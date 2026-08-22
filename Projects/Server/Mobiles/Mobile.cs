@@ -5250,7 +5250,13 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
         item.PlayerConstructed = oldItem.PlayerConstructed;
         item.Amount = oldAmount - amount;
-        item.Map = oldItem.Map;
+
+        // A parented remainder gets its map from AddItem (parent first, then map), keeping the
+        // split off the decay scheduler; a ground remainder is placed and enrolled here.
+        if (oldItem.Parent == null)
+        {
+            item.Map = oldItem.Map;
+        }
 
         oldItem.OnAfterDuped(item);
 

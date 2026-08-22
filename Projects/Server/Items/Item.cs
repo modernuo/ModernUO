@@ -335,7 +335,25 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
     [CommandProperty(AccessLevel.GameMaster)]
     public virtual bool Decays => Movable && Visible && Spawner == null;
 
-    public DateTime LastMoved { get; set; }
+    private DateTime _lastMoved;
+
+    public DateTime LastMoved
+    {
+        get => _lastMoved;
+        set
+        {
+            _lastMoved = value;
+
+            // A move at or past the reset stamp supersedes it; drop it so the CompactInfo can collapse.
+            var info = LookupCompactInfo();
+
+            if (info != null && info.m_DecayReset != default && info.m_DecayReset <= value)
+            {
+                info.m_DecayReset = default;
+                VerifyCompactInfo();
+            }
+        }
+    }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool Stackable
@@ -373,7 +391,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
                 }
 
                 Delta(ItemDelta.Update);
-                UpdateDecayRegistration();
+                RestartDecay();
             }
         }
     }
@@ -389,7 +407,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
                 SetFlag(ImplFlag.Movable, value);
 
                 Delta(ItemDelta.Update);
-                UpdateDecayRegistration();
+                RestartDecay();
             }
         }
     }
@@ -845,7 +863,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
     public virtual void Serialize(IGenericWriter writer)
     {
-        writer.Write(9); // version
+        writer.Write(10); // version
 
         var flags = SaveFlag.None;
 
@@ -955,6 +973,11 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
             {
                 flags |= SaveFlag.SavedFlags;
             }
+
+            if (info.m_DecayReset > LastMoved)
+            {
+                flags |= SaveFlag.DecayReset;
+            }
         }
 
         if (info == null || info.m_Weight < 0)
@@ -1000,6 +1023,12 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
         writer.WriteEncodedInt((int)Math.Clamp(minutes, int.MinValue, int.MaxValue));
         /* end */
+
+        if (GetSaveFlag(flags, SaveFlag.DecayReset))
+        {
+            //TODO Use WriteAnchoredTime once the save-time anchor is ported
+            writer.WriteDeltaTime(info.m_DecayReset);
+        }
 
         if (GetSaveFlag(flags, SaveFlag.Direction))
         {
@@ -1318,6 +1347,12 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
                 OnMapChange();
 
+                if (m_Parent == null)
+                {
+                    // A map change is a move; nothing else updates decay registration for a raw Map change.
+                    SetLastMoved();
+                }
+
                 if (old == null || old == Map.Internal)
                 {
                     InvalidateProperties();
@@ -1548,7 +1583,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
             if (oldValue != value)
             {
-                UpdateDecayRegistration();
+                RestartDecay();
             }
         }
     }
@@ -1742,6 +1777,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
                       || info.m_HeldBy != null
                       || info.m_BlessedFor != null
                       || info.m_Spawner != null
+                      || info.m_DecayReset != default
                       || info.m_TempFlags != 0
                       || info.m_SavedFlags != 0
                       || info.m_Weight >= 0;
@@ -2326,7 +2362,64 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
     public virtual bool OnDecay() =>
         CanDecay() && Region.Find(Location, Map).OnDecay(this);
 
-    public DateTime ScheduledDecayTime => LastMoved + DecayTime;
+    public DateTime ScheduledDecayTime
+    {
+        get
+        {
+            var reset = DecayResetTime;
+            var lastMoved = LastMoved;
+
+            return (reset > lastMoved ? reset : lastMoved) + DecayTime;
+        }
+    }
+
+    /// <summary>
+    /// When decay eligibility was last restored without the item moving, e.g. a GM unfreezing it.
+    /// The decay countdown runs from the later of this and <see cref="LastMoved" />.
+    /// </summary>
+    public DateTime DecayResetTime
+    {
+        get => LookupCompactInfo()?.m_DecayReset ?? default;
+        private set
+        {
+            if (value == default)
+            {
+                var info = LookupCompactInfo();
+
+                if (info != null && info.m_DecayReset != default)
+                {
+                    info.m_DecayReset = default;
+                    VerifyCompactInfo();
+                }
+            }
+            else
+            {
+                AcquireCompactInfo().m_DecayReset = value;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Restarts the decay countdown without touching <see cref="LastMoved" />: call when decay
+    /// eligibility changes state (Movable/Visible/Spawner) or a region refuses a decay, where a
+    /// stale <see cref="LastMoved" /> would otherwise decay the item on the next tick.
+    /// Stamps <see cref="DecayResetTime" /> only when that extends the current deadline, then
+    /// updates the scheduler registration.
+    /// </summary>
+    public void RestartDecay()
+    {
+        if (CanDecay())
+        {
+            var now = Core.Now;
+
+            if (ScheduledDecayTime < now + DecayTime)
+            {
+                DecayResetTime = now;
+            }
+        }
+
+        UpdateDecayRegistration();
+    }
 
     public void UpdateDecayRegistration()
     {
@@ -2335,6 +2428,12 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         if (CanDecay())
         {
             DecayScheduler.Register(this);
+        }
+        else
+        {
+            // No countdown to anchor while ineligible; drop the stamp so the CompactInfo
+            // can collapse. Re-eligibility always re-anchors.
+            DecayResetTime = default;
         }
     }
 
@@ -2673,6 +2772,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
         switch (version)
         {
+            case 10:
             case 9:
             case 8:
             case 7:
@@ -2695,6 +2795,18 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
                         catch
                         {
                             LastMoved = Core.Now;
+                        }
+                    }
+
+                    if (version >= 10 && GetSaveFlag(flags, SaveFlag.DecayReset))
+                    {
+                        var reset = reader.ReadDeltaTime();
+
+                        // LastMoved is stored at whole-minute precision; keep the stamp only
+                        // while it still extends the deadline.
+                        if (reset > LastMoved)
+                        {
+                            DecayResetTime = reset;
                         }
                     }
 
@@ -4361,6 +4473,8 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
         public ISpawner m_Spawner;
 
+        public DateTime m_DecayReset;
+
         public int m_TempFlags;
 
         public double m_Weight = -1;
@@ -4399,6 +4513,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         IntWeight = 0x01000000,
         SavedFlags = 0x02000000,
         NullWeight = 0x04000000,
-        PlayerConstructed = 0x08000000
+        PlayerConstructed = 0x08000000,
+        DecayReset = 0x10000000
     }
 }
