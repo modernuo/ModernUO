@@ -41,18 +41,17 @@
             <IncludeInPackage>false</IncludeInPackage>
         </ProjectReference>
         <PackageReference Include="LibDeflate.Bindings" Version="1.0.4" />
-        <PackageReference Include="System.IO.Hashing" Version="10.0.10" />
+        <PackageReference Include="System.IO.Hashing" Version="10.0.11" />
         <PackageReference Include="MailKit" Version="4.17.0" />
-        <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="10.0.10" />
+        <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="10.0.11" />
         <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.4.2" />
         <PackageReference Include="Argon2.Bindings" Version="1.20.0" />
         <PackageReference Include="ModernUO.CodeGeneratedEvents.Annotations" Version="1.0.0" />
         <PackageReference Include="ModernUO.CodeGeneratedEvents.Generator" Version="1.0.3.2" PrivateAssets="all" />
         <PackageReference Include="ZstdNet" Version="1.5.7" />
 
-        <PackageReference Include="ModernUO.Serialization.Annotations" Version="2.14.2" />
-        <PackageReference Include="ModernUO.Serialization.Generator" Version="2.14.3" />
-        <PackageReference Update="Serilog" Version="4.4.0" />
+        <PackageReference Include="ModernUO.Serialization.Annotations" Version="3.0.0" />
+        <PackageReference Include="ModernUO.Serialization.Generator" Version="3.0.0" PrivateAssets="all" />
     </ItemGroup>
     <ItemGroup>
         <AdditionalFiles Include="Migrations/*.v*.json" />
