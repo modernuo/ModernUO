@@ -276,7 +276,7 @@ public class DecayRegistrationTests
         }
     }
 
-    // A refusal restarts the countdown; it must not pretend the item moved.
+    // A refusal restarts the countdown without rewriting LastMoved.
     [Fact]
     public void RefusedDecay_DoesNotRewriteLastMoved()
     {
@@ -340,8 +340,7 @@ public class DecayRegistrationTests
         }
     }
 
-    // Once a real move supersedes the reset stamp, the stamp must be dropped so the item's
-    // CompactInfo can collapse instead of holding ~40 bytes forever.
+    // A real move supersedes the reset stamp; it must be dropped so the CompactInfo can collapse.
     [Fact]
     public void MovingAnItem_ClearsASupersededDecayResetStamp()
     {

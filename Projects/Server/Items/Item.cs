@@ -344,8 +344,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         {
             _lastMoved = value;
 
-            // A move at or past the reset stamp supersedes it; drop the stamp so the
-            // CompactInfo it lives in can collapse instead of being held forever.
+            // A move at or past the reset stamp supersedes it; drop it so the CompactInfo can collapse.
             var info = LookupCompactInfo();
 
             if (info != null && info.m_DecayReset != default && info.m_DecayReset <= value)
@@ -1350,8 +1349,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
                 if (m_Parent == null)
                 {
-                    // A map change is a move; this also enrolls/withdraws the item for decay,
-                    // since nothing else tracks eligibility gained through a raw Map change.
+                    // A map change is a move; nothing else updates decay registration for a raw Map change.
                     SetLastMoved();
                 }
 
@@ -2386,9 +2384,9 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
     }
 
     /// <summary>
-    /// Restarts the decay countdown without pretending the item moved: call when decay eligibility
-    /// changes state (Movable/Visible/Spawner) or a region refuses a decay. Otherwise a stale
-    /// <see cref="LastMoved" /> makes the scheduler delete the item on its next tick.
+    /// Restarts the decay countdown without touching <see cref="LastMoved" />: call when decay
+    /// eligibility changes state (Movable/Visible/Spawner) or a region refuses a decay, where a
+    /// stale <see cref="LastMoved" /> would otherwise decay the item on the next tick.
     /// Stamps <see cref="DecayResetTime" /> only when that extends the current deadline, then
     /// updates the scheduler registration.
     /// </summary>
@@ -2782,8 +2780,8 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
                     {
                         var reset = Core.Now - TimeSpan.FromMinutes(reader.ReadEncodedInt());
 
-                        // Minute rounding can land the stamp on LastMoved; only keep it while
-                        // it still extends the deadline, so CompactInfo is not held for nothing.
+                        // Minute rounding can land the stamp on LastMoved; keep it only while it
+                        // extends the deadline.
                         if (reset > LastMoved)
                         {
                             DecayResetTime = reset;
