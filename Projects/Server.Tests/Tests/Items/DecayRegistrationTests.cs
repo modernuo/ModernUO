@@ -208,6 +208,154 @@ public class DecayRegistrationTests
         item.Delete();
     }
 
+    // A GM freezes an item, time passes, then unfreezes it. The stale LastMoved must not
+    // let the scheduler delete it on the next tick; it gets a fresh decay window instead.
+    [Fact]
+    public void StaleImmovableItemMadeMovable_GetsAFreshDecayWindow()
+    {
+        var start = Core._now;
+
+        try
+        {
+            var item = new Item(0x1234);
+            item.MoveToWorld(new Point3D(107, 100, 0), Map.Felucca);
+
+            item.Movable = false;
+            Assert.False(DecayScheduler.IsRegistered(item), "A frozen item must not be tracked for decay.");
+
+            // Months pass while the item sits frozen; LastMoved goes stale.
+            Core._now = start + TimeSpan.FromDays(30);
+            var flipped = Core._now;
+
+            item.Movable = true;
+
+            Assert.True(DecayScheduler.IsRegistered(item), "An unfrozen item must be tracked for decay.");
+
+            AdvanceDecay(flipped, item.DecayTime - TimeSpan.FromMinutes(2), item);
+            Assert.False(item.Deleted, "An unfrozen item must get a full decay window, not vanish immediately.");
+
+            AdvanceDecay(Core._now, TimeSpan.FromMinutes(4), item);
+            Assert.True(item.Deleted, "An unfrozen item must still decay once the fresh window elapses.");
+        }
+        finally
+        {
+            Core._now = start;
+        }
+    }
+
+    // Same transition through the Visible setter: unhiding a long-hidden item.
+    [Fact]
+    public void StaleHiddenItemMadeVisible_GetsAFreshDecayWindow()
+    {
+        var start = Core._now;
+
+        try
+        {
+            var item = new Item(0x1234);
+            item.MoveToWorld(new Point3D(109, 100, 0), Map.Felucca);
+
+            item.Visible = false;
+            Assert.False(DecayScheduler.IsRegistered(item), "A hidden item must not be tracked for decay.");
+
+            Core._now = start + TimeSpan.FromDays(30);
+            var flipped = Core._now;
+
+            item.Visible = true;
+
+            Assert.True(DecayScheduler.IsRegistered(item), "An unhidden item must be tracked for decay.");
+
+            AdvanceDecay(flipped, item.DecayTime - TimeSpan.FromMinutes(2), item);
+            Assert.False(item.Deleted, "An unhidden item must get a full decay window, not vanish immediately.");
+
+            AdvanceDecay(Core._now, TimeSpan.FromMinutes(4), item);
+            Assert.True(item.Deleted, "An unhidden item must still decay once the fresh window elapses.");
+        }
+        finally
+        {
+            Core._now = start;
+        }
+    }
+
+    // A refusal restarts the countdown; it must not pretend the item moved.
+    [Fact]
+    public void RefusedDecay_DoesNotRewriteLastMoved()
+    {
+        var start = Core._now;
+
+        try
+        {
+            var item = new RefusesDecayItem();
+            item.MoveToWorld(new Point3D(110, 100, 0), Map.Felucca);
+            var lastMoved = item.LastMoved;
+
+            AdvanceDecay(start, item.DecayTime + TimeSpan.FromMinutes(2), item);
+
+            Assert.False(item.Deleted, "A refused decay must not delete the item.");
+            Assert.True(DecayScheduler.IsRegistered(item), "A refused decay must leave the item tracked.");
+            Assert.Equal(lastMoved, item.LastMoved);
+
+            item.Delete();
+        }
+        finally
+        {
+            Core._now = start;
+        }
+    }
+
+    // The fresh window must survive a save/load cycle, or a restart mid-window deletes the item.
+    [Fact]
+    public void FreshDecayWindow_SurvivesSerialization()
+    {
+        var start = Core._now;
+
+        try
+        {
+            var item = new Item(0x1234);
+            item.MoveToWorld(new Point3D(111, 100, 0), Map.Felucca);
+
+            item.Movable = false;
+            Core._now = start + TimeSpan.FromDays(30);
+            item.Movable = true;
+
+            var expected = item.ScheduledDecayTime;
+
+            var writer = new BufferWriter(new byte[512], true);
+            item.Serialize(writer);
+
+            var copy = new Item(item.Serial);
+            copy.Deserialize(new BufferReader(writer.Buffer));
+
+            // LastMoved persists as whole minutes; allow that much slack.
+            Assert.True(
+                (copy.ScheduledDecayTime - expected).Duration() <= TimeSpan.FromMinutes(1),
+                "The restarted decay window must survive a save/load cycle."
+            );
+
+            item.Delete();
+            copy.Delete();
+        }
+        finally
+        {
+            Core._now = start;
+        }
+    }
+
+    // A raw Map assignment (e.g. a GM changing Map through props) is a move: it must enroll
+    // an untracked item for decay instead of leaving it to linger forever.
+    [Fact]
+    public void ItemMovedToRealMapViaMapSetter_IsRegisteredForDecay()
+    {
+        var item = new Item(0x1234);
+        Assert.False(DecayScheduler.IsRegistered(item));
+
+        item.Map = Map.Felucca;
+
+        Assert.True(item.CanDecay());
+        Assert.True(DecayScheduler.IsRegistered(item), "Item placed on a map via the Map setter must be tracked.");
+
+        item.Delete();
+    }
+
     // Dropping into a container must untrack; taking it back out to the ground must re-track.
     [Fact]
     public void ItemMovedIntoContainerThenBackToGround_IsRegisteredForDecay()

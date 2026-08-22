@@ -311,7 +311,7 @@ public class DecayScheduler : Timer
 
             if (timeUntilDecay > _bucketInterval)
             {
-                // Item was moved (SetLastMoved called) - re-bucket or move to overflow
+                // Deadline was pushed out (SetLastMoved/RestartDecay) - re-bucket or move to overflow
                 if (timeUntilDecay > _totalBucketSpan)
                 {
                     // Extended beyond total span - move to overflow
@@ -429,7 +429,7 @@ public class DecayScheduler : Timer
             {
                 // Refused by the region. Restart the clock rather than dropping the item, which has
                 // already left the queue; re-registering as-is would spin on a due time in the past.
-                item.SetLastMoved();
+                item.RestartDecay();
             }
         }
     }
