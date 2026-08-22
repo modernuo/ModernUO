@@ -390,6 +390,29 @@ public class DecayRegistrationTests
         item.Delete();
     }
 
+    // LiftItemDupe places the remainder of a partially lifted ground stack via raw
+    // Location/Map assignments, with no MoveToWorld fallback: it must still be tracked.
+    [Fact]
+    public void PartialLiftOfGroundStack_LeavesRemainderRegisteredForDecay()
+    {
+        var stack = new Item(0x1234) { Stackable = true, Amount = 10 };
+        stack.MoveToWorld(new Point3D(114, 100, 0), Map.Felucca);
+
+        var remainder = Mobile.LiftItemDupe(stack, 3);
+
+        Assert.NotNull(remainder);
+        Assert.Equal(7, remainder.Amount);
+        Assert.Null(remainder.Parent);
+        Assert.Equal(Map.Felucca, remainder.Map);
+        Assert.True(
+            DecayScheduler.IsRegistered(remainder),
+            "The remainder of a partially lifted ground stack must be tracked for decay."
+        );
+
+        stack.Delete();
+        remainder.Delete();
+    }
+
     // Dropping into a container must untrack; taking it back out to the ground must re-track.
     [Fact]
     public void ItemMovedIntoContainerThenBackToGround_IsRegisteredForDecay()
