@@ -340,6 +340,40 @@ public class DecayRegistrationTests
         }
     }
 
+    // Once a real move supersedes the reset stamp, the stamp must be dropped so the item's
+    // CompactInfo can collapse instead of holding ~40 bytes forever.
+    [Fact]
+    public void MovingAnItem_ClearsASupersededDecayResetStamp()
+    {
+        var start = Core._now;
+
+        try
+        {
+            var item = new Item(0x1234);
+            item.MoveToWorld(new Point3D(112, 100, 0), Map.Felucca);
+
+            item.Movable = false;
+            Core._now = start + TimeSpan.FromDays(30);
+            item.Movable = true;
+
+            Assert.NotEqual(default, item.DecayResetTime);
+
+            // A real move supersedes the stamp.
+            Core._now += TimeSpan.FromMinutes(1);
+            item.MoveToWorld(new Point3D(113, 100, 0), Map.Felucca);
+
+            Assert.Equal(default, item.DecayResetTime);
+            Assert.Equal(item.LastMoved + item.DecayTime, item.ScheduledDecayTime);
+            Assert.True(DecayScheduler.IsRegistered(item));
+
+            item.Delete();
+        }
+        finally
+        {
+            Core._now = start;
+        }
+    }
+
     // A raw Map assignment (e.g. a GM changing Map through props) is a move: it must enroll
     // an untracked item for decay instead of leaving it to linger forever.
     [Fact]

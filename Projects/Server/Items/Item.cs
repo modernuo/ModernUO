@@ -335,7 +335,26 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
     [CommandProperty(AccessLevel.GameMaster)]
     public virtual bool Decays => Movable && Visible && Spawner == null;
 
-    public DateTime LastMoved { get; set; }
+    private DateTime _lastMoved;
+
+    public DateTime LastMoved
+    {
+        get => _lastMoved;
+        set
+        {
+            _lastMoved = value;
+
+            // A move at or past the reset stamp supersedes it; drop the stamp so the
+            // CompactInfo it lives in can collapse instead of being held forever.
+            var info = LookupCompactInfo();
+
+            if (info != null && info.m_DecayReset != default && info.m_DecayReset <= value)
+            {
+                info.m_DecayReset = default;
+                VerifyCompactInfo();
+            }
+        }
+    }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public bool Stackable
@@ -2761,7 +2780,14 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
                     if (version >= 10 && GetSaveFlag(flags, SaveFlag.DecayReset))
                     {
-                        DecayResetTime = Core.Now - TimeSpan.FromMinutes(reader.ReadEncodedInt());
+                        var reset = Core.Now - TimeSpan.FromMinutes(reader.ReadEncodedInt());
+
+                        // Minute rounding can land the stamp on LastMoved; only keep it while
+                        // it still extends the deadline, so CompactInfo is not held for nothing.
+                        if (reset > LastMoved)
+                        {
+                            DecayResetTime = reset;
+                        }
                     }
 
                     if (GetSaveFlag(flags, SaveFlag.Direction))
