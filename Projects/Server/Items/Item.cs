@@ -2429,6 +2429,12 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         {
             DecayScheduler.Register(this);
         }
+        else
+        {
+            // No countdown to anchor while ineligible; drop the stamp so the CompactInfo
+            // can collapse. Re-eligibility always re-anchors.
+            DecayResetTime = default;
+        }
     }
 
     public void SetLastMoved()

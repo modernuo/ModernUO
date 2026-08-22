@@ -374,6 +374,69 @@ public class DecayRegistrationTests
         }
     }
 
+    // Losing decay eligibility makes the stamp meaningless; it must be dropped so the
+    // CompactInfo is not held for as long as the item stays ineligible.
+    [Fact]
+    public void ItemBecomingIneligible_DropsTheDecayResetStamp()
+    {
+        var start = Core._now;
+
+        try
+        {
+            var item = new Item(0x1234);
+            item.MoveToWorld(new Point3D(115, 100, 0), Map.Felucca);
+
+            item.Movable = false;
+            Core._now = start + TimeSpan.FromDays(30);
+            item.Movable = true;
+
+            Assert.NotEqual(default, item.DecayResetTime);
+
+            item.Movable = false;
+
+            Assert.Equal(default, item.DecayResetTime);
+
+            item.Delete();
+        }
+        finally
+        {
+            Core._now = start;
+        }
+    }
+
+    // Moving a stamped item into a container programmatically (no drop, no SetLastMoved)
+    // must also drop the stamp.
+    [Fact]
+    public void StampedItemAddedToContainer_DropsTheDecayResetStamp()
+    {
+        var start = Core._now;
+
+        try
+        {
+            var pack = new Container(0xE75);
+            pack.MoveToWorld(new Point3D(116, 100, 0), Map.Felucca);
+
+            var item = new Item(0x1234);
+            item.MoveToWorld(new Point3D(117, 100, 0), Map.Felucca);
+
+            item.Movable = false;
+            Core._now = start + TimeSpan.FromDays(30);
+            item.Movable = true;
+
+            Assert.NotEqual(default, item.DecayResetTime);
+
+            pack.AddItem(item);
+
+            Assert.Equal(default, item.DecayResetTime);
+
+            pack.Delete();
+        }
+        finally
+        {
+            Core._now = start;
+        }
+    }
+
     // A raw Map assignment (e.g. a GM changing Map through props) is a move: it must enroll
     // an untracked item for decay instead of leaving it to linger forever.
     [Fact]
