@@ -43,6 +43,8 @@ public unsafe class UnmanagedDataReader : IGenericReader
     /// </summary>
     public long Position { get; private set; }
 
+    public TimeSpan AnchoredTimeShift { get; set; }
+
     /// <summary>
     /// Read bits of data raw from a serialized file using Little-endian.
     /// </summary>

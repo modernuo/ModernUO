@@ -114,9 +114,10 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
         using var binFs = new FileStream(
             Path.Combine(dir, $"{Name}.bin"), FileMode.Create, FileAccess.Write, FileShare.None, 1024 * 1024
         );
-        // v4 records are fixed-width 26 bytes; the header carries the type table
-        // (name lengths vary — 64 bytes per entry is a staging hint, not a contract).
-        var expectedIdxSize = 12 + 26L * EntitiesBySerial.Count + 64L * _typeTable.Count;
+        // v4 records are fixed-width 26 bytes; the v5 header carries the save-start anchor
+        // and the type table (name lengths vary — 64 bytes per entry is a staging hint, not
+        // a contract).
+        var expectedIdxSize = 20 + 26L * EntitiesBySerial.Count + 64L * _typeTable.Count;
         using var idx = new FileBufferWriter(Path.Combine(dir, $"{Name}.idx"), expectedIdxSize);
 
         var binPosition = 0L;
@@ -142,7 +143,10 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
             binPosition += _selfLength;
         }
 
-        idx.Write(4); // Version
+        idx.Write(5); // Version
+
+        // One anchor for the whole save: the world is frozen from the moment it is stamped.
+        idx.Write(World.SaveStartTime.Ticks);
 
         // The type table is fully known at freeze (AddEntity diverts to the pending
         // queues while saving) and is written before the records so the loader can
@@ -494,6 +498,14 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
 
         var version = dataReader.ReadInt();
 
+        if (version >= 5)
+        {
+            // Re-base anchored timestamps by the elapsed time since the save started.
+            var anchor = new DateTime(dataReader.ReadLong(), DateTimeKind.Utc);
+            var shift = Core.Now - anchor;
+            _anchoredTimeShift = anchor.Ticks > 0 && shift > TimeSpan.Zero ? shift : TimeSpan.Zero;
+        }
+
         if (version >= 4)
         {
             DeserializeIndexesV4(dataReader, entities);
@@ -660,6 +672,9 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
 
     private static List<T> _toDelete;
 
+    // From the loaded idx (v5+); zero when the save predates the anchor.
+    private TimeSpan _anchoredTimeShift;
+
     private unsafe void InternalDeserialize(string filePath, int index, Dictionary<ulong, string> typesDb)
     {
         using var mmf = MemoryMappedFile.CreateFromFile(filePath, FileMode.Open);
@@ -667,7 +682,10 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
 
         byte* ptr = null;
         accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref ptr);
-        var dataReader = new UnmanagedDataReader(ptr, accessor.Length, typesDb);
+        var dataReader = new UnmanagedDataReader(ptr, accessor.Length, typesDb)
+        {
+            AnchoredTimeShift = _anchoredTimeShift
+        };
 
         Deserialize(dataReader);
 

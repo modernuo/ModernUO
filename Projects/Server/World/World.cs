@@ -93,6 +93,12 @@ public static class World
     public static string SavePath { get; private set; }
     public static WorldState WorldState { get; private set; }
     public static bool Saving => WorldState == WorldState.Saving;
+
+    /// <summary>
+    /// UTC time the current or most recent world save started. Written into save indexes so
+    /// anchored timestamps can be re-based by the downtime at load.
+    /// </summary>
+    public static DateTime SaveStartTime { get; internal set; }
     public static bool Running => WorldState is not WorldState.Loading and not WorldState.Initial;
     public static bool Loading => WorldState == WorldState.Loading;
 
@@ -286,6 +292,10 @@ public static class World
         NetState.FlushAll();
 
         WorldState = WorldState.Saving;
+
+        // The world is frozen from here: one anchor for the whole save. Written into save
+        // indexes so anchored timestamps can be re-based by the downtime at load.
+        SaveStartTime = Core.Now;
 
         Broadcast(0x35, true, "The world is saving, please wait.");
 
