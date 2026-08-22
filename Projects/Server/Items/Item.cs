@@ -345,12 +345,11 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
             _lastMoved = value;
 
             // A move at or past the reset stamp supersedes it; drop it so the CompactInfo can collapse.
-            var info = LookupCompactInfo();
+            var reset = DecayResetTime;
 
-            if (info != null && info.m_DecayReset != default && info.m_DecayReset <= value)
+            if (reset != default && reset <= value)
             {
-                info.m_DecayReset = default;
-                VerifyCompactInfo();
+                DecayResetTime = default;
             }
         }
     }
@@ -2380,7 +2379,23 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
     public DateTime DecayResetTime
     {
         get => LookupCompactInfo()?.m_DecayReset ?? default;
-        private set => AcquireCompactInfo().m_DecayReset = value;
+        private set
+        {
+            if (value == default)
+            {
+                var info = LookupCompactInfo();
+
+                if (info != null && info.m_DecayReset != default)
+                {
+                    info.m_DecayReset = default;
+                    VerifyCompactInfo();
+                }
+            }
+            else
+            {
+                AcquireCompactInfo().m_DecayReset = value;
+            }
+        }
     }
 
     /// <summary>
