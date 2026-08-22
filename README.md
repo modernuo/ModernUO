@@ -46,13 +46,7 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 | Medium (50–200) | 4–8 | 8 GB | NVMe |
 | Large (200+) | 8+, high clock | 16 GB+ | NVMe |
 
-Game logic is single-threaded, so **single-core clock speed matters more than core count**, and
-**dedicated vCPU matters more than either** — burstable or shared plans throttle once credits run
-out, which is the most common cause of unexplained lag spikes. Save size drives RAM more than
-player count does.
-
-See [dev-docs/server-requirements.md](dev-docs/server-requirements.md) for the reasoning and tuning
-options.
+See [dev-docs/server-requirements.md](dev-docs/server-requirements.md) for more information.
 
 #### Development
 [![git](https://img.shields.io/badge/-git-F05032?logo=git&logoColor=F05032&labelColor=222222)](https://git-scm.com/downloads)
