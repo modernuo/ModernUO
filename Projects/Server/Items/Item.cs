@@ -1026,7 +1026,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
         if (GetSaveFlag(flags, SaveFlag.DecayReset))
         {
-            // Replace with WriteAnchoredTime once the save-time anchor is ported.
+            //TODO Use WriteAnchoredTime once the save-time anchor is ported
             writer.WriteDeltaTime(info.m_DecayReset);
         }
 

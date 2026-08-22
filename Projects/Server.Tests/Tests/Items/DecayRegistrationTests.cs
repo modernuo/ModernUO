@@ -208,8 +208,8 @@ public class DecayRegistrationTests
         item.Delete();
     }
 
-    // A GM freezes an item, time passes, then unfreezes it. The stale LastMoved must not
-    // let the scheduler delete it on the next tick; it gets a fresh decay window instead.
+    // Unfreezing an item with a stale LastMoved must grant a fresh decay window,
+    // not delete it on the next tick.
     [Fact]
     public void StaleImmovableItemMadeMovable_GetsAFreshDecayWindow()
     {
@@ -223,7 +223,6 @@ public class DecayRegistrationTests
             item.Movable = false;
             Assert.False(DecayScheduler.IsRegistered(item), "A frozen item must not be tracked for decay.");
 
-            // Months pass while the item sits frozen; LastMoved goes stale.
             Core._now = start + TimeSpan.FromDays(30);
             var flipped = Core._now;
 
@@ -358,7 +357,6 @@ public class DecayRegistrationTests
 
             Assert.NotEqual(default, item.DecayResetTime);
 
-            // A real move supersedes the stamp.
             Core._now += TimeSpan.FromMinutes(1);
             item.MoveToWorld(new Point3D(113, 100, 0), Map.Felucca);
 
@@ -437,8 +435,8 @@ public class DecayRegistrationTests
         }
     }
 
-    // A raw Map assignment (e.g. a GM changing Map through props) is a move: it must enroll
-    // an untracked item for decay instead of leaving it to linger forever.
+    // A raw Map assignment (e.g. a GM changing Map through props) is a move: it must
+    // enroll an untracked item for decay.
     [Fact]
     public void ItemMovedToRealMapViaMapSetter_IsRegisteredForDecay()
     {
