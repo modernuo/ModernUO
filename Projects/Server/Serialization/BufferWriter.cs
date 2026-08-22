@@ -407,6 +407,21 @@ public class BufferWriter : IGenericWriter
         Write(value.Ticks - DateTime.UtcNow.Ticks);
     }
 
+    /// <summary>
+    /// Writes the absolute value; <see cref="IGenericReader.ReadAnchoredTime" /> re-bases it
+    /// by the elapsed time since the save started, so downtime does not age it and an
+    /// unchanged value serializes to identical bytes.
+    /// </summary>
+    public void WriteAnchoredTime(DateTime value)
+    {
+        if (value.Kind == DateTimeKind.Local)
+        {
+            value = value.ToUniversalTime();
+        }
+
+        Write(value.Ticks);
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(IPAddress value)
     {

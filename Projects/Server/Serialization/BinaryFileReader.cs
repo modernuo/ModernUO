@@ -74,6 +74,12 @@ public sealed unsafe class BinaryFileReader : IDisposable, IGenericReader
     /// </summary>
     public long Position => _reader.Position;
 
+    public TimeSpan AnchoredTimeShift
+    {
+        get => _reader.AnchoredTimeShift;
+        set => _reader.AnchoredTimeShift = value;
+    }
+
     public void Dispose()
     {
         _accessor?.SafeMemoryMappedViewHandle.ReleasePointer();

@@ -52,6 +52,37 @@ public interface IGenericReader
             var delta     => new DateTime(delta + DateTime.UtcNow.Ticks, DateTimeKind.Utc)
         };
     }
+
+    /// <summary>
+    /// Elapsed time between the loaded save starting and this load, applied by
+    /// <see cref="ReadAnchoredTime" />. Zero when the source carries no anchor.
+    /// </summary>
+    TimeSpan AnchoredTimeShift => TimeSpan.Zero;
+
+    DateTime ReadAnchoredTime()
+    {
+        var value = ReadDateTime();
+
+        if (value == DateTime.MinValue || value == DateTime.MaxValue)
+        {
+            return value;
+        }
+
+        var shift = AnchoredTimeShift;
+        if (shift == TimeSpan.Zero)
+        {
+            return value;
+        }
+
+        var ticks = value.Ticks + shift.Ticks;
+
+        if (ticks >= DateTime.MaxValue.Ticks)
+        {
+            return DateTime.MaxValue;
+        }
+
+        return ticks <= 0 ? DateTime.MinValue : new DateTime(ticks, DateTimeKind.Utc);
+    }
     decimal ReadDecimal() => new([ReadInt(), ReadInt(), ReadInt(), ReadInt()]);
     int ReadEncodedInt()
     {

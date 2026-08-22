@@ -41,6 +41,7 @@ public interface IGenericWriter
     void WriteEncodedInt(int value);
     void Write(DateTime value);
     void WriteDeltaTime(DateTime value);
+    void WriteAnchoredTime(DateTime value);
     void Write(IPAddress value);
     void Write(TimeSpan value);
     void Write(Point3D value);
