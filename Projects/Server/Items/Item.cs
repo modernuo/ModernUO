@@ -345,11 +345,12 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
             _lastMoved = value;
 
             // A move at or past the reset stamp supersedes it; drop it so the CompactInfo can collapse.
-            var reset = DecayResetTime;
+            var info = LookupCompactInfo();
 
-            if (reset != default && reset <= value)
+            if (info != null && info.m_DecayReset != default && info.m_DecayReset <= value)
             {
-                DecayResetTime = default;
+                info.m_DecayReset = default;
+                VerifyCompactInfo();
             }
         }
     }
