@@ -197,6 +197,7 @@ public class BaseCreatureSerializationTests : IDisposable
 
         bc.SpeedClass = SpeedLevel.VeryFast; // boss state change
 
+        Assert.Equal(SpeedLevel.VeryFast, bc.SpeedClass); // conforming assignment holds
         Assert.Equal(0.125, bc.ActiveSpeed);
         Assert.Equal(0.3, bc.PassiveSpeed);
         Assert.Equal(0.125, bc.ActiveMoveSpeed);
@@ -221,6 +222,41 @@ public class BaseCreatureSerializationTests : IDisposable
         Assert.Equal(0.3, copy.PassiveSpeed);
         Assert.Equal(0.125, copy.ActiveMoveSpeed);
         Assert.Equal(0.6, copy.PassiveMoveSpeed);
+    }
+
+    [Fact]
+    public void PartialSpeedTuning_MakesTheCreatureFullyCustom()
+    {
+        NPCSpeeds.RegisterSpeed(new NPCSpeeds.SpeedClassEntry
+        {
+            Level = SpeedLevel.Fast, ActiveSpeed = 0.2, PassiveSpeed = 0.4,
+            ActiveMoveSpeed = 0.3, PassiveMoveSpeed = 0.9, Types = new HashSet<Type>()
+        });
+
+        var bc = new BucketStub();
+        _created.Add(bc);
+
+        bc.ActiveSpeed = 0.25; // one tuned value customizes the whole block
+
+        Assert.Equal(SpeedLevel.Custom, bc.SpeedClass); // the bucket label never lies
+
+        var writer = new BufferWriter(true);
+        bc.Serialize(writer);
+        var buffer = new byte[writer.Position];
+        writer.Buffer.AsSpan(0, (int)writer.Position).CopyTo(buffer);
+
+        var copy = new BucketStub(World.NewMobile);
+        _created.Add(copy);
+        var reader = new BufferReader(buffer);
+        copy.Deserialize(reader);
+
+        // All four persisted raw - no value is left silently tracking the table.
+        Assert.Equal(buffer.Length, reader.Position);
+        Assert.Equal(SpeedLevel.Custom, copy.SpeedClass);
+        Assert.Equal(0.25, copy.ActiveSpeed);
+        Assert.Equal(0.4, copy.PassiveSpeed);
+        Assert.Equal(0.3, copy.ActiveMoveSpeed);
+        Assert.Equal(0.9, copy.PassiveMoveSpeed);
     }
 
     private sealed class MobileStub : Mobile

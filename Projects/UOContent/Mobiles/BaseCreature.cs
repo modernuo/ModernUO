@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using ModernUO.CodeGeneratedEvents;
 using ModernUO.Serialization;
 using Server.Collections;
 using Server.ContextMenus;
@@ -335,29 +334,68 @@ namespace Server.Mobiles
             ApplySpeedClass();
         }
 
-        // Applies the current bucket's speeds, preserving the active/passive mode.
+        private bool _applyingSpeedClass;
+
+        // Applies the current bucket's speeds, preserving the active/passive mode. The
+        // guard keeps OnSpeedTuned from reading the half-assigned block as customization.
         private void ApplySpeedClass()
         {
-            var wasActive = _currentSpeed == _activeSpeed && _currentSpeed != _passiveSpeed;
+            if (SpeedEntry == null)
+            {
+                return; // Custom (or an unloaded table) has no bucket to apply
+            }
 
-            GetSpeeds(out var activeSpeed, out var passiveSpeed);
-            GetMoveSpeeds(out _activeMoveSpeed, out _passiveMoveSpeed);
+            _applyingSpeedClass = true;
 
-            ActiveSpeed = activeSpeed;
-            PassiveSpeed = passiveSpeed;
-            CurrentSpeed = wasActive ? activeSpeed : passiveSpeed;
+            try
+            {
+                var wasActive = _currentSpeed == _activeSpeed && _currentSpeed != _passiveSpeed;
+
+                GetSpeeds(out var activeSpeed, out var passiveSpeed);
+                GetMoveSpeeds(out _activeMoveSpeed, out _passiveMoveSpeed);
+
+                ActiveSpeed = activeSpeed;
+                PassiveSpeed = passiveSpeed;
+                CurrentSpeed = wasActive ? activeSpeed : passiveSpeed;
+            }
+            finally
+            {
+                _applyingSpeedClass = false;
+            }
         }
 
         /// <summary>Seconds per AI decision while engaged; see <see cref="ActiveMoveSpeed"/> for movement pace.</summary>
-        [SerializableField(8)]
-        [SaveFlag(nameof(ShouldSerializeActiveSpeed), nameof(ActiveSpeedDefaultValue))]
+        [SerializableField(8, fieldChanged: nameof(OnSpeedTuned))]
+        [SaveFlag(nameof(ShouldSerializeSpeeds), nameof(ActiveSpeedDefaultValue))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private double _activeSpeed;
 
-        private bool ShouldSerializeActiveSpeed()
+        // The four speeds are one block: either all conform to the bucket (elided as a
+        // set), or the creature is custom and all four serialize. Partial conformance
+        // cannot exist on the wire.
+        private bool ShouldSerializeSpeeds()
         {
-            GetSpeeds(out var activeSpeed, out _);
-            return _activeSpeed != activeSpeed;
+            if (_speedClass == SpeedLevel.Custom)
+            {
+                return true;
+            }
+
+            GetSpeeds(out var activeSpeed, out var passiveSpeed);
+            GetMoveSpeeds(out var activeMoveSpeed, out var passiveMoveSpeed);
+
+            return _activeSpeed != activeSpeed || _passiveSpeed != passiveSpeed ||
+                   _activeMoveSpeed != activeMoveSpeed || _passiveMoveSpeed != passiveMoveSpeed;
+        }
+
+        // Tuning any speed away from the bucket makes the creature fully custom - the
+        // bucket label must never lie. ApplySpeedClass assigns mid-transition and guards.
+        private void OnSpeedTuned(double oldValue, double newValue)
+        {
+            if (!_applyingSpeedClass && _speedClass != SpeedLevel.Custom && ShouldSerializeSpeeds())
+            {
+                _speedClass = SpeedLevel.Custom;
+                _speedEntry = null;
+            }
         }
 
         private double ActiveSpeedDefaultValue()
@@ -367,16 +405,10 @@ namespace Server.Mobiles
         }
 
         /// <summary>Seconds per AI decision while idle; see <see cref="PassiveMoveSpeed"/> for movement pace.</summary>
-        [SerializableField(9)]
-        [SaveFlag(nameof(ShouldSerializePassiveSpeed), nameof(PassiveSpeedDefaultValue))]
+        [SerializableField(9, fieldChanged: nameof(OnSpeedTuned))]
+        [SaveFlag(nameof(ShouldSerializeSpeeds), nameof(PassiveSpeedDefaultValue))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private double _passiveSpeed;
-
-        private bool ShouldSerializePassiveSpeed()
-        {
-            GetSpeeds(out _, out var passiveSpeed);
-            return _passiveSpeed != passiveSpeed;
-        }
 
         private double PassiveSpeedDefaultValue()
         {
@@ -399,8 +431,8 @@ namespace Server.Mobiles
         /// Movement clock (seconds per step) while engaged; 0 = inherit
         /// <see cref="ActiveSpeed"/>. <see cref="CurrentMoveSpeed"/> resolves the pace.
         /// </summary>
-        [SerializableField(11, allowFieldChange: nameof(CoerceMoveSpeed))]
-        [SaveFlag(nameof(ShouldSerializeActiveMoveSpeed), nameof(ActiveMoveSpeedDefaultValue))]
+        [SerializableField(11, allowFieldChange: nameof(CoerceMoveSpeed), fieldChanged: nameof(OnSpeedTuned))]
+        [SaveFlag(nameof(ShouldSerializeSpeeds), nameof(ActiveMoveSpeedDefaultValue))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private double _activeMoveSpeed;
 
@@ -408,8 +440,8 @@ namespace Server.Mobiles
         /// Movement clock (seconds per step) while idle; 0 = inherit
         /// <see cref="PassiveSpeed"/>. <see cref="CurrentMoveSpeed"/> resolves the pace.
         /// </summary>
-        [SerializableField(12, allowFieldChange: nameof(CoerceMoveSpeed))]
-        [SaveFlag(nameof(ShouldSerializePassiveMoveSpeed), nameof(PassiveMoveSpeedDefaultValue))]
+        [SerializableField(12, allowFieldChange: nameof(CoerceMoveSpeed), fieldChanged: nameof(OnSpeedTuned))]
+        [SaveFlag(nameof(ShouldSerializeSpeeds), nameof(PassiveMoveSpeedDefaultValue))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private double _passiveMoveSpeed;
 
@@ -419,22 +451,10 @@ namespace Server.Mobiles
             return true;
         }
 
-        private bool ShouldSerializeActiveMoveSpeed()
-        {
-            GetMoveSpeeds(out var activeMoveSpeed, out _);
-            return _activeMoveSpeed != activeMoveSpeed;
-        }
-
         private double ActiveMoveSpeedDefaultValue()
         {
             GetMoveSpeeds(out var activeMoveSpeed, out _);
             return activeMoveSpeed;
-        }
-
-        private bool ShouldSerializePassiveMoveSpeed()
-        {
-            GetMoveSpeeds(out _, out var passiveMoveSpeed);
-            return _passiveMoveSpeed != passiveMoveSpeed;
         }
 
         private double PassiveMoveSpeedDefaultValue()
@@ -853,12 +873,9 @@ namespace Server.Mobiles
 
             FightMode = mode;
 
-            GetSpeeds(out var activeSpeed, out var passiveSpeed);
+            GetSpeeds(out _activeSpeed, out _passiveSpeed);
             GetMoveSpeeds(out _activeMoveSpeed, out _passiveMoveSpeed);
-
-            ActiveSpeed = activeSpeed;
-            PassiveSpeed = passiveSpeed;
-            CurrentSpeed = passiveSpeed;
+            _currentSpeed = _passiveSpeed;
 
             _team = 0;
 
@@ -5121,9 +5138,22 @@ namespace Server.Mobiles
 
         public virtual void GetSpeeds(out double activeSpeed, out double passiveSpeed)
         {
-            var entry = SpeedEntry ?? throw new InvalidOperationException(
-                $"{GetType()} has no speed entry - is {"Data/npc-speeds.json"} missing?"
-            );
+            var entry = SpeedEntry;
+
+            if (entry == null)
+            {
+                if (_speedClass == SpeedLevel.Custom)
+                {
+                    // A custom creature is its own reference.
+                    activeSpeed = _activeSpeed;
+                    passiveSpeed = _passiveSpeed;
+                    return;
+                }
+
+                throw new InvalidOperationException(
+                    $"{GetType()} has no speed entry - is {"Data/npc-speeds.json"} missing?"
+                );
+            }
 
             activeSpeed = entry.ActiveSpeed;
             passiveSpeed = entry.PassiveSpeed;

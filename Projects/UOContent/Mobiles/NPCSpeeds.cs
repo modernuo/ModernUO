@@ -8,12 +8,13 @@ namespace Server.Mobiles;
 
 public enum SpeedLevel
 {
-    None,
+    None, // resolve by type list, falling back to Medium
     VerySlow,
     Slow,
     Medium,
     Fast,
-    VeryFast
+    VeryFast,
+    Custom // hand-tuned: no table entry; all four speeds serialize
 }
 
 public static class NPCSpeeds
@@ -30,6 +31,11 @@ public static class NPCSpeeds
     // table is immutable after Configure.
     public static SpeedClassEntry FindEntry(BaseCreature bc)
     {
+        if (bc.SpeedClass == SpeedLevel.Custom)
+        {
+            return null;
+        }
+
         if ((bc.SpeedClass == SpeedLevel.None || !_speedsByLevel.TryGetValue(bc.SpeedClass, out var sp)) &&
             !_speedsByType.TryGetValue(bc.GetType(), out sp))
         {
