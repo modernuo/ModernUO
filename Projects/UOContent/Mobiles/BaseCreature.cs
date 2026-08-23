@@ -564,7 +564,7 @@ namespace Server.Mobiles
         private int ManaMaxSeedDefaultValue() => -1;
 
         [EncodedInt]
-        [SerializableField(30, isVirtual: true)]
+        [SerializableField(30)]
         [SaveFlag(nameof(ShouldSerializeDamageMin), nameof(DamageMinDefaultValue))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _damageMin = -1;
@@ -574,7 +574,7 @@ namespace Server.Mobiles
         private int DamageMinDefaultValue() => -1;
 
         [EncodedInt]
-        [SerializableField(31, isVirtual: true)]
+        [SerializableField(31)]
         [SaveFlag(nameof(ShouldSerializeDamageMax), nameof(DamageMaxDefaultValue))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _damageMax = -1;
