@@ -57,8 +57,9 @@ public class MoveSpeedTests : IDisposable
     {
         var bc = NewCreature();
 
-        Assert.Equal(0.3, bc.ActiveMoveSpeed);
-        Assert.Equal(0.6, bc.PassiveMoveSpeed);
+        // 0 = no override; the resolved pace comes from CurrentMoveSpeed.
+        Assert.Equal(0, bc.ActiveMoveSpeed);
+        Assert.Equal(0, bc.PassiveMoveSpeed);
         Assert.Equal(bc.CurrentSpeed, bc.CurrentMoveSpeed);
     }
 
@@ -96,8 +97,8 @@ public class MoveSpeedTests : IDisposable
 
         bc.SetSpeed(0.2, 0.4);
 
-        Assert.Equal(0.2, bc.ActiveMoveSpeed);
-        Assert.Equal(0.4, bc.PassiveMoveSpeed);
+        Assert.Equal(0, bc.ActiveMoveSpeed);
+        Assert.Equal(0, bc.PassiveMoveSpeed);
     }
 
     [Fact]
@@ -108,8 +109,10 @@ public class MoveSpeedTests : IDisposable
 
         bc.ActiveMoveSpeed = 0;
 
-        Assert.Equal(0.3, bc.ActiveMoveSpeed);  // inheriting again
+        Assert.Equal(0, bc.ActiveMoveSpeed);    // inheriting again
         Assert.Equal(0.9, bc.PassiveMoveSpeed); // other override untouched
+        bc.SetCurrentSpeedToActive();
+        Assert.Equal(0.3, bc.CurrentMoveSpeed); // resolves to the think clock
     }
 
     [Fact]
@@ -121,7 +124,7 @@ public class MoveSpeedTests : IDisposable
         bc.ScaleMoveSpeed(1.0 / 1.2);
 
         Assert.Equal(0.5, bc.ActiveMoveSpeed);
-        Assert.Equal(bc.PassiveSpeed, bc.PassiveMoveSpeed); // still inheriting, not 0 * scalar
+        Assert.Equal(0, bc.PassiveMoveSpeed); // still inheriting, not 0 * scalar
     }
 
     [Fact]
@@ -185,8 +188,8 @@ public class MoveSpeedTests : IDisposable
 
         bc.MigrateMoveSpeeds();
 
-        Assert.Equal(0.35, bc.ActiveMoveSpeed);
-        Assert.Equal(0.6, bc.PassiveMoveSpeed);
+        Assert.Equal(0, bc.ActiveMoveSpeed); // still inheriting the (tuned) think clock
+        Assert.Equal(0, bc.PassiveMoveSpeed);
     }
 
     [Theory]
@@ -213,7 +216,7 @@ public class MoveSpeedTests : IDisposable
 
         // The v22 tail is the last block; exact consumption catches any offset mistake.
         Assert.Equal(buffer.Length, reader.Position);
-        Assert.Equal(overridden ? 0.45 : 0.3, copy.ActiveMoveSpeed);
-        Assert.Equal(overridden ? 0.9 : 0.6, copy.PassiveMoveSpeed);
+        Assert.Equal(overridden ? 0.45 : 0, copy.ActiveMoveSpeed);
+        Assert.Equal(overridden ? 0.9 : 0, copy.PassiveMoveSpeed);
     }
 }

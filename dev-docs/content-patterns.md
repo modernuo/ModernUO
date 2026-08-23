@@ -262,8 +262,9 @@ All "speed" values are **delays in seconds** (smaller = faster). A creature runs
   (combat decisions, target acquisition, spell timing).
 - **Move clock** — `ActiveMoveSpeed`/`PassiveMoveSpeed`/`CurrentMoveSpeed`: seconds per
   step. Inherits the matching think value until overridden, so a creature configured with
-  only think speeds behaves as one clock. Any value is legal — steps are scheduled
-  independently of think ticks, so the two need not divide evenly.
+  only think speeds behaves as one clock. The properties read the raw override (`0` =
+  inheriting); `CurrentMoveSpeed` is the resolved pace. Any value is legal — steps are
+  scheduled independently of think ticks, so the two need not divide evenly.
 
 Speeds normally come from `Distribution/Data/npc-speeds.json` (via `SpeedClass` or type
 lists); `activeMove`/`passiveMove` are optional per bucket. Prefer data over code:
