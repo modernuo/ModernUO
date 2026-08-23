@@ -4674,6 +4674,23 @@ namespace Server.Mobiles
             _passiveMoveSpeed = 0;
         }
 
+        /// <summary>
+        /// Scales movement overrides (paragon and similar buffs). Inheriting values stay
+        /// inheriting — they already follow the scaled think clock.
+        /// </summary>
+        public void ScaleMoveSpeed(double scalar)
+        {
+            if (_activeMoveSpeed > 0)
+            {
+                _activeMoveSpeed *= scalar;
+            }
+
+            if (_passiveMoveSpeed > 0)
+            {
+                _passiveMoveSpeed *= scalar;
+            }
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetCurrentSpeedToActive() => CurrentSpeed = ActiveSpeed;
 

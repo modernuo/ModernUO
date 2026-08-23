@@ -113,6 +113,18 @@ public class MoveSpeedTests : IDisposable
     }
 
     [Fact]
+    public void ScaleMoveSpeed_ScalesOverrides_LeavesInheritAlone()
+    {
+        var bc = NewCreature();
+        bc.ActiveMoveSpeed = 0.6; // passive left inheriting
+
+        bc.ScaleMoveSpeed(1.0 / 1.2);
+
+        Assert.Equal(0.5, bc.ActiveMoveSpeed);
+        Assert.Equal(bc.PassiveSpeed, bc.PassiveMoveSpeed); // still inheriting, not 0 * scalar
+    }
+
+    [Fact]
     public void Migration_MatchingThinkSpeeds_AdoptTableMoveValues()
     {
         var bc = NewCreature(); // think 0.3/0.6, matching its table entry
