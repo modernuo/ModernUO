@@ -125,6 +125,29 @@ public class MoveSpeedTests : IDisposable
     }
 
     [Fact]
+    public void SnapSpeedsToTable_UndoesScalingDrift_KeepsTunedValues()
+    {
+        var bc = NewCreature();
+        bc.TableActiveMove = 0.45;
+        bc.TablePassiveMove = 0.9;
+        bc.SetMoveSpeed(0.45, 0.9);
+
+        // 0.45 and 0.9 do not survive /1.2 then *1.2 bit-exactly.
+        bc.ScaleMoveSpeed(1.0 / 1.2);
+        bc.ScaleMoveSpeed(1.2);
+        Assert.NotEqual(0.45, bc.ActiveMoveSpeed);
+
+        bc.SnapSpeedsToTable();
+        Assert.Equal(0.45, bc.ActiveMoveSpeed);
+        Assert.Equal(0.9, bc.PassiveMoveSpeed);
+
+        // A hand-tuned value is nowhere near the epsilon and must keep.
+        bc.SetMoveSpeed(0.7, 0.9);
+        bc.SnapSpeedsToTable();
+        Assert.Equal(0.7, bc.ActiveMoveSpeed);
+    }
+
+    [Fact]
     public void Migration_MatchingThinkSpeeds_AdoptTableMoveValues()
     {
         var bc = NewCreature(); // think 0.3/0.6, matching its table entry

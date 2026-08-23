@@ -774,9 +774,6 @@ namespace Server.Mobiles
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public double MoveSpeedMod { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
         public Point3D Home
         {
             get => m_Home;
@@ -4688,6 +4685,35 @@ namespace Server.Mobiles
             if (_passiveMoveSpeed > 0)
             {
                 _passiveMoveSpeed *= scalar;
+            }
+        }
+
+        /// <summary>
+        /// Snaps speeds within rounding distance of the creature's table values back to
+        /// exact. A scaling buff that divides then multiplies can drift by an ulp (e.g.
+        /// 0.9 and 0.45 through 1.2), which would read as hand-tuned; call after undoing
+        /// such a buff. Genuinely tuned speeds are nowhere near the epsilon and keep.
+        /// </summary>
+        public void SnapSpeedsToTable()
+        {
+            GetSpeeds(out var activeSpeed, out var passiveSpeed);
+
+            if (Math.Abs(_activeSpeed - activeSpeed) < 0.0001 && Math.Abs(_passiveSpeed - passiveSpeed) < 0.0001)
+            {
+                _activeSpeed = activeSpeed;
+                _passiveSpeed = passiveSpeed;
+            }
+
+            GetMoveSpeeds(out var activeMoveSpeed, out var passiveMoveSpeed);
+
+            if (activeMoveSpeed > 0 && Math.Abs(_activeMoveSpeed - activeMoveSpeed) < 0.0001)
+            {
+                _activeMoveSpeed = activeMoveSpeed;
+            }
+
+            if (passiveMoveSpeed > 0 && Math.Abs(_passiveMoveSpeed - passiveMoveSpeed) < 0.0001)
+            {
+                _passiveMoveSpeed = passiveMoveSpeed;
             }
         }
 
