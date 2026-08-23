@@ -3,12 +3,16 @@
     "level": "VerySlow",
     "active": 0.4,
     "passive": 0.8,
+    "activeMove": 0.9,
+    "passiveMove": 1.5,
     "types": []
   },
   {
     "level": "Slow",
     "active": 0.3,
     "passive": 0.6,
+    "activeMove": 0.6,
+    "passiveMove": 1.2,
     "types": [
       "AntLion", "ArcticOgreLord", "BogThing",
       "Bogle", "BoneKnight", "EarthElemental",
@@ -28,6 +32,8 @@
     "level": "Medium",
     "active": 0.25,
     "passive": 0.5,
+    "activeMove": 0.45,
+    "passiveMove": 1.05,
     "types": [
       "AcidElemental", "AgapiteElemental", "Alligator",
       "AncientLich", "Betrayer", "Bird",
@@ -108,6 +114,8 @@
     "level": "Fast",
     "active": 0.2,
     "passive": 0.4,
+    "activeMove": 0.3,
+    "passiveMove": 0.9,
     "types": [
       "LordOaks", "Silvani", "AirElemental",
       "AncientWyrm", "Balron", "BladeSpirits",
@@ -139,6 +147,8 @@
     "level": "VeryFast",
     "active": 0.125,
     "passive": 0.30,
+    "activeMove": 0.125,
+    "passiveMove": 0.6,
     "types": [
       "Barracoon", "Mephitis", "Neira",
       "Rikktor", "Semidar", "EnergyVortex",
