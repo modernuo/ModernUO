@@ -317,7 +317,7 @@ namespace Server.Mobiles
         private FightMode FightModeDefaultValue() => FightMode.Closest;
 
         /// <summary>Seconds per AI decision while engaged; see <see cref="ActiveMoveSpeed"/> for movement pace.</summary>
-        [SerializableField(7, isVirtual: true)]
+        [SerializableField(7)]
         [SaveFlag(nameof(ShouldSerializeActiveSpeed), nameof(ActiveSpeedDefaultValue))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private double _activeSpeed;
@@ -335,7 +335,7 @@ namespace Server.Mobiles
         }
 
         /// <summary>Seconds per AI decision while idle; see <see cref="PassiveMoveSpeed"/> for movement pace.</summary>
-        [SerializableField(8, isVirtual: true)]
+        [SerializableField(8)]
         [SaveFlag(nameof(ShouldSerializePassiveSpeed), nameof(PassiveSpeedDefaultValue))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private double _passiveSpeed;
