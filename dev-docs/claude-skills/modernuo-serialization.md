@@ -40,21 +40,31 @@ public partial class MyItem : Item { }
 public partial class MigratedItem : Item { }
 ```
 
-### [SerializableField(index, setter, saveIf)]
+### [SerializableField(index, getter, setter, isVirtual, fieldChanged, allowFieldChange)]
 Applied to `_camelCase` private fields. Generates `PascalCase` property.
 - `index`: Serialization order (0+)
-- `setter`: Access level -- `"private"`, `"internal"`, or omit for public
-- `saveIf`: Condition method name for conditional serialization
+- `getter`/`setter`: Access level -- `"private"`, `"internal"`, or omit for public
+- `isVirtual`: Generate a virtual property
+- `fieldChanged`: `nameof` of `void Method(T oldValue, T newValue)`, invoked by the generated setter after assignment
+- `allowFieldChange`: `nameof` of `bool Method(ref T value)`, invoked before assignment -- coerce through the `ref` parameter or return `false` to reject
+
+Generated setter pipeline: equality check → `allowFieldChange` → assignment → `MarkDirty` → `InvalidateProperties` (if declared) → `fieldChanged`. The field still holds the old value while the gate runs. Hooks require a generated setter (SG3018 on readonly/setterless fields); a missing or wrong-shaped named method is SG3015.
 
 ```csharp
-[SerializableField(0)]
+[SerializableField(0, allowFieldChange: nameof(AllowChargesChange))]
 [SerializedCommandProperty(AccessLevel.GameMaster)]
+[InvalidateProperties]
 private int _charges;
-// Generates: public int Charges { get; set; }
+
+private bool AllowChargesChange(ref int value)
+{
+    value = Math.Clamp(value, 0, MaxCharges);
+    return true;
+}
 ```
 
 ### [SerializableProperty(index, useField)]
-Applied to properties with custom get/set logic.
+Applied to properties with **custom getters** (fallback defaults, lazy/self-healing reads) or setter semantics the field hooks cannot express. For setters that only coerce, veto, or run post-change side effects, use `[SerializableField]` with `allowFieldChange`/`fieldChanged` instead.
 - `index`: Serialization order
 - `useField`: Backing field name if auto-detection fails
 
@@ -63,12 +73,12 @@ Applied to properties with custom get/set logic.
 [CommandProperty(AccessLevel.GameMaster)]
 public int MaxItems
 {
-    get => _maxItems == -1 ? DefaultMaxItems : _maxItems;
+    get => _maxItems == -1 ? DefaultMaxItems : _maxItems;   // custom getter: the reason this is a property
     set
     {
         _maxItems = value;
         InvalidateProperties();
-        this.MarkDirty();
+        this.MarkDirty();   // REQUIRED in custom setters
     }
 }
 ```
@@ -89,8 +99,11 @@ Exposes field to `[Props` gump for in-game editing.
 ### [EncodedInt]
 Variable-length int encoding (saves space for small values).
 
+### [AnchoredDateTime]
+Stores the absolute UTC instant; shifted by downtime at load so remaining time is preserved. Byte-stable across idle saves. Prefer for deadlines/elapsed-while-running values.
+
 ### [DeltaDateTime]
-Stores DateTime as offset from current time (handles server restarts).
+Stores DateTime as offset from current time (handles server restarts). Legacy: rewrites bytes every save; prefer `[AnchoredDateTime]` for new fields. Converting between the two changes the wire format (version bump).
 
 ### [InternString]
 Interns strings to reduce memory for repeated values.
@@ -128,28 +141,32 @@ private void AfterDeserialization()
 }
 ```
 
-### [DeserializeTimerField(fieldIndex)]
-Custom timer deserialization. Timer is saved as remaining TimeSpan.
+### [DeserializeTimer(nameof(Method), wallClock)]
+Required on every serializable `Timer` member (SG3008 otherwise). By default the next tick is stored as **anchored time** (downtime does not consume the remaining delay; idle saves byte-stable); `wallClock: true` stores an absolute deadline instead (delay negative if it passed during downtime). The method -- `void Method(TimeSpan delay)` -- is invoked **only when a timer was running at save**; there is no sentinel to check.
 
 ```csharp
 [SerializableField(0, setter: "private")]
+[DeserializeTimer(nameof(DeserializeEvaluateTimer), wallClock: true)]
 private Timer _evaluateTimer;
 
-[DeserializeTimerField(0)]
 private void DeserializeEvaluateTimer(TimeSpan delay)
 {
     _evaluateTimer = Timer.DelayCall(delay, EvaluationInterval, Evaluate);
 }
 ```
 
-### [SerializableFieldSaveFlag(fieldIndex)] / [SerializableFieldDefault(fieldIndex)]
-Conditional serialization -- skip fields with default values.
+Switching a timer between drifting and `wallClock` changes the wire format: bump the class version and add `MigrateFrom` -- the old content struct exposes `XxxNext` (`DateTime`) and `XxxDelay` (`TimeSpan`, `TimeSpan.MinValue` when no timer ran).
+
+### [SaveFlag(nameof(ShouldSerializeMethod), nameof(DefaultValueMethod))]
+On the serializable field/property itself. Conditional serialization -- skip fields with default values. Second method optional; when omitted, the field keeps its default at load.
 
 ```csharp
-[SerializableFieldSaveFlag(0)]
+[SerializableField(0)]
+[SaveFlag(nameof(ShouldSerializeMaxItems), nameof(MaxItemsDefaultValue))]
+private int _maxItems;
+
 private bool ShouldSerializeMaxItems() => _maxItems != -1;
 
-[SerializableFieldDefault(0)]
 private int MaxItemsDefaultValue() => -1;
 ```
 
@@ -216,28 +233,35 @@ public partial class ChargedItem : Item
 }
 ```
 
-### Item with Custom Properties
+### Item with Setter Hooks (coerce + side effects)
 ```csharp
 [SerializationGenerator(2)]
 public partial class BagOfSending : Item
 {
-    [SerializableProperty(0)]
-    [CommandProperty(AccessLevel.GameMaster)]
-    public BagOfSendingHue BagOfSendingHue
+    [SerializableField(0, fieldChanged: nameof(OnBagOfSendingHueChanged))]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private BagOfSendingHue _bagOfSendingHue;
+
+    private void OnBagOfSendingHueChanged(BagOfSendingHue oldValue, BagOfSendingHue newValue)
     {
-        get => _bagOfSendingHue;
-        set
+        Hue = newValue switch
         {
-            _bagOfSendingHue = value;
-            Hue = value switch
-            {
-                BagOfSendingHue.Yellow => 0x8A5,
-                BagOfSendingHue.Blue => 0x8AD,
-                BagOfSendingHue.Red => 0x89B,
-                _ => Hue
-            };
-            this.MarkDirty();
-        }
+            BagOfSendingHue.Yellow => 0x8A5,
+            BagOfSendingHue.Blue   => 0x8AD,
+            BagOfSendingHue.Red    => 0x89B,
+            _                      => Hue
+        };
+    }
+
+    [SerializableField(1, allowFieldChange: nameof(AllowChargesChange))]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    [InvalidateProperties]
+    private int _charges;
+
+    private bool AllowChargesChange(ref int value)
+    {
+        value = Math.Clamp(value, 0, MaxCharges);
+        return true;
     }
 }
 ```
@@ -328,11 +352,13 @@ public partial class MagicGem
 ## Real Examples
 - Simple creature: `Projects/UOContent/Mobiles/Animals/Bears/BlackBear.cs`
 - Serialized fields + timer: `Projects/UOContent/Items/Weapons/Ranged/BaseRanged.cs`
-- Custom properties: `Projects/UOContent/Items/Special/Solen Items/BagOfSending.cs`
+- Setter hooks (allowFieldChange + fieldChanged): `Projects/UOContent/Items/Special/Solen Items/BagOfSending.cs`
+- Custom getters (era fallbacks, the [SerializableProperty] use case): `Projects/UOContent/Items/Weapons/BaseWeapon.cs`
 - Complex with AfterDeserialization: `Projects/UOContent/Accounting/Account.cs`
-- Timer deserialization: `Projects/UOContent/Items/Aquarium/Aquarium.cs`
+- Timer deserialization (wall-clock): `Projects/UOContent/Items/Aquarium/Aquarium.cs`
+- Timer deserialization (drifting/anchored + timer MigrateFrom): `Projects/UOContent/Items/Lights/BaseLight.cs`
 - Tidy + DeltaDateTime: `Projects/UOContent/Engines/CannedEvil/ChampionSpawn.cs`
-- Conditional serialization: `Projects/Server/Items/Container.cs`
+- Conditional serialization ([SaveFlag]): `Projects/Server/Items/Container.cs`
 
 ## Version Migration
 Migration schemas are JSON files in `Projects/Server/Migrations/` and `Projects/UOContent/Migrations/`:

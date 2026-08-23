@@ -188,15 +188,19 @@ public partial class TimedItem : Item
 ```
 
 ### Pattern 4: Serializable Timer Field
+Every serializable `Timer` member declares `[DeserializeTimer(nameof(Method))]` on the
+field. By default the next tick is stored as anchored time (downtime does not consume the
+remaining delay); pass `wallClock: true` for absolute deadlines. The method runs **only when
+a timer was running at save**, with the remaining delay.
+
 ```csharp
 [SerializableField(0, setter: "private")]
+[DeserializeTimer(nameof(DeserializeDecayTimer))]
 private Timer _decayTimer;
 
-[DeserializeTimerField(0)]
 private void DeserializeDecayTimer(TimeSpan delay)
 {
     _decayTimer = Timer.DelayCall(delay, Delete);
-    _decayTimer.Start();
 }
 
 public void BeginDecay(TimeSpan delay)

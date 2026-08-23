@@ -147,17 +147,26 @@ public partial class DecayingItem : Item
 }
 ```
 
-### [DeserializeTimerField] Pattern (for Timer fields)
+### [DeserializeTimer] Pattern (for Timer fields)
+Required on every serializable `Timer` member. Drifting by default: the next tick is stored
+as anchored time, so server downtime does not consume the remaining delay. Use
+`wallClock: true` for absolute deadlines (delay is negative if it passed during downtime).
+The method is invoked **only when a timer was running at save** — no sentinel to check.
+
 ```csharp
 [SerializableField(0, setter: "private")]
+[DeserializeTimer(nameof(DeserializeEvaluateTimer), wallClock: true)]
 private Timer _evaluateTimer;
 
-[DeserializeTimerField(0)]
 private void DeserializeEvaluateTimer(TimeSpan delay)
 {
     _evaluateTimer = Timer.DelayCall(delay, EvaluationInterval, Evaluate);
 }
 ```
+
+Switching an existing timer between drifting and `wallClock` changes the wire format — bump
+the class's `[SerializationGenerator]` version and add a `MigrateFrom` (the old content
+struct exposes `XxxDelay`, `TimeSpan.MinValue` when no timer ran).
 
 ### Custom Timer Class (When You Need Complex Logic)
 ```csharp
