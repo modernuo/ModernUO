@@ -36,16 +36,14 @@ public partial class ShardPoller : Item
         Movable = false;
     }
 
-    [SerializableProperty(0)]
-    [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
-    public string Title
+    [SerializableField(0, allowFieldChange: nameof(AllowTitleChange))]
+    [SerializedCommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
+    private string _title;
+
+    private bool AllowTitleChange(ref string value)
     {
-        get => _title;
-        set
-        {
-            _title = ShardPollPrompt.UrlToHref(value);
-            this.MarkDirty();
-        }
+        value = ShardPollPrompt.UrlToHref(value);
+        return true;
     }
 
     [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
@@ -54,31 +52,20 @@ public partial class ShardPoller : Item
             ? TimeSpan.Zero
             : Utility.Max(StartTime + Duration - Core.Now, TimeSpan.Zero);
 
-    [SerializableProperty(3)]
-    [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
-    public bool Active
+    [SerializableField(3, fieldChanged: nameof(OnActiveChanged))]
+    [SerializedCommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
+    private bool _active;
+
+    private void OnActiveChanged(bool oldValue, bool newValue)
     {
-        get => _active;
-        set
+        if (_active)
         {
-            if (_active == value)
-            {
-                return;
-            }
-
-            _active = value;
-
-            if (_active)
-            {
-                StartTime = Core.Now;
-                _activePollers.Add(this);
-            }
-            else
-            {
-                _activePollers.Remove(this);
-            }
-
-            this.MarkDirty();
+            StartTime = Core.Now;
+            _activePollers.Add(this);
+        }
+        else
+        {
+            _activePollers.Remove(this);
         }
     }
 
@@ -250,15 +237,12 @@ public partial class ShardPollOption
         }
     }
 
-    [SerializableProperty(0)]
-    public string Title
+    [SerializableField(0, fieldChanged: nameof(OnTitleChanged))]
+    private string _title;
+
+    private void OnTitleChanged(string oldValue, string newValue)
     {
-        get => _title;
-        set
-        {
-            _title = value;
-            _lineBreaks = -1;
-        }
+        _lineBreaks = -1;
     }
 
     public int Votes => Voters.Length;

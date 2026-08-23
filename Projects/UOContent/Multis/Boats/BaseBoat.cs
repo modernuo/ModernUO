@@ -136,31 +136,23 @@ namespace Server.Multis
             }
         }
 
+        [SerializableField(3, fieldChanged: nameof(OnTimeOfDecayChanged))]
         [DeltaDateTime]
-        [SerializableProperty(3)]
-        [CommandProperty(AccessLevel.GameMaster)]
-        public DateTime TimeOfDecay
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private DateTime _timeOfDecay;
+
+        private void OnTimeOfDecayChanged(DateTime oldValue, DateTime newValue)
         {
-            get => _timeOfDecay;
-            set
-            {
-                _timeOfDecay = value;
-                TillerMan?.InvalidateProperties();
-                this.MarkDirty();
-            }
+            TillerMan?.InvalidateProperties();
         }
 
-        [SerializableProperty(10)]
-        [CommandProperty(AccessLevel.GameMaster)]
-        public string ShipName
+        [SerializableField(10, fieldChanged: nameof(OnShipNameChanged))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private string _shipName;
+
+        private void OnShipNameChanged(string oldValue, string newValue)
         {
-            get => _shipName;
-            set
-            {
-                _shipName = value;
-                TillerMan?.InvalidateProperties();
-                this.MarkDirty();
-            }
+            TillerMan?.InvalidateProperties();
         }
 
         [CommandProperty(AccessLevel.GameMaster)]

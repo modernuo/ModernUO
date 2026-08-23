@@ -28,17 +28,14 @@ public partial class DragonBardingDeed : Item, ICraftable
 
     public override int LabelNumber => _exceptional ? 1053181 : 1053012; // dragon barding deed
 
-    [SerializableProperty(2)]
-    [CommandProperty(AccessLevel.GameMaster)]
-    public CraftResource Resource
+    [SerializableField(2, fieldChanged: nameof(OnResourceChanged))]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    [InvalidateProperties]
+    private CraftResource _resource;
+
+    private void OnResourceChanged(CraftResource oldValue, CraftResource newValue)
     {
-        get => _resource;
-        set
-        {
-            _resource = value;
-            Hue = CraftResources.GetHue(value);
-            InvalidateProperties();
-        }
+        Hue = CraftResources.GetHue(newValue);
     }
 
     public int OnCraft(

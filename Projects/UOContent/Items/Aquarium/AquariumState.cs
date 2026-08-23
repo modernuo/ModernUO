@@ -30,19 +30,14 @@ namespace Server.Items
 
         public AquariumState(Aquarium parent) => _aquarium = parent;
 
-        [SerializableProperty(0)]
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int State
+        [SerializableField(0, allowFieldChange: nameof(AllowStateChange))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private int _state;
+
+        private bool AllowStateChange(ref int value)
         {
-            get => _state;
-            set
-            {
-                if (_state != value)
-                {
-                    _state = Math.Clamp(value, 0, 4);
-                    MarkDirty();
-                }
-            }
+            value = Math.Clamp(value, 0, 4);
+            return true;
         }
 
         [SerializableField(1)]

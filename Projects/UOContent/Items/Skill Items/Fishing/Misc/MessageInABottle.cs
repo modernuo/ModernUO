@@ -25,16 +25,14 @@ public partial class MessageInABottle : Item
 
     public override int LabelNumber => 1041080; // a message in a bottle
 
-    [SerializableProperty(0)]
-    [CommandProperty(AccessLevel.GameMaster)]
-    public int Level
+    [SerializableField(0, allowFieldChange: nameof(AllowLevelChange))]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private int _level;
+
+    private bool AllowLevelChange(ref int value)
     {
-        get => _level;
-        set
-        {
-            _level = Math.Max(1, Math.Min(value, 4));
-            this.MarkDirty();
-        }
+        value = Math.Max(1, Math.Min(value, 4));
+        return true;
     }
 
     public static int GetRandomLevel()

@@ -17,20 +17,9 @@ public abstract partial class BaseSuit : Item
 
     public override double DefaultWeight => 1.0;
 
-    [SerializableProperty(0)]
-    public AccessLevel AccessLevel
-    {
-        get => _accessLevel;
-        set
-        {
-            var oldAccessLevel = _accessLevel;
-            _accessLevel = value;
-            InvalidateProperties();
-            this.MarkDirty();
-
-            OnAccessLevelChanged(oldAccessLevel, _accessLevel);
-        }
-    }
+    [SerializableField(0, fieldChanged: nameof(OnAccessLevelChanged))]
+    [InvalidateProperties]
+    private AccessLevel _accessLevel;
 
     public virtual void OnAccessLevelChanged(AccessLevel oldAccessLevel, AccessLevel accessLevel)
     {

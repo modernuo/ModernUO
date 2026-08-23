@@ -148,18 +148,13 @@ public partial class PlayerBarkeeper : BaseVendor
         LoadSBInfo();
     }
 
-    [SerializableProperty(0)]
-    public BaseHouse House
-    {
-        get => _house;
-        set
-        {
-            _house?.PlayerBarkeepers.Remove(this);
-            value?.PlayerBarkeepers.Add(this);
+    [SerializableField(0, fieldChanged: nameof(OnHouseChanged))]
+    private BaseHouse _house;
 
-            _house = value;
-            this.MarkDirty();
-        }
+    private void OnHouseChanged(BaseHouse oldValue, BaseHouse newValue)
+    {
+        oldValue?.PlayerBarkeepers.Remove(this);
+        newValue?.PlayerBarkeepers.Add(this);
     }
 
     public override bool IsActiveBuyer => false;

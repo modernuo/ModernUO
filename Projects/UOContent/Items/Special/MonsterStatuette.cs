@@ -162,21 +162,15 @@ public partial class MonsterStatuette : Item, IRewardItem, IGumpToggleItem
             _                                   => fallback
         };
 
-    [SerializableProperty(0)]
-    [CommandProperty(AccessLevel.GameMaster)]
-    public MonsterStatuetteType Type
+    [SerializableField(0, fieldChanged: nameof(OnTypeChanged))]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    [InvalidateProperties]
+    private MonsterStatuetteType _type;
+
+    private void OnTypeChanged(MonsterStatuetteType oldValue, MonsterStatuetteType newValue)
     {
-        get => _type;
-        set
-        {
-            _type = value;
-            ItemID = MonsterStatuetteInfo.GetInfo(_type).ItemID;
-
-            Hue = GetStatuetteHue(_type, Hue);
-
-            InvalidateProperties();
-            this.MarkDirty();
-        }
+        ItemID = MonsterStatuetteInfo.GetInfo(_type).ItemID;
+        Hue = GetStatuetteHue(_type, Hue);
     }
 
     public override int LabelNumber => MonsterStatuetteInfo.GetInfo(_type).LabelNumber;

@@ -103,18 +103,20 @@ public partial class SOS : Item
     [CommandProperty(AccessLevel.GameMaster)]
     public bool IsAncient => _level >= 4;
 
-    [SerializableProperty(0)]
-    [CommandProperty(AccessLevel.GameMaster)]
-    public int Level
+    [SerializableField(0, fieldChanged: nameof(OnLevelChanged), allowFieldChange: nameof(AllowLevelChange))]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    [InvalidateProperties]
+    private int _level;
+
+    private bool AllowLevelChange(ref int value)
     {
-        get => _level;
-        set
-        {
-            _level = Math.Max(1, Math.Min(value, 4));
-            UpdateHue();
-            InvalidateProperties();
-            this.MarkDirty();
-        }
+        value = Math.Max(1, Math.Min(value, 4));
+        return true;
+    }
+
+    private void OnLevelChanged(int oldValue, int newValue)
+    {
+        UpdateHue();
     }
 
     public void UpdateHue() => Hue = IsAncient ? 0x481 : 0;

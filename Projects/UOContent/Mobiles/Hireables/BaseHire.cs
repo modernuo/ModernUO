@@ -23,19 +23,14 @@ public partial class BaseHire : BaseCreature
 
     public int GoldOnDeath { get; set; }
 
-    [SerializableProperty(1)]
-    [CommandProperty(AccessLevel.GameMaster)]
-    public bool IsHired
-    {
-        get => _isHired;
-        set
-        {
-            _isHired = value;
+    [SerializableField(1, fieldChanged: nameof(OnIsHiredChanged))]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    [InvalidateProperties]
+    private bool _isHired;
 
-            Delta(MobileDelta.Noto);
-            InvalidateProperties();
-            this.MarkDirty();
-        }
+    private void OnIsHiredChanged(bool oldValue, bool newValue)
+    {
+        Delta(MobileDelta.Noto);
     }
 
     public BaseHire(AIType AI) : base(AI, FightMode.Aggressor)

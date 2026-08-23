@@ -30,20 +30,24 @@ public partial class MorphItem : Item
         _outsideRange = outRange;
     }
 
-    [SerializableProperty(0)]
-    [CommandProperty(AccessLevel.GameMaster)]
-    public int OutsideRange
+    [SerializableField(0, allowFieldChange: nameof(AllowOutsideRangeChange))]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private int _outsideRange;
+
+    private bool AllowOutsideRangeChange(ref int value)
     {
-        get => _outsideRange;
-        set => _outsideRange = Math.Clamp(value, 0, 18);
+        value = Math.Clamp(value, 0, 18);
+        return true;
     }
 
-    [SerializableProperty(3)]
-    [CommandProperty(AccessLevel.GameMaster)]
-    public int InsideRange
+    [SerializableField(3, allowFieldChange: nameof(AllowInsideRangeChange))]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private int _insideRange;
+
+    private bool AllowInsideRangeChange(ref int value)
     {
-        get => _insideRange;
-        set => _insideRange = Math.Clamp(value, 0, 18);
+        value = Math.Clamp(value, 0, 18);
+        return true;
     }
 
     [CommandProperty(AccessLevel.GameMaster)]

@@ -62,48 +62,37 @@ namespace Server.Mobiles
         [SerializableField(3)]
         private int _bardingHP;
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        [SerializableProperty(2)]
-        public bool HasBarding
-        {
-            get => _hasBarding;
-            set
-            {
-                _hasBarding = value;
+        [SerializableField(2, fieldChanged: nameof(OnHasBardingChanged))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        [InvalidateProperties]
+        private bool _hasBarding;
 
-                if (_hasBarding)
-                {
-                    Hue = CraftResources.GetHue(_bardingResource);
-                    Body = 0x31F;
-                    ItemID = 0x3EBE;
-                }
-                else
-                {
-                    Hue = 0x851;
-                    Body = 0x31A;
-                    ItemID = 0x3EBD;
-                }
-                InvalidateProperties();
-                this.MarkDirty();
+        private void OnHasBardingChanged(bool oldValue, bool newValue)
+        {
+            if (_hasBarding)
+            {
+                Hue = CraftResources.GetHue(_bardingResource);
+                Body = 0x31F;
+                ItemID = 0x3EBE;
+            }
+            else
+            {
+                Hue = 0x851;
+                Body = 0x31A;
+                ItemID = 0x3EBD;
             }
         }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        [SerializableProperty(4)]
-        public CraftResource BardingResource
+        [SerializableField(4, fieldChanged: nameof(OnBardingResourceChanged))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        [InvalidateProperties]
+        private CraftResource _bardingResource;
+
+        private void OnBardingResourceChanged(CraftResource oldValue, CraftResource newValue)
         {
-            get => _bardingResource;
-            set
+            if (_hasBarding)
             {
-                _bardingResource = value;
-
-                if (_hasBarding)
-                {
-                    Hue = CraftResources.GetHue(value);
-                }
-
-                InvalidateProperties();
-                this.MarkDirty();
+                Hue = CraftResources.GetHue(newValue);
             }
         }
 

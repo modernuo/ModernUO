@@ -123,49 +123,35 @@ public partial class PlantItem : Item, ISecurable
 
     private bool ShouldSerializePlantStatus() => _plantStatus != PlantStatus.BowlOfDirt;
 
-    [SerializableProperty(2)]
+    [SerializableField(2, fieldChanged: nameof(OnPlantTypeChanged))]
     [SaveFlag(nameof(ShouldSerializePlantType))]
-    [CommandProperty(AccessLevel.GameMaster)]
-    public PlantType PlantType
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private PlantType _plantType;
+
+    private void OnPlantTypeChanged(PlantType oldValue, PlantType newValue)
     {
-        get => _plantType;
-        set
-        {
-            _plantType = value;
-            Update();
-        }
+        Update();
     }
 
     private bool ShouldSerializePlantType() => (int)_plantType != 0;
 
-    [SerializableProperty(3)]
+    [SerializableField(3, fieldChanged: nameof(OnPlantHueChanged))]
     [SaveFlag(nameof(ShouldSerializePlantHue))]
-    [CommandProperty(AccessLevel.GameMaster)]
-    public PlantHue PlantHue
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private PlantHue _plantHue;
+
+    private void OnPlantHueChanged(PlantHue oldValue, PlantHue newValue)
     {
-        get => _plantHue;
-        set
-        {
-            _plantHue = value;
-            Update();
-        }
+        Update();
     }
 
     private bool ShouldSerializePlantHue() => _plantHue != PlantHue.None;
 
-    [SerializableProperty(4)]
+    [SerializableField(4)]
     [SaveFlag(nameof(ShouldSerializeShowType))]
-    [CommandProperty(AccessLevel.GameMaster)]
-    public bool ShowType
-    {
-        get => _showType;
-        set
-        {
-            _showType = value;
-            InvalidateProperties();
-            this.MarkDirty();
-        }
-    }
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    [InvalidateProperties]
+    private bool _showType;
 
     private bool ShouldSerializeShowType() => _showType;
 

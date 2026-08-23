@@ -14,12 +14,14 @@ public abstract partial class BaseFruitTreeAddon : BaseAddon
     public abstract override BaseAddonDeed Deed { get; }
     public abstract Item Fruit { get; }
 
-    [SerializableProperty(0)]
-    [CommandProperty(AccessLevel.GameMaster)]
-    public int Fruits
+    [SerializableField(0, allowFieldChange: nameof(AllowFruitsChange))]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private int _fruits;
+
+    private bool AllowFruitsChange(ref int value)
     {
-        get => _fruits;
-        set => _fruits = Math.Max(value, 0);
+        value = Math.Max(value, 0);
+        return true;
     }
 
     public override void OnComponentUsed(AddonComponent c, Mobile from)

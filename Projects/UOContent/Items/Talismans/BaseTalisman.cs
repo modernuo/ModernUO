@@ -279,23 +279,17 @@ public partial class BaseTalisman : Item, IAosItem
     public override int LabelNumber => 1071023; // Talisman
     public virtual bool ForceShowName => false; // used to override default summoner/removal name
 
-    [SerializableProperty(10)]
+    [SerializableField(10, fieldChanged: nameof(OnChargesChanged))]
     [SaveFlag(nameof(ShouldSerializeCharges))]
-    [CommandProperty(AccessLevel.GameMaster)]
-    public int Charges
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    [InvalidateProperties]
+    private int _charges;
+
+    private void OnChargesChanged(int oldValue, int newValue)
     {
-        get => _charges;
-        set
+        if (_chargeTime > 0)
         {
-            _charges = value;
-
-            if (_chargeTime > 0)
-            {
-                StartTimer();
-            }
-
-            InvalidateProperties();
-            this.MarkDirty();
+            StartTimer();
         }
     }
 

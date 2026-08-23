@@ -35,16 +35,19 @@ namespace Server.Items
         [CommandProperty(AccessLevel.GameMaster)]
         public int MaxFlour => 2;
 
-        [SerializableProperty(0)]
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int CurFlour
+        [SerializableField(0, fieldChanged: nameof(OnCurFlourChanged), allowFieldChange: nameof(AllowCurFlourChange))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private int _curFlour;
+
+        private bool AllowCurFlourChange(ref int value)
         {
-            get => _curFlour;
-            set
-            {
-                _curFlour = Math.Max(0, Math.Min(value, MaxFlour));
-                UpdateStage();
-            }
+            value = Math.Max(0, Math.Min(value, MaxFlour));
+            return true;
+        }
+
+        private void OnCurFlourChanged(int oldValue, int newValue)
+        {
+            UpdateStage();
         }
 
         public void StartWorking(Mobile from)

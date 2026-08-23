@@ -32,18 +32,20 @@ public partial class VendorItem
     public string FormattedPrice =>
         Core.ML ? Price.ToString("N0", CultureInfo.GetCultureInfo("en-US")) : Price.ToString();
 
-    [SerializableProperty(2)]
-    public string Description
-    {
-        get => _description;
-        set
-        {
-            _description = value ?? "";
+    [SerializableField(2, fieldChanged: nameof(OnDescriptionChanged), allowFieldChange: nameof(AllowDescriptionChange))]
+    private string _description;
 
-            if (Valid)
-            {
-                Item.InvalidateProperties();
-            }
+    private bool AllowDescriptionChange(ref string value)
+    {
+        value = value ?? "";
+        return true;
+    }
+
+    private void OnDescriptionChanged(string oldValue, string newValue)
+    {
+        if (Valid)
+        {
+            Item.InvalidateProperties();
         }
     }
 

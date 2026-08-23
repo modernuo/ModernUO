@@ -146,34 +146,24 @@ public partial class HouseRaffleStone : Item
         }
     }
 
-    [SerializableProperty(3)]
-    [CommandProperty(AccessLevel.GameMaster, AccessLevel.Seer)]
-    public Rectangle2D PlotBounds
-    {
-        get => _plotBounds;
-        set
-        {
-            _plotBounds = value;
+    [SerializableField(3, fieldChanged: nameof(OnPlotBoundsChanged))]
+    [SerializedCommandProperty(AccessLevel.GameMaster, AccessLevel.Seer)]
+    [InvalidateProperties]
+    private Rectangle2D _plotBounds;
 
-            InvalidateRegion();
-            InvalidateProperties();
-            this.MarkDirty();
-        }
+    private void OnPlotBoundsChanged(Rectangle2D oldValue, Rectangle2D newValue)
+    {
+        InvalidateRegion();
     }
 
-    [SerializableProperty(4)]
-    [CommandProperty(AccessLevel.GameMaster, AccessLevel.Seer)]
-    public Map PlotFacet
-    {
-        get => _plotFacet;
-        set
-        {
-            _plotFacet = value;
+    [SerializableField(4, fieldChanged: nameof(OnPlotFacetChanged))]
+    [SerializedCommandProperty(AccessLevel.GameMaster, AccessLevel.Seer)]
+    [InvalidateProperties]
+    private Map _plotFacet;
 
-            InvalidateRegion();
-            InvalidateProperties();
-            this.MarkDirty();
-        }
+    private void OnPlotFacetChanged(Map oldValue, Map newValue)
+    {
+        InvalidateRegion();
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
@@ -190,17 +180,15 @@ public partial class HouseRaffleStone : Item
         }
     }
 
-    [SerializableProperty(6)]
-    [CommandProperty(AccessLevel.GameMaster, AccessLevel.Seer)]
-    public int TicketPrice
+    [SerializableField(6, allowFieldChange: nameof(AllowTicketPriceChange))]
+    [SerializedCommandProperty(AccessLevel.GameMaster, AccessLevel.Seer)]
+    [InvalidateProperties]
+    private int _ticketPrice;
+
+    private bool AllowTicketPriceChange(ref int value)
     {
-        get => _ticketPrice;
-        set
-        {
-            _ticketPrice = Math.Max(0, value);
-            InvalidateProperties();
-            this.MarkDirty();
-        }
+        value = Math.Max(0, value);
+        return true;
     }
 
     public override string DefaultName => "a house raffle stone";

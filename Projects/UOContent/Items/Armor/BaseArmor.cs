@@ -219,25 +219,16 @@ namespace Server.Items
 
         private bool ShouldSerializeDurability() => _durability != ArmorDurabilityLevel.Regular;
 
-        [SerializableProperty(13)]
+        [SerializableField(13, fieldChanged: nameof(OnProtectionLevelChanged))]
         [SaveFlag(nameof(ShouldSerializeProtectionLevel))]
-        [CommandProperty(AccessLevel.GameMaster)]
-        public ArmorProtectionLevel ProtectionLevel
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        [InvalidateProperties]
+        private ArmorProtectionLevel _protectionLevel;
+
+        private void OnProtectionLevelChanged(ArmorProtectionLevel oldValue, ArmorProtectionLevel newValue)
         {
-            get => _protectionLevel;
-            set
-            {
-                if (_protectionLevel != value)
-                {
-                    _protectionLevel = value;
-
-                    Invalidate();
-                    InvalidateProperties();
-
-                    (Parent as Mobile)?.UpdateResistances();
-                    this.MarkDirty();
-                }
-            }
+            Invalidate();
+            (Parent as Mobile)?.UpdateResistances();
         }
 
         private bool ShouldSerializeProtectionLevel() => _protectionLevel != ArmorProtectionLevel.Regular;

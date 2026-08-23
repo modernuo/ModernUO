@@ -14,7 +14,15 @@ public partial class WarningItem : Item
     private TextDefinition _warningMessage;
 
     // Field 1
+    [SerializableField(1, allowFieldChange: nameof(AllowRangeChange))]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _range;
+
+    private bool AllowRangeChange(ref int value)
+    {
+        value = Math.Min(value, 18);
+        return true;
+    }
 
     [SerializableField(2)]
     private TimeSpan _resetDelay;
@@ -37,18 +45,6 @@ public partial class WarningItem : Item
 
         _warningMessage = warning;
         _range = Math.Min(range, 18);
-    }
-
-    [CommandProperty(AccessLevel.GameMaster)]
-    [SerializableProperty(1, useField: nameof(_range))]
-    public int Range
-    {
-        get => _range;
-        set
-        {
-            _range = Math.Min(value, 18);
-            this.MarkDirty();
-        }
     }
 
     public virtual bool OnlyToTriggerer => false;

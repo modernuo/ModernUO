@@ -54,17 +54,15 @@ public partial class FountainOfLife : BaseAddonContainer
     public override int DefaultDropSound => 66;
     public override int DefaultMaxItems => 125;
 
-    [SerializableProperty(0)]
-    [CommandProperty(AccessLevel.GameMaster)]
-    public int Charges
+    [SerializableField(0, allowFieldChange: nameof(AllowChargesChange))]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    [InvalidateProperties]
+    private int _charges;
+
+    private bool AllowChargesChange(ref int value)
     {
-        get => _charges;
-        set
-        {
-            _charges = Math.Min(value, MaxCharges);
-            InvalidateProperties();
-            this.MarkDirty();
-        }
+        value = Math.Min(value, MaxCharges);
+        return true;
     }
 
     public override bool OnDragLift(Mobile from) => false;
@@ -183,16 +181,14 @@ public partial class FountainOfLifeDeed : BaseAddonContainerDeed
     public override int LabelNumber => 1075197; // Fountain of Life
     public override BaseAddonContainer Addon => new FountainOfLife(_charges);
 
-    [SerializableProperty(0)]
-    [CommandProperty(AccessLevel.GameMaster)]
-    public int Charges
+    [SerializableField(0, allowFieldChange: nameof(AllowChargesChange))]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    [InvalidateProperties]
+    private int _charges;
+
+    private bool AllowChargesChange(ref int value)
     {
-        get => _charges;
-        set
-        {
-            _charges = Math.Min(value, FountainOfLife.MaxCharges);
-            InvalidateProperties();
-            this.MarkDirty();
-        }
+        value = Math.Min(value, FountainOfLife.MaxCharges);
+        return true;
     }
 }
