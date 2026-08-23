@@ -837,7 +837,6 @@ public abstract partial class BaseAI
 
         if (Core.TickCount - Mobile.NextReacquireTime < 0)
         {
-
             Mobile.FocusMob = null;
             return false;
         }
