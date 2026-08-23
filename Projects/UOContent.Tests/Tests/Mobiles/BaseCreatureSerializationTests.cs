@@ -166,6 +166,63 @@ public class BaseCreatureSerializationTests : IDisposable
         Assert.Equal(master, copy.LastOwner);
     }
 
+    private sealed class BucketStub : BaseCreature
+    {
+        public BucketStub() : base(AIType.AI_Melee) => Body = 0xC9;
+
+        public BucketStub(Serial serial) : base(serial) => Body = 0xC9;
+
+        public override SpeedLevel DefaultSpeedClass => SpeedLevel.Fast;
+    }
+
+    [Fact]
+    public void SpeedClass_Assignment_AppliesBucket_AndRoundTrips()
+    {
+        NPCSpeeds.RegisterSpeed(new NPCSpeeds.SpeedClassEntry
+        {
+            Level = SpeedLevel.Fast, ActiveSpeed = 0.2, PassiveSpeed = 0.4,
+            ActiveMoveSpeed = 0.3, PassiveMoveSpeed = 0.9, Types = new HashSet<Type>()
+        });
+        NPCSpeeds.RegisterSpeed(new NPCSpeeds.SpeedClassEntry
+        {
+            Level = SpeedLevel.VeryFast, ActiveSpeed = 0.125, PassiveSpeed = 0.3,
+            ActiveMoveSpeed = 0.125, PassiveMoveSpeed = 0.6, Types = new HashSet<Type>()
+        });
+
+        var bc = new BucketStub();
+        _created.Add(bc);
+
+        Assert.Equal(0.2, bc.ActiveSpeed); // seeded from the default bucket
+        Assert.Equal(0.3, bc.ActiveMoveSpeed);
+
+        bc.SpeedClass = SpeedLevel.VeryFast; // boss state change
+
+        Assert.Equal(0.125, bc.ActiveSpeed);
+        Assert.Equal(0.3, bc.PassiveSpeed);
+        Assert.Equal(0.125, bc.ActiveMoveSpeed);
+        Assert.Equal(0.6, bc.PassiveMoveSpeed);
+        Assert.Equal(0.3, bc.CurrentSpeed); // stayed in the passive mode
+
+        // The changed bucket persists; the (bucket-matching) speeds elide but restore
+        // through the new bucket - the consistency the stateful SpeedClass guarantees.
+        var writer = new BufferWriter(true);
+        bc.Serialize(writer);
+        var buffer = new byte[writer.Position];
+        writer.Buffer.AsSpan(0, (int)writer.Position).CopyTo(buffer);
+
+        var copy = new BucketStub(World.NewMobile);
+        _created.Add(copy);
+        var reader = new BufferReader(buffer);
+        copy.Deserialize(reader);
+
+        Assert.Equal(buffer.Length, reader.Position);
+        Assert.Equal(SpeedLevel.VeryFast, copy.SpeedClass);
+        Assert.Equal(0.125, copy.ActiveSpeed);
+        Assert.Equal(0.3, copy.PassiveSpeed);
+        Assert.Equal(0.125, copy.ActiveMoveSpeed);
+        Assert.Equal(0.6, copy.PassiveMoveSpeed);
+    }
+
     private sealed class MobileStub : Mobile
     {
         public MobileStub() => Body = 0xC9;

@@ -56,6 +56,12 @@
       "rule": "EnumMigrationRule"
     },
     {
+      "name": "SpeedClass",
+      "type": "Server.Mobiles.SpeedLevel",
+      "usesSaveFlag": true,
+      "rule": "EnumMigrationRule"
+    },
+    {
       "name": "ActiveSpeed",
       "type": "double",
       "usesSaveFlag": true,

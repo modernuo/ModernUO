@@ -316,8 +316,40 @@ namespace Server.Mobiles
 
         private FightMode FightModeDefaultValue() => FightMode.Closest;
 
+        /// <summary>
+        /// The creature's npc-speeds bucket. Assigning applies the bucket's speeds; a
+        /// type's constant bucket belongs in <see cref="DefaultSpeedClass"/>.
+        /// </summary>
+        [SerializableField(7, fieldChanged: nameof(OnSpeedClassChange))]
+        [SaveFlag(nameof(ShouldSerializeSpeedClass), nameof(SpeedClassDefaultValue))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private SpeedLevel _speedClass;
+
+        private bool ShouldSerializeSpeedClass() => _speedClass != DefaultSpeedClass;
+
+        private SpeedLevel SpeedClassDefaultValue() => DefaultSpeedClass;
+
+        private void OnSpeedClassChange(SpeedLevel oldValue, SpeedLevel newValue)
+        {
+            _speedEntry = null;
+            ApplySpeedClass();
+        }
+
+        // Applies the current bucket's speeds, preserving the active/passive mode.
+        private void ApplySpeedClass()
+        {
+            var wasActive = _currentSpeed == _activeSpeed && _currentSpeed != _passiveSpeed;
+
+            GetSpeeds(out var activeSpeed, out var passiveSpeed);
+            GetMoveSpeeds(out _activeMoveSpeed, out _passiveMoveSpeed);
+
+            ActiveSpeed = activeSpeed;
+            PassiveSpeed = passiveSpeed;
+            CurrentSpeed = wasActive ? activeSpeed : passiveSpeed;
+        }
+
         /// <summary>Seconds per AI decision while engaged; see <see cref="ActiveMoveSpeed"/> for movement pace.</summary>
-        [SerializableField(7)]
+        [SerializableField(8)]
         [SaveFlag(nameof(ShouldSerializeActiveSpeed), nameof(ActiveSpeedDefaultValue))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private double _activeSpeed;
@@ -335,7 +367,7 @@ namespace Server.Mobiles
         }
 
         /// <summary>Seconds per AI decision while idle; see <see cref="PassiveMoveSpeed"/> for movement pace.</summary>
-        [SerializableField(8)]
+        [SerializableField(9)]
         [SaveFlag(nameof(ShouldSerializePassiveSpeed), nameof(PassiveSpeedDefaultValue))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private double _passiveSpeed;
@@ -352,7 +384,7 @@ namespace Server.Mobiles
             return passiveSpeed;
         }
 
-        [SerializableField(9, fieldChanged: nameof(OnCurrentSpeedChange))]
+        [SerializableField(10, fieldChanged: nameof(OnCurrentSpeedChange))]
         [SaveFlag(nameof(ShouldSerializeCurrentSpeed), nameof(CurrentSpeedDefaultValue))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private double _currentSpeed;
@@ -367,7 +399,7 @@ namespace Server.Mobiles
         /// Movement clock (seconds per step) while engaged; 0 = inherit
         /// <see cref="ActiveSpeed"/>. <see cref="CurrentMoveSpeed"/> resolves the pace.
         /// </summary>
-        [SerializableField(10, allowFieldChange: nameof(CoerceMoveSpeed))]
+        [SerializableField(11, allowFieldChange: nameof(CoerceMoveSpeed))]
         [SaveFlag(nameof(ShouldSerializeActiveMoveSpeed), nameof(ActiveMoveSpeedDefaultValue))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private double _activeMoveSpeed;
@@ -376,7 +408,7 @@ namespace Server.Mobiles
         /// Movement clock (seconds per step) while idle; 0 = inherit
         /// <see cref="PassiveSpeed"/>. <see cref="CurrentMoveSpeed"/> resolves the pace.
         /// </summary>
-        [SerializableField(11, allowFieldChange: nameof(CoerceMoveSpeed))]
+        [SerializableField(12, allowFieldChange: nameof(CoerceMoveSpeed))]
         [SaveFlag(nameof(ShouldSerializePassiveMoveSpeed), nameof(PassiveMoveSpeedDefaultValue))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private double _passiveMoveSpeed;
@@ -411,21 +443,21 @@ namespace Server.Mobiles
             return passiveMoveSpeed;
         }
 
-        [SerializableField(12)]
+        [SerializableField(13)]
         [SaveFlag(nameof(ShouldSerializeHome))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private Point3D _home;
 
         private bool ShouldSerializeHome() => _home != Point3D.Zero;
 
-        [SerializableField(13)]
+        [SerializableField(14)]
         [SaveFlag(nameof(ShouldSerializeHomeMap))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private Map _homeMap;
 
         private bool ShouldSerializeHomeMap() => _homeMap != null;
 
-        [SerializableField(14, fieldChanged: nameof(OnControlledChange))]
+        [SerializableField(15, fieldChanged: nameof(OnControlledChange))]
         [SaveFlag(nameof(ShouldSerializeControlled))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private bool _controlled;
@@ -438,43 +470,43 @@ namespace Server.Mobiles
             InvalidateProperties();
         }
 
-        // Field 15: ControlMaster (hand-written property; follower bookkeeping brackets the assignment)
+        // Field 16: ControlMaster (hand-written property; follower bookkeeping brackets the assignment)
         private Mobile _controlMaster;
 
         private bool ShouldSerializeControlMaster() => _controlMaster != null;
 
-        [SerializableField(16)]
+        [SerializableField(17)]
         [SaveFlag(nameof(ShouldSerializeControlTarget))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private Mobile _controlTarget;
 
         private bool ShouldSerializeControlTarget() => _controlTarget != null;
 
-        [SerializableField(17)]
+        [SerializableField(18)]
         [SaveFlag(nameof(ShouldSerializeControlDest))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private Point3D _controlDest;
 
         private bool ShouldSerializeControlDest() => _controlDest != Point3D.Zero;
 
-        // Field 18: ControlOrder (hand-written property; order logic must run on equal re-assignment)
+        // Field 19: ControlOrder (hand-written property; order logic must run on equal re-assignment)
         private OrderType _controlOrder;
 
         private bool ShouldSerializeControlOrder() => _controlOrder != OrderType.None;
 
-        [SerializableField(19)]
+        [SerializableField(20)]
         [SaveFlag(nameof(ShouldSerializeMinTameSkill))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private double _minTameSkill;
 
         private bool ShouldSerializeMinTameSkill() => _minTameSkill != 0;
 
-        // Field 20: Tamable (hand-written property; custom getter masks paragons)
+        // Field 21: Tamable (hand-written property; custom getter masks paragons)
         private bool _tamable;
 
         private bool ShouldSerializeTamable() => _tamable;
 
-        [SerializableField(21, fieldChanged: nameof(OnSummonedChange))]
+        [SerializableField(22, fieldChanged: nameof(OnSummonedChange))]
         [SaveFlag(nameof(ShouldSerializeSummoned))]
         [SerializedCommandProperty(AccessLevel.Administrator)]
         private bool _summoned;
@@ -489,19 +521,19 @@ namespace Server.Mobiles
         }
 
         [AnchoredDateTime]
-        [SerializableField(22, getter: "protected", setter: "protected")]
+        [SerializableField(23, getter: "protected", setter: "protected")]
         [SaveFlag(nameof(ShouldSerializeSummonEnd))]
         private DateTime _summonEnd;
 
         private bool ShouldSerializeSummonEnd() => _summoned;
 
-        // Field 23: SummonMaster (hand-written property; follower bookkeeping brackets the assignment)
+        // Field 24: SummonMaster (hand-written property; follower bookkeeping brackets the assignment)
         private Mobile _summonMaster;
 
         private bool ShouldSerializeSummonMaster() => _summonMaster != null;
 
         [EncodedInt]
-        [SerializableField(24)]
+        [SerializableField(25)]
         [SaveFlag(nameof(ShouldSerializeControlSlots), nameof(ControlSlotsDefaultValue))]
         [SerializedCommandProperty(AccessLevel.Administrator)]
         private int _controlSlots = 1;
@@ -511,7 +543,7 @@ namespace Server.Mobiles
         private int ControlSlotsDefaultValue() => 1;
 
         [EncodedInt]
-        [SerializableField(25, allowFieldChange: nameof(ClampLoyalty))]
+        [SerializableField(26, allowFieldChange: nameof(ClampLoyalty))]
         [SaveFlag(nameof(ShouldSerializeLoyalty), nameof(LoyaltyDefaultValue))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _loyalty;
@@ -526,7 +558,7 @@ namespace Server.Mobiles
             return true;
         }
 
-        [SerializableField(26)]
+        [SerializableField(27)]
         [SaveFlag(nameof(ShouldSerializeCurrentWayPoint))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private WayPoint _currentWayPoint;
@@ -534,7 +566,7 @@ namespace Server.Mobiles
         private bool ShouldSerializeCurrentWayPoint() => _currentWayPoint != null;
 
         [EncodedInt]
-        [SerializableField(27)]
+        [SerializableField(28)]
         [SaveFlag(nameof(ShouldSerializeHitsMaxSeed), nameof(HitsMaxSeedDefaultValue))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _hitsMaxSeed = -1;
@@ -544,7 +576,7 @@ namespace Server.Mobiles
         private int HitsMaxSeedDefaultValue() => -1;
 
         [EncodedInt]
-        [SerializableField(28)]
+        [SerializableField(29)]
         [SaveFlag(nameof(ShouldSerializeStamMaxSeed), nameof(StamMaxSeedDefaultValue))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _stamMaxSeed = -1;
@@ -554,7 +586,7 @@ namespace Server.Mobiles
         private int StamMaxSeedDefaultValue() => -1;
 
         [EncodedInt]
-        [SerializableField(29)]
+        [SerializableField(30)]
         [SaveFlag(nameof(ShouldSerializeManaMaxSeed), nameof(ManaMaxSeedDefaultValue))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _manaMaxSeed = -1;
@@ -564,7 +596,7 @@ namespace Server.Mobiles
         private int ManaMaxSeedDefaultValue() => -1;
 
         [EncodedInt]
-        [SerializableField(30)]
+        [SerializableField(31)]
         [SaveFlag(nameof(ShouldSerializeDamageMin), nameof(DamageMinDefaultValue))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _damageMin = -1;
@@ -574,7 +606,7 @@ namespace Server.Mobiles
         private int DamageMinDefaultValue() => -1;
 
         [EncodedInt]
-        [SerializableField(31)]
+        [SerializableField(32)]
         [SaveFlag(nameof(ShouldSerializeDamageMax), nameof(DamageMaxDefaultValue))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _damageMax = -1;
@@ -584,7 +616,7 @@ namespace Server.Mobiles
         private int DamageMaxDefaultValue() => -1;
 
         [EncodedInt]
-        [SerializableField(32, fieldChanged: nameof(OnResistanceSeedChange))]
+        [SerializableField(33, fieldChanged: nameof(OnResistanceSeedChange))]
         [SaveFlag(nameof(ShouldSerializePhysicalResistanceSeed))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _physicalResistanceSeed;
@@ -594,7 +626,7 @@ namespace Server.Mobiles
         private void OnResistanceSeedChange(int oldValue, int newValue) => UpdateResistances();
 
         [EncodedInt]
-        [SerializableField(33, fieldChanged: nameof(OnResistanceSeedChange))]
+        [SerializableField(34, fieldChanged: nameof(OnResistanceSeedChange))]
         [SaveFlag(nameof(ShouldSerializeFireResistSeed))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _fireResistSeed;
@@ -602,7 +634,7 @@ namespace Server.Mobiles
         private bool ShouldSerializeFireResistSeed() => _fireResistSeed != 0;
 
         [EncodedInt]
-        [SerializableField(34, fieldChanged: nameof(OnResistanceSeedChange))]
+        [SerializableField(35, fieldChanged: nameof(OnResistanceSeedChange))]
         [SaveFlag(nameof(ShouldSerializeColdResistSeed))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _coldResistSeed;
@@ -610,7 +642,7 @@ namespace Server.Mobiles
         private bool ShouldSerializeColdResistSeed() => _coldResistSeed != 0;
 
         [EncodedInt]
-        [SerializableField(35, fieldChanged: nameof(OnResistanceSeedChange))]
+        [SerializableField(36, fieldChanged: nameof(OnResistanceSeedChange))]
         [SaveFlag(nameof(ShouldSerializePoisonResistSeed))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _poisonResistSeed;
@@ -618,7 +650,7 @@ namespace Server.Mobiles
         private bool ShouldSerializePoisonResistSeed() => _poisonResistSeed != 0;
 
         [EncodedInt]
-        [SerializableField(36, fieldChanged: nameof(OnResistanceSeedChange))]
+        [SerializableField(37, fieldChanged: nameof(OnResistanceSeedChange))]
         [SaveFlag(nameof(ShouldSerializeEnergyResistSeed))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _energyResistSeed;
@@ -626,7 +658,7 @@ namespace Server.Mobiles
         private bool ShouldSerializeEnergyResistSeed() => _energyResistSeed != 0;
 
         [EncodedInt]
-        [SerializableField(37)]
+        [SerializableField(38)]
         [SaveFlag(nameof(ShouldSerializePhysicalDamage), nameof(PhysicalDamageDefaultValue))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _physicalDamage = 100;
@@ -636,7 +668,7 @@ namespace Server.Mobiles
         private int PhysicalDamageDefaultValue() => 100;
 
         [EncodedInt]
-        [SerializableField(38)]
+        [SerializableField(39)]
         [SaveFlag(nameof(ShouldSerializeFireDamage))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _fireDamage;
@@ -644,7 +676,7 @@ namespace Server.Mobiles
         private bool ShouldSerializeFireDamage() => _fireDamage != 0;
 
         [EncodedInt]
-        [SerializableField(39)]
+        [SerializableField(40)]
         [SaveFlag(nameof(ShouldSerializeColdDamage))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _coldDamage;
@@ -652,7 +684,7 @@ namespace Server.Mobiles
         private bool ShouldSerializeColdDamage() => _coldDamage != 0;
 
         [EncodedInt]
-        [SerializableField(40)]
+        [SerializableField(41)]
         [SaveFlag(nameof(ShouldSerializePoisonDamage))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _poisonDamage;
@@ -660,7 +692,7 @@ namespace Server.Mobiles
         private bool ShouldSerializePoisonDamage() => _poisonDamage != 0;
 
         [EncodedInt]
-        [SerializableField(41)]
+        [SerializableField(42)]
         [SaveFlag(nameof(ShouldSerializeEnergyDamage))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _energyDamage;
@@ -668,7 +700,7 @@ namespace Server.Mobiles
         private bool ShouldSerializeEnergyDamage() => _energyDamage != 0;
 
         [Tidy]
-        [SerializableField(42, setter: "private")]
+        [SerializableField(43, setter: "private")]
         [SaveFlag(nameof(ShouldSerializeOwners), nameof(OwnersDefaultValue))]
         private List<Mobile> _owners;
 
@@ -680,13 +712,13 @@ namespace Server.Mobiles
 
         private List<Mobile> OwnersDefaultValue() => new();
 
-        [SerializableField(43)]
+        [SerializableField(44)]
         [SaveFlag(nameof(ShouldSerializeIsDeadPet))]
         private bool _isDeadPet;
 
         private bool ShouldSerializeIsDeadPet() => _isDeadPet;
 
-        [SerializableField(44, fieldChanged: nameof(OnBondedChange))]
+        [SerializableField(45, fieldChanged: nameof(OnBondedChange))]
         [SaveFlag(nameof(ShouldSerializeIsBonded))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private bool _isBonded;
@@ -695,33 +727,33 @@ namespace Server.Mobiles
 
         private void OnBondedChange(bool oldValue, bool newValue) => InvalidateProperties();
 
-        [SerializableField(45)]
+        [SerializableField(46)]
         [SaveFlag(nameof(ShouldSerializeBondingBegin))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private DateTime _bondingBegin;
 
         private bool ShouldSerializeBondingBegin() => _bondingBegin != DateTime.MinValue;
 
-        [SerializableField(46)]
+        [SerializableField(47)]
         [SaveFlag(nameof(ShouldSerializeOwnerAbandonTime))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private DateTime _ownerAbandonTime;
 
         private bool ShouldSerializeOwnerAbandonTime() => _ownerAbandonTime != DateTime.MinValue;
 
-        [SerializableField(47)]
+        [SerializableField(48)]
         [SaveFlag(nameof(ShouldSerializeHasGeneratedLoot))]
         private bool _hasGeneratedLoot;
 
         private bool ShouldSerializeHasGeneratedLoot() => _hasGeneratedLoot;
 
-        // Field 48: IsParagon (hand-written property; the setter converts, which must not run at load)
+        // Field 49: IsParagon (hand-written property; the setter converts, which must not run at load)
         private bool _isParagon;
 
         private bool ShouldSerializeIsParagon() => _isParagon;
 
         [Tidy]
-        [SerializableField(49, setter: "private")]
+        [SerializableField(50, setter: "private")]
         [SaveFlag(nameof(ShouldSerializeFriends))]
         private List<Mobile> _friends;
 
@@ -731,7 +763,7 @@ namespace Server.Mobiles
             return _friends?.Count > 0;
         }
 
-        [SerializableField(50)]
+        [SerializableField(51)]
         [SaveFlag(nameof(ShouldSerializeRemoveIfUntamed))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private bool _removeIfUntamed;
@@ -739,14 +771,14 @@ namespace Server.Mobiles
         private bool ShouldSerializeRemoveIfUntamed() => _removeIfUntamed;
 
         [EncodedInt]
-        [SerializableField(51)]
+        [SerializableField(52)]
         [SaveFlag(nameof(ShouldSerializeRemoveStep))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _removeStep;
 
         private bool ShouldSerializeRemoveStep() => _removeStep != 0;
 
-        [SerializableField(52, setter: "private")]
+        [SerializableField(53, setter: "private")]
         [SaveFlag(nameof(ShouldSerializePendingDeleteTimer))]
         [DeserializeTimer(nameof(DeserializePendingDeleteTimer))]
         private Timer _pendingDeleteTimer;
@@ -761,7 +793,7 @@ namespace Server.Mobiles
             _pendingDeleteTimer.Start();
         }
 
-        [SerializableField(53)]
+        [SerializableField(54)]
         [SaveFlag(nameof(ShouldSerializeCorpseNameOverride))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private string _corpseNameOverride;
@@ -814,6 +846,8 @@ namespace Server.Mobiles
             _currentAI = ai;
             _defaultAI = ai;
 
+            _speedClass = DefaultSpeedClass;
+
             RangePerception = iRangePerception;
             RangeFight = iRangeFight;
 
@@ -857,6 +891,7 @@ namespace Server.Mobiles
 
         public BaseCreature(Serial serial) : base(serial)
         {
+            _speedClass = DefaultSpeedClass;
             Debug = false;
         }
 
@@ -911,7 +946,7 @@ namespace Server.Mobiles
 
         public virtual double WeaponAbilityChance => 0.4;
 
-        [SerializableProperty(48, useField: nameof(_isParagon))]
+        [SerializableProperty(49, useField: nameof(_isParagon))]
         [SaveFlag(nameof(ShouldSerializeIsParagon))]
         [CommandProperty(AccessLevel.GameMaster)]
         public bool IsParagon
@@ -1122,7 +1157,7 @@ namespace Server.Mobiles
             }
         }
 
-        [SerializableProperty(15, useField: nameof(_controlMaster))]
+        [SerializableProperty(16, useField: nameof(_controlMaster))]
         [SaveFlag(nameof(ShouldSerializeControlMaster))]
         [CommandProperty(AccessLevel.GameMaster)]
         public Mobile ControlMaster
@@ -1148,7 +1183,7 @@ namespace Server.Mobiles
             }
         }
 
-        [SerializableProperty(23, useField: nameof(_summonMaster))]
+        [SerializableProperty(24, useField: nameof(_summonMaster))]
         [SaveFlag(nameof(ShouldSerializeSummonMaster))]
         [CommandProperty(AccessLevel.GameMaster)]
         public Mobile SummonMaster
@@ -1172,7 +1207,7 @@ namespace Server.Mobiles
 
         // Re-issuing the current order must still run the order logic (pet commands), so
         // this keeps a hand-written setter with no equality skip.
-        [SerializableProperty(18, useField: nameof(_controlOrder))]
+        [SerializableProperty(19, useField: nameof(_controlOrder))]
         [SaveFlag(nameof(ShouldSerializeControlOrder))]
         [CommandProperty(AccessLevel.GameMaster)]
         public OrderType ControlOrder
@@ -1207,7 +1242,7 @@ namespace Server.Mobiles
         [CommandProperty(AccessLevel.GameMaster)]
         public DateTime BardEndTime { get; set; }
 
-        [SerializableProperty(20, useField: nameof(_tamable))]
+        [SerializableProperty(21, useField: nameof(_tamable))]
         [SaveFlag(nameof(ShouldSerializeTamable))]
         [CommandProperty(AccessLevel.GameMaster)]
         public bool Tamable
@@ -5075,8 +5110,8 @@ namespace Server.Mobiles
             }
         }
 
-        // If this needs to be serialized, recommend creating a hash or registry id. Don't serialize strings.
-        public virtual SpeedLevel SpeedClass => SpeedLevel.None;
+        // A type's constant bucket; runtime state changes assign SpeedClass instead.
+        public virtual SpeedLevel DefaultSpeedClass => SpeedLevel.None;
 
         // Resolved once per creature; serialization consults the table four times per mob
         // per save (and again on elided loads), so the dictionary walk must not repeat.
