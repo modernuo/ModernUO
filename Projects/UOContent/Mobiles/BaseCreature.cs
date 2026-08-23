@@ -5078,14 +5078,29 @@ namespace Server.Mobiles
         // If this needs to be serialized, recommend creating a hash or registry id. Don't serialize strings.
         public virtual SpeedLevel SpeedClass => SpeedLevel.None;
 
+        // Resolved once per creature; serialization consults the table four times per mob
+        // per save (and again on elided loads), so the dictionary walk must not repeat.
+        private NPCSpeeds.SpeedClassEntry _speedEntry;
+
+        private NPCSpeeds.SpeedClassEntry SpeedEntry => _speedEntry ??= NPCSpeeds.FindEntry(this);
+
         public virtual void GetSpeeds(out double activeSpeed, out double passiveSpeed)
         {
-            NPCSpeeds.GetSpeeds(this, out activeSpeed, out passiveSpeed);
+            var entry = SpeedEntry ?? throw new InvalidOperationException(
+                $"{GetType()} has no speed entry - is {"Data/npc-speeds.json"} missing?"
+            );
+
+            activeSpeed = entry.ActiveSpeed;
+            passiveSpeed = entry.PassiveSpeed;
         }
 
+        // Move speeds are optional (0 = inherit), so this tolerates an unloaded table.
         public virtual void GetMoveSpeeds(out double activeMoveSpeed, out double passiveMoveSpeed)
         {
-            NPCSpeeds.GetMoveSpeeds(this, out activeMoveSpeed, out passiveMoveSpeed);
+            var entry = SpeedEntry;
+
+            activeMoveSpeed = entry?.ActiveMoveSpeed ?? 0;
+            passiveMoveSpeed = entry?.PassiveMoveSpeed ?? 0;
         }
 
         // Pre-v22 saves carry no movement clock. Think speeds matching today's GetSpeeds
