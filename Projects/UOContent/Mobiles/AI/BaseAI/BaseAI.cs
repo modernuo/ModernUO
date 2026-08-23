@@ -496,7 +496,6 @@ public abstract partial class BaseAI
 
             _investigating = false;
             _guardStopTick = Core.TickCount + GuardGraceDuration;
-
         }
 
         if (Core.TickCount - _guardStopTick < 0)
