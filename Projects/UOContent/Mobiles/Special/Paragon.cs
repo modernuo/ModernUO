@@ -79,6 +79,7 @@ public static class Paragon
 
         bc.PassiveSpeed /= SpeedBuff;
         bc.ActiveSpeed /= SpeedBuff;
+        bc.ScaleMoveSpeed(1.0 / SpeedBuff);
         bc.CurrentSpeed = bc.PassiveSpeed;
 
         bc.DamageMin += DamageBuff;
@@ -143,6 +144,8 @@ public static class Paragon
 
         bc.PassiveSpeed *= SpeedBuff;
         bc.ActiveSpeed *= SpeedBuff;
+        bc.ScaleMoveSpeed(SpeedBuff);
+        bc.SnapSpeedsToTable(); // an ulp of scaling drift must not read as hand-tuned
         bc.CurrentSpeed = bc.PassiveSpeed;
 
         bc.DamageMin -= DamageBuff;

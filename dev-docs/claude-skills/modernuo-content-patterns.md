@@ -23,6 +23,12 @@ description: >
 4. **Clean up timers and references in `OnDelete()`/`OnAfterDelete()`**
 5. **No LINQ** in game logic -- use loops and `PooledRefList<T>`
 6. **File placement** matters -- follow the directory conventions below
+7. **Creature speeds are delays in seconds, on two clocks** -- think
+   (`ActiveSpeed`/`PassiveSpeed`, seconds per AI decision) and move
+   (`ActiveMoveSpeed`/`PassiveMoveSpeed`, seconds per step; inherits think until
+   overridden). Prefer `npc-speeds.json` buckets (`SpeedClass`); `SetSpeed()` sets think
+   AND clears move overrides, `SetMoveSpeed()` sets move only -- see
+   `dev-docs/content-patterns.md` § Creature Speeds
 
 ## New Item Template
 
