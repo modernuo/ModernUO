@@ -363,10 +363,29 @@ namespace Server.Mobiles
 
         private void OnCurrentSpeedChange(double oldValue, double newValue) => AIObject?.OnCurrentSpeedChanged();
 
-        // Movement clock (seconds per step); 0 = inherit the matching think value.
-        // Serialized through the hand-written resolving properties (fields 10 and 11).
+        /// <summary>
+        /// Movement clock (seconds per step) while engaged; 0 = inherit
+        /// <see cref="ActiveSpeed"/>. <see cref="CurrentMoveSpeed"/> resolves the pace.
+        /// </summary>
+        [SerializableField(10, allowFieldChange: nameof(CoerceMoveSpeed))]
+        [SaveFlag(nameof(ShouldSerializeActiveMoveSpeed), nameof(ActiveMoveSpeedDefaultValue))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private double _activeMoveSpeed;
+
+        /// <summary>
+        /// Movement clock (seconds per step) while idle; 0 = inherit
+        /// <see cref="PassiveSpeed"/>. <see cref="CurrentMoveSpeed"/> resolves the pace.
+        /// </summary>
+        [SerializableField(11, allowFieldChange: nameof(CoerceMoveSpeed))]
+        [SaveFlag(nameof(ShouldSerializePassiveMoveSpeed), nameof(PassiveMoveSpeedDefaultValue))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private double _passiveMoveSpeed;
+
+        private bool CoerceMoveSpeed(ref double value)
+        {
+            value = Math.Max(0, value); // anything non-positive means "inherit"
+            return true;
+        }
 
         private bool ShouldSerializeActiveMoveSpeed()
         {
@@ -1075,34 +1094,6 @@ namespace Server.Mobiles
         [CommandProperty(AccessLevel.GameMaster)]
         public virtual int ChaseLeashRange => RangePerception * 2;
 
-        /// <summary>Seconds per step while engaged. Inherits <see cref="ActiveSpeed"/>; set 0 to re-inherit.</summary>
-        [SerializableProperty(10, useField: nameof(_activeMoveSpeed))]
-        [SaveFlag(nameof(ShouldSerializeActiveMoveSpeed), nameof(ActiveMoveSpeedDefaultValue))]
-        [CommandProperty(AccessLevel.GameMaster)]
-        public virtual double ActiveMoveSpeed
-        {
-            get => _activeMoveSpeed > 0 ? _activeMoveSpeed : _activeSpeed;
-            set
-            {
-                _activeMoveSpeed = value > 0 ? value : 0;
-                this.MarkDirty();
-            }
-        }
-
-        /// <summary>Seconds per step while idle. Inherits <see cref="PassiveSpeed"/>; set 0 to re-inherit.</summary>
-        [SerializableProperty(11, useField: nameof(_passiveMoveSpeed))]
-        [SaveFlag(nameof(ShouldSerializePassiveMoveSpeed), nameof(PassiveMoveSpeedDefaultValue))]
-        [CommandProperty(AccessLevel.GameMaster)]
-        public virtual double PassiveMoveSpeed
-        {
-            get => _passiveMoveSpeed > 0 ? _passiveMoveSpeed : _passiveSpeed;
-            set
-            {
-                _passiveMoveSpeed = value > 0 ? value : 0;
-                this.MarkDirty();
-            }
-        }
-
         // Herded creatures walk at a fixed standard pace regardless of their own speed
         // (RunUO's forced 0.3, without its TransformMoveDelay inflation to 0.6).
         private const double HerdingMoveSpeed = 0.3;
@@ -1129,9 +1120,17 @@ namespace Server.Mobiles
                     return HerdingMoveSpeed;
                 }
 
-                return _currentSpeed == _activeSpeed ? ActiveMoveSpeed
-                    : _currentSpeed == _passiveSpeed ? PassiveMoveSpeed
-                    : _currentSpeed;
+                if (_currentSpeed == _activeSpeed)
+                {
+                    return _activeMoveSpeed > 0 ? _activeMoveSpeed : _activeSpeed;
+                }
+
+                if (_currentSpeed == _passiveSpeed)
+                {
+                    return _passiveMoveSpeed > 0 ? _passiveMoveSpeed : _passiveSpeed;
+                }
+
+                return _currentSpeed;
             }
         }
 

@@ -269,7 +269,8 @@ public class BaseCreatureSerializationTests : IDisposable
         Assert.Equal(10, copy.FireResistSeed);
         Assert.Equal(0.3, copy.ActiveSpeed);
         // v22 wrote explicit zeros for the move overrides ("inherit"), so the resolved
-        // pace falls back to the think clock through the resolving getters.
-        Assert.Equal(0.3, copy.ActiveMoveSpeed);
+        // pace falls back to the think clock.
+        Assert.Equal(0, copy.ActiveMoveSpeed);
+        Assert.Equal(0.6, copy.CurrentMoveSpeed); // passive mode, inheriting
     }
 }
