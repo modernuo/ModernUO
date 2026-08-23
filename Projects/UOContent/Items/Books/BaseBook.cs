@@ -19,41 +19,38 @@ namespace Server.Items
         [InternString]
         [InvalidateProperties]
         [SerializableField(1)]
+        [SaveFlag(nameof(ShouldSerializeTitle), nameof(TitleDefaultValue))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private string _title;
 
-        [SerializableFieldSaveFlag(1)]
         private bool ShouldSerializeTitle() => _title != DefaultContent?.Title;
 
-        [SerializableFieldDefault(1)]
         private string TitleDefaultValue() => DefaultContent?.Title;
 
         [InvalidateProperties]
         [SerializableField(2)]
+        [SaveFlag(nameof(ShouldSerializeAuthor), nameof(AuthorDefaultValue))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private string _author;
 
-        [SerializableFieldSaveFlag(2)]
         private bool ShouldSerializeAuthor() => _author != DefaultContent?.Author;
 
-        [SerializableFieldDefault(2)]
         private string AuthorDefaultValue() => DefaultContent?.Author;
 
         [SerializableField(3)]
+        [SaveFlag(nameof(ShouldSerializeWritable))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private bool _writable;
 
-        [SerializableFieldSaveFlag(3)]
         private bool ShouldSerializeWritable() => _writable;
 
         [SerializedIgnoreDupe]
         [SerializableField(4, setter: "protected")]
+        [SaveFlag(nameof(ShouldSerializePages), nameof(PagesDefaultValue))]
         private BookPageInfo[] _pages;
 
-        [SerializableFieldSaveFlag(4)]
         private bool ShouldSerializePages() => DefaultContent?.IsMatch(_pages) != true;
 
-        [SerializableFieldDefault(4)]
         private BookPageInfo[] PagesDefaultValue() => DefaultContent?.Copy() ?? Array.Empty<BookPageInfo>();
 
         [Constructible]

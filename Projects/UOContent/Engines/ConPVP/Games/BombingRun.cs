@@ -830,10 +830,9 @@ public partial class BRBomb : Item
 [SerializationGenerator(0, false)]
 public partial class BRGoal : BaseAddon
 {
-    [SerializableField(0)]
+    [SerializableField(0, fieldChanged: nameof(OnNorthChanged))]
     private bool _north;
 
-    [SerializableFieldChanged(0)]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void OnNorthChanged(bool oldValue, bool newValue) => Remake();
 

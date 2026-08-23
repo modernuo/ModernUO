@@ -21,33 +21,29 @@ namespace Server;
 [SerializationGenerator(0)]
 public abstract partial class SkillMod : MobileMod
 {
-    [SerializableField(0)]
+    [SerializableField(0, fieldChanged: nameof(OnObeyCapChanged))]
     private bool _obeyCap;
 
-    [SerializableFieldChanged(0)]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void OnObeCapChanged(bool oldValue, bool newValue) => Owner?.Skills[_skill]?.Update();
+    private void OnObeyCapChanged(bool oldValue, bool newValue) => Owner?.Skills[_skill]?.Update();
 
-    [SerializableField(1)]
+    [SerializableField(1, fieldChanged: nameof(OnSkillChanged))]
     private SkillName _skill;
 
-    [SerializableFieldChanged(1)]
     private void OnSkillChanged(SkillName oldValue, SkillName newValue)
     {
         Owner?.Skills[newValue]?.Update();
         Owner?.Skills[oldValue]?.Update();
     }
 
-    [SerializableField(2)]
+    [SerializableField(2, fieldChanged: nameof(OnRelativeChanged))]
     private bool _relative;
 
-    [SerializableFieldChanged(2)]
     private void OnRelativeChanged(bool oldValue, bool newValue) => Owner?.Skills[_skill]?.Update();
 
-    [SerializableField(3)]
+    [SerializableField(3, fieldChanged: nameof(OnValueChanged))]
     private double _value;
 
-    [SerializableFieldChanged(3)]
     private void OnValueChanged(double oldValue, double newValue) => Owner?.Skills[_skill]?.Update();
 
     public SkillMod(Mobile owner) : base(owner)

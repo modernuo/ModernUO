@@ -37,21 +37,22 @@ namespace Server.Items
         public override double DefaultWeight => 3.0;
     }
 
-    [SerializationGenerator(3, false)]
+    [SerializationGenerator(4, false)]
     public partial class DeathRobe : Robe
     {
         private static readonly TimeSpan m_DefaultDecayTime = TimeSpan.FromMinutes(1.0);
 
-        [TimerDrift]
         [SerializableField(0)]
+        [DeserializeTimer(nameof(DeserializeDecayTimer))]
         private Timer _decayTimer;
 
-        [DeserializeTimerField(0)]
-        private void DeserializeDecayTimer(TimeSpan delay)
+        private void DeserializeDecayTimer(TimeSpan delay) => BeginDecay(delay);
+
+        private void MigrateFrom(V3Content content)
         {
-            if (delay != TimeSpan.MinValue)
+            if (content.DecayTimerDelay != TimeSpan.MinValue)
             {
-                BeginDecay(delay);
+                DeserializeDecayTimer(content.DecayTimerDelay);
             }
         }
 

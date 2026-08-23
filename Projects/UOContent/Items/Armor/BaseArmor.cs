@@ -18,95 +18,92 @@ namespace Server.Items
     {
         [SerializedIgnoreDupe]
         [SerializableField(0, setter: "private")]
+        [SaveFlag(nameof(ShouldSerializeAosAttributes), nameof(AttributesDefaultValue))]
         [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
         private AosAttributes _attributes;
 
-        [SerializableFieldSaveFlag(0)]
         private bool ShouldSerializeAosAttributes() => !_attributes.IsEmpty;
 
-        [SerializableFieldDefault(0)]
         private AosAttributes AttributesDefaultValue() => new(this);
 
         [SerializedIgnoreDupe]
         [SerializableField(1, setter: "private")]
+        [SaveFlag(nameof(ShouldSerializeArmorAttributes), nameof(ArmorAttributesDefaultValue))]
         [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
         private AosArmorAttributes _armorAttributes;
 
-        [SerializableFieldSaveFlag(1)]
         private bool ShouldSerializeArmorAttributes() => !_armorAttributes.IsEmpty;
 
-        [SerializableFieldDefault(1)]
         private AosArmorAttributes ArmorAttributesDefaultValue() => new(this);
 
         [EncodedInt]
         [InvalidateProperties]
         [SerializableField(2)]
+        [SaveFlag(nameof(ShouldSerializePhysicalBonus))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _physicalBonus;
 
-        [SerializableFieldSaveFlag(2)]
         private bool ShouldSerializePhysicalBonus() => _physicalBonus != 0;
 
         [EncodedInt]
         [InvalidateProperties]
         [SerializableField(3)]
+        [SaveFlag(nameof(ShouldSerializeFireBonus))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _fireBonus;
 
-        [SerializableFieldSaveFlag(3)]
         private bool ShouldSerializeFireBonus() => _fireBonus != 0;
 
         [EncodedInt]
         [InvalidateProperties]
         [SerializableField(4)]
+        [SaveFlag(nameof(ShouldSerializeColdBonus))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _coldBonus;
 
-        [SerializableFieldSaveFlag(4)]
         private bool ShouldSerializeColdBonus() => _coldBonus != 0;
 
         [EncodedInt]
         [InvalidateProperties]
         [SerializableField(5)]
+        [SaveFlag(nameof(ShouldSerializePoisonBonus))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _poisonBonus;
 
-        [SerializableFieldSaveFlag(5)]
         private bool ShouldSerializePoisonBonus() => _poisonBonus != 0;
 
         [EncodedInt]
         [InvalidateProperties]
         [SerializableField(6)]
+        [SaveFlag(nameof(ShouldSerializeEnergyBonus))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _energyBonus;
 
-        [SerializableFieldSaveFlag(6)]
         private bool ShouldSerializeEnergyBonus() => _energyBonus != 0;
 
         [SerializableField(7)]
+        [SaveFlag(nameof(ShouldSerializeIdentified))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private bool _identified;
 
-        [SerializableFieldSaveFlag(7)]
         private bool ShouldSerializeIdentified() => _identified;
 
         [EncodedInt]
         [SerializableField(8)]
+        [SaveFlag(nameof(ShouldSerializeMaxHitPoints))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _maxHitPoints;
 
-        [SerializableFieldSaveFlag(8)]
         private bool ShouldSerializeMaxHitPoints() => _maxHitPoints != 0;
 
         [InvalidateProperties]
         [SerializableField(10)]
+        [SaveFlag(nameof(ShouldSerializeCrafter))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private string _crafter;
 
-        [SerializableFieldSaveFlag(10)]
         private bool ShouldSerializeCrafter() => !string.IsNullOrEmpty(_crafter);
 
-        [SerializableFieldSaveFlag(14)]
         private bool ShouldSerializeResource() => _resource != DefaultResource;
 
         // Field 15
@@ -135,13 +132,12 @@ namespace Server.Items
 
         [SerializedIgnoreDupe]
         [SerializableField(23, setter: "private")]
+        [SaveFlag(nameof(ShouldSerializeSkillBonuses), nameof(SkillBonusesDefaultValue))]
         [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
         public AosSkillBonuses _skillBonuses;
 
-        [SerializableFieldSaveFlag(23)]
         private bool ShouldSerializeSkillBonuses() => !_skillBonuses.IsEmpty;
 
-        [SerializableFieldDefault(23)]
         private AosSkillBonuses SkillBonusesDefaultValue() => new(this);
 
         private FactionItem m_FactionState;
@@ -190,6 +186,7 @@ namespace Server.Items
         public virtual int OldIntReq => 0;
 
         [SerializableProperty(11)]
+        [SaveFlag(nameof(ShouldSerializeArmorQuality), nameof(QualityDefaultValue))]
         [CommandProperty(AccessLevel.GameMaster)]
         public ArmorQuality Quality
         {
@@ -202,13 +199,12 @@ namespace Server.Items
             }
         }
 
-        [SerializableFieldSaveFlag(11)]
         private bool ShouldSerializeArmorQuality() => _quality != ArmorQuality.Regular;
 
-        [SerializableFieldDefault(11)]
         private ArmorQuality QualityDefaultValue() => ArmorQuality.Regular;
 
         [SerializableProperty(12)]
+        [SaveFlag(nameof(ShouldSerializeDurability))]
         [CommandProperty(AccessLevel.GameMaster)]
         public ArmorDurabilityLevel Durability
         {
@@ -221,10 +217,10 @@ namespace Server.Items
             }
         }
 
-        [SerializableFieldSaveFlag(12)]
         private bool ShouldSerializeDurability() => _durability != ArmorDurabilityLevel.Regular;
 
         [SerializableProperty(13)]
+        [SaveFlag(nameof(ShouldSerializeProtectionLevel))]
         [CommandProperty(AccessLevel.GameMaster)]
         public ArmorProtectionLevel ProtectionLevel
         {
@@ -244,10 +240,10 @@ namespace Server.Items
             }
         }
 
-        [SerializableFieldSaveFlag(13)]
         private bool ShouldSerializeProtectionLevel() => _protectionLevel != ArmorProtectionLevel.Regular;
 
         [SerializableProperty(14)]
+        [SaveFlag(nameof(ShouldSerializeResource), nameof(ResourceDefaultValue))]
         [CommandProperty(AccessLevel.GameMaster)]
         public CraftResource Resource
         {
@@ -273,11 +269,11 @@ namespace Server.Items
             }
         }
 
-        [SerializableFieldDefault(14)]
         private CraftResource ResourceDefaultValue() => DefaultResource;
 
         [EncodedInt]
         [SerializableProperty(15, useField: nameof(_armorBase))]
+        [SaveFlag(nameof(ShouldSerializeArmorBase), nameof(ArmorBaseDefaultValue))]
         [CommandProperty(AccessLevel.GameMaster)]
         public int BaseArmorRating
         {
@@ -290,10 +286,8 @@ namespace Server.Items
             }
         }
 
-        [SerializableFieldSaveFlag(15)]
         private bool ShouldSerializeArmorBase() => _armorBase != -1;
 
-        [SerializableFieldDefault(15)]
         private int ArmorBaseDefaultValue() => -1;
 
         public double BaseArmorRatingScaled => BaseArmorRating * ArmorScalar;
@@ -343,6 +337,7 @@ namespace Server.Items
 
         [EncodedInt]
         [SerializableProperty(16, useField: nameof(_strBonus))]
+        [SaveFlag(nameof(ShouldSerializeStrBonus), nameof(StrBonusDefaultValue))]
         [CommandProperty(AccessLevel.GameMaster)]
         public int StrBonus
         {
@@ -355,14 +350,13 @@ namespace Server.Items
             }
         }
 
-        [SerializableFieldSaveFlag(16)]
         private bool ShouldSerializeStrBonus() => _strBonus != -1;
 
-        [SerializableFieldDefault(16)]
         private int StrBonusDefaultValue() => -1;
 
         [EncodedInt]
         [SerializableProperty(17, useField: nameof(_dexBonus))]
+        [SaveFlag(nameof(ShouldSerializeDexBonus), nameof(DexBonusDefaultValue))]
         [CommandProperty(AccessLevel.GameMaster)]
         public int DexBonus
         {
@@ -375,14 +369,13 @@ namespace Server.Items
             }
         }
 
-        [SerializableFieldSaveFlag(17)]
         private bool ShouldSerializeDexBonus() => _dexBonus != -1;
 
-        [SerializableFieldDefault(17)]
         private int DexBonusDefaultValue() => -1;
 
         [EncodedInt]
         [SerializableProperty(18, useField: nameof(_intBonus))]
+        [SaveFlag(nameof(ShouldSerializeIntBonus), nameof(IntBonusDefaultValue))]
         [CommandProperty(AccessLevel.GameMaster)]
         public int IntBonus
         {
@@ -395,14 +388,13 @@ namespace Server.Items
             }
         }
 
-        [SerializableFieldSaveFlag(18)]
         private bool ShouldSerializeIntBonus() => _intBonus != -1;
 
-        [SerializableFieldDefault(18)]
         private int IntBonusDefaultValue() => -1;
 
         [EncodedInt]
         [SerializableProperty(19, useField: nameof(_strReq))]
+        [SaveFlag(nameof(ShouldSerializeStrReq), nameof(StrReqDefaultValue))]
         [CommandProperty(AccessLevel.GameMaster)]
         public int StrRequirement
         {
@@ -415,14 +407,13 @@ namespace Server.Items
             }
         }
 
-        [SerializableFieldSaveFlag(19)]
         private bool ShouldSerializeStrReq() => _strReq != -1;
 
-        [SerializableFieldDefault(19)]
         private int StrReqDefaultValue() => -1;
 
         [EncodedInt]
         [SerializableProperty(20, useField: nameof(_dexReq))]
+        [SaveFlag(nameof(ShouldSerializeDexReq), nameof(DexReqDefaultValue))]
         [CommandProperty(AccessLevel.GameMaster)]
         public int DexRequirement
         {
@@ -435,14 +426,13 @@ namespace Server.Items
             }
         }
 
-        [SerializableFieldSaveFlag(20)]
         private bool ShouldSerializeDexReq() => _dexReq != -1;
 
-        [SerializableFieldDefault(20)]
         private int DexReqDefaultValue() => -1;
 
         [EncodedInt]
         [SerializableProperty(21, useField: nameof(_intReq))]
+        [SaveFlag(nameof(ShouldSerializeIntReq), nameof(IntReqDefaultValue))]
         [CommandProperty(AccessLevel.GameMaster)]
         public int IntRequirement
         {
@@ -455,13 +445,12 @@ namespace Server.Items
             }
         }
 
-        [SerializableFieldSaveFlag(21)]
         private bool ShouldSerializeIntReq() => _intReq != -1;
 
-        [SerializableFieldDefault(21)]
         private int IntReqDefaultValue() => -1;
 
         [SerializableProperty(22, useField: nameof(_meditate))]
+        [SaveFlag(nameof(ShouldSerializeMeditationAllowance))]
         [CommandProperty(AccessLevel.GameMaster)]
         public AMA MeditationAllowance
         {
@@ -473,7 +462,6 @@ namespace Server.Items
             }
         }
 
-        [SerializableFieldSaveFlag(22)]
         private bool ShouldSerializeMeditationAllowance() => _meditate >= AMA.All;
 
         public virtual double ArmorScalar
@@ -689,6 +677,7 @@ namespace Server.Items
 
         [EncodedInt]
         [SerializableProperty(9)]
+        [SaveFlag(nameof(ShouldSerializeHitPoints))]
         [CommandProperty(AccessLevel.GameMaster)]
         public int HitPoints
         {
@@ -716,7 +705,6 @@ namespace Server.Items
             }
         }
 
-        [SerializableFieldSaveFlag(9)]
         private bool ShouldSerializeHitPoints() => _hitPoints != 0;
 
         public virtual int InitMinHits => 0;

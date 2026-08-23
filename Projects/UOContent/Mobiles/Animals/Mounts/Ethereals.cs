@@ -11,19 +11,19 @@ namespace Server.Mobiles
     public partial class EtherealMount : Item, IMount, IMountItem, IRewardItem
     {
         [SerializableField(0)]
+        [SaveFlag(nameof(ShouldSerializeIsDonationItem))]
         [SerializedCommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
         public bool _isDonationItem;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [SerializableFieldSaveFlag(0)]
         public bool ShouldSerializeIsDonationItem() => _isDonationItem;
 
         [SerializableField(1)]
+        [SaveFlag(nameof(ShouldSerializeIsRewardItem))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         public bool _isRewardItem;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [SerializableFieldSaveFlag(1)]
         public bool ShouldSerializeIsRewardItem() => _isRewardItem;
 
         [Constructible]
@@ -87,6 +87,7 @@ namespace Server.Mobiles
         public virtual int EtherealHue => 0x4001;
 
         [SerializableProperty(4)]
+        [SaveFlag(nameof(ShouldSerializeRider))]
         [CommandProperty(AccessLevel.GameMaster)]
         public Mobile Rider
         {
@@ -124,11 +125,11 @@ namespace Server.Mobiles
             }
         }
 
-        [SerializableFieldSaveFlag(4)]
         private bool ShouldSerializeRider() => _rider != null;
 
         [CommandProperty(AccessLevel.GameMaster)]
         [SerializableProperty(5)]
+        [SaveFlag(nameof(ShouldSerializeSteps))]
         public int Steps
         {
             get => _steps;
@@ -139,7 +140,6 @@ namespace Server.Mobiles
             }
         }
 
-        [SerializableFieldSaveFlag(5)]
         private bool ShouldSerializeSteps() => _steps != StepsMax;
 
         public virtual int StepsMax => 3840; // Should be same as horse

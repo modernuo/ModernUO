@@ -6,27 +6,27 @@ namespace Server.Engines.BulkOrders;
 public partial class BOBFilter
 {
     [SerializableField(0)]
+    [SaveFlag(nameof(ShouldSerializeType))]
     private int _type;
 
-    [SerializableFieldSaveFlag(0)]
     private bool ShouldSerializeType() => _type != 0;
 
     [SerializableField(1)]
+    [SaveFlag(nameof(ShouldSerializeQuality))]
     private int _quality;
 
-    [SerializableFieldSaveFlag(1)]
     private bool ShouldSerializeQuality() => _quality != 0;
 
     [SerializableField(2)]
+    [SaveFlag(nameof(ShouldSerializeMaterial))]
     private int _material;
 
-    [SerializableFieldSaveFlag(2)]
     private bool ShouldSerializeMaterial() => _material != 0;
 
     [SerializableField(3)]
+    [SaveFlag(nameof(ShouldSerializeQuantity))]
     private int _quantity;
 
-    [SerializableFieldSaveFlag(3)]
     private bool ShouldSerializeQuantity() => _quantity != 0;
 
     private void Deserialize(IGenericReader reader, int version)

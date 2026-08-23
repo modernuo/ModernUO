@@ -11,64 +11,62 @@ public partial class BaseQuiver : Container, ICraftable, IAosItem
 
     [SerializedIgnoreDupe]
     [SerializableField(0, setter: "private")]
+    [SaveFlag(nameof(ShouldSerializeAosAttributes), nameof(AttributesDefaultValue))]
     [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
     private AosAttributes _attributes;
 
-    [SerializableFieldSaveFlag(0)]
     private bool ShouldSerializeAosAttributes() => !_attributes.IsEmpty;
 
-    [SerializableFieldDefault(0)]
     private AosAttributes AttributesDefaultValue() => new(this);
 
     [InvalidateProperties]
     [SerializableField(1)]
+    [SaveFlag(nameof(ShouldSerializeLowerAmmoCost))]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _lowerAmmoCost;
 
-    [SerializableFieldSaveFlag(1)]
     private bool ShouldSerializeLowerAmmoCost() => _lowerAmmoCost != 0;
 
     [InvalidateProperties]
     [SerializableField(2)]
+    [SaveFlag(nameof(ShouldSerializeWeightReduction))]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _weightReduction;
 
-    [SerializableFieldSaveFlag(2)]
     private bool ShouldSerializeWeightReduction() => _weightReduction != 0;
 
     [InvalidateProperties]
     [SerializableField(3)]
+    [SaveFlag(nameof(ShouldSerializeDamageIncrease))]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _damageIncrease;
 
-    [SerializableFieldSaveFlag(3)]
     private bool ShouldSerializeDamageIncrease() => _damageIncrease != 0;
 
     [InvalidateProperties]
     [SerializableField(4)]
+    [SaveFlag(nameof(ShouldSerializeCrafter))]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private string _crafter;
 
-    [SerializableFieldSaveFlag(4)]
     private bool ShouldSerializeCrafter() => !string.IsNullOrEmpty(_crafter);
 
     [InvalidateProperties]
     [SerializableField(5)]
+    [SaveFlag(nameof(ShouldSerializeQuality), nameof(QualityDefaultValue))]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private ClothingQuality _quality;
 
-    [SerializableFieldSaveFlag(5)]
     private bool ShouldSerializeQuality() => _quality != ClothingQuality.Regular;
 
-    [SerializableFieldDefault(5)]
     private ClothingQuality QualityDefaultValue() => ClothingQuality.Regular;
 
     [InvalidateProperties]
     [SerializableField(6)]
+    [SaveFlag(nameof(ShouldSerializeCapacity))]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _capacity;
 
-    [SerializableFieldSaveFlag(6)]
     private bool ShouldSerializeCapacity() => _capacity != 0;
 
     public BaseQuiver(int itemID = 0x2FB7) : base(itemID)

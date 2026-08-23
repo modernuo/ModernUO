@@ -39,8 +39,8 @@
         <PackageReference Include="LibDeflate.Bindings" Version="1.0.4" />
         <PackageReference Include="System.IO.Hashing" Version="10.0.11" />
 
-        <PackageReference Include="ModernUO.Serialization.Annotations" Version="3.0.0" />
-        <PackageReference Include="ModernUO.Serialization.Generator" Version="3.0.0" PrivateAssets="all" />
+        <PackageReference Include="ModernUO.Serialization.Annotations" Version="4.0.0" />
+        <PackageReference Include="ModernUO.Serialization.Generator" Version="4.0.0" PrivateAssets="all" />
     </ItemGroup>
     <ItemGroup>
         <AdditionalFiles Include="Migrations/*.v*.json" />

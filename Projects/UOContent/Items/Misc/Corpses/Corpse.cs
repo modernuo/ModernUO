@@ -86,7 +86,7 @@ public enum CorpseFlag
     OwnerWasAnimatedDead = 0x00000800
 }
 
-[SerializationGenerator(17, false)]
+[SerializationGenerator(18, false)]
 public partial class Corpse : Container, ICarvable
 {
     public static readonly TimeSpan MonsterLootRightSacrifice = TimeSpan.FromMinutes(2.0);
@@ -114,12 +114,36 @@ public partial class Corpse : Container, ICarvable
     [SerializableField(3, getter: "private", setter: "private")]
     private Dictionary<Item, Point3D> _restoreTable;
 
-    [TimerDrift]
     [SerializableField(4, getter: "private", setter: "private")]
+    [DeserializeTimer(nameof(DeserializeDecayTimer))]
     private Timer _decayTimer;
 
-    [DeserializeTimerField(4)]
     private void DeserializeDecayTimer(TimeSpan delay) => BeginDecay(delay);
+
+    private void MigrateFrom(V17Content content)
+    {
+        _restoreEquip = content.RestoreEquip;
+        _flags = content.Flags;
+        _timeOfDeath = content.TimeOfDeath;
+        _restoreTable = content.RestoreTable;
+        _looters = content.Looters;
+        _killer = content.Killer;
+        _aggressors = content.Aggressors;
+        _owner = content.Owner;
+        _corpseName = content.CorpseName;
+        _accessLevel = content.AccessLevel;
+        _guild = content.Guild;
+        _equipItems = content.EquipItems;
+        _hairItemId = content.HairItemId;
+        _hairHue = content.HairHue;
+        _facialHairItemId = content.FacialHairItemId;
+        _facialHairHue = content.FacialHairHue;
+
+        if (content.DecayTimerDelay != TimeSpan.MinValue)
+        {
+            DeserializeDecayTimer(content.DecayTimerDelay);
+        }
+    }
 
     [SerializableField(5, setter: "private")]
     private HashSet<Mobile> _looters;

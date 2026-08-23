@@ -31,6 +31,7 @@ public partial class FountainOfLife : BaseAddonContainer
     public const int MaxCharges = 10;
 
     [SerializableField(1)]
+    [DeserializeTimer(nameof(DeserializeTimer), wallClock: true)]
     private Timer _timer;
 
     [Constructible]
@@ -39,7 +40,6 @@ public partial class FountainOfLife : BaseAddonContainer
         _charges = charges;
     }
 
-    [DeserializeTimerField(1)]
     private void DeserializeTimer(TimeSpan delay)
     {
         _timer = Timer.DelayCall(Utility.Max(delay, TimeSpan.Zero), RechargeTime, Recharge);

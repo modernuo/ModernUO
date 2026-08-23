@@ -56,130 +56,126 @@ public abstract partial class BaseWeapon
 
     [InvalidateProperties]
     [SerializableField(0)]
+    [SaveFlag(nameof(ShouldSerializeDamageLevel))]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private WeaponDamageLevel _damageLevel;
 
-    [SerializableFieldSaveFlag(0)]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool ShouldSerializeDamageLevel() => _damageLevel != WeaponDamageLevel.Regular;
 
     [InvalidateProperties]
     [SerializableField(5)]
+    [SaveFlag(nameof(ShouldSerializeMaxHitPoints))]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _maxHitPoints;
 
-    [SerializableFieldSaveFlag(5)]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool ShouldSerializeMaxHitPoints() => _maxHitPoints != 0;
 
     [InvalidateProperties]
     [SerializableField(6)]
+    [SaveFlag(nameof(ShouldSerializeSlayer))]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private SlayerName _slayer;
 
-    [SerializableFieldSaveFlag(6)]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool ShouldSerializeSlayer() => _slayer != SlayerName.None;
 
     [InvalidateProperties]
     [SerializableField(7)]
+    [SaveFlag(nameof(ShouldSerializePoison))]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private Poison _poison;
 
-    [SerializableFieldSaveFlag(7)]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool ShouldSerializePoison() => _poison != null;
 
     [InvalidateProperties]
     [SerializableField(8)]
+    [SaveFlag(nameof(ShouldSerializePoisonCharges))]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _poisonCharges;
 
-    [SerializableFieldSaveFlag(8)]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool ShouldSerializePoisonCharges() => _poisonCharges > 0;
 
     [InvalidateProperties]
     [SerializableField(9)]
+    [SaveFlag(nameof(ShouldSerializeCrafter))]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private string _crafter;
 
-    [SerializableFieldSaveFlag(9)]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool ShouldSerializeCrafter() => !string.IsNullOrEmpty(_crafter);
 
     [InvalidateProperties]
     [SerializableField(10)]
+    [SaveFlag(nameof(ShouldSerializeIdentified))]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private bool _identified;
 
-    [SerializableFieldSaveFlag(10)]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool ShouldSerializeIdentified() => _identified;
 
     [SerializedIgnoreDupe]
     [SerializableField(24, setter: "private")]
+    [SaveFlag(nameof(ShouldSerializeAttributes), nameof(AttributesDefaultValue))]
     [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
     private AosAttributes _attributes;
 
-    [SerializableFieldSaveFlag(24)]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool ShouldSerializeAttributes() => !_attributes.IsEmpty;
 
-    [SerializableFieldDefault(24)]
     private AosAttributes AttributesDefaultValue() => new(this);
 
     [SerializedIgnoreDupe]
     [SerializableField(25, setter: "private")]
+    [SaveFlag(nameof(ShouldSerializeWeaponAttributes), nameof(WeaponAttributesDefaultValue))]
     [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
     private AosWeaponAttributes _weaponAttributes;
 
-    [SerializableFieldSaveFlag(25)]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool ShouldSerializeWeaponAttributes() => !_weaponAttributes.IsEmpty;
 
-    [SerializableFieldDefault(25)]
     private AosWeaponAttributes WeaponAttributesDefaultValue() => new(this);
 
     [SerializedIgnoreDupe]
     [SerializableField(26, setter: "private")]
+    [SaveFlag(nameof(ShouldSerializeSkillBonuses), nameof(SkillBonusesDefaultValue))]
     [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
     private AosSkillBonuses _skillBonuses;
 
-    [SerializableFieldSaveFlag(26)]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool ShouldSerializeSkillBonuses() => !_skillBonuses.IsEmpty;
 
-    [SerializableFieldDefault(26)]
     private AosSkillBonuses SkillBonusesDefaultValue() => new(this);
 
     [InvalidateProperties]
     [SerializableField(27)]
+    [SaveFlag(nameof(ShouldSerializeSlayer2))]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private SlayerName _slayer2;
 
-    [SerializableFieldSaveFlag(27)]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool ShouldSerializeSlayer2() => _slayer2 != SlayerName.None;
 
     [SerializedIgnoreDupe]
     [SerializableField(28, setter: "private")]
+    [SaveFlag(nameof(ShouldSerializeElementAttributes), nameof(AosElementAttributesDefaultValue))]
     [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
     private AosElementAttributes _aosElementDamages;
 
-    [SerializableFieldSaveFlag(28)]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool ShouldSerializeElementAttributes() => !_aosElementDamages.IsEmpty;
 
-    [SerializableFieldDefault(28)]
     private AosElementAttributes AosElementAttributesDefaultValue() => new(this);
 
     [InvalidateProperties]
     [SerializableField(29)]
+    [SaveFlag(nameof(ShouldSerializeEngravedText))]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private string _engravedText;
 
-    [SerializableFieldSaveFlag(29)]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool ShouldSerializeEngravedText() => !string.IsNullOrEmpty(_engravedText);
 
@@ -286,6 +282,7 @@ public abstract partial class BaseWeapon
     public bool Consecrated { get; set; }
 
     [SerializableProperty(1)]
+    [SaveFlag(nameof(ShouldSerializeWeaponAccuracy))]
     [CommandProperty(AccessLevel.GameMaster)]
     public WeaponAccuracyLevel AccuracyLevel
     {
@@ -321,10 +318,10 @@ public abstract partial class BaseWeapon
         }
     }
 
-    [SerializableFieldSaveFlag(1)]
     private bool ShouldSerializeWeaponAccuracy() => _accuracyLevel != WeaponAccuracyLevel.Regular;
 
     [SerializableProperty(2)]
+    [SaveFlag(nameof(ShouldSerializeDurabilityLevel))]
     [CommandProperty(AccessLevel.GameMaster)]
     public WeaponDurabilityLevel DurabilityLevel
     {
@@ -339,10 +336,10 @@ public abstract partial class BaseWeapon
         }
     }
 
-    [SerializableFieldSaveFlag(2)]
     private bool ShouldSerializeDurabilityLevel() => _durabilityLevel != WeaponDurabilityLevel.Regular;
 
     [SerializableProperty(3)]
+    [SaveFlag(nameof(ShouldSerializeQuality), nameof(QualityDefaultValue))]
     [CommandProperty(AccessLevel.GameMaster)]
     public WeaponQuality Quality
     {
@@ -357,13 +354,12 @@ public abstract partial class BaseWeapon
         }
     }
 
-    [SerializableFieldSaveFlag(3)]
     private bool ShouldSerializeQuality() => _quality != WeaponQuality.Regular;
 
-    [SerializableFieldDefault(3)]
     private WeaponQuality QualityDefaultValue() => WeaponQuality.Regular;
 
     [SerializableProperty(4)]
+    [SaveFlag(nameof(ShouldSerializeHitPoints))]
     [CommandProperty(AccessLevel.GameMaster)]
     public int HitPoints
     {
@@ -387,10 +383,10 @@ public abstract partial class BaseWeapon
         }
     }
 
-    [SerializableFieldSaveFlag(4)]
     private bool ShouldSerializeHitPoints() => _hitPoints > 0;
 
     [SerializableProperty(11)]
+    [SaveFlag(nameof(ShouldSerializeStrReq), nameof(StrReqDefaultValue))]
     [CommandProperty(AccessLevel.GameMaster)]
     public int StrRequirement
     {
@@ -403,13 +399,12 @@ public abstract partial class BaseWeapon
         }
     }
 
-    [SerializableFieldSaveFlag(11)]
     private bool ShouldSerializeStrReq() => _strRequirement != -1;
 
-    [SerializableFieldDefault(11)]
     private int StrReqDefaultValue() => -1;
 
     [SerializableProperty(12)]
+    [SaveFlag(nameof(ShouldSerializeDexReq), nameof(DexReqDefaultValue))]
     [CommandProperty(AccessLevel.GameMaster)]
     public int DexRequirement
     {
@@ -422,13 +417,12 @@ public abstract partial class BaseWeapon
         }
     }
 
-    [SerializableFieldSaveFlag(12)]
     private bool ShouldSerializeDexReq() => _dexRequirement != -1;
 
-    [SerializableFieldDefault(12)]
     private int DexReqDefaultValue() => -1;
 
     [SerializableProperty(13)]
+    [SaveFlag(nameof(ShouldSerializeIntReq), nameof(IntReqDefaultValue))]
     [CommandProperty(AccessLevel.GameMaster)]
     public int IntRequirement
     {
@@ -441,13 +435,12 @@ public abstract partial class BaseWeapon
         }
     }
 
-    [SerializableFieldSaveFlag(13)]
     private bool ShouldSerializeIntReq() => _intRequirement != -1;
 
-    [SerializableFieldDefault(13)]
     private int IntReqDefaultValue() => -1;
 
     [SerializableProperty(14)]
+    [SaveFlag(nameof(ShouldSerializeMinDamage), nameof(MinDamageDefaultValue))]
     [CommandProperty(AccessLevel.GameMaster)]
     public int MinDamage
     {
@@ -460,13 +453,12 @@ public abstract partial class BaseWeapon
         }
     }
 
-    [SerializableFieldSaveFlag(14)]
     private bool ShouldSerializeMinDamage() => _minDamage != -1;
 
-    [SerializableFieldDefault(14)]
     private int MinDamageDefaultValue() => -1;
 
     [SerializableProperty(15)]
+    [SaveFlag(nameof(ShouldSerializeMaxDamage), nameof(MaxDamageDefaultValue))]
     [CommandProperty(AccessLevel.GameMaster)]
     public int MaxDamage
     {
@@ -479,13 +471,12 @@ public abstract partial class BaseWeapon
         }
     }
 
-    [SerializableFieldSaveFlag(15)]
     private bool ShouldSerializeMaxDamage() => _maxDamage != -1;
 
-    [SerializableFieldDefault(15)]
     private int MaxDamageDefaultValue() => -1;
 
     [SerializableProperty(16)]
+    [SaveFlag(nameof(ShouldSerializeHitSound), nameof(HitSoundDefaultValue))]
     [CommandProperty(AccessLevel.GameMaster)]
     public int HitSound
     {
@@ -497,13 +488,12 @@ public abstract partial class BaseWeapon
         }
     }
 
-    [SerializableFieldSaveFlag(16)]
     private bool ShouldSerializeHitSound() => _hitSound != -1;
 
-    [SerializableFieldDefault(16)]
     private int HitSoundDefaultValue() => -1;
 
     [SerializableProperty(17)]
+    [SaveFlag(nameof(ShouldSerializeMissSound), nameof(MissSoundDefaultValue))]
     [CommandProperty(AccessLevel.GameMaster)]
     public int MissSound
     {
@@ -515,13 +505,12 @@ public abstract partial class BaseWeapon
         }
     }
 
-    [SerializableFieldSaveFlag(17)]
     private bool ShouldSerializeMissSound() => _missSound != -1;
 
-    [SerializableFieldDefault(17)]
     private int MissSoundDefaultValue() => -1;
 
     [SerializableProperty(18)]
+    [SaveFlag(nameof(ShouldSerializeSpeed), nameof(SpeedDefaultValue))]
     [CommandProperty(AccessLevel.GameMaster)]
     public float Speed
     {
@@ -552,13 +541,12 @@ public abstract partial class BaseWeapon
         }
     }
 
-    [SerializableFieldSaveFlag(18)]
     private bool ShouldSerializeSpeed() => _speed != -1;
 
-    [SerializableFieldDefault(18)]
     private float SpeedDefaultValue() => -1;
 
     [SerializableProperty(19)]
+    [SaveFlag(nameof(ShouldSerializeMaxRange), nameof(MaxRangeDefaultValue))]
     [CommandProperty(AccessLevel.GameMaster)]
     public int MaxRange
     {
@@ -571,13 +559,12 @@ public abstract partial class BaseWeapon
         }
     }
 
-    [SerializableFieldSaveFlag(19)]
     private bool ShouldSerializeMaxRange() => _maxRange != -1;
 
-    [SerializableFieldDefault(19)]
     private int MaxRangeDefaultValue() => -1;
 
     [SerializableProperty(20)]
+    [SaveFlag(nameof(ShouldSerializeSkill), nameof(SkillNameDefaultValue))]
     [CommandProperty(AccessLevel.GameMaster)]
     public SkillName Skill
     {
@@ -590,13 +577,12 @@ public abstract partial class BaseWeapon
         }
     }
 
-    [SerializableFieldSaveFlag(20)]
     private bool ShouldSerializeSkill() => _skill != (SkillName)(-1);
 
-    [SerializableFieldDefault(20)]
     private SkillName SkillNameDefaultValue() => (SkillName)(-1);
 
     [SerializableProperty(21)]
+    [SaveFlag(nameof(ShouldSerializeType), nameof(TypeDefaultValue))]
     [CommandProperty(AccessLevel.GameMaster)]
     public WeaponType Type
     {
@@ -608,13 +594,12 @@ public abstract partial class BaseWeapon
         }
     }
 
-    [SerializableFieldSaveFlag(21)]
     private bool ShouldSerializeType() => _type != (WeaponType)(-1);
 
-    [SerializableFieldDefault(21)]
     private WeaponType TypeDefaultValue() => (WeaponType)(-1);
 
     [SerializableProperty(22)]
+    [SaveFlag(nameof(ShouldSerializeAnimation), nameof(AnimationDefaultValue))]
     [CommandProperty(AccessLevel.GameMaster)]
     public WeaponAnimation Animation
     {
@@ -626,13 +611,12 @@ public abstract partial class BaseWeapon
         }
     }
 
-    [SerializableFieldSaveFlag(22)]
     private bool ShouldSerializeAnimation() => _animation != (WeaponAnimation)(-1);
 
-    [SerializableFieldDefault(22)]
     private WeaponAnimation AnimationDefaultValue() => (WeaponAnimation)(-1);
 
     [SerializableProperty(23)]
+    [SaveFlag(nameof(ShouldSerializeResource), nameof(ResourceDefaultValue))]
     [CommandProperty(AccessLevel.GameMaster)]
     public CraftResource Resource
     {
@@ -648,10 +632,8 @@ public abstract partial class BaseWeapon
         }
     }
 
-    [SerializableFieldSaveFlag(23)]
     private bool ShouldSerializeResource() => _resource != CraftResource.Iron;
 
-    [SerializableFieldDefault(23)]
     private CraftResource ResourceDefaultValue() => CraftResource.Iron;
 
     public virtual int OnCraft(

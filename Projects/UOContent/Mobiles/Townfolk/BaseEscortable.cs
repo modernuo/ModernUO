@@ -17,7 +17,7 @@ using EDI = Server.Mobiles.EscortDestinationInfo;
 
 namespace Server.Mobiles;
 
-[SerializationGenerator(2, false)]
+[SerializationGenerator(3, false)]
 public partial class BaseEscortable : BaseCreature
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(BaseEscortable));
@@ -158,16 +158,22 @@ public partial class BaseEscortable : BaseCreature
     [SerializableField(0, setter: "private")]
     private string _destinationString;
 
-    [TimerDrift]
     [SerializableField(1)]
+    [DeserializeTimer(nameof(DeserializeDeleteTimer))]
     private Timer _deleteTimer;
 
-    [DeserializeTimerField(1)]
-    private void DeserializeDeleteTimer(TimeSpan delay)
+    private void DeserializeDeleteTimer(TimeSpan delay) => Timer.DelayCall(delay, Delete);
+
+    private void MigrateFrom(V2Content content)
     {
-        if (delay >= TimeSpan.Zero)
+        _destinationString = content.DestinationString;
+        _mlQuestType = content.MlQuestType;
+        _mlQuestDestinationMessage = content.MlQuestDestinationMessage;
+        _mlQuestPaymentMessage = content.MlQuestPaymentMessage;
+
+        if (content.DeleteTimerDelay != TimeSpan.MinValue)
         {
-            Timer.DelayCall(delay, Delete);
+            DeserializeDeleteTimer(content.DeleteTimerDelay);
         }
     }
 
