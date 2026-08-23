@@ -26,32 +26,17 @@ public static class NPCSpeeds
     public static int MinIdleSeconds { get; private set; }
     public static int MaxIdleSeconds { get; private set; }
 
-    public static void GetSpeeds(BaseCreature bc, out double activeSpeed, out double passiveSpeed)
+    // Null when the table is unloaded (test fixtures). Creatures cache the result — the
+    // table is immutable after Configure.
+    public static SpeedClassEntry FindEntry(BaseCreature bc)
     {
         if ((bc.SpeedClass == SpeedLevel.None || !_speedsByLevel.TryGetValue(bc.SpeedClass, out var sp)) &&
             !_speedsByType.TryGetValue(bc.GetType(), out sp))
         {
-            sp = _speedsByLevel[SpeedLevel.Medium];
+            _speedsByLevel.TryGetValue(SpeedLevel.Medium, out sp);
         }
 
-        activeSpeed = sp.ActiveSpeed;
-        passiveSpeed = sp.PassiveSpeed;
-    }
-
-    // Move speeds are optional (0 = inherit), so this tolerates a missing entry or table.
-    public static void GetMoveSpeeds(BaseCreature bc, out double activeMoveSpeed, out double passiveMoveSpeed)
-    {
-        if ((bc.SpeedClass == SpeedLevel.None || !_speedsByLevel.TryGetValue(bc.SpeedClass, out var sp)) &&
-            !_speedsByType.TryGetValue(bc.GetType(), out sp) &&
-            !_speedsByLevel.TryGetValue(SpeedLevel.Medium, out sp))
-        {
-            activeMoveSpeed = 0;
-            passiveMoveSpeed = 0;
-            return;
-        }
-
-        activeMoveSpeed = sp.ActiveMoveSpeed;
-        passiveMoveSpeed = sp.PassiveMoveSpeed;
+        return sp;
     }
 
     public static void RegisterSpeed(SpeedClassEntry entry)
