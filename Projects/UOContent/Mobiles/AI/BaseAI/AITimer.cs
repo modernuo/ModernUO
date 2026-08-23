@@ -17,9 +17,15 @@ using System;
 
 namespace Server.Mobiles;
 
+/// <summary>
+/// Drives an AI on two clocks: decisions at <see cref="BaseCreature.CurrentSpeed"/>, plus
+/// move-only wakes at <see cref="BaseAI.NextMove"/> while a pursuit is live. Each tick
+/// schedules the earlier of the two deadlines.
+/// </summary>
 public sealed class AITimer : Timer
 {
     private readonly BaseAI _owner;
+    private long _nextThink;
     private int _detectHiddenMinDelay;
     private int _detectHiddenMaxDelay;
 
@@ -28,12 +34,27 @@ public sealed class AITimer : Timer
     {
         _owner = owner;
         _owner._nextDetectHidden = Core.TickCount;
+        _nextThink = Core.TickCount;
     }
 
     public void Activate()
     {
+        _nextThink = Core.TickCount;
         Interval = TimeSpan.FromSeconds(_owner.Mobile.CurrentSpeed);
         Start();
+    }
+
+    // A speed-up must not wait out a stale, longer think deadline.
+    public void OnSpeedChanged()
+    {
+        var candidate = Core.TickCount + (long)(_owner.Mobile.CurrentSpeed * 1000);
+
+        if (candidate - _nextThink < 0)
+        {
+            _nextThink = candidate;
+        }
+
+        Interval = TimeSpan.FromSeconds(_owner.Mobile.CurrentSpeed);
     }
 
     protected override void OnTick()
@@ -44,23 +65,52 @@ public sealed class AITimer : Timer
             return;
         }
 
-        _owner.Mobile.OnThink();
-
-        if (ShouldStop())
+        if (Core.TickCount - _nextThink >= 0)
         {
-            Stop();
-            return;
+            _owner.Mobile.OnThink();
+
+            if (ShouldStop())
+            {
+                Stop();
+                return;
+            }
+
+            HandleBardEffects();
+
+            if (_owner.Mobile.Controlled ? _owner.Obey() : _owner.Think())
+            {
+                HandleDetectHidden();
+            }
+
+            // Cadence from the post-decision speed (decisions may flip active/passive).
+            _nextThink = Core.TickCount + (long)(_owner.Mobile.CurrentSpeed * 1000);
+        }
+        else
+        {
+            _owner.ContinueMove();
         }
 
-        Interval = TimeSpan.FromSeconds(_owner.Mobile.CurrentSpeed);
-        HandleBardEffects();
+        ScheduleNext();
+    }
 
-        if (_owner.Mobile.Controlled ? !_owner.Obey() : !_owner.Think())
+    private void ScheduleNext()
+    {
+        var now = Core.TickCount;
+        var delay = _nextThink - now;
+
+        if (_owner.TryGetMoveWake(out var nextMove))
         {
-            return;
+            var moveDelay = nextMove - now;
+
+            // Only a future budget is a wake — a blocked creature must not spin the timer.
+            if (moveDelay > 0 && moveDelay < delay)
+            {
+                delay = moveDelay;
+            }
         }
 
-        HandleDetectHidden();
+        // The wheel rounds up to its 8ms resolution; a non-positive delay becomes one turn.
+        Interval = TimeSpan.FromMilliseconds(delay);
     }
 
     private bool ShouldStop()

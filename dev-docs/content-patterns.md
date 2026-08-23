@@ -254,6 +254,35 @@ public override int TreasureMapLevel => 3;               // Drops treasure map
 public override double WeaponAbilityChance => 0.4;        // Weapon ability chance
 ```
 
+### Creature Speeds (think vs move clocks)
+
+All "speed" values are **delays in seconds** (smaller = faster). A creature runs two clocks:
+
+- **Think clock** — `ActiveSpeed`/`PassiveSpeed`/`CurrentSpeed`: seconds per AI decision
+  (combat decisions, target acquisition, spell timing).
+- **Move clock** — `ActiveMoveSpeed`/`PassiveMoveSpeed`/`CurrentMoveSpeed`: seconds per
+  step. Inherits the matching think value until overridden, so a creature configured with
+  only think speeds behaves as one clock. Any value is legal — steps are scheduled
+  independently of think ticks, so the two need not divide evenly.
+
+Speeds normally come from `Distribution/Data/npc-speeds.json` (via `SpeedClass` or type
+lists); `activeMove`/`passiveMove` are optional per bucket. Prefer data over code:
+
+```csharp
+public override SpeedLevel SpeedClass => SpeedLevel.Slow;  // bucket in npc-speeds.json
+```
+
+Code-level overrides for special cases:
+
+```csharp
+SetSpeed(0.5, 2.0);          // think clock; ALSO clears move overrides (one-clock legacy semantics)
+SetMoveSpeed(0.45, 0.9);     // move clock only — call after SetSpeed if both are wanted
+ClearMoveSpeed();            // back to inheriting the think clock
+```
+
+All four are `[props`-tunable per instance (move values: set `0` to re-inherit); per-instance
+move overrides serialize. Being badly hurt slows steps, never decisions (RunUO parity).
+
 ---
 
 ## New Spell

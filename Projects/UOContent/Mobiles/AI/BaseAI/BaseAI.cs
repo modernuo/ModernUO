@@ -58,6 +58,7 @@ public abstract partial class BaseAI
     public BaseAI(BaseCreature m)
     {
         Mobile = m;
+        NextMove = Core.TickCount;
         AITimer = new AITimer(this);
 
         if (!m.PlayerRangeSensitive || !World.Loading && m.Map != null && m.Map != Map.Internal && m.Map.GetSector(m.Location).Active)
@@ -295,6 +296,9 @@ public abstract partial class BaseAI
 
     public virtual void OnActionChanged()
     {
+        // A change of course invalidates between-think movement continuation.
+        ClearMoveIntent();
+
         switch (Action)
         {
             case ActionType.Wander:
@@ -1131,6 +1135,6 @@ public abstract partial class BaseAI
 
     public virtual void OnCurrentSpeedChanged()
     {
-        AITimer.Interval = TimeSpan.FromSeconds(Mobile.CurrentSpeed);
+        AITimer.OnSpeedChanged();
     }
 }

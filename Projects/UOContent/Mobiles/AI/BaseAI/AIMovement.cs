@@ -38,7 +38,18 @@ public abstract partial class BaseAI
     private bool _approachGaveUp;
     private Point3D _approachGaveUpGoalLoc;
 
-    public static double BadlyHurtMoveDelay(BaseCreature bc)
+    // --- Move intent (see ContinueMove) ------------------------------------------------
+    // Durable movement goal renewed by en-route ApproachTarget/MoveToPoint calls; while
+    // live, the AITimer wakes at NextMove between think ticks to advance the step.
+    private Mobile _moveIntentTarget;
+    private IPoint3D _moveIntentPoint;
+    private bool _moveIntentRun;
+    private int _moveIntentRange;
+    private long _moveIntentExpire;
+
+    // Inflates a step delay while badly hurt; computed from the passed base so it cannot
+    // compound across steps. Damage slows steps, never decisions.
+    public static double BadlyHurtMoveDelay(BaseCreature bc, double delay)
     {
         var statMin = Core.HS ? bc.Stam : bc.Hits;
         var statMax = Core.HS ? bc.StamMax : bc.HitsMax;
@@ -46,14 +57,15 @@ public abstract partial class BaseAI
         if (!bc.IsDeadPet && (bc.ReduceSpeedWithDamage || bc.IsSubdued)
                           && statMax > 0 && statMin < statMax * 0.3)
         {
-            var hits = (double)statMin / statMax;
+            var stat = (double)statMin / statMax;
 
-            if (hits < 0.1) { return bc.CurrentSpeed + 0.15; }
-            if (hits < 0.2) { return bc.CurrentSpeed + 0.1; }
-            if (hits < 0.3) { return bc.CurrentSpeed + 0.05; }
+            if (stat < 0.1) { return delay + 0.15; }
+            if (stat < 0.2) { return delay + 0.1; }
+
+            return delay + 0.05;
         }
 
-        return bc.CurrentSpeed;
+        return delay;
     }
 
     public bool CanMoveNow(out double delay)
@@ -62,12 +74,23 @@ public abstract partial class BaseAI
         return Core.TickCount - NextMove >= 0;
     }
 
-    // Caps movement at one actual step per AI think tick; pacing itself is the timer's
-    // cadence. Half a step keeps the budget below the timer interval so a legitimate
-    // next-tick move is never jitter-throttled.
+    // Accumulative full-step budget: long-run pacing averages CurrentMoveSpeed exactly
+    // regardless of timer-grid jitter; snap-to-now caps stall catch-up at one step.
     private void ConsumeMoveBudget()
     {
-        NextMove = Core.TickCount + Math.Max(50, (int)(Mobile.CurrentSpeed * 500));
+        var stepDelay = Mobile.CurrentMoveSpeed;
+
+        if (!(Core.AOS && IsFollowingMaster()))
+        {
+            stepDelay = BadlyHurtMoveDelay(Mobile, stepDelay);
+        }
+
+        NextMove += Math.Max(50, (long)(stepDelay * 1000));
+
+        if (Core.TickCount - NextMove > 0)
+        {
+            NextMove = Core.TickCount;
+        }
     }
 
     public virtual bool CheckMove() => !(Mobile.Deleted || Mobile.DisallowAllMoves);
@@ -95,21 +118,18 @@ public abstract partial class BaseAI
 
         if (TryMove(d))
         {
+            // Writes the think clock only; hurt slowdown applies in ConsumeMoveBudget.
             if (Core.AOS && IsFollowingMaster())
             {
                 Mobile.CurrentSpeed = 0.1;
             }
-            else if (Mobile.Hits < Mobile.HitsMax * 0.3)
-            {
-                Mobile.CurrentSpeed = BadlyHurtMoveDelay(Mobile);
-            }
             else if (Mobile.Warmode || Mobile.Combatant != null)
             {
-                Mobile.CurrentSpeed = Mobile.ActiveSpeed;
+                Mobile.SetCurrentSpeedToActive();
             }
             else
             {
-                Mobile.CurrentSpeed = Mobile.PassiveSpeed;
+                Mobile.SetCurrentSpeedToPassive();
             }
 
             ConsumeMoveBudget();
@@ -319,12 +339,14 @@ public abstract partial class BaseAI
     {
         if (Mobile.Deleted || Mobile.DisallowAllMoves || target?.Deleted != false)
         {
+            ClearMoveIntent();
             return false;
         }
 
         if (Mobile.InRange(target, range))
         {
             ResetApproach();
+            ClearMoveIntent();
             return true;
         }
 
@@ -333,11 +355,14 @@ public abstract partial class BaseAI
         {
             if (target.Location == _approachGaveUpGoalLoc)
             {
+                ClearMoveIntent();
                 return false;
             }
 
             ResetApproach(); // target moved — try again fresh
         }
+
+        RenewMoveIntent(target, null, run, range);
 
         // FAST PATH: greedy step toward the target, counted as success ONLY when the move
         // fully succeeded (not an auto-turn sidestep) and actually got us closer. An
@@ -401,6 +426,7 @@ public abstract partial class BaseAI
     {
         if (Mobile.Deleted || Mobile.DisallowAllMoves || goal == null)
         {
+            ClearMoveIntent();
             return false;
         }
 
@@ -409,16 +435,26 @@ public abstract partial class BaseAI
             Path = new PathFollower(Mobile, goal) { Mover = DoMoveImpl };
         }
 
+        RenewMoveIntent(null, goal, run, 1);
+
         var couldMove = CanMoveNow(out _) && !IsInBadState();
         var locBefore = Mobile.Location;
 
         if (Path.Follow(run, 1))
         {
             Path = null;
+            ClearMoveIntent();
             return false; // arrived
         }
 
-        return Mobile.Location != locBefore || !couldMove;
+        var progressed = Mobile.Location != locBefore || !couldMove;
+
+        if (!progressed)
+        {
+            ClearMoveIntent();
+        }
+
+        return progressed;
     }
 
     /// <summary>
@@ -461,10 +497,10 @@ public abstract partial class BaseAI
 
         if (++_approachStallTicks >= ApproachGiveUpTicks)
         {
-
             _approachGaveUp = true;
             _approachGaveUpGoalLoc = goalLoc;
             Path = null;
+            ClearMoveIntent();
         }
     }
 
@@ -478,6 +514,56 @@ public abstract partial class BaseAI
         _approachBestDist = 0;
         _approachStallTicks = 0;
         _approachGaveUp = false;
+    }
+
+    private void RenewMoveIntent(Mobile target, IPoint3D point, bool run, int range)
+    {
+        _moveIntentTarget = target;
+        _moveIntentPoint = point;
+        _moveIntentRun = run;
+        _moveIntentRange = range;
+
+        // A live pursuit renews every think tick; unrenewed intent dies on its own.
+        _moveIntentExpire = Core.TickCount + (long)(Mobile.CurrentSpeed * 2000) + 250;
+    }
+
+    public void ClearMoveIntent()
+    {
+        _moveIntentTarget = null;
+        _moveIntentPoint = null;
+    }
+
+    /// <summary>
+    /// True while a durable movement goal is live; <paramref name="nextMove"/> is the tick
+    /// the movement budget elapses.
+    /// </summary>
+    public bool TryGetMoveWake(out long nextMove)
+    {
+        nextMove = NextMove;
+
+        return (_moveIntentTarget != null || _moveIntentPoint != null) &&
+               Core.TickCount - _moveIntentExpire < 0;
+    }
+
+    /// <summary>
+    /// Advances the current pursuit/investigation by one step on a movement-clock wake;
+    /// no decisions run.
+    /// </summary>
+    public void ContinueMove()
+    {
+        if (!TryGetMoveWake(out var nextMove) || Core.TickCount - nextMove < 0)
+        {
+            return;
+        }
+
+        if (_moveIntentTarget != null)
+        {
+            ApproachTarget(_moveIntentTarget, _moveIntentRun, _moveIntentRange);
+        }
+        else
+        {
+            MoveToPoint(_moveIntentPoint, _moveIntentRun);
+        }
     }
 
     public virtual bool MoveTo(Mobile m, bool run, int range)

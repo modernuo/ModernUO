@@ -38,6 +38,22 @@ public static class NPCSpeeds
         passiveSpeed = sp.PassiveSpeed;
     }
 
+    // Move speeds are optional (0 = inherit), so this tolerates a missing entry or table.
+    public static void GetMoveSpeeds(BaseCreature bc, out double activeMoveSpeed, out double passiveMoveSpeed)
+    {
+        if ((bc.SpeedClass == SpeedLevel.None || !_speedsByLevel.TryGetValue(bc.SpeedClass, out var sp)) &&
+            !_speedsByType.TryGetValue(bc.GetType(), out sp) &&
+            !_speedsByLevel.TryGetValue(SpeedLevel.Medium, out sp))
+        {
+            activeMoveSpeed = 0;
+            passiveMoveSpeed = 0;
+            return;
+        }
+
+        activeMoveSpeed = sp.ActiveMoveSpeed;
+        passiveMoveSpeed = sp.PassiveMoveSpeed;
+    }
+
     public static void RegisterSpeed(SpeedClassEntry entry)
     {
         _speedsByLevel[entry.Level] = entry;
@@ -77,6 +93,13 @@ public static class NPCSpeeds
 
         [JsonPropertyName("passive")]
         public double PassiveSpeed { get; init; }
+
+        // Movement clock (seconds per step); absent/0 = inherit the matching think value.
+        [JsonPropertyName("activeMove")]
+        public double ActiveMoveSpeed { get; init; }
+
+        [JsonPropertyName("passiveMove")]
+        public double PassiveMoveSpeed { get; init; }
 
         [JsonPropertyName("types")]
         public HashSet<Type> Types { get; init; }

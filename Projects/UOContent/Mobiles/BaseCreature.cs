@@ -265,6 +265,10 @@ namespace Server.Mobiles
         private double _passiveSpeed;
         private double _currentSpeed;
 
+        // Movement clock (seconds per step); 0 = inherit the matching think value.
+        private double _activeMoveSpeed;
+        private double _passiveMoveSpeed;
+
         // Herding - Overrides the AI to force the mob to move to a specific location
         // Thinking: 0.3s, Movement: 0.6s.
         private IPoint2D _targetLocation;
@@ -342,6 +346,7 @@ namespace Server.Mobiles
             FightMode = mode;
 
             GetSpeeds(out var activeSpeed, out var passiveSpeed);
+            GetMoveSpeeds(out _activeMoveSpeed, out _passiveMoveSpeed);
 
             ActiveSpeed = activeSpeed;
             PassiveSpeed = passiveSpeed;
@@ -673,6 +678,7 @@ namespace Server.Mobiles
         [CommandProperty(AccessLevel.GameMaster)]
         public int RangeHome { get; set; } = 10;
 
+        /// <summary>Seconds per AI decision while engaged; see <see cref="ActiveMoveSpeed"/> for movement pace.</summary>
         [CommandProperty(AccessLevel.GameMaster)]
         public virtual double ActiveSpeed
         {
@@ -686,6 +692,7 @@ namespace Server.Mobiles
             }
         }
 
+        /// <summary>Seconds per AI decision while idle; see <see cref="PassiveMoveSpeed"/> for movement pace.</summary>
         [CommandProperty(AccessLevel.GameMaster)]
         public virtual double PassiveSpeed
         {
@@ -698,6 +705,22 @@ namespace Server.Mobiles
                     _passiveSpeed = value;
                 }
             }
+        }
+
+        /// <summary>Seconds per step while engaged. Inherits <see cref="ActiveSpeed"/>; set 0 to re-inherit.</summary>
+        [CommandProperty(AccessLevel.GameMaster)]
+        public virtual double ActiveMoveSpeed
+        {
+            get => _activeMoveSpeed > 0 ? _activeMoveSpeed : _activeSpeed;
+            set => _activeMoveSpeed = value > 0 ? value : 0;
+        }
+
+        /// <summary>Seconds per step while idle. Inherits <see cref="PassiveSpeed"/>; set 0 to re-inherit.</summary>
+        [CommandProperty(AccessLevel.GameMaster)]
+        public virtual double PassiveMoveSpeed
+        {
+            get => _passiveMoveSpeed > 0 ? _passiveMoveSpeed : _passiveSpeed;
+            set => _passiveMoveSpeed = value > 0 ? value : 0;
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
@@ -722,6 +745,31 @@ namespace Server.Mobiles
                     _currentSpeed = value;
                     AIObject?.OnCurrentSpeedChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Resolved seconds per step: a verbatim active/passive <see cref="CurrentSpeed"/>
+        /// maps to the matching movement value; a bespoke pace stays fused to both clocks.
+        /// </summary>
+        [CommandProperty(AccessLevel.GameMaster)]
+        public double CurrentMoveSpeed
+        {
+            get
+            {
+                var current = CurrentSpeed;
+
+                if (current == _activeSpeed)
+                {
+                    return ActiveMoveSpeed;
+                }
+
+                if (current == _passiveSpeed)
+                {
+                    return PassiveMoveSpeed;
+                }
+
+                return current;
             }
         }
 
@@ -1850,7 +1898,7 @@ namespace Server.Mobiles
         {
             base.Serialize(writer);
 
-            writer.Write(21); // version
+            writer.Write(22); // version
 
             writer.Write((int)m_CurrentAI);
             writer.Write((int)m_DefaultAI);
@@ -1970,6 +2018,10 @@ namespace Server.Mobiles
 
             // Version 19
             writer.Write(HomeMap);
+
+            // Version 22 (0 = inherit the matching think value)
+            writer.Write(_activeMoveSpeed);
+            writer.Write(_passiveMoveSpeed);
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -2171,6 +2223,12 @@ namespace Server.Mobiles
             if (version >= 19)
             {
                 HomeMap = reader.ReadMap();
+            }
+
+            if (version >= 22)
+            {
+                _activeMoveSpeed = reader.ReadDouble();
+                _passiveMoveSpeed = reader.ReadDouble();
             }
 
             if (version <= 14 && m_Paragon && Hue == 0x31)
@@ -4586,11 +4644,30 @@ namespace Server.Mobiles
             return false;
         }
 
+        /// <summary>
+        /// Sets the think clock and clears movement overrides (legacy one-clock semantics);
+        /// use <see cref="SetMoveSpeed"/> for an independent movement pace.
+        /// </summary>
         public void SetSpeed(double active, double passive, bool isPassive = true)
         {
             ActiveSpeed = active;
             PassiveSpeed = passive;
+            ClearMoveSpeed();
             CurrentSpeed = isPassive ? PassiveSpeed : ActiveSpeed;
+        }
+
+        /// <summary>Sets only the movement clock (seconds per step).</summary>
+        public void SetMoveSpeed(double active, double passive)
+        {
+            ActiveMoveSpeed = active;
+            PassiveMoveSpeed = passive;
+        }
+
+        /// <summary>Clears movement overrides; steps pace off the think clock again.</summary>
+        public void ClearMoveSpeed()
+        {
+            _activeMoveSpeed = 0;
+            _passiveMoveSpeed = 0;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -4904,6 +4981,11 @@ namespace Server.Mobiles
         public virtual void GetSpeeds(out double activeSpeed, out double passiveSpeed)
         {
             NPCSpeeds.GetSpeeds(this, out activeSpeed, out passiveSpeed);
+        }
+
+        public virtual void GetMoveSpeeds(out double activeMoveSpeed, out double passiveMoveSpeed)
+        {
+            NPCSpeeds.GetMoveSpeeds(this, out activeMoveSpeed, out passiveMoveSpeed);
         }
 
         public virtual void DropBackpack()
