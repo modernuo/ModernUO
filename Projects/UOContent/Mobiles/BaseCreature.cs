@@ -162,7 +162,7 @@ namespace Server.Mobiles
 
         public const int DefaultRangePerception = 16;
 
-        private const double ChanceToRummage = 0.5; // 50%
+        private const double ChanceToRummage = 0.5;
 
         private const double MinutesToNextRummageMin = 1.0;
         private const double MinutesToNextRummageMax = 4.0;
@@ -229,7 +229,7 @@ namespace Server.Mobiles
 
         private static readonly Type[] _gold =
         {
-            // white wyrms eat gold..
+            // White wyrms eat gold.
             typeof(Gold)
         };
 
@@ -795,9 +795,7 @@ namespace Server.Mobiles
 
         private long m_NextRummageTime;
 
-        /* until we are sure about who should be getting deleted, move them instead */
-        /* On OSI, they despawn */
-
+        // On OSI these despawn; we queue a return home instead of deleting.
         private bool m_ReturnQueued;
 
         protected bool m_Spawning;
@@ -811,7 +809,7 @@ namespace Server.Mobiles
             int iRangeFight = 1
         )
         {
-            _loyalty = MaxLoyalty; // Wonderfully Happy
+            _loyalty = MaxLoyalty;
 
             _currentAI = ai;
             _defaultAI = ai;
@@ -882,8 +880,7 @@ namespace Server.Mobiles
 
         public virtual InhumanSpeech SpeechType => null;
 
-        /* Do not serialize this till the code is finalized */
-
+        // Deliberately not serialized until the feature is finalized.
         [CommandProperty(AccessLevel.GameMaster)]
         public bool SeeksHome { get; set; }
 
@@ -971,11 +968,11 @@ namespace Server.Mobiles
 
         public virtual bool DeathAdderCharmable => false;
 
-        // TODO: Find the pub 31 tweaks to the DispelDifficulty and apply them of course.
-        // at this skill level we dispel 50% chance
+        //TODO Apply the pub 31 DispelDifficulty tweaks
+        // Skill level at which dispel succeeds 50% of the time.
         public virtual double DispelDifficulty => 0.0;
 
-        // at difficulty - focus we have 0%, at difficulty + focus we have 100%
+        // 0% at difficulty - focus, 100% at difficulty + focus.
         public virtual double DispelFocus => 20.0;
 
         public virtual bool DisplayWeight => Backpack is StrongBackpack;
@@ -1046,16 +1043,7 @@ namespace Server.Mobiles
 
         public virtual bool CanDestroyObstacles => false;
 
-        /*
-        Seems this actually was removed on OSI somewhere between the original bug report and now.
-        We will call it ML, until we can get better information. I suspect it was on the OSI TC when
-        originally it taken out of RunUO, and not implemented on OSIs production shards until more
-        recently.  Either way, this is, or was, accurate OSI behavior, and just entirely
-        removing it was incorrect.  OSI followers were distracted by being attacked well into
-        AoS, at very least.
-
-        */
-
+        // OSI followers were distracted by attacks well into AoS; removed around ML.
         public virtual bool CanBeDistracted => !Core.ML;
 
         public override bool ShouldCheckStatTimers => false;
@@ -1370,7 +1358,6 @@ namespace Server.Mobiles
         [CommandProperty(AccessLevel.GameMaster)]
         public int DirectDamage { get; set; }
 
-        // Is immune to breath damages
         public virtual bool BreathImmune => false;
 
         public virtual bool CanFlee => !_isParagon;
@@ -1428,7 +1415,6 @@ namespace Server.Mobiles
         public HonorContext ReceivedHonorContext { get; set; }
 
         public List<MLQuest> MLQuests =>
-            // Assign the quests if we don't have one, and if it is still null, return an empty list
             (m_MLQuests ??= StaticMLQuester ? MLQuestSystem.FindQuestList(GetType()) : ConstructQuestList()) ?? MLQuestSystem.EmptyList;
 
         public virtual MonsterAbility[] GetMonsterAbilities() => null;
@@ -1891,7 +1877,6 @@ namespace Server.Mobiles
             }
 
             int disruptThreshold;
-            // NPCs can use bandages too!
             if (!Core.AOS)
             {
                 disruptThreshold = 0;
@@ -2230,7 +2215,7 @@ namespace Server.Mobiles
             }
             else
             {
-                _loyalty = MaxLoyalty; // Wonderfully Happy
+                _loyalty = MaxLoyalty;
             }
 
             if (version >= 4)
@@ -2441,8 +2426,7 @@ namespace Server.Mobiles
                 return true;
             }
 
-            // Note: Yes, this happens for all questers (regardless of type, e.g. escorts),
-            // even if they can't offer you anything at the moment
+            // Happens for all questers, even those with nothing to offer right now.
             if (MLQuestSystem.Enabled && CanGiveMLQuest && from is PlayerMobile mobile)
             {
                 // You need to mark your quest items so I don't take the wrong object.  Then speak to me.
@@ -2473,7 +2457,7 @@ namespace Server.Mobiles
                 AIType.AI_Vendor  => new VendorAI(this),
                 AIType.AI_Mage    => new MageAI(this),
                 AIType.AI_Predator =>
-                    // m_AI = new PredatorAI(this);
+                    //TODO Implement PredatorAI
                     new MeleeAI(this),
                 AIType.AI_Thief => new ThiefAI(this),
                 _               => null
@@ -2611,13 +2595,6 @@ namespace Server.Mobiles
             base.OnAfterDelete();
         }
 
-        /*
-         * This function can be overridden.. so a "Strongest" mobile, can have a different definition depending
-         * on who check for value
-         * -Could add a FightMode.Preferred
-         *
-         */
-
         public virtual double GetFightModeRanking(Mobile m, FightMode acqType, bool bPlayerOnly)
         {
             if (bPlayerOnly && !m.Player)
@@ -2633,8 +2610,7 @@ namespace Server.Mobiles
             };
         }
 
-        // Turn, - for left, + for right
-        // Basic for now, needs work
+        // Turn: negative = left, positive = right.
         public virtual void Turn(int iTurnSteps)
         {
             var v = (int)Direction;
@@ -2878,12 +2854,11 @@ namespace Server.Mobiles
         {
             if (Combatant != null)
             {
-                return false; // in combat.. not idling
+                return false; // in combat, not idling
             }
 
             if (m_IdleReleaseTime > DateTime.MinValue)
             {
-                // idling...
                 if (Core.Now >= m_IdleReleaseTime)
                 {
                     m_IdleReleaseTime = DateTime.MinValue;
@@ -2895,7 +2870,7 @@ namespace Server.Mobiles
 
             if (Utility.Random(100) < 95)
             {
-                return false; // not idling, but don't want to enter idle state
+                return false; // chose not to enter the idle state
             }
 
             var idleSeconds = Utility.RandomMinMax(NPCSpeeds.MinIdleSeconds, NPCSpeeds.MaxIdleSeconds);
@@ -2934,12 +2909,6 @@ namespace Server.Mobiles
             PlaySound(GetIdleSound());
             return true; // entered idle state
         }
-
-        /*
-          this way, due to the huge number of locations this will have to be changed
-          Perhaps we can change this in the future when fixing game play is not the
-          major issue.
-        */
 
         public virtual void CheckedAnimate(int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay)
         {
@@ -3003,7 +2972,7 @@ namespace Server.Mobiles
 
             SpeechType?.OnMovement(this, m, oldLocation);
 
-            /* Begin notice sound */
+            // Notice sound
             if ((!m.Hidden || m.AccessLevel == AccessLevel.Player) && m.Player && FightMode != FightMode.Aggressor &&
                 FightMode != FightMode.None && Combatant == null && !Controlled && !Summoned && !BardPacified &&
                 InRange(m.Location, 18) && !InRange(oldLocation, 18))
@@ -3015,7 +2984,6 @@ namespace Server.Mobiles
 
                 PlaySound(GetAngerSound());
             }
-            /* End notice sound */
 
             if (MLQuestSystem.Enabled && CanShout && m is PlayerMobile mobile)
             {
@@ -3101,7 +3069,7 @@ namespace Server.Mobiles
             }
             else if (Controlled && Commandable)
             {
-                // Intentional difference (showing ONLY bonded when bonded instead of bonded & tame)
+                // Deliberate: show only (bonded), never (bonded) and (tame) together.
                 if (IsBonded)
                 {
                     list.Add(1049608); // (bonded)
@@ -3426,7 +3394,6 @@ namespace Server.Mobiles
                 ProcessDelta();
                 SendIncomingPacket();
 
-                // TODO: This can be done in Parallel if there are lots of them.
                 var aggressors = Aggressors;
 
                 for (var i = 0; i < aggressors.Count; ++i)
@@ -3500,7 +3467,6 @@ namespace Server.Mobiles
 
                         if (ds.m_Mobile == killer)
                         {
-                            // If the titles system gets feature flagged, it will be supported
                             titles.Add(ds.m_Mobile);
                             fame.Add(totalFame);
                             karma.Add(totalKarma);
@@ -3874,7 +3840,7 @@ namespace Server.Mobiles
                 {
                     // *rummages through a corpse and takes an item*
                     PublicOverheadMessage(MessageType.Emote, 0x3B2, 1008086);
-                    // TODO: Instancing of Rummaged stuff.
+                    //TODO Instance rummaged loot
                     return true;
                 }
             }
@@ -4220,11 +4186,7 @@ namespace Server.Mobiles
             }
         }
 
-        /*
-          Solen Style, override me for other mobiles/items:
-          kappa+acidslime, grizzles+whatever, etc.
-        */
-
+        // Solen-style acid; override for other harmful drops (kappa slime, etc.).
         public virtual Item NewHarmfulItem() => new Acid(TimeSpan.FromSeconds(10), 30, 30);
 
         public virtual void StopFlee()
@@ -4461,10 +4423,9 @@ namespace Server.Mobiles
                 }
                 else if (_loyalty < MaxLoyalty)
                 {
-                    // Calculate the loyalty increase
                     var loyaltyIncrease = Utility.CoinFlips(amount, MaxLoyaltyIncrease) * 10;
 
-                    if (loyaltyIncrease > 0)  // Only update if there's an actual increase
+                    if (loyaltyIncrease > 0)
                     {
                         _loyalty = Math.Min(MaxLoyalty, _loyalty + loyaltyIncrease);
                         SayTo(from, 502060); // Your pet looks happier.
@@ -4669,7 +4630,6 @@ namespace Server.Mobiles
                     }
                 }
 
-                /* Sanity check */
                 if (baseToSet > theirSkill.CapFixedPoint ||
                     m.Skills.Total - theirSkill.BaseFixedPoint + baseToSet > m.Skills.Cap)
                 {
@@ -5146,10 +5106,8 @@ namespace Server.Mobiles
             NPCSpeeds.GetMoveSpeeds(this, out activeMoveSpeed, out passiveMoveSpeed);
         }
 
-        // Pre-v22 saves carry no movement clock. A creature whose serialized think speeds
-        // still match what it would spawn with today was never hand-tuned: adopt today's
-        // move values so existing worlds (and pets) pick up npc-speeds pacing without a
-        // respawn. Tuned creatures keep movement inheriting their think clock.
+        // Pre-v22 saves carry no movement clock. Think speeds matching today's GetSpeeds
+        // mean never hand-tuned: adopt today's move values; tuned creatures keep inheriting.
         internal void MigrateMoveSpeeds()
         {
             GetSpeeds(out var activeSpeed, out var passiveSpeed);
@@ -5598,8 +5556,6 @@ namespace Server.Mobiles
 
             var onSelf = patient == this;
 
-            // DoBeneficial( patient );
-
             RevealingAction();
 
             if (!onSelf)
@@ -5642,7 +5598,7 @@ namespace Server.Mobiles
                     {
                         patient.SendLocalizedMessage(1010059); // You have been cured of all poisons.
 
-                        CheckSkill(SkillName.Healing, 0.0, 60.0 + poisonLevel * 10.0); // TODO: Verify formula
+                        CheckSkill(SkillName.Healing, 0.0, 60.0 + poisonLevel * 10.0); //TODO Verify formula
                         CheckSkill(SkillName.Anatomy, 0.0, 100.0);
                     }
                 }
@@ -5841,7 +5797,6 @@ namespace Server.Mobiles
 
             using var toRelease = PooledRefQueue<BaseCreature>.Create();
 
-            // added array for wild creatures in house regions to be removed
             using var toRemove = PooledRefQueue<Mobile>.Create();
 
             foreach (var m in World.Mobiles.Values)
@@ -5899,7 +5854,7 @@ namespace Server.Mobiles
                     }
                 }
 
-                // added lines to check if a wild creature in a house region has to be removed or not
+                // Wild creatures squatting in houses are removed outright.
                 if (!c.Controlled && !c.IsStabled && (c.Region.IsPartOf<HouseRegion>() && c.CanBeDamaged() ||
                                                       c.RemoveIfUntamed && c.Spawner == null))
                 {
@@ -5921,12 +5876,13 @@ namespace Server.Mobiles
                 var c = toRelease.Dequeue();
 
                 c.Say(1043255, c.Name); // ~1_NAME~ appears to have decided that is better off without a master!
-                c.Loyalty = BaseCreature.MaxLoyalty; // Wonderfully Happy
+                c.Loyalty = BaseCreature.MaxLoyalty;
                 c.IsBonded = false;
                 c.BondingBegin = DateTime.MinValue;
                 c.OwnerAbandonTime = DateTime.MinValue;
                 c.ControlTarget = null;
-                // This will prevent no release of creatures left alone with AI disabled (and consequent bug of Followers)
+                // Release directly: a creature left alone with its AI disabled would
+                // otherwise never release and permanently hold its owner's follower slots.
                 c.AIObject.DoOrderRelease();
                 c.DropBackpack();
             }
