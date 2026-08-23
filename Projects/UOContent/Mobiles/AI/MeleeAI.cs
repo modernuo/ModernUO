@@ -114,7 +114,6 @@ public class MeleeAI : BaseAI
 
         if (Mobile.GetDistanceToSqrt(combatant) > Mobile.RangePerception + 1)
         {
-
             this.DebugSayFormatted($"I cannot find {combatant.Name}, so my guard is up.");
             Action = ActionType.Guard;
             return false;
