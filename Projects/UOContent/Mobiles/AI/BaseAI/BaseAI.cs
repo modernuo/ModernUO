@@ -356,7 +356,6 @@ public abstract partial class BaseAI
         _investigateStopTick = Core.TickCount + InvestigateDuration;
         _guardStopTick = Core.TickCount + GuardGraceDuration;
         _lkpGoal = null;
-
     }
 
     private void HandleFleeAction()
