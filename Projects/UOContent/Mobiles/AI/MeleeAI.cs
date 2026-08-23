@@ -82,7 +82,7 @@ public class MeleeAI : BaseAI
             return true;
         }
 
-        if (!Mobile.InRange(combatant, Mobile.RangePerception * 3))
+        if (!Mobile.InRange(combatant, Mobile.ChaseLeashRange))
         {
             Mobile.Combatant = null;
         }

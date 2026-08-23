@@ -660,6 +660,13 @@ namespace Server.Mobiles
         [CommandProperty(AccessLevel.GameMaster)]
         public int RangePerception { get; set; }
 
+        /// <summary>
+        /// How far a chase may stretch before the creature gives up its combatant. Between
+        /// RangePerception and this leash it keeps chasing but may switch to closer targets.
+        /// </summary>
+        [CommandProperty(AccessLevel.GameMaster)]
+        public virtual int ChaseLeashRange => RangePerception * 2;
+
         [CommandProperty(AccessLevel.GameMaster)]
         public int RangeFight { get; set; }
 

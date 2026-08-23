@@ -36,10 +36,32 @@ public abstract partial class BaseAI
         }
     }
 
-    private bool UseGroupMovement(Mobile target) =>
+    /// <summary>
+    /// Crowding refinement for the final approach: engages only near the target when allies
+    /// contest the ring, so creatures spread instead of stacking. Chasing any real distance
+    /// always uses the pathfinding approach primitive.
+    /// </summary>
+    private bool UseGroupMovement(Mobile target, int range) =>
         Mobile.Combatant == target
         && !Mobile.Controlled
-        && CountNearbyAllies(target) > 0;
+        && Mobile.InRange(target, range + 2)
+        && CountCrowdingAllies(target, range) > 0;
+
+    private int CountCrowdingAllies(Mobile target, int range)
+    {
+        var crowding = 0;
+
+        foreach (var m in target.GetMobilesInRange(range + 1))
+        {
+            if (m != Mobile && m.Combatant == target && m is BaseCreature { Controlled: false } bc
+                && bc.Team == Mobile.Team)
+            {
+                crowding++;
+            }
+        }
+
+        return crowding;
+    }
 
     public static bool MoveToWithGroup(BaseAI ai, Mobile target, bool run, int range)
     {
@@ -56,6 +78,7 @@ public abstract partial class BaseAI
         {
             if (optimalPosition == Point3D.Zero)
             {
+
                 return ai.MoveToWithCollisionAvoidance(target, run, range);
             }
 
@@ -68,27 +91,20 @@ public abstract partial class BaseAI
                 direction = GetAdjustedDirection(direction);
             }
 
-            return ai.DoMove(direction, true);
+            var res = ai.DoMoveImpl(direction, true);
+
+            if (res is MoveResult.Success or MoveResult.BadState)
+            {
+                return true;
+            }
+
+            // A blocked or wall-slid step is not progress — route around the obstacle.
+            return ai.ApproachTarget(target, run, range);
         }
         finally
         {
             allies.Dispose();
         }
-    }
-
-    private int CountNearbyAllies(Mobile target)
-    {
-        var allies = 0;
-        foreach (var m in Mobile.GetMobilesInRange(8))
-        {
-            if (m != Mobile && m.Combatant == target && m is BaseCreature { Controlled: false } bc
-                && bc.Team == Mobile.Team)
-            {
-                allies++;
-            }
-        }
-
-        return allies;
     }
 
     private PooledRefList<BaseCreature> GetNearbyAllies(Mobile target)

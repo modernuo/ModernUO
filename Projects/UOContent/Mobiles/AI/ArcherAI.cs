@@ -47,7 +47,7 @@ public class ArcherAI : BaseAI
         {
             this.DebugSayFormatted($"I am still not in range of {combatant.Name}");
 
-            if ((int)Mobile.GetDistanceToSqrt(combatant) > Mobile.RangePerception + 1)
+            if (!Mobile.InRange(combatant, Mobile.ChaseLeashRange))
             {
                 this.DebugSayFormatted($"I have lost {combatant.Name}");
 

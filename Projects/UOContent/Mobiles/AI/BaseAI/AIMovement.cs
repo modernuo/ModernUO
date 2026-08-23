@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.  *
  ************************************************************************/
 
+using System;
 using System.Runtime.CompilerServices;
 using Server.Collections;
 using Server.Items;
@@ -58,7 +59,15 @@ public abstract partial class BaseAI
     public bool CanMoveNow(out double delay)
     {
         delay = 0.0;
-        return Core.TickCount >= NextMove;
+        return Core.TickCount - NextMove >= 0;
+    }
+
+    // Caps movement at one actual step per AI think tick; pacing itself is the timer's
+    // cadence. Half a step keeps the budget below the timer interval so a legitimate
+    // next-tick move is never jitter-throttled.
+    private void ConsumeMoveBudget()
+    {
+        NextMove = Core.TickCount + Math.Max(50, (int)(Mobile.CurrentSpeed * 500));
     }
 
     public virtual bool CheckMove() => !(Mobile.Deleted || Mobile.DisallowAllMoves);
@@ -102,6 +111,8 @@ public abstract partial class BaseAI
             {
                 Mobile.CurrentSpeed = Mobile.PassiveSpeed;
             }
+
+            ConsumeMoveBudget();
 
             return MoveResult.Success;
         }
@@ -151,6 +162,7 @@ public abstract partial class BaseAI
 
             if (Mobile.Move(Mobile.Direction))
             {
+                ConsumeMoveBudget();
                 return MoveResult.SuccessAutoTurn;
             }
         }
@@ -341,22 +353,30 @@ public abstract partial class BaseAI
 
             if (res == MoveResult.BadState)
             {
-                return false; // not allowed to move this tick; not a stall
+                return true; // not allowed to move this tick (frozen/casting/throttled); not a failure
             }
 
             if (res == MoveResult.Success && Mobile.GetDistanceToSqrt(target) < distBefore)
             {
+
                 ResetApproach();
-                return Mobile.InRange(target, range);
+                return true; // healthy en-route progress
             }
+
             // else: fall through; let the PathFollower route around the obstacle.
         }
 
         // PLANNING PATH: a persistent PathFollower, never discarded by a greedy step.
         if (Path == null || Path.Goal != target)
         {
+
             Path = new PathFollower(Mobile, target) { Mover = DoMoveImpl };
         }
+
+        // Sample move-eligibility BEFORE the attempt: a successful step consumes the move
+        // budget, which would mask stall accounting and the progress signal.
+        var couldMove = CanMoveNow(out _) && !IsInBadState();
+        var locBefore = Mobile.Location;
 
         if (Path.Follow(run, range))
         {
@@ -364,8 +384,41 @@ public abstract partial class BaseAI
             return true;
         }
 
-        TrackApproachProgress(target);
-        return false;
+        TrackApproachProgress(target, couldMove);
+
+        // En-route progress is success; failure only when a move-eligible tick took no step
+        // (no working path), or the approach has given up.
+        var progressed = !_approachGaveUp && (Mobile.Location != locBefore || !couldMove);
+
+        return progressed;
+    }
+
+    /// <summary>
+    /// Walks toward a fixed point (e.g. a target's last-known position), pathfinding around
+    /// obstacles. Returns false on arrival or when genuinely unable to make progress.
+    /// </summary>
+    public bool MoveToPoint(IPoint3D goal, bool run)
+    {
+        if (Mobile.Deleted || Mobile.DisallowAllMoves || goal == null)
+        {
+            return false;
+        }
+
+        if (Path?.Goal != goal)
+        {
+            Path = new PathFollower(Mobile, goal) { Mover = DoMoveImpl };
+        }
+
+        var couldMove = CanMoveNow(out _) && !IsInBadState();
+        var locBefore = Mobile.Location;
+
+        if (Path.Follow(run, 1))
+        {
+            Path = null;
+            return false; // arrived
+        }
+
+        return Mobile.Location != locBefore || !couldMove;
     }
 
     /// <summary>
@@ -376,11 +429,11 @@ public abstract partial class BaseAI
     /// gives up and idles. A MOVING goal (an active chase) resets the baseline every tick,
     /// so chases never give up even when the gap holds constant.
     /// </summary>
-    private void TrackApproachProgress(Mobile target)
+    private void TrackApproachProgress(Mobile target, bool couldMove)
     {
-        if (!CanMoveNow(out _))
+        if (!couldMove)
         {
-            return; // a not-yet-due move (stun) is not a stall
+            return; // a tick that was never allowed to move (stun, stall) is not a stall
         }
 
         var dist = Mobile.GetDistanceToSqrt(target);
@@ -408,6 +461,7 @@ public abstract partial class BaseAI
 
         if (++_approachStallTicks >= ApproachGiveUpTicks)
         {
+
             _approachGaveUp = true;
             _approachGaveUpGoalLoc = goalLoc;
             Path = null;
@@ -444,7 +498,7 @@ public abstract partial class BaseAI
             return true;
         }
 
-        if (UseGroupMovement(m))
+        if (UseGroupMovement(m, range))
         {
             return MoveToWithGroup(this, m, shouldRun, range);
         }
@@ -467,7 +521,11 @@ public abstract partial class BaseAI
 
         var direction = Mobile.GetDirectionTo(target);
 
-        if (DoMove(direction, true))
+        // Wall-slide auto-turns must not count as progress, or a creature pinned on
+        // geometry reports success forever.
+        var res = DoMoveImpl(direction, true);
+
+        if (res is MoveResult.Success or MoveResult.BadState)
         {
             return true;
         }
@@ -476,14 +534,14 @@ public abstract partial class BaseAI
         {
             var clockwise = (Direction)(((int)direction + i) % 8);
 
-            if (DoMove(clockwise, true))
+            if (DoMoveImpl(clockwise, true) == MoveResult.Success)
             {
                 return true;
             }
 
             var counterclockwise = (Direction)(((int)direction - i + 8) % 8);
 
-            if (DoMove(counterclockwise, true))
+            if (DoMoveImpl(counterclockwise, true) == MoveResult.Success)
             {
                 return true;
             }
