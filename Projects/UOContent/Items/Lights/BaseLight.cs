@@ -3,7 +3,7 @@ using ModernUO.Serialization;
 
 namespace Server.Items;
 
-[SerializationGenerator(1, false)]
+[SerializationGenerator(2, false)]
 public abstract partial class BaseLight : Item
 {
     public static readonly bool Burnout = false;
@@ -16,16 +16,28 @@ public abstract partial class BaseLight : Item
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private bool _protected;
 
-    [TimerDrift]
     [SerializableField(4, getter: "private", setter: "private")]
+    [DeserializeTimer(nameof(DeserializeTimer))]
     private Timer _burnTimer;
 
-    [DeserializeTimerField(4)]
     private void DeserializeTimer(TimeSpan delay)
     {
         if (_burning && _duration != TimeSpan.Zero)
         {
             DoTimer(delay);
+        }
+    }
+
+    private void MigrateFrom(V1Content content)
+    {
+        _burntOut = content.BurntOut;
+        _burning = content.Burning;
+        _duration = content.Duration;
+        _protected = content.Protected;
+
+        if (content.BurnTimerDelay != TimeSpan.MinValue)
+        {
+            DeserializeTimer(content.BurnTimerDelay);
         }
     }
 

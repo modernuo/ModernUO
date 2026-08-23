@@ -3,17 +3,24 @@ using ModernUO.Serialization;
 
 namespace Server.Items;
 
-[SerializationGenerator(2, false)]
+[SerializationGenerator(3, false)]
 public partial class DecayedCorpse : Container
 {
     private static TimeSpan _defaultDecayTime = TimeSpan.FromMinutes(7.0);
 
-    [TimerDrift]
     [SerializableField(0, getter: "private", setter: "private")]
+    [DeserializeTimer(nameof(DeserializeDecayTimer))]
     private Timer _decayTimer;
 
-    [DeserializeTimerField(0)]
     private void DeserializeDecayTimer(TimeSpan delay) => BeginDecay(delay);
+
+    private void MigrateFrom(V2Content content)
+    {
+        if (content.DecayTimerDelay != TimeSpan.MinValue)
+        {
+            DeserializeDecayTimer(content.DecayTimerDelay);
+        }
+    }
 
     public DecayedCorpse(string name) : base(Utility.Random(0xECA, 9))
     {

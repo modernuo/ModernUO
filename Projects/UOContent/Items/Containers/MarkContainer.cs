@@ -3,19 +3,31 @@ using ModernUO.Serialization;
 
 namespace Server.Items;
 
-[SerializationGenerator(0, false)]
+[SerializationGenerator(1, false)]
 public partial class MarkContainer : LockableContainer
 {
-    [TimerDrift]
     [SerializableField(1, getter: "private", setter: "private")]
+    [DeserializeTimer(nameof(DeserializeRelockTimer))]
     private InternalTimer _relockTimer;
 
-    [DeserializeTimerField(1)]
     private void DeserializeRelockTimer(TimeSpan delay)
     {
         if (!Locked && _autoLock)
         {
             _relockTimer = new InternalTimer(this, delay);
+        }
+    }
+
+    private void MigrateFrom(V0Content content)
+    {
+        _autoLock = content.AutoLock;
+        _targetMap = content.TargetMap;
+        _target = content.Target;
+        _description = content.Description;
+
+        if (content.RelockTimerDelay != TimeSpan.MinValue)
+        {
+            DeserializeRelockTimer(content.RelockTimerDelay);
         }
     }
 

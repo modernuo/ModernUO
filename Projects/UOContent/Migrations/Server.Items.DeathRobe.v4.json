@@ -1,0 +1,14 @@
+{
+  "version": 4,
+  "type": "Server.Items.DeathRobe",
+  "properties": [
+    {
+      "name": "DecayTimer",
+      "type": "Server.Timer",
+      "rule": "TimerMigrationRule",
+      "ruleArguments": [
+        "@AnchoredTimer"
+      ]
+    }
+  ]
+}

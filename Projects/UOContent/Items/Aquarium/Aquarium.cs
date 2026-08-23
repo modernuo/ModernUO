@@ -31,9 +31,9 @@ namespace Server.Items
         private bool m_EvaluateDay;
 
         [SerializableField(0, setter: "private")]
+        [DeserializeTimer(nameof(DeserializeEvaluateTimer), wallClock: true)]
         private Timer _evaluateTimer;
 
-        [DeserializeTimerField(0)]
         private void DeserializeEvaluateTimer(TimeSpan delay)
         {
             _evaluateTimer = Timer.DelayCall(delay, EvaluationInterval, Evaluate);

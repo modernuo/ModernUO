@@ -9,7 +9,7 @@ using Server.Network;
 
 namespace Server.Items;
 
-[SerializationGenerator(3, false)]
+[SerializationGenerator(4, false)]
 public partial class TreasureMapChest : LockableContainer
 {
     [Tidy]
@@ -29,17 +29,30 @@ public partial class TreasureMapChest : LockableContainer
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _level;
 
-    [TimerDrift]
     [SerializableField(4)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
+    [DeserializeTimer(nameof(DeserializeExpireTimer))]
     private Timer _expireTimer;
 
-    [DeserializeTimerField(4)]
     private void DeserializeExpireTimer(TimeSpan delay)
     {
         if (!_temporary)
         {
             _expireTimer = Timer.DelayCall(delay, Delete);
+        }
+    }
+
+    private void MigrateFrom(V3Content content)
+    {
+        _guardians = content.Guardians;
+        _temporary = content.Temporary;
+        _owner = content.Owner;
+        _level = content.Level;
+        _lifted = content.Lifted;
+
+        if (content.ExpireTimerDelay != TimeSpan.MinValue)
+        {
+            DeserializeExpireTimer(content.ExpireTimerDelay);
         }
     }
 

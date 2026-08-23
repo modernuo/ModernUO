@@ -3,19 +3,22 @@ using ModernUO.Serialization;
 
 namespace Server.Items;
 
-[SerializationGenerator(2, false)]
+[SerializationGenerator(3, false)]
 public abstract partial class FillableContainer : LockableContainer
 {
-    [TimerDrift]
     [SerializableField(1)]
+    [DeserializeTimer(nameof(DeserializeRespawnTimer))]
     private Timer _respawnTimer;
 
-    [DeserializeTimerField(1)]
-    private void DeserializeRespawnTimer(TimeSpan delay)
+    private void DeserializeRespawnTimer(TimeSpan delay) => _respawnTimer = Timer.DelayCall(delay, Respawn);
+
+    private void MigrateFrom(V2Content content)
     {
-        if (delay > TimeSpan.MinValue)
+        _contentType = content.ContentType;
+
+        if (content.RespawnTimerDelay != TimeSpan.MinValue)
         {
-            _respawnTimer = Timer.DelayCall(delay, Respawn);
+            DeserializeRespawnTimer(content.RespawnTimerDelay);
         }
     }
 
