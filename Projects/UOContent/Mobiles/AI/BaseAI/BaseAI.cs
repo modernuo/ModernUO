@@ -964,7 +964,6 @@ public abstract partial class BaseAI
         }
 
         Mobile.FocusMob = newFocusMob ?? enemySummonMob;
-
         return Mobile.FocusMob != null;
     }
 
