@@ -79,7 +79,7 @@ namespace Server.Spells.Spellweaving
             Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Beneficial);
         }
 
-        [OnEvent(nameof(BaseCreature.CreatureDeathEvent))]
+        [OnEvent(nameof(CreatureEvents.CreatureDeathEvent))]
         [OnEvent(nameof(PlayerMobile.PlayerDeathEvent))]
         public static void OnDeathEvent(Mobile m)
         {
