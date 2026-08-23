@@ -15,22 +15,14 @@ public abstract partial class BaseHides : Item, ICommodity
 
     public override double DefaultWeight => 5.0;
 
-    [SerializableProperty(0)]
-    [CommandProperty(AccessLevel.GameMaster)]
-    public CraftResource Resource
-    {
-        get => _resource;
-        set
-        {
-            if (_resource != value)
-            {
-                _resource = value;
-                Hue = CraftResources.GetHue(value);
+    [SerializableField(0, fieldChanged: nameof(OnResourceChanged))]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    [InvalidateProperties]
+    private CraftResource _resource;
 
-                InvalidateProperties();
-                this.MarkDirty();
-            }
-        }
+    private void OnResourceChanged(CraftResource oldValue, CraftResource newValue)
+    {
+        Hue = CraftResources.GetHue(newValue);
     }
 
     public override int LabelNumber

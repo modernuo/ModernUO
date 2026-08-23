@@ -62,23 +62,19 @@ public partial class MarkContainer : LockableContainer
         }
     }
 
-    [SerializableProperty(0)]
-    [CommandProperty(AccessLevel.GameMaster)]
-    public bool AutoLock
-    {
-        get => _autoLock;
-        set
-        {
-            _autoLock = value;
+    [SerializableField(0, fieldChanged: nameof(OnAutoLockChanged))]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private bool _autoLock;
 
-            if (!_autoLock)
-            {
-                StopTimer();
-            }
-            else if (!Locked)
-            {
-                _relockTimer ??= new InternalTimer(this);
-            }
+    private void OnAutoLockChanged(bool oldValue, bool newValue)
+    {
+        if (!_autoLock)
+        {
+            StopTimer();
+        }
+        else if (!Locked)
+        {
+            _relockTimer ??= new InternalTimer(this);
         }
     }
 

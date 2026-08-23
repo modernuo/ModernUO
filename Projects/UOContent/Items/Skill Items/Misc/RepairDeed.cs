@@ -62,17 +62,15 @@ public partial class RepairDeed : Item
 
     public override bool DisplayLootType => false;
 
-    [CommandProperty(AccessLevel.GameMaster)]
-    [SerializableProperty(1)]
-    public double SkillLevel
+    [SerializableField(1, allowFieldChange: nameof(AllowSkillLevelChange))]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    [InvalidateProperties]
+    private double _skillLevel;
+
+    private bool AllowSkillLevelChange(ref double value)
     {
-        get => _skillLevel;
-        set
-        {
-            _skillLevel = Math.Clamp(value, 0, 120.0);
-            InvalidateProperties();
-            this.MarkDirty();
-        }
+        value = Math.Clamp(value, 0, 120.0);
+        return true;
     }
 
     public override void AddNameProperty(IPropertyList list)

@@ -43,18 +43,14 @@ namespace Server.Mobiles
 
         public override string CorpseName => "a sheep corpse";
 
+        [SerializableField(0, fieldChanged: nameof(OnNextWoolTimeChanged))]
         [DeltaDateTime]
-        [SerializableProperty(0)]
-        [CommandProperty(AccessLevel.GameMaster)]
-        public DateTime NextWoolTime
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private DateTime _nextWoolTime;
+
+        private void OnNextWoolTimeChanged(DateTime oldValue, DateTime newValue)
         {
-            get => _nextWoolTime;
-            set
-            {
-                _nextWoolTime = value;
-                SheepBody();
-                this.MarkDirty();
-            }
+            SheepBody();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

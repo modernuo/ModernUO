@@ -47,36 +47,24 @@ public partial class RecallRune : Item
         }
     }
 
-    [SerializableProperty(2)]
-    [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
-    public bool Marked
+    [SerializableField(2, fieldChanged: nameof(OnMarkedChanged))]
+    [SerializedCommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
+    [InvalidateProperties]
+    private bool _marked;
+
+    private void OnMarkedChanged(bool oldValue, bool newValue)
     {
-        get => _marked;
-        set
-        {
-            if (_marked != value)
-            {
-                _marked = value;
-                CalculateHue();
-                InvalidateProperties();
-            }
-        }
+        CalculateHue();
     }
 
-    [SerializableProperty(4)]
-    [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
-    public Map TargetMap
+    [SerializableField(4, fieldChanged: nameof(OnTargetMapChanged))]
+    [SerializedCommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
+    [InvalidateProperties]
+    private Map _targetMap;
+
+    private void OnTargetMapChanged(Map oldValue, Map newValue)
     {
-        get => _targetMap;
-        set
-        {
-            if (_targetMap != value)
-            {
-                _targetMap = value;
-                CalculateHue();
-                InvalidateProperties();
-            }
-        }
+        CalculateHue();
     }
 
     private void Deserialize(IGenericReader reader, int version)

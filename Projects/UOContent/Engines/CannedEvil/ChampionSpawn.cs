@@ -203,47 +203,38 @@ public partial class ChampionSpawn : Item
         }
     }
 
-    [SerializableProperty(3)]
-    [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
-    public int MaxLevel
+    [SerializableField(3, allowFieldChange: nameof(AllowMaxLevelChange))]
+    [SerializedCommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
+    private int _maxLevel;
+
+    private bool AllowMaxLevelChange(ref int value)
     {
-        get => _maxLevel;
-        set => _maxLevel = Math.Clamp(value, 0, 18);
+        value = Math.Clamp(value, 0, 18);
+        return true;
     }
 
-    [SerializableProperty(9)]
-    [CommandProperty(AccessLevel.GameMaster)]
-    public Rectangle2D SpawnArea
+    [SerializableField(9, fieldChanged: nameof(OnSpawnAreaChanged))]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    [InvalidateProperties]
+    private Rectangle2D _spawnArea;
+
+    private void OnSpawnAreaChanged(Rectangle2D oldValue, Rectangle2D newValue)
     {
-        get => _spawnArea;
-        set
-        {
-            _spawnArea = value;
-            this.MarkDirty();
-            InvalidateProperties();
-            UpdateRegion();
-        }
+        UpdateRegion();
     }
 
-    [SerializableProperty(11)]
-    [CommandProperty(AccessLevel.GameMaster)]
-    public int Kills
+    [SerializableField(11, fieldChanged: nameof(OnKillsChanged))]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    [InvalidateProperties]
+    private int _kills;
+
+    private void OnKillsChanged(int oldValue, int newValue)
     {
-        get => _kills;
-        set
+        var n = _kills / (double)MaxKills;
+        var p = (int)(n * 100);
+        if (p < 90)
         {
-            _kills = value;
-            this.MarkDirty();
-
-            var n = _kills / (double)MaxKills;
-            var p = (int)(n * 100);
-
-            if (p < 90)
-            {
-                SetWhiteSkullCount(p / 20);
-            }
-
-            InvalidateProperties();
+            SetWhiteSkullCount(p / 20);
         }
     }
 

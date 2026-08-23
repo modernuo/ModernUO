@@ -325,34 +325,26 @@ namespace Server.Items
 
         public override double DefaultWeight => 3.0;
 
+        [SerializableField(0, fieldChanged: nameof(OnCurArcaneChargesChanged))]
         [EncodedInt]
-        [SerializableProperty(0)]
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int CurArcaneCharges
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        [InvalidateProperties]
+        private int _curArcaneCharges;
+
+        private void OnCurArcaneChargesChanged(int oldValue, int newValue)
         {
-            get => _curArcaneCharges;
-            set
-            {
-                _curArcaneCharges = value;
-                InvalidateProperties();
-                Update();
-                this.MarkDirty();
-            }
+            Update();
         }
 
+        [SerializableField(1, fieldChanged: nameof(OnMaxArcaneChargesChanged))]
         [EncodedInt]
-        [SerializableProperty(1)]
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int MaxArcaneCharges
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        [InvalidateProperties]
+        private int _maxArcaneCharges;
+
+        private void OnMaxArcaneChargesChanged(int oldValue, int newValue)
         {
-            get => _maxArcaneCharges;
-            set
-            {
-                _maxArcaneCharges = value;
-                InvalidateProperties();
-                Update();
-                this.MarkDirty();
-            }
+            Update();
         }
 
         [CommandProperty(AccessLevel.GameMaster)]

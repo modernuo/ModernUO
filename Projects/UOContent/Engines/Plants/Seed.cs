@@ -35,18 +35,14 @@ public partial class Seed : Item
 
     public override double DefaultWeight => 1.0;
 
-    [CommandProperty(AccessLevel.GameMaster)]
-    [SerializableProperty(1)]
-    public PlantHue PlantHue
+    [SerializableField(1, fieldChanged: nameof(OnPlantHueChanged))]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    [InvalidateProperties]
+    private PlantHue _plantHue;
+
+    private void OnPlantHueChanged(PlantHue oldValue, PlantHue newValue)
     {
-        get => _plantHue;
-        set
-        {
-            _plantHue = value;
-            Hue = PlantHueInfo.GetInfo(value).Hue;
-            InvalidateProperties();
-            this.MarkDirty();
-        }
+        Hue = PlantHueInfo.GetInfo(newValue).Hue;
     }
 
     public override int LabelNumber => 1060810; // seed

@@ -94,18 +94,13 @@ public partial class PlayerVendor : Mobile
 
     public PlayerVendorPlaceholder Placeholder { get; set; }
 
-    [SerializableProperty(2)]
-    public BaseHouse House
-    {
-        get => _house;
-        set
-        {
-            _house?.PlayerVendors.Remove(this);
-            value?.PlayerVendors.Add(this);
+    [SerializableField(2, fieldChanged: nameof(OnHouseChanged))]
+    private BaseHouse _house;
 
-            _house = value;
-            this.MarkDirty();
-        }
+    private void OnHouseChanged(BaseHouse oldValue, BaseHouse newValue)
+    {
+        oldValue?.PlayerVendors.Remove(this);
+        newValue?.PlayerVendors.Add(this);
     }
 
     public int ChargePerDay

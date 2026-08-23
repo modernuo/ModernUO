@@ -76,25 +76,25 @@ public partial class SackFlour : Item, IHasQuantity
 
     public override double DefaultWeight => 5.0;
 
-    [SerializableProperty(0)]
-    [CommandProperty(AccessLevel.GameMaster)]
-    public int Quantity
+    [SerializableField(0, fieldChanged: nameof(OnQuantityChanged), allowFieldChange: nameof(AllowQuantityChange))]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private int _quantity;
+
+    private bool AllowQuantityChange(ref int value)
     {
-        get => _quantity;
-        set
+        value = Math.Min(20, Math.Max(0, value));
+        return true;
+    }
+
+    private void OnQuantityChanged(int oldValue, int newValue)
+    {
+        if (_quantity == 0)
         {
-            _quantity = Math.Min(20, Math.Max(0, value));
-
-            if (_quantity == 0)
-            {
-                Delete();
-            }
-            else if (_quantity < 20 && ItemID is 0x1039 or 0x1045)
-            {
-                ++ItemID;
-            }
-
-            this.MarkDirty();
+            Delete();
+        }
+        else if (_quantity < 20 && ItemID is 0x1039 or 0x1045)
+        {
+            ++ItemID;
         }
     }
 

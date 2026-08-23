@@ -16,12 +16,14 @@ public partial class MurderContext
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private TimeSpan _longTermElapse;
 
-    [SerializableProperty(2)]
-    [CommandProperty(AccessLevel.GameMaster)]
-    public int ShortTermMurders
+    [SerializableField(2, allowFieldChange: nameof(AllowShortTermMurdersChange))]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private int _shortTermMurders;
+
+    private bool AllowShortTermMurdersChange(ref int value)
     {
-        get => _shortTermMurders;
-        set => _shortTermMurders = Math.Max(value, 0);
+        value = Math.Max(value, 0);
+        return true;
     }
 
     [SerializableField(3)]

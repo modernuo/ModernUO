@@ -113,19 +113,15 @@ namespace Server.Items
             Resistances = new AosElementAttributes(this);
         }
 
-        [SerializableProperty(0)]
+        [SerializableField(0, fieldChanged: nameof(OnResourceChanged))]
         [SaveFlag(nameof(ShouldSerializeResource))]
-        [CommandProperty(AccessLevel.GameMaster)]
-        public CraftResource Resource
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        [InvalidateProperties]
+        private CraftResource _resource;
+
+        private void OnResourceChanged(CraftResource oldValue, CraftResource newValue)
         {
-            get => _resource;
-            set
-            {
-                _resource = value;
-                Hue = CraftResources.GetHue(_resource);
-                InvalidateProperties();
-                this.MarkDirty();
-            }
+            Hue = CraftResources.GetHue(_resource);
         }
 
         [SerializableProperty(9, useField: nameof(_strReq))]

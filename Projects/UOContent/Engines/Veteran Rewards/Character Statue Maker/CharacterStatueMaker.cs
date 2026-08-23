@@ -25,17 +25,13 @@ public partial class CharacterStatueMaker : Item, IRewardItem
 
     public override int LabelNumber => 1076173; // Character Statue Maker
 
-    [SerializableProperty(1)]
-    [CommandProperty(AccessLevel.GameMaster)]
-    public StatueType StatueType
+    [SerializableField(1, fieldChanged: nameof(OnStatueTypeChanged))]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private StatueType _statueType;
+
+    private void OnStatueTypeChanged(StatueType oldValue, StatueType newValue)
     {
-        get => _statueType;
-        set
-        {
-            _statueType = value;
-            InvalidateHue();
-            this.MarkDirty();
-        }
+        InvalidateHue();
     }
 
     public override void OnDoubleClick(Mobile from)

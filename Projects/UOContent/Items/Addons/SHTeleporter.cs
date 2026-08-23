@@ -25,35 +25,27 @@ namespace Server.Items
             _teleOffset = offset;
         }
 
-        [SerializableProperty(0)]
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool Active
-        {
-            get => _active;
-            set
-            {
-                _active = value;
+        [SerializableField(0, fieldChanged: nameof(OnActiveChanged))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private bool _active;
 
-                if (Addon is SHTeleporter sourceAddon)
-                {
-                    sourceAddon.ChangeActive(value);
-                }
+        private void OnActiveChanged(bool oldValue, bool newValue)
+        {
+            if (Addon is SHTeleporter sourceAddon)
+            {
+                sourceAddon.ChangeActive(newValue);
             }
         }
 
-        [SerializableProperty(1)]
-        [CommandProperty(AccessLevel.GameMaster)]
-        public SHTeleComponent TeleDest
-        {
-            get => _teleDest;
-            set
-            {
-                _teleDest = value;
+        [SerializableField(1, fieldChanged: nameof(OnTeleDestChanged))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private SHTeleComponent _teleDest;
 
-                if (Addon is SHTeleporter sourceAddon)
-                {
-                    sourceAddon.ChangeDest(value);
-                }
+        private void OnTeleDestChanged(SHTeleComponent oldValue, SHTeleComponent newValue)
+        {
+            if (Addon is SHTeleporter sourceAddon)
+            {
+                sourceAddon.ChangeDest(newValue);
             }
         }
 

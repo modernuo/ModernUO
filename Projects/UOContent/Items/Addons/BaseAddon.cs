@@ -63,22 +63,14 @@ namespace Server.Items
             }
         }
 
-        [SerializableProperty(1)]
-        [CommandProperty(AccessLevel.GameMaster)]
-        public CraftResource Resource
-        {
-            get => _resource;
-            set
-            {
-                if (_resource != value)
-                {
-                    _resource = value;
-                    Hue = CraftResources.GetHue(_resource);
+        [SerializableField(1, fieldChanged: nameof(OnResourceChanged))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        [InvalidateProperties]
+        private CraftResource _resource;
 
-                    InvalidateProperties();
-                    this.MarkDirty();
-                }
-            }
+        private void OnResourceChanged(CraftResource oldValue, CraftResource newValue)
+        {
+            Hue = CraftResources.GetHue(_resource);
         }
 
         Item IAddon.Deed => Deed;

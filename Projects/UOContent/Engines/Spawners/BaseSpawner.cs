@@ -311,26 +311,20 @@ public abstract partial class BaseSpawner : Item, ISpawner
         }
     }
 
-    [SerializableProperty(8)]
-    [CommandProperty(AccessLevel.Developer)]
-    public int Count
+    [SerializableField(8, fieldChanged: nameof(OnCountChanged))]
+    [SerializedCommandProperty(AccessLevel.Developer)]
+    [InvalidateProperties]
+    private int _count;
+
+    private void OnCountChanged(int oldValue, int newValue)
     {
-        get => _count;
-        set
+        if (IsFull)
         {
-            _count = value;
-
-            if (IsFull)
-            {
-                _timer?.Stop();
-            }
-            else if (_timer?.Running != true)
-            {
-                DoTimer();
-            }
-
-            InvalidateProperties();
-            this.MarkDirty();
+            _timer?.Stop();
+        }
+        else if (_timer?.Running != true)
+        {
+            DoTimer();
         }
     }
 

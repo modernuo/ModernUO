@@ -83,20 +83,14 @@ public partial class SoulStone : Item, ISecurable
         }
     }
 
-    [SerializableProperty(6)]
-    [CommandProperty(AccessLevel.GameMaster)]
-    public double SkillValue
+    [SerializableField(6, fieldChanged: nameof(OnSkillValueChanged))]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    [InvalidateProperties]
+    private double _skillValue;
+
+    private void OnSkillValueChanged(double oldValue, double newValue)
     {
-        get => _skillValue;
-        set
-        {
-            _skillValue = value;
-
-            ItemID = IsEmpty ? _inactiveItemID : _activeItemID;
-
-            InvalidateProperties();
-            this.MarkDirty();
-        }
+        ItemID = IsEmpty ? _inactiveItemID : _activeItemID;
     }
 
     [CommandProperty(AccessLevel.GameMaster)]

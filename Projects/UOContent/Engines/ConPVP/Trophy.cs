@@ -64,17 +64,13 @@ public partial class Trophy : Item
         UpdateStyle();
     }
 
-    [SerializableProperty(1)]
-    [CommandProperty(AccessLevel.GameMaster)]
-    public TrophyRank Rank
+    [SerializableField(1, fieldChanged: nameof(OnRankChanged))]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private TrophyRank _rank;
+
+    private void OnRankChanged(TrophyRank oldValue, TrophyRank newValue)
     {
-        get => _rank;
-        set
-        {
-            _rank = value;
-            UpdateStyle();
-            this.MarkDirty();
-        }
+        UpdateStyle();
     }
 
     private void Deserialize(IGenericReader reader, int version)

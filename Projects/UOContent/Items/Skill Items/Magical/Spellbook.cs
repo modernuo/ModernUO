@@ -133,28 +133,19 @@ public partial class Spellbook : Item, ICraftable, ISlayer, IAosItem
     public virtual int BookOffset => 0;
     public virtual int BookCount => 64;
 
-    [CommandProperty(AccessLevel.GameMaster)]
-    [SerializableProperty(7)]
-    public ulong Content
+    [SerializableField(7, fieldChanged: nameof(OnContentChanged))]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    [InvalidateProperties]
+    private ulong _content;
+
+    private void OnContentChanged(ulong oldValue, ulong newValue)
     {
-        get => _content;
-        set
+        // This assignment will mark it as dirty
+        SpellCount = 0;
+        while (newValue > 0)
         {
-            if (_content != value)
-            {
-                _content = value;
-
-                // This assignment will mark it as dirty
-                SpellCount = 0;
-
-                while (value > 0)
-                {
-                    _spellCount += (int)(value & 0x1);
-                    value >>= 1;
-                }
-
-                InvalidateProperties();
-            }
+            _spellCount += (int)(newValue & 0x1);
+            newValue >>= 1;
         }
     }
 

@@ -332,27 +332,22 @@ public partial class PigmentsOfTokuno : BasePigmentsOfTokuno
     [Constructible]
     public PigmentsOfTokuno(PigmentType type, int uses) : base(uses) => Type = type;
 
-    [SerializableProperty(0)]
-    [CommandProperty(AccessLevel.GameMaster)]
-    public PigmentType Type
+    [SerializableField(0, fieldChanged: nameof(OnTypeChanged))]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private PigmentType _type;
+
+    private void OnTypeChanged(PigmentType oldValue, PigmentType newValue)
     {
-        get => _type;
-        set
+        var v = (int)_type;
+        if (v >= 0 && v < _table.Length)
         {
-            _type = value;
-
-            var v = (int)_type;
-
-            if (v >= 0 && v < _table.Length)
-            {
-                Hue = _table[v][0];
-                Label = _table[v][1];
-            }
-            else
-            {
-                Hue = 0;
-                Label = -1;
-            }
+            Hue = _table[v][0];
+            Label = _table[v][1];
+        }
+        else
+        {
+            Hue = 0;
+            Label = -1;
         }
     }
 

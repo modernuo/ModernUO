@@ -324,27 +324,21 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
     [CommandProperty(AccessLevel.GameMaster)]
     public bool IsFull => _quantity >= MaxQuantity;
 
-    [SerializableProperty(2)]
-    [CommandProperty(AccessLevel.GameMaster)]
-    public BeverageType Content
+    [SerializableField(2, fieldChanged: nameof(OnContentChanged))]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    [InvalidateProperties]
+    private BeverageType _content;
+
+    private void OnContentChanged(BeverageType oldValue, BeverageType newValue)
     {
-        get => _content;
-        set
+        var itemID = ComputeItemID();
+        if (itemID > 0)
         {
-            _content = value;
-
-            InvalidateProperties();
-
-            var itemID = ComputeItemID();
-
-            if (itemID > 0)
-            {
-                ItemID = itemID;
-            }
-            else
-            {
-                Delete();
-            }
+            ItemID = itemID;
+        }
+        else
+        {
+            Delete();
         }
     }
 

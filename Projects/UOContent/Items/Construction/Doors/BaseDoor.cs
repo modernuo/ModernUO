@@ -74,43 +74,31 @@ public abstract partial class BaseDoor : Item, ILockable, ITelekinesisable
         Movable = false;
     }
 
-    [SerializableProperty(1)]
-    [CommandProperty(AccessLevel.GameMaster)]
-    public bool Open
+    [SerializableField(1, fieldChanged: nameof(OnOpenChanged))]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private bool _open;
+
+    private void OnOpenChanged(bool oldValue, bool newValue)
     {
-        get => _open;
-        set
+        ItemID = _open ? _openedId : _closedId;
+        if (_open)
         {
-            if (_open != value)
-            {
-                _open = value;
-
-                ItemID = _open ? _openedId : _closedId;
-
-                if (_open)
-                {
-                    Location = new Point3D(X + _offset.X, Y + _offset.Y, Z + _offset.Z);
-                }
-                else
-                {
-                    Location = new Point3D(X - _offset.X, Y - _offset.Y, Z - _offset.Z);
-                }
-
-                Effects.PlaySound(this, _open ? OpenedSound : ClosedSound);
-
-                if (_open)
-                {
-                    _timer ??= new InternalTimer(this);
-                    _timer.Start();
-                }
-                else
-                {
-                    _timer.Stop();
-                    _timer = null;
-                }
-
-                this.MarkDirty();
-            }
+            Location = new Point3D(X + _offset.X, Y + _offset.Y, Z + _offset.Z);
+        }
+        else
+        {
+            Location = new Point3D(X - _offset.X, Y - _offset.Y, Z - _offset.Z);
+        }
+        Effects.PlaySound(this, _open ? OpenedSound : ClosedSound);
+        if (_open)
+        {
+            _timer ??= new InternalTimer(this);
+            _timer.Start();
+        }
+        else
+        {
+            _timer.Stop();
+            _timer = null;
         }
     }
 

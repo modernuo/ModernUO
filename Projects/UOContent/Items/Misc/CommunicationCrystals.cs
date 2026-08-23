@@ -275,7 +275,15 @@ public partial class BroadcastCrystal : Item
 [SerializationGenerator(0)]
 public partial class ReceiverCrystal : Item
 {
+    [SerializableField(0, fieldChanged: nameof(OnSenderChanged))]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private BroadcastCrystal _sender;
+
+    private void OnSenderChanged(BroadcastCrystal oldValue, BroadcastCrystal newValue)
+    {
+        oldValue?.RemoveReceiver(this);
+        newValue?.AddReceiver(this);
+    }
 
     [Constructible]
     public ReceiverCrystal() : base(0x1ED0) => Light = LightType.Circle150;
@@ -294,20 +302,6 @@ public partial class ReceiverCrystal : Item
         {
             ItemID = value ? 0x1ED1 : 0x1ED0;
             InvalidateProperties();
-        }
-    }
-
-    [SerializableProperty(0, useField: nameof(_sender))]
-    [CommandProperty(AccessLevel.GameMaster)]
-    public BroadcastCrystal Sender
-    {
-        get => _sender;
-        set
-        {
-            _sender?.RemoveReceiver(this);
-            _sender = value;
-            value?.AddReceiver(this);
-            this.MarkDirty();
         }
     }
 

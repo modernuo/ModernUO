@@ -60,17 +60,14 @@ public abstract partial class BaseRunicTool : BaseTool
 
     public BaseRunicTool(CraftResource resource, int uses, int itemID) : base(uses, itemID) => _resource = resource;
 
-    [SerializableProperty(0)]
-    [CommandProperty(AccessLevel.GameMaster)]
-    public CraftResource Resource
+    [SerializableField(0, fieldChanged: nameof(OnResourceChanged))]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    [InvalidateProperties]
+    private CraftResource _resource;
+
+    private void OnResourceChanged(CraftResource oldValue, CraftResource newValue)
     {
-        get => _resource;
-        set
-        {
-            _resource = value;
-            Hue = CraftResources.GetHue(_resource);
-            InvalidateProperties();
-        }
+        Hue = CraftResources.GetHue(_resource);
     }
 
     private void Deserialize(IGenericReader reader, int version)

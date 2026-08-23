@@ -237,16 +237,12 @@ namespace Server.Items
             }
         }
 
-        [SerializableProperty(0)]
-        public PuzzleChestSolution Solution
+        [SerializableField(0, fieldChanged: nameof(OnSolutionChanged))]
+        private PuzzleChestSolution _solution;
+
+        private void OnSolutionChanged(PuzzleChestSolution oldValue, PuzzleChestSolution newValue)
         {
-            get => _solution;
-            set
-            {
-                _solution = value;
-                InitHints();
-                this.MarkDirty();
-            }
+            InitHints();
         }
 
         public PuzzleChestCylinder FirstHint

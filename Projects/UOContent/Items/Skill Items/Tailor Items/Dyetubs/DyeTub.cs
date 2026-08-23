@@ -41,20 +41,13 @@ namespace Server.Items
 
         public virtual bool AllowDyables => true;
 
-        [SerializableProperty(2)]
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int DyedHue
-        {
-            get => _dyedHue;
-            set
-            {
-                if (_redyable)
-                {
-                    _dyedHue = value;
-                    Hue = value;
-                }
-            }
-        }
+        [SerializableField(2, allowFieldChange: nameof(AllowDyedHueChange), fieldChanged: nameof(OnDyedHueChanged))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private int _dyedHue;
+
+        private bool AllowDyedHueChange(ref int value) => _redyable;
+
+        private void OnDyedHueChanged(int oldValue, int newValue) => Hue = newValue;
 
         // Three metallic tubs now.
         public virtual bool MetallicHues => false;

@@ -36,50 +36,41 @@ public partial class BagOfSending : Item, TranslocationItem
 
     public override int LabelNumber => 1054104; // a bag of sending
 
-    [SerializableProperty(0)]
-    [CommandProperty(AccessLevel.GameMaster)]
-    public BagOfSendingHue BagOfSendingHue
-    {
-        get => _bagOfSendingHue;
-        set
-        {
-            _bagOfSendingHue = value;
+    [SerializableField(0, fieldChanged: nameof(OnBagOfSendingHueChanged))]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private BagOfSendingHue _bagOfSendingHue;
 
-            Hue = value switch
-            {
-                BagOfSendingHue.Yellow => 0x8A5,
-                BagOfSendingHue.Blue   => 0x8AD,
-                BagOfSendingHue.Red    => 0x89B,
-                _                      => Hue
-            };
-            this.MarkDirty();
-        }
+    private void OnBagOfSendingHueChanged(BagOfSendingHue oldValue, BagOfSendingHue newValue)
+    {
+        Hue = newValue switch
+        {
+            BagOfSendingHue.Yellow => 0x8A5,
+            BagOfSendingHue.Blue   => 0x8AD,
+            BagOfSendingHue.Red    => 0x89B,
+            _                      => Hue
+        };
     }
 
-    [SerializableProperty(1)]
-    [CommandProperty(AccessLevel.GameMaster)]
-    public int Charges
+    [SerializableField(1, allowFieldChange: nameof(AllowChargesChange))]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    [InvalidateProperties]
+    private int _charges;
+
+    private bool AllowChargesChange(ref int value)
     {
-        get => _charges;
-        set
-        {
-            _charges = Math.Clamp(value, 0, MaxCharges);
-            InvalidateProperties();
-            this.MarkDirty();
-        }
+        value = Math.Clamp(value, 0, MaxCharges);
+        return true;
     }
 
-    [SerializableProperty(2)]
-    [CommandProperty(AccessLevel.GameMaster)]
-    public int Recharges
+    [SerializableField(2, allowFieldChange: nameof(AllowRechargesChange))]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    [InvalidateProperties]
+    private int _recharges;
+
+    private bool AllowRechargesChange(ref int value)
     {
-        get => _recharges;
-        set
-        {
-            _recharges = Math.Clamp(value, 0, MaxRecharges);
-            InvalidateProperties();
-            this.MarkDirty();
-        }
+        value = Math.Clamp(value, 0, MaxRecharges);
+        return true;
     }
 
     [CommandProperty(AccessLevel.GameMaster)]

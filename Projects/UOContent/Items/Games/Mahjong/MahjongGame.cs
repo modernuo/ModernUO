@@ -55,55 +55,33 @@ public partial class MahjongGame : Item, ISecurable
 
     public override double DefaultWeight => 5.0;
 
-    [CommandProperty(AccessLevel.GameMaster)]
-    [SerializableProperty(6)]
-    public bool ShowScores
+    [SerializableField(6, fieldChanged: nameof(OnShowScoresChanged))]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private bool _showScores;
+
+    private void OnShowScoresChanged(bool oldValue, bool newValue)
     {
-        get => _showScores;
-        set
+        if (newValue)
         {
-            if (_showScores == value)
-            {
-                return;
-            }
-
-            _showScores = value;
-
-            if (value)
-            {
-                _players.SendPlayersPacket(true, true);
-            }
-
-            _players.SendGeneralPacket(true, true);
-            _players.SendLocalizedMessage(value ? 1062777 : 1062778); // The dealer has enabled/disabled score display.
-            this.MarkDirty();
+            _players.SendPlayersPacket(true, true);
         }
+        _players.SendGeneralPacket(true, true);
+        _players.SendLocalizedMessage(newValue ? 1062777 : 1062778); // The dealer has enabled/disabled score display.
     }
 
-    [CommandProperty(AccessLevel.GameMaster)]
-    [SerializableProperty(7)]
-    public bool SpectatorVision
+    [SerializableField(7, fieldChanged: nameof(OnSpectatorVisionChanged))]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    [InvalidateProperties]
+    private bool _spectatorVision;
+
+    private void OnSpectatorVisionChanged(bool oldValue, bool newValue)
     {
-        get => _spectatorVision;
-        set
+        if (_players.IsInGamePlayer(_players.DealerPosition))
         {
-            if (_spectatorVision == value)
-            {
-                return;
-            }
-
-            _spectatorVision = value;
-
-            if (_players.IsInGamePlayer(_players.DealerPosition))
-            {
-                _players.Dealer.NetState.SendMahjongGeneralInfo(this);
-            }
-
-            _players.SendTilesPacket(false, true);
-            _players.SendLocalizedMessage(value ? 1062715 : 1062716); // The dealer has enabled/disabled Spectator Vision.
-            InvalidateProperties();
-            this.MarkDirty();
+            _players.Dealer.NetState.SendMahjongGeneralInfo(this);
         }
+        _players.SendTilesPacket(false, true);
+        _players.SendLocalizedMessage(newValue ? 1062715 : 1062716); // The dealer has enabled/disabled Spectator Vision.
     }
 
     private void BuildHorizontalWall(

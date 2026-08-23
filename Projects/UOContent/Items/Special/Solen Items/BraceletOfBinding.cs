@@ -27,30 +27,26 @@ public partial class BraceletOfBinding : BaseBracelet, TranslocationItem
 
     public override double DefaultWeight => 1.0;
 
-    [SerializableProperty(0)]
-    [CommandProperty(AccessLevel.GameMaster)]
-    public int Recharges
+    [SerializableField(0, allowFieldChange: nameof(AllowRechargesChange))]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    [InvalidateProperties]
+    private int _recharges;
+
+    private bool AllowRechargesChange(ref int value)
     {
-        get => _recharges;
-        set
-        {
-            _recharges = Math.Clamp(value, 0, MaxRecharges);
-            InvalidateProperties();
-            this.MarkDirty();
-        }
+        value = Math.Clamp(value, 0, MaxRecharges);
+        return true;
     }
 
-    [SerializableProperty(1)]
-    [CommandProperty(AccessLevel.GameMaster)]
-    public int Charges
+    [SerializableField(1, allowFieldChange: nameof(AllowChargesChange))]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    [InvalidateProperties]
+    private int _charges;
+
+    private bool AllowChargesChange(ref int value)
     {
-        get => _charges;
-        set
-        {
-            _charges = Math.Clamp(value, 0, MaxCharges);
-            InvalidateProperties();
-            this.MarkDirty();
-        }
+        value = Math.Clamp(value, 0, MaxCharges);
+        return true;
     }
 
     [SerializableProperty(3)]

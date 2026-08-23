@@ -12,16 +12,12 @@ public partial class SummoningAltar : AbbatoirAddon
     {
     }
 
-    [SerializableProperty(0)]
-    public BoneDemon Daemon
+    [SerializableField(0, fieldChanged: nameof(OnDaemonChanged))]
+    private BoneDemon _daemon;
+
+    private void OnDaemonChanged(BoneDemon oldValue, BoneDemon newValue)
     {
-        get => _daemon;
-        set
-        {
-            _daemon = value;
-            CheckDaemon();
-            this.MarkDirty();
-        }
+        CheckDaemon();
     }
 
     public void CheckDaemon()

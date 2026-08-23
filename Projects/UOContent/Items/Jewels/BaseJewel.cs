@@ -93,16 +93,13 @@ public abstract partial class BaseJewel : Item, ICraftable, IAosItem
         }
     }
 
-    [SerializableProperty(2)]
-    [CommandProperty(AccessLevel.GameMaster)]
-    public CraftResource Resource
+    [SerializableField(2, fieldChanged: nameof(OnResourceChanged))]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private CraftResource _resource;
+
+    private void OnResourceChanged(CraftResource oldValue, CraftResource newValue)
     {
-        get => _resource;
-        set
-        {
-            _resource = value;
-            Hue = CraftResources.GetHue(_resource);
-        }
+        Hue = CraftResources.GetHue(_resource);
     }
 
     public override int PhysicalResistance => Resistances.Physical;
