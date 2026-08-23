@@ -457,16 +457,24 @@ set
 ```
 Without this, changes won't be saved.
 
+Most RunUO custom setters only clamp the value or run side effects after assignment. Those
+convert to a plain `[SerializableField]` with the `allowFieldChange`/`fieldChanged` hooks,
+which handle the equality check and `MarkDirty()` for you -- reserve `[SerializableProperty]`
+for custom getters (see `dev-docs/serialization.md`).
+
 ### 3. Field Ordering
 The `[SerializableField(N)]` index determines serialization order. Choose a logical order and don't change it after the first save — or increment the version.
 
 ### 4. Conditional Serialization
-Use `[SerializableFieldSaveFlag]` and `[SerializableFieldDefault]` to skip default values:
+Use `[SaveFlag]` on the serializable field to skip default values (the second method is
+optional -- omit it and the field keeps its default at load):
 ```csharp
-[SerializableFieldSaveFlag(0)]
+[SerializableField(0)]
+[SaveFlag(nameof(ShouldSerializeMaxItems), nameof(MaxItemsDefaultValue))]
+private int _maxItems;
+
 private bool ShouldSerializeMaxItems() => _maxItems != -1;
 
-[SerializableFieldDefault(0)]
 private int MaxItemsDefaultValue() => -1;
 ```
 
@@ -479,12 +487,15 @@ private List<Mobile> _followers;
 ```
 
 ### 6. DateTime Fields
-Use `[DeltaDateTime]` to survive server restarts:
+Use `[AnchoredDateTime]` to survive server restarts -- the value is shifted by downtime at
+load, so the remaining time is preserved and idle saves stay byte-stable:
 ```csharp
-[DeltaDateTime]
+[AnchoredDateTime]
 [SerializableField(0)]
 private DateTime _expireTime;
 ```
+(`[DeltaDateTime]` is the legacy equivalent; it rewrites bytes on every save. Converting an
+existing field between the two changes the wire format and requires a version bump.)
 
 ### 7. Keeping Manual Serialization (Rare)
 Some edge cases still need manual serialization. If a type has complex conditional logic that can't be expressed with attributes, you can implement `ISerializable` manually. But this is rare — try attributes first.

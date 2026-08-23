@@ -305,7 +305,7 @@ In RunUO, timers are commonly started in `Deserialize()`. In ModernUO, use `[Aft
 `_token.Cancel()` can be called on a default token, a stopped token, or an already-cancelled token. No null checks needed.
 
 ### 4. Timer.DelayCall Still Exists
-`Timer.DelayCall()` is still available and returns a `Timer` object. Use it when you need the `Timer` reference (e.g., for `[DeserializeTimerField]`) or state-carrying overloads.
+`Timer.DelayCall()` is still available and returns a `Timer` object. Use it when you need the `Timer` reference (e.g., for a serialized timer field with `[DeserializeTimer]`) or state-carrying overloads.
 
 ### 5. Custom Timer Classes Are Still Possible
 For complex timer logic (e.g., `Corpse.DecayTimer`), you can still subclass `Timer` with `OnTick()`. But prefer the fire-and-forget pattern for simple cases.

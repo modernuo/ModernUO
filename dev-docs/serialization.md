@@ -117,7 +117,7 @@ public partial class MyItem : Item { }
 
 See `dev-docs/runuo-migration-docs/02-serialization.md` for complete migration guidance.
 
-### [SerializableField(index, setter, saveIf)]
+### [SerializableField(index, getter, setter, isVirtual, fieldChanged, allowFieldChange)]
 
 **Target**: Private field (`_camelCase`)
 **Generates**: Public `PascalCase` property with get/set
@@ -125,8 +125,11 @@ See `dev-docs/runuo-migration-docs/02-serialization.md` for complete migration g
 | Parameter | Type | Default | Description |
 |---|---|---|---|
 | `index` | `int` | Required | Serialization order (0-based) |
-| `setter` | `string` | `null` (public) | `"private"` or `"internal"` to restrict setter |
-| `saveIf` | `string` | `null` | Method name returning bool for conditional save |
+| `getter` | `string` | `"public"` | Getter accessibility |
+| `setter` | `string` | `"public"` | `"private"` or `"internal"` to restrict setter |
+| `isVirtual` | `bool` | `false` | Generate a `virtual` property |
+| `fieldChanged` | `string` | `null` | `nameof` of a `void Method(T oldValue, T newValue)` invoked by the generated setter after assignment |
+| `allowFieldChange` | `string` | `null` | `nameof` of a `bool Method(ref T value)` invoked before assignment; coerce the value through the `ref` parameter, or return `false` to reject the change |
 
 ```csharp
 [SerializableField(0)]                              // Public property
@@ -144,14 +147,57 @@ The generated property for `_charges` would be:
 public int Charges
 {
     get => _charges;
-    set { _charges = value; this.MarkDirty(); }
+    set
+    {
+        if (value != _charges)
+        {
+            _charges = value;
+            this.MarkDirty();
+        }
+    }
 }
 ```
+
+**Setter hooks** replace most hand-written `[SerializableProperty]` setters. The generated
+pipeline is: equality check → `allowFieldChange` (coerce/veto) → assignment → `MarkDirty` →
+`InvalidateProperties` (if declared) → `fieldChanged`. The gate runs before assignment, so
+the field itself still holds the old value inside it.
+
+```csharp
+[SerializableField(0, allowFieldChange: nameof(AllowChargesChange))]
+[SerializedCommandProperty(AccessLevel.GameMaster)]
+[InvalidateProperties]
+private int _charges;
+
+private bool AllowChargesChange(ref int value)
+{
+    value = Math.Clamp(value, 0, MaxCharges);   // coerce, or return false to veto
+    return true;
+}
+
+[SerializableField(1, fieldChanged: nameof(OnOwnerChanged))]
+private Mobile _owner;
+
+// oldValue makes unsubscribe/resubscribe patterns trivial
+private void OnOwnerChanged(Mobile oldValue, Mobile newValue)
+{
+    oldValue?.Followers.Remove(this);
+    newValue?.Followers.Add(this);
+}
+```
+
+Both hooks require a generated setter — declaring one on a `readonly` field or with
+`setter: null` is a compile-time error (SG3018), and a named method that is missing or has
+the wrong signature is too (SG3015).
 
 ### [SerializableProperty(index, useField)]
 
 **Target**: Property with custom get/set logic
-**Use when**: You need non-trivial getter/setter logic
+**Use when**: You need a **custom getter** (fallback defaults, lazy or self-healing reads)
+or setter semantics the field hooks cannot express (work that must run on *equal*
+assignment, pre-assignment state capture). For setters that only coerce, veto, or run
+post-change side effects, prefer `[SerializableField]` with `allowFieldChange`/`fieldChanged`
+instead — the generated setter handles equality, `MarkDirty`, and ordering for you.
 
 | Parameter | Type | Default | Description |
 |---|---|---|---|
@@ -163,7 +209,7 @@ public int Charges
 [CommandProperty(AccessLevel.GameMaster)]
 public int MaxItems
 {
-    get => _maxItems == -1 ? DefaultMaxItems : _maxItems;
+    get => _maxItems == -1 ? DefaultMaxItems : _maxItems;   // custom getter: the reason this is a property
     set
     {
         _maxItems = value;
@@ -172,6 +218,10 @@ public int MaxItems
     }
 }
 ```
+
+Note: the `fieldChanged`/`allowFieldChange` hooks are `[SerializableField]` arguments and
+cannot be declared on a `[SerializableProperty]` — its setter is your own code, so call your
+methods from the setter directly.
 
 ### [InvalidateProperties]
 
@@ -208,12 +258,32 @@ Overloads:
 
 Best for fields that are usually small values (counts, IDs, indexes).
 
+### [AnchoredDateTime]
+
+**Target**: `DateTime` field
+**Effect**: Stores the absolute UTC instant; at load it is shifted forward by the downtime
+between the save and the load (using the save-start anchor in the save's index file), so
+server downtime does not consume the remaining time. `DateTime.MinValue`/`MaxValue`
+sentinels pass through unshifted.
+
+Prefer this for deadlines and "elapsed while running" values. Unlike `[DeltaDateTime]`, the
+stored bytes do not change on every save when the value is unchanged, keeping idle saves
+byte-stable.
+
+```csharp
+[AnchoredDateTime]
+[SerializableField(0)]
+private DateTime _expireTime;
+```
+
 ### [DeltaDateTime]
 
 **Target**: `DateTime` field
 **Effect**: Stores as offset from current time rather than absolute timestamp.
 
-This ensures timers and expiration dates survive server restarts correctly.
+Legacy encoding for surviving restarts: it rewrites the bytes on every save even when the
+value has not changed. Prefer `[AnchoredDateTime]` for new fields; converting an existing
+field between the two changes the wire format and requires a version bump.
 
 ```csharp
 [DeltaDateTime]
@@ -289,40 +359,76 @@ private void AfterDeserialization()
 }
 ```
 
-### [DeserializeTimerField(fieldIndex)]
+### [DeserializeTimer(nameof(Method), wallClock)]
 
-**Target**: Method taking `TimeSpan` parameter
-**Effect**: Custom deserialization for Timer fields. The timer is saved as remaining delay.
+**Target**: `Timer`-typed `[SerializableField]` or `[SerializableProperty]` member
+**Effect**: Declares how the timer is stored and restored. Required on every serializable
+timer (SG3008 otherwise).
+
+By default the timer's next tick is stored as **anchored time**: server downtime does not
+consume the remaining delay, and idle saves are byte-stable. Pass `wallClock: true` to store
+an absolute deadline instead (the delay is then negative when the deadline passed during
+downtime).
+
+The named method — `void Method(TimeSpan delay)` — is invoked **only when a timer was
+actually running at save**, with the remaining delay. There is no sentinel value to check.
 
 ```csharp
 [SerializableField(0, setter: "private")]
+[DeserializeTimer(nameof(DeserializeDecayTimer))]
 private Timer _decayTimer;
 
-[DeserializeTimerField(0)]
-private void DeserializeDecayTimer(TimeSpan delay)
+private void DeserializeDecayTimer(TimeSpan delay) => _decayTimer = Timer.DelayCall(delay, Delete);
+```
+
+Switching an existing timer between drifting and `wallClock` changes the wire format — bump
+the class version and add a `MigrateFrom`. The old-version content struct exposes the
+timer's `XxxNext` (`DateTime`) and `XxxDelay` (`TimeSpan`, `TimeSpan.MinValue` when no timer
+was running):
+
+```csharp
+private void MigrateFrom(V3Content content)
 {
-    _decayTimer = Timer.DelayCall(delay, Delete);
-    _decayTimer.Start();
+    if (content.DecayTimerDelay != TimeSpan.MinValue)
+    {
+        DeserializeDecayTimer(content.DecayTimerDelay);
+    }
 }
 ```
 
-### [SerializableFieldSaveFlag(fieldIndex)] / [SerializableFieldDefault(fieldIndex)]
+### [SaveFlag(nameof(ShouldSerializeMethod), nameof(DefaultValueMethod))]
 
+**Target**: the serializable field or property itself
 **Conditional serialization** -- skip fields that have their default value.
+
+The first method (`bool Method()`) decides whether the value is written. The optional second
+method (returning the field's type, no parameters) supplies the value at load when it was
+not written; when omitted, the field keeps its default value.
+
+```csharp
+[SerializableField(0)]
+[SaveFlag(nameof(ShouldSerializeCharges), nameof(ChargesDefaultValue))]
+private int _charges;
+
+private bool ShouldSerializeCharges() => _charges != -1;
+
+private int ChargesDefaultValue() => -1;
+```
+
+Works on `[SerializableProperty]` members the same way:
 
 ```csharp
 [EncodedInt]
 [SerializableProperty(0)]
+[SaveFlag(nameof(ShouldSerializeMaxItems), nameof(MaxItemsDefaultValue))]
 public int MaxItems
 {
     get => _maxItems == -1 ? DefaultMaxItems : _maxItems;
     set { _maxItems = value; this.MarkDirty(); }
 }
 
-[SerializableFieldSaveFlag(0)]
 private bool ShouldSerializeMaxItems() => _maxItems != -1;
 
-[SerializableFieldDefault(0)]
 private int MaxItemsDefaultValue() => -1;
 ```
 
