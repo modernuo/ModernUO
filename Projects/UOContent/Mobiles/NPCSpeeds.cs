@@ -8,13 +8,12 @@ namespace Server.Mobiles;
 
 public enum SpeedLevel
 {
-    None, // resolve by type list, falling back to Medium
+    None, // no bucket: the creature's own speeds are authoritative (custom)
     VerySlow,
     Slow,
     Medium,
     Fast,
-    VeryFast,
-    Custom // hand-tuned: no table entry; all four speeds serialize
+    VeryFast
 }
 
 public static class NPCSpeeds
@@ -27,23 +26,28 @@ public static class NPCSpeeds
     public static int MinIdleSeconds { get; private set; }
     public static int MaxIdleSeconds { get; private set; }
 
-    // Null when the table is unloaded (test fixtures). Creatures cache the result — the
-    // table is immutable after Configure.
-    public static SpeedClassEntry FindEntry(BaseCreature bc)
+    // Construction-time resolution of a type's bucket: an explicit DefaultSpeedClass,
+    // else the table's type list, else Medium so unconfigured creatures never construct
+    // at 0/0. None only when the table itself is unloaded (test fixtures).
+    public static SpeedLevel ResolveDefaultLevel(BaseCreature bc)
     {
-        if (bc.SpeedClass == SpeedLevel.Custom)
+        if (bc.DefaultSpeedClass != SpeedLevel.None)
         {
-            return null;
+            return bc.DefaultSpeedClass;
         }
 
-        if ((bc.SpeedClass == SpeedLevel.None || !_speedsByLevel.TryGetValue(bc.SpeedClass, out var sp)) &&
-            !_speedsByType.TryGetValue(bc.GetType(), out sp))
+        if (_speedsByType.TryGetValue(bc.GetType(), out var sp))
         {
-            _speedsByLevel.TryGetValue(SpeedLevel.Medium, out sp);
+            return sp.Level;
         }
 
-        return sp;
+        return _speedsByLevel.ContainsKey(SpeedLevel.Medium) ? SpeedLevel.Medium : SpeedLevel.None;
     }
+
+    // Null for None (custom) or an unloaded table. Creatures cache the result — the
+    // table is immutable after Configure.
+    public static SpeedClassEntry FindEntry(SpeedLevel level) =>
+        level == SpeedLevel.None ? null : _speedsByLevel.GetValueOrDefault(level);
 
     public static void RegisterSpeed(SpeedClassEntry entry)
     {

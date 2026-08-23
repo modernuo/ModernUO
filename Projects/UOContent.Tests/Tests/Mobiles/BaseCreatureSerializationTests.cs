@@ -85,7 +85,7 @@ public class BaseCreatureSerializationTests : IDisposable
         Assert.Equal(0.3, copy.ActiveSpeed);
         Assert.Equal(0.6, copy.PassiveSpeed);
         Assert.Equal(0.6, copy.CurrentSpeed);
-        Assert.Equal(0.6, copy.ActiveMoveSpeed);   // pulled from the table, not the wire
+        Assert.Equal(0.6, copy.ActiveMoveSpeed);   // class None (no table in tests): restored from the wire
         Assert.Equal(1.2, copy.PassiveMoveSpeed);
         Assert.Equal(100, copy.PhysicalDamage);
         Assert.Equal(BaseCreature.MaxLoyalty, copy.Loyalty);
@@ -238,7 +238,7 @@ public class BaseCreatureSerializationTests : IDisposable
 
         bc.ActiveSpeed = 0.25; // one tuned value customizes the whole block
 
-        Assert.Equal(SpeedLevel.Custom, bc.SpeedClass); // the bucket label never lies
+        Assert.Equal(SpeedLevel.None, bc.SpeedClass); // the bucket label never lies
 
         var writer = new BufferWriter(true);
         bc.Serialize(writer);
@@ -252,7 +252,7 @@ public class BaseCreatureSerializationTests : IDisposable
 
         // All four persisted raw - no value is left silently tracking the table.
         Assert.Equal(buffer.Length, reader.Position);
-        Assert.Equal(SpeedLevel.Custom, copy.SpeedClass);
+        Assert.Equal(SpeedLevel.None, copy.SpeedClass);
         Assert.Equal(0.25, copy.ActiveSpeed);
         Assert.Equal(0.4, copy.PassiveSpeed);
         Assert.Equal(0.3, copy.ActiveMoveSpeed);

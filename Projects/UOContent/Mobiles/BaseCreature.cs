@@ -316,7 +316,8 @@ namespace Server.Mobiles
         private FightMode FightModeDefaultValue() => FightMode.Closest;
 
         /// <summary>
-        /// The creature's npc-speeds bucket. Assigning applies the bucket's speeds; a
+        /// The creature's npc-speeds bucket, resolved at construction. Assigning applies
+        /// the bucket's speeds; None means custom (its own speeds are authoritative). A
         /// type's constant bucket belongs in <see cref="DefaultSpeedClass"/>.
         /// </summary>
         [SerializableField(7, fieldChanged: nameof(OnSpeedClassChange))]
@@ -324,9 +325,9 @@ namespace Server.Mobiles
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private SpeedLevel _speedClass;
 
-        private bool ShouldSerializeSpeedClass() => _speedClass != DefaultSpeedClass;
+        private bool ShouldSerializeSpeedClass() => _speedClass != ResolvedDefaultSpeedClass;
 
-        private SpeedLevel SpeedClassDefaultValue() => DefaultSpeedClass;
+        private SpeedLevel SpeedClassDefaultValue() => ResolvedDefaultSpeedClass;
 
         private void OnSpeedClassChange(SpeedLevel oldValue, SpeedLevel newValue)
         {
@@ -342,7 +343,7 @@ namespace Server.Mobiles
         {
             if (SpeedEntry == null)
             {
-                return; // Custom (or an unloaded table) has no bucket to apply
+                return; // None (custom) or an unloaded table has no bucket to apply
             }
 
             _applyingSpeedClass = true;
@@ -375,7 +376,7 @@ namespace Server.Mobiles
         // cannot exist on the wire.
         private bool ShouldSerializeSpeeds()
         {
-            if (_speedClass == SpeedLevel.Custom)
+            if (_speedClass == SpeedLevel.None)
             {
                 return true;
             }
@@ -391,9 +392,9 @@ namespace Server.Mobiles
         // bucket label must never lie. ApplySpeedClass assigns mid-transition and guards.
         private void OnSpeedTuned(double oldValue, double newValue)
         {
-            if (!_applyingSpeedClass && _speedClass != SpeedLevel.Custom && ShouldSerializeSpeeds())
+            if (!_applyingSpeedClass && _speedClass != SpeedLevel.None && ShouldSerializeSpeeds())
             {
-                _speedClass = SpeedLevel.Custom;
+                _speedClass = SpeedLevel.None;
                 _speedEntry = null;
             }
         }
@@ -866,7 +867,7 @@ namespace Server.Mobiles
             _currentAI = ai;
             _defaultAI = ai;
 
-            _speedClass = DefaultSpeedClass;
+            _speedClass = ResolvedDefaultSpeedClass;
 
             RangePerception = iRangePerception;
             RangeFight = iRangeFight;
@@ -876,6 +877,14 @@ namespace Server.Mobiles
             GetSpeeds(out _activeSpeed, out _passiveSpeed);
             GetMoveSpeeds(out _activeMoveSpeed, out _passiveMoveSpeed);
             _currentSpeed = _passiveSpeed;
+
+            if (_activeSpeed <= 0 || _passiveSpeed <= 0)
+            {
+                // A 0-delay creature spins its AI timer at wheel resolution.
+                throw new InvalidOperationException(
+                    $"{GetType()} constructed without speeds - is {"Data/npc-speeds.json"} missing?"
+                );
+            }
 
             _team = 0;
 
@@ -908,7 +917,7 @@ namespace Server.Mobiles
 
         public BaseCreature(Serial serial) : base(serial)
         {
-            _speedClass = DefaultSpeedClass;
+            _speedClass = ResolvedDefaultSpeedClass;
             Debug = false;
         }
 
@@ -2349,6 +2358,14 @@ namespace Server.Mobiles
             else
             {
                 MigrateMoveSpeeds();
+            }
+
+            // Legacy saves carry no bucket; the ctor guessed the type default. If the
+            // loaded speeds do not conform, the creature is custom.
+            if (_speedClass != SpeedLevel.None && ShouldSerializeSpeeds())
+            {
+                _speedClass = SpeedLevel.None;
+                _speedEntry = null;
             }
 
             if (version <= 14 && _isParagon && Hue == 0x31)
@@ -5134,7 +5151,13 @@ namespace Server.Mobiles
         // per save (and again on elided loads), so the dictionary walk must not repeat.
         private NPCSpeeds.SpeedClassEntry _speedEntry;
 
-        private NPCSpeeds.SpeedClassEntry SpeedEntry => _speedEntry ??= NPCSpeeds.FindEntry(this);
+        private NPCSpeeds.SpeedClassEntry SpeedEntry => _speedEntry ??= NPCSpeeds.FindEntry(_speedClass);
+
+        private SpeedLevel? _resolvedDefaultSpeedClass;
+
+        // The bucket a fresh spawn of this type resolves to (construction-time only).
+        private SpeedLevel ResolvedDefaultSpeedClass =>
+            _resolvedDefaultSpeedClass ??= NPCSpeeds.ResolveDefaultLevel(this);
 
         public virtual void GetSpeeds(out double activeSpeed, out double passiveSpeed)
         {
@@ -5142,7 +5165,7 @@ namespace Server.Mobiles
 
             if (entry == null)
             {
-                if (_speedClass == SpeedLevel.Custom)
+                if (_speedClass == SpeedLevel.None)
                 {
                     // A custom creature is its own reference.
                     activeSpeed = _activeSpeed;
@@ -5151,7 +5174,7 @@ namespace Server.Mobiles
                 }
 
                 throw new InvalidOperationException(
-                    $"{GetType()} has no speed entry - is {"Data/npc-speeds.json"} missing?"
+                    $"{GetType()} names bucket {_speedClass} but the table has no entry - is {"Data/npc-speeds.json"} missing?"
                 );
             }
 
