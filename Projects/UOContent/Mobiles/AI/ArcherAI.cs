@@ -49,7 +49,6 @@ public class ArcherAI : BaseAI
 
             if (!Mobile.InRange(combatant, Mobile.ChaseLeashRange))
             {
-
                 this.DebugSayFormatted($"I have lost {combatant.Name}");
 
                 Mobile.Combatant = null;
