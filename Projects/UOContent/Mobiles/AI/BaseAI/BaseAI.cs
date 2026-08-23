@@ -78,7 +78,6 @@ public abstract partial class BaseAI
         {
             if (_action != value)
             {
-
                 _action = value;
                 OnActionChanged();
             }
