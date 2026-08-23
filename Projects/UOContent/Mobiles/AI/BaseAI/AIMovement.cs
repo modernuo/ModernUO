@@ -333,7 +333,6 @@ public abstract partial class BaseAI
         {
             if (target.Location == _approachGaveUpGoalLoc)
             {
-
                 return false;
             }
 
