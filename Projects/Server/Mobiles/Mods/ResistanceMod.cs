@@ -21,17 +21,15 @@ namespace Server;
 [SerializationGenerator(0)]
 public partial class ResistanceMod : MobileMod
 {
-    [SerializableField(0)]
+    [SerializableField(0, fieldChanged: nameof(OnTypeChanged))]
     private ResistanceType _type;
 
-    [SerializableFieldChanged(0)]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void OnTypeChanged(ResistanceType oldValue, ResistanceType newValue) => Owner?.UpdateResistances();
 
-    [SerializableField(1)]
+    [SerializableField(1, fieldChanged: nameof(OnOffsetChanged))]
     private int _offset;
 
-    [SerializableFieldChanged(1)]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void OnOffsetChanged(int oldValue, int newValue) => Owner?.UpdateResistances();
 

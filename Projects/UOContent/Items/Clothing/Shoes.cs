@@ -54,11 +54,10 @@ namespace Server.Items
     {
         [EncodedInt]
         [InvalidateProperties]
-        [SerializableField(0)]
+        [SerializableField(0, fieldChanged: nameof(OnCurArcaneChargesChanged))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _curArcaneCharges;
 
-        [SerializableFieldChanged(0)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void OnCurArcaneChargesChanged(int oldValue, int newValue) => Update();
 

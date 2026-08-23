@@ -31,13 +31,12 @@ namespace Server.Items
         public override ArmorMeditationAllowance DefMedAllowance => ArmorMeditationAllowance.All;
 
         [SerializableField(0, setter: "private")]
+        [SaveFlag(nameof(ShouldSerializeWeaponAttributes), nameof(WeaponAttributesDefaultValue))]
         [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
         public AosWeaponAttributes _weaponAttributes;
 
-        [SerializableFieldSaveFlag(0)]
         private bool ShouldSerializeWeaponAttributes() => !_weaponAttributes.IsEmpty;
 
-        [SerializableFieldDefault(0)]
         private AosWeaponAttributes WeaponAttributesDefaultValue() => new(this);
 
         public override void AppendChildNameProperties(IPropertyList list)

@@ -54,10 +54,10 @@ public abstract partial class BaseSpawner : Item, ISpawner
     [SerializedCommandProperty(AccessLevel.Developer)]
     private Guid _guid;
 
-    [SerializableFieldSaveFlag(1)]
     private bool ShouldSerializeReturnOnDeactivate() => _returnOnDeactivate;
 
     [SerializableField(1)]
+    [SaveFlag(nameof(ShouldSerializeReturnOnDeactivate))]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private bool _returnOnDeactivate;
 
@@ -67,48 +67,46 @@ public abstract partial class BaseSpawner : Item, ISpawner
 
     private int _walkingRange = -1;
 
-    [SerializableFieldSaveFlag(4)]
     private bool ShouldSerializeWayPoint() => _wayPoint != null;
 
     [SerializableField(4)]
+    [SaveFlag(nameof(ShouldSerializeWayPoint))]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private WayPoint _wayPoint;
 
-    [SerializableFieldSaveFlag(5)]
     private bool ShouldSerializeGroup() => _group;
 
     [InvalidateProperties]
     [SerializableField(5)]
+    [SaveFlag(nameof(ShouldSerializeGroup))]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private bool _group;
 
-    [SerializableFieldSaveFlag(6)]
     private bool ShouldSerializeMinDelay() => _minDelay != DefaultMinDelay;
 
-    [SerializableFieldDefault(6)]
     private TimeSpan MinDelayDefault() => DefaultMinDelay;
 
     [InvalidateProperties]
     [SerializableField(6)]
+    [SaveFlag(nameof(ShouldSerializeMinDelay), nameof(MinDelayDefault))]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private TimeSpan _minDelay;
 
-    [SerializableFieldSaveFlag(7)]
     private bool ShouldSerializeMaxDelay() => _maxDelay != DefaultMaxDelay;
 
-    [SerializableFieldDefault(7)]
     private TimeSpan MaxDelayDefault() => DefaultMaxDelay;
 
     [InvalidateProperties]
     [SerializableField(7)]
+    [SaveFlag(nameof(ShouldSerializeMaxDelay), nameof(MaxDelayDefault))]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private TimeSpan _maxDelay;
 
-    [SerializableFieldSaveFlag(9)]
     private bool ShouldSerializeTeam() => _team != 0;
 
     [InvalidateProperties]
     [SerializableField(9)]
+    [SaveFlag(nameof(ShouldSerializeTeam))]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private int _team;
 
@@ -125,29 +123,29 @@ public abstract partial class BaseSpawner : Item, ISpawner
     /// If true, the home location of the spawn is the location where it spawned
     /// If false, the home location of the spawn is the location of the spawner
     /// </summary>
-    [SerializableFieldSaveFlag(11)]
     private bool ShouldSerializeSpawnLocationIsHome() => _spawnLocationIsHome;
 
     [InvalidateProperties]
     [SerializableField(11)]
+    [SaveFlag(nameof(ShouldSerializeSpawnLocationIsHome))]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private bool _spawnLocationIsHome;
 
-    [SerializableFieldSaveFlag(12)]
     private bool ShouldSerializeEnd() => _end != default;
 
     [SerializableField(12)]
+    [SaveFlag(nameof(ShouldSerializeEnd))]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private DateTime _end;
 
     /// <summary>
     /// Controls how spawn position optimization is handled.
     /// </summary>
-    [SerializableFieldSaveFlag(13)]
     private bool ShouldSerializeSpawnPositionMode() =>
         _spawnPositionMode is not SpawnPositionMode.Automatic and not SpawnPositionMode.Abandoned;
 
     [SerializableField(13)]
+    [SaveFlag(nameof(ShouldSerializeSpawnPositionMode))]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private SpawnPositionMode _spawnPositionMode;
 
@@ -156,13 +154,12 @@ public abstract partial class BaseSpawner : Item, ISpawner
     /// <summary>
     /// Maximum number of random position attempts before engaging optimization.
     /// </summary>
-    [SerializableFieldSaveFlag(14)]
     private bool ShouldSerializeMaxSpawnAttempts() => _maxSpawnAttempts != DefaultMaxSpawnAttempts;
 
-    [SerializableFieldDefault(14)]
     private int MaxSpawnAttemptsDefault() => DefaultMaxSpawnAttempts;
 
     [SerializableField(14)]
+    [SaveFlag(nameof(ShouldSerializeMaxSpawnAttempts), nameof(MaxSpawnAttemptsDefault))]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private int _maxSpawnAttempts;
 

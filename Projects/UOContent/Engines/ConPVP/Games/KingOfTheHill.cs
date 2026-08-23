@@ -252,10 +252,9 @@ public partial class HillOfTheKing : Item
 public partial class KHBoard : Item
 {
     [SerializedCommandProperty(AccessLevel.GameMaster)]
-    [SerializableField(0)]
+    [SerializableField(0, fieldChanged: nameof(OnControllerChanged))]
     private KHController _controller;
 
-    [SerializableFieldChanged(0)]
     private void OnControllerChanged(KHController oldValue, KHController newValue)
     {
         oldValue?.RemoveBoard(this);

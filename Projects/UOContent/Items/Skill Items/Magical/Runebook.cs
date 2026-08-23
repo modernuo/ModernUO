@@ -371,27 +371,27 @@ public partial class RunebookEntry
     private Runebook _runebook;
 
     [SerializableField(0)]
+    [SaveFlag(nameof(ShouldSerializeHouse))]
     private BaseHouse _house;
 
-    [SerializableFieldSaveFlag(0)]
     public bool ShouldSerializeHouse() => _house?.Deleted == false;
 
     [SerializableField(1)]
+    [SaveFlag(nameof(ShouldSerializeLocation))]
     private Point3D _location;
 
-    [SerializableFieldSaveFlag(1)]
     public bool ShouldSerializeLocation() => _house?.Deleted != false;
 
     [SerializableField(2)]
+    [SaveFlag(nameof(ShouldSerializeMap))]
     private Map _map;
 
-    [SerializableFieldSaveFlag(2)]
     public bool ShouldSerializeMap() => _house?.Deleted != false;
 
     [SerializableField(3)]
+    [SaveFlag(nameof(ShouldSerializeDesc))]
     private string _description;
 
-    [SerializableFieldSaveFlag(3)]
     public bool ShouldSerializeDesc() => _house?.Deleted != false;
 
     public RunebookEntry(

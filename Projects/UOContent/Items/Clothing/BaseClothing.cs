@@ -26,76 +26,71 @@ namespace Server.Items
     public abstract partial class BaseClothing
         : Item, IDyable, IScissorable, IFactionItem, ICraftable, IWearableDurability, IAosItem
     {
-        [SerializableFieldSaveFlag(0)]
         private bool ShouldSerializeResource() => _resource != DefaultResource;
 
         [SerializedIgnoreDupe]
         [SerializableField(1, setter: "private")]
+        [SaveFlag(nameof(ShouldSerializeAttributes), nameof(AttributesDefaultValue))]
         [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
         private AosAttributes _attributes;
 
-        [SerializableFieldSaveFlag(1)]
         private bool ShouldSerializeAttributes() => !_attributes.IsEmpty;
 
-        [SerializableFieldDefault(1)]
         private AosAttributes AttributesDefaultValue() => new(this);
 
         [SerializedIgnoreDupe]
         [SerializableField(2, setter: "private")]
+        [SaveFlag(nameof(ShouldSerializeClothingAttributes), nameof(ClothingAttributesDefaultValue))]
         [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
         private AosArmorAttributes _clothingAttributes;
 
-        [SerializableFieldSaveFlag(2)]
         private bool ShouldSerializeClothingAttributes() => !_clothingAttributes.IsEmpty;
 
-        [SerializableFieldDefault(2)]
         private AosArmorAttributes ClothingAttributesDefaultValue() => new(this);
 
         [SerializedIgnoreDupe]
         [SerializableField(3, setter: "private")]
+        [SaveFlag(nameof(ShouldSerializeSkillBonuses), nameof(SkillBonusesDefaultValue))]
         [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
         private AosSkillBonuses _skillBonuses;
 
-        [SerializableFieldSaveFlag(3)]
         private bool ShouldSerializeSkillBonuses() => !_skillBonuses.IsEmpty;
 
-        [SerializableFieldDefault(3)]
         private AosSkillBonuses SkillBonusesDefaultValue() => new(this);
 
         [SerializedIgnoreDupe]
         [SerializableField(4, setter: "private")]
+        [SaveFlag(nameof(ShouldSerializeResistances), nameof(ResistancesDefaultValue))]
         [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
         private AosElementAttributes _resistances;
 
-        [SerializableFieldSaveFlag(4)]
         private bool ShouldSerializeResistances() => !_resistances.IsEmpty;
 
-        [SerializableFieldDefault(4)]
         private AosElementAttributes ResistancesDefaultValue() => new(this);
 
         [EncodedInt]
         [InvalidateProperties]
         [SerializableField(5)]
+        [SaveFlag(nameof(ShouldSerializeMaxHitPoints))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _maxHitPoints;
 
-        [SerializableFieldSaveFlag(5)]
         private bool ShouldSerializeMaxHitPoints() => _maxHitPoints != 0;
 
         [InvalidateProperties]
         [SerializableField(7)]
+        [SaveFlag(nameof(ShouldSerializeCrafter))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private string _crafter;
 
-        [SerializableFieldSaveFlag(7)]
         private bool ShouldSerializeCrafter() => !string.IsNullOrEmpty(_crafter);
 
         [InvalidateProperties]
         [SerializableField(8)]
+        [SaveFlag(nameof(ShouldSerializeQuality))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private ClothingQuality _quality = ClothingQuality.Regular;
 
-        [SerializableFieldSaveFlag(8)]
         private bool ShouldSerializeQuality() => _quality != ClothingQuality.Regular;
 
         // Field 9
@@ -119,6 +114,7 @@ namespace Server.Items
         }
 
         [SerializableProperty(0)]
+        [SaveFlag(nameof(ShouldSerializeResource))]
         [CommandProperty(AccessLevel.GameMaster)]
         public CraftResource Resource
         {
@@ -133,6 +129,7 @@ namespace Server.Items
         }
 
         [SerializableProperty(9, useField: nameof(_strReq))]
+        [SaveFlag(nameof(ShouldSerializeStrReq))]
         [CommandProperty(AccessLevel.GameMaster)]
         public int StrRequirement
         {
@@ -145,7 +142,6 @@ namespace Server.Items
             }
         }
 
-        [SerializableFieldSaveFlag(9)]
         private bool ShouldSerializeStrReq() => _strReq != -1;
 
         public virtual CraftResource DefaultResource => CraftResource.None;
@@ -299,6 +295,7 @@ namespace Server.Items
 
         [EncodedInt]
         [SerializableProperty(6)]
+        [SaveFlag(nameof(ShouldSerializeHitPoints))]
         [CommandProperty(AccessLevel.GameMaster)]
         public int HitPoints
         {
@@ -324,7 +321,6 @@ namespace Server.Items
             }
         }
 
-        [SerializableFieldSaveFlag(6)]
         private bool ShouldSerializeHitPoints() => _hitPoints != 0;
 
         public virtual int InitMinHits => 0;

@@ -37,17 +37,17 @@ public partial class PlantItem : Item, ISecurable
 
     [SerializedIgnoreDupe]
     [SerializableField(0)]
+    [SaveFlag(nameof(ShouldSerializeSecureLevel))]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private SecureLevel _level;
 
-    [SerializableFieldSaveFlag(0)]
     private bool ShouldSerializeSecureLevel() => (int)_level != 0;
 
     [SerializedIgnoreDupe]
     [SerializableField(5, setter: "private")]
+    [SaveFlag(nameof(ShouldSerializePlantSystem))]
     private PlantSystem _plantSystem;
 
-    [SerializableFieldSaveFlag(5)]
     private bool ShouldSerializePlantSystem() => _plantStatus < PlantStatus.DecorativePlant;
 
     // For clients older than 7.0.12.0
@@ -82,6 +82,7 @@ public partial class PlantItem : Item, ISecurable
 
     [CommandProperty(AccessLevel.GameMaster)]
     [SerializableProperty(1)]
+    [SaveFlag(nameof(ShouldSerializePlantStatus))]
     public PlantStatus PlantStatus
     {
         get => _plantStatus;
@@ -120,10 +121,10 @@ public partial class PlantItem : Item, ISecurable
         }
     }
 
-    [SerializableFieldSaveFlag(1)]
     private bool ShouldSerializePlantStatus() => _plantStatus != PlantStatus.BowlOfDirt;
 
     [SerializableProperty(2)]
+    [SaveFlag(nameof(ShouldSerializePlantType))]
     [CommandProperty(AccessLevel.GameMaster)]
     public PlantType PlantType
     {
@@ -135,10 +136,10 @@ public partial class PlantItem : Item, ISecurable
         }
     }
 
-    [SerializableFieldSaveFlag(2)]
     private bool ShouldSerializePlantType() => (int)_plantType != 0;
 
     [SerializableProperty(3)]
+    [SaveFlag(nameof(ShouldSerializePlantHue))]
     [CommandProperty(AccessLevel.GameMaster)]
     public PlantHue PlantHue
     {
@@ -150,10 +151,10 @@ public partial class PlantItem : Item, ISecurable
         }
     }
 
-    [SerializableFieldSaveFlag(3)]
     private bool ShouldSerializePlantHue() => _plantHue != PlantHue.None;
 
     [SerializableProperty(4)]
+    [SaveFlag(nameof(ShouldSerializeShowType))]
     [CommandProperty(AccessLevel.GameMaster)]
     public bool ShowType
     {
@@ -166,7 +167,6 @@ public partial class PlantItem : Item, ISecurable
         }
     }
 
-    [SerializableFieldSaveFlag(4)]
     private bool ShouldSerializeShowType() => _showType;
 
     [CommandProperty(AccessLevel.GameMaster)]

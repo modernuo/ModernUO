@@ -44,10 +44,10 @@ public partial class Container : Item
     internal int _version;
 
     [SerializableField(3)]
+    [SaveFlag(nameof(ShouldSerializeLiftOverride))]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private bool _liftOverride;
 
-    [SerializableFieldSaveFlag(3)]
     private bool ShouldSerializeLiftOverride() => _liftOverride;
 
     public Container(int itemID) : base(itemID)
@@ -84,6 +84,7 @@ public partial class Container : Item
 
     [EncodedInt]
     [SerializableProperty(0)]
+    [SaveFlag(nameof(ShouldSerializeMaxItems), nameof(MaxItemsDefaultValue))]
     [CommandProperty(AccessLevel.GameMaster)]
     public int MaxItems
     {
@@ -96,14 +97,13 @@ public partial class Container : Item
         }
     }
 
-    [SerializableFieldSaveFlag(0)]
     private bool ShouldSerializeMaxItems() => _maxItems != -1;
 
-    [SerializableFieldDefault(0)]
     private int MaxItemsDefaultValue() => -1;
 
     [EncodedInt]
     [SerializableProperty(1)]
+    [SaveFlag(nameof(ShouldSerializeGumpId), nameof(GumpIDDefaultValue))]
     [CommandProperty(AccessLevel.GameMaster)]
     public int GumpID
     {
@@ -115,14 +115,13 @@ public partial class Container : Item
         }
     }
 
-    [SerializableFieldSaveFlag(1)]
     private bool ShouldSerializeGumpId() => _gumpID != -1;
 
-    [SerializableFieldDefault(1)]
     private int GumpIDDefaultValue() => -1;
 
     [EncodedInt]
     [SerializableProperty(2)]
+    [SaveFlag(nameof(ShouldSerializeDropSound), nameof(DropSoundDefaultValue))]
     [CommandProperty(AccessLevel.GameMaster)]
     public int DropSound
     {
@@ -134,10 +133,8 @@ public partial class Container : Item
         }
     }
 
-    [SerializableFieldSaveFlag(2)]
     private bool ShouldSerializeDropSound() => _dropSound != -1;
 
-    [SerializableFieldDefault(2)]
     private int DropSoundDefaultValue() => -1;
 
     [CommandProperty(AccessLevel.GameMaster)]

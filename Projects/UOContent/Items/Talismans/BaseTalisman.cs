@@ -128,136 +128,131 @@ public partial class BaseTalisman : Item, IAosItem
 
     [SerializedIgnoreDupe]
     [SerializableField(0, setter: "private")]
+    [SaveFlag(nameof(ShouldSerializeAttributes), nameof(AttributesDefaultValue))]
     [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
     private AosAttributes _attributes;
 
-    [SerializableFieldSaveFlag(0)]
     public bool ShouldSerializeAttributes() => !_attributes.IsEmpty;
 
-    [SerializableFieldDefault(0)]
     private AosAttributes AttributesDefaultValue() => new(this);
 
     [SerializedIgnoreDupe]
     [SerializableField(1, setter: "private")]
+    [SaveFlag(nameof(ShouldSerializeSkillBonuses), nameof(SkillBonusesDefaultValue))]
     [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
     private AosSkillBonuses _skillBonuses;
 
-    [SerializableFieldSaveFlag(1)]
     public bool ShouldSerializeSkillBonuses() => !_skillBonuses.IsEmpty;
 
-    [SerializableFieldDefault(1)]
     private AosSkillBonuses SkillBonusesDefaultValue() => new(this);
 
     [SerializedIgnoreDupe]
     [InvalidateProperties]
     [SerializableField(2)]
+    [SaveFlag(nameof(ShouldSerializeProtection), nameof(ProtectionDefaultValue))]
     [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
     private TalismanAttribute _protection;
 
-    [SerializableFieldSaveFlag(2)]
     public bool ShouldSerializeProtection() => !_protection.IsEmpty;
 
-    [SerializableFieldDefault(2)]
     private TalismanAttribute ProtectionDefaultValue() => new();
 
     [SerializedIgnoreDupe]
     [InvalidateProperties]
     [SerializableField(3)]
+    [SaveFlag(nameof(ShouldSerializeKiller), nameof(KillerDefaultValue))]
     [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
     private TalismanAttribute _killer;
 
-    [SerializableFieldSaveFlag(3)]
     public bool ShouldSerializeKiller() => !_killer.IsEmpty;
 
-    [SerializableFieldDefault(3)]
     private TalismanAttribute KillerDefaultValue() => new();
 
     [SerializedIgnoreDupe]
     [InvalidateProperties]
     [SerializableField(4)]
+    [SaveFlag(nameof(ShouldSerializeSummoner), nameof(SummonerDefaultValue))]
     [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
     private TalismanAttribute _summoner;
 
-    [SerializableFieldSaveFlag(4)]
     public bool ShouldSerializeSummoner() => !_summoner.IsEmpty;
 
-    [SerializableFieldDefault(4)]
     private TalismanAttribute SummonerDefaultValue() => new();
 
     [InvalidateProperties]
     [SerializableField(5)]
+    [SaveFlag(nameof(ShouldSerializeRemoval))]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private TalismanRemoval _removal;
 
-    [SerializableFieldSaveFlag(5)]
     public bool ShouldSerializeRemoval() => _removal != TalismanRemoval.None;
 
     [InvalidateProperties]
     [SerializableField(6)]
+    [SaveFlag(nameof(ShouldSerializeSkill))]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private SkillName _skill;
 
-    [SerializableFieldSaveFlag(6)]
     public bool ShouldSerializeSkill() => (int)_skill != 0;
 
     [EncodedInt]
     [InvalidateProperties]
     [SerializableField(7)]
+    [SaveFlag(nameof(ShouldSerializeSuccessBonus))]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _successBonus;
 
-    [SerializableFieldSaveFlag(7)]
     public bool ShouldSerializeSuccessBonus() => _successBonus != 0;
 
     [EncodedInt]
     [InvalidateProperties]
     [SerializableField(8)]
+    [SaveFlag(nameof(ShouldSerializeExceptionalBonus))]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _exceptionalBonus;
 
-    [SerializableFieldSaveFlag(8)]
     public bool ShouldSerializeExceptionalBonus() => _exceptionalBonus != 0;
 
     [EncodedInt]
     [InvalidateProperties]
     [SerializableField(9)]
+    [SaveFlag(nameof(ShouldSerializeMaxCharges))]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _maxCharges;
 
-    [SerializableFieldSaveFlag(9)]
     public bool ShouldSerializeMaxCharges() => _maxCharges != 0;
 
     [EncodedInt]
     [InvalidateProperties]
     [SerializableField(11)]
+    [SaveFlag(nameof(ShouldSerializeMaxChargeTime))]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _maxChargeTime;
 
-    [SerializableFieldSaveFlag(11)]
     public bool ShouldSerializeMaxChargeTime() => _maxChargeTime != 0;
 
     [EncodedInt]
     [InvalidateProperties]
     [SerializableField(12)]
+    [SaveFlag(nameof(ShouldSerializeChargeTime))]
     private int _chargeTime;
 
-    [SerializableFieldSaveFlag(12)]
     public bool ShouldSerializeChargeTime() => _chargeTime != 0;
 
     [InvalidateProperties]
     [SerializableField(13)]
+    [SaveFlag(nameof(ShouldSerializeBlessed))]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private bool _blessed;
 
-    [SerializableFieldSaveFlag(13)]
     public bool ShouldSerializeBlessed() => _blessed;
 
     [InvalidateProperties]
     [SerializableField(14)]
+    [SaveFlag(nameof(ShouldSerializeSlayer))]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private TalismanSlayerName _slayer;
 
-    [SerializableFieldSaveFlag(14)]
     public bool ShouldSerializeSlayer() => _slayer != TalismanSlayerName.None;
 
     private BaseCreature _creature;
@@ -285,6 +280,7 @@ public partial class BaseTalisman : Item, IAosItem
     public virtual bool ForceShowName => false; // used to override default summoner/removal name
 
     [SerializableProperty(10)]
+    [SaveFlag(nameof(ShouldSerializeCharges))]
     [CommandProperty(AccessLevel.GameMaster)]
     public int Charges
     {
@@ -303,7 +299,6 @@ public partial class BaseTalisman : Item, IAosItem
         }
     }
 
-    [SerializableFieldSaveFlag(10)]
     public bool ShouldSerializeCharges() => _charges != 0;
 
     public static void Configure()

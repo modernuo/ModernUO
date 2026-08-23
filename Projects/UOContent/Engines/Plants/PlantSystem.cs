@@ -33,24 +33,24 @@ namespace Server.Engines.Plants
         private PlantItem _plant;
 
         [SerializableField(0)]
+        [SaveFlag(nameof(ShouldSerializeFertileDirt))]
         private bool _fertileDirt;
 
-        [SerializableFieldSaveFlag(0)]
         private bool ShouldSerializeFertileDirt() => _fertileDirt;
 
         [SerializableField(1)]
         private DateTime _nextGrowth;
 
         [SerializableField(2, setter: "private")]
+        [SaveFlag(nameof(ShouldSerializeGrowthIndicator))]
         private PlantGrowthIndicator _growthIndicator;
 
-        [SerializableFieldSaveFlag(2)]
         private bool ShouldSerializeGrowthIndicator() => _growthIndicator != PlantGrowthIndicator.None;
 
         [SerializableField(13)]
+        [SaveFlag(nameof(ShouldSerializePollinated))]
         private bool _pollinated;
 
-        [SerializableFieldSaveFlag(13)]
         private bool ShouldSerializePollinated() => _pollinated;
 
         public PlantSystem(PlantItem plant)
@@ -98,6 +98,7 @@ namespace Server.Engines.Plants
         public bool IsFullWater => _water >= 4;
 
         [SerializableProperty(3)]
+        [SaveFlag(nameof(ShouldSerializeWater))]
         public int Water
         {
             get => _water;
@@ -109,10 +110,10 @@ namespace Server.Engines.Plants
             }
         }
 
-        [SerializableFieldSaveFlag(3)]
         private bool ShouldSerializeWater() => _water != 0;
 
         [SerializableProperty(4)]
+        [SaveFlag(nameof(ShouldSerializeHits))]
         public int Hits
         {
             get => _hits;
@@ -135,7 +136,6 @@ namespace Server.Engines.Plants
             }
         }
 
-        [SerializableFieldSaveFlag(4)]
         private bool ShouldSerializeHits() => _hits != 0;
 
         public int MaxHits => 10 + (int)Plant.PlantStatus * 2;
@@ -150,6 +150,7 @@ namespace Server.Engines.Plants
             };
 
         [SerializableProperty(5)]
+        [SaveFlag(nameof(ShouldSerializeInfestation))]
         public int Infestation
         {
             get => _infestation;
@@ -160,10 +161,10 @@ namespace Server.Engines.Plants
             }
         }
 
-        [SerializableFieldSaveFlag(5)]
         private bool ShouldSerializeInfestation() => _infestation != 0;
 
         [SerializableProperty(6)]
+        [SaveFlag(nameof(ShouldSerializeFungus))]
         public int Fungus
         {
             get => _fungus;
@@ -174,10 +175,10 @@ namespace Server.Engines.Plants
             }
         }
 
-        [SerializableFieldSaveFlag(6)]
         private bool ShouldSerializeFungus() => _fungus != 0;
 
         [SerializableProperty(7)]
+        [SaveFlag(nameof(ShouldSerializePoison))]
         public int Poison
         {
             get => _poison;
@@ -188,10 +189,10 @@ namespace Server.Engines.Plants
             }
         }
 
-        [SerializableFieldSaveFlag(7)]
         private bool ShouldSerializePoison() => _poison != 0;
 
         [SerializableProperty(8)]
+        [SaveFlag(nameof(ShouldSerializeDisease))]
         public int Disease
         {
             get => _disease;
@@ -202,12 +203,12 @@ namespace Server.Engines.Plants
             }
         }
 
-        [SerializableFieldSaveFlag(8)]
         private bool ShouldSerializeDisease() => _disease != 0;
 
         public bool IsFullPoisonPotion => _poisonPotion >= 2;
 
         [SerializableProperty(9)]
+        [SaveFlag(nameof(ShouldSerializePoisonPotion))]
         public int PoisonPotion
         {
             get => _poisonPotion;
@@ -218,12 +219,12 @@ namespace Server.Engines.Plants
             }
         }
 
-        [SerializableFieldSaveFlag(9)]
         private bool ShouldSerializePoisonPotion() => _poisonPotion != 0;
 
         public bool IsFullCurePotion => _curePotion >= 2;
 
         [SerializableProperty(10)]
+        [SaveFlag(nameof(ShouldSerializeCurePotion))]
         public int CurePotion
         {
             get => _curePotion;
@@ -234,12 +235,12 @@ namespace Server.Engines.Plants
             }
         }
 
-        [SerializableFieldSaveFlag(10)]
         private bool ShouldSerializeCurePotion() => _curePotion != 0;
 
         public bool IsFullHealPotion => _healPotion >= 2;
 
         [SerializableProperty(11)]
+        [SaveFlag(nameof(ShouldSerializeHealPotion))]
         public int HealPotion
         {
             get => _healPotion;
@@ -250,12 +251,12 @@ namespace Server.Engines.Plants
             }
         }
 
-        [SerializableFieldSaveFlag(11)]
         private bool ShouldSerializeHealPotion() => _healPotion != 0;
 
         public bool IsFullStrengthPotion => _strengthPotion >= 2;
 
         [SerializableProperty(12)]
+        [SaveFlag(nameof(ShouldSerializeStrengthPotion))]
         public int StrengthPotion
         {
             get => _strengthPotion;
@@ -266,7 +267,6 @@ namespace Server.Engines.Plants
             }
         }
 
-        [SerializableFieldSaveFlag(12)]
         private bool ShouldSerializeStrengthPotion() => _strengthPotion != 0;
 
         public bool HasMaladies => Infestation > 0 || Fungus > 0 || Poison > 0 || Disease > 0 || Water != 2;
@@ -274,6 +274,7 @@ namespace Server.Engines.Plants
         public bool PollenProducing => Plant.IsCrossable && Plant.PlantStatus >= PlantStatus.FullGrownPlant;
 
         [SerializableProperty(14)]
+        [SaveFlag(nameof(ShouldSerializeSeedType))]
         public PlantType SeedType
         {
             get => Pollinated ? _seedType : Plant.PlantType;
@@ -284,10 +285,10 @@ namespace Server.Engines.Plants
             }
         }
 
-        [SerializableFieldSaveFlag(14)]
         private bool ShouldSerializeSeedType() => _pollinated;
 
         [SerializableProperty(15)]
+        [SaveFlag(nameof(ShouldSerializeSeedHue))]
         public PlantHue SeedHue
         {
             get => Pollinated ? _seedHue : Plant.PlantHue;
@@ -298,53 +299,50 @@ namespace Server.Engines.Plants
             }
         }
 
-        [SerializableFieldSaveFlag(15)]
         private bool ShouldSerializeSeedHue() => _pollinated;
 
         [SerializableProperty(16)]
+        [SaveFlag(nameof(ShouldSerializeAvailableSeeds))]
         public int AvailableSeeds
         {
             get => _availableSeeds;
             set => _availableSeeds = Math.Max(value, 0);
         }
 
-        [SerializableFieldSaveFlag(16)]
         private bool ShouldSerializeAvailableSeeds() => _availableSeeds != 0;
 
         [SerializableProperty(17)]
+        [SaveFlag(nameof(ShouldSerializeLeftSeeds), nameof(LeftSeedsDefaultValue))]
         public int LeftSeeds
         {
             get => _leftSeeds;
             set => _leftSeeds = Math.Max(value, 0);
         }
 
-        [SerializableFieldSaveFlag(17)]
         private bool ShouldSerializeLeftSeeds() => _leftSeeds != 8;
 
-        [SerializableFieldDefault(17)]
         private int LeftSeedsDefaultValue() => 8;
 
         [SerializableProperty(18)]
+        [SaveFlag(nameof(ShouldSerializeAvailableResources))]
         public int AvailableResources
         {
             get => _availableResources;
             set => _availableResources = Math.Max(value, 0);
         }
 
-        [SerializableFieldSaveFlag(18)]
         private bool ShouldSerializeAvailableResources() => _availableResources != 0;
 
         [SerializableProperty(19)]
+        [SaveFlag(nameof(ShouldSerializeLeftResources), nameof(LeftResourcesDefaultValue))]
         public int LeftResources
         {
             get => _leftResources;
             set => _leftResources = Math.Max(value, 0);
         }
 
-        [SerializableFieldSaveFlag(19)]
         private bool ShouldSerializeLeftResources() => _leftResources != 8;
 
-        [SerializableFieldDefault(19)]
         private int LeftResourcesDefaultValue() => 8;
 
         public void Reset(bool potions)

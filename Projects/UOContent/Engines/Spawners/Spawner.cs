@@ -10,17 +10,17 @@ public partial class Spawner : BaseSpawner
     /// When true, enables proactive spiral scanning to find valid spawn positions.
     /// Only relevant when SpawnPositionMode is Automatic or Enabled.
     /// </summary>
-    [SerializableFieldSaveFlag(0)]
     private bool ShouldSerializeUseSpiralScan() => _useSpiralScan;
 
     [SerializableField(0)]
+    [SaveFlag(nameof(ShouldSerializeUseSpiralScan))]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private bool _useSpiralScan;
 
-    [SerializableFieldSaveFlag(1)]
     private bool ShouldSerializeSpawnBounds() => _spawnBounds != default;
 
     [SerializableProperty(1)]
+    [SaveFlag(nameof(ShouldSerializeSpawnBounds))]
     [CommandProperty(AccessLevel.Developer)]
     public override Rectangle3D SpawnBounds
     {

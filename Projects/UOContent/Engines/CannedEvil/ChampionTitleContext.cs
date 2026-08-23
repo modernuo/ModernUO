@@ -51,9 +51,9 @@ public partial class ChampionTitleContext
     }
 
     [SerializableField(1)]
+    [SaveFlag(nameof(ShouldSerializeAbyss))]
     private ChampionTitle _abyss;
 
-    [SerializableFieldSaveFlag(1)]
     private bool ShouldSerializeAbyss() => _abyss != null;
 
     [CommandProperty(AccessLevel.GameMaster)]
@@ -71,9 +71,9 @@ public partial class ChampionTitleContext
     }
 
     [SerializableField(2)]
+    [SaveFlag(nameof(ShouldSerializeArachnid))]
     private ChampionTitle _arachnid;
 
-    [SerializableFieldSaveFlag(2)]
     private bool ShouldSerializeArachnid() => _arachnid != null;
 
     [CommandProperty(AccessLevel.GameMaster)]
@@ -91,9 +91,9 @@ public partial class ChampionTitleContext
     }
 
     [SerializableField(3)]
+    [SaveFlag(nameof(ShouldSerializeColdBlood))]
     private ChampionTitle _coldBlood;
 
-    [SerializableFieldSaveFlag(3)]
     private bool ShouldSerializeColdBlood() => _coldBlood != null;
 
     [CommandProperty(AccessLevel.GameMaster)]
@@ -111,9 +111,9 @@ public partial class ChampionTitleContext
     }
 
     [SerializableField(4)]
+    [SaveFlag(nameof(ShouldSerializeForestLord))]
     private ChampionTitle _forestLord;
 
-    [SerializableFieldSaveFlag(4)]
     private bool ShouldSerializeForestLord() => _forestLord != null;
 
     [CommandProperty(AccessLevel.GameMaster)]
@@ -131,9 +131,9 @@ public partial class ChampionTitleContext
     }
 
     [SerializableField(5)]
+    [SaveFlag(nameof(ShouldSerializeVerminHorde))]
     private ChampionTitle _verminHorde;
 
-    [SerializableFieldSaveFlag(5)]
     private bool ShouldSerializeVerminHorde() => _verminHorde != null;
 
     [CommandProperty(AccessLevel.GameMaster)]
@@ -151,9 +151,9 @@ public partial class ChampionTitleContext
     }
 
     [SerializableField(6)]
+    [SaveFlag(nameof(ShouldSerializeUnholyTerror))]
     private ChampionTitle _unholyTerror;
 
-    [SerializableFieldSaveFlag(6)]
     private bool ShouldSerializeUnholyTerror() => _unholyTerror != null;
 
     [CommandProperty(AccessLevel.GameMaster)]
@@ -171,9 +171,9 @@ public partial class ChampionTitleContext
     }
 
     [SerializableField(7)]
+    [SaveFlag(nameof(ShouldSerializeSleepingDragon))]
     private ChampionTitle _sleepingDragon;
 
-    [SerializableFieldSaveFlag(7)]
     private bool ShouldSerializeSleepingDragon() => _sleepingDragon != null;
 
     [CommandProperty(AccessLevel.GameMaster)]
@@ -191,9 +191,9 @@ public partial class ChampionTitleContext
     }
 
     [SerializableField(8)]
+    [SaveFlag(nameof(ShouldSerializeCorrupt))]
     private ChampionTitle _corrupt;
 
-    [SerializableFieldSaveFlag(8)]
     private bool ShouldSerializeCorrupt() => _corrupt != null;
 
     [CommandProperty(AccessLevel.GameMaster)]
@@ -211,9 +211,9 @@ public partial class ChampionTitleContext
     }
 
     [SerializableField(9)]
+    [SaveFlag(nameof(ShouldSerializeGlade))]
     private ChampionTitle _glade;
 
-    [SerializableFieldSaveFlag(9)]
     private bool ShouldSerializeGlade() => _glade != null;
 
     [CommandProperty(AccessLevel.GameMaster)]
