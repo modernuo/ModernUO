@@ -40,6 +40,7 @@ public abstract partial class BaseAI
     private Mobile _lkpTarget;
     private Point3D _lkpLocation;
     private IPoint3D _lkpGoal; // boxed _lkpLocation handed to the PathFollower
+    private IPoint3D _herdGoal; // boxed herding goal handed to the PathFollower
     private long _lkpExpireTick;
     private long _guardStopTick;
     private long _investigateStopTick;
@@ -627,6 +628,7 @@ public abstract partial class BaseAI
 
         if (target == null)
         {
+            _herdGoal = null;
             return false;
         }
 
@@ -634,7 +636,15 @@ public abstract partial class BaseAI
 
         if (distance >= 1 && distance <= 15)
         {
-            DoMove(Mobile.GetDirectionTo(target));
+            // A cached boxed goal keeps the PathFollower persistent across ticks; walking
+            // through MoveToPoint paces herding on the movement clock and paths around
+            // obstacles.
+            if (_herdGoal == null || _herdGoal.X != target.X || _herdGoal.Y != target.Y)
+            {
+                _herdGoal = new Point3D(target.X, target.Y, Mobile.Map?.GetAverageZ(target.X, target.Y) ?? Mobile.Z);
+            }
+
+            MoveToPoint(_herdGoal, false);
             return true;
         }
 
@@ -644,6 +654,7 @@ public abstract partial class BaseAI
         }
 
         Mobile.TargetLocation = null;
+        _herdGoal = null;
         return false;
     }
 

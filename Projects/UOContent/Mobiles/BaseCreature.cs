@@ -269,8 +269,8 @@ namespace Server.Mobiles
         private double _activeMoveSpeed;
         private double _passiveMoveSpeed;
 
-        // Herding - Overrides the AI to force the mob to move to a specific location
-        // Thinking: 0.3s, Movement: 0.6s.
+        // Herding - forces the mob to walk to a specific location, paced by the movement
+        // clock at HerdingMoveSpeed. Thinking is unaffected.
         private IPoint2D _targetLocation;
 
         private int m_DamageMax = -1;
@@ -723,21 +723,21 @@ namespace Server.Mobiles
             set => _passiveMoveSpeed = value > 0 ? value : 0;
         }
 
+        // Herded creatures walk at a fixed standard pace regardless of their own speed
+        // (RunUO's forced 0.3, without its TransformMoveDelay inflation to 0.6).
+        private const double HerdingMoveSpeed = 0.3;
+
         [CommandProperty(AccessLevel.GameMaster)]
         public IPoint2D TargetLocation
         {
             get => _targetLocation;
-            set
-            {
-                _targetLocation = value;
-                AIObject?.OnCurrentSpeedChanged();
-            }
+            set => _targetLocation = value;
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
         public double CurrentSpeed
         {
-            get => _targetLocation != null ? 0.3 : _currentSpeed;
+            get => _currentSpeed;
             set
             {
                 if (Math.Abs(_currentSpeed - value) > 0.0001)
@@ -751,25 +751,21 @@ namespace Server.Mobiles
         /// <summary>
         /// Resolved seconds per step: a verbatim active/passive <see cref="CurrentSpeed"/>
         /// maps to the matching movement value; a bespoke pace stays fused to both clocks.
+        /// A herded creature is always driven at <see cref="HerdingMoveSpeed"/>.
         /// </summary>
         [CommandProperty(AccessLevel.GameMaster)]
         public double CurrentMoveSpeed
         {
             get
             {
-                var current = CurrentSpeed;
-
-                if (current == _activeSpeed)
+                if (_targetLocation != null)
                 {
-                    return ActiveMoveSpeed;
+                    return HerdingMoveSpeed;
                 }
 
-                if (current == _passiveSpeed)
-                {
-                    return PassiveMoveSpeed;
-                }
-
-                return current;
+                return _currentSpeed == _activeSpeed ? ActiveMoveSpeed
+                    : _currentSpeed == _passiveSpeed ? PassiveMoveSpeed
+                    : _currentSpeed;
             }
         }
 

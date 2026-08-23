@@ -125,6 +125,21 @@ public class MoveSpeedTests : IDisposable
     }
 
     [Fact]
+    public void Herding_DrivesMoveClock_ThinkUntouched()
+    {
+        var bc = NewCreature(); // think 0.3/0.6, passive
+        bc.SetMoveSpeed(0.45, 1.05);
+
+        bc.TargetLocation = new Point2D(10, 10);
+
+        Assert.Equal(0.6, bc.CurrentSpeed);     // think clock unaffected by herding
+        Assert.Equal(0.3, bc.CurrentMoveSpeed); // fixed herding pace, not 1.05
+
+        bc.TargetLocation = null;
+        Assert.Equal(1.05, bc.CurrentMoveSpeed);
+    }
+
+    [Fact]
     public void SnapSpeedsToTable_UndoesScalingDrift_KeepsTunedValues()
     {
         var bc = NewCreature();
