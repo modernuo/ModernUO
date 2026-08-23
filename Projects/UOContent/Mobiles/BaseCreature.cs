@@ -2230,6 +2230,10 @@ namespace Server.Mobiles
                 _activeMoveSpeed = reader.ReadDouble();
                 _passiveMoveSpeed = reader.ReadDouble();
             }
+            else
+            {
+                MigrateMoveSpeeds();
+            }
 
             if (version <= 14 && m_Paragon && Hue == 0x31)
             {
@@ -4986,6 +4990,20 @@ namespace Server.Mobiles
         public virtual void GetMoveSpeeds(out double activeMoveSpeed, out double passiveMoveSpeed)
         {
             NPCSpeeds.GetMoveSpeeds(this, out activeMoveSpeed, out passiveMoveSpeed);
+        }
+
+        // Pre-v22 saves carry no movement clock. A creature whose serialized think speeds
+        // still match what it would spawn with today was never hand-tuned: adopt today's
+        // move values so existing worlds (and pets) pick up npc-speeds pacing without a
+        // respawn. Tuned creatures keep movement inheriting their think clock.
+        internal void MigrateMoveSpeeds()
+        {
+            GetSpeeds(out var activeSpeed, out var passiveSpeed);
+
+            if (_activeSpeed == activeSpeed && _passiveSpeed == passiveSpeed)
+            {
+                GetMoveSpeeds(out _activeMoveSpeed, out _passiveMoveSpeed);
+            }
         }
 
         public virtual void DropBackpack()

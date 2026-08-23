@@ -24,15 +24,24 @@ public class MoveSpeedTests : IDisposable
 
     private sealed class SpeedStub : BaseCreature
     {
+        // Stands in for the npc-speeds table (unconfigured in the test fixture).
+        public double TableActiveMove;
+        public double TablePassiveMove;
+
         public SpeedStub() : base(AIType.AI_Animal) => Body = 0xC9;
 
         public SpeedStub(Serial serial) : base(serial) => Body = 0xC9;
 
-        // NPCSpeeds isn't configured in the test fixture; provide fixed think speeds.
         public override void GetSpeeds(out double activeSpeed, out double passiveSpeed)
         {
             activeSpeed = 0.3;
             passiveSpeed = 0.6;
+        }
+
+        public override void GetMoveSpeeds(out double activeMoveSpeed, out double passiveMoveSpeed)
+        {
+            activeMoveSpeed = TableActiveMove;
+            passiveMoveSpeed = TablePassiveMove;
         }
     }
 
@@ -101,6 +110,33 @@ public class MoveSpeedTests : IDisposable
 
         Assert.Equal(0.3, bc.ActiveMoveSpeed);  // inheriting again
         Assert.Equal(0.9, bc.PassiveMoveSpeed); // other override untouched
+    }
+
+    [Fact]
+    public void Migration_MatchingThinkSpeeds_AdoptTableMoveValues()
+    {
+        var bc = NewCreature(); // think 0.3/0.6, matching its table entry
+        bc.TableActiveMove = 0.45;
+        bc.TablePassiveMove = 0.9;
+
+        bc.MigrateMoveSpeeds();
+
+        Assert.Equal(0.45, bc.ActiveMoveSpeed);
+        Assert.Equal(0.9, bc.PassiveMoveSpeed);
+    }
+
+    [Fact]
+    public void Migration_TunedThinkSpeeds_KeepInheriting()
+    {
+        var bc = NewCreature();
+        bc.SetSpeed(0.35, 0.6); // hand-tuned: no longer matches the table entry
+        bc.TableActiveMove = 0.45;
+        bc.TablePassiveMove = 0.9;
+
+        bc.MigrateMoveSpeeds();
+
+        Assert.Equal(0.35, bc.ActiveMoveSpeed);
+        Assert.Equal(0.6, bc.PassiveMoveSpeed);
     }
 
     [Theory]
