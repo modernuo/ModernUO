@@ -1843,7 +1843,7 @@ namespace Server.Mobiles
         {
             base.Serialize(writer);
 
-            writer.Write(20); // version
+            writer.Write(21); // version
 
             writer.Write((int)m_CurrentAI);
             writer.Write((int)m_DefaultAI);
@@ -1880,7 +1880,7 @@ namespace Server.Mobiles
 
             if (_summoned)
             {
-                writer.WriteDeltaTime(SummonEnd);
+                writer.WriteAnchoredTime(SummonEnd);
             }
 
             writer.Write(ControlSlots);
@@ -2035,7 +2035,7 @@ namespace Server.Mobiles
 
                 if (_summoned)
                 {
-                    SummonEnd = reader.ReadDeltaTime();
+                    SummonEnd = version >= 21 ? reader.ReadAnchoredTime() : reader.ReadDeltaTime();
                     new UnsummonTimer(this, SummonEnd - Core.Now).Start();
                 }
 

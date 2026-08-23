@@ -99,6 +99,15 @@ public static class World
     /// anchored timestamps can be re-based by the downtime at load.
     /// </summary>
     public static DateTime SaveStartTime { get; internal set; }
+
+    /// <summary>
+    /// The anchored-time shift for the save currently being loaded: the downtime between the
+    /// save's start and this load. Stamped while entity indexes are read (they all carry the
+    /// same anchor, since the whole save shares one <see cref="SaveStartTime" />) and applied
+    /// to every reader of that save's files — including <see cref="GenericPersistence" />
+    /// payloads, which carry no anchor of their own. Zero for saves that predate the anchor.
+    /// </summary>
+    public static TimeSpan LoadTimeShift { get; internal set; }
     public static bool Running => WorldState is not WorldState.Loading and not WorldState.Initial;
     public static bool Loading => WorldState == WorldState.Loading;
 

@@ -67,16 +67,23 @@ public class FireFieldSpell : MagerySpell, ITargetingSpell<IPoint3D>
 }
 
 [DispellableField]
-[SerializationGenerator(0, false)]
+[SerializationGenerator(1, false)]
 public partial class FireFieldItem : Item
 {
+    private void MigrateFrom(V0Content content)
+    {
+        _damage = content.Damage;
+        _caster = content.Caster;
+        _end = content.End;
+    }
+
     [SerializableField(0)]
     private int _damage;
 
     [SerializableField(1)]
     private Mobile _caster;
 
-    [DeltaDateTime]
+    [AnchoredDateTime]
     [SerializableField(2)]
     private DateTime _end;
     private Timer _timer;

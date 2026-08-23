@@ -248,7 +248,7 @@ public class StealableArtifacts : GenericPersistence
 
     public override void Serialize(IGenericWriter writer)
     {
-        writer.WriteEncodedInt(1); // version
+        writer.WriteEncodedInt(2); // version
 
         writer.Write(_enabled);
 
@@ -261,7 +261,7 @@ public class StealableArtifacts : GenericPersistence
                 var si = _artifacts[i];
 
                 writer.Write(si.Item);
-                writer.WriteDeltaTime(si.NextRespawn);
+                writer.WriteAnchoredTime(si.NextRespawn);
             }
         }
     }
@@ -282,7 +282,7 @@ public class StealableArtifacts : GenericPersistence
             for (var i = 0; i < length; i++)
             {
                 var item = reader.ReadEntity<Item>();
-                var nextRespawn = reader.ReadDeltaTime();
+                var nextRespawn = version >= 2 ? reader.ReadAnchoredTime() : reader.ReadDeltaTime();
 
                 if (i < _artifacts.Length)
                 {

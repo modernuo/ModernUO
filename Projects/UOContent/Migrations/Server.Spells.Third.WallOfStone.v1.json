@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "type": "Server.Spells.Third.WallOfStone",
+  "properties": [
+    {
+      "name": "Caster",
+      "type": "Server.Mobile",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "End",
+      "type": "System.DateTime",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "AnchoredTime"
+      ]
+    }
+  ]
+}

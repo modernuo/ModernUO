@@ -5,9 +5,14 @@ using System.Runtime.CompilerServices;
 
 namespace Server.Mobiles
 {
-    [SerializationGenerator(0, false)]
+    [SerializationGenerator(1, false)]
     public partial class Sheep : BaseCreature, ICarvable
     {
+        private void MigrateFrom(V0Content content)
+        {
+            _nextWoolTime = content.NextWoolTime;
+        }
+
         [Constructible]
         public Sheep() : base(AIType.AI_Animal, FightMode.Aggressor)
         {
@@ -44,7 +49,7 @@ namespace Server.Mobiles
         public override string CorpseName => "a sheep corpse";
 
         [SerializableField(0, fieldChanged: nameof(OnNextWoolTimeChanged))]
-        [DeltaDateTime]
+        [AnchoredDateTime]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private DateTime _nextWoolTime;
 

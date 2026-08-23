@@ -27,16 +27,44 @@ using Server.Logging;
 
 namespace Server.Engines.CannedEvil;
 
-[SerializationGenerator(10, false)]
+[SerializationGenerator(11, false)]
 public partial class ChampionSpawn : Item
 {
+    private void MigrateFrom(V10Content content)
+    {
+        _level = content.Level;
+        _activatedByProximity = content.ActivatedByProximity;
+        _nextProximityTime = content.NextProximityTime;
+        _maxLevel = content.MaxLevel;
+        _activatedByValor = content.ActivatedByValor;
+        _damageEntries = content.DamageEntries;
+        _confinedRoaming = content.ConfinedRoaming;
+        _idol = content.Idol;
+        _hasBeenAdvanced = content.HasBeenAdvanced;
+        _spawnArea = content.SpawnArea;
+        _randomizeType = content.RandomizeType;
+        _kills = content.Kills;
+        _active = content.Active;
+        _type = content.Type;
+        _creatures = content.Creatures;
+        _redSkulls = content.RedSkulls;
+        _whiteSkulls = content.WhiteSkulls;
+        _platform = content.Platform;
+        _altar = content.Altar;
+        _expireDelay = content.ExpireDelay;
+        _expireTime = content.ExpireTime;
+        _champion = content.Champion;
+        _restartDelay = content.RestartDelay;
+        _restartTime = content.RestartTime;
+    }
+
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(ChampionSpawn));
 
     [SerializableField(1)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private bool _activatedByProximity;
 
-    [DeltaDateTime]
+    [AnchoredDateTime]
     [SerializableField(2)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private DateTime _nextProximityTime;
@@ -96,7 +124,7 @@ public partial class ChampionSpawn : Item
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private TimeSpan _expireDelay;
 
-    [DeltaDateTime]
+    [AnchoredDateTime]
     [SerializableField(20)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private DateTime _expireTime;
@@ -109,7 +137,7 @@ public partial class ChampionSpawn : Item
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private TimeSpan _restartDelay;
 
-    [DeltaDateTime]
+    [AnchoredDateTime]
     [SerializableField(23, setter: "private")]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private DateTime _restartTime;

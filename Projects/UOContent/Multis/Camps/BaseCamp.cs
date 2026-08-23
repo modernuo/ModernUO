@@ -6,9 +6,16 @@ using Server.Mobiles;
 
 namespace Server.Multis;
 
-[SerializationGenerator(1, false)]
+[SerializationGenerator(2, false)]
 public abstract partial class BaseCamp : BaseMulti
 {
+    private void MigrateFrom(V1Content content)
+    {
+        _items = content.Items;
+        _mobiles = content.Mobiles;
+        _decayTime = content.DecayTime;
+    }
+
     [Tidy]
     [SerializableField(0, setter: "private")]
     private List<Item> _items;
@@ -17,7 +24,7 @@ public abstract partial class BaseCamp : BaseMulti
     [SerializableField(1, setter: "private")]
     private List<Mobile> _mobiles;
 
-    [DeltaDateTime]
+    [AnchoredDateTime]
     [SerializableField(2, setter: "private")]
     private DateTime _decayTime;
 

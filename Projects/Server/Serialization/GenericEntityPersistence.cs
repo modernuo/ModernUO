@@ -504,6 +504,10 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
             var anchor = new DateTime(dataReader.ReadLong(), DateTimeKind.Utc);
             var shift = Core.Now - anchor;
             _anchoredTimeShift = anchor.Ticks > 0 && shift > TimeSpan.Zero ? shift : TimeSpan.Zero;
+
+            // The whole save shares one anchor. Publish it so payloads without their own
+            // (GenericPersistence bins) can shift too; indexes load before any of them.
+            World.LoadTimeShift = _anchoredTimeShift;
         }
 
         if (version >= 4)

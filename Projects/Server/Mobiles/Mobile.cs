@@ -2324,11 +2324,11 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
     public virtual void Serialize(IGenericWriter writer)
     {
-        writer.Write(37); // version
+        writer.Write(38); // version
 
-        writer.WriteDeltaTime(LastStrGain);
-        writer.WriteDeltaTime(LastIntGain);
-        writer.WriteDeltaTime(LastDexGain);
+        writer.WriteAnchoredTime(LastStrGain);
+        writer.WriteAnchoredTime(LastIntGain);
+        writer.WriteAnchoredTime(LastDexGain);
 
         byte hairflag = 0x00;
 
@@ -6150,6 +6150,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
         switch (version)
         {
+            case 38: // Stat-gain stamps moved from delta time to anchored time
             case 37: // Decomposed hair into inline item id/hue (dropped the VirtualHairInfo object)
             case 36: // Moved virtues to VirtueSystem
             case 35: // Moved short term murders to PlayerMurderSystem
@@ -6158,9 +6159,18 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             case 32: // Removed StuckMenu
             case 31:
                 {
-                    LastStrGain = reader.ReadDeltaTime();
-                    LastIntGain = reader.ReadDeltaTime();
-                    LastDexGain = reader.ReadDeltaTime();
+                    if (version >= 38)
+                    {
+                        LastStrGain = reader.ReadAnchoredTime();
+                        LastIntGain = reader.ReadAnchoredTime();
+                        LastDexGain = reader.ReadAnchoredTime();
+                    }
+                    else
+                    {
+                        LastStrGain = reader.ReadDeltaTime();
+                        LastIntGain = reader.ReadDeltaTime();
+                        LastDexGain = reader.ReadDeltaTime();
+                    }
 
                     goto case 30;
                 }

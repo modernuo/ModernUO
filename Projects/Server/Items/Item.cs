@@ -863,7 +863,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
     public virtual void Serialize(IGenericWriter writer)
     {
-        writer.Write(10); // version
+        writer.Write(11); // version
 
         var flags = SaveFlag.None;
 
@@ -1015,19 +1015,13 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
         writer.Write((int)flags);
 
-        /* begin last moved time optimization */
-        var ticks = LastMoved.Ticks;
-        var now = Core.Now.Ticks;
-
-        var minutes = new TimeSpan(now - ticks).TotalMinutes;
-
-        writer.WriteEncodedInt((int)Math.Clamp(minutes, int.MinValue, int.MaxValue));
-        /* end */
+        // Anchored: shifted by downtime at load, so time-since-moved is preserved and the
+        // bytes are stable across saves while the item does not move.
+        writer.WriteAnchoredTime(LastMoved);
 
         if (GetSaveFlag(flags, SaveFlag.DecayReset))
         {
-            //TODO Use WriteAnchoredTime once the save-time anchor is ported
-            writer.WriteDeltaTime(info.m_DecayReset);
+            writer.WriteAnchoredTime(info.m_DecayReset);
         }
 
         if (GetSaveFlag(flags, SaveFlag.Direction))
@@ -2772,6 +2766,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
         switch (version)
         {
+            case 11:
             case 10:
             case 9:
             case 8:
@@ -2780,7 +2775,11 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
                 {
                     var flags = (SaveFlag)reader.ReadInt();
 
-                    if (version < 7)
+                    if (version >= 11)
+                    {
+                        LastMoved = reader.ReadAnchoredTime();
+                    }
+                    else if (version < 7)
                     {
                         LastMoved = reader.ReadDeltaTime();
                     }
@@ -2800,10 +2799,10 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
                     if (version >= 10 && GetSaveFlag(flags, SaveFlag.DecayReset))
                     {
-                        var reset = reader.ReadDeltaTime();
+                        var reset = version >= 11 ? reader.ReadAnchoredTime() : reader.ReadDeltaTime();
 
-                        // LastMoved is stored at whole-minute precision; keep the stamp only
-                        // while it still extends the deadline.
+                        // Pre-v11 LastMoved was stored at whole-minute precision; keep the
+                        // stamp only while it still extends the deadline.
                         if (reset > LastMoved)
                         {
                             DecayResetTime = reset;

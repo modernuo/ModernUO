@@ -119,7 +119,7 @@ namespace Server.Engines.MLQuests.Objectives
             if (IsTimed)
             {
                 writer.Write(true);
-                writer.WriteDeltaTime(EndTime);
+                writer.WriteAnchoredTime(EndTime);
             }
             else
             {
@@ -135,7 +135,7 @@ namespace Server.Engines.MLQuests.Objectives
         {
             if (reader.ReadBool())
             {
-                var endTime = reader.ReadDeltaTime();
+                var endTime = version >= 3 ? reader.ReadAnchoredTime() : reader.ReadDeltaTime();
 
                 if (objInstance != null)
                 {

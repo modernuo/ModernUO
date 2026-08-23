@@ -64,13 +64,19 @@ public class PoisonFieldSpell : MagerySpell, ITargetingSpell<IPoint3D>
 }
 
 [DispellableField]
-[SerializationGenerator(0, false)]
+[SerializationGenerator(1, false)]
 public partial class PoisonField : Item
 {
+    private void MigrateFrom(V0Content content)
+    {
+        _caster = content.Caster;
+        _end = content.End;
+    }
+
     [SerializableField(0)]
     private Mobile _caster;
 
-    [DeltaDateTime]
+    [AnchoredDateTime]
     [SerializableField(1)]
     private DateTime _end;
 

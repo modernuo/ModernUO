@@ -162,10 +162,15 @@ namespace Server.Items
         }
     }
 
-    [SerializationGenerator(0)]
+    [SerializationGenerator(1)]
     public partial class PuzzleChestSolutionAndTime : PuzzleChestSolution
     {
-        [DeltaDateTime]
+        private void MigrateFrom(V0Content content)
+        {
+            _when = content.When;
+        }
+
+        [AnchoredDateTime]
         [SerializableField(0)]
         private DateTime _when;
 

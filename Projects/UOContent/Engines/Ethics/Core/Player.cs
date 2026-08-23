@@ -5,9 +5,20 @@ using Server.Mobiles;
 namespace Server.Ethics;
 
 [PropertyObject]
-[SerializationGenerator(1)]
+[SerializationGenerator(2)]
 public partial class Player : EthicsEntity
 {
+    private void MigrateFrom(V1Content content)
+    {
+        _mobile = content.Mobile;
+        _power = content.Power;
+        _history = content.History;
+        _steed = content.Steed;
+        _familiar = content.Familiar;
+        _shield = content.Shield;
+        _ethic = content.Ethic;
+    }
+
     [SerializableField(0, setter: "private")]
     private Mobile _mobile;
 
@@ -27,7 +38,7 @@ public partial class Player : EthicsEntity
     [SerializedCommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
     private Mobile _familiar;
 
-    [DeltaDateTime]
+    [AnchoredDateTime]
     [SerializableField(5, setter: "private")]
     private DateTime _shield;
 

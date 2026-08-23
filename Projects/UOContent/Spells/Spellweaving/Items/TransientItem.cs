@@ -3,12 +3,17 @@ using ModernUO.Serialization;
 
 namespace Server.Items;
 
-[SerializationGenerator(1, false)]
+[SerializationGenerator(2, false)]
 public partial class TransientItem : Item
 {
+    private void MigrateFrom(V1Content content)
+    {
+        _expiration = content.Expiration;
+    }
+
     private TimerExecutionToken _timerToken;
 
-    [DeltaDateTime]
+    [AnchoredDateTime]
     [SerializableField(0)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private DateTime _expiration;
