@@ -40,7 +40,10 @@ public interface IGenericWriter
     void Write(decimal value);
     void WriteEncodedInt(int value);
     void Write(DateTime value);
+
+    [Obsolete("Delta time rewrites its bytes on every save. Write anchored time instead (WriteAnchoredTime, or [AnchoredDateTime] on generated fields); bump the containing type's version, as the wire format changes. Existing delta payloads remain readable through ReadDeltaTime in old-version fallbacks.")]
     void WriteDeltaTime(DateTime value);
+
     void WriteAnchoredTime(DateTime value);
     void Write(IPAddress value);
     void Write(TimeSpan value);
