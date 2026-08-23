@@ -50,8 +50,8 @@
         <PackageReference Include="ModernUO.CodeGeneratedEvents.Generator" Version="1.0.3.2" PrivateAssets="all" />
         <PackageReference Include="ZstdNet" Version="1.5.7" />
 
-        <PackageReference Include="ModernUO.Serialization.Annotations" Version="3.0.0" />
-        <PackageReference Include="ModernUO.Serialization.Generator" Version="3.0.0" PrivateAssets="all" />
+        <PackageReference Include="ModernUO.Serialization.Annotations" Version="4.0.0" />
+        <PackageReference Include="ModernUO.Serialization.Generator" Version="4.0.0" PrivateAssets="all" />
     </ItemGroup>
     <ItemGroup>
         <AdditionalFiles Include="Migrations/*.v*.json" />
