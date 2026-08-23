@@ -82,8 +82,9 @@ public class MeleeAI : BaseAI
             return true;
         }
 
-        if (!Mobile.InRange(combatant, Mobile.RangePerception * 3))
+        if (!Mobile.InRange(combatant, Mobile.ChaseLeashRange))
         {
+
             Mobile.Combatant = null;
         }
 
@@ -114,6 +115,7 @@ public class MeleeAI : BaseAI
 
         if (Mobile.GetDistanceToSqrt(combatant) > Mobile.RangePerception + 1)
         {
+
             this.DebugSayFormatted($"I cannot find {combatant.Name}, so my guard is up.");
             Action = ActionType.Guard;
             return false;

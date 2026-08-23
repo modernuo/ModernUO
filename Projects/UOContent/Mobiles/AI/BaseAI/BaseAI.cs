@@ -26,10 +26,24 @@ namespace Server.Mobiles;
 
 public abstract partial class BaseAI
 {
+    // Last-known-position tracking: recorded while the combatant is in LOS; drives the
+    // guard-time investigation and the instant re-engage.
+    private const int GuardGraceDuration = 10_000;
+    private const int LkpFreshDuration = 30_000;
+    private const int InvestigateDuration = 15_000;
+
     private ActionType _action;
     public long _nextDetectHidden;
     public DateTime _lastOrder = DateTime.MinValue;
     public Mobile _commandIssuer;
+
+    private Mobile _lkpTarget;
+    private Point3D _lkpLocation;
+    private IPoint3D _lkpGoal; // boxed _lkpLocation handed to the PathFollower
+    private long _lkpExpireTick;
+    private long _guardStopTick;
+    private long _investigateStopTick;
+    private bool _investigating;
 
     public PathFollower Path { get; protected set; }
     public AITimer AITimer { get; }
@@ -64,6 +78,7 @@ public abstract partial class BaseAI
         {
             if (_action != value)
             {
+
                 _action = value;
                 OnActionChanged();
             }
@@ -233,6 +248,15 @@ public abstract partial class BaseAI
             return true;
         }
 
+        if (_action == ActionType.Combat)
+        {
+            UpdateLastKnownLocation();
+        }
+        else if (_action is ActionType.Wander or ActionType.Guard)
+        {
+            TryReengageLastKnown();
+        }
+
         switch (Action)
         {
             case ActionType.Wander:
@@ -323,6 +347,16 @@ public abstract partial class BaseAI
     {
         Mobile.Warmode = true;
         Mobile.Combatant = null;
+
+        // Investigate a fresh last-seen position that is not already in view; the guard
+        // grace period begins once the investigation ends.
+        _investigating = _lkpTarget != null && Core.TickCount - _lkpExpireTick < 0 &&
+                         !(Mobile.InRange(_lkpLocation, 1) ||
+                           Mobile.InLOS(_lkpLocation) && Mobile.InRange(_lkpLocation, Mobile.RangePerception));
+        _investigateStopTick = Core.TickCount + InvestigateDuration;
+        _guardStopTick = Core.TickCount + GuardGraceDuration;
+        _lkpGoal = null;
+
     }
 
     private void HandleFleeAction()
@@ -453,16 +487,117 @@ public abstract partial class BaseAI
 
     public virtual bool DoActionGuard()
     {
-        if (Mobile.Combatant == null)
+        if (_investigating)
         {
-            DebugSay("No threats found. Going home...");
-            Action = ActionType.Wander;
+            if (InvestigateLastKnown())
+            {
+                return true;
+            }
+
+            _investigating = false;
+            _guardStopTick = Core.TickCount + GuardGraceDuration;
+
         }
 
-        DebugSay("I stopped being on guard.");
+        if (Core.TickCount - _guardStopTick < 0)
+        {
+            DebugSay("I am on guard.");
+
+            if (Utility.Random(8) == 0)
+            {
+                Mobile.Direction = (Direction)Utility.Random(8);
+            }
+
+            return true;
+        }
+
+        DebugSay("I stopped being on guard. Going home...");
         Action = ActionType.Wander;
 
         return true;
+    }
+
+    /// <summary>
+    /// Records the combatant's position while it is visible and in line of sight.
+    /// </summary>
+    private void UpdateLastKnownLocation()
+    {
+        var combatant = Mobile.Combatant;
+
+        if (combatant?.Deleted == false && combatant.Map == Mobile.Map &&
+            Mobile.CanSee(combatant) && Mobile.InLOS(combatant))
+        {
+            _lkpTarget = combatant;
+            _lkpLocation = combatant.Location;
+            _lkpExpireTick = Core.TickCount + LkpFreshDuration;
+        }
+    }
+
+    /// <summary>
+    /// Re-engages the last-seen target when it returns to view within perception range,
+    /// bypassing the reacquire throttle.
+    /// </summary>
+    private bool TryReengageLastKnown()
+    {
+        var target = _lkpTarget;
+
+        if (target == null)
+        {
+            return false;
+        }
+
+        if (target.Deleted || !target.Alive || target.Map != Mobile.Map ||
+            target is BaseCreature { IsDeadPet: true } || Core.TickCount - _lkpExpireTick >= 0)
+        {
+            ClearLastKnown();
+            return false;
+        }
+
+        if (Mobile.Controlled || Mobile.BardPacified || Mobile.BardProvoked || Mobile.FightMode == FightMode.None)
+        {
+            return false;
+        }
+
+        if (!Mobile.InRange(target, Mobile.RangePerception) || !Mobile.CanSee(target) ||
+            !Mobile.InLOS(target) || !Mobile.CanBeHarmful(target, false))
+        {
+            return false;
+        }
+
+        DebugSay("There you are!");
+        Mobile.Combatant = target;
+        Mobile.FocusMob = null;
+        Action = ActionType.Combat;
+        return true;
+    }
+
+    /// <summary>
+    /// Walks toward the last-seen position until it is in view, reached, timed out, or
+    /// unreachable. Returns false when the investigation is finished.
+    /// </summary>
+    private bool InvestigateLastKnown()
+    {
+        if (_lkpTarget == null || Core.TickCount - _investigateStopTick >= 0)
+        {
+            return false;
+        }
+
+        if (Mobile.InRange(_lkpLocation, 1) ||
+            Mobile.InLOS(_lkpLocation) && Mobile.InRange(_lkpLocation, Mobile.RangePerception))
+        {
+            DebugSay("They truly disappeared...");
+            return false;
+        }
+
+        _lkpGoal ??= _lkpLocation;
+        return MoveToPoint(_lkpGoal, false);
+    }
+
+    private void ClearLastKnown()
+    {
+        _lkpTarget = null;
+        _lkpGoal = null;
+        _investigating = false;
     }
 
     public virtual bool DoActionFlee()
@@ -705,6 +840,7 @@ public abstract partial class BaseAI
 
         if (Core.TickCount - Mobile.NextReacquireTime < 0)
         {
+
             Mobile.FocusMob = null;
             return false;
         }
@@ -829,6 +965,7 @@ public abstract partial class BaseAI
         }
 
         Mobile.FocusMob = newFocusMob ?? enemySummonMob;
+
         return Mobile.FocusMob != null;
     }
 
