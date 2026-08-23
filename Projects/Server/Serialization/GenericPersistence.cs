@@ -98,7 +98,13 @@ public abstract class GenericPersistence : Persistence, IGenericSerializable
 
             byte* ptr = null;
             accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref ptr);
-            var dataReader = new UnmanagedDataReader(ptr, accessor.Length, typesDb);
+            var dataReader = new UnmanagedDataReader(ptr, accessor.Length, typesDb)
+            {
+                // These payloads carry no anchor of their own; they inherit the save-wide
+                // shift stamped while the entity indexes were read (indexes always load
+                // before persistence payloads — see Persistence.Load).
+                AnchoredTimeShift = World.LoadTimeShift
+            };
             Deserialize(dataReader);
 
             error = dataReader.Position != fileLength

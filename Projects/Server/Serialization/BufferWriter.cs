@@ -384,6 +384,7 @@ public class BufferWriter : IGenericWriter
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [Obsolete("Delta time rewrites its bytes on every save. Write anchored time instead (WriteAnchoredTime, or [AnchoredDateTime] on generated fields); bump the containing type's version, as the wire format changes. Existing delta payloads remain readable through ReadDeltaTime in old-version fallbacks.")]
     public void WriteDeltaTime(DateTime value)
     {
         if (value == DateTime.MinValue)

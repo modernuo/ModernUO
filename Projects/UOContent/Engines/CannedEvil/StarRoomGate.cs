@@ -3,15 +3,21 @@ using ModernUO.Serialization;
 
 namespace Server.Items;
 
-[SerializationGenerator(1, false)]
+[SerializationGenerator(2, false)]
 public partial class StarRoomGate : Moongate
 {
+    private void MigrateFrom(V1Content content)
+    {
+        _decays = content.Decays;
+        _decayTime = content.DecayTime;
+    }
+
     private static TimeSpan GateDuration = TimeSpan.FromMinutes(2.0);
 
     [SerializableField(0)]
     private bool _decays;
 
-    [DeltaDateTime]
+    [AnchoredDateTime]
     [SerializableField(1)]
     private DateTime _decayTime;
 

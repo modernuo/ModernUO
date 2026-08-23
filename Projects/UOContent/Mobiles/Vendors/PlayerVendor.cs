@@ -22,9 +22,20 @@ public class PlayerVendorTargetAttribute : Attribute;
  * Next, uncomment the MigrateFrom function and change the `V3Content` type to match the serialization version
  * before it was bumped. Then run publish.cmd to generate the migration file.
  */
-[SerializationGenerator(3, false)]
+[SerializationGenerator(4, false)]
 public partial class PlayerVendor : Mobile
 {
+    private void MigrateFrom(V3Content content)
+    {
+        _shopName = content.ShopName;
+        _nextPayTime = content.NextPayTime;
+        _house = content.House;
+        _owner = content.Owner;
+        _bankAccount = content.BankAccount;
+        _holdGold = content.HoldGold;
+        _sellItems = content.SellItems;
+    }
+
     private Timer _payTimer;
 
     [InvalidateProperties]
@@ -32,7 +43,7 @@ public partial class PlayerVendor : Mobile
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private string _shopName;
 
-    [DeltaDateTime]
+    [AnchoredDateTime]
     [SerializableField(1, setter: "private")]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private DateTime _nextPayTime;

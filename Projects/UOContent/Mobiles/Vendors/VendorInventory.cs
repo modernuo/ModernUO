@@ -37,7 +37,7 @@ namespace Server.Mobiles
             Items = reader.ReadEntityList<Item>();
             Gold = reader.ReadInt();
 
-            ExpireTime = reader.ReadDeltaTime();
+            ExpireTime = version >= 1 ? reader.ReadAnchoredTime() : reader.ReadDeltaTime();
 
             if (Items.Count == 0 && Gold == 0)
             {
@@ -88,7 +88,7 @@ namespace Server.Mobiles
 
         public void Serialize(IGenericWriter writer)
         {
-            writer.WriteEncodedInt(0); // version
+            writer.WriteEncodedInt(1); // version
 
             writer.Write(Owner);
             writer.Write(VendorName);
@@ -98,7 +98,7 @@ namespace Server.Mobiles
             writer.Write(Items);
             writer.Write(Gold);
 
-            writer.WriteDeltaTime(ExpireTime);
+            writer.WriteAnchoredTime(ExpireTime);
         }
 
         private class ExpireTimer : Timer

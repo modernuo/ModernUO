@@ -19,9 +19,24 @@ namespace Server.Multis
         Single
     }
 
-    [SerializationGenerator(4, false)]
+    [SerializationGenerator(5, false)]
     public abstract partial class BaseBoat : BaseMulti
     {
+        private void MigrateFrom(V4Content content)
+        {
+            _mapItem = content.MapItem;
+            _nextNavPoint = content.NextNavPoint;
+            _facing = content.Facing;
+            _timeOfDecay = content.TimeOfDecay;
+            _owner = content.Owner;
+            _pPlank = content.PPlank;
+            _sPlank = content.SPlank;
+            _tillerMan = content.TillerMan;
+            _hold = content.Hold;
+            _anchored = content.Anchored;
+            _shipName = content.ShipName;
+        }
+
         public enum DryDockResult
         {
             Valid,
@@ -137,7 +152,7 @@ namespace Server.Multis
         }
 
         [SerializableField(3, fieldChanged: nameof(OnTimeOfDecayChanged))]
-        [DeltaDateTime]
+        [AnchoredDateTime]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private DateTime _timeOfDecay;
 

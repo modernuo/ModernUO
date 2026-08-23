@@ -46,9 +46,20 @@ public class VendorRentalDuration
     }
 }
 
-[SerializationGenerator(0)]
+[SerializationGenerator(1)]
 public partial class RentedVendor : PlayerVendor
 {
+    private void MigrateFrom(V0Content content)
+    {
+        _rentalDurationId = content.RentalDurationId;
+        _rentalPrice = content.RentalPrice;
+        _landlordRenew = content.LandlordRenew;
+        _renterRenew = content.RenterRenew;
+        _renewalPrice = content.RenewalPrice;
+        _rentalGold = content.RentalGold;
+        _rentalExpireTime = content.RentalExpireTime;
+    }
+
     private Timer _rentalExpireTimer;
 
     public RentedVendor(
@@ -93,7 +104,7 @@ public partial class RentedVendor : PlayerVendor
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _rentalGold;
 
-    [DeltaDateTime]
+    [AnchoredDateTime]
     [SerializableField(6)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private DateTime _rentalExpireTime;

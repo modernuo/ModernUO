@@ -43,6 +43,12 @@ public interface IGenericReader
     DateTime ReadDateTime() => new(ReadLong(), DateTimeKind.Utc);
     TimeSpan ReadTimeSpan() => new(ReadLong());
 
+    /// <summary>
+    /// Decodes a legacy delta-time value. Only for reading old-version payloads (version
+    /// fallbacks and migration replays) — current formats store anchored time and read it
+    /// with <see cref="ReadAnchoredTime" />. <see cref="IGenericWriter.WriteDeltaTime" /> is
+    /// obsolete: no current-version format may write delta time.
+    /// </summary>
     DateTime ReadDeltaTime()
     {
         return ReadLong() switch
