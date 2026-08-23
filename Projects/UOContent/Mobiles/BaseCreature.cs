@@ -3010,6 +3010,11 @@ namespace Server.Mobiles
         {
             base.OnCombatantChange();
 
+            if (ChaseDebug.Tracks(this))
+            {
+                ChaseDebug.Log(this, $"combatant -> {ChaseDebug.Describe(Combatant)} | {ChaseDebug.TargetInfo(this, Combatant)}");
+            }
+
             Warmode = Combatant?.Deleted == false && Combatant.Alive;
 
             if (CanFly && Warmode)

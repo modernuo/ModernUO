@@ -110,6 +110,14 @@ public abstract partial class BaseAI
     private void ConsumeMoveBudget()
     {
         NextMove = Core.TickCount + Math.Max(50, (long)(EffectiveStepDelay() * 1000));
+
+        if (ChaseDebug.Tracks(Mobile))
+        {
+            ChaseDebug.Log(
+                Mobile,
+                $"step: budget +{(int)(EffectiveStepDelay() * 1000)}ms, next step in {NextMove - Core.TickCount}ms | {ChaseDebug.Clocks(Mobile)}"
+            );
+        }
     }
 
     public virtual bool CheckMove() => !(Mobile.Deleted || Mobile.DisallowAllMoves);
@@ -375,6 +383,11 @@ public abstract partial class BaseAI
         {
             if (target.Location == _approachGaveUpGoalLoc)
             {
+                if (ChaseDebug.Tracks(Mobile))
+                {
+                    ChaseDebug.Log(Mobile, $"approach idle (gave up earlier) | {ChaseDebug.TargetInfo(Mobile, target)}");
+                }
+
                 ClearMoveIntent();
                 return false;
             }
@@ -403,17 +416,29 @@ public abstract partial class BaseAI
 
             if (res == MoveResult.Success && Mobile.GetDistanceToSqrt(target) < distBefore)
             {
+                if (ChaseDebug.Tracks(Mobile))
+                {
+                    ChaseDebug.Log(Mobile, $"greedy step ok {distBefore:F1} -> {Mobile.GetDistanceToSqrt(target):F1}");
+                }
 
                 ResetApproach();
                 return true; // healthy en-route progress
             }
 
+            if (ChaseDebug.Tracks(Mobile))
+            {
+                ChaseDebug.Log(Mobile, $"greedy step {res} (no progress) -> planner | {ChaseDebug.TargetInfo(Mobile, target)}");
+            }
             // else: fall through; let the PathFollower route around the obstacle.
         }
 
         // PLANNING PATH: a persistent PathFollower, never discarded by a greedy step.
         if (Path == null || Path.Goal != target)
         {
+            if (ChaseDebug.Tracks(Mobile))
+            {
+                ChaseDebug.Log(Mobile, $"engaging pathfinder | {ChaseDebug.TargetInfo(Mobile, target)}");
+            }
 
             Path = new PathFollower(Mobile, target) { Mover = DoMoveImpl };
         }
@@ -434,6 +459,14 @@ public abstract partial class BaseAI
         // En-route progress is success; failure only when a move-eligible tick took no step
         // (no working path), or the approach has given up.
         var progressed = !_approachGaveUp && (Mobile.Location != locBefore || !couldMove);
+
+        if (ChaseDebug.Tracks(Mobile))
+        {
+            ChaseDebug.Log(
+                Mobile,
+                $"path follow {(progressed ? "en-route" : "STUCK")} stall={_approachStallTicks} | {ChaseDebug.TargetInfo(Mobile, target)}"
+            );
+        }
 
         return progressed;
     }
@@ -517,6 +550,11 @@ public abstract partial class BaseAI
 
         if (++_approachStallTicks >= ApproachGiveUpTicks)
         {
+            if (ChaseDebug.Tracks(Mobile))
+            {
+                ChaseDebug.Log(Mobile, $"approach GIVE UP after {_approachStallTicks} stalled ticks | {ChaseDebug.TargetInfo(Mobile, target)}");
+            }
+
             _approachGaveUp = true;
             _approachGaveUpGoalLoc = goalLoc;
             Path = null;

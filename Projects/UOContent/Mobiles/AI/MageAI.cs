@@ -701,6 +701,11 @@ public class MageAI : BaseAI
         {
             DebugSay("I cannot see my target, moving to regain line of sight");
 
+            if (ChaseDebug.Tracks(Mobile))
+            {
+                ChaseDebug.Log(Mobile, $"mage: no LOS, closing distance | {ChaseDebug.TargetInfo(Mobile, c)}");
+            }
+
             if (!MoveTo(c, 1))
             {
                 OnFailedMove();

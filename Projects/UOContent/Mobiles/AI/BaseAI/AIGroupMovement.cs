@@ -78,6 +78,10 @@ public abstract partial class BaseAI
         {
             if (optimalPosition == Point3D.Zero)
             {
+                if (ChaseDebug.Tracks(mobile))
+                {
+                    ChaseDebug.Log(mobile, $"group: no ring cell -> collision-avoidance | {ChaseDebug.TargetInfo(mobile, target)}");
+                }
 
                 return ai.MoveToWithCollisionAvoidance(target, range);
             }
@@ -92,6 +96,11 @@ public abstract partial class BaseAI
             }
 
             var res = ai.DoMoveImpl(direction, true);
+
+            if (ChaseDebug.Tracks(mobile))
+            {
+                ChaseDebug.Log(mobile, $"group: ring cell {optimalPosition} dir={direction} result={res} | {ChaseDebug.TargetInfo(mobile, target)}");
+            }
 
             if (res is MoveResult.Success or MoveResult.BadState)
             {

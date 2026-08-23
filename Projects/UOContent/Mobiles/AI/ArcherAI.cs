@@ -49,6 +49,11 @@ public class ArcherAI : BaseAI
 
             if (!Mobile.InRange(combatant, Mobile.ChaseLeashRange))
             {
+                if (ChaseDebug.Tracks(Mobile))
+                {
+                    ChaseDebug.Log(Mobile, $"leash: beyond ChaseLeashRange -> combatant cleared | {ChaseDebug.TargetInfo(Mobile, combatant)}");
+                }
+
                 this.DebugSayFormatted($"I have lost {combatant.Name}");
 
                 Mobile.Combatant = null;

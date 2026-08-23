@@ -82,6 +82,11 @@ public abstract partial class BaseAI
         {
             if (_action != value)
             {
+                if (ChaseDebug.Tracks(Mobile))
+                {
+                    ChaseDebug.Log(Mobile, $"action {_action} -> {value} | {ChaseDebug.TargetInfo(Mobile, Mobile.Combatant)}");
+                }
+
                 _action = value;
                 OnActionChanged();
             }
@@ -354,6 +359,13 @@ public abstract partial class BaseAI
         _investigateStopTick = Core.TickCount + InvestigateDuration;
         _guardStopTick = Core.TickCount + GuardGraceDuration;
         _lkpGoal = null;
+
+        if (ChaseDebug.Tracks(Mobile))
+        {
+            ChaseDebug.Log(Mobile, _investigating
+                ? $"guard: investigating last-known {_lkpLocation} of {ChaseDebug.Describe(_lkpTarget)}"
+                : "guard: standing alert (no investigation needed)");
+        }
     }
 
     private void HandleFleeAction()
@@ -493,6 +505,11 @@ public abstract partial class BaseAI
 
             _investigating = false;
             _guardStopTick = Core.TickCount + GuardGraceDuration;
+
+            if (ChaseDebug.Tracks(Mobile))
+            {
+                ChaseDebug.Log(Mobile, "guard: investigation ended, standing alert");
+            }
         }
 
         if (Core.TickCount - _guardStopTick < 0)
@@ -558,6 +575,11 @@ public abstract partial class BaseAI
             !Mobile.InLOS(target) || !Mobile.CanBeHarmful(target, false))
         {
             return false;
+        }
+
+        if (ChaseDebug.Tracks(Mobile))
+        {
+            ChaseDebug.Log(Mobile, $"re-engaging last-known target | {ChaseDebug.TargetInfo(Mobile, target)}");
         }
 
         DebugSay("There you are!");
@@ -849,6 +871,11 @@ public abstract partial class BaseAI
 
         if (gateRemaining > 0 && gateRemaining <= reacquireDelay)
         {
+            if (ChaseDebug.Tracks(Mobile))
+            {
+                ChaseDebug.Log(Mobile, $"acquire throttled ({Mobile.NextReacquireTime - Core.TickCount}ms left)");
+            }
+
             Mobile.FocusMob = null;
             return false;
         }
@@ -971,9 +998,24 @@ public abstract partial class BaseAI
                 enemySummonMob = m;
                 enemySummonVal = theirVal;
             }
+            else if (theirVal > val && ChaseDebug.Tracks(Mobile))
+            {
+                ChaseDebug.Log(Mobile, $"acquire: candidate rejected (no LOS) | {ChaseDebug.TargetInfo(Mobile, m)}");
+            }
         }
 
         Mobile.FocusMob = newFocusMob ?? enemySummonMob;
+
+        if (ChaseDebug.Tracks(Mobile))
+        {
+            ChaseDebug.Log(
+                Mobile,
+                Mobile.FocusMob != null
+                    ? $"acquire -> {ChaseDebug.Describe(Mobile.FocusMob)}"
+                    : "acquire -> none"
+            );
+        }
+
         return Mobile.FocusMob != null;
     }
 
