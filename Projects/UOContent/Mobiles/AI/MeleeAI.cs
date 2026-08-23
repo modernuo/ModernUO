@@ -84,7 +84,6 @@ public class MeleeAI : BaseAI
 
         if (!Mobile.InRange(combatant, Mobile.ChaseLeashRange))
         {
-
             Mobile.Combatant = null;
         }
 
