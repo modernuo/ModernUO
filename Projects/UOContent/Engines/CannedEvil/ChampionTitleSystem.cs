@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using ModernUO.CodeGeneratedEvents;
-using Server.Collections;
 using Server.Mobiles;
 
 namespace Server.Engines.CannedEvil;
