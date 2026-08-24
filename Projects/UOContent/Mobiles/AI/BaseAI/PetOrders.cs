@@ -309,13 +309,13 @@ public abstract partial class BaseAI
         {
             this.DebugSayFormatted($"Guarding my master, {controlMaster.Name}.");
 
-            var guardLocation = controlMaster.Location;
-
-            var distance = (int)Mobile.GetDistanceToSqrt(guardLocation);
+            var distance = (int)Mobile.GetDistanceToSqrt(controlMaster);
 
             if (distance > 3)
             {
-                DoMove(Mobile.GetDirectionTo(guardLocation));
+                // Through the approach primitive so guard-following registers a move
+                // intent (between-think move wakes) and paths around obstacles.
+                WalkMobileRange(controlMaster, 1, true, 1, 3);
             }
             else
             {

@@ -26,7 +26,8 @@ public abstract partial class BaseAI
             return;
         }
 
-        Activate();
+        // A fresh command wakes the AI immediately — never wait out the previous cadence.
+        AITimer.Prod();
 
         switch (Mobile.ControlOrder)
         {
