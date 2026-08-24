@@ -227,12 +227,6 @@ public partial class BallOfSummoning : Item, TranslocationItem
         if (pet.IsStabled)
         {
             pet.SetControlMaster(from);
-
-            if (pet.Summoned)
-            {
-                pet.SummonMaster = from;
-            }
-
             pet.ControlTarget = from;
             pet.ControlOrder = OrderType.Follow;
 

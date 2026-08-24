@@ -447,11 +447,6 @@ public abstract partial class BaseAI
         if (Mobile.FindMyName(e.Speech, true) && e.Speech.InsensitiveContains("obey"))
         {
             Mobile.SetControlMaster(e.Mobile);
-
-            if (Mobile.Summoned)
-            {
-                Mobile.SummonMaster = e.Mobile;
-            }
         }
     }
 }

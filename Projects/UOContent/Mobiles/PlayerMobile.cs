@@ -3553,7 +3553,6 @@ namespace Server.Mobiles
                 pet.Internalize();
 
                 pet.SetControlMaster(null);
-                pet.SummonMaster = null;
 
                 pet.IsStabled = true;
                 pet.StabledBy = this;
@@ -3601,12 +3600,6 @@ namespace Server.Mobiles
                 if (Followers + pet.ControlSlots <= FollowersMax)
                 {
                     pet.SetControlMaster(this);
-
-                    if (pet.Summoned)
-                    {
-                        pet.SummonMaster = this;
-                    }
-
                     pet.ControlTarget = this;
                     pet.ControlOrder = OrderType.Follow;
 

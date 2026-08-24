@@ -134,12 +134,6 @@
       ]
     },
     {
-      "name": "ControlMaster",
-      "type": "Server.Mobile",
-      "usesSaveFlag": true,
-      "rule": "SerializableInterfaceMigrationRule"
-    },
-    {
       "name": "ControlTarget",
       "type": "Server.Mobile",
       "usesSaveFlag": true,
@@ -197,7 +191,7 @@
       ]
     },
     {
-      "name": "SummonMaster",
+      "name": "Master",
       "type": "Server.Mobile",
       "usesSaveFlag": true,
       "rule": "SerializableInterfaceMigrationRule"

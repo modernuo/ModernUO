@@ -13,6 +13,7 @@ using Server.Engines.Virtues;
 using Server.Ethics;
 using Server.Factions;
 using Server.Items;
+using Server.Logging;
 using Server.Misc;
 using Server.Multis;
 using Server.Network;
@@ -136,6 +137,8 @@ namespace Server.Mobiles
     [SerializationGenerator(23, false)]
     public abstract partial class BaseCreature : Mobile, IHonorTarget, IQuestGiver
     {
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(BaseCreature));
+
         public enum Allegiance
         {
             None,
@@ -491,43 +494,41 @@ namespace Server.Mobiles
             InvalidateProperties();
         }
 
-        // Field 16: ControlMaster (hand-written property; follower bookkeeping brackets the assignment)
+        // ControlMaster and SummonMaster serialize as one master reference (Master below).
         private Mobile _controlMaster;
 
-        private bool ShouldSerializeControlMaster() => _controlMaster != null;
-
-        [SerializableField(17)]
+        [SerializableField(16)]
         [SaveFlag(nameof(ShouldSerializeControlTarget))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private Mobile _controlTarget;
 
         private bool ShouldSerializeControlTarget() => _controlTarget != null;
 
-        [SerializableField(18)]
+        [SerializableField(17)]
         [SaveFlag(nameof(ShouldSerializeControlDest))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private Point3D _controlDest;
 
         private bool ShouldSerializeControlDest() => _controlDest != Point3D.Zero;
 
-        // Field 19: ControlOrder (hand-written property; order logic must run on equal re-assignment)
+        // Field 18: ControlOrder (hand-written property; order logic must run on equal re-assignment)
         private OrderType _controlOrder;
 
         private bool ShouldSerializeControlOrder() => _controlOrder != OrderType.None;
 
-        [SerializableField(20)]
+        [SerializableField(19)]
         [SaveFlag(nameof(ShouldSerializeMinTameSkill))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private double _minTameSkill;
 
         private bool ShouldSerializeMinTameSkill() => _minTameSkill != 0;
 
-        // Field 21: Tamable (hand-written property; custom getter masks paragons)
+        // Field 20: Tamable (hand-written property; custom getter masks paragons)
         private bool _tamable;
 
         private bool ShouldSerializeTamable() => _tamable;
 
-        [SerializableField(22, fieldChanged: nameof(OnSummonedChange))]
+        [SerializableField(21, fieldChanged: nameof(OnSummonedChange))]
         [SaveFlag(nameof(ShouldSerializeSummoned))]
         [SerializedCommandProperty(AccessLevel.Administrator)]
         private bool _summoned;
@@ -542,19 +543,30 @@ namespace Server.Mobiles
         }
 
         [AnchoredDateTime]
-        [SerializableField(23, getter: "protected", setter: "protected")]
+        [SerializableField(22, getter: "protected", setter: "protected")]
         [SaveFlag(nameof(ShouldSerializeSummonEnd))]
         private DateTime _summonEnd;
 
         private bool ShouldSerializeSummonEnd() => _summoned;
 
-        // Field 24: SummonMaster (hand-written property; follower bookkeeping brackets the assignment)
         private Mobile _summonMaster;
 
-        private bool ShouldSerializeSummonMaster() => _summonMaster != null;
+        // When both roles are set they are always the same mobile (every management flow
+        // assigns them in lockstep via SetControlMaster), so one reference serializes -
+        // refreshed here at save - and fans back out through the Controlled/Summoned
+        // flags in AfterDeserialization.
+        [SerializableField(23, getter: "private", setter: "private")]
+        [SaveFlag(nameof(ShouldSerializeMaster))]
+        private Mobile _master;
+
+        private bool ShouldSerializeMaster()
+        {
+            _master = _controlMaster ?? _summonMaster;
+            return _master != null;
+        }
 
         [EncodedInt]
-        [SerializableField(25)]
+        [SerializableField(24)]
         [SaveFlag(nameof(ShouldSerializeControlSlots), nameof(ControlSlotsDefaultValue))]
         [SerializedCommandProperty(AccessLevel.Administrator)]
         private int _controlSlots = 1;
@@ -564,7 +576,7 @@ namespace Server.Mobiles
         private int ControlSlotsDefaultValue() => 1;
 
         [EncodedInt]
-        [SerializableField(26, allowFieldChange: nameof(ClampLoyalty))]
+        [SerializableField(25, allowFieldChange: nameof(ClampLoyalty))]
         [SaveFlag(nameof(ShouldSerializeLoyalty), nameof(LoyaltyDefaultValue))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _loyalty;
@@ -579,7 +591,7 @@ namespace Server.Mobiles
             return true;
         }
 
-        [SerializableField(27)]
+        [SerializableField(26)]
         [SaveFlag(nameof(ShouldSerializeCurrentWayPoint))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private WayPoint _currentWayPoint;
@@ -587,7 +599,7 @@ namespace Server.Mobiles
         private bool ShouldSerializeCurrentWayPoint() => _currentWayPoint != null;
 
         [EncodedInt]
-        [SerializableField(28)]
+        [SerializableField(27)]
         [SaveFlag(nameof(ShouldSerializeHitsMaxSeed), nameof(HitsMaxSeedDefaultValue))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _hitsMaxSeed = -1;
@@ -597,7 +609,7 @@ namespace Server.Mobiles
         private int HitsMaxSeedDefaultValue() => -1;
 
         [EncodedInt]
-        [SerializableField(29)]
+        [SerializableField(28)]
         [SaveFlag(nameof(ShouldSerializeStamMaxSeed), nameof(StamMaxSeedDefaultValue))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _stamMaxSeed = -1;
@@ -607,7 +619,7 @@ namespace Server.Mobiles
         private int StamMaxSeedDefaultValue() => -1;
 
         [EncodedInt]
-        [SerializableField(30)]
+        [SerializableField(29)]
         [SaveFlag(nameof(ShouldSerializeManaMaxSeed), nameof(ManaMaxSeedDefaultValue))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _manaMaxSeed = -1;
@@ -617,7 +629,7 @@ namespace Server.Mobiles
         private int ManaMaxSeedDefaultValue() => -1;
 
         [EncodedInt]
-        [SerializableField(31)]
+        [SerializableField(30)]
         [SaveFlag(nameof(ShouldSerializeDamageMin), nameof(DamageMinDefaultValue))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _damageMin = -1;
@@ -627,7 +639,7 @@ namespace Server.Mobiles
         private int DamageMinDefaultValue() => -1;
 
         [EncodedInt]
-        [SerializableField(32)]
+        [SerializableField(31)]
         [SaveFlag(nameof(ShouldSerializeDamageMax), nameof(DamageMaxDefaultValue))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _damageMax = -1;
@@ -637,7 +649,7 @@ namespace Server.Mobiles
         private int DamageMaxDefaultValue() => -1;
 
         [EncodedInt]
-        [SerializableField(33, fieldChanged: nameof(OnResistanceSeedChange))]
+        [SerializableField(32, fieldChanged: nameof(OnResistanceSeedChange))]
         [SaveFlag(nameof(ShouldSerializePhysicalResistanceSeed))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _physicalResistanceSeed;
@@ -647,7 +659,7 @@ namespace Server.Mobiles
         private void OnResistanceSeedChange(int oldValue, int newValue) => UpdateResistances();
 
         [EncodedInt]
-        [SerializableField(34, fieldChanged: nameof(OnResistanceSeedChange))]
+        [SerializableField(33, fieldChanged: nameof(OnResistanceSeedChange))]
         [SaveFlag(nameof(ShouldSerializeFireResistSeed))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _fireResistSeed;
@@ -655,7 +667,7 @@ namespace Server.Mobiles
         private bool ShouldSerializeFireResistSeed() => _fireResistSeed != 0;
 
         [EncodedInt]
-        [SerializableField(35, fieldChanged: nameof(OnResistanceSeedChange))]
+        [SerializableField(34, fieldChanged: nameof(OnResistanceSeedChange))]
         [SaveFlag(nameof(ShouldSerializeColdResistSeed))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _coldResistSeed;
@@ -663,7 +675,7 @@ namespace Server.Mobiles
         private bool ShouldSerializeColdResistSeed() => _coldResistSeed != 0;
 
         [EncodedInt]
-        [SerializableField(36, fieldChanged: nameof(OnResistanceSeedChange))]
+        [SerializableField(35, fieldChanged: nameof(OnResistanceSeedChange))]
         [SaveFlag(nameof(ShouldSerializePoisonResistSeed))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _poisonResistSeed;
@@ -671,7 +683,7 @@ namespace Server.Mobiles
         private bool ShouldSerializePoisonResistSeed() => _poisonResistSeed != 0;
 
         [EncodedInt]
-        [SerializableField(37, fieldChanged: nameof(OnResistanceSeedChange))]
+        [SerializableField(36, fieldChanged: nameof(OnResistanceSeedChange))]
         [SaveFlag(nameof(ShouldSerializeEnergyResistSeed))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _energyResistSeed;
@@ -679,7 +691,7 @@ namespace Server.Mobiles
         private bool ShouldSerializeEnergyResistSeed() => _energyResistSeed != 0;
 
         [EncodedInt]
-        [SerializableField(38)]
+        [SerializableField(37)]
         [SaveFlag(nameof(ShouldSerializePhysicalDamage), nameof(PhysicalDamageDefaultValue))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _physicalDamage = 100;
@@ -689,7 +701,7 @@ namespace Server.Mobiles
         private int PhysicalDamageDefaultValue() => 100;
 
         [EncodedInt]
-        [SerializableField(39)]
+        [SerializableField(38)]
         [SaveFlag(nameof(ShouldSerializeFireDamage))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _fireDamage;
@@ -697,7 +709,7 @@ namespace Server.Mobiles
         private bool ShouldSerializeFireDamage() => _fireDamage != 0;
 
         [EncodedInt]
-        [SerializableField(40)]
+        [SerializableField(39)]
         [SaveFlag(nameof(ShouldSerializeColdDamage))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _coldDamage;
@@ -705,7 +717,7 @@ namespace Server.Mobiles
         private bool ShouldSerializeColdDamage() => _coldDamage != 0;
 
         [EncodedInt]
-        [SerializableField(41)]
+        [SerializableField(40)]
         [SaveFlag(nameof(ShouldSerializePoisonDamage))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _poisonDamage;
@@ -713,7 +725,7 @@ namespace Server.Mobiles
         private bool ShouldSerializePoisonDamage() => _poisonDamage != 0;
 
         [EncodedInt]
-        [SerializableField(42)]
+        [SerializableField(41)]
         [SaveFlag(nameof(ShouldSerializeEnergyDamage))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _energyDamage;
@@ -721,7 +733,7 @@ namespace Server.Mobiles
         private bool ShouldSerializeEnergyDamage() => _energyDamage != 0;
 
         [Tidy]
-        [SerializableField(43, setter: "private")]
+        [SerializableField(42, setter: "private")]
         [SaveFlag(nameof(ShouldSerializeOwners), nameof(OwnersDefaultValue))]
         private List<Mobile> _owners;
 
@@ -733,13 +745,13 @@ namespace Server.Mobiles
 
         private List<Mobile> OwnersDefaultValue() => new();
 
-        [SerializableField(44)]
+        [SerializableField(43)]
         [SaveFlag(nameof(ShouldSerializeIsDeadPet))]
         private bool _isDeadPet;
 
         private bool ShouldSerializeIsDeadPet() => _isDeadPet;
 
-        [SerializableField(45, fieldChanged: nameof(OnBondedChange))]
+        [SerializableField(44, fieldChanged: nameof(OnBondedChange))]
         [SaveFlag(nameof(ShouldSerializeIsBonded))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private bool _isBonded;
@@ -748,33 +760,33 @@ namespace Server.Mobiles
 
         private void OnBondedChange(bool oldValue, bool newValue) => InvalidateProperties();
 
-        [SerializableField(46)]
+        [SerializableField(45)]
         [SaveFlag(nameof(ShouldSerializeBondingBegin))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private DateTime _bondingBegin;
 
         private bool ShouldSerializeBondingBegin() => _bondingBegin != DateTime.MinValue;
 
-        [SerializableField(47)]
+        [SerializableField(46)]
         [SaveFlag(nameof(ShouldSerializeOwnerAbandonTime))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private DateTime _ownerAbandonTime;
 
         private bool ShouldSerializeOwnerAbandonTime() => _ownerAbandonTime != DateTime.MinValue;
 
-        [SerializableField(48)]
+        [SerializableField(47)]
         [SaveFlag(nameof(ShouldSerializeHasGeneratedLoot))]
         private bool _hasGeneratedLoot;
 
         private bool ShouldSerializeHasGeneratedLoot() => _hasGeneratedLoot;
 
-        // Field 49: IsParagon (hand-written property; the setter converts, which must not run at load)
+        // Field 48: IsParagon (hand-written property; the setter converts, which must not run at load)
         private bool _isParagon;
 
         private bool ShouldSerializeIsParagon() => _isParagon;
 
         [Tidy]
-        [SerializableField(50, setter: "private")]
+        [SerializableField(49, setter: "private")]
         [SaveFlag(nameof(ShouldSerializeFriends))]
         private List<Mobile> _friends;
 
@@ -784,7 +796,7 @@ namespace Server.Mobiles
             return _friends?.Count > 0;
         }
 
-        [SerializableField(51)]
+        [SerializableField(50)]
         [SaveFlag(nameof(ShouldSerializeRemoveIfUntamed))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private bool _removeIfUntamed;
@@ -792,14 +804,14 @@ namespace Server.Mobiles
         private bool ShouldSerializeRemoveIfUntamed() => _removeIfUntamed;
 
         [EncodedInt]
-        [SerializableField(52)]
+        [SerializableField(51)]
         [SaveFlag(nameof(ShouldSerializeRemoveStep))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _removeStep;
 
         private bool ShouldSerializeRemoveStep() => _removeStep != 0;
 
-        [SerializableField(53, setter: "private")]
+        [SerializableField(52, setter: "private")]
         [SaveFlag(nameof(ShouldSerializePendingDeleteTimer))]
         [DeserializeTimer(nameof(DeserializePendingDeleteTimer))]
         private Timer _pendingDeleteTimer;
@@ -814,7 +826,7 @@ namespace Server.Mobiles
             _pendingDeleteTimer.Start();
         }
 
-        [SerializableField(54)]
+        [SerializableField(53)]
         [SaveFlag(nameof(ShouldSerializeCorpseNameOverride))]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private string _corpseNameOverride;
@@ -880,10 +892,11 @@ namespace Server.Mobiles
 
             if (_activeSpeed <= 0 || _passiveSpeed <= 0)
             {
-                // A 0-delay creature spins its AI timer at wheel resolution.
-                throw new InvalidOperationException(
-                    $"{GetType()} constructed without speeds - is {"Data/npc-speeds.json"} missing?"
-                );
+                // A 0-delay creature would spin its AI timer at wheel resolution.
+                logger.Debug("{Type} constructed without speeds - is Data/npc-speeds.json missing? Defaulting to Medium.", GetType());
+                _activeSpeed = 0.25;
+                _passiveSpeed = 0.5;
+                _currentSpeed = _passiveSpeed;
             }
 
             _team = 0;
@@ -972,7 +985,7 @@ namespace Server.Mobiles
 
         public virtual double WeaponAbilityChance => 0.4;
 
-        [SerializableProperty(49, useField: nameof(_isParagon))]
+        [SerializableProperty(48, useField: nameof(_isParagon))]
         [SaveFlag(nameof(ShouldSerializeIsParagon))]
         [CommandProperty(AccessLevel.GameMaster)]
         public bool IsParagon
@@ -1183,8 +1196,6 @@ namespace Server.Mobiles
             }
         }
 
-        [SerializableProperty(16, useField: nameof(_controlMaster))]
-        [SaveFlag(nameof(ShouldSerializeControlMaster))]
         [CommandProperty(AccessLevel.GameMaster)]
         public Mobile ControlMaster
         {
@@ -1209,8 +1220,6 @@ namespace Server.Mobiles
             }
         }
 
-        [SerializableProperty(24, useField: nameof(_summonMaster))]
-        [SaveFlag(nameof(ShouldSerializeSummonMaster))]
         [CommandProperty(AccessLevel.GameMaster)]
         public Mobile SummonMaster
         {
@@ -1233,7 +1242,7 @@ namespace Server.Mobiles
 
         // Re-issuing the current order must still run the order logic (pet commands), so
         // this keeps a hand-written setter with no equality skip.
-        [SerializableProperty(19, useField: nameof(_controlOrder))]
+        [SerializableProperty(18, useField: nameof(_controlOrder))]
         [SaveFlag(nameof(ShouldSerializeControlOrder))]
         [CommandProperty(AccessLevel.GameMaster)]
         public OrderType ControlOrder
@@ -1268,7 +1277,7 @@ namespace Server.Mobiles
         [CommandProperty(AccessLevel.GameMaster)]
         public DateTime BardEndTime { get; set; }
 
-        [SerializableProperty(21, useField: nameof(_tamable))]
+        [SerializableProperty(20, useField: nameof(_tamable))]
         [SaveFlag(nameof(ShouldSerializeTamable))]
         [CommandProperty(AccessLevel.GameMaster)]
         public bool Tamable
@@ -2368,6 +2377,10 @@ namespace Server.Mobiles
                 _speedEntry = null;
             }
 
+            // Feed the masters through the consolidated reference so the
+            // AfterDeserialization fan-out is uniform across both load paths.
+            _master = _controlMaster ?? _summonMaster;
+
             if (version <= 14 && _isParagon && Hue == 0x31)
             {
                 Hue = Paragon.Hue; // Paragon hue fixed, should now be 0x501.
@@ -2377,6 +2390,9 @@ namespace Server.Mobiles
         [AfterDeserialization]
         private void AfterDeserialization()
         {
+            _controlMaster = _controlled ? _master : null;
+            _summonMaster = _summoned ? _master : null;
+
             if (Core.AOS && NameHue == 0x35)
             {
                 NameHue = -1;
@@ -3622,8 +3638,8 @@ namespace Server.Mobiles
 
             var m = _controlMaster;
             SetControlMaster(null);
+            SummonMaster = null; // uncontrolled summons have no control master to clear through
 
-            SummonMaster = null;
             ReceivedHonorContext?.Cancel();
 
             base.OnDelete();
@@ -3669,6 +3685,11 @@ namespace Server.Mobiles
                 Controlled = false;
                 ControlTarget = null;
                 ControlOrder = OrderType.None;
+
+                if (_summoned)
+                {
+                    SummonMaster = null;
+                }
             }
             else
             {
@@ -3692,6 +3713,11 @@ namespace Server.Mobiles
                 Controlled = true;
                 ControlTarget = null;
                 ControlOrder = OrderType.Come;
+
+                if (_summoned)
+                {
+                    SummonMaster = m;
+                }
 
 
                 if (_pendingDeleteTimer != null)

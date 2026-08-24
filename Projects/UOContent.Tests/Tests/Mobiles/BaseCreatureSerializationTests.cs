@@ -164,6 +164,27 @@ public class BaseCreatureSerializationTests : IDisposable
         Assert.Equal(master, copy.LastOwner);
     }
 
+    [Fact]
+    public void UncontrolledSummon_KeepsItsSummonMaster()
+    {
+        var bc = NewCreature();
+        var master = new PlayerMobile(World.NewMobile);
+        master.DefaultMobileInit();
+        World.AddEntity(master);
+        _created.Add(master);
+
+        // Energy vortex-style: summoned with a master, never controlled.
+        bc.Summoned = true;
+        bc.SummonMaster = master;
+
+        var copy = Load(Snapshot(bc));
+
+        Assert.True(copy.Summoned);
+        Assert.False(copy.Controlled);
+        Assert.Equal(master, copy.SummonMaster);
+        Assert.Null(copy.ControlMaster);
+    }
+
     private sealed class BucketStub : BaseCreature
     {
         public BucketStub() : base(AIType.AI_Melee) => Body = 0xC9;
