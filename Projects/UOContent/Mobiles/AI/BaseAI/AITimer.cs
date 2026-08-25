@@ -54,6 +54,9 @@ public sealed class AITimer : Timer
 
     // A fresh command must not wait out the previous cadence: think now. Pets are exempt
     // from sector deactivation, so dropping the stagger Delay here cannot bunch sector wakes.
+    // Spam-safe: at most one think per command and no compounding, and a think grants no
+    // action — steps (NextMove budget), swings, casts, abilities and detect-hidden are all
+    // gated by their own budgets/timers that this never touches.
     public void Prod()
     {
         _nextThink = Core.TickCount;
