@@ -118,18 +118,19 @@ public abstract partial class BaseAI
 
         if (TryMove(d))
         {
-            // Writes the think clock only; hurt slowdown applies in ConsumeMoveBudget.
-            if (Core.AOS && IsFollowingMaster())
+            // An obeying pet's pace is owned by its order handler (issue sets the think
+            // clock; guard/follow write the AOS sprint) — the per-step flip re-derives
+            // speed for wild creatures and combat only, or it would fight those writes.
+            if (!IsObeyingMoveOrder())
             {
-                Mobile.CurrentSpeed = 0.1;
-            }
-            else if (Mobile.Warmode || Mobile.Combatant != null)
-            {
-                Mobile.SetCurrentSpeedToActive();
-            }
-            else
-            {
-                Mobile.SetCurrentSpeedToPassive();
+                if (Mobile.Warmode || Mobile.Combatant != null)
+                {
+                    Mobile.SetCurrentSpeedToActive();
+                }
+                else
+                {
+                    Mobile.SetCurrentSpeedToPassive();
+                }
             }
 
             ConsumeMoveBudget();
@@ -541,8 +542,7 @@ public abstract partial class BaseAI
     {
         nextMove = NextMove;
 
-        return (_moveIntentTarget != null || _moveIntentPoint != null) &&
-               Core.TickCount - _moveIntentExpire < 0;
+        return (_moveIntentTarget != null || _moveIntentPoint != null) && Core.TickCount - _moveIntentExpire < 0;
     }
 
     /// <summary>
@@ -598,6 +598,14 @@ public abstract partial class BaseAI
         Mobile.ControlOrder == OrderType.Follow &&
         Mobile.ControlTarget == Mobile.ControlMaster &&
         Mobile.Combatant == null;
+
+    // A pet executing a master's movement order with no combat; its order handler owns
+    // the speed clocks (mirrors RunUO's OnCurrentOrderChanged/DoOrder* speed writes).
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsObeyingMoveOrder() =>
+        Mobile.Controlled &&
+        Mobile.Combatant == null &&
+        Mobile.ControlOrder is OrderType.Come or OrderType.Follow or OrderType.Guard;
 
     private bool MoveToWithCollisionAvoidance(Mobile target, bool run, int range)
     {

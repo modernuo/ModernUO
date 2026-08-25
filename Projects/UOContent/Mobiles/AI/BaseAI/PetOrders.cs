@@ -128,6 +128,13 @@ public abstract partial class BaseAI
 
         this.DebugSayFormatted($"I am ordered to follow {Mobile.ControlTarget?.Name}.");
 
+        // RunUO AOS parity: a pet sprints after its master (bespoke 0.1 fuses to both
+        // clocks); other targets keep the active pace the order issue set.
+        if (Core.AOS && Mobile.ControlTarget == Mobile.ControlMaster && Mobile.Combatant == null)
+        {
+            Mobile.CurrentSpeed = 0.1;
+        }
+
         if (currentDistance > 1)
         {
             WalkMobileRange(Mobile.ControlTarget, 1, currentDistance > 2, 1, 2);
@@ -320,12 +327,23 @@ public abstract partial class BaseAI
 
             if (distance > 3)
             {
-                // Through the approach primitive so guard-following registers a move
-                // intent (between-think move wakes) and paths around obstacles.
+                // RunUO parity: the AOS return sprints (bespoke 0.1 fuses to both
+                // clocks); earlier eras run active. Through the approach primitive so
+                // guard-following registers a move intent and paths around obstacles.
+                if (Core.AOS)
+                {
+                    Mobile.CurrentSpeed = 0.1;
+                }
+                else
+                {
+                    Mobile.SetCurrentSpeedToActive();
+                }
+
                 WalkMobileRange(controlMaster, 1, true, 1, 3);
             }
             else
             {
+                Mobile.SetCurrentSpeedToActive(); // alert at the master's side
                 WalkRandom(3, 1, 1);
             }
         }

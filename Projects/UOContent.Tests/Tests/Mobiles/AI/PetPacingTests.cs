@@ -32,58 +32,64 @@ public class PetPacingTests : IDisposable
         _created.Clear();
     }
 
+    // Issuing an order sets the think clock organically (RunUO OnCurrentOrderChanged
+    // parity): movement orders run active, resting orders run passive. The move clock
+    // then resolves through the normal classification — no special-casing.
     [Fact]
-    public void ObeyingPet_PacesStepsOnThinkClock()
+    public void OrderIssue_SetsThinkClock()
     {
         var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
-        pet.SetMoveSpeed(0.3, 0.9); // wild-creature table pace; must not slow obedience
-        pet.SetCurrentSpeedToPassive();
-
-        Assert.Equal(OrderType.Come, pet.ControlOrder);
-        Assert.Equal(0.4, pet.CurrentMoveSpeed);
-
-        pet.ControlTarget = master;
-        pet.ControlOrder = OrderType.Follow;
-        Assert.Equal(0.4, pet.CurrentMoveSpeed);
-    }
-
-    // A guarding pet with nothing to fight returns to its master at the follow sprint
-    // pace (RunUO guard parity) while its think cadence stays untouched.
-    [Fact]
-    public void GuardReturn_SprintsOnMoveClock()
-    {
-        var (_, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
         pet.SetMoveSpeed(0.3, 0.9);
         pet.SetCurrentSpeedToPassive();
 
-        pet.ControlOrder = OrderType.Guard; // fixture era is EJ: Core.AOS is true
+        pet.ControlOrder = OrderType.Come;
+        Assert.Equal(0.2, pet.CurrentSpeed);
+        Assert.Equal(0.3, pet.CurrentMoveSpeed); // organic: verbatim active -> activeMove
 
-        Assert.Equal(0.1, pet.CurrentMoveSpeed);
-        Assert.Equal(0.4, pet.CurrentSpeed); // think clock unaffected
+        pet.ControlOrder = OrderType.Stay;
+        Assert.Equal(0.4, pet.CurrentSpeed);
+        Assert.Equal(0.9, pet.CurrentMoveSpeed);
+
+        pet.ControlTarget = master;
+        pet.ControlOrder = OrderType.Follow;
+        Assert.Equal(0.2, pet.CurrentSpeed);
+
+        pet.ControlOrder = OrderType.Guard;
+        Assert.Equal(0.2, pet.CurrentSpeed);
     }
 
-    // Boundary guard: pre-AOS eras have no sprint — guard paces on the think clock.
+    // RunUO AOS parity: a pet following its master sprints — DoOrderFollow writes the
+    // bespoke 0.1, which fuses to both clocks through the normal classification.
     [Fact]
-    public void GuardReturn_PreAOS_PacesThinkClock()
+    public void FollowMaster_ObeySprints()
     {
-        var previous = Core.Expansion;
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        pet.SetMoveSpeed(0.3, 0.9);
+        pet.AIObject.AITimer?.Stop();
 
-        try
-        {
-            Core.Expansion = Expansion.UOR;
+        pet.ControlTarget = master;
+        pet.ControlOrder = OrderType.Follow; // fixture era is EJ: Core.AOS is true
+        pet.AIObject.Obey();
 
-            var (_, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
-            pet.SetMoveSpeed(0.3, 0.9);
-            pet.SetCurrentSpeedToPassive();
+        Assert.Equal(0.1, pet.CurrentSpeed);
+        Assert.Equal(0.1, pet.CurrentMoveSpeed);
+    }
 
-            pet.ControlOrder = OrderType.Guard;
+    // A guarding pet at its master's side stays organically active — never the
+    // stale-warmode passive lottery, and no sprint while there is nowhere to go.
+    [Fact]
+    public void GuardAtMastersSide_IsActive()
+    {
+        var (_, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        pet.SetMoveSpeed(0.3, 0.9);
+        pet.AIObject.AITimer?.Stop();
+        pet.SetCurrentSpeedToPassive();
 
-            Assert.Equal(0.4, pet.CurrentMoveSpeed);
-        }
-        finally
-        {
-            Core.Expansion = previous;
-        }
+        pet.ControlOrder = OrderType.Guard;
+        pet.AIObject.Obey(); // nothing to guard against, master adjacent
+
+        Assert.Equal(0.2, pet.CurrentSpeed);
+        Assert.Equal(0.3, pet.CurrentMoveSpeed);
     }
 
     // Boundary guard: a pet chasing a combatant keeps the move table.

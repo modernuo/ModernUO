@@ -36,6 +36,8 @@ public class GuardFollowTests
 
         var moved = pet.Location != start;
         var hasIntent = ai.TryGetMoveWake(out _);
+        var currentSpeed = pet.CurrentSpeed;
+        var currentMoveSpeed = pet.CurrentMoveSpeed;
 
         pet.Delete();
         master.Delete();
@@ -44,5 +46,54 @@ public class GuardFollowTests
         // Between-think move wakes require a registered move intent; bare greedy stepping
         // quantizes guard-following to the think grid (issue #2593).
         Assert.True(hasIntent, "guard-following must register a move intent");
+
+        // RunUO AOS parity: the guard return sprints at the bespoke 0.1, fused to both
+        // clocks, and the per-step speed flip must not undo it (fixture era is EJ).
+        Assert.Equal(0.1, currentSpeed);
+        Assert.Equal(0.1, currentMoveSpeed);
+    }
+
+    [Fact]
+    public void GuardReturn_PreAOS_RunsActive()
+    {
+        var previous = Core.Expansion;
+
+        try
+        {
+            Core.Expansion = Expansion.UOR;
+
+            var map = Map.Maps[1];
+            Assert.NotNull(map);
+            map.GetAverageZ(1500, 1600, out _, out var z, out _);
+
+            var master = new PlayerMobile(World.NewMobile);
+            master.DefaultMobileInit();
+            master.MoveToWorld(new Point3D(1494, 1600, (sbyte)z), map);
+
+            var pet = new PetTestStub();
+            pet.MoveToWorld(new Point3D(1500, 1600, (sbyte)z), map);
+            pet.SetControlMaster(master);
+
+            var ai = pet.AIObject;
+            ai.AITimer?.Stop();
+            pet.ControlOrder = OrderType.Guard;
+            ai.AITimer?.Stop();
+            pet.SetCurrentSpeedToPassive(); // a stale passive state must not persist
+
+            ai.NextMove = 0;
+            ai.Obey();
+
+            var currentSpeed = pet.CurrentSpeed;
+
+            pet.Delete();
+            master.Delete();
+
+            // No sprint pre-AOS: the return runs organically active.
+            Assert.Equal(0.2, currentSpeed);
+        }
+        finally
+        {
+            Core.Expansion = previous;
+        }
     }
 }

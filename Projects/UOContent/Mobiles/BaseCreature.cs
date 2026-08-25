@@ -750,9 +750,9 @@ namespace Server.Mobiles
 
         /// <summary>
         /// Resolved seconds per step: a verbatim active/passive <see cref="CurrentSpeed"/>
-        /// maps to the matching movement value; a bespoke pace stays fused to both clocks.
-        /// A herded creature is always driven at <see cref="HerdingMoveSpeed"/>; a pet
-        /// executing a master's movement order paces on the think clock.
+        /// maps to the matching movement value; a bespoke pace (e.g. the AOS 0.1 sprint
+        /// pet orders write) stays fused to both clocks. A herded creature is always
+        /// driven at <see cref="HerdingMoveSpeed"/>.
         /// </summary>
         [CommandProperty(AccessLevel.GameMaster)]
         public double CurrentMoveSpeed
@@ -762,18 +762,6 @@ namespace Server.Mobiles
                 if (_targetLocation != null)
                 {
                     return HerdingMoveSpeed;
-                }
-
-                // Obedience is never slowed by the wild-creature move table; combat
-                // chases (combatant set) keep it. A guarding pet returns to its master
-                // at the follow sprint pace (RunUO guard parity) with its think cadence
-                // untouched.
-                if (Controlled && Combatant == null &&
-                    ControlOrder is OrderType.Come or OrderType.Follow or OrderType.Guard)
-                {
-                    return Core.AOS && ControlOrder == OrderType.Guard
-                        ? Math.Min(_currentSpeed, 0.1)
-                        : _currentSpeed;
                 }
 
                 return _currentSpeed == _activeSpeed ? ActiveMoveSpeed
