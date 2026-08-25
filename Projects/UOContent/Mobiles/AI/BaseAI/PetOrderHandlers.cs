@@ -163,9 +163,16 @@ public abstract partial class BaseAI
         _commandIssuer?.RevealingAction();
         Mobile.FocusMob = null;
         Mobile.Warmode = true;
-        Mobile.PlaySound(Mobile.GetAttackSound());
-        Mobile.ControlMaster?.SendLocalizedMessage(1049671, Mobile.Name);
-        // ~1_NAME~ is now guarding you.
+
+        // Only a freshly issued command plays the flourish; resuming the persistent
+        // order after an explicit attack must not replay it after every kill.
+        if (!_resolvingOrder)
+        {
+            Mobile.PlaySound(Mobile.GetAttackSound());
+            Mobile.ControlMaster?.SendLocalizedMessage(1049671, Mobile.Name);
+            // ~1_NAME~ is now guarding you.
+        }
+
         _commandIssuer = null;
     }
 

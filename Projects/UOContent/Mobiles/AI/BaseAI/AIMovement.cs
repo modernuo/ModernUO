@@ -649,14 +649,12 @@ public abstract partial class BaseAI
         {
             var iCurrDist = (int)Mobile.GetDistanceToSqrt(m);
 
-            var shouldRun = run && iCurrDist > 5;
-
             if (iCurrDist >= iWantDistMin && iCurrDist <= iWantDistMax)
             {
                 return true;
             }
 
-            if (!MoveTowardsOrAwayFrom(m, shouldRun, iCurrDist, iWantDistMax))
+            if (!MoveTowardsOrAwayFrom(m, run, iCurrDist, iWantDistMax))
             {
                 return false;
             }
@@ -667,18 +665,19 @@ public abstract partial class BaseAI
         return dist >= iWantDistMin && dist <= iWantDistMax;
     }
 
+    // The caller's run flag is honored as-is: it only sets the client-side animation
+    // (server pace is the move budget), and the callers that pass anything but false —
+    // follow, guard, clone — gate it on their own distance thresholds.
     private bool MoveTowardsOrAwayFrom(Mobile m, bool run, int iCurrDist, int iWantDistMax)
     {
-        var shouldRun = run && iCurrDist > 5;
-
         if (iCurrDist > iWantDistMax)
         {
             // Too far: approach via the centralized progress-based primitive.
-            return ApproachTarget(m, shouldRun, iWantDistMax);
+            return ApproachTarget(m, run, iWantDistMax);
         }
 
         // Too close: back away. Retreat keeps the simple greedy behavior (out of scope).
-        if (DoMove(m.GetDirectionTo(Mobile, shouldRun), true))
+        if (DoMove(m.GetDirectionTo(Mobile, run), true))
         {
             Path = null;
             return true;

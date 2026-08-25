@@ -765,11 +765,15 @@ namespace Server.Mobiles
                 }
 
                 // Obedience is never slowed by the wild-creature move table; combat
-                // chases (combatant set) keep it.
+                // chases (combatant set) keep it. A guarding pet returns to its master
+                // at the follow sprint pace (RunUO guard parity) with its think cadence
+                // untouched.
                 if (Controlled && Combatant == null &&
                     ControlOrder is OrderType.Come or OrderType.Follow or OrderType.Guard)
                 {
-                    return _currentSpeed;
+                    return Core.AOS && ControlOrder == OrderType.Guard
+                        ? Math.Min(_currentSpeed, 0.1)
+                        : _currentSpeed;
                 }
 
                 return _currentSpeed == _activeSpeed ? ActiveMoveSpeed

@@ -42,12 +42,48 @@ public class PetPacingTests : IDisposable
         Assert.Equal(OrderType.Come, pet.ControlOrder);
         Assert.Equal(0.4, pet.CurrentMoveSpeed);
 
-        pet.ControlOrder = OrderType.Guard;
-        Assert.Equal(0.4, pet.CurrentMoveSpeed);
-
         pet.ControlTarget = master;
         pet.ControlOrder = OrderType.Follow;
         Assert.Equal(0.4, pet.CurrentMoveSpeed);
+    }
+
+    // A guarding pet with nothing to fight returns to its master at the follow sprint
+    // pace (RunUO guard parity) while its think cadence stays untouched.
+    [Fact]
+    public void GuardReturn_SprintsOnMoveClock()
+    {
+        var (_, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        pet.SetMoveSpeed(0.3, 0.9);
+        pet.SetCurrentSpeedToPassive();
+
+        pet.ControlOrder = OrderType.Guard; // fixture era is EJ: Core.AOS is true
+
+        Assert.Equal(0.1, pet.CurrentMoveSpeed);
+        Assert.Equal(0.4, pet.CurrentSpeed); // think clock unaffected
+    }
+
+    // Boundary guard: pre-AOS eras have no sprint — guard paces on the think clock.
+    [Fact]
+    public void GuardReturn_PreAOS_PacesThinkClock()
+    {
+        var previous = Core.Expansion;
+
+        try
+        {
+            Core.Expansion = Expansion.UOR;
+
+            var (_, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+            pet.SetMoveSpeed(0.3, 0.9);
+            pet.SetCurrentSpeedToPassive();
+
+            pet.ControlOrder = OrderType.Guard;
+
+            Assert.Equal(0.4, pet.CurrentMoveSpeed);
+        }
+        finally
+        {
+            Core.Expansion = previous;
+        }
     }
 
     // Boundary guard: a pet chasing a combatant keeps the move table.
