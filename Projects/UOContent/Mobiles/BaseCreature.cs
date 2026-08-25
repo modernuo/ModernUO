@@ -858,6 +858,10 @@ namespace Server.Mobiles
         [CommandProperty(AccessLevel.GameMaster)]
         public Point3D ControlDest { get; set; }
 
+        // Deliberately fires on every assignment, not just changes: a reissued order is a
+        // command ("all attack" retargets via ControlTarget, "all follow" breaks off combat,
+        // "all stay" re-anchors Home) and must run its handler and wake the AI. Handlers
+        // needing change-detection compare against the previous order they receive.
         [CommandProperty(AccessLevel.GameMaster)]
         public OrderType ControlOrder
         {
