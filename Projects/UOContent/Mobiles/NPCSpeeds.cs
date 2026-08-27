@@ -8,7 +8,7 @@ namespace Server.Mobiles;
 
 public enum SpeedLevel
 {
-    None,
+    None, // no bucket: the creature's own speeds are authoritative (custom)
     VerySlow,
     Slow,
     Medium,
@@ -26,33 +26,28 @@ public static class NPCSpeeds
     public static int MinIdleSeconds { get; private set; }
     public static int MaxIdleSeconds { get; private set; }
 
-    public static void GetSpeeds(BaseCreature bc, out double activeSpeed, out double passiveSpeed)
+    // Construction-time resolution of a type's bucket: an explicit DefaultSpeedClass,
+    // else the table's type list, else Medium so unconfigured creatures never construct
+    // at 0/0. None only when the table itself is unloaded (test fixtures).
+    public static SpeedLevel ResolveDefaultLevel(BaseCreature bc)
     {
-        if ((bc.SpeedClass == SpeedLevel.None || !_speedsByLevel.TryGetValue(bc.SpeedClass, out var sp)) &&
-            !_speedsByType.TryGetValue(bc.GetType(), out sp))
+        if (bc.DefaultSpeedClass != SpeedLevel.None)
         {
-            sp = _speedsByLevel[SpeedLevel.Medium];
+            return bc.DefaultSpeedClass;
         }
 
-        activeSpeed = sp.ActiveSpeed;
-        passiveSpeed = sp.PassiveSpeed;
-    }
-
-    // Move speeds are optional (0 = inherit), so this tolerates a missing entry or table.
-    public static void GetMoveSpeeds(BaseCreature bc, out double activeMoveSpeed, out double passiveMoveSpeed)
-    {
-        if ((bc.SpeedClass == SpeedLevel.None || !_speedsByLevel.TryGetValue(bc.SpeedClass, out var sp)) &&
-            !_speedsByType.TryGetValue(bc.GetType(), out sp) &&
-            !_speedsByLevel.TryGetValue(SpeedLevel.Medium, out sp))
+        if (_speedsByType.TryGetValue(bc.GetType(), out var sp))
         {
-            activeMoveSpeed = 0;
-            passiveMoveSpeed = 0;
-            return;
+            return sp.Level;
         }
 
-        activeMoveSpeed = sp.ActiveMoveSpeed;
-        passiveMoveSpeed = sp.PassiveMoveSpeed;
+        return _speedsByLevel.ContainsKey(SpeedLevel.Medium) ? SpeedLevel.Medium : SpeedLevel.None;
     }
+
+    // Null for None (custom) or an unloaded table. Creatures cache the result — the
+    // table is immutable after Configure.
+    public static SpeedClassEntry FindEntry(SpeedLevel level) =>
+        level == SpeedLevel.None ? null : _speedsByLevel.GetValueOrDefault(level);
 
     public static void RegisterSpeed(SpeedClassEntry entry)
     {

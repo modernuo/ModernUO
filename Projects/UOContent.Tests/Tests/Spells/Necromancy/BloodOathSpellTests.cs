@@ -121,7 +121,7 @@ public class BloodOathSpellTests
 
         BloodOathSpell.RegisterOath(caster, target, TimeSpan.FromMinutes(5));
 
-        BaseCreature.CreatureDeletedEvent(target); // central handler breaks the oath from the target side
+        CreatureEvents.CreatureDeletedEvent(target); // central handler breaks the oath from the target side
 
         Assert.Null(BloodOathSpell.GetBloodOath(target));
         Assert.False(BloodOathSpell.RemoveCurse(caster));

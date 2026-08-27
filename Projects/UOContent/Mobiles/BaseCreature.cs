@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using ModernUO.CodeGeneratedEvents;
+using ModernUO.Serialization;
 using Server.Collections;
 using Server.ContextMenus;
 using Server.Engines.ConPVP;
@@ -13,6 +13,7 @@ using Server.Engines.Virtues;
 using Server.Ethics;
 using Server.Factions;
 using Server.Items;
+using Server.Logging;
 using Server.Misc;
 using Server.Multis;
 using Server.Network;
@@ -133,8 +134,11 @@ namespace Server.Mobiles
         public int CompareTo(DamageStore ds) => (ds?.m_Damage ?? 0).CompareTo(m_Damage);
     }
 
+    [SerializationGenerator(23, false)]
     public abstract partial class BaseCreature : Mobile, IHonorTarget, IQuestGiver
     {
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(BaseCreature));
+
         public enum Allegiance
         {
             None,
@@ -160,7 +164,7 @@ namespace Server.Mobiles
 
         public const int DefaultRangePerception = 16;
 
-        private const double ChanceToRummage = 0.5; // 50%
+        private const double ChanceToRummage = 0.5;
 
         private const double MinutesToNextRummageMin = 1.0;
         private const double MinutesToNextRummageMax = 4.0;
@@ -227,7 +231,7 @@ namespace Server.Mobiles
 
         private static readonly Type[] _gold =
         {
-            // white wyrms eat gold..
+            // White wyrms eat gold.
             typeof(Gold)
         };
 
@@ -250,53 +254,599 @@ namespace Server.Mobiles
             typeof(AncientSmithyHammer), typeof(Scorp)
         };
 
-        private bool _summoned;
+        // --- Serialized state ---------------------------------------------------------
+        // Nearly every field is behind a [SaveFlag] so a creature that matches its
+        // defaults (including npc-speeds table values) writes only the version and flags.
 
-        private bool m_bTamable;
-        private int m_ColdResistance;
+        [SerializableField(0, setter: "private")]
+        private AIType _defaultAI;
 
-        private bool _controlled;        // Is controlled
-        private Mobile m_ControlMaster;   // My master
-        private OrderType m_ControlOrder; // My order
+        [SerializableField(1, setter: "private")]
+        [SaveFlag(nameof(ShouldSerializeCurrentAI), nameof(CurrentAIDefaultValue))]
+        private AIType _currentAI;
 
-        private AIType m_CurrentAI; // The current AI
+        private bool ShouldSerializeCurrentAI() => _currentAI != _defaultAI;
 
+        private AIType CurrentAIDefaultValue() => _defaultAI;
+
+        [EncodedInt]
+        [SerializableField(2)]
+        [SaveFlag(nameof(ShouldSerializeRangePerception), nameof(RangePerceptionDefaultValue))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private int _rangePerception;
+
+        private bool ShouldSerializeRangePerception() => _rangePerception != DefaultRangePerception;
+
+        private int RangePerceptionDefaultValue() => DefaultRangePerception;
+
+        [EncodedInt]
+        [SerializableField(3)]
+        [SaveFlag(nameof(ShouldSerializeRangeFight), nameof(RangeFightDefaultValue))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private int _rangeFight;
+
+        private bool ShouldSerializeRangeFight() => _rangeFight != 1;
+
+        private int RangeFightDefaultValue() => 1;
+
+        [EncodedInt]
+        [SerializableField(4)]
+        [SaveFlag(nameof(ShouldSerializeRangeHome), nameof(RangeHomeDefaultValue))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private int _rangeHome = 10;
+
+        private bool ShouldSerializeRangeHome() => _rangeHome != 10;
+
+        private int RangeHomeDefaultValue() => 10;
+
+        [EncodedInt]
+        [SerializableField(5, fieldChanged: nameof(OnTeamChange))]
+        [SaveFlag(nameof(ShouldSerializeTeam))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private int _team;
+
+        private bool ShouldSerializeTeam() => _team != 0;
+
+        private void OnTeamChange(int oldValue, int newValue) => OnTeamChange();
+
+        [SerializableField(6)]
+        [SaveFlag(nameof(ShouldSerializeFightMode), nameof(FightModeDefaultValue))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private FightMode _fightMode;
+
+        private bool ShouldSerializeFightMode() => _fightMode != FightMode.Closest;
+
+        private FightMode FightModeDefaultValue() => FightMode.Closest;
+
+        /// <summary>
+        /// The creature's npc-speeds bucket, resolved at construction. Assigning applies
+        /// the bucket's speeds; None means custom (its own speeds are authoritative). A
+        /// type's constant bucket belongs in <see cref="DefaultSpeedClass"/>.
+        /// </summary>
+        [SerializableField(7, fieldChanged: nameof(OnSpeedClassChange))]
+        [SaveFlag(nameof(ShouldSerializeSpeedClass), nameof(SpeedClassDefaultValue))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private SpeedLevel _speedClass;
+
+        private bool ShouldSerializeSpeedClass() => _speedClass != ResolvedDefaultSpeedClass;
+
+        private SpeedLevel SpeedClassDefaultValue() => ResolvedDefaultSpeedClass;
+
+        private void OnSpeedClassChange(SpeedLevel oldValue, SpeedLevel newValue)
+        {
+            _speedEntry = null;
+            ApplySpeedClass();
+        }
+
+        private bool _applyingSpeedClass;
+
+        // Applies the current bucket's speeds, preserving the active/passive mode. The
+        // guard keeps OnSpeedTuned from reading the half-assigned block as customization.
+        private void ApplySpeedClass()
+        {
+            if (SpeedEntry == null)
+            {
+                return; // None (custom) or an unloaded table has no bucket to apply
+            }
+
+            _applyingSpeedClass = true;
+
+            try
+            {
+                var wasActive = _currentSpeed == _activeSpeed && _currentSpeed != _passiveSpeed;
+
+                GetSpeeds(out var activeSpeed, out var passiveSpeed);
+                GetMoveSpeeds(out _activeMoveSpeed, out _passiveMoveSpeed);
+
+                ActiveSpeed = activeSpeed;
+                PassiveSpeed = passiveSpeed;
+                CurrentSpeed = wasActive ? activeSpeed : passiveSpeed;
+            }
+            finally
+            {
+                _applyingSpeedClass = false;
+            }
+        }
+
+        /// <summary>Seconds per AI decision while engaged; see <see cref="ActiveMoveSpeed"/> for movement pace.</summary>
+        [SerializableField(8, fieldChanged: nameof(OnSpeedTuned))]
+        [SaveFlag(nameof(ShouldSerializeSpeeds), nameof(ActiveSpeedDefaultValue))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private double _activeSpeed;
+
+        // The four speeds are one block: either all conform to the bucket (elided as a
+        // set), or the creature is custom and all four serialize. Partial conformance
+        // cannot exist on the wire.
+        private bool ShouldSerializeSpeeds()
+        {
+            if (_speedClass == SpeedLevel.None)
+            {
+                return true;
+            }
+
+            GetSpeeds(out var activeSpeed, out var passiveSpeed);
+            GetMoveSpeeds(out var activeMoveSpeed, out var passiveMoveSpeed);
+
+            return _activeSpeed != activeSpeed || _passiveSpeed != passiveSpeed ||
+                   _activeMoveSpeed != activeMoveSpeed || _passiveMoveSpeed != passiveMoveSpeed;
+        }
+
+        // Tuning any speed away from the bucket makes the creature fully custom - the
+        // bucket label must never lie. ApplySpeedClass assigns mid-transition and guards.
+        private void OnSpeedTuned(double oldValue, double newValue)
+        {
+            if (!_applyingSpeedClass && _speedClass != SpeedLevel.None && ShouldSerializeSpeeds())
+            {
+                _speedClass = SpeedLevel.None;
+                _speedEntry = null;
+            }
+        }
+
+        private double ActiveSpeedDefaultValue()
+        {
+            GetSpeeds(out var activeSpeed, out _);
+            return activeSpeed;
+        }
+
+        /// <summary>Seconds per AI decision while idle; see <see cref="PassiveMoveSpeed"/> for movement pace.</summary>
+        [SerializableField(9, fieldChanged: nameof(OnSpeedTuned))]
+        [SaveFlag(nameof(ShouldSerializeSpeeds), nameof(PassiveSpeedDefaultValue))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private double _passiveSpeed;
+
+        private double PassiveSpeedDefaultValue()
+        {
+            GetSpeeds(out _, out var passiveSpeed);
+            return passiveSpeed;
+        }
+
+        [SerializableField(10, fieldChanged: nameof(OnCurrentSpeedChange))]
+        [SaveFlag(nameof(ShouldSerializeCurrentSpeed), nameof(CurrentSpeedDefaultValue))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private double _currentSpeed;
 
-        // Movement clock (seconds per step); 0 = inherit the matching think value.
+        private bool ShouldSerializeCurrentSpeed() => _currentSpeed != _passiveSpeed;
+
+        private double CurrentSpeedDefaultValue() => _passiveSpeed;
+
+        private void OnCurrentSpeedChange(double oldValue, double newValue) => AIObject?.OnCurrentSpeedChanged();
+
+        /// <summary>
+        /// Movement clock (seconds per step) while engaged; 0 = inherit
+        /// <see cref="ActiveSpeed"/>. <see cref="CurrentMoveSpeed"/> resolves the pace.
+        /// </summary>
+        [SerializableField(11, allowFieldChange: nameof(CoerceMoveSpeed), fieldChanged: nameof(OnSpeedTuned))]
+        [SaveFlag(nameof(ShouldSerializeSpeeds), nameof(ActiveMoveSpeedDefaultValue))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private double _activeMoveSpeed;
+
+        /// <summary>
+        /// Movement clock (seconds per step) while idle; 0 = inherit
+        /// <see cref="PassiveSpeed"/>. <see cref="CurrentMoveSpeed"/> resolves the pace.
+        /// </summary>
+        [SerializableField(12, allowFieldChange: nameof(CoerceMoveSpeed), fieldChanged: nameof(OnSpeedTuned))]
+        [SaveFlag(nameof(ShouldSerializeSpeeds), nameof(PassiveMoveSpeedDefaultValue))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
         private double _passiveMoveSpeed;
+
+        private bool CoerceMoveSpeed(ref double value)
+        {
+            value = Math.Max(0, value); // anything non-positive means "inherit"
+            return true;
+        }
+
+        private double ActiveMoveSpeedDefaultValue()
+        {
+            GetMoveSpeeds(out var activeMoveSpeed, out _);
+            return activeMoveSpeed;
+        }
+
+        private double PassiveMoveSpeedDefaultValue()
+        {
+            GetMoveSpeeds(out _, out var passiveMoveSpeed);
+            return passiveMoveSpeed;
+        }
+
+        [SerializableField(13)]
+        [SaveFlag(nameof(ShouldSerializeHome))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private Point3D _home;
+
+        private bool ShouldSerializeHome() => _home != Point3D.Zero;
+
+        [SerializableField(14)]
+        [SaveFlag(nameof(ShouldSerializeHomeMap))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private Map _homeMap;
+
+        private bool ShouldSerializeHomeMap() => _homeMap != null;
+
+        [SerializableField(15, fieldChanged: nameof(OnControlledChange))]
+        [SaveFlag(nameof(ShouldSerializeControlled))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private bool _controlled;
+
+        private bool ShouldSerializeControlled() => _controlled;
+
+        private void OnControlledChange(bool oldValue, bool newValue)
+        {
+            Delta(MobileDelta.Noto);
+            InvalidateProperties();
+        }
+
+        // ControlMaster and SummonMaster serialize as one master reference (Master below).
+        private Mobile _controlMaster;
+
+        [SerializableField(16)]
+        [SaveFlag(nameof(ShouldSerializeControlTarget))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private Mobile _controlTarget;
+
+        private bool ShouldSerializeControlTarget() => _controlTarget != null;
+
+        [SerializableField(17)]
+        [SaveFlag(nameof(ShouldSerializeControlDest))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private Point3D _controlDest;
+
+        private bool ShouldSerializeControlDest() => _controlDest != Point3D.Zero;
+
+        // Field 18: ControlOrder (hand-written property; order logic must run on equal re-assignment)
+        private OrderType _controlOrder;
+
+        private bool ShouldSerializeControlOrder() => _controlOrder != OrderType.None;
+
+        [SerializableField(19)]
+        [SaveFlag(nameof(ShouldSerializeMinTameSkill))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private double _minTameSkill;
+
+        private bool ShouldSerializeMinTameSkill() => _minTameSkill != 0;
+
+        // Field 20: Tamable (hand-written property; custom getter masks paragons)
+        private bool _tamable;
+
+        private bool ShouldSerializeTamable() => _tamable;
+
+        [SerializableField(21, fieldChanged: nameof(OnSummonedChange))]
+        [SaveFlag(nameof(ShouldSerializeSummoned))]
+        [SerializedCommandProperty(AccessLevel.Administrator)]
+        private bool _summoned;
+
+        private bool ShouldSerializeSummoned() => _summoned;
+
+        private void OnSummonedChange(bool oldValue, bool newValue)
+        {
+            NextReacquireTime = Core.TickCount;
+            Delta(MobileDelta.Noto);
+            InvalidateProperties();
+        }
+
+        [AnchoredDateTime]
+        [SerializableField(22, getter: "protected", setter: "protected")]
+        [SaveFlag(nameof(ShouldSerializeSummonEnd))]
+        private DateTime _summonEnd;
+
+        private bool ShouldSerializeSummonEnd() => _summoned;
+
+        private Mobile _summonMaster;
+
+        // When both roles are set they are always the same mobile (every management flow
+        // assigns them in lockstep via SetControlMaster), so one reference serializes -
+        // refreshed here at save - and fans back out through the Controlled/Summoned
+        // flags in AfterDeserialization.
+        [SerializableField(23, getter: "private", setter: "private")]
+        [SaveFlag(nameof(ShouldSerializeMaster))]
+        private Mobile _master;
+
+        private bool ShouldSerializeMaster()
+        {
+            _master = _controlMaster ?? _summonMaster;
+            return _master != null;
+        }
+
+        [EncodedInt]
+        [SerializableField(24)]
+        [SaveFlag(nameof(ShouldSerializeControlSlots), nameof(ControlSlotsDefaultValue))]
+        [SerializedCommandProperty(AccessLevel.Administrator)]
+        private int _controlSlots = 1;
+
+        private bool ShouldSerializeControlSlots() => _controlSlots != 1;
+
+        private int ControlSlotsDefaultValue() => 1;
+
+        [EncodedInt]
+        [SerializableField(25, allowFieldChange: nameof(ClampLoyalty))]
+        [SaveFlag(nameof(ShouldSerializeLoyalty), nameof(LoyaltyDefaultValue))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private int _loyalty;
+
+        private bool ShouldSerializeLoyalty() => _loyalty != MaxLoyalty;
+
+        private int LoyaltyDefaultValue() => MaxLoyalty;
+
+        private bool ClampLoyalty(ref int value)
+        {
+            value = Math.Clamp(value, 0, MaxLoyalty);
+            return true;
+        }
+
+        [SerializableField(26)]
+        [SaveFlag(nameof(ShouldSerializeCurrentWayPoint))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private WayPoint _currentWayPoint;
+
+        private bool ShouldSerializeCurrentWayPoint() => _currentWayPoint != null;
+
+        [EncodedInt]
+        [SerializableField(27)]
+        [SaveFlag(nameof(ShouldSerializeHitsMaxSeed), nameof(HitsMaxSeedDefaultValue))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private int _hitsMaxSeed = -1;
+
+        private bool ShouldSerializeHitsMaxSeed() => _hitsMaxSeed != -1;
+
+        private int HitsMaxSeedDefaultValue() => -1;
+
+        [EncodedInt]
+        [SerializableField(28)]
+        [SaveFlag(nameof(ShouldSerializeStamMaxSeed), nameof(StamMaxSeedDefaultValue))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private int _stamMaxSeed = -1;
+
+        private bool ShouldSerializeStamMaxSeed() => _stamMaxSeed != -1;
+
+        private int StamMaxSeedDefaultValue() => -1;
+
+        [EncodedInt]
+        [SerializableField(29)]
+        [SaveFlag(nameof(ShouldSerializeManaMaxSeed), nameof(ManaMaxSeedDefaultValue))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private int _manaMaxSeed = -1;
+
+        private bool ShouldSerializeManaMaxSeed() => _manaMaxSeed != -1;
+
+        private int ManaMaxSeedDefaultValue() => -1;
+
+        [EncodedInt]
+        [SerializableField(30)]
+        [SaveFlag(nameof(ShouldSerializeDamageMin), nameof(DamageMinDefaultValue))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private int _damageMin = -1;
+
+        private bool ShouldSerializeDamageMin() => _damageMin != -1;
+
+        private int DamageMinDefaultValue() => -1;
+
+        [EncodedInt]
+        [SerializableField(31)]
+        [SaveFlag(nameof(ShouldSerializeDamageMax), nameof(DamageMaxDefaultValue))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private int _damageMax = -1;
+
+        private bool ShouldSerializeDamageMax() => _damageMax != -1;
+
+        private int DamageMaxDefaultValue() => -1;
+
+        [EncodedInt]
+        [SerializableField(32, fieldChanged: nameof(OnResistanceSeedChange))]
+        [SaveFlag(nameof(ShouldSerializePhysicalResistanceSeed))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private int _physicalResistanceSeed;
+
+        private bool ShouldSerializePhysicalResistanceSeed() => _physicalResistanceSeed != 0;
+
+        private void OnResistanceSeedChange(int oldValue, int newValue) => UpdateResistances();
+
+        [EncodedInt]
+        [SerializableField(33, fieldChanged: nameof(OnResistanceSeedChange))]
+        [SaveFlag(nameof(ShouldSerializeFireResistSeed))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private int _fireResistSeed;
+
+        private bool ShouldSerializeFireResistSeed() => _fireResistSeed != 0;
+
+        [EncodedInt]
+        [SerializableField(34, fieldChanged: nameof(OnResistanceSeedChange))]
+        [SaveFlag(nameof(ShouldSerializeColdResistSeed))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private int _coldResistSeed;
+
+        private bool ShouldSerializeColdResistSeed() => _coldResistSeed != 0;
+
+        [EncodedInt]
+        [SerializableField(35, fieldChanged: nameof(OnResistanceSeedChange))]
+        [SaveFlag(nameof(ShouldSerializePoisonResistSeed))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private int _poisonResistSeed;
+
+        private bool ShouldSerializePoisonResistSeed() => _poisonResistSeed != 0;
+
+        [EncodedInt]
+        [SerializableField(36, fieldChanged: nameof(OnResistanceSeedChange))]
+        [SaveFlag(nameof(ShouldSerializeEnergyResistSeed))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private int _energyResistSeed;
+
+        private bool ShouldSerializeEnergyResistSeed() => _energyResistSeed != 0;
+
+        [EncodedInt]
+        [SerializableField(37)]
+        [SaveFlag(nameof(ShouldSerializePhysicalDamage), nameof(PhysicalDamageDefaultValue))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private int _physicalDamage = 100;
+
+        private bool ShouldSerializePhysicalDamage() => _physicalDamage != 100;
+
+        private int PhysicalDamageDefaultValue() => 100;
+
+        [EncodedInt]
+        [SerializableField(38)]
+        [SaveFlag(nameof(ShouldSerializeFireDamage))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private int _fireDamage;
+
+        private bool ShouldSerializeFireDamage() => _fireDamage != 0;
+
+        [EncodedInt]
+        [SerializableField(39)]
+        [SaveFlag(nameof(ShouldSerializeColdDamage))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private int _coldDamage;
+
+        private bool ShouldSerializeColdDamage() => _coldDamage != 0;
+
+        [EncodedInt]
+        [SerializableField(40)]
+        [SaveFlag(nameof(ShouldSerializePoisonDamage))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private int _poisonDamage;
+
+        private bool ShouldSerializePoisonDamage() => _poisonDamage != 0;
+
+        [EncodedInt]
+        [SerializableField(41)]
+        [SaveFlag(nameof(ShouldSerializeEnergyDamage))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private int _energyDamage;
+
+        private bool ShouldSerializeEnergyDamage() => _energyDamage != 0;
+
+        [Tidy]
+        [SerializableField(42, setter: "private")]
+        [SaveFlag(nameof(ShouldSerializeOwners), nameof(OwnersDefaultValue))]
+        private List<Mobile> _owners;
+
+        private bool ShouldSerializeOwners()
+        {
+            _owners?.Tidy();
+            return _owners?.Count > 0;
+        }
+
+        private List<Mobile> OwnersDefaultValue() => new();
+
+        [SerializableField(43)]
+        [SaveFlag(nameof(ShouldSerializeIsDeadPet))]
+        private bool _isDeadPet;
+
+        private bool ShouldSerializeIsDeadPet() => _isDeadPet;
+
+        [SerializableField(44, fieldChanged: nameof(OnBondedChange))]
+        [SaveFlag(nameof(ShouldSerializeIsBonded))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private bool _isBonded;
+
+        private bool ShouldSerializeIsBonded() => _isBonded;
+
+        private void OnBondedChange(bool oldValue, bool newValue) => InvalidateProperties();
+
+        [SerializableField(45)]
+        [SaveFlag(nameof(ShouldSerializeBondingBegin))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private DateTime _bondingBegin;
+
+        private bool ShouldSerializeBondingBegin() => _bondingBegin != DateTime.MinValue;
+
+        [SerializableField(46)]
+        [SaveFlag(nameof(ShouldSerializeOwnerAbandonTime))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private DateTime _ownerAbandonTime;
+
+        private bool ShouldSerializeOwnerAbandonTime() => _ownerAbandonTime != DateTime.MinValue;
+
+        [SerializableField(47)]
+        [SaveFlag(nameof(ShouldSerializeHasGeneratedLoot))]
+        private bool _hasGeneratedLoot;
+
+        private bool ShouldSerializeHasGeneratedLoot() => _hasGeneratedLoot;
+
+        // Field 48: IsParagon (hand-written property; the setter converts, which must not run at load)
+        private bool _isParagon;
+
+        private bool ShouldSerializeIsParagon() => _isParagon;
+
+        [Tidy]
+        [SerializableField(49, setter: "private")]
+        [SaveFlag(nameof(ShouldSerializeFriends))]
+        private List<Mobile> _friends;
+
+        private bool ShouldSerializeFriends()
+        {
+            _friends?.Tidy();
+            return _friends?.Count > 0;
+        }
+
+        [SerializableField(50)]
+        [SaveFlag(nameof(ShouldSerializeRemoveIfUntamed))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private bool _removeIfUntamed;
+
+        private bool ShouldSerializeRemoveIfUntamed() => _removeIfUntamed;
+
+        [EncodedInt]
+        [SerializableField(51)]
+        [SaveFlag(nameof(ShouldSerializeRemoveStep))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private int _removeStep;
+
+        private bool ShouldSerializeRemoveStep() => _removeStep != 0;
+
+        [SerializableField(52, setter: "private")]
+        [SaveFlag(nameof(ShouldSerializePendingDeleteTimer))]
+        [DeserializeTimer(nameof(DeserializePendingDeleteTimer))]
+        private Timer _pendingDeleteTimer;
+
+        // Stabled and controlled pets never resume a delete countdown (legacy parity).
+        private bool ShouldSerializePendingDeleteTimer() =>
+            _pendingDeleteTimer?.Running == true && !IsStabled && !(_controlled && _controlMaster != null);
+
+        private void DeserializePendingDeleteTimer(TimeSpan delay)
+        {
+            _pendingDeleteTimer = new DeleteTimer(this, delay);
+            _pendingDeleteTimer.Start();
+        }
+
+        [SerializableField(53)]
+        [SaveFlag(nameof(ShouldSerializeCorpseNameOverride))]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private string _corpseNameOverride;
+
+        private bool ShouldSerializeCorpseNameOverride() => _corpseNameOverride != null;
+
+        // --- Non-serialized state -------------------------------------------------------
 
         // Herding - forces the mob to walk to a specific location, paced by the movement
         // clock at HerdingMoveSpeed. Thinking is unaffected.
         private IPoint2D _targetLocation;
 
-        private int m_DamageMax = -1;
-
-        private int m_DamageMin = -1;
-        private AIType m_DefaultAI; // The default AI
-
-        private DeleteTimer m_DeleteTimer;
-        private int m_EnergyResistance;
-
         private int m_FailedReturnHome; /* return to home failure counter */
-        private int m_FireResistance;
 
-        private bool m_HasGeneratedLoot; // have we generated our loot yet?
         private TimerExecutionToken _healTimerToken;
-
-        private Point3D m_Home; // The home position of the creature, used by some AI
 
         private DateTime m_IdleReleaseTime;
 
-        private bool m_IsBonded;
-
         private bool m_IsStabled;
         protected int m_KillersLuck;
-
-        private int m_Loyalty;
 
         private DateTime m_MLNextShout;
 
@@ -310,23 +860,12 @@ namespace Server.Mobiles
 
         private long m_NextRummageTime;
 
-        private bool m_Paragon;
-
-        private int m_PhysicalResistance;
-        private int m_PoisonResistance;
-
-        /* until we are sure about who should be getting deleted, move them instead */
-        /* On OSI, they despawn */
-
+        // On OSI these despawn; we queue a return home instead of deleting.
         private bool m_ReturnQueued;
 
         protected bool m_Spawning;
 
-        private Mobile m_SummonMaster;
-
         private SkillName m_Teaching = (SkillName)(-1);
-
-        private int m_Team; // Monster Team
 
         public BaseCreature(
             AIType ai,
@@ -335,33 +874,41 @@ namespace Server.Mobiles
             int iRangeFight = 1
         )
         {
-            m_Loyalty = MaxLoyalty; // Wonderfully Happy
+            _loyalty = MaxLoyalty;
 
-            m_CurrentAI = ai;
-            m_DefaultAI = ai;
+            _currentAI = ai;
+            _defaultAI = ai;
+
+            _speedClass = ResolvedDefaultSpeedClass;
 
             RangePerception = iRangePerception;
             RangeFight = iRangeFight;
 
             FightMode = mode;
 
-            GetSpeeds(out var activeSpeed, out var passiveSpeed);
+            GetSpeeds(out _activeSpeed, out _passiveSpeed);
             GetMoveSpeeds(out _activeMoveSpeed, out _passiveMoveSpeed);
+            _currentSpeed = _passiveSpeed;
 
-            ActiveSpeed = activeSpeed;
-            PassiveSpeed = passiveSpeed;
-            CurrentSpeed = passiveSpeed;
+            if (_activeSpeed <= 0 || _passiveSpeed <= 0)
+            {
+                // A 0-delay creature would spin its AI timer at wheel resolution.
+                logger.Debug("{Type} constructed without speeds - is Data/npc-speeds.json missing? Defaulting to Medium.", GetType());
+                _activeSpeed = 0.25;
+                _passiveSpeed = 0.5;
+                _currentSpeed = _passiveSpeed;
+            }
 
-            m_Team = 0;
+            _team = 0;
 
             Debug = false;
 
             _controlled = false;
-            m_ControlMaster = null;
+            _controlMaster = null;
             ControlTarget = null;
-            m_ControlOrder = OrderType.None;
+            _controlOrder = OrderType.None;
 
-            m_bTamable = false;
+            _tamable = false;
 
             Owners = new List<Mobile>();
 
@@ -383,6 +930,7 @@ namespace Server.Mobiles
 
         public BaseCreature(Serial serial) : base(serial)
         {
+            _speedClass = ResolvedDefaultSpeedClass;
             Debug = false;
         }
 
@@ -406,13 +954,9 @@ namespace Server.Mobiles
 
         public virtual InhumanSpeech SpeechType => null;
 
-        /* Do not serialize this till the code is finalized */
-
+        // Deliberately not serialized until the feature is finalized.
         [CommandProperty(AccessLevel.GameMaster)]
         public bool SeeksHome { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public string CorpseNameOverride { get; set; }
 
         [CommandProperty(AccessLevel.GameMaster, AccessLevel.Administrator)]
         public bool IsStabled
@@ -436,20 +980,20 @@ namespace Server.Mobiles
 
         public virtual bool FollowsAcquireRules => true;
 
-        protected DateTime SummonEnd { get; set; }
-
         public virtual Faction FactionAllegiance => null;
         public virtual int FactionSilverWorth => 30;
 
         public virtual double WeaponAbilityChance => 0.4;
 
+        [SerializableProperty(48, useField: nameof(_isParagon))]
+        [SaveFlag(nameof(ShouldSerializeIsParagon))]
         [CommandProperty(AccessLevel.GameMaster)]
         public bool IsParagon
         {
-            get => m_Paragon;
+            get => _isParagon;
             set
             {
-                if (m_Paragon == value)
+                if (_isParagon == value)
                 {
                     return;
                 }
@@ -463,9 +1007,10 @@ namespace Server.Mobiles
                     Paragon.UnConvert(this);
                 }
 
-                m_Paragon = value;
+                _isParagon = value;
 
                 InvalidateProperties();
+                this.MarkDirty();
             }
         }
 
@@ -473,8 +1018,6 @@ namespace Server.Mobiles
 
         public virtual FoodType FavoriteFood => FoodType.Meat;
         public virtual PackInstinct PackInstinct => PackInstinct.None;
-
-        public List<Mobile> Owners { get; private set; }
 
         public virtual bool AllowMaleTamer => true;
         public virtual bool AllowFemaleTamer => true;
@@ -499,11 +1042,11 @@ namespace Server.Mobiles
 
         public virtual bool DeathAdderCharmable => false;
 
-        // TODO: Find the pub 31 tweaks to the DispelDifficulty and apply them of course.
-        // at this skill level we dispel 50% chance
+        //TODO Apply the pub 31 DispelDifficulty tweaks
+        // Skill level at which dispel succeeds 50% of the time.
         public virtual double DispelDifficulty => 0.0;
 
-        // at difficulty - focus we have 0%, at difficulty + focus we have 100%
+        // 0% at difficulty - focus, 100% at difficulty + focus.
         public virtual double DispelFocus => 20.0;
 
         public virtual bool DisplayWeight => Backpack is StrongBackpack;
@@ -539,20 +1082,10 @@ namespace Server.Mobiles
         }
 
         public virtual bool IsNecroFamiliar =>
-            Summoned && m_ControlMaster != null &&
-            SummonFamiliarSpell.Table.TryGetValue(m_ControlMaster, out var bc) && bc == this;
+            Summoned && _controlMaster != null &&
+            SummonFamiliarSpell.Table.TryGetValue(_controlMaster, out var bc) && bc == this;
 
         public virtual bool DeleteCorpseOnDeath => !Core.AOS && _summoned;
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int Loyalty
-        {
-            get => m_Loyalty;
-            set => m_Loyalty = Math.Clamp(value, 0, MaxLoyalty);
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public WayPoint CurrentWayPoint { get; set; }
 
         public virtual Mobile ConstantFocus => null;
 
@@ -567,39 +1100,16 @@ namespace Server.Mobiles
         public virtual bool AlwaysAttackable => false;
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public virtual int DamageMin
-        {
-            get => m_DamageMin;
-            set => m_DamageMin = value;
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public virtual int DamageMax
-        {
-            get => m_DamageMax;
-            set => m_DamageMax = value;
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
         public override int HitsMax =>
             HitsMaxSeed <= 0 ? Str : Math.Clamp(HitsMaxSeed + GetStatOffset(StatType.Str), 1, 65000);
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int HitsMaxSeed { get; set; } = -1;
 
         [CommandProperty(AccessLevel.GameMaster)]
         public override int StamMax =>
             StamMaxSeed <= 0 ? Dex : Math.Clamp(StamMaxSeed + GetStatOffset(StatType.Dex), 1, 65000);
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public int StamMaxSeed { get; set; } = -1;
-
-        [CommandProperty(AccessLevel.GameMaster)]
         public override int ManaMax =>
             ManaMaxSeed <= 0 ? Int : Math.Clamp(ManaMaxSeed + GetStatOffset(StatType.Int), 1, 65000);
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int ManaMaxSeed { get; set; } = -1;
 
         public virtual bool CanOpenDoors => !Body.IsAnimal && !Body.IsSea;
 
@@ -607,16 +1117,7 @@ namespace Server.Mobiles
 
         public virtual bool CanDestroyObstacles => false;
 
-        /*
-        Seems this actually was removed on OSI somewhere between the original bug report and now.
-        We will call it ML, until we can get better information. I suspect it was on the OSI TC when
-        originally it taken out of RunUO, and not implemented on OSIs production shards until more
-        recently.  Either way, this is, or was, accurate OSI behavior, and just entirely
-        removing it was incorrect.  OSI followers were distracted by being attacked well into
-        AoS, at very least.
-
-        */
-
+        // OSI followers were distracted by attacks well into AoS; removed around ML.
         public virtual bool CanBeDistracted => !Core.ML;
 
         public override bool ShouldCheckStatTimers => false;
@@ -628,17 +1129,17 @@ namespace Server.Mobiles
         [CommandProperty(AccessLevel.GameMaster)]
         public AIType AI
         {
-            get => m_CurrentAI;
+            get => _currentAI;
             set
             {
-                m_CurrentAI = value;
+                _currentAI = value;
 
-                if (m_CurrentAI == AIType.AI_Use_Default)
+                if (_currentAI == AIType.AI_Use_Default)
                 {
-                    m_CurrentAI = m_DefaultAI;
+                    _currentAI = _defaultAI;
                 }
 
-                ChangeAIType(m_CurrentAI);
+                ChangeAIType(_currentAI);
             }
         }
 
@@ -646,24 +1147,7 @@ namespace Server.Mobiles
         public bool Debug { get; set; }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public int Team
-        {
-            get => m_Team;
-            set
-            {
-                m_Team = value;
-                OnTeamChange();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
         public Mobile FocusMob { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public FightMode FightMode { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int RangePerception { get; set; }
 
         /// <summary>
         /// How far a chase may stretch before the creature gives up its combatant. Between
@@ -671,57 +1155,6 @@ namespace Server.Mobiles
         /// </summary>
         [CommandProperty(AccessLevel.GameMaster)]
         public virtual int ChaseLeashRange => RangePerception * 2;
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int RangeFight { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int RangeHome { get; set; } = 10;
-
-        /// <summary>Seconds per AI decision while engaged; see <see cref="ActiveMoveSpeed"/> for movement pace.</summary>
-        [CommandProperty(AccessLevel.GameMaster)]
-        public virtual double ActiveSpeed
-        {
-            get => _activeSpeed;
-            set
-            {
-                if (Math.Abs(_activeSpeed - value) > .0001)
-                {
-                    _activeSpeed = value;
-                }
-            }
-        }
-
-        /// <summary>Seconds per AI decision while idle; see <see cref="PassiveMoveSpeed"/> for movement pace.</summary>
-        [CommandProperty(AccessLevel.GameMaster)]
-        public virtual double PassiveSpeed
-        {
-            get => _passiveSpeed;
-            set
-            {
-                _passiveSpeed = value;
-                if (Math.Abs(_passiveSpeed - value) > .0001)
-                {
-                    _passiveSpeed = value;
-                }
-            }
-        }
-
-        /// <summary>Seconds per step while engaged. Inherits <see cref="ActiveSpeed"/>; set 0 to re-inherit.</summary>
-        [CommandProperty(AccessLevel.GameMaster)]
-        public virtual double ActiveMoveSpeed
-        {
-            get => _activeMoveSpeed > 0 ? _activeMoveSpeed : _activeSpeed;
-            set => _activeMoveSpeed = value > 0 ? value : 0;
-        }
-
-        /// <summary>Seconds per step while idle. Inherits <see cref="PassiveSpeed"/>; set 0 to re-inherit.</summary>
-        [CommandProperty(AccessLevel.GameMaster)]
-        public virtual double PassiveMoveSpeed
-        {
-            get => _passiveMoveSpeed > 0 ? _passiveMoveSpeed : _passiveSpeed;
-            set => _passiveMoveSpeed = value > 0 ? value : 0;
-        }
 
         // Herded creatures walk at a fixed standard pace regardless of their own speed
         // (RunUO's forced 0.3, without its TransformMoveDelay inflation to 0.6).
@@ -732,20 +1165,6 @@ namespace Server.Mobiles
         {
             get => _targetLocation;
             set => _targetLocation = value;
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public double CurrentSpeed
-        {
-            get => _currentSpeed;
-            set
-            {
-                if (Math.Abs(_currentSpeed - value) > 0.0001)
-                {
-                    _currentSpeed = value;
-                    AIObject?.OnCurrentSpeedChanged();
-                }
-            }
         }
 
         /// <summary>
@@ -763,102 +1182,83 @@ namespace Server.Mobiles
                     return HerdingMoveSpeed;
                 }
 
-                return _currentSpeed == _activeSpeed ? ActiveMoveSpeed
-                    : _currentSpeed == _passiveSpeed ? PassiveMoveSpeed
-                    : _currentSpeed;
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public Point3D Home
-        {
-            get => m_Home;
-            set => m_Home = value;
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public Map HomeMap { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool Controlled
-        {
-            get => _controlled;
-            set
-            {
-                if (_controlled == value)
+                if (_currentSpeed == _activeSpeed)
                 {
-                    return;
+                    return _activeMoveSpeed > 0 ? _activeMoveSpeed : _activeSpeed;
                 }
 
-                _controlled = value;
-                Delta(MobileDelta.Noto);
+                if (_currentSpeed == _passiveSpeed)
+                {
+                    return _passiveMoveSpeed > 0 ? _passiveMoveSpeed : _passiveSpeed;
+                }
 
-                InvalidateProperties();
+                return _currentSpeed;
             }
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
         public Mobile ControlMaster
         {
-            get => m_ControlMaster;
+            get => _controlMaster;
             set
             {
-                if (m_ControlMaster == value || this == value)
+                if (_controlMaster == value || this == value)
                 {
                     return;
                 }
 
                 RemoveFollowers();
-                m_ControlMaster = value;
+                _controlMaster = value;
                 AddFollowers();
-                if (m_ControlMaster != null)
+                if (_controlMaster != null)
                 {
                     StopDeleteTimer();
                 }
 
                 Delta(MobileDelta.Noto);
+                this.MarkDirty();
             }
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
         public Mobile SummonMaster
         {
-            get => m_SummonMaster;
+            get => _summonMaster;
             set
             {
-                if (m_SummonMaster == value || this == value)
+                if (_summonMaster == value || this == value)
                 {
                     return;
                 }
 
                 RemoveFollowers();
-                m_SummonMaster = value;
+                _summonMaster = value;
                 AddFollowers();
 
                 Delta(MobileDelta.Noto);
+                this.MarkDirty();
             }
         }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public Mobile ControlTarget { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public Point3D ControlDest { get; set; }
-
+        // Re-issuing the current order must still run the order logic (pet commands), so
+        // this keeps a hand-written setter with no equality skip.
+        [SerializableProperty(18, useField: nameof(_controlOrder))]
+        [SaveFlag(nameof(ShouldSerializeControlOrder))]
         [CommandProperty(AccessLevel.GameMaster)]
         public OrderType ControlOrder
         {
-            get => m_ControlOrder;
+            get => _controlOrder;
             set
             {
-                var previous = m_ControlOrder;
-                m_ControlOrder = value;
+                var previous = _controlOrder;
+                _controlOrder = value;
 
                 AIObject?.OnCurrentOrderChanged(previous);
 
                 InvalidateProperties();
 
-                m_ControlMaster?.InvalidateProperties();
+                _controlMaster?.InvalidateProperties();
+                this.MarkDirty();
             }
         }
 
@@ -877,38 +1277,18 @@ namespace Server.Mobiles
         [CommandProperty(AccessLevel.GameMaster)]
         public DateTime BardEndTime { get; set; }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public double MinTameSkill { get; set; }
-
+        [SerializableProperty(20, useField: nameof(_tamable))]
+        [SaveFlag(nameof(ShouldSerializeTamable))]
         [CommandProperty(AccessLevel.GameMaster)]
         public bool Tamable
         {
-            get => m_bTamable && !m_Paragon;
-            set => m_bTamable = value;
-        }
-
-        [CommandProperty(AccessLevel.Administrator)]
-        public bool Summoned
-        {
-            get => _summoned;
+            get => _tamable && !_isParagon;
             set
             {
-                if (_summoned == value)
-                {
-                    return;
-                }
-
-                NextReacquireTime = Core.TickCount;
-
-                _summoned = value;
-                Delta(MobileDelta.Noto);
-
-                InvalidateProperties();
+                _tamable = value;
+                this.MarkDirty();
             }
         }
-
-        [CommandProperty(AccessLevel.Administrator)]
-        public int ControlSlots { get; set; } = 1;
 
         public virtual bool NoHouseRestrictions => false;
         public virtual bool IsHouseSummonable => false;
@@ -933,19 +1313,13 @@ namespace Server.Mobiles
 
         public virtual bool GivesMLMinorArtifact => false;
 
-        /* To save on cpu usage, RunUO creatures only reacquire creatures under the following circumstances:
-         *  - 10 seconds have elapsed since the last time it tried
-         *  - The creature was attacked
-         *  - Some creatures, like dragons, will reacquire when they see someone move
-         *
-         * This functionality appears to be implemented on OSI as well
-         */
-
+        // Reacquire only every ReacquireDelay, when attacked, or (for some creatures) on
+        // seeing movement - OSI parity and a CPU saver.
         public long NextReacquireTime { get; set; }
 
         public virtual TimeSpan ReacquireDelay => TimeSpan.FromSeconds(10.0);
         public virtual bool ReacquireOnMovement => false;
-        public virtual bool AcquireOnApproach => m_Paragon;
+        public virtual bool AcquireOnApproach => _isParagon;
         public virtual int AcquireOnApproachRange => 10;
 
         public static bool Summoning { get; set; }
@@ -957,13 +1331,6 @@ namespace Server.Mobiles
 
         public virtual bool ReturnsToHome =>
             SeeksHome && Home != Point3D.Zero && !m_ReturnQueued && !Controlled && !Summoned;
-
-        // used for deleting untamed creatures [in houses]
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool RemoveIfUntamed { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int RemoveStep { get; set; }
 
         public virtual bool CanGiveMLQuest => MLQuests.Count != 0;
         public virtual bool StaticMLQuester => true;
@@ -1000,113 +1367,24 @@ namespace Server.Mobiles
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public bool IsBonded
-        {
-            get => m_IsBonded;
-            set
-            {
-                m_IsBonded = value;
-                InvalidateProperties();
-            }
-        }
-
-        public bool IsDeadPet { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public DateTime BondingBegin { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public DateTime OwnerAbandonTime { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
         public TimeSpan DeleteTimeLeft
         {
             get
             {
-                if (m_DeleteTimer?.Running == true)
+                if (_pendingDeleteTimer?.Running == true)
                 {
-                    return m_DeleteTimer.Next - Core.Now;
+                    return _pendingDeleteTimer.Next - Core.Now;
                 }
 
                 return TimeSpan.Zero;
             }
         }
 
-        public override int BasePhysicalResistance => m_PhysicalResistance;
-        public override int BaseFireResistance => m_FireResistance;
-        public override int BaseColdResistance => m_ColdResistance;
-        public override int BasePoisonResistance => m_PoisonResistance;
-        public override int BaseEnergyResistance => m_EnergyResistance;
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int PhysicalResistanceSeed
-        {
-            get => m_PhysicalResistance;
-            set
-            {
-                m_PhysicalResistance = value;
-                UpdateResistances();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int FireResistSeed
-        {
-            get => m_FireResistance;
-            set
-            {
-                m_FireResistance = value;
-                UpdateResistances();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int ColdResistSeed
-        {
-            get => m_ColdResistance;
-            set
-            {
-                m_ColdResistance = value;
-                UpdateResistances();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int PoisonResistSeed
-        {
-            get => m_PoisonResistance;
-            set
-            {
-                m_PoisonResistance = value;
-                UpdateResistances();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int EnergyResistSeed
-        {
-            get => m_EnergyResistance;
-            set
-            {
-                m_EnergyResistance = value;
-                UpdateResistances();
-            }
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int PhysicalDamage { get; set; } = 100;
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int FireDamage { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int ColdDamage { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int PoisonDamage { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int EnergyDamage { get; set; }
+        public override int BasePhysicalResistance => _physicalResistanceSeed;
+        public override int BaseFireResistance => _fireResistSeed;
+        public override int BaseColdResistance => _coldResistSeed;
+        public override int BasePoisonResistance => _poisonResistSeed;
+        public override int BaseEnergyResistance => _energyResistSeed;
 
         [CommandProperty(AccessLevel.GameMaster)]
         public int ChaosDamage { get; set; }
@@ -1114,14 +1392,11 @@ namespace Server.Mobiles
         [CommandProperty(AccessLevel.GameMaster)]
         public int DirectDamage { get; set; }
 
-        // Is immune to breath damages
         public virtual bool BreathImmune => false;
 
-        public virtual bool CanFlee => !m_Paragon;
+        public virtual bool CanFlee => !_isParagon;
 
         public DateTime EndFleeTime { get; set; }
-
-        public List<Mobile> Friends { get; private set; }
 
         public virtual bool AllowNewPetFriend => Friends == null || Friends.Count < 5;
 
@@ -1174,7 +1449,6 @@ namespace Server.Mobiles
         public HonorContext ReceivedHonorContext { get; set; }
 
         public List<MLQuest> MLQuests =>
-            // Assign the quests if we don't have one, and if it is still null, return an empty list
             (m_MLQuests ??= StaticMLQuester ? MLQuestSystem.FindQuestList(GetType()) : ConstructQuestList()) ?? MLQuestSystem.EmptyList;
 
         public virtual MonsterAbility[] GetMonsterAbilities() => null;
@@ -1400,7 +1674,7 @@ namespace Server.Mobiles
                 return false;
             }
 
-            if (m_Team != c.Team || FightMode == FightMode.Evil && m.Karma < 0 || c.FightMode == FightMode.Evil && Karma < 0)
+            if (_team != c.Team || FightMode == FightMode.Evil && m.Karma < 0 || c.FightMode == FightMode.Evil && Karma < 0)
             {
                 return true;
             }
@@ -1518,7 +1792,7 @@ namespace Server.Mobiles
 
             var chance = Math.Clamp(700 + bonus, 220, 990);
 
-            chance -= (MaxLoyalty - m_Loyalty) * 10;
+            chance -= (MaxLoyalty - _loyalty) * 10;
 
             return chance / 1000.0;
         }
@@ -1610,7 +1884,7 @@ namespace Server.Mobiles
 
         public override bool CheckPoisonImmunity(Mobile from, Poison poison) =>
             base.CheckPoisonImmunity(from, poison) ||
-            (m_Paragon ? PoisonImpl.IncreaseLevel(PoisonImmune) : PoisonImmune)?.Level >= poison.Level;
+            (_isParagon ? PoisonImpl.IncreaseLevel(PoisonImmune) : PoisonImmune)?.Level >= poison.Level;
 
         public void Unpacify()
         {
@@ -1637,7 +1911,6 @@ namespace Server.Mobiles
             }
 
             int disruptThreshold;
-            // NPCs can use bandages too!
             if (!Core.AOS)
             {
                 disruptThreshold = 0;
@@ -1887,161 +2160,29 @@ namespace Server.Mobiles
             }
         }
 
-        public override void Serialize(IGenericWriter writer)
+        // Pre-codegen loads only (versions 0-22); post-codegen bumps use MigrateFrom.
+        private void Deserialize(IGenericReader reader, int version)
         {
-            base.Serialize(writer);
 
-            writer.Write(22); // version
+            _currentAI = (AIType)reader.ReadInt();
+            _defaultAI = (AIType)reader.ReadInt();
 
-            writer.Write((int)m_CurrentAI);
-            writer.Write((int)m_DefaultAI);
+            _rangePerception = reader.ReadInt();
+            _rangeFight = reader.ReadInt();
 
-            writer.Write(RangePerception);
-            writer.Write(RangeFight);
-
-            writer.Write(m_Team);
-
-            writer.Write(_activeSpeed);
-            writer.Write(_passiveSpeed);
-            writer.Write(_currentSpeed);
-
-            writer.Write(m_Home.X);
-            writer.Write(m_Home.Y);
-            writer.Write(m_Home.Z);
-
-            // Version 1
-            writer.Write(RangeHome);
-
-            // Version 2
-            writer.Write((int)FightMode);
-
-            writer.Write(_controlled);
-            writer.Write(m_ControlMaster);
-            writer.Write(ControlTarget);
-            writer.Write(ControlDest);
-            writer.Write((int)m_ControlOrder);
-            writer.Write(MinTameSkill);
-            // Removed in version 9
-            // writer.Write( (double) m_dMaxTameSkill );
-            writer.Write(m_bTamable);
-            writer.Write(_summoned);
-
-            if (_summoned)
-            {
-                writer.WriteAnchoredTime(SummonEnd);
-            }
-
-            writer.Write(ControlSlots);
-
-            // Version 3
-            writer.Write(m_Loyalty);
-
-            // Version 4
-            writer.Write(CurrentWayPoint);
-
-            // Verison 5
-            writer.Write(m_SummonMaster);
-
-            // Version 6
-            writer.Write(HitsMaxSeed);
-            writer.Write(StamMaxSeed);
-            writer.Write(ManaMaxSeed);
-            writer.Write(m_DamageMin);
-            writer.Write(m_DamageMax);
-
-            // Version 7
-            writer.Write(m_PhysicalResistance);
-            writer.Write(PhysicalDamage);
-
-            writer.Write(m_FireResistance);
-            writer.Write(FireDamage);
-
-            writer.Write(m_ColdResistance);
-            writer.Write(ColdDamage);
-
-            writer.Write(m_PoisonResistance);
-            writer.Write(PoisonDamage);
-
-            writer.Write(m_EnergyResistance);
-            writer.Write(EnergyDamage);
-
-            // Version 8
-            Owners.Tidy();
-            writer.Write(Owners);
-
-            // Version 10
-            writer.Write(IsDeadPet);
-            writer.Write(m_IsBonded);
-            writer.Write(BondingBegin);
-            writer.Write(OwnerAbandonTime);
-
-            // Version 11
-            writer.Write(m_HasGeneratedLoot);
-
-            // Version 12
-            writer.Write(m_Paragon);
-
-            var hasFriends = Friends?.Count > 0;
-
-            // Version 13
-            writer.Write(hasFriends);
-
-            if (hasFriends)
-            {
-                Friends.Tidy();
-                writer.Write(Friends);
-            }
-
-            // Version 14
-            writer.Write(RemoveIfUntamed);
-            writer.Write(RemoveStep);
-
-            // Version 17
-            if (IsStabled || Controlled && ControlMaster != null)
-            {
-                writer.Write(TimeSpan.Zero);
-            }
-            else
-            {
-                writer.Write(DeleteTimeLeft);
-            }
-
-            // Version 18
-            writer.Write(CorpseNameOverride);
-
-            // Version 19
-            writer.Write(HomeMap);
-
-            // Version 22 (0 = inherit the matching think value)
-            writer.Write(_activeMoveSpeed);
-            writer.Write(_passiveMoveSpeed);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            m_CurrentAI = (AIType)reader.ReadInt();
-            m_DefaultAI = (AIType)reader.ReadInt();
-
-            RangePerception = reader.ReadInt();
-            RangeFight = reader.ReadInt();
-
-            m_Team = reader.ReadInt();
+            _team = reader.ReadInt();
 
             _activeSpeed = reader.ReadDouble();
             _passiveSpeed = reader.ReadDouble();
             _currentSpeed = reader.ReadDouble();
 
-            m_Home.X = reader.ReadInt();
-            m_Home.Y = reader.ReadInt();
-            m_Home.Z = reader.ReadInt();
+            _home.X = reader.ReadInt();
+            _home.Y = reader.ReadInt();
+            _home.Z = reader.ReadInt();
 
             if (version >= 1)
             {
-                RangeHome = reader.ReadInt();
+                _rangeHome = reader.ReadInt();
 
                 if (version < 20)
                 {
@@ -2062,121 +2203,121 @@ namespace Server.Mobiles
             }
             else
             {
-                RangeHome = 0;
+                _rangeHome = 0;
             }
 
             if (version >= 2)
             {
-                FightMode = (FightMode)reader.ReadInt();
+                _fightMode = (FightMode)reader.ReadInt();
 
                 _controlled = reader.ReadBool();
-                m_ControlMaster = reader.ReadEntity<Mobile>();
-                ControlTarget = reader.ReadEntity<Mobile>();
-                ControlDest = reader.ReadPoint3D();
-                m_ControlOrder = (OrderType)reader.ReadInt();
+                _controlMaster = reader.ReadEntity<Mobile>();
+                _controlTarget = reader.ReadEntity<Mobile>();
+                _controlDest = reader.ReadPoint3D();
+                _controlOrder = (OrderType)reader.ReadInt();
 
-                MinTameSkill = reader.ReadDouble();
+                _minTameSkill = reader.ReadDouble();
 
                 if (version < 9)
                 {
                     reader.ReadDouble();
                 }
 
-                m_bTamable = reader.ReadBool();
+                _tamable = reader.ReadBool();
                 _summoned = reader.ReadBool();
 
                 if (_summoned)
                 {
-                    SummonEnd = version >= 21 ? reader.ReadAnchoredTime() : reader.ReadDeltaTime();
-                    new UnsummonTimer(this, SummonEnd - Core.Now).Start();
+                    // The UnsummonTimer is restarted in AfterDeserialization.
+                    _summonEnd = version >= 21 ? reader.ReadAnchoredTime() : reader.ReadDeltaTime();
                 }
 
-                ControlSlots = reader.ReadInt();
+                _controlSlots = reader.ReadInt();
             }
             else
             {
-                FightMode = FightMode.Closest;
+                _fightMode = FightMode.Closest;
 
                 _controlled = false;
-                m_ControlMaster = null;
-                ControlTarget = null;
-                m_ControlOrder = OrderType.None;
+                _controlMaster = null;
+                _controlTarget = null;
+                _controlOrder = OrderType.None;
             }
 
             if (version >= 3)
             {
-                m_Loyalty = reader.ReadInt();
+                _loyalty = reader.ReadInt();
             }
             else
             {
-                m_Loyalty = MaxLoyalty; // Wonderfully Happy
+                _loyalty = MaxLoyalty;
             }
 
             if (version >= 4)
             {
-                CurrentWayPoint = reader.ReadEntity<WayPoint>();
+                _currentWayPoint = reader.ReadEntity<WayPoint>();
             }
 
             if (version >= 5)
             {
-                m_SummonMaster = reader.ReadEntity<Mobile>();
+                _summonMaster = reader.ReadEntity<Mobile>();
             }
 
             if (version >= 6)
             {
-                HitsMaxSeed = reader.ReadInt();
-                StamMaxSeed = reader.ReadInt();
-                ManaMaxSeed = reader.ReadInt();
-                m_DamageMin = reader.ReadInt();
-                m_DamageMax = reader.ReadInt();
+                _hitsMaxSeed = reader.ReadInt();
+                _stamMaxSeed = reader.ReadInt();
+                _manaMaxSeed = reader.ReadInt();
+                _damageMin = reader.ReadInt();
+                _damageMax = reader.ReadInt();
             }
 
             if (version >= 7)
             {
-                m_PhysicalResistance = reader.ReadInt();
-                PhysicalDamage = reader.ReadInt();
+                _physicalResistanceSeed = reader.ReadInt();
+                _physicalDamage = reader.ReadInt();
 
-                m_FireResistance = reader.ReadInt();
-                FireDamage = reader.ReadInt();
+                _fireResistSeed = reader.ReadInt();
+                _fireDamage = reader.ReadInt();
 
-                m_ColdResistance = reader.ReadInt();
-                ColdDamage = reader.ReadInt();
+                _coldResistSeed = reader.ReadInt();
+                _coldDamage = reader.ReadInt();
 
-                m_PoisonResistance = reader.ReadInt();
-                PoisonDamage = reader.ReadInt();
+                _poisonResistSeed = reader.ReadInt();
+                _poisonDamage = reader.ReadInt();
 
-                m_EnergyResistance = reader.ReadInt();
-                EnergyDamage = reader.ReadInt();
+                _energyResistSeed = reader.ReadInt();
+                _energyDamage = reader.ReadInt();
             }
 
             if (version >= 8)
             {
-                Owners = reader.ReadEntityList<Mobile>();
+                _owners = reader.ReadEntityList<Mobile>();
             }
             else
             {
-                Owners = new List<Mobile>();
+                _owners = new List<Mobile>();
             }
 
             if (version >= 10)
             {
-                IsDeadPet = reader.ReadBool();
-                m_IsBonded = reader.ReadBool();
-                BondingBegin = reader.ReadDateTime();
-                OwnerAbandonTime = reader.ReadDateTime();
+                _isDeadPet = reader.ReadBool();
+                _isBonded = reader.ReadBool();
+                _bondingBegin = reader.ReadDateTime();
+                _ownerAbandonTime = reader.ReadDateTime();
             }
 
-            m_HasGeneratedLoot = version < 11 || reader.ReadBool();
+            _hasGeneratedLoot = version < 11 || reader.ReadBool();
 
-            m_Paragon = version >= 12 && reader.ReadBool();
+            _isParagon = version >= 12 && reader.ReadBool();
 
             if (version >= 13 && reader.ReadBool())
             {
-                Friends = reader.ReadEntityList<Mobile>();
+                _friends = reader.ReadEntityList<Mobile>();
             }
-            else if (version < 13 && m_ControlOrder >= OrderType.Unfriend)
+            else if (version < 13 && _controlOrder >= OrderType.Unfriend)
             {
-                ++m_ControlOrder;
+                ++_controlOrder;
             }
 
             if (version < 16 && Loyalty != MaxLoyalty)
@@ -2186,8 +2327,8 @@ namespace Server.Mobiles
 
             if (version >= 14)
             {
-                RemoveIfUntamed = reader.ReadBool();
-                RemoveStep = reader.ReadInt();
+                _removeIfUntamed = reader.ReadBool();
+                _removeStep = reader.ReadInt();
             }
 
             var deleteTime = TimeSpan.Zero;
@@ -2204,18 +2345,18 @@ namespace Server.Mobiles
                     deleteTime = TimeSpan.FromDays(3.0);
                 }
 
-                m_DeleteTimer = new DeleteTimer(this, deleteTime);
-                m_DeleteTimer.Start();
+                _pendingDeleteTimer = new DeleteTimer(this, deleteTime);
+                _pendingDeleteTimer.Start();
             }
 
             if (version >= 18)
             {
-                CorpseNameOverride = reader.ReadString();
+                _corpseNameOverride = reader.ReadString();
             }
 
             if (version >= 19)
             {
-                HomeMap = reader.ReadMap();
+                _homeMap = reader.ReadMap();
             }
 
             if (version >= 22)
@@ -2228,25 +2369,57 @@ namespace Server.Mobiles
                 MigrateMoveSpeeds();
             }
 
-            if (version <= 14 && m_Paragon && Hue == 0x31)
+            // Legacy saves carry no bucket; the ctor guessed the type default. If the
+            // loaded speeds do not conform, the creature is custom.
+            if (_speedClass != SpeedLevel.None && ShouldSerializeSpeeds())
+            {
+                _speedClass = SpeedLevel.None;
+                _speedEntry = null;
+            }
+
+            // Feed the masters through the consolidated reference so the
+            // AfterDeserialization fan-out is uniform across both load paths.
+            _master = _controlMaster ?? _summonMaster;
+
+            if (version <= 14 && _isParagon && Hue == 0x31)
             {
                 Hue = Paragon.Hue; // Paragon hue fixed, should now be 0x501.
             }
+        }
+
+        [AfterDeserialization]
+        private void AfterDeserialization()
+        {
+            _controlMaster = _controlled ? _master : null;
+            _summonMaster = _summoned ? _master : null;
 
             if (Core.AOS && NameHue == 0x35)
             {
                 NameHue = -1;
             }
 
+            if (_summoned)
+            {
+                new UnsummonTimer(this, _summonEnd - Core.Now).Start();
+            }
+
+            // Abandoned-pet fallback: a pet with a former owner but no persisted delete
+            // countdown still despawns (legacy loads restore their own timer above).
+            if (_pendingDeleteTimer == null && LastOwner != null && !_controlled && !IsStabled)
+            {
+                _pendingDeleteTimer = new DeleteTimer(this, TimeSpan.FromDays(3.0));
+                _pendingDeleteTimer.Start();
+            }
+
             CheckStatTimers();
 
-            ChangeAIType(m_CurrentAI);
+            ChangeAIType(_currentAI);
 
             AddFollowers();
 
             if (IsAnimatedDead)
             {
-                AnimateDeadSpell.Register(m_SummonMaster, this);
+                AnimateDeadSpell.Register(_summonMaster, this);
             }
         }
 
@@ -2301,8 +2474,7 @@ namespace Server.Mobiles
                 return true;
             }
 
-            // Note: Yes, this happens for all questers (regardless of type, e.g. escorts),
-            // even if they can't offer you anything at the moment
+            // Happens for all questers, even those with nothing to offer right now.
             if (MLQuestSystem.Enabled && CanGiveMLQuest && from is PlayerMobile mobile)
             {
                 // You need to mark your quest items so I don't take the wrong object.  Then speak to me.
@@ -2333,7 +2505,7 @@ namespace Server.Mobiles
                 AIType.AI_Vendor  => new VendorAI(this),
                 AIType.AI_Mage    => new MageAI(this),
                 AIType.AI_Predator =>
-                    // m_AI = new PredatorAI(this);
+                    //TODO Implement PredatorAI
                     new MeleeAI(this),
                 AIType.AI_Thief => new ThiefAI(this),
                 _               => null
@@ -2353,7 +2525,7 @@ namespace Server.Mobiles
 
         public void RemoveFollowers()
         {
-            var master = m_ControlMaster ?? m_SummonMaster;
+            var master = _controlMaster ?? _summonMaster;
             if (master != null)
             {
                 master.Followers -= Math.Min(ControlSlots, master.Followers);
@@ -2367,7 +2539,7 @@ namespace Server.Mobiles
 
         public void AddFollowers()
         {
-            var master = m_ControlMaster ?? m_SummonMaster;
+            var master = _controlMaster ?? _summonMaster;
             if (master != null)
             {
                 master.Followers += ControlSlots;
@@ -2413,7 +2585,7 @@ namespace Server.Mobiles
 
         public virtual void OnGaveMeleeAttack(Mobile defender, int damage)
         {
-            var p = m_Paragon ? PoisonImpl.IncreaseLevel(HitPoison) : HitPoison;
+            var p = _isParagon ? PoisonImpl.IncreaseLevel(HitPoison) : HitPoison;
 
             if (p != null && HitPoisonChance >= Utility.RandomDouble())
             {
@@ -2442,17 +2614,17 @@ namespace Server.Mobiles
                 AIObject = null;
             }
 
-            if (m_DeleteTimer != null)
+            if (_pendingDeleteTimer != null)
             {
-                m_DeleteTimer.Stop();
-                m_DeleteTimer = null;
+                _pendingDeleteTimer.Stop();
+                _pendingDeleteTimer = null;
             }
 
             FocusMob = null;
 
             if (IsAnimatedDead)
             {
-                AnimateDeadSpell.Unregister(m_SummonMaster, this);
+                AnimateDeadSpell.Unregister(_summonMaster, this);
             }
 
             if (Summoned && SummonMaster != null)
@@ -2471,13 +2643,6 @@ namespace Server.Mobiles
             base.OnAfterDelete();
         }
 
-        /*
-         * This function can be overridden.. so a "Strongest" mobile, can have a different definition depending
-         * on who check for value
-         * -Could add a FightMode.Preferred
-         *
-         */
-
         public virtual double GetFightModeRanking(Mobile m, FightMode acqType, bool bPlayerOnly)
         {
             if (bPlayerOnly && !m.Player)
@@ -2493,8 +2658,7 @@ namespace Server.Mobiles
             };
         }
 
-        // Turn, - for left, + for right
-        // Basic for now, needs work
+        // Turn: negative = left, positive = right.
         public virtual void Turn(int iTurnSteps)
         {
             var v = (int)Direction;
@@ -2511,7 +2675,7 @@ namespace Server.Mobiles
 
         public bool IsHurt() => Hits != HitsMax;
 
-        public double GetHomeDistance() => this.GetDistanceToSqrt(m_Home);
+        public double GetHomeDistance() => this.GetDistanceToSqrt(_home);
 
         public virtual int GetTeamSize(int iRange)
         {
@@ -2538,7 +2702,7 @@ namespace Server.Mobiles
                 aggressor.Aggressors.Add(AggressorInfo.Create(this, aggressor, true));
             }
 
-            var ct = m_ControlOrder;
+            var ct = _controlOrder;
 
             if (AIObject != null)
             {
@@ -2612,7 +2776,7 @@ namespace Server.Mobiles
                 AIObject?.GetContextMenuEntries(from, ref list);
             }
 
-            if (m_bTamable && !_controlled && from.Alive)
+            if (_tamable && !_controlled && from.Alive)
             {
                 list.Add(new TameEntry(from.Female ? AllowFemaleTamer : AllowMaleTamer));
             }
@@ -2663,7 +2827,7 @@ namespace Server.Mobiles
         }
 
         public override bool IsHarmfulCriminal(Mobile target) =>
-            (!Controlled || target != m_ControlMaster) && (!Summoned || target != m_SummonMaster) &&
+            (!Controlled || target != _controlMaster) && (!Summoned || target != _summonMaster) &&
             (target is not BaseCreature { InitialInnocent: true } creature || creature.Controlled) &&
             (target is not PlayerMobile mobile || mobile.PermaFlags.Count <= 0) && base.IsHarmfulCriminal(target);
 
@@ -2673,13 +2837,13 @@ namespace Server.Mobiles
 
             if (Controlled || Summoned)
             {
-                if (m_ControlMaster?.Player == true)
+                if (_controlMaster?.Player == true)
                 {
-                    m_ControlMaster.CriminalAction(false);
+                    _controlMaster.CriminalAction(false);
                 }
-                else if (m_SummonMaster?.Player == true)
+                else if (_summonMaster?.Player == true)
                 {
-                    m_SummonMaster.CriminalAction(false);
+                    _summonMaster.CriminalAction(false);
                 }
             }
         }
@@ -2688,7 +2852,7 @@ namespace Server.Mobiles
         {
             base.DoHarmful(target, indirect);
 
-            if (target == this || target == m_ControlMaster || target == m_SummonMaster || !Controlled && !Summoned)
+            if (target == this || target == _controlMaster || target == _summonMaster || !Controlled && !Summoned)
             {
                 return;
             }
@@ -2738,12 +2902,11 @@ namespace Server.Mobiles
         {
             if (Combatant != null)
             {
-                return false; // in combat.. not idling
+                return false; // in combat, not idling
             }
 
             if (m_IdleReleaseTime > DateTime.MinValue)
             {
-                // idling...
                 if (Core.Now >= m_IdleReleaseTime)
                 {
                     m_IdleReleaseTime = DateTime.MinValue;
@@ -2755,7 +2918,7 @@ namespace Server.Mobiles
 
             if (Utility.Random(100) < 95)
             {
-                return false; // not idling, but don't want to enter idle state
+                return false; // chose not to enter the idle state
             }
 
             var idleSeconds = Utility.RandomMinMax(NPCSpeeds.MinIdleSeconds, NPCSpeeds.MaxIdleSeconds);
@@ -2794,12 +2957,6 @@ namespace Server.Mobiles
             PlaySound(GetIdleSound());
             return true; // entered idle state
         }
-
-        /*
-          this way, due to the huge number of locations this will have to be changed
-          Perhaps we can change this in the future when fixing game play is not the
-          major issue.
-        */
 
         public virtual void CheckedAnimate(int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay)
         {
@@ -2869,7 +3026,7 @@ namespace Server.Mobiles
 
             SpeechType?.OnMovement(this, m, oldLocation);
 
-            /* Begin notice sound */
+            // Notice sound
             if ((!m.Hidden || m.AccessLevel == AccessLevel.Player) && m.Player && FightMode != FightMode.Aggressor &&
                 FightMode != FightMode.None && Combatant == null && !Controlled && !Summoned && !BardPacified &&
                 InRange(m.Location, 18) && !InRange(oldLocation, 18))
@@ -2881,7 +3038,6 @@ namespace Server.Mobiles
 
                 PlaySound(GetAngerSound());
             }
-            /* End notice sound */
 
             if (MLQuestSystem.Enabled && CanShout && m is PlayerMobile mobile)
             {
@@ -2955,7 +3111,7 @@ namespace Server.Mobiles
                     list.Add(TotalWeight == 1 ? 1072788 : 1072789, TotalWeight); // Weight: ~1_WEIGHT~ stones
                 }
 
-                if (m_ControlOrder == OrderType.Guard)
+                if (_controlOrder == OrderType.Guard)
                 {
                     list.Add(1080078); // guarding
                 }
@@ -2967,7 +3123,7 @@ namespace Server.Mobiles
             }
             else if (Controlled && Commandable)
             {
-                // Intentional difference (showing ONLY bonded when bonded instead of bonded & tame)
+                // Deliberate: show only (bonded), never (bonded) and (tame) together.
                 if (IsBonded)
                 {
                     list.Add(1049608); // (bonded)
@@ -3029,7 +3185,7 @@ namespace Server.Mobiles
             {
                 if (treasureLevel >= 0)
                 {
-                    if (m_Paragon && Paragon.ChestChance > Utility.RandomDouble())
+                    if (_isParagon && Paragon.ChestChance > Utility.RandomDouble())
                     {
                         PackItem(new ParagonChest(Name, treasureLevel));
                     }
@@ -3039,7 +3195,7 @@ namespace Server.Mobiles
                     }
                 }
 
-                if (m_Paragon && Paragon.ChocolateIngredientChance > Utility.RandomDouble())
+                if (_isParagon && Paragon.ChocolateIngredientChance > Utility.RandomDouble())
                 {
                     switch (Utility.Random(4))
                     {
@@ -3067,9 +3223,9 @@ namespace Server.Mobiles
                 }
             }
 
-            if (!Summoned && !NoKillAwards && !m_HasGeneratedLoot)
+            if (!Summoned && !NoKillAwards && !_hasGeneratedLoot)
             {
-                m_HasGeneratedLoot = true;
+                _hasGeneratedLoot = true;
                 GenerateLoot(false);
             }
 
@@ -3274,7 +3430,7 @@ namespace Server.Mobiles
                     MondainsLegacy.GiveArtifactTo(mob);
                 }
             }
-            else if (m_Paragon)
+            else if (_isParagon)
             {
                 if (Paragon.CheckArtifactChance(mob, this))
                 {
@@ -3282,9 +3438,6 @@ namespace Server.Mobiles
                 }
             }
         }
-
-        [GeneratedEvent(nameof(CreatureDeathEvent))]
-        public static partial void CreatureDeathEvent(BaseCreature bc);
 
         public override void OnDeath(Container c)
         {
@@ -3308,7 +3461,6 @@ namespace Server.Mobiles
                 ProcessDelta();
                 SendIncomingPacket();
 
-                // TODO: This can be done in Parallel if there are lots of them.
                 var aggressors = Aggressors;
 
                 for (var i = 0; i < aggressors.Count; ++i)
@@ -3348,7 +3500,7 @@ namespace Server.Mobiles
                     OwnerAbandonTime = DateTime.MinValue;
                 }
 
-                CreatureDeathEvent(this);
+                CreatureEvents.CreatureDeathEvent(this);
 
                 CheckStatTimers();
                 return;
@@ -3382,7 +3534,6 @@ namespace Server.Mobiles
 
                         if (ds.m_Mobile == killer)
                         {
-                            // If the titles system gets feature flagged, it will be supported
                             titles.Add(ds.m_Mobile);
                             fame.Add(totalFame);
                             karma.Add(totalKarma);
@@ -3478,20 +3629,17 @@ namespace Server.Mobiles
                 c.Delete();
             }
 
-            CreatureDeathEvent(this);
+            CreatureEvents.CreatureDeathEvent(this);
         }
-
-        [GeneratedEvent(nameof(CreatureDeletedEvent))]
-        public static partial void CreatureDeletedEvent(BaseCreature bc);
 
         public override void OnDelete()
         {
-            CreatureDeletedEvent(this);
+            CreatureEvents.CreatureDeletedEvent(this);
 
-            var m = m_ControlMaster;
+            var m = _controlMaster;
             SetControlMaster(null);
+            SummonMaster = null; // uncontrolled summons have no control master to clear through
 
-            SummonMaster = null;
             ReceivedHonorContext?.Cancel();
 
             base.OnDelete();
@@ -3537,6 +3685,11 @@ namespace Server.Mobiles
                 Controlled = false;
                 ControlTarget = null;
                 ControlOrder = OrderType.None;
+
+                if (_summoned)
+                {
+                    SummonMaster = null;
+                }
             }
             else
             {
@@ -3561,11 +3714,16 @@ namespace Server.Mobiles
                 ControlTarget = null;
                 ControlOrder = OrderType.Come;
 
-
-                if (m_DeleteTimer != null)
+                if (_summoned)
                 {
-                    m_DeleteTimer.Stop();
-                    m_DeleteTimer = null;
+                    SummonMaster = m;
+                }
+
+
+                if (_pendingDeleteTimer != null)
+                {
+                    _pendingDeleteTimer.Stop();
+                    _pendingDeleteTimer = null;
                 }
             }
 
@@ -3759,7 +3917,7 @@ namespace Server.Mobiles
                 {
                     // *rummages through a corpse and takes an item*
                     PublicOverheadMessage(MessageType.Emote, 0x3B2, 1008086);
-                    // TODO: Instancing of Rummaged stuff.
+                    //TODO Instance rummaged loot
                     return true;
                 }
             }
@@ -3780,14 +3938,14 @@ namespace Server.Mobiles
                 return BardMaster;
             }
 
-            if (_controlled && m_ControlMaster != null)
+            if (_controlled && _controlMaster != null)
             {
-                return m_ControlMaster;
+                return _controlMaster;
             }
 
-            if (_summoned && m_SummonMaster != null)
+            if (_summoned && _summonMaster != null)
             {
-                return m_SummonMaster;
+                return _summonMaster;
             }
 
             return base.GetDamageMaster(damagee);
@@ -4059,17 +4217,17 @@ namespace Server.Mobiles
             if (this is not BaseEscortable && !Summoned && !Deleted && !IsStabled)
             {
                 StopDeleteTimer();
-                m_DeleteTimer = new DeleteTimer(this, TimeSpan.FromDays(3.0));
-                m_DeleteTimer.Start();
+                _pendingDeleteTimer = new DeleteTimer(this, TimeSpan.FromDays(3.0));
+                _pendingDeleteTimer.Start();
             }
         }
 
         public void StopDeleteTimer()
         {
-            if (m_DeleteTimer != null)
+            if (_pendingDeleteTimer != null)
             {
-                m_DeleteTimer.Stop();
-                m_DeleteTimer = null;
+                _pendingDeleteTimer.Stop();
+                _pendingDeleteTimer = null;
             }
         }
 
@@ -4105,11 +4263,7 @@ namespace Server.Mobiles
             }
         }
 
-        /*
-          Solen Style, override me for other mobiles/items:
-          kappa+acidslime, grizzles+whatever, etc.
-        */
-
+        // Solen-style acid; override for other harmful drops (kappa slime, etc.).
         public virtual Item NewHarmfulItem() => new Acid(TimeSpan.FromSeconds(10), 30, 30);
 
         public virtual void StopFlee()
@@ -4150,7 +4304,7 @@ namespace Server.Mobiles
         public virtual void RemovePetFriend(Mobile m) => Friends?.Remove(m);
 
         public virtual bool IsFriend(Mobile m) =>
-            OppositionGroup?.IsEnemy(this, m) != true && m is BaseCreature c && m_Team == c.m_Team
+            OppositionGroup?.IsEnemy(this, m) != true && m is BaseCreature c && _team == c._team
             && (_summoned || _controlled) == (c._summoned || c._controlled);
 
         public virtual Allegiance GetFactionAllegiance(Mobile mob)
@@ -4342,16 +4496,15 @@ namespace Server.Mobiles
 
                 if (Core.SE)
                 {
-                    m_Loyalty = MaxLoyalty;
+                    _loyalty = MaxLoyalty;
                 }
-                else if (m_Loyalty < MaxLoyalty)
+                else if (_loyalty < MaxLoyalty)
                 {
-                    // Calculate the loyalty increase
                     var loyaltyIncrease = Utility.CoinFlips(amount, MaxLoyaltyIncrease) * 10;
 
-                    if (loyaltyIncrease > 0)  // Only update if there's an actual increase
+                    if (loyaltyIncrease > 0)
                     {
-                        m_Loyalty = Math.Min(MaxLoyalty, m_Loyalty + loyaltyIncrease);
+                        _loyalty = Math.Min(MaxLoyalty, _loyalty + loyaltyIncrease);
                         SayTo(from, 502060); // Your pet looks happier.
                     }
                 }
@@ -4367,7 +4520,7 @@ namespace Server.Mobiles
 
                 if (IsBondable && !IsBonded)
                 {
-                    var master = m_ControlMaster;
+                    var master = _controlMaster;
 
                     if (master != null && master == from) // So friends can't start the bonding process
                     {
@@ -4554,7 +4707,6 @@ namespace Server.Mobiles
                     }
                 }
 
-                /* Sanity check */
                 if (baseToSet > theirSkill.CapFixedPoint ||
                     m.Skills.Total - theirSkill.BaseFixedPoint + baseToSet > m.Skills.Cap)
                 {
@@ -4721,14 +4873,14 @@ namespace Server.Mobiles
 
         public void SetDamage(int val)
         {
-            m_DamageMin = val;
-            m_DamageMax = val;
+            _damageMin = val;
+            _damageMax = val;
         }
 
         public void SetDamage(int min, int max)
         {
-            m_DamageMin = min;
-            m_DamageMax = max;
+            _damageMin = min;
+            _damageMax = max;
         }
 
         public void SetHits(int val)
@@ -4862,27 +5014,27 @@ namespace Server.Mobiles
             {
                 case ResistanceType.Physical:
                     {
-                        m_PhysicalResistance = val;
+                        _physicalResistanceSeed = val;
                         break;
                     }
                 case ResistanceType.Fire:
                     {
-                        m_FireResistance = val;
+                        _fireResistSeed = val;
                         break;
                     }
                 case ResistanceType.Cold:
                     {
-                        m_ColdResistance = val;
+                        _coldResistSeed = val;
                         break;
                     }
                 case ResistanceType.Poison:
                     {
-                        m_PoisonResistance = val;
+                        _poisonResistSeed = val;
                         break;
                     }
                 case ResistanceType.Energy:
                     {
-                        m_EnergyResistance = val;
+                        _energyResistSeed = val;
                         break;
                     }
             }
@@ -5018,23 +5170,55 @@ namespace Server.Mobiles
             }
         }
 
-        // If this needs to be serialized, recommend creating a hash or registry id. Don't serialize strings.
-        public virtual SpeedLevel SpeedClass => SpeedLevel.None;
+        // A type's constant bucket; runtime state changes assign SpeedClass instead.
+        public virtual SpeedLevel DefaultSpeedClass => SpeedLevel.None;
+
+        // Resolved once per creature; serialization consults the table four times per mob
+        // per save (and again on elided loads), so the dictionary walk must not repeat.
+        private NPCSpeeds.SpeedClassEntry _speedEntry;
+
+        private NPCSpeeds.SpeedClassEntry SpeedEntry => _speedEntry ??= NPCSpeeds.FindEntry(_speedClass);
+
+        private SpeedLevel? _resolvedDefaultSpeedClass;
+
+        // The bucket a fresh spawn of this type resolves to (construction-time only).
+        private SpeedLevel ResolvedDefaultSpeedClass =>
+            _resolvedDefaultSpeedClass ??= NPCSpeeds.ResolveDefaultLevel(this);
 
         public virtual void GetSpeeds(out double activeSpeed, out double passiveSpeed)
         {
-            NPCSpeeds.GetSpeeds(this, out activeSpeed, out passiveSpeed);
+            var entry = SpeedEntry;
+
+            if (entry == null)
+            {
+                if (_speedClass == SpeedLevel.None)
+                {
+                    // A custom creature is its own reference.
+                    activeSpeed = _activeSpeed;
+                    passiveSpeed = _passiveSpeed;
+                    return;
+                }
+
+                throw new InvalidOperationException(
+                    $"{GetType()} names bucket {_speedClass} but the table has no entry - is {"Data/npc-speeds.json"} missing?"
+                );
+            }
+
+            activeSpeed = entry.ActiveSpeed;
+            passiveSpeed = entry.PassiveSpeed;
         }
 
+        // Move speeds are optional (0 = inherit), so this tolerates an unloaded table.
         public virtual void GetMoveSpeeds(out double activeMoveSpeed, out double passiveMoveSpeed)
         {
-            NPCSpeeds.GetMoveSpeeds(this, out activeMoveSpeed, out passiveMoveSpeed);
+            var entry = SpeedEntry;
+
+            activeMoveSpeed = entry?.ActiveMoveSpeed ?? 0;
+            passiveMoveSpeed = entry?.PassiveMoveSpeed ?? 0;
         }
 
-        // Pre-v22 saves carry no movement clock. A creature whose serialized think speeds
-        // still match what it would spawn with today was never hand-tuned: adopt today's
-        // move values so existing worlds (and pets) pick up npc-speeds pacing without a
-        // respawn. Tuned creatures keep movement inheriting their think clock.
+        // Pre-v22 saves carry no movement clock. Think speeds matching today's GetSpeeds
+        // mean never hand-tuned: adopt today's move values; tuned creatures keep inheriting.
         internal void MigrateMoveSpeeds()
         {
             GetSpeeds(out var activeSpeed, out var passiveSpeed);
@@ -5083,7 +5267,7 @@ namespace Server.Mobiles
 
             GenerateLoot();
 
-            if (m_Paragon)
+            if (_isParagon)
             {
                 if (Fame < 1250)
                 {
@@ -5483,8 +5667,6 @@ namespace Server.Mobiles
 
             var onSelf = patient == this;
 
-            // DoBeneficial( patient );
-
             RevealingAction();
 
             if (!onSelf)
@@ -5527,7 +5709,7 @@ namespace Server.Mobiles
                     {
                         patient.SendLocalizedMessage(1010059); // You have been cured of all poisons.
 
-                        CheckSkill(SkillName.Healing, 0.0, 60.0 + poisonLevel * 10.0); // TODO: Verify formula
+                        CheckSkill(SkillName.Healing, 0.0, 60.0 + poisonLevel * 10.0); //TODO Verify formula
                         CheckSkill(SkillName.Anatomy, 0.0, 100.0);
                     }
                 }
@@ -5726,7 +5908,6 @@ namespace Server.Mobiles
 
             using var toRelease = PooledRefQueue<BaseCreature>.Create();
 
-            // added array for wild creatures in house regions to be removed
             using var toRemove = PooledRefQueue<Mobile>.Create();
 
             foreach (var m in World.Mobiles.Values)
@@ -5784,7 +5965,7 @@ namespace Server.Mobiles
                     }
                 }
 
-                // added lines to check if a wild creature in a house region has to be removed or not
+                // Wild creatures squatting in houses are removed outright.
                 if (!c.Controlled && !c.IsStabled && (c.Region.IsPartOf<HouseRegion>() && c.CanBeDamaged() ||
                                                       c.RemoveIfUntamed && c.Spawner == null))
                 {
@@ -5806,12 +5987,13 @@ namespace Server.Mobiles
                 var c = toRelease.Dequeue();
 
                 c.Say(1043255, c.Name); // ~1_NAME~ appears to have decided that is better off without a master!
-                c.Loyalty = BaseCreature.MaxLoyalty; // Wonderfully Happy
+                c.Loyalty = BaseCreature.MaxLoyalty;
                 c.IsBonded = false;
                 c.BondingBegin = DateTime.MinValue;
                 c.OwnerAbandonTime = DateTime.MinValue;
                 c.ControlTarget = null;
-                // This will prevent no release of creatures left alone with AI disabled (and consequent bug of Followers)
+                // Release directly: a creature left alone with its AI disabled would
+                // otherwise never release and permanently hold its owner's follower slots.
                 c.AIObject.DoOrderRelease();
                 c.DropBackpack();
             }
