@@ -113,7 +113,7 @@ public class BaseRegion : Region
                         m_RectBuffer2.RemoveAt(k);
 
                         var sz = rect.Start.Z;
-                        var ez = rect.End.X;
+                        var ez = rect.End.Z;
 
                         if (l1 < l2)
                         {
