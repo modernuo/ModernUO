@@ -584,3 +584,21 @@ Projects/UOContent/
 - One primary class per file
 - Group related items in subdirectories
 - Era-specific content goes in era-named subdirectories
+
+---
+
+## Body Animation Catalog
+
+`Distribution/Data/body-animations.json` lists every mobile body the client can animate,
+resolved the way ClassicUO resolves it (`mobtypes.txt`, `Bodyconv.def`, `anim*.mul`,
+`AnimationFrame*.uop`): type (`Monster`/`SeaMonster`/`Animal`/`Human`/`Equipment`), layout
+(`High`/`Low`/`People`), source file, `hasWalk`/`hasRun`/`hasStand`, and the direction-0 frame
+count per animation group (`frames[]`, `0` = missing). `bodyTableMismatches[]` lists bodies whose
+`Data/bodyTable.cfg` type differs from the client's (`Empty` = not in the table).
+
+Use it when choosing a `Body` for a creature (does it have the groups the server will ask for?)
+and when a body must move faster than 0.4 s/step: a `Low` body with `hasRun: false` slides on
+its stand frames when flagged as running (only 116, 282 and 283 in the 7.0.x client).
+
+Regenerate with the `BodyAnimCatalog` tool (`tools/BodyAnimCatalog` in the tools checkout):
+`dotnet run -c Release -- <client dir> Distribution/Data/body-animations.json Distribution/Data/bodyTable.cfg`.
