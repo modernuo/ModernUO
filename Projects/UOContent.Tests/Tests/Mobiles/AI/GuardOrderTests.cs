@@ -6,11 +6,9 @@ using Xunit;
 
 namespace UOContent.Tests.Mobiles.AI;
 
-// Pins guard-order combat semantics (issue #2595): a guarding pet engages and fights
-// without ever leaving the Guard order, retargets toward the master's closest aggressor,
-// and stands down deterministically when there is nothing to guard against. The scene
-// sits on the proven-open (1495..1500, 1600) Trammel segment from ApproachTargetTests;
-// combat targets are adjacent so no pathfinding runs.
+// A guarding pet fights without leaving the Guard order, retargets toward the master's
+// closest aggressor, and stands down when nothing threatens. Scene: the open
+// (1495..1500, 1600) Trammel segment; targets are adjacent so no pathfinding runs.
 [Collection("Sequential UOContent Tests")]
 public class GuardOrderTests : IDisposable
 {
@@ -60,8 +58,7 @@ public class GuardOrderTests : IDisposable
         aggr.MoveToWorld(loc, pet.Map);
         _created.Add(aggr);
 
-        // Guards the test setup itself: the scene must stay on open, LOS-clear terrain
-        // and the combatant assignment must not be vetoed.
+        // Setup guard: the scene must stay LOS-clear and the combatant must not be vetoed.
         Assert.True(pet.InLOS(aggr), $"no LOS from pet to aggressor at {loc}");
 
         if (attacking != null)

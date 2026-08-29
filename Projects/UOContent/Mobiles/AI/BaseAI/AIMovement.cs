@@ -118,9 +118,7 @@ public abstract partial class BaseAI
 
         if (TryMove(d))
         {
-            // An obeying pet's pace is owned by its order handler (issue sets the think
-            // clock; guard/follow write the AOS sprint) — the per-step flip re-derives
-            // speed for wild creatures and combat only, or it would fight those writes.
+            // Obeying pets are paced by their order handlers.
             if (!IsObeyingMoveOrder())
             {
                 if (Mobile.Warmode || Mobile.Combatant != null)
@@ -599,8 +597,7 @@ public abstract partial class BaseAI
         Mobile.ControlTarget == Mobile.ControlMaster &&
         Mobile.Combatant == null;
 
-    // A pet executing a master's movement order with no combat; its order handler owns
-    // the speed clocks (mirrors RunUO's OnCurrentOrderChanged/DoOrder* speed writes).
+    // A pet executing a movement order outside combat; its order handler owns its speed.
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsObeyingMoveOrder() =>
         Mobile.Controlled &&
@@ -673,9 +670,7 @@ public abstract partial class BaseAI
         return dist >= iWantDistMin && dist <= iWantDistMax;
     }
 
-    // The caller's run flag is honored as-is: it only sets the client-side animation
-    // (server pace is the move budget), and the callers that pass anything but false —
-    // follow, guard, clone — gate it on their own distance thresholds.
+    // run only sets the client animation; callers gate it on their own distance thresholds.
     private bool MoveTowardsOrAwayFrom(Mobile m, bool run, int iCurrDist, int iWantDistMax)
     {
         if (iCurrDist > iWantDistMax)

@@ -6,9 +6,7 @@ using Xunit;
 
 namespace UOContent.Tests.Mobiles.AI;
 
-// Pins the pet-obedience pacing policy (issue #2593): a controlled pet executing a
-// master's movement order paces its steps on the think clock, not the wild-creature
-// move table; combat chases and herding keep their own pacing.
+// Pet order handlers own the speed clocks; combat chases and herding keep their own pacing.
 [Collection("Sequential UOContent Tests")]
 public class PetPacingTests : IDisposable
 {
@@ -32,9 +30,7 @@ public class PetPacingTests : IDisposable
         _created.Clear();
     }
 
-    // Issuing an order sets the think clock organically (RunUO OnCurrentOrderChanged
-    // parity): movement orders run active, resting orders run passive. The move clock
-    // then resolves through the normal classification — no special-casing.
+    // Movement orders run active, resting orders run passive; the move clock follows.
     [Fact]
     public void OrderIssue_SetsThinkClock()
     {
@@ -44,7 +40,7 @@ public class PetPacingTests : IDisposable
 
         pet.ControlOrder = OrderType.Come;
         Assert.Equal(0.2, pet.CurrentSpeed);
-        Assert.Equal(0.3, pet.CurrentMoveSpeed); // organic: verbatim active -> activeMove
+        Assert.Equal(0.3, pet.CurrentMoveSpeed); // verbatim active -> activeMove
 
         pet.ControlOrder = OrderType.Stay;
         Assert.Equal(0.4, pet.CurrentSpeed);
@@ -58,8 +54,7 @@ public class PetPacingTests : IDisposable
         Assert.Equal(0.2, pet.CurrentSpeed);
     }
 
-    // RunUO AOS parity: a pet following its master sprints — DoOrderFollow writes the
-    // bespoke 0.1, which fuses to both clocks through the normal classification.
+    // AOS: following the master sprints at a bespoke 0.1 on both clocks.
     [Fact]
     public void FollowMaster_ObeySprints()
     {
@@ -68,15 +63,14 @@ public class PetPacingTests : IDisposable
         pet.AIObject.AITimer?.Stop();
 
         pet.ControlTarget = master;
-        pet.ControlOrder = OrderType.Follow; // fixture era is EJ: Core.AOS is true
+        pet.ControlOrder = OrderType.Follow; // fixture era is EJ
         pet.AIObject.Obey();
 
         Assert.Equal(0.1, pet.CurrentSpeed);
         Assert.Equal(0.1, pet.CurrentMoveSpeed);
     }
 
-    // A guarding pet at its master's side stays organically active — never the
-    // stale-warmode passive lottery, and no sprint while there is nowhere to go.
+    // At the master's side a guarding pet stays active: no stale-warmode passive, no sprint.
     [Fact]
     public void GuardAtMastersSide_IsActive()
     {
@@ -92,7 +86,7 @@ public class PetPacingTests : IDisposable
         Assert.Equal(0.3, pet.CurrentMoveSpeed);
     }
 
-    // Boundary guard: a pet chasing a combatant keeps the move table.
+    // A pet chasing a combatant keeps the move table.
     [Fact]
     public void CombatChasingPet_KeepsMoveTable()
     {
@@ -109,7 +103,7 @@ public class PetPacingTests : IDisposable
         Assert.Equal(0.3, pet.CurrentMoveSpeed);
     }
 
-    // Boundary guard: herding overrides obedience pacing.
+    // Herding overrides order pacing.
     [Fact]
     public void HerdedObeyingPet_KeepsHerdingPace()
     {
@@ -148,8 +142,7 @@ public class PetPacingTests : IDisposable
         return (master, pet);
     }
 
-    // Advances simulated time in 8ms lockstep with the wheel, like the real event loop,
-    // so wake schedules and Core.TickCount stay in sync.
+    // Advances time in 8ms lockstep so the wheel and Core.TickCount stay in sync.
     private static void RunFor(long ms)
     {
         var deadline = Core._tickCount + ms;
@@ -179,8 +172,7 @@ public class PetPacingTests : IDisposable
         return condition();
     }
 
-    // Runs past the random spawn-stagger delay to a known think-tick anchor: returns
-    // right after a think fires, with the next one a full passive cadence (0.4s) away.
+    // Runs past the spawn stagger; returns right after a think with the next 0.4s away.
     private ThinkProbe SettledProbe(out PlayerMobile master)
     {
         Core._tickCount = 0;
@@ -203,11 +195,9 @@ public class PetPacingTests : IDisposable
         var pet = SettledProbe(out var master);
         var thinksBefore = pet.Thinks;
 
-        // Mid-wait on the passive cadence: the next think is ~200ms out.
-        RunFor(200);
+        RunFor(200); // mid-wait, next think ~200ms out
         Assert.Equal(thinksBefore, pet.Thinks);
 
-        // The player issues a command; the pet must not wait out the stale wake.
         pet.ControlTarget = master;
         pet.ControlOrder = OrderType.Follow;
 
@@ -221,12 +211,9 @@ public class PetPacingTests : IDisposable
         var pet = SettledProbe(out _);
         var thinksBefore = pet.Thinks;
 
-        // Mid-wait on the passive cadence: the next think is ~200ms out.
-        RunFor(200);
+        RunFor(200); // mid-wait, next think ~200ms out
         Assert.Equal(thinksBefore, pet.Thinks);
 
-        // The pet is sped up (e.g. a buff): the next think must move up to the new
-        // 0.1s cadence instead of waiting out the stale 0.4s deadline.
         pet.CurrentSpeed = 0.1;
 
         RunFor(120);

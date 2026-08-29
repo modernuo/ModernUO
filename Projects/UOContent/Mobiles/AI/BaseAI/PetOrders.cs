@@ -128,8 +128,7 @@ public abstract partial class BaseAI
 
         this.DebugSayFormatted($"I am ordered to follow {Mobile.ControlTarget?.Name}.");
 
-        // RunUO AOS parity: a pet sprints after its master (bespoke 0.1 fuses to both
-        // clocks); other targets keep the active pace the order issue set.
+        // AOS: sprint after the master (bespoke 0.1 paces both clocks).
         if (Core.AOS && Mobile.ControlTarget == Mobile.ControlMaster && Mobile.Combatant == null)
         {
             Mobile.CurrentSpeed = 0.1;
@@ -304,9 +303,7 @@ public abstract partial class BaseAI
         {
             this.DebugSayFormatted($"Attacking target: {combatant.Name}");
 
-            // Engage without leaving the Guard order (#2595): the (guarding)/guarded
-            // tags persist, recall/gate keeps the pet, and the per-tick scan retargets
-            // toward the master's closest aggressor for the whole fight.
+            // Engage without leaving the Guard order so tags, recall handling, and retargeting persist.
             Mobile.Combatant = combatant;
             Mobile.FocusMob = combatant;
             Action = ActionType.Combat;
@@ -317,8 +314,7 @@ public abstract partial class BaseAI
         {
             this.DebugSayFormatted($"Guarding my master, {controlMaster.Name}.");
 
-            // Stand down deterministically: a stale Warmode otherwise leaves the return
-            // pace active or passive by combat history.
+            // Stand down; a stale Warmode would skew the return pace.
             Mobile.FocusMob = null;
             Mobile.Warmode = false;
             Mobile.Combatant = null;
@@ -327,9 +323,7 @@ public abstract partial class BaseAI
 
             if (distance > 3)
             {
-                // RunUO parity: the AOS return sprints (bespoke 0.1 fuses to both
-                // clocks); earlier eras run active. Through the approach primitive so
-                // guard-following registers a move intent and paths around obstacles.
+                // AOS: sprint back (bespoke 0.1 paces both clocks); earlier eras run active.
                 if (Core.AOS)
                 {
                     Mobile.CurrentSpeed = 0.1;
@@ -384,8 +378,7 @@ public abstract partial class BaseAI
         Mobile.ControlTarget = Mobile.ControlMaster;
         ResumePersistentOrder();
 
-        // A resumed Guard engages through its own scan without ever leaving the order;
-        // only non-guard fallbacks chain the next aggressor through an explicit Attack.
+        // A resumed Guard engages through its own scan; other fallbacks chain an explicit Attack.
         if (Mobile.ControlOrder == OrderType.Guard ||
             Mobile.FightMode is not (FightMode.Closest or FightMode.Aggressor))
         {
@@ -407,10 +400,8 @@ public abstract partial class BaseAI
     }
 
     /// <summary>
-    /// Selects the aggressor a pet should defend against, preferring whichever is
-    /// closest to the master (RunUO guard parity — a guarding pet retargets to protect
-    /// its owner). The current combatant is the baseline and is kept unless a strictly
-    /// closer aggressor exists. Pure selection: never mutates any order state.
+    /// Selects the aggressor closest to the master. The current combatant is kept
+    /// unless a strictly closer one exists. Never mutates order state.
     /// </summary>
     private Mobile FindGuardTarget()
     {

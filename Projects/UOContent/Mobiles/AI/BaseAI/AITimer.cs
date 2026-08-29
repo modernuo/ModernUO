@@ -26,7 +26,7 @@ public sealed class AITimer : Timer
 {
     private readonly BaseAI _owner;
     private long _nextThink;
-    private long _nextWake; // when the pending wheel entry fires; the wheel cannot tell us
+    private long _nextWake; // when the pending wheel entry fires
     private bool _inTick;
     private int _detectHiddenMinDelay;
     private int _detectHiddenMaxDelay;
@@ -48,15 +48,11 @@ public sealed class AITimer : Timer
             return;
         }
 
-        Start(); // keeps the current Delay: the construction stagger for spawn/sector wakes
+        Start(); // keeps the stagger Delay
         _nextWake = Core.TickCount + (long)Delay.TotalMilliseconds;
     }
 
-    // A fresh command must not wait out the previous cadence: think now. Pets are exempt
-    // from sector deactivation, so dropping the stagger Delay here cannot bunch sector wakes.
-    // Spam-safe: at most one think per command and no compounding, and a think grants no
-    // action — steps (NextMove budget), swings, casts, abilities and detect-hidden are all
-    // gated by their own budgets/timers that this never touches.
+    // Think now. A think grants no action: steps, swings, casts, and abilities keep their own gates.
     public void Prod()
     {
         _nextThink = Core.TickCount;
@@ -84,14 +80,13 @@ public sealed class AITimer : Timer
         }
     }
 
-    // Restarts the timer when the new earliest deadline lands before the pending wake.
-    // The wheel reads Interval only after the next fire, so moving a pending wake earlier
-    // requires Stop, Delay = remaining, Start.
+    // Moves the pending wake earlier. Interval is only read after the next fire,
+    // so this needs Stop, Delay = remaining, Start.
     private void Reschedule()
     {
         if (_inTick || !Running)
         {
-            return; // ScheduleNext reads the updated deadlines at tick end
+            return; // ScheduleNext handles it at tick end
         }
 
         var now = Core.TickCount;
@@ -104,7 +99,7 @@ public sealed class AITimer : Timer
 
         if (deadline - _nextWake >= 0)
         {
-            return; // the pending wake is already at or before the new deadline
+            return; // pending wake is already early enough
         }
 
         Stop();

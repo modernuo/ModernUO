@@ -26,7 +26,6 @@ public abstract partial class BaseAI
             return;
         }
 
-        // A fresh command wakes the AI immediately — never wait out the previous cadence.
         AITimer.Prod();
 
         switch (Mobile.ControlOrder)
@@ -38,7 +37,6 @@ public abstract partial class BaseAI
                 }
             case OrderType.Come:
                 {
-                    // RunUO parity: movement orders run the active think clock.
                     Mobile.SetCurrentSpeedToActive();
                     break;
                 }
@@ -141,7 +139,7 @@ public abstract partial class BaseAI
         Mobile.FocusMob = null;
         Mobile.Warmode = false;
         Mobile.Combatant = null;
-        Mobile.SetCurrentSpeedToPassive(); // RunUO parity: resting orders run passive
+        Mobile.SetCurrentSpeedToPassive();
     }
 
     private void HandleTransferOrder()
@@ -155,7 +153,7 @@ public abstract partial class BaseAI
         Mobile.FocusMob = null;
         Mobile.Warmode = false;
         Mobile.Combatant = null;
-        Mobile.SetCurrentSpeedToPassive(); // RunUO parity: resting orders run passive
+        Mobile.SetCurrentSpeedToPassive();
         Mobile.PlaySound(Mobile.GetIdleSound());
         _commandIssuer = null;
     }
@@ -172,8 +170,7 @@ public abstract partial class BaseAI
         Mobile.Warmode = true;
         Mobile.SetCurrentSpeedToActive();
 
-        // Only a freshly issued command plays the flourish; resuming the persistent
-        // order after an explicit attack must not replay it after every kill.
+        // Resuming the persistent order must not replay the flourish.
         if (!_resolvingOrder)
         {
             Mobile.PlaySound(Mobile.GetAttackSound());
@@ -223,7 +220,7 @@ public abstract partial class BaseAI
         Mobile.FocusMob = null;
         Mobile.Warmode = false;
         Mobile.Combatant = null;
-        Mobile.SetCurrentSpeedToActive(); // RunUO parity: movement orders run active
+        Mobile.SetCurrentSpeedToActive();
         Mobile.PlaySound(Mobile.GetIdleSound());
         _commandIssuer = null;
     }
@@ -239,7 +236,7 @@ public abstract partial class BaseAI
         Mobile.FocusMob = null;
         Mobile.Warmode = false;
         Mobile.Combatant = null;
-        Mobile.SetCurrentSpeedToPassive(); // RunUO parity: resting orders run passive
+        Mobile.SetCurrentSpeedToPassive();
         Mobile.PlaySound(Mobile.GetIdleSound());
         _commandIssuer = null;
         // Home (the stay anchor) is owned by SetPersistentOrder, not this handler.

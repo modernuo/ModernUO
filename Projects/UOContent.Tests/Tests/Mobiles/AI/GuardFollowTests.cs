@@ -5,8 +5,7 @@ using Xunit;
 
 namespace UOContent.Tests.Mobiles.AI;
 
-// Guard-order following drives real movement primitives (and may pathfind), so it shares
-// the pathfinding sequential collection like ApproachTargetTests.
+// Guard-following may pathfind, so this shares the pathfinding collection.
 [Collection("Sequential Pathfinding Tests")]
 public class GuardFollowTests
 {
@@ -43,12 +42,10 @@ public class GuardFollowTests
         master.Delete();
 
         Assert.True(moved, "a guarding pet beyond guard range must step toward its master");
-        // Between-think move wakes require a registered move intent; bare greedy stepping
-        // quantizes guard-following to the think grid (issue #2593).
+        // Without a move intent, guard-following only steps on the think grid.
         Assert.True(hasIntent, "guard-following must register a move intent");
 
-        // RunUO AOS parity: the guard return sprints at the bespoke 0.1, fused to both
-        // clocks, and the per-step speed flip must not undo it (fixture era is EJ).
+        // AOS return sprint on both clocks; the per-step speed flip must not undo it.
         Assert.Equal(0.1, currentSpeed);
         Assert.Equal(0.1, currentMoveSpeed);
     }
@@ -88,7 +85,7 @@ public class GuardFollowTests
             pet.Delete();
             master.Delete();
 
-            // No sprint pre-AOS: the return runs organically active.
+            // No sprint pre-AOS: the return runs active.
             Assert.Equal(0.2, currentSpeed);
         }
         finally
