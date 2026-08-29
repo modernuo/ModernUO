@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Server.Commands;
 using Server.Logging;
@@ -25,6 +26,23 @@ public static class ChaseDebug
 
     public static bool Tracks(BaseCreature bc) => _tracked.Count > 0 && bc != null && _tracked.Contains(bc);
 
+    // DIAG: mirrored to a shared folder so client and server traces can be aligned by UTC time.
+    private static readonly System.IO.StreamWriter _file = OpenFile();
+
+    private static System.IO.StreamWriter OpenFile()
+    {
+        try
+        {
+            const string path = @"C:\Repositories\ModernUO\docs\chase-logs\server-chase.log";
+            System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(path)!);
+            return new System.IO.StreamWriter(path, false) { AutoFlush = true };
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
     public static void Log(BaseCreature bc, string message)
     {
         if (bc.Deleted)
@@ -34,6 +52,7 @@ public static class ChaseDebug
         }
 
         logger.Information("[{Serial}] {Name} @{Location} | {Message}", bc.Serial, bc.RawName, bc.Location, message);
+        _file?.WriteLine($"{DateTime.UtcNow:HH:mm:ss.fff}\t{Core.TickCount}\t{bc.Serial}\t{bc.Location}\t{message}");
     }
 
     public static string Describe(Mobile m) =>
