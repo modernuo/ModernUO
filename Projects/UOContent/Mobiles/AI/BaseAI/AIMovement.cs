@@ -572,9 +572,9 @@ public abstract partial class BaseAI
         }
 
         var distance = (int)Mobile.GetDistanceToSqrt(m);
-        var distanceThreshold = Core.AOS && IsFollowingMaster() ? 1 : 5;
-
-        var shouldRun = run && distance > distanceThreshold;
+        //TODO Derive the Running bit from CurrentMoveSpeed in DoMoveImpl and drop the run parameter
+        var distanceThreshold = Core.AOS && IsFollowingMaster() ? 1 : 3;
+        var shouldRun = distance > distanceThreshold;
 
         if (Mobile.InRange(m, range))
         {
