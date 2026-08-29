@@ -134,7 +134,18 @@ public sealed class AITimer : Timer
             return;
         }
 
-        if (Core.TickCount - _nextThink >= 0)
+        var isThink = Core.TickCount - _nextThink >= 0;
+
+        if (ChaseDebug.Tracks(_owner.Mobile))
+        {
+            ChaseDebug.Log(
+                _owner.Mobile,
+                $"tick {(isThink ? "THINK" : "move-wake")} late={Core.TickCount - _nextWake}ms " +
+                $"think-due={_nextThink - Core.TickCount}ms move-due={_owner.NextMove - Core.TickCount}ms"
+            );
+        }
+
+        if (isThink)
         {
             _owner.Mobile.OnThink();
 
@@ -192,6 +203,15 @@ public sealed class AITimer : Timer
         // The wheel rounds up to its 8ms resolution; a non-positive delay becomes one turn.
         Interval = TimeSpan.FromMilliseconds(delay);
         _nextWake = now + (long)Interval.TotalMilliseconds;
+
+        if (ChaseDebug.Tracks(_owner.Mobile))
+        {
+            var hasIntent = _owner.TryGetMoveWake(out var mv);
+            ChaseDebug.Log(
+                _owner.Mobile,
+                $"schedule: wake in {delay}ms (think in {_nextThink - now}ms, intent={hasIntent} move in {mv - now}ms) | {ChaseDebug.Clocks(_owner.Mobile)}"
+            );
+        }
     }
 
     private bool ShouldStop()

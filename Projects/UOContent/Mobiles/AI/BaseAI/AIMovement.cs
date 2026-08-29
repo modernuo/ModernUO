@@ -132,10 +132,21 @@ public abstract partial class BaseAI
     {
         if (IsInBadState() || !CanMoveNow(out _))
         {
+            if (ChaseDebug.Tracks(Mobile))
+            {
+                ChaseDebug.Log(
+                    Mobile,
+                    IsInBadState()
+                        ? "step refused: bad state (frozen/paralyzed/casting)"
+                        : $"step refused: budget ready in {NextMove - Core.TickCount}ms"
+                );
+            }
+
             return MoveResult.BadState;
         }
 
         d = (d & Direction.Mask) | (ShouldRun() ? Direction.Running : 0);
+        var lastMove = Mobile.LastMoveTime;
 
         if ((Mobile.Direction & Direction.Mask) != (d & Direction.Mask))
         {
@@ -147,6 +158,15 @@ public abstract partial class BaseAI
 
         if (TryMove(d))
         {
+            if (ChaseDebug.Tracks(Mobile))
+            {
+                ChaseDebug.Log(
+                    Mobile,
+                    $"STEP {d & Direction.Mask} run={(d & Direction.Running) != 0} since-last-step={Core.TickCount - lastMove}ms " +
+                    $"warmode={Mobile.Warmode} combatant={ChaseDebug.Describe(Mobile.Combatant)}"
+                );
+            }
+
             // Obeying pets are paced by their order handlers.
             if (!IsObeyingMoveOrder())
             {
@@ -167,11 +187,23 @@ public abstract partial class BaseAI
 
         if ((mobDirection & Direction.Mask) != (d & Direction.Mask))
         {
+            if (ChaseDebug.Tracks(Mobile))
+            {
+                ChaseDebug.Log(Mobile, $"step {d & Direction.Mask} failed -> auto-turn only");
+            }
+
             Mobile.Direction = d;
             return MoveResult.SuccessAutoTurn;
         }
 
-        return HandleBlockedMovement(d);
+        var blocked = HandleBlockedMovement(d);
+
+        if (ChaseDebug.Tracks(Mobile))
+        {
+            ChaseDebug.Log(Mobile, $"step {d & Direction.Mask} blocked -> {blocked}");
+        }
+
+        return blocked;
     }
 
     private bool TryMove(Direction d)
