@@ -283,6 +283,13 @@ ClearMoveSpeed();            // back to inheriting the think clock
 All four are `[props`-tunable per instance (move values: set `0` to re-inherit); per-instance
 move overrides serialize. Being badly hurt slows steps, never decisions (RunUO parity).
 
+The client's `Running` bit is derived from the step pace, never passed by callers
+(`BaseAI.ShouldRun`, stamped in `DoMoveImpl`): a step shorter than the client's walk
+interpolation — 400 ms on foot, 200 ms mounted/flying (`Movement.WalkFootDelay` /
+`WalkMountDelay`) — is flagged as a run, or the client falls behind and snaps. Movement
+APIs (`MoveTo`, `WalkMobileRange`, `ApproachTarget`, `MoveToPoint`) take no run argument;
+to make a creature run, make it fast.
+
 ### OnThink: the excess-call contract
 
 `OnThink()` is a scheduler pass, not an action. The AI timer calls it *at least* at the

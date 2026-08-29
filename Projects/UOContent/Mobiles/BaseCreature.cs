@@ -2861,7 +2861,7 @@ namespace Server.Mobiles
                     CanBeHarmful(m) && IsEnemy(m))
                 {
                     Combatant = FocusMob = m;
-                    AIObject?.MoveTo(m, true, 1);
+                    AIObject?.MoveTo(m, 1);
                     DoHarmful(m);
                 }
             }

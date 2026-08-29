@@ -474,6 +474,26 @@ The extra parameters (RangePerception, RangeFight, ActiveSpeed, PassiveSpeed) ha
 | `Name = "a creature"` in constructor | `public override string DefaultName => "a creature";` |
 | `get { return value; }` | `=> value;` expression-bodied |
 
+## AI Movement: No `run` Argument
+
+RunUO's movement calls took a `run` flag that callers set inconsistently (`true` in
+combat, `false` for pets, gated by `dist > 5` inside `MoveTo`). The flag only selects the
+client's per-step animation time, so ModernUO derives it from the creature's step pace
+(`BaseAI.ShouldRun`) and the parameter is gone:
+
+```csharp
+// RunUO
+MoveTo(combatant, true, m_Mobile.RangeFight);
+WalkMobileRange(m_Mobile.ControlMaster, 1, false, 0, 1);
+
+// ModernUO
+MoveTo(combatant, Mobile.RangeFight);
+WalkMobileRange(Mobile.ControlMaster, 1, 0, 1);
+```
+
+`ApproachTarget`, `MoveToPoint` and `PathFollower.Follow` lose the argument the same way.
+To make a creature run, make it fast (`SetMoveSpeed` / `npc-speeds.json`), not flagged.
+
 ## Item Name Changes
 
 ```csharp

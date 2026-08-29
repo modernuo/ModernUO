@@ -43,7 +43,7 @@ public class ArcherAI : BaseAI
             return true;
         }
 
-        if (!WalkMobileRange(combatant, 1, false, Mobile.RangeFight, Mobile.Weapon.MaxRange))
+        if (!WalkMobileRange(combatant, 1, Mobile.RangeFight, Mobile.Weapon.MaxRange))
         {
             this.DebugSayFormatted($"I am still not in range of {combatant.Name}");
 

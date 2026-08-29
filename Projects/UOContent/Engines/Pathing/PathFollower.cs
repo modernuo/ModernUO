@@ -83,7 +83,7 @@ public class PathFollower
     public static bool Check(Point3D loc, Point3D goal, int range) =>
         Utility.InRange(loc, goal, range) && (range > 1 || (loc.Z - goal.Z).Abs() < 16);
 
-    public bool Follow(bool run, int range)
+    public bool Follow(int range)
     {
         var goal = GetGoalLocation();
         Direction d;
@@ -97,13 +97,13 @@ public class PathFollower
 
         if (!(Enabled && m_Path.Success))
         {
-            d = m_From.GetDirectionTo(goal, run);
+            d = m_From.GetDirectionTo(goal);
             m_From.SetDirection(d);
 
             return Move(d) is MoveResult.Success or MoveResult.SuccessAutoTurn && Check(m_From.Location, goal, range);
         }
 
-        d = m_From.GetDirectionTo(m_Next, run);
+        d = m_From.GetDirectionTo(m_Next);
         m_From.SetDirection(d);
         var res = Move(d);
 

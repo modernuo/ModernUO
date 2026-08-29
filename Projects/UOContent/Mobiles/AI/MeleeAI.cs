@@ -99,7 +99,7 @@ public class MeleeAI : BaseAI
 
     private bool AttemptMoveToCombatant(Mobile combatant)
     {
-        if (MoveTo(combatant, false, Mobile.RangeFight))
+        if (MoveTo(combatant, Mobile.RangeFight))
         {
             return true;
         }
