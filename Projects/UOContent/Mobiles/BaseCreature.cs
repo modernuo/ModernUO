@@ -947,6 +947,10 @@ namespace Server.Mobiles
         public long NextReacquireTime { get; set; }
 
         public virtual TimeSpan ReacquireDelay => TimeSpan.FromSeconds(10.0);
+
+        // Retry pace after a scan that found nothing; the full ReacquireDelay applies only
+        // after a successful acquire, as target stickiness.
+        public virtual TimeSpan FailedReacquireDelay => TimeSpan.FromSeconds(1.0);
         public virtual bool ReacquireOnMovement => false;
         public virtual bool AcquireOnApproach => m_Paragon;
         public virtual int AcquireOnApproachRange => 10;
@@ -2023,6 +2027,10 @@ namespace Server.Mobiles
         public override void Deserialize(IGenericReader reader)
         {
             base.Deserialize(reader);
+
+            // Not serialized; the 0 default blocks acquisition on hosts whose tick counter
+            // starts negative (tick fields must seed from a live tick, never rely on 0).
+            NextReacquireTime = Core.TickCount;
 
             var version = reader.ReadInt();
 

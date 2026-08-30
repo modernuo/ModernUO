@@ -856,16 +856,17 @@ public abstract partial class BaseAI
             return false;
         }
 
-        Mobile.NextReacquireTime = Core.TickCount + (int)Mobile.ReacquireDelay.TotalMilliseconds;
-
         DebugSay("Acquiring new target...");
 
-        if (Mobile.Map == null)
-        {
-            return Mobile.FocusMob != null;
-        }
+        var acquired = AcquireNewFocusMob(Mobile.Map, iRange, acqType, bPlayerOnly, bFacFriend, bFacFoe);
 
-        return AcquireNewFocusMob(Mobile.Map, iRange, acqType, bPlayerOnly, bFacFriend, bFacFoe);
+        // A successful acquire holds for the full delay; an empty scan retries quickly.
+        // Re-arming the long delay on failure left a creature blind for the whole delay
+        // to a player walking up (walk-up aggro latency uniform in 0..ReacquireDelay).
+        Mobile.NextReacquireTime = Core.TickCount +
+            (int)(acquired ? Mobile.ReacquireDelay : Mobile.FailedReacquireDelay).TotalMilliseconds;
+
+        return acquired;
     }
 
     private bool HandleBardProvoked()
