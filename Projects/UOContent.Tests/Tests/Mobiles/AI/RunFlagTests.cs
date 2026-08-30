@@ -95,10 +95,8 @@ public class RunFlagTests : System.IDisposable
         Assert.Equal(expected, (pet.Direction & Direction.Running) != 0);
     }
 
-    // An isolated step — one that resumes after standing at least a walk interval — is
-    // rendered alone by the client, so a run flag makes it a 200ms dart beside the player.
-    // It must go out as a walk; only a continuing cadence (or a true sprinter, whose pace
-    // would flood the client queue behind a walk-rendered step) flags run.
+    // An isolated step (after standing at least a walk interval) renders alone and darts
+    // if run-flagged, so it walks; continuing cadences and true sprinters keep the flag.
     [Fact]
     public void IsolatedStep_DropsToWalk()
     {

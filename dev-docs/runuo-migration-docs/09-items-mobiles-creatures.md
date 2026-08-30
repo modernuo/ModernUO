@@ -493,6 +493,9 @@ WalkMobileRange(Mobile.ControlMaster, 1, 0, 1);
 
 `ApproachTarget`, `MoveToPoint` and `PathFollower.Follow` lose the argument the same way.
 To make a creature run, make it fast (`SetMoveSpeed` / `npc-speeds.json`), not flagged.
+An isolated step (after the creature stood for at least a walk interval) goes out as a
+walk regardless of pace — only a continuing cadence, or a pace faster than the run
+interpolation, flags run.
 
 ## Item Name Changes
 

@@ -292,7 +292,8 @@ pace — the client renders each step alone, so a run-flagged single step darts 
 pace beats the run interpolation (a true sprinter), where a walk-rendered first step would
 flood the client's step queue. Movement APIs (`MoveTo`, `WalkMobileRange`,
 `ApproachTarget`, `MoveToPoint`) take no run argument; to make a creature run, make it
-fast.
+fast. Creatures step at most once per `CurrentMoveSpeed` period, paced from the step just
+taken — a stall never banks catch-up steps, so a resumed chase restarts at full pace.
 
 ### OnThink: the excess-call contract
 
