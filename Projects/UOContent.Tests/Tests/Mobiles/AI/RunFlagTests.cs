@@ -137,4 +137,28 @@ public class RunFlagTests : System.IDisposable
         Assert.False(ai.CanMoveNow(out _));
         Assert.True(ai.NextMove - Core.TickCount > 250);
     }
+
+    [Fact]
+    public void LateStepDoesNotEarnAQuickerFollowUp()
+    {
+        var map = Map.Maps[1];
+        Assert.NotNull(map);
+        map.GetAverageZ(1500, 1600, out _, out var z, out _);
+
+        var pet = Spawn(0.3);
+        pet.MoveToWorld(new Point3D(1500, 1600, (sbyte)z), map);
+
+        pet.Warmode = true; // keep the active move clock through the step
+
+        var ai = pet.AIObject;
+        // The step lands 200ms past the budget — under one period, the reactive
+        // mirroring case (think grid vs budget deadline misalignment).
+        ai.NextMove = Core.TickCount - 200;
+
+        Assert.True(ai.DoMove(Direction.West));
+
+        // The debt must not be repaid: a sub-period catch-up step follows ~100ms
+        // behind and renders as a dart pair beside the player.
+        Assert.True(ai.NextMove - Core.TickCount > 250);
+    }
 }

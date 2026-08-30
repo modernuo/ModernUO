@@ -105,19 +105,14 @@ public abstract partial class BaseAI
         return pace < runDelay || Core.TickCount - Mobile.LastMoveTime < walkDelay;
     }
 
-    // Accumulative full-step budget: long-run pacing averages CurrentMoveSpeed exactly
-    // regardless of timer-grid jitter. A stall past a full period restarts the cadence
-    // instead of banking steps — banked steps release as a catch-up burst faster than
-    // the creature's pace, which the client renders as a sprint/teleport.
+    // One step per period, paced from the step just taken — no debt accrual. A late step
+    // (blocked, reactive stand, think-grid misalignment) must not be repaid with a quicker
+    // follow-up: even a sub-period repayment puts two steps ~100ms apart, which the client
+    // renders as a dart. In continuous pursuit the move-wake lands within wheel resolution
+    // of this deadline, so the only cost is single-digit-ms drift per step.
     private void ConsumeMoveBudget()
     {
-        var delay = Math.Max(50, (long)(EffectiveStepDelay() * 1000));
-        NextMove += delay;
-
-        if (Core.TickCount - NextMove > 0)
-        {
-            NextMove = Core.TickCount + delay;
-        }
+        NextMove = Core.TickCount + Math.Max(50, (long)(EffectiveStepDelay() * 1000));
     }
 
     public virtual bool CheckMove() => !(Mobile.Deleted || Mobile.DisallowAllMoves);
