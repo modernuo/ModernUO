@@ -40,7 +40,7 @@ public class ApproachTargetTests
         for (var i = 0; i < maxTicks; i++)
         {
             ai.NextMove = 0;
-            ai.WalkMobileRange(target, 1, false, 1, 2);
+            ai.WalkMobileRange(target, 1, 1, 2);
             if (bc.InRange(target, arriveDist))
             {
                 return true;
@@ -123,7 +123,7 @@ public class ApproachTargetTests
         for (var i = 0; i < 200; i++)
         {
             ai.NextMove = 0;
-            ai.MoveTo(target, false, 1);
+            ai.MoveTo(target, 1);
             if (bc.InRange(target, 1))
             {
                 arrived = true;
@@ -154,7 +154,7 @@ public class ApproachTargetTests
         for (var i = 0; i < 60; i++)
         {
             ai.NextMove = 0;
-            ai.MoveTo(target, true, 1);
+            ai.MoveTo(target, 1);
 
             // Target walks west every other tick for its first several steps, then stops,
             // so a same-speed chaser eventually closes the gap.
@@ -214,7 +214,7 @@ public class ApproachTargetTests
         for (var i = 0; i < 120; i++)
         {
             ai.NextMove = 0;
-            ai.MoveTo(target, false, 1);
+            ai.MoveTo(target, 1);
         }
 
         // After giving up, the creature must idle (not oscillate) while the goal is still.
@@ -223,7 +223,7 @@ public class ApproachTargetTests
         for (var i = 0; i < 20; i++)
         {
             ai.NextMove = 0;
-            ai.MoveTo(target, false, 1);
+            ai.MoveTo(target, 1);
             if (bc.Location != idleStart)
             {
                 stayedIdle = false;

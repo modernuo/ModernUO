@@ -130,6 +130,9 @@ Alphabetical by RunUO API name. Use Ctrl+F / Cmd+F to search.
 | `writer.WriteEncodedInt(value)` | `writer.WriteEncodedInt(value)` | Same |
 | `InvalidateProperties()` | `InvalidateProperties()` | Same, or use `[InvalidateProperties]` |
 | `this.MarkDirty()` | `this.MarkDirty()` | NEW — required in custom setters |
+| `MoveTo(m, run, range)` | `MoveTo(m, range)` | `run` removed; the Running bit is derived from the step pace (`BaseAI.ShouldRun`) |
+| `WalkMobileRange(m, steps, run, min, max)` | `WalkMobileRange(m, steps, min, max)` | Same |
+| `PathFollower.Follow(run, range)` | `Follow(range)` | Same |
 
 ## Networking
 

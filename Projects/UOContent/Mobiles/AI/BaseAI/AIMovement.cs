@@ -18,6 +18,7 @@ using System.Runtime.CompilerServices;
 using Server.Collections;
 using Server.Items;
 using MoveImpl = Server.Movement.MovementImpl;
+using Moves = Server.Movement.Movement;
 
 namespace Server.Mobiles;
 
@@ -43,7 +44,6 @@ public abstract partial class BaseAI
     // live, the AITimer wakes at NextMove between think ticks to advance the step.
     private Mobile _moveIntentTarget;
     private IPoint3D _moveIntentPoint;
-    private bool _moveIntentRun;
     private int _moveIntentRange;
     private long _moveIntentExpire;
 
@@ -74,23 +74,42 @@ public abstract partial class BaseAI
         return Core.TickCount - NextMove >= 0;
     }
 
-    // Accumulative full-step budget: long-run pacing averages CurrentMoveSpeed exactly
-    // regardless of timer-grid jitter; snap-to-now caps stall catch-up at one step.
-    private void ConsumeMoveBudget()
+    // Seconds per step as the client observes it: the move clock plus the hurt inflation.
+    private double EffectiveStepDelay()
     {
         var stepDelay = Mobile.CurrentMoveSpeed;
 
-        if (!(Core.AOS && IsFollowingMaster()))
+        return Core.AOS && IsFollowingMaster() ? stepDelay : BadlyHurtMoveDelay(Mobile, stepDelay);
+    }
+
+    // The Running bit only selects the client's per-step interpolation (walk 400ms / run
+    // 200ms on foot, 200/100 mounted). A step shorter than the walk time must run or the
+    // client falls behind and snaps — but an isolated step (after standing at least a walk
+    // interval) renders alone and darts if run-flagged, so it goes out as a walk. A true
+    // sprinter always runs: a walk-rendered first step would flood the client's queue.
+    public bool ShouldRun()
+    {
+        var mounted = Mobile.Mounted || Mobile.Flying;
+        var walkDelay = mounted ? Moves.WalkMountDelay : Moves.WalkFootDelay;
+        var pace = EffectiveStepDelay() * 1000;
+
+        if (pace >= walkDelay)
         {
-            stepDelay = BadlyHurtMoveDelay(Mobile, stepDelay);
+            return false;
         }
 
-        NextMove += Math.Max(50, (long)(stepDelay * 1000));
+        var runDelay = mounted ? Moves.RunMountDelay : Moves.RunFootDelay;
 
-        if (Core.TickCount - NextMove > 0)
-        {
-            NextMove = Core.TickCount;
-        }
+        return pace < runDelay || Core.TickCount - Mobile.LastMoveTime < walkDelay;
+    }
+
+    // One step per period, paced from the step just taken — no debt accrual: repaying a
+    // late step with a quicker follow-up puts two steps ~100ms apart, which renders as a
+    // dart. In continuous pursuit the move-wake lands within wheel resolution of this
+    // deadline, so the only cost is single-digit-ms drift per step.
+    private void ConsumeMoveBudget()
+    {
+        NextMove = Core.TickCount + Math.Max(50, (long)(EffectiveStepDelay() * 1000));
     }
 
     public virtual bool CheckMove() => !(Mobile.Deleted || Mobile.DisallowAllMoves);
@@ -107,6 +126,8 @@ public abstract partial class BaseAI
         {
             return MoveResult.BadState;
         }
+
+        d = (d & Direction.Mask) | (ShouldRun() ? Direction.Running : 0);
 
         if ((Mobile.Direction & Direction.Mask) != (d & Direction.Mask))
         {
@@ -334,7 +355,7 @@ public abstract partial class BaseAI
     /// best-distance stall counter idles the creature if an in-range goal is genuinely
     /// unreachable, without ever abandoning a real chase or detour.
     /// </summary>
-    protected bool ApproachTarget(Mobile target, bool run, int range)
+    protected bool ApproachTarget(Mobile target, int range)
     {
         if (Mobile.Deleted || Mobile.DisallowAllMoves || target?.Deleted != false)
         {
@@ -361,7 +382,7 @@ public abstract partial class BaseAI
             ResetApproach(); // target moved — try again fresh
         }
 
-        RenewMoveIntent(target, null, run, range);
+        RenewMoveIntent(target, null, range);
 
         // FAST PATH: greedy step toward the target, counted as success ONLY when the move
         // fully succeeded (not an auto-turn sidestep) and actually got us closer. An
@@ -373,7 +394,7 @@ public abstract partial class BaseAI
         if (Path == null && Mobile.InLOS(target))
         {
             var distBefore = Mobile.GetDistanceToSqrt(target);
-            var res = DoMoveImpl(Mobile.GetDirectionTo(target, run), true);
+            var res = DoMoveImpl(Mobile.GetDirectionTo(target), true);
 
             if (res == MoveResult.BadState)
             {
@@ -402,7 +423,7 @@ public abstract partial class BaseAI
         var couldMove = CanMoveNow(out _) && !IsInBadState();
         var locBefore = Mobile.Location;
 
-        if (Path.Follow(run, range))
+        if (Path.Follow(range))
         {
             ResetApproach();
             return true;
@@ -421,7 +442,7 @@ public abstract partial class BaseAI
     /// Walks toward a fixed point (e.g. a target's last-known position), pathfinding around
     /// obstacles. Returns false on arrival or when genuinely unable to make progress.
     /// </summary>
-    public bool MoveToPoint(IPoint3D goal, bool run)
+    public bool MoveToPoint(IPoint3D goal)
     {
         if (Mobile.Deleted || Mobile.DisallowAllMoves || goal == null)
         {
@@ -434,12 +455,12 @@ public abstract partial class BaseAI
             Path = new PathFollower(Mobile, goal) { Mover = DoMoveImpl };
         }
 
-        RenewMoveIntent(null, goal, run, 1);
+        RenewMoveIntent(null, goal, 1);
 
         var couldMove = CanMoveNow(out _) && !IsInBadState();
         var locBefore = Mobile.Location;
 
-        if (Path.Follow(run, 1))
+        if (Path.Follow(1))
         {
             Path = null;
             ClearMoveIntent();
@@ -515,11 +536,10 @@ public abstract partial class BaseAI
         _approachGaveUp = false;
     }
 
-    private void RenewMoveIntent(Mobile target, IPoint3D point, bool run, int range)
+    private void RenewMoveIntent(Mobile target, IPoint3D point, int range)
     {
         _moveIntentTarget = target;
         _moveIntentPoint = point;
-        _moveIntentRun = run;
         _moveIntentRange = range;
 
         // A live pursuit renews every think tick; unrenewed intent dies on its own.
@@ -556,25 +576,20 @@ public abstract partial class BaseAI
 
         if (_moveIntentTarget != null)
         {
-            ApproachTarget(_moveIntentTarget, _moveIntentRun, _moveIntentRange);
+            ApproachTarget(_moveIntentTarget, _moveIntentRange);
         }
         else
         {
-            MoveToPoint(_moveIntentPoint, _moveIntentRun);
+            MoveToPoint(_moveIntentPoint);
         }
     }
 
-    public virtual bool MoveTo(Mobile m, bool run, int range)
+    public virtual bool MoveTo(Mobile m, int range)
     {
         if (Mobile.Deleted || Mobile.DisallowAllMoves || m?.Deleted != false)
         {
             return false;
         }
-
-        var distance = (int)Mobile.GetDistanceToSqrt(m);
-        //TODO Derive the Running bit from CurrentMoveSpeed in DoMoveImpl and drop the run parameter
-        var distanceThreshold = Core.AOS && IsFollowingMaster() ? 1 : 3;
-        var shouldRun = distance > distanceThreshold;
 
         if (Mobile.InRange(m, range))
         {
@@ -584,10 +599,10 @@ public abstract partial class BaseAI
 
         if (UseGroupMovement(m, range))
         {
-            return MoveToWithGroup(this, m, shouldRun, range);
+            return MoveToWithGroup(this, m, range);
         }
 
-        return ApproachTarget(m, shouldRun, range);
+        return ApproachTarget(m, range);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -604,12 +619,8 @@ public abstract partial class BaseAI
         Mobile.Combatant == null &&
         Mobile.ControlOrder is OrderType.Come or OrderType.Follow or OrderType.Guard;
 
-    private bool MoveToWithCollisionAvoidance(Mobile target, bool run, int range)
+    private bool MoveToWithCollisionAvoidance(Mobile target, int range)
     {
-        var distance = (int)Mobile.GetDistanceToSqrt(target);
-
-        var shouldRun = run && distance > 5;
-
         var direction = Mobile.GetDirectionTo(target);
 
         // Wall-slide auto-turns must not count as progress, or a creature pinned on
@@ -640,10 +651,10 @@ public abstract partial class BaseAI
 
         // Tactical sidesteps exhausted — route around the obstacle via the centralized
         // approach primitive (persistent PathFollower, no oscillation).
-        return ApproachTarget(target, shouldRun, range);
+        return ApproachTarget(target, range);
     }
 
-    public virtual bool WalkMobileRange(Mobile m, int iSteps, bool run, int iWantDistMin, int iWantDistMax)
+    public virtual bool WalkMobileRange(Mobile m, int iSteps, int iWantDistMin, int iWantDistMax)
     {
         if (Mobile.Deleted || Mobile.DisallowAllMoves || m == null)
         {
@@ -659,7 +670,7 @@ public abstract partial class BaseAI
                 return true;
             }
 
-            if (!MoveTowardsOrAwayFrom(m, run, iCurrDist, iWantDistMax))
+            if (!MoveTowardsOrAwayFrom(m, iCurrDist, iWantDistMax))
             {
                 return false;
             }
@@ -670,17 +681,16 @@ public abstract partial class BaseAI
         return dist >= iWantDistMin && dist <= iWantDistMax;
     }
 
-    // run only sets the client animation; callers gate it on their own distance thresholds.
-    private bool MoveTowardsOrAwayFrom(Mobile m, bool run, int iCurrDist, int iWantDistMax)
+    private bool MoveTowardsOrAwayFrom(Mobile m, int iCurrDist, int iWantDistMax)
     {
         if (iCurrDist > iWantDistMax)
         {
             // Too far: approach via the centralized progress-based primitive.
-            return ApproachTarget(m, run, iWantDistMax);
+            return ApproachTarget(m, iWantDistMax);
         }
 
         // Too close: back away. Retreat keeps the simple greedy behavior (out of scope).
-        if (DoMove(m.GetDirectionTo(Mobile, run), true))
+        if (DoMove(m.GetDirectionTo(Mobile), true))
         {
             Path = null;
             return true;

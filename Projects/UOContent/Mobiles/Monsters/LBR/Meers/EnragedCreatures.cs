@@ -108,7 +108,7 @@ namespace Server.Mobiles
             */
             else if (!Combat(this))
             {
-                AIObject?.MoveTo(SummonMaster, false, 5);
+                AIObject?.MoveTo(SummonMaster, 5);
             }
             /*
               On OSI, if the summon attacks a mobile, the summoner meer also

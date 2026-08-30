@@ -81,7 +81,7 @@ public class HealerAI : BaseAI
             return true;
         }
 
-        WalkMobileRange(Mobile.FocusMob, 1, false, 4, 7);
+        WalkMobileRange(Mobile.FocusMob, 1, 4, 7);
 
         // TODO: Should it be able to do this?
         if (Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, Mobile.Combatant))

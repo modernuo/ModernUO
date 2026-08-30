@@ -84,7 +84,7 @@ public abstract partial class BaseAI
             return true;
         }
 
-        WalkMobileRange(Mobile.ControlMaster, 1, false, 1, 2);
+        WalkMobileRange(Mobile.ControlMaster, 1, 1, 2);
 
         if (Mobile.GetDistanceToSqrt(Mobile.ControlMaster) <= 2)
         {
@@ -136,7 +136,7 @@ public abstract partial class BaseAI
 
         if (currentDistance > 1)
         {
-            WalkMobileRange(Mobile.ControlTarget, 1, currentDistance > 2, 1, 2);
+            WalkMobileRange(Mobile.ControlTarget, 1, 1, 2);
         }
     }
 
@@ -333,7 +333,7 @@ public abstract partial class BaseAI
                     Mobile.SetCurrentSpeedToActive();
                 }
 
-                WalkMobileRange(controlMaster, 1, true, 1, 3);
+                WalkMobileRange(controlMaster, 1, 1, 3);
             }
             else
             {

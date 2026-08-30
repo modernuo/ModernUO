@@ -63,7 +63,7 @@ public abstract partial class BaseAI
         return crowding;
     }
 
-    public static bool MoveToWithGroup(BaseAI ai, Mobile target, bool run, int range)
+    public static bool MoveToWithGroup(BaseAI ai, Mobile target, int range)
     {
         if (Core.TickCount - _lastGroupUpdateTime > 1000)
         {
@@ -79,7 +79,7 @@ public abstract partial class BaseAI
             if (optimalPosition == Point3D.Zero)
             {
 
-                return ai.MoveToWithCollisionAvoidance(target, run, range);
+                return ai.MoveToWithCollisionAvoidance(target, range);
             }
 
             _reservedPositions[mobile] = optimalPosition;
@@ -99,7 +99,7 @@ public abstract partial class BaseAI
             }
 
             // A blocked or wall-slid step is not progress — route around the obstacle.
-            return ai.ApproachTarget(target, run, range);
+            return ai.ApproachTarget(target, range);
         }
         finally
         {

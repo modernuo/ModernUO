@@ -41,7 +41,7 @@ public class PredatorAI : BaseAI
             return true;
         }
 
-        if (!WalkMobileRange(combatant, 1, false, Mobile.RangeFight, Mobile.RangeFight))
+        if (!WalkMobileRange(combatant, 1, Mobile.RangeFight, Mobile.RangeFight))
         {
             if (Mobile.GetDistanceToSqrt(combatant) > Mobile.RangePerception + 1)
             {
@@ -70,7 +70,7 @@ public class PredatorAI : BaseAI
         }
         else if (AcquireFocusMob(Mobile.RangePerception * 2, FightMode.Closest, true, false, true))
         {
-            if (WalkMobileRange(Mobile.FocusMob, 1, false, Mobile.RangePerception, Mobile.RangePerception * 2))
+            if (WalkMobileRange(Mobile.FocusMob, 1, Mobile.RangePerception, Mobile.RangePerception * 2))
             {
                 DebugSay("Well, here I am safe");
 

@@ -442,7 +442,7 @@ public abstract partial class BaseAI
         var master = Mobile.SummonMaster;
         if (master != null && master.Map == Mobile.Map && master.InRange(Mobile, Mobile.RangePerception))
         {
-            MoveTo(master, false, 1);
+            MoveTo(master, 1);
         }
     }
 
@@ -592,7 +592,7 @@ public abstract partial class BaseAI
         }
 
         _lkpGoal ??= _lkpLocation;
-        return MoveToPoint(_lkpGoal, false);
+        return MoveToPoint(_lkpGoal);
     }
 
     private void ClearLastKnown()
@@ -644,7 +644,7 @@ public abstract partial class BaseAI
                 _herdGoal = new Point3D(target.X, target.Y, Mobile.Map?.GetAverageZ(target.X, target.Y) ?? Mobile.Z);
             }
 
-            MoveToPoint(_herdGoal, false);
+            MoveToPoint(_herdGoal);
             return true;
         }
 
@@ -798,7 +798,7 @@ public abstract partial class BaseAI
     {
         if (AcquireFocusMob(Mobile.RangePerception * 2, FightMode.Closest, true, false, true))
         {
-            if (WalkMobileRange(Mobile.FocusMob, 1, false, Mobile.RangePerception, Mobile.RangePerception * 2))
+            if (WalkMobileRange(Mobile.FocusMob, 1, Mobile.RangePerception, Mobile.RangePerception * 2))
             {
                 DebugSay("I backed off to safety. Wandering...");
 

@@ -171,7 +171,7 @@ public class MageAI : BaseAI
     {
         if (!SmartAI)
         {
-            if (!MoveTo(m, false, Mobile.RangeFight))
+            if (!MoveTo(m, Mobile.RangeFight))
             {
                 OnFailedMove();
             }
@@ -185,14 +185,14 @@ public class MageAI : BaseAI
             {
                 RunFrom(m);
             }
-            else if (!Mobile.InRange(m, Math.Max(Mobile.RangeFight, 2)) && !MoveTo(m, false, 1))
+            else if (!Mobile.InRange(m, Math.Max(Mobile.RangeFight, 2)) && !MoveTo(m, 1))
             {
                 OnFailedMove();
             }
         }
         else if (!Mobile.InRange(m, Mobile.RangeFight))
         {
-            if (!MoveTo(m, false, 1))
+            if (!MoveTo(m, 1))
             {
                 OnFailedMove();
             }
@@ -701,7 +701,7 @@ public class MageAI : BaseAI
         {
             DebugSay("I cannot see my target, moving to regain line of sight");
 
-            if (!MoveTo(c, false, 1))
+            if (!MoveTo(c, 1))
             {
                 OnFailedMove();
             }
@@ -1039,7 +1039,7 @@ public class MageAI : BaseAI
                 // target can be invoked.
                 if (!Mobile.InLOS(toTarget))
                 {
-                    MoveTo(toTarget, true, 1);
+                    MoveTo(toTarget, 1);
                 }
                 else
                 {
