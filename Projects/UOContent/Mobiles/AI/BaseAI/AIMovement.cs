@@ -84,12 +84,25 @@ public abstract partial class BaseAI
 
     // The Running bit only selects the client's per-step interpolation (walk 400ms / run
     // 200ms on foot, 200/100 mounted). A step shorter than the walk time must be flagged
-    // as a run or the client falls behind and snaps.
+    // as a run or the client falls behind and snaps — but the client renders each step on
+    // its own, so an isolated step (resuming after at least a walk interval standing)
+    // reads as a dart when run-flagged. Isolated steps go out as walks; only a continuing
+    // cadence flags run, except a true sprinter whose pace beats the run interpolation —
+    // there a walk-rendered first step would flood the client's step queue.
     public bool ShouldRun()
     {
-        var walkDelay = Mobile.Mounted || Mobile.Flying ? Moves.WalkMountDelay : Moves.WalkFootDelay;
+        var mounted = Mobile.Mounted || Mobile.Flying;
+        var walkDelay = mounted ? Moves.WalkMountDelay : Moves.WalkFootDelay;
+        var pace = EffectiveStepDelay() * 1000;
 
-        return EffectiveStepDelay() * 1000 < walkDelay;
+        if (pace >= walkDelay)
+        {
+            return false;
+        }
+
+        var runDelay = mounted ? Moves.RunMountDelay : Moves.RunFootDelay;
+
+        return pace < runDelay || Core.TickCount - Mobile.LastMoveTime < walkDelay;
     }
 
     // Accumulative full-step budget: long-run pacing averages CurrentMoveSpeed exactly

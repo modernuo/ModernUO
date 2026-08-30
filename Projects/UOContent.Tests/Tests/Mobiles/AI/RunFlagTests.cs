@@ -19,6 +19,7 @@ public class RunFlagTests : System.IDisposable
         pet.AIObject.AITimer?.Stop();
         pet.SetMoveSpeed(activeMove, activeMove * 3);
         pet.SetCurrentSpeedToActive();
+        pet.LastMoveTime = Core.TickCount; // mid-cadence unless a test says otherwise
         _created.Add(pet);
         return pet;
     }
@@ -92,6 +93,28 @@ public class RunFlagTests : System.IDisposable
         Assert.True(ai.DoMove(Direction.West));
         Assert.NotEqual(start, pet.Location);
         Assert.Equal(expected, (pet.Direction & Direction.Running) != 0);
+    }
+
+    // An isolated step — one that resumes after standing at least a walk interval — is
+    // rendered alone by the client, so a run flag makes it a 200ms dart beside the player.
+    // It must go out as a walk; only a continuing cadence (or a true sprinter, whose pace
+    // would flood the client queue behind a walk-rendered step) flags run.
+    [Fact]
+    public void IsolatedStep_DropsToWalk()
+    {
+        var pet = Spawn(0.3);
+        pet.LastMoveTime = Core.TickCount - 1000;
+
+        Assert.False(pet.AIObject.ShouldRun());
+    }
+
+    [Fact]
+    public void IsolatedStep_SprinterStillRuns()
+    {
+        var pet = Spawn(0.125);
+        pet.LastMoveTime = Core.TickCount - 1000;
+
+        Assert.True(pet.AIObject.ShouldRun());
     }
 
     [Fact]
