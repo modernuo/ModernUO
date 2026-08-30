@@ -93,14 +93,17 @@ public abstract partial class BaseAI
     }
 
     // Accumulative full-step budget: long-run pacing averages CurrentMoveSpeed exactly
-    // regardless of timer-grid jitter; snap-to-now caps stall catch-up at one step.
+    // regardless of timer-grid jitter. A stall past a full period restarts the cadence
+    // instead of banking steps — banked steps release as a catch-up burst faster than
+    // the creature's pace, which the client renders as a sprint/teleport.
     private void ConsumeMoveBudget()
     {
-        NextMove += Math.Max(50, (long)(EffectiveStepDelay() * 1000));
+        var delay = Math.Max(50, (long)(EffectiveStepDelay() * 1000));
+        NextMove += delay;
 
         if (Core.TickCount - NextMove > 0)
         {
-            NextMove = Core.TickCount;
+            NextMove = Core.TickCount + delay;
         }
     }
 

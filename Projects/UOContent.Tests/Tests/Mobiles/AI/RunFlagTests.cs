@@ -93,4 +93,25 @@ public class RunFlagTests : System.IDisposable
         Assert.NotEqual(start, pet.Location);
         Assert.Equal(expected, (pet.Direction & Direction.Running) != 0);
     }
+
+    [Fact]
+    public void StallDoesNotBankCatchUpSteps()
+    {
+        var map = Map.Maps[1];
+        Assert.NotNull(map);
+        map.GetAverageZ(1500, 1600, out _, out var z, out _);
+
+        var pet = Spawn(0.3);
+        pet.MoveToWorld(new Point3D(1500, 1600, (sbyte)z), map);
+
+        var ai = pet.AIObject;
+        ai.NextMove = Core.TickCount - 1000;
+
+        Assert.True(ai.DoMove(Direction.West));
+
+        // A stall must restart the cadence at full pace: banked catch-up steps
+        // release as a burst the client renders as a sprint/teleport.
+        Assert.False(ai.CanMoveNow(out _));
+        Assert.True(ai.NextMove - Core.TickCount > 250);
+    }
 }
