@@ -26,6 +26,8 @@ public sealed class AITimer : Timer
 {
     private readonly BaseAI _owner;
     private long _nextThink;
+    private long _nextWake; // when the pending wheel entry fires
+    private bool _inTick;
     private int _detectHiddenMinDelay;
     private int _detectHiddenMaxDelay;
 
@@ -40,8 +42,30 @@ public sealed class AITimer : Timer
     public void Activate()
     {
         _nextThink = Core.TickCount;
-        Interval = TimeSpan.FromSeconds(_owner.Mobile.CurrentSpeed);
+
+        if (Running)
+        {
+            return;
+        }
+
+        Start(); // keeps the stagger Delay
+        _nextWake = Core.TickCount + (long)Delay.TotalMilliseconds;
+    }
+
+    // Think now. A think grants no action: steps, swings, casts, and abilities keep their own gates.
+    public void Prod()
+    {
+        _nextThink = Core.TickCount;
+
+        if (Running)
+        {
+            Reschedule();
+            return;
+        }
+
+        Delay = TimeSpan.Zero;
         Start();
+        _nextWake = Core.TickCount + (long)Delay.TotalMilliseconds;
     }
 
     // A speed-up must not wait out a stale, longer think deadline.
@@ -52,12 +76,53 @@ public sealed class AITimer : Timer
         if (candidate - _nextThink < 0)
         {
             _nextThink = candidate;
+            Reschedule();
+        }
+    }
+
+    // Moves the pending wake earlier. Interval is only read after the next fire,
+    // so this needs Stop, Delay = remaining, Start.
+    private void Reschedule()
+    {
+        if (_inTick || !Running)
+        {
+            return; // ScheduleNext handles it at tick end
         }
 
-        Interval = TimeSpan.FromSeconds(_owner.Mobile.CurrentSpeed);
+        var now = Core.TickCount;
+        var deadline = _nextThink;
+
+        if (_owner.TryGetMoveWake(out var nextMove) && nextMove - now > 0 && nextMove - deadline < 0)
+        {
+            deadline = nextMove;
+        }
+
+        if (deadline - _nextWake >= 0)
+        {
+            return; // pending wake is already early enough
+        }
+
+        Stop();
+        Delay = TimeSpan.FromMilliseconds(Math.Max(0, deadline - now));
+        Start();
+        _nextWake = now + (long)Delay.TotalMilliseconds;
     }
 
     protected override void OnTick()
+    {
+        _inTick = true;
+
+        try
+        {
+            OnTickCore();
+        }
+        finally
+        {
+            _inTick = false;
+        }
+    }
+
+    private void OnTickCore()
     {
         if (ShouldStop())
         {
@@ -111,6 +176,7 @@ public sealed class AITimer : Timer
 
         // The wheel rounds up to its 8ms resolution; a non-positive delay becomes one turn.
         Interval = TimeSpan.FromMilliseconds(delay);
+        _nextWake = now + (long)Interval.TotalMilliseconds;
     }
 
     private bool ShouldStop()

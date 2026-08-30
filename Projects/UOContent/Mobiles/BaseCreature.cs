@@ -750,8 +750,9 @@ namespace Server.Mobiles
 
         /// <summary>
         /// Resolved seconds per step: a verbatim active/passive <see cref="CurrentSpeed"/>
-        /// maps to the matching movement value; a bespoke pace stays fused to both clocks.
-        /// A herded creature is always driven at <see cref="HerdingMoveSpeed"/>.
+        /// maps to the matching movement value; a bespoke pace (e.g. the pet-order 0.1 sprint)
+        /// stays fused to both clocks. A herded creature is always driven at
+        /// <see cref="HerdingMoveSpeed"/>.
         /// </summary>
         [CommandProperty(AccessLevel.GameMaster)]
         public double CurrentMoveSpeed
@@ -845,6 +846,8 @@ namespace Server.Mobiles
         [CommandProperty(AccessLevel.GameMaster)]
         public Point3D ControlDest { get; set; }
 
+        // Fires on every assignment, not only changes: a reissued order is a command
+        // (retarget, break off combat, re-anchor Home). Handlers receive the previous order.
         [CommandProperty(AccessLevel.GameMaster)]
         public OrderType ControlOrder
         {

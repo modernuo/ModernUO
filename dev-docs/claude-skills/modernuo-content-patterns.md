@@ -29,6 +29,13 @@ description: >
    overridden). Prefer `npc-speeds.json` buckets (`SpeedClass`); `SetSpeed()` sets think
    AND clears move overrides, `SetMoveSpeed()` sets move only -- see
    `dev-docs/content-patterns.md` § Creature Speeds
+8. **`OnThink` overrides must be excess-call tolerant** -- it fires more often than the
+   think cadence (player commands prod it; speed-ups reschedule it). Gate consequential
+   work on a tick-count deadline (subtraction form) or make it idempotent; bare per-call
+   random rolls are cosmetics-only. `MonsterAbility` is under the same contract: the
+   trigger cooldown is the rate limit, `ChanceToTrigger` is per-sample jitter, and a
+   zero-cooldown `Think`/`CombatAction` ability triggers every sampled think -- see
+   `dev-docs/content-patterns.md` § OnThink: the excess-call contract
 
 ## New Item Template
 

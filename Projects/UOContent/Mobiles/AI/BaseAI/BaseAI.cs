@@ -64,7 +64,7 @@ public abstract partial class BaseAI
 
         if (!m.PlayerRangeSensitive || !World.Loading && m.Map != null && m.Map != Map.Internal && m.Map.GetSector(m.Location).Active)
         {
-            AITimer.Start();
+            AITimer.Activate();
         }
 
         if (Action != ActionType.Wander)

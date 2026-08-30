@@ -118,18 +118,17 @@ public abstract partial class BaseAI
 
         if (TryMove(d))
         {
-            // Writes the think clock only; hurt slowdown applies in ConsumeMoveBudget.
-            if (Core.AOS && IsFollowingMaster())
+            // Obeying pets are paced by their order handlers.
+            if (!IsObeyingMoveOrder())
             {
-                Mobile.CurrentSpeed = 0.1;
-            }
-            else if (Mobile.Warmode || Mobile.Combatant != null)
-            {
-                Mobile.SetCurrentSpeedToActive();
-            }
-            else
-            {
-                Mobile.SetCurrentSpeedToPassive();
+                if (Mobile.Warmode || Mobile.Combatant != null)
+                {
+                    Mobile.SetCurrentSpeedToActive();
+                }
+                else
+                {
+                    Mobile.SetCurrentSpeedToPassive();
+                }
             }
 
             ConsumeMoveBudget();
@@ -541,8 +540,7 @@ public abstract partial class BaseAI
     {
         nextMove = NextMove;
 
-        return (_moveIntentTarget != null || _moveIntentPoint != null) &&
-               Core.TickCount - _moveIntentExpire < 0;
+        return (_moveIntentTarget != null || _moveIntentPoint != null) && Core.TickCount - _moveIntentExpire < 0;
     }
 
     /// <summary>
@@ -574,9 +572,9 @@ public abstract partial class BaseAI
         }
 
         var distance = (int)Mobile.GetDistanceToSqrt(m);
-        var distanceThreshold = Core.AOS && IsFollowingMaster() ? 1 : 5;
-
-        var shouldRun = run && distance > distanceThreshold;
+        //TODO Derive the Running bit from CurrentMoveSpeed in DoMoveImpl and drop the run parameter
+        var distanceThreshold = Core.AOS && IsFollowingMaster() ? 1 : 3;
+        var shouldRun = distance > distanceThreshold;
 
         if (Mobile.InRange(m, range))
         {
@@ -598,6 +596,13 @@ public abstract partial class BaseAI
         Mobile.ControlOrder == OrderType.Follow &&
         Mobile.ControlTarget == Mobile.ControlMaster &&
         Mobile.Combatant == null;
+
+    // A pet executing a movement order outside combat; its order handler owns its speed.
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool IsObeyingMoveOrder() =>
+        Mobile.Controlled &&
+        Mobile.Combatant == null &&
+        Mobile.ControlOrder is OrderType.Come or OrderType.Follow or OrderType.Guard;
 
     private bool MoveToWithCollisionAvoidance(Mobile target, bool run, int range)
     {
@@ -649,14 +654,12 @@ public abstract partial class BaseAI
         {
             var iCurrDist = (int)Mobile.GetDistanceToSqrt(m);
 
-            var shouldRun = run && iCurrDist > 5;
-
             if (iCurrDist >= iWantDistMin && iCurrDist <= iWantDistMax)
             {
                 return true;
             }
 
-            if (!MoveTowardsOrAwayFrom(m, shouldRun, iCurrDist, iWantDistMax))
+            if (!MoveTowardsOrAwayFrom(m, run, iCurrDist, iWantDistMax))
             {
                 return false;
             }
@@ -667,18 +670,17 @@ public abstract partial class BaseAI
         return dist >= iWantDistMin && dist <= iWantDistMax;
     }
 
+    // run only sets the client animation; callers gate it on their own distance thresholds.
     private bool MoveTowardsOrAwayFrom(Mobile m, bool run, int iCurrDist, int iWantDistMax)
     {
-        var shouldRun = run && iCurrDist > 5;
-
         if (iCurrDist > iWantDistMax)
         {
             // Too far: approach via the centralized progress-based primitive.
-            return ApproachTarget(m, shouldRun, iWantDistMax);
+            return ApproachTarget(m, run, iWantDistMax);
         }
 
         // Too close: back away. Retreat keeps the simple greedy behavior (out of scope).
-        if (DoMove(m.GetDirectionTo(Mobile, shouldRun), true))
+        if (DoMove(m.GetDirectionTo(Mobile, run), true))
         {
             Path = null;
             return true;

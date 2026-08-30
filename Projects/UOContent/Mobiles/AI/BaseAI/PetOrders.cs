@@ -128,6 +128,12 @@ public abstract partial class BaseAI
 
         this.DebugSayFormatted($"I am ordered to follow {Mobile.ControlTarget?.Name}.");
 
+        // AOS: sprint after the master (bespoke 0.1 paces both clocks).
+        if (Core.AOS && Mobile.ControlTarget == Mobile.ControlMaster && Mobile.Combatant == null)
+        {
+            Mobile.CurrentSpeed = 0.1;
+        }
+
         if (currentDistance > 1)
         {
             WalkMobileRange(Mobile.ControlTarget, 1, currentDistance > 2, 1, 2);
@@ -291,14 +297,13 @@ public abstract partial class BaseAI
             return true;
         }
 
-        FindCombatant();
+        var combatant = FindGuardTarget();
 
-        if (IsValidCombatant(Mobile.Combatant))
+        if (combatant != null)
         {
-            var combatant = Mobile.Combatant;
-
             this.DebugSayFormatted($"Attacking target: {combatant.Name}");
 
+            // Engage without leaving the Guard order so tags, recall handling, and retargeting persist.
             Mobile.Combatant = combatant;
             Mobile.FocusMob = combatant;
             Action = ActionType.Combat;
@@ -309,16 +314,30 @@ public abstract partial class BaseAI
         {
             this.DebugSayFormatted($"Guarding my master, {controlMaster.Name}.");
 
-            var guardLocation = controlMaster.Location;
+            // Stand down; a stale Warmode would skew the return pace.
+            Mobile.FocusMob = null;
+            Mobile.Warmode = false;
+            Mobile.Combatant = null;
 
-            var distance = (int)Mobile.GetDistanceToSqrt(guardLocation);
+            var distance = (int)Mobile.GetDistanceToSqrt(controlMaster);
 
             if (distance > 3)
             {
-                DoMove(Mobile.GetDirectionTo(guardLocation));
+                // AOS: sprint back (bespoke 0.1 paces both clocks); earlier eras run active.
+                if (Core.AOS)
+                {
+                    Mobile.CurrentSpeed = 0.1;
+                }
+                else
+                {
+                    Mobile.SetCurrentSpeedToActive();
+                }
+
+                WalkMobileRange(controlMaster, 1, true, 1, 3);
             }
             else
             {
+                Mobile.SetCurrentSpeedToActive(); // alert at the master's side
                 WalkRandom(3, 1, 1);
             }
         }
@@ -359,67 +378,83 @@ public abstract partial class BaseAI
         Mobile.ControlTarget = Mobile.ControlMaster;
         ResumePersistentOrder();
 
-        if (Mobile.FightMode is FightMode.Closest or FightMode.Aggressor)
+        // A resumed Guard engages through its own scan; other fallbacks chain an explicit Attack.
+        if (Mobile.ControlOrder == OrderType.Guard ||
+            Mobile.FightMode is not (FightMode.Closest or FightMode.Aggressor))
         {
-            FindCombatant();
+            return;
+        }
+
+        var next = FindGuardTarget();
+
+        if (next != null)
+        {
+            Mobile.ControlTarget = next;
+            Mobile.ControlOrder = OrderType.Attack;
+            Mobile.Combatant = next;
+
+            this.DebugSayFormatted($"{next.Name} is still hostile! Engaging...");
+
+            Think();
         }
     }
 
-    private void FindCombatant()
+    /// <summary>
+    /// Selects the aggressor closest to the master. The current combatant is kept
+    /// unless a strictly closer one exists. Never mutates order state.
+    /// </summary>
+    private Mobile FindGuardTarget()
     {
         var controlMaster = Mobile.ControlMaster;
+        var anchor = controlMaster ?? Mobile;
+
+        var current = Mobile.Combatant;
+        var best = current != controlMaster && IsValidCombatant(current) ? current : null;
+        var bestDist = best?.GetDistanceToSqrt(anchor) ?? double.MaxValue;
 
         foreach (var aggr in Mobile.GetMobilesInRange(Mobile.RangePerception))
         {
-            if (!Mobile.CanSee(aggr) || aggr.IsDeadBondedPet || !aggr.Alive)
+            if (aggr == best || aggr == Mobile || aggr == controlMaster ||
+                aggr.IsDeadBondedPet || !aggr.Alive ||
+                aggr.Combatant != Mobile && (controlMaster == null || aggr.Combatant != controlMaster))
             {
                 continue;
             }
 
-            var isAttackingPet = aggr.Combatant == Mobile;
-            var isAttackingMaster = controlMaster != null && aggr.Combatant == controlMaster;
+            var dist = aggr.GetDistanceToSqrt(anchor);
 
-            if (isAttackingPet || isAttackingMaster)
+            if (dist < bestDist && Mobile.CanSee(aggr) && Mobile.InLOS(aggr))
             {
-                if (Mobile.InLOS(aggr))
-                {
-                    Mobile.ControlTarget = aggr;
-                    Mobile.ControlOrder = OrderType.Attack;
-                    Mobile.Combatant = aggr;
-
-                    var target = isAttackingMaster ? "master" : "me";
-                    this.DebugSayFormatted($"{aggr.Name} is attacking my {target}! Engaging...");
-
-                    Think();
-                    return;
-                }
+                best = aggr;
+                bestDist = dist;
             }
         }
 
-        if (controlMaster?.Aggressors != null)
-        {
-            for (var i = 0; i < controlMaster.Aggressors.Count; i++)
-            {
-                var aggressor = controlMaster.Aggressors[i].Attacker;
+        var aggressors = controlMaster?.Aggressors;
 
-                if (aggressor?.Deleted != false || !aggressor.Alive || aggressor.IsDeadBondedPet)
+        if (aggressors != null)
+        {
+            for (var i = 0; i < aggressors.Count; i++)
+            {
+                var aggressor = aggressors[i].Attacker;
+
+                if (aggressor == best || aggressor?.Deleted != false || !aggressor.Alive ||
+                    aggressor.IsDeadBondedPet || !Mobile.InRange(aggressor, Mobile.RangePerception))
                 {
                     continue;
                 }
 
-                if (Mobile.InRange(aggressor, Mobile.RangePerception) && Mobile.CanSee(aggressor) && Mobile.InLOS(aggressor))
+                var dist = aggressor.GetDistanceToSqrt(anchor);
+
+                if (dist < bestDist && Mobile.CanSee(aggressor) && Mobile.InLOS(aggressor))
                 {
-                    Mobile.ControlTarget = aggressor;
-                    Mobile.ControlOrder = OrderType.Attack;
-                    Mobile.Combatant = aggressor;
-
-                    this.DebugSayFormatted($"{aggressor.Name} recently attacked my master! Retaliating...");
-
-                    Think();
-                    return;
+                    best = aggressor;
+                    bestDist = dist;
                 }
             }
         }
+
+        return best;
     }
 
     public virtual bool DoOrderRelease()

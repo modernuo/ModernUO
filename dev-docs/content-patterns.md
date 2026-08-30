@@ -283,6 +283,61 @@ ClearMoveSpeed();            // back to inheriting the think clock
 All four are `[props`-tunable per instance (move values: set `0` to re-inherit); per-instance
 move overrides serialize. Being badly hurt slows steps, never decisions (RunUO parity).
 
+### OnThink: the excess-call contract
+
+`OnThink()` is a scheduler pass, not an action. The AI timer calls it *at least* at the
+think cadence (`CurrentSpeed`), but it can and does fire more often: a player command
+wakes the AI immediately (`AITimer.Prod()`), a speed-up reschedules the pending wake, and
+players run command macros that drive extra thinks deliberately (order spam is spam-safe
+by design — reaction, never action). RunUO had the same property (its timer restarted
+with a random delay on every speed change), so this has never been a fixed-rate callback.
+
+**Every `OnThink` override must be excess-call tolerant.** An extra call must never grant
+an extra action:
+
+- Gate consequential work on its own deadline field, compared in subtraction form
+  (`Core.TickCount - _nextX >= 0` — see `tick-counts.md`), or make it idempotent.
+- Never pace a consequential action with a bare per-call `Utility.RandomDouble()` roll —
+  its frequency then scales with think rate, which players can influence. Per-call rolls
+  are acceptable only for pure cosmetics (idle animations, flavor sounds).
+- The engine already gates the expensive things: steps (the `NextMove` budget), weapon
+  swings, spell casts, detect-hidden, and the base `BaseCreature.OnThink` actions (heal,
+  rummage, aura) all carry their own clocks. Follow that pattern.
+
+```csharp
+private long _nextSpecial;
+
+public override void OnThink()
+{
+    base.OnThink();
+
+    if (Core.TickCount - _nextSpecial >= 0)
+    {
+        DoSpecial();
+        _nextSpecial = Core.TickCount + 5000; // the real rate limit lives here
+    }
+}
+```
+
+### MonsterAbility: same contract
+
+`MonsterAbility.CanTrigger` is sampled once per think for `Think`- and
+`CombatAction`-triggered abilities, so abilities live under the same rule:
+
+- **`MinTriggerCooldown`/`MaxTriggerCooldown` is the real rate limit** — the floor holds
+  no matter how often thinks fire. Always give a triggered ability a real cooldown.
+- **`ChanceToTrigger` is a per-sample roll**: above the cooldown floor, the expected
+  trigger delay shrinks as think rate rises. Treat the chance as flavor jitter, never as
+  the rate limiter, and keep cooldowns long relative to the think interval so the jitter
+  stays negligible (fire breath — chance 0.5, cooldown 30–45s — varies under 1% between
+  natural and spammed think rates).
+- A **zero-cooldown ability records no cooldown at all** and triggers on every sampled
+  think that passes its chance — only ever correct for passive alteration hooks, never
+  for `Think`/`CombatAction` triggers.
+- An ability that breaks pet orders (fear-style effects) must own its duration explicitly
+  (a hold state, or a "refuses orders until" deadline checked in the order handlers) —
+  pets react to re-issued commands immediately, so think latency is not a hold.
+
 ---
 
 ## New Spell

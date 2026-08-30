@@ -26,7 +26,7 @@ public abstract partial class BaseAI
             return;
         }
 
-        Activate();
+        AITimer.Prod();
 
         switch (Mobile.ControlOrder)
         {
@@ -36,6 +36,10 @@ public abstract partial class BaseAI
                     break;
                 }
             case OrderType.Come:
+                {
+                    Mobile.SetCurrentSpeedToActive();
+                    break;
+                }
             case OrderType.Drop:
             case OrderType.Friend:
             case OrderType.Unfriend:
@@ -135,6 +139,7 @@ public abstract partial class BaseAI
         Mobile.FocusMob = null;
         Mobile.Warmode = false;
         Mobile.Combatant = null;
+        Mobile.SetCurrentSpeedToPassive();
     }
 
     private void HandleTransferOrder()
@@ -148,6 +153,7 @@ public abstract partial class BaseAI
         Mobile.FocusMob = null;
         Mobile.Warmode = false;
         Mobile.Combatant = null;
+        Mobile.SetCurrentSpeedToPassive();
         Mobile.PlaySound(Mobile.GetIdleSound());
         _commandIssuer = null;
     }
@@ -162,9 +168,16 @@ public abstract partial class BaseAI
         _commandIssuer?.RevealingAction();
         Mobile.FocusMob = null;
         Mobile.Warmode = true;
-        Mobile.PlaySound(Mobile.GetAttackSound());
-        Mobile.ControlMaster?.SendLocalizedMessage(1049671, Mobile.Name);
-        // ~1_NAME~ is now guarding you.
+        Mobile.SetCurrentSpeedToActive();
+
+        // Resuming the persistent order must not replay the flourish.
+        if (!_resolvingOrder)
+        {
+            Mobile.PlaySound(Mobile.GetAttackSound());
+            Mobile.ControlMaster?.SendLocalizedMessage(1049671, Mobile.Name);
+            // ~1_NAME~ is now guarding you.
+        }
+
         _commandIssuer = null;
     }
 
@@ -191,6 +204,7 @@ public abstract partial class BaseAI
         }
 
         Mobile.Warmode = true;
+        Mobile.SetCurrentSpeedToActive();
         Mobile.PlaySound(Mobile.GetAttackSound());
         _commandIssuer = null;
     }
@@ -206,6 +220,7 @@ public abstract partial class BaseAI
         Mobile.FocusMob = null;
         Mobile.Warmode = false;
         Mobile.Combatant = null;
+        Mobile.SetCurrentSpeedToActive();
         Mobile.PlaySound(Mobile.GetIdleSound());
         _commandIssuer = null;
     }
@@ -221,6 +236,7 @@ public abstract partial class BaseAI
         Mobile.FocusMob = null;
         Mobile.Warmode = false;
         Mobile.Combatant = null;
+        Mobile.SetCurrentSpeedToPassive();
         Mobile.PlaySound(Mobile.GetIdleSound());
         _commandIssuer = null;
         // Home (the stay anchor) is owned by SetPersistentOrder, not this handler.
