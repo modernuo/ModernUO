@@ -83,12 +83,10 @@ public abstract partial class BaseAI
     }
 
     // The Running bit only selects the client's per-step interpolation (walk 400ms / run
-    // 200ms on foot, 200/100 mounted). A step shorter than the walk time must be flagged
-    // as a run or the client falls behind and snaps — but the client renders each step on
-    // its own, so an isolated step (resuming after at least a walk interval standing)
-    // reads as a dart when run-flagged. Isolated steps go out as walks; only a continuing
-    // cadence flags run, except a true sprinter whose pace beats the run interpolation —
-    // there a walk-rendered first step would flood the client's step queue.
+    // 200ms on foot, 200/100 mounted). A step shorter than the walk time must run or the
+    // client falls behind and snaps — but an isolated step (after standing at least a walk
+    // interval) renders alone and darts if run-flagged, so it goes out as a walk. A true
+    // sprinter always runs: a walk-rendered first step would flood the client's queue.
     public bool ShouldRun()
     {
         var mounted = Mobile.Mounted || Mobile.Flying;
@@ -105,11 +103,10 @@ public abstract partial class BaseAI
         return pace < runDelay || Core.TickCount - Mobile.LastMoveTime < walkDelay;
     }
 
-    // One step per period, paced from the step just taken — no debt accrual. A late step
-    // (blocked, reactive stand, think-grid misalignment) must not be repaid with a quicker
-    // follow-up: even a sub-period repayment puts two steps ~100ms apart, which the client
-    // renders as a dart. In continuous pursuit the move-wake lands within wheel resolution
-    // of this deadline, so the only cost is single-digit-ms drift per step.
+    // One step per period, paced from the step just taken — no debt accrual: repaying a
+    // late step with a quicker follow-up puts two steps ~100ms apart, which renders as a
+    // dart. In continuous pursuit the move-wake lands within wheel resolution of this
+    // deadline, so the only cost is single-digit-ms drift per step.
     private void ConsumeMoveBudget()
     {
         NextMove = Core.TickCount + Math.Max(50, (long)(EffectiveStepDelay() * 1000));
