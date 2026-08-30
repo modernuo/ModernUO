@@ -880,6 +880,11 @@ public abstract partial class BaseAI
             return false;
         }
 
+        if (ChaseDebug.Tracks(Mobile))
+        {
+            ChaseDebug.Log(Mobile, $"acquire scan: range={iRange} mode={acqType} playerOnly={bPlayerOnly}");
+        }
+
         DebugSay("Acquiring new target...", 0);
 
         var acquired = AcquireNewFocusMob(Mobile.Map, iRange, acqType, bPlayerOnly, bFacFriend, bFacFoe);
@@ -887,6 +892,11 @@ public abstract partial class BaseAI
         // Reaction time is the approach path (BaseCreature.ScheduleAcquireOnApproach),
         // not this poll — every scan honors the full delay.
         Mobile.NextReacquireTime = Core.TickCount + reacquireDelay;
+
+        if (ChaseDebug.Tracks(Mobile))
+        {
+            ChaseDebug.Log(Mobile, $"acquire gate re-armed +{Mobile.NextReacquireTime - Core.TickCount}ms (acquired={acquired})");
+        }
 
         return acquired;
     }
@@ -973,6 +983,15 @@ public abstract partial class BaseAI
         {
             if (IsInvalidTarget(m, bPlayerOnly))
             {
+                if (m.Player && ChaseDebug.Tracks(Mobile))
+                {
+                    ChaseDebug.Log(
+                        Mobile,
+                        $"acquire: {m.RawName} rejected (invalid-target: blessed={m.Blessed} alive={m.Alive} " +
+                        $"access={m.AccessLevel} cansee={Mobile.CanSee(m)} hidden={m.Hidden})"
+                    );
+                }
+
                 continue;
             }
 
@@ -982,6 +1001,16 @@ public abstract partial class BaseAI
             if (IsInvalidSummonTarget(m, bc, pm) || IsInvalidFactionTarget(m, bFacFriend, bFacFoe)
                                                  || IsInvalidFightModeTarget(m, acqType, bc))
             {
+                if (m.Player && ChaseDebug.Tracks(Mobile))
+                {
+                    ChaseDebug.Log(
+                        Mobile,
+                        $"acquire: {m.RawName} rejected (summon={IsInvalidSummonTarget(m, bc, pm)} " +
+                        $"faction={IsInvalidFactionTarget(m, bFacFriend, bFacFoe)} " +
+                        $"fightmode={IsInvalidFightModeTarget(m, acqType, bc)})"
+                    );
+                }
+
                 continue;
             }
 
@@ -1146,6 +1175,11 @@ public abstract partial class BaseAI
     {
         if (Mobile.Map == null || Mobile.Map == Map.Internal || !Mobile.Controlled && !Mobile.Map.GetSector(Mobile.Location).Active)
         {
+            if (ChaseDebug.Tracks(Mobile))
+            {
+                ChaseDebug.Log(Mobile, $"timer STOP (deactivate: map={Mobile.Map} sector-active={Mobile.Map?.GetSector(Mobile.Location).Active})");
+            }
+
             AITimer.Stop();
         }
 
@@ -1180,6 +1214,11 @@ public abstract partial class BaseAI
     {
         if (!AITimer.Running)
         {
+            if (ChaseDebug.Tracks(Mobile))
+            {
+                ChaseDebug.Log(Mobile, "timer ACTIVATE (was stopped)");
+            }
+
             AITimer.Activate();
         }
     }

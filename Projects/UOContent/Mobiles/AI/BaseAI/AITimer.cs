@@ -130,6 +130,11 @@ public sealed class AITimer : Timer
     {
         if (ShouldStop())
         {
+            if (ChaseDebug.Tracks(_owner.Mobile))
+            {
+                ChaseDebug.Log(_owner.Mobile, "timer STOP (should-stop at tick start)");
+            }
+
             Stop();
             return;
         }
@@ -151,6 +156,11 @@ public sealed class AITimer : Timer
 
             if (ShouldStop())
             {
+                if (ChaseDebug.Tracks(_owner.Mobile))
+                {
+                    ChaseDebug.Log(_owner.Mobile, "timer STOP (should-stop after OnThink)");
+                }
+
                 Stop();
                 return;
             }

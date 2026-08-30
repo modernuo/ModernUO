@@ -104,6 +104,13 @@ public static class ChaseDebug
         from.SendMessage($"Now tracing {bc.RawName} ({bc.Serial}) — output in the server console.");
         Log(bc, $"tracing started | ai={bc.AI} action={bc.AIObject?.Action.ToString() ?? "none"} " +
                 $"{TargetInfo(bc, bc.Combatant)} perception={bc.RangePerception} fight={bc.RangeFight} {Clocks(bc)}");
+
+        var reacquireIn = bc.NextReacquireTime - Core.TickCount;
+        Log(bc, $"snapshot | fightmode={bc.FightMode} reacquire-in={(reacquireIn > 0 ? reacquireIn : 0)}ms " +
+                $"timer={(bc.AIObject?.AITimer?.Running == true ? "running" : "STOPPED")} " +
+                $"sector-active={bc.Map?.GetSector(bc.Location).Active} controlled={bc.Controlled} " +
+                $"focus={Describe(bc.FocusMob)} constant-focus={Describe(bc.ConstantFocus)} " +
+                $"your-access={from.AccessLevel}{(from.AccessLevel > AccessLevel.Player ? " — ACQUISITION IGNORES STAFF" : "")}");
     }
 
     private class ChaseDebugTarget : Target
