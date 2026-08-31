@@ -301,7 +301,8 @@ Acquisition is event-driven, not polled. The periodic scan (`AcquireFocusMob`) i
 `ReacquireDelay` (10 s default) and every scan re-arms it in full, success or failure — it
 is target stickiness plus the fallback for what movement cannot signal (reveals, doors,
 summons). Reaction time comes from `BaseCreature.OnMovement`: an enemy moving inside
-`AcquireOnApproachRange` (paragons 10, default `RangePerception`) clamps the next scan to
+`AcquireOnApproachRange` (10 — on-screen; the periodic scan keeps the wider
+`RangePerception`) clamps the next scan to
 at most **`AcquireOnApproachDelay`** — the intelligence gradient. `TimeSpan.Zero`
 (paragons) also prods the AI, so the ranked scan engages within a timer-wheel turn; the
 2 s default reads as "took a beat to notice you"; larger is dumber; a creature that

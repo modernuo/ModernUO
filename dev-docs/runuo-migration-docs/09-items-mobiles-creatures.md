@@ -512,7 +512,8 @@ public override bool AcquireOnApproach => true;
 public override TimeSpan AcquireOnApproachDelay => TimeSpan.Zero;
 ```
 
-`AcquireOnApproachRange` now defaults to `RangePerception` (paragons keep 10). The
+`AcquireOnApproachRange` stays 10 for all creatures (reactive aggro is on-screen; the
+periodic `ReacquireDelay` scan still sweeps the full `RangePerception`). The
 acquired target comes from the normal FightMode-ranked scan, not from whichever mobile
 happened to move. See `content-patterns.md` § Target Acquisition.
 

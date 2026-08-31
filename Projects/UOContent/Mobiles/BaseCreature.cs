@@ -953,7 +953,9 @@ namespace Server.Mobiles
         // think; larger is dumber; pure ReacquireDelay is the oblivious floor.
         public virtual TimeSpan AcquireOnApproachDelay => m_Paragon ? TimeSpan.Zero : TimeSpan.FromSeconds(2.0);
 
-        public virtual int AcquireOnApproachRange => m_Paragon ? 10 : RangePerception;
+        // Reactive range is tighter than the periodic scan's RangePerception: approach
+        // aggro starts on-screen; the ReacquireDelay poll keeps the wide ambient sweep.
+        public virtual int AcquireOnApproachRange => 10;
 
         // Clamps the scan deadline rather than opening the gate: repeated steps cannot
         // shorten it further, so an armed creature scans once per delay period.

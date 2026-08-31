@@ -85,9 +85,10 @@ public class AcquisitionTests : IDisposable
     }
 
     [Theory]
-    [InlineData(false, 5, true)]  // an enemy moving inside notice range clamps the deadline
+    [InlineData(false, 5, true)]  // an enemy moving inside approach range (10) clamps the deadline
     [InlineData(true, 5, false)]  // a same-team wild creature is not an enemy — ignored
-    [InlineData(false, 20, false)] // outside notice range (16) is ignored
+    [InlineData(false, 12, false)] // inside RangePerception but outside approach range — poll only
+    [InlineData(false, 20, false)] // outside approach range (10) is ignored
     public void MovementClampsScanDeadlineOnlyForEnemiesInRange(bool wildMover, int distance, bool notices)
     {
         var map = Map.Maps[1];
