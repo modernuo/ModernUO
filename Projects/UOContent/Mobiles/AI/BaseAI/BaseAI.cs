@@ -856,7 +856,9 @@ public abstract partial class BaseAI
             return false;
         }
 
-        DebugSay("Acquiring new target...");
+        // No cooldown re-arm: this precedes every AI's "detected X" transition message,
+        // which a re-arm here would swallow.
+        DebugSay("Acquiring new target...", 0);
 
         var acquired = AcquireNewFocusMob(Mobile.Map, iRange, acqType, bPlayerOnly, bFacFriend, bFacFoe);
 
@@ -942,8 +944,10 @@ public abstract partial class BaseAI
 
     private bool AcquireNewFocusMob(Map map, int iRange, FightMode acqType, bool bPlayerOnly, bool bFacFriend, bool bFacFoe)
     {
-        Mobile newFocusMob = null, enemySummonMob = null;
-        double val = double.MinValue, enemySummonVal = double.MinValue;
+        Mobile newFocusMob = null;
+        Mobile enemySummonMob = null;
+        var val = double.MinValue;
+        var enemySummonVal = double.MinValue;
 
         foreach (var m in map.GetMobilesInRange(Mobile.Location, iRange))
         {
