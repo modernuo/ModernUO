@@ -961,11 +961,20 @@ namespace Server.Mobiles
         // creature yields one scan per delay period, not one per think.
         private void ScheduleAcquireOnApproach()
         {
-            var deadline = Core.TickCount + (long)AcquireOnApproachDelay.TotalMilliseconds;
+            var delay = (long)AcquireOnApproachDelay.TotalMilliseconds;
+            var deadline = Core.TickCount + delay;
 
             if (deadline - NextReacquireTime < 0)
             {
                 NextReacquireTime = deadline;
+            }
+
+            if (delay <= 0)
+            {
+                // Zero-delay (paragon snap): think now — the ranked scan engages within a
+                // wheel turn instead of waiting out the think cadence. Prod is spam-safe
+                // and the Combatant == null guard ends it once engaged.
+                AIObject?.AITimer?.Prod();
             }
         }
 

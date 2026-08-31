@@ -158,9 +158,10 @@ public class AcquisitionTests : IDisposable
 
         bc.OnMovement(mover, new Point3D(1400, 1600, (sbyte)z));
 
-        // Zero = scan on the very next think: the gate is open, no direct engage.
+        // Zero = the gate opens and the AI is prodded to think now; no direct engage.
         Assert.True(Core.TickCount - bc.NextReacquireTime >= 0);
         Assert.Null(bc.Combatant);
+        Assert.True(bc.AIObject.AITimer.Running);
     }
 
     [Fact]
