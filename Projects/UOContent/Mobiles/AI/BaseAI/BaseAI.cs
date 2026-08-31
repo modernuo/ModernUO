@@ -861,8 +861,6 @@ public abstract partial class BaseAI
             return false;
         }
 
-        // No cooldown re-arm: this precedes every AI's "detected X" transition message,
-        // which a re-arm here would swallow.
         DebugSay("Acquiring new target...", 0);
 
         var acquired = AcquireNewFocusMob(Mobile.Map, iRange, acqType, bPlayerOnly, bFacFriend, bFacFoe);
