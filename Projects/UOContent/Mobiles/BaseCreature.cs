@@ -948,34 +948,39 @@ namespace Server.Mobiles
 
         public virtual TimeSpan ReacquireDelay => TimeSpan.FromSeconds(10.0);
 
-        // Reaction-time knob: a player moving inside perception pulls the next scan to at
-        // most this far away (see NoticeMovement). The intelligence ladder:
-        // AcquireOnApproach (instant, forced engage) > ReacquireOnMovement (scan next
-        // think) > this bounded notice (default) > pure ReacquireDelay (oblivious).
-        public virtual TimeSpan NoticeMovementDelay => TimeSpan.FromSeconds(2.0);
+        // The intelligence gradient (formerly the AcquireOnApproach bool): an enemy moving
+        // inside AcquireOnApproachRange pulls the next scan to at most this far away. Zero
+        // engages instantly on movement — the old paragon behavior. Ladder: Zero (instant,
+        // forced engage) > ReacquireOnMovement (scan next think) > bounded delay (default)
+        // > pure ReacquireDelay (oblivious).
+        public virtual TimeSpan AcquireOnApproachDelay => m_Paragon ? TimeSpan.Zero : TimeSpan.FromSeconds(2.0);
 
-        // Bounded notice: clamp the scan deadline instead of opening the gate — repeated
-        // steps cannot shorten it further, so a player moving beside an armed creature
-        // yields one scan per notice period, not one per think.
-        private void NoticeMovement()
+        public virtual int AcquireOnApproachRange => m_Paragon ? 10 : RangePerception;
+
+        // Bounded approach-acquire: clamp the scan deadline instead of opening the gate —
+        // repeated steps cannot shorten it further, so an enemy moving beside an armed
+        // creature yields one scan per delay period, not one per think.
+        private void ScheduleAcquireOnApproach()
         {
-            var notice = Core.TickCount + (long)NoticeMovementDelay.TotalMilliseconds;
+            var deadline = Core.TickCount + (long)AcquireOnApproachDelay.TotalMilliseconds;
 
-            if (notice - NextReacquireTime < 0)
+            if (deadline - NextReacquireTime < 0)
             {
-                NextReacquireTime = notice;
+                NextReacquireTime = deadline;
             }
         }
 
-        private bool ShouldNoticeMovement(Mobile m) =>
-            Combatant == null && m.Player && !m.Hidden &&
+        // IsEnemy first: it cheaply rejects the common case (a same-team wild creature
+        // wandering past another) before CanBeHarmful's notoriety work; CanBeHarmful also
+        // covers hidden movers via CanSee.
+        private bool ShouldAcquireOnApproach(Mobile m) =>
+            Combatant == null &&
             !Controlled && !Summoned && !BardPacified &&
             FightMode != FightMode.None && FightMode != FightMode.Aggressor &&
-            InRange(m.Location, RangePerception);
+            InRange(m.Location, AcquireOnApproachRange) &&
+            IsEnemy(m) && CanBeHarmful(m, false);
 
         public virtual bool ReacquireOnMovement => false;
-        public virtual bool AcquireOnApproach => m_Paragon;
-        public virtual int AcquireOnApproachRange => 10;
 
         public static bool Summoning { get; set; }
 
@@ -2885,23 +2890,22 @@ namespace Server.Mobiles
 
         public override void OnMovement(Mobile m, Point3D oldLocation)
         {
-            if (AcquireOnApproach && !Controlled && !Summoned && !BardPacified && FightMode != FightMode.Aggressor)
+            var acquireOnApproach = ShouldAcquireOnApproach(m);
+
+            if (acquireOnApproach && AcquireOnApproachDelay <= TimeSpan.Zero)
             {
-                if (InRange(m.Location, AcquireOnApproachRange) && !InRange(oldLocation, AcquireOnApproachRange) &&
-                    CanBeHarmful(m) && IsEnemy(m))
-                {
-                    Combatant = FocusMob = m;
-                    AIObject?.MoveTo(m, 1);
-                    DoHarmful(m);
-                }
+                // The gradient's floor: instant engage (the old paragon behavior).
+                Combatant = FocusMob = m;
+                AIObject?.MoveTo(m, 1);
+                DoHarmful(m);
             }
             else if (ReacquireOnMovement)
             {
                 ForceReacquire();
             }
-            else if (ShouldNoticeMovement(m))
+            else if (acquireOnApproach)
             {
-                NoticeMovement();
+                ScheduleAcquireOnApproach();
             }
 
             SpeechType?.OnMovement(this, m, oldLocation);

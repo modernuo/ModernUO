@@ -6,9 +6,9 @@ using Xunit;
 
 namespace UOContent.Tests.Mobiles.AI;
 
-// Pins the reacquire gate: an empty scan retries quickly, a successful acquire holds its
-// target for the full ReacquireDelay (stickiness). Re-arming the long delay on failure
-// left creatures blind for the whole delay to a player walking up.
+// Pins the reacquire gate and the AcquireOnApproachDelay intelligence gradient: every scan
+// re-arms the full ReacquireDelay; enemy movement clamps the deadline to the approach
+// delay (Zero = instant paragon engage); an illegal deadline self-heals.
 [Collection("Sequential Pathfinding Tests")]
 public class AcquisitionTests : IDisposable
 {
@@ -85,10 +85,10 @@ public class AcquisitionTests : IDisposable
     }
 
     [Theory]
-    [InlineData(true, 5, true)]   // player moving inside perception clamps the deadline
-    [InlineData(false, 5, false)] // non-player movement is ignored
-    [InlineData(true, 20, false)] // outside perception (16) is ignored
-    public void MovementClampsScanDeadlineToNoticeDelay(bool player, int distance, bool notices)
+    [InlineData(false, 5, true)]  // an enemy moving inside notice range clamps the deadline
+    [InlineData(true, 5, false)]  // a same-team wild creature is not an enemy — ignored
+    [InlineData(false, 20, false)] // outside notice range (16) is ignored
+    public void MovementClampsScanDeadlineOnlyForEnemiesInRange(bool wildMover, int distance, bool notices)
     {
         var map = Map.Maps[1];
         Assert.NotNull(map);
@@ -97,10 +97,18 @@ public class AcquisitionTests : IDisposable
         var bc = Spawn(map, new Point3D(1500, 1600, (sbyte)z));
         bc.NextReacquireTime = Core.TickCount + 8000;
 
-        var mover = new TargetStub { Player = player };
-        mover.DefaultMobileInit();
-        mover.MoveToWorld(new Point3D(1500 - distance, 1600, (sbyte)z), map);
-        _created.Add(mover);
+        Mobile mover;
+        if (wildMover)
+        {
+            mover = Spawn(map, new Point3D(1500 - distance, 1600, (sbyte)z));
+        }
+        else
+        {
+            mover = new TargetStub { Player = true };
+            mover.DefaultMobileInit();
+            mover.MoveToWorld(new Point3D(1500 - distance, 1600, (sbyte)z), map);
+            _created.Add(mover);
+        }
 
         bc.OnMovement(mover, new Point3D(1400, 1600, (sbyte)z));
 
@@ -109,7 +117,7 @@ public class AcquisitionTests : IDisposable
         if (notices)
         {
             // Clamped to the notice delay (2s), never opened outright.
-            Assert.InRange(remaining, 1, (long)bc.NoticeMovementDelay.TotalMilliseconds);
+            Assert.InRange(remaining, 1, (long)bc.AcquireOnApproachDelay.TotalMilliseconds);
         }
         else
         {
@@ -117,8 +125,44 @@ public class AcquisitionTests : IDisposable
         }
     }
 
+    private sealed class InstantStub : BaseCreature
+    {
+        public InstantStub() : base(AIType.AI_Melee, FightMode.Closest, 16, 1) => Body = 0xC9;
+
+        public override TimeSpan AcquireOnApproachDelay => TimeSpan.Zero;
+
+        public override void GetSpeeds(out double activeSpeed, out double passiveSpeed)
+        {
+            activeSpeed = 0.3;
+            passiveSpeed = 0.6;
+        }
+    }
+
     [Fact]
-    public void RepeatedMovement_DoesNotShortenBelowNoticeDelay()
+    public void ZeroApproachDelay_EngagesInstantly()
+    {
+        var map = Map.Maps[1];
+        Assert.NotNull(map);
+        map.GetAverageZ(1500, 1600, out _, out var z, out _);
+
+        var bc = new InstantStub();
+        bc.MoveToWorld(new Point3D(1500, 1600, (sbyte)z), map);
+        bc.AIObject.AITimer?.Stop();
+        _created.Add(bc);
+        bc.NextReacquireTime = Core.TickCount + 8000;
+
+        var mover = new TargetStub { Player = true };
+        mover.DefaultMobileInit();
+        mover.MoveToWorld(new Point3D(1495, 1600, (sbyte)z), map);
+        _created.Add(mover);
+
+        bc.OnMovement(mover, new Point3D(1400, 1600, (sbyte)z));
+
+        Assert.Equal(mover, bc.Combatant);
+    }
+
+    [Fact]
+    public void RepeatedMovement_DoesNotShortenBelowApproachDelay()
     {
         var map = Map.Maps[1];
         Assert.NotNull(map);
