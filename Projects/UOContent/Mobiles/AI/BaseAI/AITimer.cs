@@ -51,10 +51,9 @@ public sealed class AITimer : Timer
             return;
         }
 
-        // Activation is player-visible (sector wake, spawn, resurrection): a short random
-        // spread wakes the creature within a think while a sector's worth of timers still
-        // avoids a same-tick burst. Cohort desync happens after the first think (see
-        // _spreadPhase) — a long first-wake delay here read as lag.
+        // Short random spread: the creature responds within a think while a sector's
+        // worth of timers avoids a same-tick burst; cohort desync happens after the
+        // first think (see _spreadPhase).
         Delay = TimeSpan.FromMilliseconds(Utility.Random(256));
         Start();
         _nextWake = Core.TickCount + (long)Delay.TotalMilliseconds;
@@ -161,11 +160,10 @@ public sealed class AITimer : Timer
 
             if (_spreadPhase)
             {
-                // One-time desync after a wake: a cohort activated by the same player step
-                // (sector wake, world load) shares a think phase and would move in
-                // lock-step forever — the RunUO town artifact. A random fraction of one
-                // period spreads each creature's cadence without delaying the first,
-                // player-visible think.
+                // One-time desync after a wake: cohorts activated together (sector wake,
+                // world load) share a think phase and would move in lock-step forever. A
+                // random fraction of one period spreads the cadence without delaying the
+                // first think.
                 _spreadPhase = false;
                 _nextThink += Utility.Random((int)Math.Max(1, period));
             }

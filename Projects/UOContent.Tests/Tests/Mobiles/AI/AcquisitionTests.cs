@@ -6,9 +6,9 @@ using Xunit;
 
 namespace UOContent.Tests.Mobiles.AI;
 
-// Pins the reacquire gate and the AcquireOnApproachDelay intelligence gradient: every scan
-// re-arms the full ReacquireDelay; enemy movement clamps the deadline to the approach
-// delay (Zero = instant paragon engage); an illegal deadline self-heals.
+// Pins the reacquire gate and the AcquireOnApproachDelay gradient: every scan re-arms the
+// full ReacquireDelay; enemy movement clamps the deadline to the approach delay (Zero =
+// prodded scan); an illegal deadline self-heals.
 [Collection("Sequential Pathfinding Tests")]
 public class AcquisitionTests : IDisposable
 {
@@ -116,7 +116,7 @@ public class AcquisitionTests : IDisposable
 
         if (notices)
         {
-            // Clamped to the notice delay (2s), never opened outright.
+            // Clamped to the approach delay (2s), never opened outright.
             Assert.InRange(remaining, 1, (long)bc.AcquireOnApproachDelay.TotalMilliseconds);
         }
         else

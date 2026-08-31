@@ -948,17 +948,15 @@ namespace Server.Mobiles
 
         public virtual TimeSpan ReacquireDelay => TimeSpan.FromSeconds(10.0);
 
-        // The intelligence gradient (formerly the AcquireOnApproach bool): an enemy moving
-        // inside AcquireOnApproachRange pulls the next scan to at most this far away —
-        // Zero (paragons) scans on the very next think, larger is dumber, and pure
-        // ReacquireDelay (no approach reaction) is the oblivious floor.
+        // Reaction-time gradient: an enemy moving inside AcquireOnApproachRange pulls the
+        // next scan to at most this far away. Zero (paragons) scans on the very next
+        // think; larger is dumber; pure ReacquireDelay is the oblivious floor.
         public virtual TimeSpan AcquireOnApproachDelay => m_Paragon ? TimeSpan.Zero : TimeSpan.FromSeconds(2.0);
 
         public virtual int AcquireOnApproachRange => m_Paragon ? 10 : RangePerception;
 
-        // Bounded approach-acquire: clamp the scan deadline instead of opening the gate —
-        // repeated steps cannot shorten it further, so an enemy moving beside an armed
-        // creature yields one scan per delay period, not one per think.
+        // Clamps the scan deadline rather than opening the gate: repeated steps cannot
+        // shorten it further, so an armed creature scans once per delay period.
         private void ScheduleAcquireOnApproach()
         {
             var delay = (long)AcquireOnApproachDelay.TotalMilliseconds;
@@ -971,16 +969,14 @@ namespace Server.Mobiles
 
             if (delay <= 0)
             {
-                // Zero-delay (paragon snap): think now — the ranked scan engages within a
-                // wheel turn instead of waiting out the think cadence. Prod is spam-safe
-                // and the Combatant == null guard ends it once engaged.
+                // Zero: think now — the ranked scan engages within a wheel turn. Prod is
+                // spam-safe; the Combatant == null guard stops the prods once engaged.
                 AIObject?.AITimer?.Prod();
             }
         }
 
-        // IsEnemy first: it cheaply rejects the common case (a same-team wild creature
-        // wandering past another) before CanBeHarmful's notoriety work; CanBeHarmful also
-        // covers hidden movers via CanSee.
+        // IsEnemy first — it cheaply rejects the common case (a same-team wild creature
+        // wandering past); CanBeHarmful covers hidden movers via CanSee.
         private bool ShouldAcquireOnApproach(Mobile m) =>
             Combatant == null &&
             !Controlled && !Summoned && !BardPacified &&
