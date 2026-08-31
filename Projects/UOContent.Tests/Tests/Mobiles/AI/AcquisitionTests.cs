@@ -63,6 +63,29 @@ public class AcquisitionTests : IDisposable
         Assert.InRange(bc.NextReacquireTime - Core.TickCount, 1, 5000);
     }
 
+    [Theory]
+    [InlineData(true, 5, true)]   // player moving inside perception opens the gate
+    [InlineData(false, 5, false)] // non-player movement is ignored
+    [InlineData(true, 20, false)] // outside perception (16) is ignored
+    public void MovementOpensGateOnlyForPlayersInPerception(bool player, int distance, bool opens)
+    {
+        var map = Map.Maps[1];
+        Assert.NotNull(map);
+        map.GetAverageZ(1500, 1600, out _, out var z, out _);
+
+        var bc = Spawn(map, new Point3D(1500, 1600, (sbyte)z));
+        bc.NextReacquireTime = Core.TickCount + 8000;
+
+        var mover = new TargetStub { Player = player };
+        mover.DefaultMobileInit();
+        mover.MoveToWorld(new Point3D(1500 - distance, 1600, (sbyte)z), map);
+        _created.Add(mover);
+
+        bc.OnMovement(mover, new Point3D(1400, 1600, (sbyte)z));
+
+        Assert.Equal(opens, Core.TickCount - bc.NextReacquireTime >= 0);
+    }
+
     [Fact]
     public void SuccessfulAcquire_HoldsFullDelay()
     {

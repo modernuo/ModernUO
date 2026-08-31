@@ -949,8 +949,20 @@ namespace Server.Mobiles
         public virtual TimeSpan ReacquireDelay => TimeSpan.FromSeconds(10.0);
 
         // Retry pace after a scan that found nothing; the full ReacquireDelay applies only
-        // after a successful acquire, as target stickiness.
-        public virtual TimeSpan FailedReacquireDelay => TimeSpan.FromSeconds(1.0);
+        // after a successful acquire, as target stickiness. Walk-up aggro does not wait on
+        // this — a player moving inside perception opens the gate (ShouldNoticeMovement);
+        // this is the fallback for what movement cannot signal (reveals, doors, summons).
+        public virtual TimeSpan FailedReacquireDelay => TimeSpan.FromSeconds(4.0);
+
+        // A gate-blocked creature notices a player moving inside its perception and scans
+        // on its next think — walk-up aggro without per-second polling. Not the paragon
+        // insta-acquire (AcquireOnApproach): the think cadence keeps the reaction unhurried.
+        private bool ShouldNoticeMovement(Mobile m) =>
+            Combatant == null && m.Player && !m.Hidden &&
+            Core.TickCount - NextReacquireTime < 0 &&
+            !Controlled && !Summoned && !BardPacified &&
+            FightMode != FightMode.None && FightMode != FightMode.Aggressor &&
+            InRange(m.Location, RangePerception);
         public virtual bool ReacquireOnMovement => false;
         public virtual bool AcquireOnApproach => m_Paragon;
         public virtual int AcquireOnApproachRange => 10;
@@ -2873,7 +2885,7 @@ namespace Server.Mobiles
                     DoHarmful(m);
                 }
             }
-            else if (ReacquireOnMovement)
+            else if (ReacquireOnMovement || ShouldNoticeMovement(m))
             {
                 ForceReacquire();
             }

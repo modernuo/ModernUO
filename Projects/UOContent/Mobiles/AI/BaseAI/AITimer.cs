@@ -31,7 +31,7 @@ public sealed class AITimer : Timer
     private int _detectHiddenMinDelay;
     private int _detectHiddenMaxDelay;
 
-    public AITimer(BaseAI owner) : base(TimeSpan.FromMilliseconds(Utility.Random(3000)),
+    public AITimer(BaseAI owner) : base(TimeSpan.FromMilliseconds(Utility.Random(256)),
         TimeSpan.FromSeconds(owner.Mobile.CurrentSpeed))
     {
         _owner = owner;
@@ -48,7 +48,11 @@ public sealed class AITimer : Timer
             return;
         }
 
-        Start(); // keeps the stagger Delay
+        // Activation is player-visible (sector wake, spawn, resurrection): a short random
+        // spread wakes the creature within a think while a sector's worth of timers still
+        // avoids a same-tick burst. The construction stagger (up to 3s) read as lag.
+        Delay = TimeSpan.FromMilliseconds(Utility.Random(256));
+        Start();
         _nextWake = Core.TickCount + (long)Delay.TotalMilliseconds;
     }
 
