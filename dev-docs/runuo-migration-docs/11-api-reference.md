@@ -133,6 +133,7 @@ Alphabetical by RunUO API name. Use Ctrl+F / Cmd+F to search.
 | `MoveTo(m, run, range)` | `MoveTo(m, range)` | `run` removed; the Running bit is derived from the step pace (`BaseAI.ShouldRun`) |
 | `WalkMobileRange(m, steps, run, min, max)` | `WalkMobileRange(m, steps, min, max)` | Same |
 | `PathFollower.Follow(run, range)` | `Follow(range)` | Same |
+| `AcquireOnApproach` (bool) | `AcquireOnApproachDelay` (TimeSpan) | Reaction-time gradient; `Zero` = old instant behavior |
 
 ## Networking
 

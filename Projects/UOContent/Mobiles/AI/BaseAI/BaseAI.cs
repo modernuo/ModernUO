@@ -868,8 +868,8 @@ public abstract partial class BaseAI
 
         var acquired = AcquireNewFocusMob(Mobile.Map, iRange, acqType, bPlayerOnly, bFacFriend, bFacFoe);
 
-        // Reaction time is the movement-notice path (BaseCreature.NoticeMovement), not
-        // this poll — every scan honors the full delay.
+        // Reaction time is the approach path (BaseCreature.ScheduleAcquireOnApproach),
+        // not this poll — every scan honors the full delay.
         Mobile.NextReacquireTime = Core.TickCount + reacquireDelay;
 
         return acquired;

@@ -295,6 +295,23 @@ flood the client's step queue. Movement APIs (`MoveTo`, `WalkMobileRange`,
 fast. Creatures step at most once per `CurrentMoveSpeed` period, paced from the step just
 taken — a stall never banks catch-up steps, so a resumed chase restarts at full pace.
 
+### Target Acquisition: the reaction-time gradient
+
+Acquisition is event-driven, not polled. The periodic scan (`AcquireFocusMob`) is gated by
+`ReacquireDelay` (10 s default) and every scan re-arms it in full, success or failure — it
+is target stickiness plus the fallback for what movement cannot signal (reveals, doors,
+summons). Reaction time comes from `BaseCreature.OnMovement`: an enemy moving inside
+`AcquireOnApproachRange` (paragons 10, default `RangePerception`) clamps the next scan to
+at most **`AcquireOnApproachDelay`** — the intelligence gradient. `TimeSpan.Zero`
+(paragons) also prods the AI, so the ranked scan engages within a timer-wheel turn; the
+2 s default reads as "took a beat to notice you"; larger is dumber; a creature that
+overrides the delay above `ReacquireDelay` is effectively oblivious to approach. Repeated
+steps cannot shorten the clamp, so an armed creature scans once per delay period, not once
+per step or think. `ReacquireOnMovement` remains the broader hook (any mover, no enemy
+check, scan next think). The gate self-heals: a deadline further out than `ReacquireDelay`
+is illegal and reads as open, so no wedged or wrapped value can silence acquisition beyond
+one delay period.
+
 ### OnThink: the excess-call contract
 
 `OnThink()` is a scheduler pass, not an action. The AI timer calls it *at least* at the

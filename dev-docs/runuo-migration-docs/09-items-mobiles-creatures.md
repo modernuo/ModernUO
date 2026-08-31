@@ -497,6 +497,25 @@ An isolated step (after the creature stood for at least a walk interval) goes ou
 walk regardless of pace — only a continuing cadence, or a pace faster than the run
 interpolation, flags run.
 
+## Target Acquisition: `AcquireOnApproach` Is a Delay
+
+RunUO's `AcquireOnApproach` bool (paragon insta-aggro on approach) is now
+`AcquireOnApproachDelay`, a `TimeSpan` reaction-time gradient that applies to every
+creature — enemy movement inside `AcquireOnApproachRange` schedules a scan within the
+delay instead of waiting out the 10 s `ReacquireDelay` poll:
+
+```csharp
+// RunUO
+public override bool AcquireOnApproach => true;
+
+// ModernUO — Zero is the old instant behavior; larger values are dumber
+public override TimeSpan AcquireOnApproachDelay => TimeSpan.Zero;
+```
+
+`AcquireOnApproachRange` now defaults to `RangePerception` (paragons keep 10). The
+acquired target comes from the normal FightMode-ranked scan, not from whichever mobile
+happened to move. See `content-patterns.md` § Target Acquisition.
+
 ## Item Name Changes
 
 ```csharp
