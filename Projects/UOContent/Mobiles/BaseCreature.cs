@@ -949,10 +949,9 @@ namespace Server.Mobiles
         public virtual TimeSpan ReacquireDelay => TimeSpan.FromSeconds(10.0);
 
         // The intelligence gradient (formerly the AcquireOnApproach bool): an enemy moving
-        // inside AcquireOnApproachRange pulls the next scan to at most this far away. Zero
-        // engages instantly on movement — the old paragon behavior. Ladder: Zero (instant,
-        // forced engage) > ReacquireOnMovement (scan next think) > bounded delay (default)
-        // > pure ReacquireDelay (oblivious).
+        // inside AcquireOnApproachRange pulls the next scan to at most this far away —
+        // Zero (paragons) scans on the very next think, larger is dumber, and pure
+        // ReacquireDelay (no approach reaction) is the oblivious floor.
         public virtual TimeSpan AcquireOnApproachDelay => m_Paragon ? TimeSpan.Zero : TimeSpan.FromSeconds(2.0);
 
         public virtual int AcquireOnApproachRange => m_Paragon ? 10 : RangePerception;
@@ -2890,22 +2889,13 @@ namespace Server.Mobiles
 
         public override void OnMovement(Mobile m, Point3D oldLocation)
         {
-            var acquireOnApproach = ShouldAcquireOnApproach(m);
-
-            if (acquireOnApproach && AcquireOnApproachDelay <= TimeSpan.Zero)
+            if (ShouldAcquireOnApproach(m))
             {
-                // The gradient's floor: instant engage (the old paragon behavior).
-                Combatant = FocusMob = m;
-                AIObject?.MoveTo(m, 1);
-                DoHarmful(m);
+                ScheduleAcquireOnApproach();
             }
             else if (ReacquireOnMovement)
             {
                 ForceReacquire();
-            }
-            else if (acquireOnApproach)
-            {
-                ScheduleAcquireOnApproach();
             }
 
             SpeechType?.OnMovement(this, m, oldLocation);

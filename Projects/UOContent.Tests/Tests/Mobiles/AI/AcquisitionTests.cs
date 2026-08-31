@@ -139,7 +139,7 @@ public class AcquisitionTests : IDisposable
     }
 
     [Fact]
-    public void ZeroApproachDelay_EngagesInstantly()
+    public void ZeroApproachDelay_OpensGateImmediately()
     {
         var map = Map.Maps[1];
         Assert.NotNull(map);
@@ -158,7 +158,9 @@ public class AcquisitionTests : IDisposable
 
         bc.OnMovement(mover, new Point3D(1400, 1600, (sbyte)z));
 
-        Assert.Equal(mover, bc.Combatant);
+        // Zero = scan on the very next think: the gate is open, no direct engage.
+        Assert.True(Core.TickCount - bc.NextReacquireTime >= 0);
+        Assert.Null(bc.Combatant);
     }
 
     [Fact]
