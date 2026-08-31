@@ -2053,8 +2053,6 @@ namespace Server.Mobiles
         {
             base.Deserialize(reader);
 
-            // Not serialized; the 0 default blocks acquisition on hosts whose tick counter
-            // starts negative (tick fields must seed from a live tick, never rely on 0).
             NextReacquireTime = Core.TickCount;
 
             var version = reader.ReadInt();
