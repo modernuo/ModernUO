@@ -219,7 +219,7 @@ namespace Server.Engines.Harvest
                             }
                             else
                             {
-                                item.Delete();
+                                bonusItem?.Delete();
                             }
                         }
 
