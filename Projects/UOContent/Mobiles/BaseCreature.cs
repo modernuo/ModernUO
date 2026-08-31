@@ -948,21 +948,31 @@ namespace Server.Mobiles
 
         public virtual TimeSpan ReacquireDelay => TimeSpan.FromSeconds(10.0);
 
-        // Retry pace after a scan that found nothing; the full ReacquireDelay applies only
-        // after a successful acquire, as target stickiness. Walk-up aggro does not wait on
-        // this — a player moving inside perception opens the gate (ShouldNoticeMovement);
-        // this is the fallback for what movement cannot signal (reveals, doors, summons).
-        public virtual TimeSpan FailedReacquireDelay => TimeSpan.FromSeconds(4.0);
+        // Reaction-time knob: a player moving inside perception pulls the next scan to at
+        // most this far away (see NoticeMovement). The intelligence ladder:
+        // AcquireOnApproach (instant, forced engage) > ReacquireOnMovement (scan next
+        // think) > this bounded notice (default) > pure ReacquireDelay (oblivious).
+        public virtual TimeSpan NoticeMovementDelay => TimeSpan.FromSeconds(2.0);
 
-        // A gate-blocked creature notices a player moving inside its perception and scans
-        // on its next think — walk-up aggro without per-second polling. Not the paragon
-        // insta-acquire (AcquireOnApproach): the think cadence keeps the reaction unhurried.
+        // Bounded notice: clamp the scan deadline instead of opening the gate — repeated
+        // steps cannot shorten it further, so a player moving beside an armed creature
+        // yields one scan per notice period, not one per think.
+        private void NoticeMovement()
+        {
+            var notice = Core.TickCount + (long)NoticeMovementDelay.TotalMilliseconds;
+
+            if (notice - NextReacquireTime < 0)
+            {
+                NextReacquireTime = notice;
+            }
+        }
+
         private bool ShouldNoticeMovement(Mobile m) =>
             Combatant == null && m.Player && !m.Hidden &&
-            Core.TickCount - NextReacquireTime < 0 &&
             !Controlled && !Summoned && !BardPacified &&
             FightMode != FightMode.None && FightMode != FightMode.Aggressor &&
             InRange(m.Location, RangePerception);
+
         public virtual bool ReacquireOnMovement => false;
         public virtual bool AcquireOnApproach => m_Paragon;
         public virtual int AcquireOnApproachRange => 10;
@@ -2885,9 +2895,13 @@ namespace Server.Mobiles
                     DoHarmful(m);
                 }
             }
-            else if (ReacquireOnMovement || ShouldNoticeMovement(m))
+            else if (ReacquireOnMovement)
             {
                 ForceReacquire();
+            }
+            else if (ShouldNoticeMovement(m))
+            {
+                NoticeMovement();
             }
 
             SpeechType?.OnMovement(this, m, oldLocation);

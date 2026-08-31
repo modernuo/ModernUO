@@ -850,7 +850,13 @@ public abstract partial class BaseAI
             return false;
         }
 
-        if (Core.TickCount - Mobile.NextReacquireTime < 0)
+        var reacquireDelay = (long)Mobile.ReacquireDelay.TotalMilliseconds;
+        var gateRemaining = Mobile.NextReacquireTime - Core.TickCount;
+
+        // Self-healing gate: nothing may legally arm the deadline further out than
+        // ReacquireDelay, so a wedged or wrapped value cannot silence acquisition —
+        // it reads as open and the scan below re-arms it sanely.
+        if (gateRemaining > 0 && gateRemaining <= reacquireDelay)
         {
             Mobile.FocusMob = null;
             return false;
@@ -862,11 +868,9 @@ public abstract partial class BaseAI
 
         var acquired = AcquireNewFocusMob(Mobile.Map, iRange, acqType, bPlayerOnly, bFacFriend, bFacFoe);
 
-        // A successful acquire holds for the full delay; an empty scan retries quickly.
-        // Re-arming the long delay on failure left a creature blind for the whole delay
-        // to a player walking up (walk-up aggro latency uniform in 0..ReacquireDelay).
-        Mobile.NextReacquireTime = Core.TickCount +
-            (int)(acquired ? Mobile.ReacquireDelay : Mobile.FailedReacquireDelay).TotalMilliseconds;
+        // Reaction time is the movement-notice path (BaseCreature.NoticeMovement), not
+        // this poll — every scan honors the full delay.
+        Mobile.NextReacquireTime = Core.TickCount + reacquireDelay;
 
         return acquired;
     }
