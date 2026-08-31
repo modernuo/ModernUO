@@ -28,6 +28,7 @@ public sealed class AITimer : Timer
     private long _nextThink;
     private long _nextWake; // when the pending wheel entry fires
     private bool _inTick;
+    private bool _spreadPhase;
     private int _detectHiddenMinDelay;
     private int _detectHiddenMaxDelay;
 
@@ -37,11 +38,13 @@ public sealed class AITimer : Timer
         _owner = owner;
         _owner._nextDetectHidden = Core.TickCount;
         _nextThink = Core.TickCount;
+        _spreadPhase = true;
     }
 
     public void Activate()
     {
         _nextThink = Core.TickCount;
+        _spreadPhase = true;
 
         if (Running)
         {
@@ -50,7 +53,8 @@ public sealed class AITimer : Timer
 
         // Activation is player-visible (sector wake, spawn, resurrection): a short random
         // spread wakes the creature within a think while a sector's worth of timers still
-        // avoids a same-tick burst. The construction stagger (up to 3s) read as lag.
+        // avoids a same-tick burst. Cohort desync happens after the first think (see
+        // _spreadPhase) — a long first-wake delay here read as lag.
         Delay = TimeSpan.FromMilliseconds(Utility.Random(256));
         Start();
         _nextWake = Core.TickCount + (long)Delay.TotalMilliseconds;
@@ -152,7 +156,19 @@ public sealed class AITimer : Timer
             }
 
             // Cadence from the post-decision speed (decisions may flip active/passive).
-            _nextThink = Core.TickCount + (long)(_owner.Mobile.CurrentSpeed * 1000);
+            var period = (long)(_owner.Mobile.CurrentSpeed * 1000);
+            _nextThink = Core.TickCount + period;
+
+            if (_spreadPhase)
+            {
+                // One-time desync after a wake: a cohort activated by the same player step
+                // (sector wake, world load) shares a think phase and would move in
+                // lock-step forever — the RunUO town artifact. A random fraction of one
+                // period spreads each creature's cadence without delaying the first,
+                // player-visible think.
+                _spreadPhase = false;
+                _nextThink += Utility.Random((int)Math.Max(1, period));
+            }
         }
         else
         {
