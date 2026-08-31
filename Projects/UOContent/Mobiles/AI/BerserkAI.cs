@@ -12,7 +12,7 @@ public class BerserkAI : BaseAI
 
         if (AcquireFocusMob(Mobile.RangePerception, FightMode.Closest, false, true, true))
         {
-            this.DebugSayFormatted($"I have detected {Mobile.FocusMob.Name} and I will attack");
+            this.DebugSayFormatted($"I have detected {Mobile.FocusMob.Name}, attacking");
 
             Mobile.Combatant = Mobile.FocusMob;
             Action = ActionType.Combat;
