@@ -936,14 +936,6 @@ namespace Server.Mobiles
 
         public virtual bool GivesMLMinorArtifact => false;
 
-        /* To save on cpu usage, RunUO creatures only reacquire creatures under the following circumstances:
-         *  - 10 seconds have elapsed since the last time it tried
-         *  - The creature was attacked
-         *  - Some creatures, like dragons, will reacquire when they see someone move
-         *
-         * This functionality appears to be implemented on OSI as well
-         */
-
         public long NextReacquireTime { get; set; }
 
         public virtual TimeSpan ReacquireDelay => TimeSpan.FromSeconds(10.0);
