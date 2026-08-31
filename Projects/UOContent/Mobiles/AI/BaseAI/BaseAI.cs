@@ -853,8 +853,6 @@ public abstract partial class BaseAI
         var reacquireDelay = (long)Mobile.ReacquireDelay.TotalMilliseconds;
         var gateRemaining = Mobile.NextReacquireTime - Core.TickCount;
 
-        // Nothing may legally arm the deadline further out than ReacquireDelay: a wedged
-        // or wrapped value reads as open instead of silencing acquisition.
         if (gateRemaining > 0 && gateRemaining <= reacquireDelay)
         {
             Mobile.FocusMob = null;
