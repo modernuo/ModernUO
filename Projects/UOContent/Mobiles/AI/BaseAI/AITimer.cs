@@ -28,23 +28,20 @@ public sealed class AITimer : Timer
     private long _nextThink;
     private long _nextWake; // when the pending wheel entry fires
     private bool _inTick;
-    private bool _spreadPhase;
     private int _detectHiddenMinDelay;
     private int _detectHiddenMaxDelay;
 
-    public AITimer(BaseAI owner) : base(TimeSpan.FromMilliseconds(Utility.Random(256)),
-        TimeSpan.FromSeconds(owner.Mobile.CurrentSpeed))
+    // The initial delay is irrelevant: Activate is the only start path and sets its own.
+    public AITimer(BaseAI owner) : base(TimeSpan.Zero, TimeSpan.FromSeconds(owner.Mobile.CurrentSpeed))
     {
         _owner = owner;
         _owner._nextDetectHidden = Core.TickCount;
         _nextThink = Core.TickCount;
-        _spreadPhase = true;
     }
 
     public void Activate()
     {
         _nextThink = Core.TickCount;
-        _spreadPhase = true;
 
         if (Running)
         {
@@ -52,8 +49,8 @@ public sealed class AITimer : Timer
         }
 
         // Short random spread: the creature responds within a think while a sector's
-        // worth of timers avoids a same-tick burst; cohort desync happens after the
-        // first think (see _spreadPhase).
+        // worth of timers avoids a same-tick burst; the idle think jitter keeps the
+        // cohort apart from there.
         Delay = TimeSpan.FromMilliseconds(Utility.Random(256));
         Start();
         _nextWake = Core.TickCount + (long)Delay.TotalMilliseconds;
@@ -158,14 +155,14 @@ public sealed class AITimer : Timer
             var period = (long)(_owner.Mobile.CurrentSpeed * 1000);
             _nextThink = Core.TickCount + period;
 
-            if (_spreadPhase)
+            // Idle cadence drifts: a zero-mean jitter random-walks think phases apart, so
+            // creatures spawned or woken together cannot stay in lock-step (a one-shot
+            // spread can collide and identical periods never separate). Engaged cadence
+            // stays exact — pursuit timing anchors to real step times.
+            if (_owner.Mobile.CurrentSpeed == _owner.Mobile.PassiveSpeed)
             {
-                // One-time desync after a wake: cohorts activated together (sector wake,
-                // world load) share a think phase and would move in lock-step forever. A
-                // random fraction of one period spreads the cadence without delaying the
-                // first think.
-                _spreadPhase = false;
-                _nextThink += Utility.Random((int)Math.Max(1, period));
+                var jitter = (int)(period >> 3);
+                _nextThink += Utility.RandomMinMax(-jitter, jitter);
             }
         }
         else
