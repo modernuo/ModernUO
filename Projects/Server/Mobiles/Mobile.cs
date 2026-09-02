@@ -722,14 +722,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
     public bool HasAggressed => _aggressed.Count > 0;
 
-    // Refreshes an entry and moves it to the tail so the list stays in LastCombatTime order.
-    private static void RefreshAggression(ref ValueLinkList<AggressorInfo> list, AggressorInfo info)
-    {
-        info.Refresh();
-        list.Remove(info);
-        list.AddLast(info);
-    }
-
     public bool ChangingCombatant => m_ChangingCombatant > 0;
 
     private void ExpireCombatant()
@@ -3808,6 +3800,14 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     }
 
     public virtual void AggressiveAction(Mobile aggressor) => AggressiveAction(aggressor, false);
+
+    // Refreshes an entry and moves it to the tail so the list stays in LastCombatTime order.
+    private static void RefreshAggression(ref ValueLinkList<AggressorInfo> list, AggressorInfo info)
+    {
+        info.Refresh();
+        list.Remove(info);
+        list.AddLast(info);
+    }
 
     public virtual void AggressiveAction(Mobile aggressor, bool criminal)
     {
