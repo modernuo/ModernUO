@@ -456,6 +456,9 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     /// first <see cref="AddSkillMod"/> and released when the last mod is removed.
     /// </summary>
     public List<SkillMod> SkillMods => _skillMods;
+
+    internal List<StatMod> StatModsInternal => _statMods;
+
     public List<ResistanceMod> ResistanceMods => _resistanceMods;
 
     [CommandProperty(AccessLevel.GameMaster)]
