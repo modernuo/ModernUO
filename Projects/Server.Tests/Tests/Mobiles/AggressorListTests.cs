@@ -134,7 +134,61 @@ public class AggressorListTests
     }
 
     [Fact]
-    public void RemoveAggressor_UnlinksAndEmpties()
+    public void RepeatAggression_RelinksAggressedSideToTail()
+    {
+        var victim = new TestMobile();
+        var a = new TestMobile();
+        var b = new TestMobile();
+        var c = new TestMobile();
+
+        try
+        {
+            a.AggressiveAction(victim, criminal: false);
+            b.AggressiveAction(victim, criminal: false);
+            c.AggressiveAction(victim, criminal: false);
+            b.AggressiveAction(victim, criminal: false); // b was in the middle of the aggressed list
+
+            Assert.Equal(new[] { a, c, b }, Defenders(victim));
+        }
+        finally
+        {
+            victim.Delete();
+            a.Delete();
+            b.Delete();
+            c.Delete();
+        }
+    }
+
+    [Fact]
+    public void MutualCombat_KeepsOnePairedRecord_AndDeleteClearsPeer()
+    {
+        var victim = new TestMobile();
+        var attacker = new TestMobile();
+
+        try
+        {
+            victim.AggressiveAction(attacker, criminal: false);
+            attacker.AggressiveAction(victim, criminal: false); // fighting back does not add a second pair
+
+            Assert.Equal(1, victim.Aggressors.Count);
+            Assert.Equal(1, attacker.Aggressed.Count);
+            Assert.Equal(0, attacker.Aggressors.Count);
+            Assert.Equal(0, victim.Aggressed.Count);
+
+            attacker.Delete();
+
+            Assert.Equal(0, victim.Aggressors.Count);
+            Assert.False(victim.HasAggressors);
+        }
+        finally
+        {
+            victim.Delete();
+            attacker.Delete(); // deleting twice is a no-op
+        }
+    }
+
+    [Fact]
+    public void RemoveAggression_UnlinksBothHalves()
     {
         var victim = new TestMobile();
         var attacker = new TestMobile();
