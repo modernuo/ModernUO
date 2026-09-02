@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 namespace Server.Mobiles;
 
 public class MeleeAI : BaseAI
@@ -14,6 +16,7 @@ public class MeleeAI : BaseAI
         if (AcquireFocusMob(Mobile.RangePerception, Mobile.FightMode, false, false, true))
         {
             this.DebugSayFormatted($"I have detected {Mobile.FocusMob.Name}, attacking");
+
             Mobile.Combatant = Mobile.FocusMob;
             Action = ActionType.Combat;
         }
@@ -65,13 +68,9 @@ public class MeleeAI : BaseAI
         return true;
     }
 
-    private bool IsValidCombatant(Mobile combatant)
-    {
-        return combatant?.Deleted == false 
-               && combatant.Map == Mobile.Map 
-               && combatant.Alive 
-               && !combatant.IsDeadBondedPet;
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private bool IsValidCombatant(Mobile combatant) =>
+        combatant?.Deleted == false && combatant.Map == Mobile.Map && combatant.Alive && !combatant.IsDeadBondedPet;
 
     private bool HandleOutOfRangeCombatant(Mobile combatant)
     {
@@ -127,7 +126,8 @@ public class MeleeAI : BaseAI
     {
         if (AcquireFocusMob(Mobile.RangePerception, Mobile.FightMode, false, false, true))
         {
-            this.DebugSayFormatted($"I have detected {Mobile.FocusMob.Name}, attacking.");
+            this.DebugSayFormatted($"I have detected {Mobile.FocusMob.Name}, attacking");
+
             Mobile.Combatant = Mobile.FocusMob;
             Action = ActionType.Combat;
         }

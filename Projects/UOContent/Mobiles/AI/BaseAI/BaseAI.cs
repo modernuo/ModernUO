@@ -850,22 +850,24 @@ public abstract partial class BaseAI
             return false;
         }
 
-        if (Core.TickCount - Mobile.NextReacquireTime < 0)
+        var reacquireDelay = (long)Mobile.ReacquireDelay.TotalMilliseconds;
+        var gateRemaining = Mobile.NextReacquireTime - Core.TickCount;
+
+        if (gateRemaining > 0 && gateRemaining <= reacquireDelay)
         {
             Mobile.FocusMob = null;
             return false;
         }
 
-        Mobile.NextReacquireTime = Core.TickCount + (int)Mobile.ReacquireDelay.TotalMilliseconds;
+        DebugSay("Acquiring new target...", 0);
 
-        DebugSay("Acquiring new target...");
+        var acquired = AcquireNewFocusMob(Mobile.Map, iRange, acqType, bPlayerOnly, bFacFriend, bFacFoe);
 
-        if (Mobile.Map == null)
-        {
-            return Mobile.FocusMob != null;
-        }
+        // Reaction time is the approach path (BaseCreature.ScheduleAcquireOnApproach),
+        // not this poll — every scan honors the full delay.
+        Mobile.NextReacquireTime = Core.TickCount + reacquireDelay;
 
-        return AcquireNewFocusMob(Mobile.Map, iRange, acqType, bPlayerOnly, bFacFriend, bFacFoe);
+        return acquired;
     }
 
     private bool HandleBardProvoked()
@@ -941,8 +943,10 @@ public abstract partial class BaseAI
 
     private bool AcquireNewFocusMob(Map map, int iRange, FightMode acqType, bool bPlayerOnly, bool bFacFriend, bool bFacFoe)
     {
-        Mobile newFocusMob = null, enemySummonMob = null;
-        double val = double.MinValue, enemySummonVal = double.MinValue;
+        Mobile newFocusMob = null;
+        Mobile enemySummonMob = null;
+        var val = double.MinValue;
+        var enemySummonVal = double.MinValue;
 
         foreach (var m in map.GetMobilesInRange(Mobile.Location, iRange))
         {

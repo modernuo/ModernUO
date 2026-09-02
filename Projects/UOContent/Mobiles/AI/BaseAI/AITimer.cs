@@ -31,8 +31,8 @@ public sealed class AITimer : Timer
     private int _detectHiddenMinDelay;
     private int _detectHiddenMaxDelay;
 
-    public AITimer(BaseAI owner) : base(TimeSpan.FromMilliseconds(Utility.Random(3000)),
-        TimeSpan.FromSeconds(owner.Mobile.CurrentSpeed))
+    // The initial delay is irrelevant: Activate is the only start path and sets its own.
+    public AITimer(BaseAI owner) : base(TimeSpan.Zero, TimeSpan.FromSeconds(owner.Mobile.CurrentSpeed))
     {
         _owner = owner;
         _owner._nextDetectHidden = Core.TickCount;
@@ -48,7 +48,11 @@ public sealed class AITimer : Timer
             return;
         }
 
-        Start(); // keeps the stagger Delay
+        // Short random spread: the creature responds within a think while a sector's
+        // worth of timers avoids a same-tick burst; the idle think jitter keeps the
+        // cohort apart from there.
+        Delay = TimeSpan.FromMilliseconds(Utility.Random(256));
+        Start();
         _nextWake = Core.TickCount + (long)Delay.TotalMilliseconds;
     }
 
@@ -148,7 +152,18 @@ public sealed class AITimer : Timer
             }
 
             // Cadence from the post-decision speed (decisions may flip active/passive).
-            _nextThink = Core.TickCount + (long)(_owner.Mobile.CurrentSpeed * 1000);
+            var period = (long)(_owner.Mobile.CurrentSpeed * 1000);
+            _nextThink = Core.TickCount + period;
+
+            // Idle cadence drifts: a zero-mean jitter random-walks think phases apart, so
+            // creatures spawned or woken together cannot stay in lock-step (a one-shot
+            // spread can collide and identical periods never separate). Engaged cadence
+            // stays exact — pursuit timing anchors to real step times.
+            if (_owner.Mobile.CurrentSpeed == _owner.Mobile.PassiveSpeed)
+            {
+                var jitter = (int)(period >> 3);
+                _nextThink += Utility.RandomMinMax(-jitter, jitter);
+            }
         }
         else
         {

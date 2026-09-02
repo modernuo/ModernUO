@@ -936,20 +936,49 @@ namespace Server.Mobiles
 
         public virtual bool GivesMLMinorArtifact => false;
 
-        /* To save on cpu usage, RunUO creatures only reacquire creatures under the following circumstances:
-         *  - 10 seconds have elapsed since the last time it tried
-         *  - The creature was attacked
-         *  - Some creatures, like dragons, will reacquire when they see someone move
-         *
-         * This functionality appears to be implemented on OSI as well
-         */
-
         public long NextReacquireTime { get; set; }
 
         public virtual TimeSpan ReacquireDelay => TimeSpan.FromSeconds(10.0);
-        public virtual bool ReacquireOnMovement => false;
-        public virtual bool AcquireOnApproach => m_Paragon;
+
+        // Reaction-time gradient: an enemy moving inside AcquireOnApproachRange pulls the
+        // next scan to at most this far away. Zero (paragons) scans on the very next
+        // think; larger is dumber; pure ReacquireDelay is the oblivious floor.
+        public virtual TimeSpan AcquireOnApproachDelay => m_Paragon ? TimeSpan.Zero : TimeSpan.FromSeconds(2.0);
+
+        // Reactive range is tighter than the periodic scan's RangePerception: approach
+        // aggro starts on-screen; the ReacquireDelay poll keeps the wide ambient sweep.
         public virtual int AcquireOnApproachRange => 10;
+
+        // Clamps the scan deadline rather than opening the gate: repeated steps cannot
+        // shorten it further, so an armed creature scans once per delay period.
+        private void ScheduleAcquireOnApproach()
+        {
+            var delay = (long)AcquireOnApproachDelay.TotalMilliseconds;
+            var deadline = Core.TickCount + delay;
+
+            if (deadline - NextReacquireTime < 0)
+            {
+                NextReacquireTime = deadline;
+            }
+
+            if (delay <= 0)
+            {
+                // Zero: think now — the ranked scan engages within a wheel turn. Prod is
+                // spam-safe; the Combatant == null guard stops the prods once engaged.
+                AIObject?.AITimer?.Prod();
+            }
+        }
+
+        // IsEnemy first — it cheaply rejects the common case (a same-team wild creature
+        // wandering past); CanBeHarmful covers hidden movers via CanSee.
+        private bool ShouldAcquireOnApproach(Mobile m) =>
+            Combatant == null &&
+            !Controlled && !Summoned && !BardPacified &&
+            FightMode != FightMode.None && FightMode != FightMode.Aggressor &&
+            InRange(m.Location, AcquireOnApproachRange) &&
+            IsEnemy(m) && CanBeHarmful(m, false);
+
+        public virtual bool ReacquireOnMovement => false;
 
         public static bool Summoning { get; set; }
 
@@ -2024,6 +2053,8 @@ namespace Server.Mobiles
         {
             base.Deserialize(reader);
 
+            NextReacquireTime = Core.TickCount;
+
             var version = reader.ReadInt();
 
             m_CurrentAI = (AIType)reader.ReadInt();
@@ -2855,15 +2886,9 @@ namespace Server.Mobiles
 
         public override void OnMovement(Mobile m, Point3D oldLocation)
         {
-            if (AcquireOnApproach && !Controlled && !Summoned && !BardPacified && FightMode != FightMode.Aggressor)
+            if (ShouldAcquireOnApproach(m))
             {
-                if (InRange(m.Location, AcquireOnApproachRange) && !InRange(oldLocation, AcquireOnApproachRange) &&
-                    CanBeHarmful(m) && IsEnemy(m))
-                {
-                    Combatant = FocusMob = m;
-                    AIObject?.MoveTo(m, 1);
-                    DoHarmful(m);
-                }
+                ScheduleAcquireOnApproach();
             }
             else if (ReacquireOnMovement)
             {

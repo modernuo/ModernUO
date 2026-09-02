@@ -29,7 +29,9 @@ description: >
    overridden). Prefer `npc-speeds.json` buckets (`SpeedClass`); `SetSpeed()` sets think
    AND clears move overrides, `SetMoveSpeed()` sets move only. The client `Running` bit is
    derived from the step pace (`BaseAI.ShouldRun`); movement APIs take no run argument --
-   see `dev-docs/content-patterns.md` § Creature Speeds
+   see `dev-docs/content-patterns.md` § Creature Speeds. Reaction time to approaching
+   enemies is `AcquireOnApproachDelay` (TimeSpan gradient; `Zero` = paragon snap, 2s
+   default, `ReacquireDelay`-only = oblivious) -- see § Target Acquisition
 8. **`OnThink` overrides must be excess-call tolerant** -- it fires more often than the
    think cadence (player commands prod it; speed-ups reschedule it). Gate consequential
    work on a tick-count deadline (subtraction form) or make it idempotent; bare per-call
