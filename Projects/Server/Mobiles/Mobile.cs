@@ -1627,7 +1627,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
     public virtual bool KeepsItemsOnDeath => m_AccessLevel > AccessLevel.Player;
 
-    public bool HasTrade => m_NetState?.Trades.Count > 0;
+    public bool HasTrade => m_NetState?.Trades?.Count > 0;
 
     public bool NoMoveHS { get; set; }
 

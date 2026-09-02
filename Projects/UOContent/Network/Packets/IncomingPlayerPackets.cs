@@ -86,11 +86,17 @@ public static class IncomingPlayerPackets
     public static void HuePickerResponse(NetState state, SpanReader reader)
     {
         var serial = reader.ReadUInt32();
-        _ = reader.ReadInt16(); // Item ID
+        reader.ReadInt16(); // Item ID
         var hue = Utility.ClipDyedHue(reader.ReadInt16() & 0x3FFF);
 
-        foreach (var huePicker in state.HuePickers)
+        if (state.HuePickers == null)
         {
+            return;
+        }
+
+        for (var i = 0; i < state.HuePickers.Count; i++)
+        {
+            var huePicker = state.HuePickers[i];
             if (huePicker.Serial == serial)
             {
                 state.RemoveHuePicker(huePicker);
@@ -287,12 +293,17 @@ public static class IncomingPlayerPackets
     public static void MenuResponse(NetState state, SpanReader reader)
     {
         var serial = reader.ReadUInt32();
-        int menuID = reader.ReadInt16();
+        reader.ReadInt16(); // menu id
         int index = reader.ReadInt16();
-        int itemID = reader.ReadInt16();
-        int hue = reader.ReadInt16();
+        reader.ReadInt16(); // item id
+        reader.ReadInt16(); // hue
 
         index -= 1; // convert from 1-based to 0-based
+
+        if (state.Menus == null)
+        {
+            return;
+        }
 
         for (var i = 0; i < state.Menus.Count; i++)
         {

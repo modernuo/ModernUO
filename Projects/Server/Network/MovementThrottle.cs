@@ -972,7 +972,7 @@ public static class MovementThrottle
             );
             logger.Debug(
                 "    RTT: avg={Avg}ms last={Last}ms var={Var} samples={RttSamples} stable={Stable} probe={Probe}",
-                ns.AverageRtt, ns._lastRtt, ns._rttVariance, ns._rttSampleCount, ns.HasStableConnection, probeStatus
+                ns.AverageRtt, ns.LastRtt, ns._rttVariance, ns._rttSampleCount, ns.HasStableConnection, probeStatus
             );
         }
 
@@ -1122,7 +1122,7 @@ public static class MovementThrottle
             Verdict = verdict,
             Confidence = confidence,
             AverageRtt = ns.AverageRtt,
-            LastRtt = ns._lastRtt,
+            LastRtt = ns.LastRtt,
             RttVariance = ns._rttVariance,
             StableConnection = ns.HasStableConnection,
             RttSampleCount = ns._rttSampleCount,

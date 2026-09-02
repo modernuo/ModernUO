@@ -15,7 +15,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Server.Logging;
 
@@ -70,7 +69,6 @@ public partial class NetState
     internal Queue<QueuedMovement> _movementQueue;          // Lazy initialized
     internal long _movementCredit;                          // Credit buffer for timing jitter
     internal long _nextMovementTime = Core.TickCount;       // When next movement is allowed
-    internal int _sustainedQueueDepth;                      // Tracks sustained high queue depth
     internal long _lastQueueDepthCheck = Core.TickCount;    // Throttle depth check frequency
     internal bool _hasQueuedMovements;                      // Fast check for Slice()
 
@@ -102,7 +100,6 @@ public partial class NetState
         _nextMovementTime = Core.TickCount;
         _movementCredit = 0;
         _hasQueuedMovements = false;
-        _sustainedQueueDepth = 0;
 
         // Reset movement history - next movement starts a new chain
         _hasMovementRecord = false;
@@ -169,7 +166,6 @@ public partial class NetState
     // RTT state
     internal bool _rttProbePending;                         // True while waiting for a probe response
     internal long _rttProbeTime;                            // When we sent the probe (valid only when _rttProbePending)
-    internal long _lastRtt;                                 // Most recent RTT measurement
     internal long[] _rttHistory;                            // Rolling history (lazy init)
     internal int _rttHistoryIndex;                          // Current position in history
     internal int _rttSampleCount;                           // Number of samples collected (saturates at RttHistorySize)
@@ -177,8 +173,10 @@ public partial class NetState
     internal long _nextRttProbe = Core.TickCount;           // When to send next probe
     internal int _rttProbeInterval = RttProbeIntervalNormal; // Current probe interval
 
-    // High-resolution timestamp for RTT measurement (Stopwatch ticks, not game loop ticks)
-    private long _rttProbeTimestampHiRes;
+    /// <summary>
+    /// Gets the most recent RTT measurement, or 0 if none has been recorded.
+    /// </summary>
+    public long LastRtt => _rttSampleCount > 0 ? _rttHistory[(_rttHistoryIndex - 1) & (RttHistorySize - 1)] : 0;
 
     /// <summary>
     /// Sets the RTT probe interval based on suspicion level.
@@ -215,7 +213,6 @@ public partial class NetState
             if (now - _rttProbeTime > 10000)
             {
                 _rttProbePending = false;
-                _rttProbeTimestampHiRes = 0;
             }
             return;
         }
@@ -226,7 +223,6 @@ public partial class NetState
         {
             _rttProbePending = true;
             _rttProbeTime = now;
-            _rttProbeTimestampHiRes = Stopwatch.GetTimestamp();
             _nextRttProbe = now + _rttProbeInterval + Utility.Random(RttProbeJitter);
 
             if (_movementLogging)
@@ -246,7 +242,6 @@ public partial class NetState
     /// </summary>
     public void RecordRttMeasurement()
     {
-        var nowHiRes = Stopwatch.GetTimestamp();
         var now = Core.TickCount;
 
         if (!_rttProbePending)
@@ -257,19 +252,15 @@ public partial class NetState
 
         var rtt = now - _rttProbeTime;
 
-        // High-resolution RTT in microseconds
-        var rttHiResUs = (nowHiRes - _rttProbeTimestampHiRes) * 1_000_000 / Stopwatch.Frequency;
-
         if (_movementLogging)
         {
             movementLogger.Debug(
-                "[RTT-Response] {Account}: {Rtt}ms (HiRes: {RttHiRes:F2}ms)",
-                Account?.Username ?? _toString, rtt, rttHiResUs / 1000.0
+                "[RTT-Response] {Account}: {Rtt}ms",
+                Account?.Username ?? _toString, rtt
             );
         }
 
         _rttProbePending = false;
-        _rttProbeTimestampHiRes = 0;
 
         // Sanity check - RTT should be positive and reasonable
         if (rtt is <= 0 or > 10000)
@@ -289,7 +280,6 @@ public partial class NetState
 
         // Update history
         _rttHistory[_rttHistoryIndex++ & (RttHistorySize - 1)] = rtt;
-        _lastRtt = rtt;
 
         // Track sample count (saturates at buffer size)
         if (_rttSampleCount < RttHistorySize)

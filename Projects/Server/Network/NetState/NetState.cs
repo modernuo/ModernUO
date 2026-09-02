@@ -109,9 +109,6 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         Address = address;
 
         Seeded = false;
-        HuePickers = [];
-        Menus = [];
-        Trades = [];
         NextActivityCheck = Core.TickCount + 30000;
         ConnectedOn = Core.Now;
         _toString = address?.ToString() ?? "(error)";
@@ -166,7 +163,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     public bool BlockAllPackets { get; set; }
 
-    public List<SecureTrade> Trades { get; }
+    public List<SecureTrade> Trades { get; private set; }
 
     public bool Seeded { get; set; }
 
@@ -260,8 +257,18 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     public void ValidateAllTrades()
     {
+        if (Trades == null)
+        {
+            return;
+        }
+
         for (var i = Trades.Count - 1; i >= 0; --i)
         {
+            if (Trades == null)
+            {
+                break;
+            }
+
             if (i >= Trades.Count)
             {
                 continue;
@@ -280,8 +287,18 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     public void CancelAllTrades()
     {
+        if (Trades == null)
+        {
+            return;
+        }
+
         for (var i = Trades.Count - 1; i >= 0; --i)
         {
+            if (Trades != null)
+            {
+                break;
+            }
+
             if (i < Trades.Count)
             {
                 Trades[i].Cancel();
@@ -291,11 +308,21 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     public void RemoveTrade(SecureTrade trade)
     {
-        Trades.Remove(trade);
+        Trades?.Remove(trade);
+
+        if (Trades?.Count == 0)
+        {
+            Trades = null;
+        }
     }
 
     public SecureTrade FindTrade(Mobile m)
     {
+        if (Trades == null)
+        {
+            return null;
+        }
+
         for (var i = 0; i < Trades.Count; ++i)
         {
             var trade = Trades[i];
@@ -311,6 +338,11 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     public SecureTradeContainer FindTradeContainer(Mobile m)
     {
+        if (Trades == null)
+        {
+            return null;
+        }
+
         for (var i = 0; i < Trades.Count; ++i)
         {
             var trade = Trades[i];
@@ -336,7 +368,11 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     {
         var newTrade = new SecureTrade(Mobile, state.Mobile);
 
+        Trades ??= [];
+
         Trades.Add(newTrade);
+
+        state.Trades ??= [];
         state.Trades.Add(newTrade);
 
         return newTrade.From.Container;
@@ -1176,8 +1212,16 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
         var a = Account;
 
-        Menus.Clear();
-        HuePickers.Clear();
+        Menus?.Clear();
+        Menus = null;
+
+        HuePickers?.Clear();
+        HuePickers = null;
+
+        // Just in case, but should already be nulled when Mobile.NetState is set to null and CancelAllTrades is called.
+        Trades?.Clear();
+        Trades = null;
+
         Account = null;
         ServerInfo = null;
         CityInfo = null;
