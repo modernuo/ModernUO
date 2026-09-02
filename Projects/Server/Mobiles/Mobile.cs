@@ -6478,9 +6478,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                     m_DexLock = (StatLockType)reader.ReadByte();
                     m_IntLock = (StatLockType)reader.ReadByte();
 
-                    _statMods = new List<StatMod>();
-                    _skillMods = new List<SkillMod>();
-
                     if (version < 32)
                     {
                         if (reader.ReadBool())
@@ -7813,8 +7810,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         m_FollowersMax = 5;
         Skills = new Skills(this);
         Items = new List<Item>();
-        _statMods = new List<StatMod>();
-        _skillMods = new List<SkillMod>();
         Map = Map.Internal;
         AutoPageNotify = true;
         Aggressors = new List<AggressorInfo>();
