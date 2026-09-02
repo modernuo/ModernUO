@@ -44,7 +44,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     private static readonly Queue<NetState> _connectingQueue = new(2048);
     private static readonly HashSet<NetState> _instances = new(2048);
-    public static IReadOnlySet<NetState> Instances => _instances;
+    public static HashSet<NetState> Instances => _instances;
 
     private readonly string _toString;
     private ClientVersion _version;

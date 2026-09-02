@@ -88,6 +88,11 @@ public static class MovementThrottle
             _maxCredit
         );
 
+        _maxRttBonus = ServerConfiguration.GetOrUpdateSetting(
+            "movementThrottle.maxRttBonus",
+            _maxRttBonus
+        );
+
         _hardQueueLimit = ServerConfiguration.GetOrUpdateSetting(
             "movementThrottle.hardQueueLimit",
             _hardQueueLimit
@@ -101,6 +106,16 @@ public static class MovementThrottle
         _minSamplesForRate = ServerConfiguration.GetOrUpdateSetting(
             "movementThrottle.minSamplesForRate",
             _minSamplesForRate
+        );
+
+        _maxChainGap = ServerConfiguration.GetOrUpdateSetting(
+            "movementThrottle.maxChainGap",
+            _maxChainGap
+        );
+
+        _speedHackNotificationCooldown = ServerConfiguration.GetOrUpdateSetting(
+            "movementThrottle.speedHackNotificationCooldown",
+            _speedHackNotificationCooldown
         );
 
         _suspiciousRateThreshold = (float)ServerConfiguration.GetOrUpdateSetting(
@@ -320,7 +335,6 @@ public static class MovementThrottle
     {
         ns.SendMovementRej(seq, mobile);
         ns.ResetMovementState();
-        _netStatesWithQueuedMovements.Remove(ns);
     }
 
     /// <summary>
@@ -333,20 +347,18 @@ public static class MovementThrottle
             return;
         }
 
-        // Process each NetState with queued movements
-        // Use a snapshot to avoid modification during iteration
-        var toProcess = new List<NetState>(_netStatesWithQueuedMovements);
-
-        for (var i = 0; i < toProcess.Count; i++)
+        foreach (var ns in _netStatesWithQueuedMovements)
         {
-            var ns = toProcess[i];
-            if (!ns.Running)
+            if (ns.Running)
             {
-                _netStatesWithQueuedMovements.Remove(ns);
-                continue;
+                ProcessMovementQueue(ns);
+                if (ns._hasQueuedMovements)
+                {
+                    continue;
+                }
             }
 
-            ProcessMovementQueue(ns);
+            _netStatesWithQueuedMovements.Remove(ns);
         }
     }
 
@@ -356,6 +368,7 @@ public static class MovementThrottle
     public static void ProcessMovementQueue(NetState ns)
     {
         var mobile = ns.Mobile;
+
         if (mobile?.Deleted != false)
         {
             ClearQueue(ns);
@@ -374,7 +387,7 @@ public static class MovementThrottle
         while (ns._movementQueue?.Count > 0)
         {
             // Check if it's time to execute
-            if (now < ns._nextMovementTime)
+            if (now - ns._nextMovementTime < 0)
             {
                 // Not yet - leave remaining items in queue for next Slice
                 break;
@@ -430,10 +443,6 @@ public static class MovementThrottle
 
         // Update tracking
         ns._hasQueuedMovements = ns._movementQueue?.Count > 0;
-        if (!ns._hasQueuedMovements)
-        {
-            _netStatesWithQueuedMovements.Remove(ns);
-        }
     }
 
     /// <summary>
@@ -469,7 +478,6 @@ public static class MovementThrottle
     {
         ns._movementQueue?.Clear();
         ns._hasQueuedMovements = false;
-        _netStatesWithQueuedMovements.Remove(ns);
     }
 
     // Maximum expected packets per second (mounted running = 100ms = 10/sec, plus tolerance)
@@ -516,7 +524,7 @@ public static class MovementThrottle
     private static void RecordMovement(NetState ns, long now, int cost, Direction dir, Mobile mobile)
     {
         // Calculate interval since last movement
-        var interval = ns._lastMovementRecordTime > 0
+        var interval = ns._hasMovementRecord
             ? (int)(now - ns._lastMovementRecordTime)
             : -1; // -1 indicates first movement (no previous time)
 
@@ -525,6 +533,7 @@ public static class MovementThrottle
         if (interval <= 0 || interval > _maxChainGap)
         {
             ns._lastMovementRecordTime = now;
+            ns._hasMovementRecord = true;
 
             // Use RTT to distinguish "stopped moving" vs "lagged"
             // - Stable low-latency connection with gap >> RTT → player stopped, reset history
@@ -613,6 +622,7 @@ public static class MovementThrottle
         }
 
         ns._lastMovementRecordTime = now;
+        ns._hasMovementRecord = true;
 
         // Debug logging
         if (_debugLogging && mobile?.RawName != null)
@@ -980,7 +990,7 @@ public static class MovementThrottle
         if (_debugLogging && ns.Mobile?.RawName != null)
         {
             var (burstSize, _) = DetectRecentBurst(ns);
-            var probeStatus = ns._rttProbeTime > 0 ? "pending" : "idle";
+            var probeStatus = ns._rttProbePending ? "pending" : "idle";
             var queueDepth = ns._movementQueue?.Count ?? 0;
             logger.Debug(
                 "[RateCheck] {Name}: rate={Rate:F3} samples={Samples} verdict={Verdict} " +
@@ -1054,11 +1064,12 @@ public static class MovementThrottle
         var now = Core.TickCount;
 
         // Rate-limit notifications per player
-        if (now - ns._lastSpeedHackNotification < _speedHackNotificationCooldown)
+        if (ns._speedHackNotified && now - ns._lastSpeedHackNotification < _speedHackNotificationCooldown)
         {
             return;
         }
 
+        ns._speedHackNotified = true;
         ns._lastSpeedHackNotification = now;
 
         var mobile = ns.Mobile;

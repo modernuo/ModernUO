@@ -71,22 +71,24 @@ public partial class NetState
     internal long _movementCredit;                          // Credit buffer for timing jitter
     internal long _nextMovementTime = Core.TickCount;       // When next movement is allowed
     internal int _sustainedQueueDepth;                      // Tracks sustained high queue depth
-    internal long _lastQueueDepthCheck;                     // Throttle depth check frequency
+    internal long _lastQueueDepthCheck = Core.TickCount;    // Throttle depth check frequency
     internal bool _hasQueuedMovements;                      // Fast check for Slice()
 
     // Movement history for rate-based speed hack detection (lazy initialized)
     internal MovementRecord[] _movementHistory;             // Circular buffer
     internal int _movementHistoryIndex;                     // Next write position (also serves as count until full)
     internal bool _movementHistoryFull;                     // True once buffer has wrapped
-    internal long _lastMovementRecordTime;                  // For calculating intervals
+    internal long _lastMovementRecordTime;                  // For calculating intervals (valid only when _hasMovementRecord)
+    internal bool _hasMovementRecord;                       // False until the first movement in a chain is seen
 
     // Detection state
     internal int _consecutiveHighRateSeconds;               // Sustained detection counter
-    internal long _lastSpeedHackNotification;               // Rate-limit notifications
+    internal long _lastSpeedHackNotification;               // Rate-limit notifications (valid only when _speedHackNotified)
+    internal bool _speedHackNotified;                       // False until the first notification is sent
     internal int _lastGapDuration;                          // Duration of last gap > maxChainGap (for burst forgiveness)
 
     // Movement packet rate tracking (for speed hack detection)
-    internal long _movementWindowStart;                     // Start of current 1-second window
+    internal long _movementWindowStart = Core.TickCount;    // Start of current 1-second window
     internal int _movementsInWindow;                        // Count in current window
     internal int _peakMovementRate;                         // Highest rate seen (packets/sec)
 
@@ -103,7 +105,7 @@ public partial class NetState
         _sustainedQueueDepth = 0;
 
         // Reset movement history - next movement starts a new chain
-        _lastMovementRecordTime = 0;
+        _hasMovementRecord = false;
         _movementHistoryIndex = 0;
         _movementHistoryFull = false;
 
@@ -113,7 +115,7 @@ public partial class NetState
         _rttProbeInterval = RttProbeIntervalNormal;
 
         // Reset packet rate window
-        _movementWindowStart = 0;
+        _movementWindowStart = Core.TickCount;
         _movementsInWindow = 0;
     }
 
@@ -165,13 +167,14 @@ public partial class NetState
     private const long MaxStableLatency = 200;            // Max RTT (ms) for "stable" connection
 
     // RTT state
-    internal long _rttProbeTime;                            // When we sent the probe (0 = not waiting)
+    internal bool _rttProbePending;                         // True while waiting for a probe response
+    internal long _rttProbeTime;                            // When we sent the probe (valid only when _rttProbePending)
     internal long _lastRtt;                                 // Most recent RTT measurement
     internal long[] _rttHistory;                            // Rolling history (lazy init)
     internal int _rttHistoryIndex;                          // Current position in history
     internal int _rttSampleCount;                           // Number of samples collected (saturates at RttHistorySize)
     internal long _rttVariance;                             // Calculated variance for stability
-    internal long _nextRttProbe;                            // When to send next probe
+    internal long _nextRttProbe = Core.TickCount;           // When to send next probe (seeded so the first probe fires immediately)
     internal int _rttProbeInterval = RttProbeIntervalNormal; // Current probe interval
 
     // High-resolution timestamp for RTT measurement (Stopwatch ticks, not game loop ticks)
@@ -206,21 +209,22 @@ public partial class NetState
         var now = Core.TickCount;
 
         // Don't send if we're still waiting for a response
-        if (_rttProbeTime > 0)
+        if (_rttProbePending)
         {
             // Timeout after 10 seconds - connection is probably dead or very laggy
             if (now - _rttProbeTime > 10000)
             {
-                _rttProbeTime = 0;
+                _rttProbePending = false;
                 _rttProbeTimestampHiRes = 0;
             }
             return;
         }
 
-        // First probe: send immediately when player starts moving
+        // First probe: send immediately when player starts moving (_nextRttProbe is seeded at connect)
         // Subsequent probes: send when interval has passed
-        if (_nextRttProbe == 0 || now >= _nextRttProbe)
+        if (now - _nextRttProbe >= 0)
         {
+            _rttProbePending = true;
             _rttProbeTime = now;
             _rttProbeTimestampHiRes = Stopwatch.GetTimestamp();
             _nextRttProbe = now + _rttProbeInterval + Utility.Random(RttProbeJitter);
@@ -245,7 +249,7 @@ public partial class NetState
         var nowHiRes = Stopwatch.GetTimestamp();
         var now = Core.TickCount;
 
-        if (_rttProbeTime <= 0)
+        if (!_rttProbePending)
         {
             // Not expecting a response (client-initiated version send) - ignore silently
             return;
@@ -264,7 +268,7 @@ public partial class NetState
             );
         }
 
-        _rttProbeTime = 0;
+        _rttProbePending = false;
         _rttProbeTimestampHiRes = 0;
 
         // Sanity check - RTT should be positive and reasonable
