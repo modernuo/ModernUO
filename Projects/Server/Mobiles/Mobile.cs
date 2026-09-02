@@ -707,30 +707,20 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     /// <c>.ByDescending()</c>; use <see cref="HasAggressors"/> for emptiness checks.
     /// Calling a ValueLinkList mutator on this reference compiles, but operates on a defensive
     /// copy while still unlinking the real nodes — it silently corrupts the list. Mutate only
-    /// through <see cref="AggressiveAction(Mobile, bool)"/>, <see cref="AddAggressor"/>, and
-    /// <see cref="RemoveAggressor"/>.
+    /// through <see cref="AggressiveAction(Mobile, bool)"/> and <see cref="RemoveAggression"/>.
     /// </summary>
     public ref readonly ValueLinkList<AggressorInfo> Aggressors => ref _aggressors;
 
     /// <summary>
     /// Mobiles this mobile has attacked, ordered least recent (head) to most recent (tail).
     /// Same rules as <see cref="Aggressors"/>; mutate only through
-    /// <see cref="AggressiveAction(Mobile, bool)"/> and <see cref="RemoveAggressed"/>.
+    /// <see cref="AggressiveAction(Mobile, bool)"/> and <see cref="RemoveAggression"/>.
     /// </summary>
     public ref readonly ValueLinkList<AggressorInfo> Aggressed => ref _aggressed;
 
     public bool HasAggressors => _aggressors.Count > 0;
 
     public bool HasAggressed => _aggressed.Count > 0;
-
-    /// <summary>
-    /// Appends an aggressor record without the dedupe and refresh logic of
-    /// <see cref="AggressiveAction(Mobile, bool)"/>. Used by pets defending their master.
-    /// </summary>
-    public void AddAggressor(Mobile attacker, bool criminal)
-    {
-        _aggressors.AddLast(AggressorInfo.Create(attacker, this, criminal));
-    }
 
     // Refreshes an entry and moves it to the tail so the list stays in LastCombatTime order.
     private static void RefreshAggression(ref ValueLinkList<AggressorInfo> list, AggressorInfo info)
@@ -3453,48 +3443,43 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         _expireAggrTimerToken.Cancel();
     }
 
-    // Both lists are ordered by LastCombatTime (RefreshAggression relinks on every refresh), but
-    // Expired is also true when a party is Deleted and one-sided entries (AddAggressor) can sit
-    // anywhere, so this walks the whole list. n is small; the walk captures Next before unlinking.
+    // Both lists are ordered by LastCombatTime (RefreshAggression relinks on every refresh), so
+    // time-expired entries are a head prefix. Expired is also true when a party is Deleted; that
+    // case is handled by the deleted mobile's own OnAfterDelete expiry pass, which unlinks the
+    // twin record on every peer. Records are always paired (AggressiveAction creates both halves,
+    // RemoveAggression removes both, the one-sided removers are private), so no entry can be
+    // stranded behind a live head.
     internal void CheckAggrExpire()
     {
-        for (var info = _aggressors._first; info != null;)
+        for (var info = _aggressors._first; info != null && info.Expired;)
         {
             var next = info.Next;
+            var attacker = info.Attacker;
 
-            if (info.Expired)
+            attacker.RemoveAggressed(this);
+            _aggressors.Remove(info);
+            info.Free();
+
+            if (m_NetState != null && CanSee(attacker) && Utility.InUpdateRange(m_Location, attacker.m_Location))
             {
-                var attacker = info.Attacker;
-
-                attacker.RemoveAggressed(this);
-                _aggressors.Remove(info);
-                info.Free();
-
-                if (m_NetState != null && CanSee(attacker) && Utility.InUpdateRange(m_Location, attacker.m_Location))
-                {
-                    m_NetState.SendMobileIncoming(this, attacker);
-                }
+                m_NetState.SendMobileIncoming(this, attacker);
             }
 
             info = next;
         }
 
-        for (var info = _aggressed._first; info != null;)
+        for (var info = _aggressed._first; info != null && info.Expired;)
         {
             var next = info.Next;
+            var defender = info.Defender;
 
-            if (info.Expired)
+            defender.RemoveAggressor(this);
+            _aggressed.Remove(info);
+            info.Free();
+
+            if (m_NetState != null && CanSee(defender) && Utility.InUpdateRange(m_Location, defender.m_Location))
             {
-                var defender = info.Defender;
-
-                defender.RemoveAggressor(this);
-                _aggressed.Remove(info);
-                info.Free();
-
-                if (m_NetState != null && CanSee(defender) && Utility.InUpdateRange(m_Location, defender.m_Location))
-                {
-                    m_NetState.SendMobileIncoming(this, defender);
-                }
+                m_NetState.SendMobileIncoming(this, defender);
             }
 
             info = next;
@@ -3955,7 +3940,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         Region.OnAggressed(aggressor, this, criminal);
     }
 
-    public void RemoveAggressed(Mobile aggressed)
+    private void RemoveAggressed(Mobile aggressed)
     {
         if (Deleted)
         {
@@ -3985,7 +3970,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         UpdateAggrExpire();
     }
 
-    public void RemoveAggressor(Mobile aggressor)
+    private void RemoveAggressor(Mobile aggressor)
     {
         if (Deleted)
         {
@@ -4013,6 +3998,24 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         }
 
         UpdateAggrExpire();
+    }
+
+    /// <summary>
+    /// Removes every aggression record between this mobile and <paramref name="other"/>, in
+    /// both directions on both mobiles. Records are always paired, so this is the only
+    /// public removal; one-sided removal would strand the twin record.
+    /// </summary>
+    public void RemoveAggression(Mobile other)
+    {
+        if (other == null || other == this)
+        {
+            return;
+        }
+
+        RemoveAggressor(other);
+        RemoveAggressed(other);
+        other.RemoveAggressor(this);
+        other.RemoveAggressed(this);
     }
 
     public virtual int GetTotal(TotalType type) =>

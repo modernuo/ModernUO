@@ -53,38 +53,6 @@ public class AggressorListTests
     }
 
     [Fact]
-    public void AddAggressor_AppendsWithoutDedupe()
-    {
-        var victim = new TestMobile();
-        var attacker = new TestMobile();
-
-        try
-        {
-            victim.AddAggressor(attacker, criminal: true);
-
-            Assert.True(victim.HasAggressors);
-            Assert.Equal(1, victim.Aggressors.Count);
-            Assert.Same(attacker, Attackers(victim)[0]);
-
-            foreach (var info in victim.Aggressors)
-            {
-                Assert.Same(victim, info.Defender);
-                Assert.True(info.CriminalAggression);
-                Assert.True(info.OnLinkList);
-            }
-
-            // Append-only, like the pet-defense path it replaces.
-            victim.AddAggressor(attacker, criminal: false);
-            Assert.Equal(2, victim.Aggressors.Count);
-        }
-        finally
-        {
-            victim.Delete();
-            attacker.Delete();
-        }
-    }
-
-    [Fact]
     public void AggressiveAction_PopulatesBothSides()
     {
         var victim = new TestMobile();
@@ -140,37 +108,6 @@ public class AggressorListTests
     }
 
     [Fact]
-    public void RepeatAggression_RefreshesEveryDuplicateOnce()
-    {
-        var start = Core._now;
-        var victim = new TestMobile();
-        var a = new TestMobile();
-
-        try
-        {
-            // Two one-sided entries for the same attacker, as the pet-defense path produces.
-            victim.AddAggressor(a, criminal: false);
-            victim.AddAggressor(a, criminal: false);
-
-            Core._now = start + TimeSpan.FromSeconds(30);
-            victim.AggressiveAction(a, criminal: false);
-
-            Assert.Equal(2, victim.Aggressors.Count); // refreshed in place, no third entry
-
-            foreach (var info in victim.Aggressors)
-            {
-                Assert.Equal(Core._now, info.LastCombatTime);
-            }
-        }
-        finally
-        {
-            Core._now = start;
-            victim.Delete();
-            a.Delete();
-        }
-    }
-
-    [Fact]
     public void RepeatAggression_RelinksMiddleEntryToTail()
     {
         var victim = new TestMobile();
@@ -211,10 +148,11 @@ public class AggressorListTests
                 entry = info;
             }
 
-            victim.RemoveAggressor(attacker);
+            victim.RemoveAggression(attacker);
 
             Assert.Equal(0, victim.Aggressors.Count);
             Assert.False(victim.HasAggressors);
+            Assert.Equal(0, attacker.Aggressed.Count); // both halves of the pair are gone
 
             // The entry has been returned to the pool; Next/Previous/OnLinkList are the only
             // members safe to read after Free().
@@ -237,8 +175,7 @@ public class AggressorListTests
 
         try
         {
-            m.RemoveAggressor(other);
-            m.RemoveAggressed(other);
+            m.RemoveAggression(other);
 
             Assert.Equal(0, m.Aggressors.Count);
             Assert.Equal(0, m.Aggressed.Count);
