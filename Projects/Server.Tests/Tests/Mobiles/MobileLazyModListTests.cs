@@ -57,15 +57,15 @@ public class MobileLazyModListTests
         try
         {
             Assert.Null(m.GetStatMod("test-stat"));
-            Assert.Null(m.StatModsInternal);
+            Assert.Null(m.StatMods);
 
             m.AddStatMod(new StatMod(StatType.Str, "test-stat", 5, TimeSpan.Zero));
             Assert.NotNull(m.GetStatMod("test-stat"));
-            Assert.NotNull(m.StatModsInternal);
+            Assert.NotNull(m.StatMods);
 
             m.RemoveStatMod("test-stat");
             Assert.Null(m.GetStatMod("test-stat"));
-            Assert.Null(m.StatModsInternal);
+            Assert.Null(m.StatMods);
         }
         finally
         {

@@ -457,7 +457,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     /// </summary>
     public List<SkillMod> SkillMods => _skillMods;
 
-    internal List<StatMod> StatModsInternal => _statMods;
+    public List<StatMod> StatMods => _statMods;
 
     public List<ResistanceMod> ResistanceMods => _resistanceMods;
 
