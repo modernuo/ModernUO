@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Server.Collections;
 using Server.Engines.ConPVP;
 using Server.Engines.PartySystem;
@@ -381,7 +380,7 @@ namespace Server.Misc
             return Notoriety.Innocent;
         }
 
-        /* Must be thread-safe */
+        // Runs on the game loop only; it walks the aggression lists, which are not safe to read concurrently.
         public static int MobileNotoriety(Mobile source, Mobile target)
         {
             var bcTarg = target as BaseCreature;
@@ -414,15 +413,6 @@ namespace Server.Misc
                 return Notoriety.CanBeAttacked;
             }
 
-            // A controlled pet is fair game to anyone who has attacked both the pet and its master:
-            // the pet's own record of the attacker refreshes on every hit, so the pet stays grey
-            // while the attacker keeps hitting it and reverts two minutes after they stop.
-            if (bcTarg?.ControlMaster is { } petMaster && petMaster != source &&
-                CheckAggressor(bcTarg.Aggressors, source) && CheckAggressor(petMaster.Aggressors, source))
-            {
-                return Notoriety.CanBeAttacked;
-            }
-
             if (source.Player && !target.Player && pmFrom != null && bcTarg != null)
             {
                 var master = bcTarg.GetMaster();
@@ -437,7 +427,8 @@ namespace Server.Misc
                 if (Core.ML && master != null)
                 {
                     if (source == master && CheckAggressor(bcTarg.Aggressors, source) ||
-                        CheckAggressor(source.Aggressors, bcTarg))
+                        CheckAggressor(source.Aggressors, bcTarg) ||
+                        (CheckAggressor(bcTarg.Aggressors, source) && CheckAggressor(master.Aggressors, source)))
                     {
                         return Notoriety.CanBeAttacked;
                     }
@@ -500,6 +491,15 @@ namespace Server.Misc
                 {
                     return Notoriety.CanBeAttacked;
                 }
+            }
+
+            // A controlled pet is fair game to anyone who has attacked both the pet and its master:
+            // the pet's own record of the attacker refreshes on every hit, so the pet stays grey
+            // while the attacker keeps hitting it and reverts two minutes after they stop.
+            if (bcTarg?.ControlMaster is { } petMaster && petMaster != source &&
+                CheckAggressor(bcTarg.Aggressors, source) && CheckAggressor(petMaster.Aggressors, source))
+            {
+                return Notoriety.CanBeAttacked;
             }
 
             if (CheckAggressor(source.Aggressors, target))
