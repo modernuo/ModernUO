@@ -14,7 +14,6 @@
  ************************************************************************/
 
 using System;
-using Server.Collections;
 using Server.Engines.Quests.Necro;
 using Server.Engines.Spawners;
 using Server.Engines.Virtues;
@@ -1035,33 +1034,7 @@ public abstract partial class BaseAI
         return !valid && (acqType != FightMode.Evil || (bc?.GetMaster()?.Karma ?? m.Karma) >= 0);
     }
 
-    private bool IsHostile(Mobile from) =>
-        Mobile.Combatant == from || from.Combatant == Mobile || IsAggressor(from) || IsAggressed(from);
-
-    private bool IsAggressor(Mobile from)
-    {
-        foreach (var aggressor in Mobile.Aggressors)
-        {
-            if (aggressor.Defender == from)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private bool IsAggressed(Mobile from)
-    {
-        foreach (var aggressed in Mobile.Aggressed)
-        {
-            if (aggressed.Attacker == from)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
+    private bool IsHostile(Mobile from) => Mobile.Combatant == from || from.Combatant == Mobile;
 
     public virtual void DetectHidden()
     {
