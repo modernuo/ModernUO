@@ -18,6 +18,7 @@ using System.Net;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.Engines.Virtues;
 using Server.Gumps;
 using Server.Items;
@@ -1181,11 +1182,6 @@ public partial class ChampionSpawn : Item
 
         foreach (var de in m.DamageEntries)
         {
-            if (de.HasExpired)
-            {
-                continue;
-            }
-
             var damager = de.Damager;
             var master = damager.GetDamageMaster(m);
 

@@ -3123,14 +3123,12 @@ namespace Server.Mobiles
             return base.OnBeforeDeath();
         }
 
-        public int ComputeBonusDamage(List<DamageEntry> list, Mobile m)
+        public int ComputeBonusDamage(in ValueLinkList<DamageEntry> list, Mobile m)
         {
             var bonus = 0;
 
-            for (var i = list.Count - 1; i >= 0; --i)
+            foreach (var de in list.ByDescending())
             {
-                var de = list[i];
-
                 if (de.Damager == m || de.Damager is not BaseCreature bc)
                 {
                     continue;
@@ -3167,26 +3165,15 @@ namespace Server.Mobiles
             Combatant is PlayerMobile ||
             Combatant is BaseCreature { Controlled: true } bc && bc.GetMaster() is PlayerMobile;
 
-        public static List<DamageStore> GetLootingRights(List<DamageEntry> damageEntries, int hitsMax)
+        // Iterates most recent first, matching the previous reverse-indexed loop. The list is
+        // already pruned of expired entries by the Mobile.DamageEntries getter.
+        public static List<DamageStore> GetLootingRights(in ValueLinkList<DamageEntry> damageEntries, int hitsMax)
         {
             var rights = new List<DamageStore>();
             DamageStore firstDamager = null;
 
-            for (var i = damageEntries.Count - 1; i >= 0; --i)
+            foreach (var de in damageEntries.ByDescending())
             {
-                if (i >= damageEntries.Count)
-                {
-                    continue;
-                }
-
-                var de = damageEntries[i];
-
-                if (de.HasExpired)
-                {
-                    damageEntries.RemoveAt(i);
-                    continue;
-                }
-
                 var damage = de.DamageGiven;
 
                 var respList = de.Responsible;

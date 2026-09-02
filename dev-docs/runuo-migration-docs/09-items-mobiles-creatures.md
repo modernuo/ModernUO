@@ -517,6 +517,45 @@ periodic `ReacquireDelay` scan still sweeps the full `RangePerception`). The
 acquired target comes from the normal FightMode-ranked scan, not from whichever mobile
 happened to move. See `content-patterns.md` § Target Acquisition.
 
+## Damage Entries: Inline `ValueLinkList`, Not `List<DamageEntry>`
+
+RunUO's `Mobile.DamageEntries` was a `List<DamageEntry>` allocated for every mobile.
+ModernUO keeps damage entries in an inline `ValueLinkList<DamageEntry>` struct held by
+the mobile itself, ordered least recent → most recent, so a mobile that never takes
+damage owns no list object and `RegisterDamage` relinks in O(1). The property is
+`ref readonly`; expired entries are pruned when it is read.
+
+```csharp
+// RunUO
+for (var i = m.DamageEntries.Count - 1; i >= 0; --i)
+{
+    var de = m.DamageEntries[i];          // indexer
+    ...
+}
+m.DamageEntries.Clear();
+var rights = BaseCreature.GetLootingRights(m.DamageEntries, m.HitsMax); // List<DamageEntry>
+
+// ModernUO — needs `using Server.Collections;` for the enumerator extensions
+foreach (var de in m.DamageEntries.ByDescending()) // most recent first
+{
+    ...
+}
+foreach (var de in m.DamageEntries)                // least recent first
+{
+    ...
+}
+m.ClearDamageEntries();
+var rights = BaseCreature.GetLootingRights(m.DamageEntries, m.HitsMax); // in ValueLinkList<DamageEntry>
+```
+
+What no longer compiles: the indexer, `.Add`, `.Remove`, `.RemoveAt`, `.Clear`, and
+passing the property where a `List<DamageEntry>` is expected. `.Count`,
+`FindDamageEntryFor`, `FindMostRecentDamager` and the other `Find*` methods, and
+`RegisterDamage` are unchanged. `DamageEntry` now carries `Next`/`Previous`/`OnLinkList`
+link fields; never set them yourself, and never call a `ValueLinkList` mutator on the
+`ref readonly` property — it compiles against a copy and corrupts the node's link state.
+Mutate only through `RegisterDamage` and `ClearDamageEntries`.
+
 ## Item Name Changes
 
 ```csharp
