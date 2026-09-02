@@ -2,10 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using Server.Collections;
 
 namespace Server;
 
-public class AggressorInfo
+public class AggressorInfo : IValueLinkListNode<AggressorInfo>
 {
     private static readonly Queue<AggressorInfo> m_Pool = new();
     private Mobile m_Attacker, m_Defender;
@@ -147,6 +148,11 @@ public class AggressorInfo
         }
     }
 
+    // Intrusive links for Mobile._aggressors / _aggressed. Each info is on exactly one list.
+    public AggressorInfo Next { get; set; }
+    public AggressorInfo Previous { get; set; }
+    public bool OnLinkList { get; set; }
+
     public static AggressorInfo Create(Mobile attacker, Mobile defender, bool criminal)
     {
         AggressorInfo info;
@@ -175,6 +181,8 @@ public class AggressorInfo
 
     public void Free()
     {
+        Debug.Assert(!OnLinkList, "AggressorInfo must be unlinked before it is freed.");
+
         if (m_Queued)
         {
             return;
