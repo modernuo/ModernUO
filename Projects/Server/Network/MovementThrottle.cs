@@ -50,9 +50,6 @@ public static class MovementThrottle
     private const int ClientMaxUnackedMovements = 5;
     private const int MaxQueueWithUnmodifiedClient = ClientMaxUnackedMovements - 1;  // 4
 
-    // Debug logging - enable for testing speed hack detection
-    private static bool _debugLogging = false;
-
     // Track NetStates with queued movements for efficient processing
     private static readonly HashSet<NetState> _netStatesWithQueuedMovements = new(256);
 
@@ -83,20 +80,9 @@ public static class MovementThrottle
 
     public static void Configure()
     {
-        _maxCredit = ServerConfiguration.GetOrUpdateSetting(
-            "movementThrottle.maxCredit",
-            _maxCredit
-        );
-
-        _maxRttBonus = ServerConfiguration.GetOrUpdateSetting(
-            "movementThrottle.maxRttBonus",
-            _maxRttBonus
-        );
-
-        _hardQueueLimit = ServerConfiguration.GetOrUpdateSetting(
-            "movementThrottle.hardQueueLimit",
-            _hardQueueLimit
-        );
+        _maxCredit = ServerConfiguration.GetOrUpdateSetting("movementThrottle.maxCredit", _maxCredit);
+        _maxRttBonus = ServerConfiguration.GetOrUpdateSetting("movementThrottle.maxRttBonus", _maxRttBonus);
+        _hardQueueLimit = ServerConfiguration.GetOrUpdateSetting("movementThrottle.hardQueueLimit", _hardQueueLimit);
 
         _movementHistorySize = ServerConfiguration.GetOrUpdateSetting(
             "movementThrottle.movementHistorySize",
@@ -108,10 +94,7 @@ public static class MovementThrottle
             _minSamplesForRate
         );
 
-        _maxChainGap = ServerConfiguration.GetOrUpdateSetting(
-            "movementThrottle.maxChainGap",
-            _maxChainGap
-        );
+        _maxChainGap = ServerConfiguration.GetOrUpdateSetting("movementThrottle.maxChainGap", _maxChainGap);
 
         _speedHackNotificationCooldown = ServerConfiguration.GetOrUpdateSetting(
             "movementThrottle.speedHackNotificationCooldown",
@@ -126,11 +109,6 @@ public static class MovementThrottle
         _definiteRateThreshold = (float)ServerConfiguration.GetOrUpdateSetting(
             "movementThrottle.definiteRateThreshold",
             _definiteRateThreshold
-        );
-
-        _debugLogging = ServerConfiguration.GetOrUpdateSetting(
-            "movementThrottle.debugLogging",
-            _debugLogging
         );
     }
 
@@ -206,15 +184,16 @@ public static class MovementThrottle
             // Credit can go negative up to -dynamicCredit (debt limit)
             if (ns._movementCredit - earlyAmount >= -dynamicCredit)
             {
-                var prevCredit = ns._movementCredit;
                 // Use credit to cover early arrival
                 ns._movementCredit -= earlyAmount;
 
-                if (_debugLogging && ns._movementLogging)
+                if (ns._movementLogging)
                 {
+                    var prevCredit = ns._movementCredit + earlyAmount;
+
                     logger.Debug(
                         "[Credit] {Name}: delta={Delta}ms early={Early}ms credit={PrevCredit}->{Credit}/{MaxCredit} action=execute",
-                        mobile.RawName, delta, earlyAmount, prevCredit, ns._movementCredit, dynamicCredit
+                        mobile, delta, earlyAmount, prevCredit, ns._movementCredit, dynamicCredit
                     );
                 }
 
@@ -223,11 +202,11 @@ public static class MovementThrottle
                 return;
             }
 
-            if (_debugLogging && ns._movementLogging)
+            if (ns._movementLogging)
             {
                 logger.Debug(
                     "[Credit] {Name}: delta={Delta}ms early={Early}ms credit={Credit}/{MaxCredit} EXHAUSTED -> queue",
-                    mobile.RawName, delta, earlyAmount, ns._movementCredit, dynamicCredit
+                    mobile, delta, earlyAmount, ns._movementCredit, dynamicCredit
                 );
             }
 
@@ -242,11 +221,11 @@ public static class MovementThrottle
             var prevCredit = ns._movementCredit;
             ns._movementCredit = Math.Min(ns._movementCredit + delta, dynamicCredit);
 
-            if (_debugLogging && ns._movementLogging && ns._movementCredit != prevCredit)
+            if (ns._movementLogging && ns._movementCredit != prevCredit)
             {
                 logger.Debug(
                     "[Credit] {Name}: delta=+{Delta}ms credit={PrevCredit}->{Credit}/{MaxCredit} action=execute",
-                    mobile.RawName, delta, prevCredit, ns._movementCredit, dynamicCredit
+                    mobile, delta, prevCredit, ns._movementCredit, dynamicCredit
                 );
             }
         }
@@ -262,12 +241,9 @@ public static class MovementThrottle
     {
         if (!mobile.Move(dir))
         {
-            if (_debugLogging && ns._movementLogging)
+            if (ns._movementLogging)
             {
-                logger.Debug(
-                    "[Execute] {Name}: Move FAILED dir={Dir} seq={Seq} -> reject+reset",
-                    mobile.RawName, dir, seq
-                );
+                logger.Debug("[Execute] {Name}: Move FAILED dir={Dir} seq={Seq} -> reject+reset", mobile, dir, seq);
             }
 
             // Movement failed (blocked, paralyzed, frozen, etc.)
@@ -275,11 +251,11 @@ public static class MovementThrottle
             return;
         }
 
-        if (_debugLogging && ns._movementLogging)
+        if (ns._movementLogging)
         {
             logger.Debug(
                 "[Execute] {Name}: Move OK dir={Dir} seq={Seq} nextMove={NextMove}ms",
-                mobile.RawName, dir, seq, ns._nextMovementTime - Core.TickCount
+                mobile, dir, seq, ns._nextMovementTime - Core.TickCount
             );
         }
 
@@ -319,11 +295,11 @@ public static class MovementThrottle
         ns._hasQueuedMovements = true;
         _netStatesWithQueuedMovements.Add(ns);
 
-        if (_debugLogging && ns._movementLogging)
+        if (ns._movementLogging)
         {
             logger.Debug(
                 "[Queue] {Name}: enqueued dir={Dir} seq={Seq} (depth={Depth})",
-                ns.Mobile?.RawName, dir, seq, ns._movementQueue.Count
+                ns.Mobile, dir, seq, ns._movementQueue.Count
             );
         }
     }
@@ -407,11 +383,11 @@ public static class MovementThrottle
             // Execute the move
             if (!mobile.Move(movement.Direction))
             {
-                if (_debugLogging && ns._movementLogging)
+                if (ns._movementLogging)
                 {
                     logger.Debug(
                         "[Queue] {Name}: dequeued FAILED dir={Dir} (remaining={Remaining})",
-                        mobile.RawName, movement.Direction, remaining
+                        mobile, movement.Direction, remaining
                     );
                 }
 
@@ -420,12 +396,12 @@ public static class MovementThrottle
                 return;
             }
 
-            if (_debugLogging && ns._movementLogging)
+            if (ns._movementLogging)
             {
                 var waited = now - ns._nextMovementTime;
                 logger.Debug(
                     "[Queue] {Name}: dequeued OK dir={Dir} (remaining={Remaining}, waited={Waited}ms)",
-                    mobile.RawName, movement.Direction, remaining, waited >= 0 ? waited : 0
+                    mobile, movement.Direction, remaining, waited >= 0 ? waited : 0
                 );
             }
 
@@ -492,7 +468,7 @@ public static class MovementThrottle
         logger.Information(
             "Movement queue overflow: {Character} ({Account}) | " +
             "Queue reached hard limit: {Limit} | IP: {IP}",
-            mobile?.RawName ?? "Unknown",
+            mobile,
             ns.Account?.Username ?? "Unknown",
             _hardQueueLimit,
             ns.Address
@@ -553,19 +529,19 @@ public static class MovementThrottle
                 // A large gap followed by a burst of packets = likely lag recovery, not speed hack
                 ns._lastGapDuration = interval;
 
-                if (_debugLogging && mobile?.RawName != null)
+                if (ns._movementLogging)
                 {
                     var action = shouldReset ? "history reset" : "history preserved (possible lag)";
                     logger.Debug(
                         "[Movement] {Name}: SKIP recording (gap {Gap}ms > {MaxGap}ms, " +
                         "RTT={RTT}ms stable={Stable} → {Action})",
-                        mobile.RawName, interval, _maxChainGap, avgRtt, ns.HasStableConnection, action
+                        mobile, interval, _maxChainGap, avgRtt, ns.HasStableConnection, action
                     );
                 }
             }
-            else if (_debugLogging && mobile?.RawName != null)
+            else if (ns._movementLogging)
             {
-                logger.Debug("[Movement] {Name}: SKIP recording (first in chain)", mobile.RawName);
+                logger.Debug("[Movement] {Name}: SKIP recording (first in chain)", mobile);
             }
 
             return;
@@ -581,12 +557,9 @@ public static class MovementThrottle
         // the next real move's interval artificially short, inflating rate.
         if (cost == 0)
         {
-            if (_debugLogging && mobile?.RawName != null)
+            if (ns._movementLogging)
             {
-                logger.Debug(
-                    "[Movement] {Name}: SKIP direction-only change (preserves interval measurement)",
-                    mobile.RawName
-                );
+                logger.Debug("[Movement] {Name}: SKIP direction-only change (preserves interval measurement)", mobile);
             }
             return;
         }
@@ -625,13 +598,13 @@ public static class MovementThrottle
         ns._hasMovementRecord = true;
 
         // Debug logging
-        if (_debugLogging && mobile?.RawName != null)
+        if (ns._movementLogging)
         {
             var historyCount = ns._movementHistoryFull ? _movementHistorySize : ns._movementHistoryIndex;
             logger.Debug(
                 "[Movement] {Name}: interval={Interval}ms target={Target}ms queue={Queue} " +
                 "flags={Flags} history={History}/{MaxHistory} RTT={RTT}ms",
-                mobile.RawName, interval, cost, record.QueueDepth,
+                mobile, interval, cost, record.QueueDepth,
                 flags, historyCount, _movementHistorySize, ns.AverageRtt
             );
         }
@@ -824,7 +797,7 @@ public static class MovementThrottle
         var averageRtt = ns.AverageRtt;
 
         // Detailed rate breakdown for debugging
-        if (_debugLogging)
+        if (ns._movementLogging)
         {
             logger.Debug("[MovementAnalysis] Rate={Rate:F3}, Samples={Samples}, RTT={RTT}ms",
                 rate, sampleCount, averageRtt);
@@ -987,7 +960,7 @@ public static class MovementThrottle
         var verdict = AnalyzeMovement(ns, out var rate, out var sampleCount, out var confidence);
 
         // Debug logging
-        if (_debugLogging && ns.Mobile?.RawName != null)
+        if (ns._movementLogging)
         {
             var (burstSize, _) = DetectRecentBurst(ns);
             var probeStatus = ns._rttProbePending ? "pending" : "idle";
@@ -995,7 +968,7 @@ public static class MovementThrottle
             logger.Debug(
                 "[RateCheck] {Name}: rate={Rate:F3} samples={Samples} verdict={Verdict} " +
                 "confidence={Confidence:P0} queue={Queue} burst={Burst} sustained={Sustained}s",
-                ns.Mobile.RawName, rate, sampleCount, verdict, confidence, queueDepth, burstSize, ns._consecutiveHighRateSeconds
+                ns.Mobile, rate, sampleCount, verdict, confidence, queueDepth, burstSize, ns._consecutiveHighRateSeconds
             );
             logger.Debug(
                 "    RTT: avg={Avg}ms last={Last}ms var={Var} samples={RttSamples} stable={Stable} probe={Probe}",
@@ -1035,11 +1008,11 @@ public static class MovementThrottle
 
         if (shouldNotify)
         {
-            if (_debugLogging)
+            if (ns._movementLogging)
             {
                 logger.Debug(
                     "[ALERT] {Urgency} - {Name}: rate={Rate:F3} verdict={Verdict} confidence={Confidence:P0}",
-                    urgency, ns.Mobile?.RawName, rate, verdict, confidence
+                    urgency, ns.Mobile, rate, verdict, confidence
                 );
             }
             NotifyStaff(ns, rate, sampleCount, confidence, verdict, urgency);
@@ -1081,7 +1054,7 @@ public static class MovementThrottle
             "PacketRate: {PacketRate}/s (peak: {PeakRate}/s) | RTT: {Rtt}ms (stable: {Stable}) | " +
             "Sustained: {Sustained}s | Queue: {Queue} | Location: {Location} Map: {Map} | IP: {IP}",
             urgency,
-            mobile?.RawName ?? "Unknown",
+            mobile,
             ns.Account?.Username ?? "Unknown",
             rate,
             sampleCount,

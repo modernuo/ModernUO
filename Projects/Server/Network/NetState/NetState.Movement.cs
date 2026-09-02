@@ -174,7 +174,7 @@ public partial class NetState
     internal int _rttHistoryIndex;                          // Current position in history
     internal int _rttSampleCount;                           // Number of samples collected (saturates at RttHistorySize)
     internal long _rttVariance;                             // Calculated variance for stability
-    internal long _nextRttProbe = Core.TickCount;           // When to send next probe (seeded so the first probe fires immediately)
+    internal long _nextRttProbe = Core.TickCount;           // When to send next probe
     internal int _rttProbeInterval = RttProbeIntervalNormal; // Current probe interval
 
     // High-resolution timestamp for RTT measurement (Stopwatch ticks, not game loop ticks)
@@ -220,7 +220,7 @@ public partial class NetState
             return;
         }
 
-        // First probe: send immediately when player starts moving (_nextRttProbe is seeded at connect)
+        // First probe: send immediately when player starts moving
         // Subsequent probes: send when interval has passed
         if (now - _nextRttProbe >= 0)
         {
