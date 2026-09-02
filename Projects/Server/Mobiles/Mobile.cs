@@ -379,8 +379,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     {
         m_Region = Map.Internal.DefaultRegion;
         Serial = serial;
-        Aggressors = new List<AggressorInfo>();
-        Aggressed = new List<AggressorInfo>();
         NextSkillTime = Core.TickCount;
     }
 
@@ -700,9 +698,47 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     [CommandProperty(AccessLevel.Administrator)]
     public long NextSkillTime { get; set; }
 
-    public List<AggressorInfo> Aggressors { get; private set; }
+    private ValueLinkList<AggressorInfo> _aggressors;
+    private ValueLinkList<AggressorInfo> _aggressed;
 
-    public List<AggressorInfo> Aggressed { get; private set; }
+    /// <summary>
+    /// Mobiles that have attacked this mobile, ordered least recent (head) to most recent (tail)
+    /// by <see cref="AggressorInfo.LastCombatTime"/>. Enumerate with <c>foreach</c> or
+    /// <c>.ByDescending()</c>; use <see cref="HasAggressors"/> for emptiness checks.
+    /// Calling a ValueLinkList mutator on this reference compiles, but operates on a defensive
+    /// copy while still unlinking the real nodes — it silently corrupts the list. Mutate only
+    /// through <see cref="AggressiveAction(Mobile, bool)"/>, <see cref="AddAggressor"/>, and
+    /// <see cref="RemoveAggressor"/>.
+    /// </summary>
+    public ref readonly ValueLinkList<AggressorInfo> Aggressors => ref _aggressors;
+
+    /// <summary>
+    /// Mobiles this mobile has attacked, ordered least recent (head) to most recent (tail).
+    /// Same rules as <see cref="Aggressors"/>; mutate only through
+    /// <see cref="AggressiveAction(Mobile, bool)"/> and <see cref="RemoveAggressed"/>.
+    /// </summary>
+    public ref readonly ValueLinkList<AggressorInfo> Aggressed => ref _aggressed;
+
+    public bool HasAggressors => _aggressors.Count > 0;
+
+    public bool HasAggressed => _aggressed.Count > 0;
+
+    /// <summary>
+    /// Appends an aggressor record without the dedupe and refresh logic of
+    /// <see cref="AggressiveAction(Mobile, bool)"/>. Used by pets defending their master.
+    /// </summary>
+    public void AddAggressor(Mobile attacker, bool criminal)
+    {
+        _aggressors.AddLast(AggressorInfo.Create(attacker, this, criminal));
+    }
+
+    // Refreshes an entry and moves it to the tail so the list stays in LastCombatTime order.
+    private static void RefreshAggression(ref ValueLinkList<AggressorInfo> list, AggressorInfo info)
+    {
+        info.Refresh();
+        list.Remove(info);
+        list.AddLast(info);
+    }
 
     public bool ChangingCombatant => m_ChangingCombatant > 0;
 
@@ -2035,9 +2071,9 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             {
                 m_HitsTimer?.Stop();
 
-                for (var i = 0; i < Aggressors.Count; i++) // reset reports on full HP
+                for (var info = _aggressors._first; info != null; info = info.Next) // reset reports on full HP
                 {
-                    Aggressors[i].CanReportMurder = false;
+                    info.CanReportMurder = false;
                 }
 
                 ClearDamageEntries(); // reset damage entries on full HP
@@ -2504,6 +2540,8 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
         m_Map?.OnLeave(this);
         m_Map = null;
+
+        ClearAggressions();
 
         m_MountItem = null;
 
@@ -3390,7 +3428,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
     private void UpdateAggrExpire()
     {
-        if (Deleted || Aggressors.Count == 0 && Aggressed.Count == 0)
+        if (Deleted || !HasAggressors && !HasAggressed)
         {
             StopAggrExpire();
         }
@@ -3402,7 +3440,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
     private void ExpireAggr()
     {
-        if (Deleted || Aggressors.Count == 0 && Aggressed.Count == 0)
+        if (Deleted || !HasAggressors && !HasAggressed)
         {
             StopAggrExpire();
         }
@@ -3417,54 +3455,72 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         _expireAggrTimerToken.Cancel();
     }
 
-    private void CheckAggrExpire()
+    // Unlinks this mobile from every peer's aggression list now, instead of leaving entries whose
+    // Expired reports true (Deleted) for the peer's expiry timer to find. Keeps the lists' expired
+    // entries a pure head prefix.
+    private void ClearAggressions()
     {
-        for (var i = Aggressors.Count - 1; i >= 0; --i)
+        for (var info = _aggressors._first; info != null;)
         {
-            if (i >= Aggressors.Count)
-            {
-                continue;
-            }
+            var next = info.Next;
 
-            var info = Aggressors[i];
+            info.Attacker.RemoveAggressed(this);
+            _aggressors.Remove(info);
+            info.Free();
 
-            if (info.Expired)
-            {
-                var attacker = info.Attacker;
-                attacker.RemoveAggressed(this);
-
-                Aggressors.RemoveAt(i);
-                info.Free();
-
-                if (m_NetState != null && CanSee(attacker) && Utility.InUpdateRange(m_Location, attacker.m_Location))
-                {
-                    m_NetState.SendMobileIncoming(this, attacker);
-                }
-            }
+            info = next;
         }
 
-        for (var i = Aggressed.Count - 1; i >= 0; --i)
+        for (var info = _aggressed._first; info != null;)
         {
-            if (i >= Aggressed.Count)
+            var next = info.Next;
+
+            info.Defender.RemoveAggressor(this);
+            _aggressed.Remove(info);
+            info.Free();
+
+            info = next;
+        }
+
+        StopAggrExpire();
+    }
+
+    // Both lists are ordered by LastCombatTime, so time-expired entries are a head prefix.
+    // A deleted peer is unlinked eagerly by Delete(), so Expired's Deleted case never lingers here.
+    internal void CheckAggrExpire()
+    {
+        for (var info = _aggressors._first; info != null && info.Expired;)
+        {
+            var next = info.Next;
+            var attacker = info.Attacker;
+
+            attacker.RemoveAggressed(this);
+            _aggressors.Remove(info);
+            info.Free();
+
+            if (m_NetState != null && CanSee(attacker) && Utility.InUpdateRange(m_Location, attacker.m_Location))
             {
-                continue;
+                m_NetState.SendMobileIncoming(this, attacker);
             }
 
-            var info = Aggressed[i];
+            info = next;
+        }
 
-            if (info.Expired)
+        for (var info = _aggressed._first; info != null && info.Expired;)
+        {
+            var next = info.Next;
+            var defender = info.Defender;
+
+            defender.RemoveAggressor(this);
+            _aggressed.Remove(info);
+            info.Free();
+
+            if (m_NetState != null && CanSee(defender) && Utility.InUpdateRange(m_Location, defender.m_Location))
             {
-                var defender = info.Defender;
-                defender.RemoveAggressor(this);
-
-                Aggressed.RemoveAt(i);
-                info.Free();
-
-                if (m_NetState != null && CanSee(defender) && Utility.InUpdateRange(m_Location, defender.m_Location))
-                {
-                    m_NetState.SendMobileIncoming(this, defender);
-                }
+                m_NetState.SendMobileIncoming(this, defender);
             }
+
+            info = next;
         }
 
         UpdateAggrExpire();
@@ -3812,79 +3868,77 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
         var addAggressor = true;
 
-        var list = Aggressors;
-
-        for (var i = 0; i < list.Count; ++i)
+        var last = _aggressors._last;
+        for (var info = _aggressors._first; info != null;)
         {
-            var info = list[i];
+            var next = info == last ? null : info.Next;
 
             if (info.Attacker == aggressor)
             {
-                info.Refresh();
+                RefreshAggression(ref _aggressors, info);
                 info.CriminalAggression = criminal;
                 info.CanReportMurder = criminal;
 
                 addAggressor = false;
             }
+
+            info = next;
         }
 
-        list = aggressor.Aggressors;
-
-        for (var i = 0; i < list.Count; ++i)
+        last = aggressor._aggressors._last;
+        for (var info = aggressor._aggressors._first; info != null;)
         {
-            var info = list[i];
+            var next = info == last ? null : info.Next;
 
             if (info.Attacker == this)
             {
-                info.Refresh();
+                RefreshAggression(ref aggressor._aggressors, info);
 
                 addAggressor = false;
             }
+
+            info = next;
         }
 
         var addAggressed = true;
 
-        list = Aggressed;
-
-        for (var i = 0; i < list.Count; ++i)
+        last = _aggressed._last;
+        for (var info = _aggressed._first; info != null;)
         {
-            var info = list[i];
+            var next = info == last ? null : info.Next;
 
             if (info.Defender == aggressor)
             {
-                info.Refresh();
+                RefreshAggression(ref _aggressed, info);
 
                 addAggressed = false;
             }
+
+            info = next;
         }
 
-        list = aggressor.Aggressed;
-
-        for (var i = 0; i < list.Count; ++i)
+        last = aggressor._aggressed._last;
+        for (var info = aggressor._aggressed._first; info != null;)
         {
-            var info = list[i];
+            var next = info == last ? null : info.Next;
 
             if (info.Defender == this)
             {
-                info.Refresh();
+                RefreshAggression(ref aggressor._aggressed, info);
                 info.CriminalAggression = criminal;
                 info.CanReportMurder = criminal;
 
                 addAggressed = false;
             }
+
+            info = next;
         }
 
         var setCombatant = false;
 
         if (addAggressor)
         {
-            Aggressors.Add(
-                AggressorInfo.Create(
-                    aggressor,
-                    this,
-                    criminal
-                )
-            );
+            _aggressors.AddLast(AggressorInfo.Create(aggressor, this, criminal));
 
             if (CanSee(aggressor))
             {
@@ -3901,13 +3955,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
         if (addAggressed)
         {
-            aggressor.Aggressed.Add(
-                AggressorInfo.Create(
-                    aggressor,
-                    this,
-                    criminal
-                )
-            );
+            aggressor._aggressed.AddLast(AggressorInfo.Create(aggressor, this, criminal));
 
             if (CanSee(aggressor))
             {
@@ -3937,15 +3985,11 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             return;
         }
 
-        var list = Aggressed;
-
-        for (var i = 0; i < list.Count; ++i)
+        for (var info = _aggressed._first; info != null; info = info.Next)
         {
-            var info = list[i];
-
             if (info.Defender == aggressed)
             {
-                Aggressed.RemoveAt(i);
+                _aggressed.Remove(info);
                 info.Free();
 
                 if (m_NetState != null && CanSee(aggressed))
@@ -3967,15 +4011,11 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             return;
         }
 
-        var list = Aggressors;
-
-        for (var i = 0; i < list.Count; ++i)
+        for (var info = _aggressors._first; info != null; info = info.Next)
         {
-            var info = list[i];
-
             if (info.Attacker == aggressor)
             {
-                Aggressors.RemoveAt(i);
+                _aggressors.Remove(info);
                 info.Free();
 
                 if (m_NetState != null && CanSee(aggressor))
@@ -7829,8 +7869,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         Items = new List<Item>();
         Map = Map.Internal;
         AutoPageNotify = true;
-        Aggressors = new List<AggressorInfo>();
-        Aggressed = new List<AggressorInfo>();
 
         NextSkillTime = Core.TickCount;
     }
