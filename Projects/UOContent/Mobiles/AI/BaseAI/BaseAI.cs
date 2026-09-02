@@ -14,6 +14,7 @@
  ************************************************************************/
 
 using System;
+using Server.Collections;
 using Server.Engines.Quests.Necro;
 using Server.Engines.Spawners;
 using Server.Engines.Virtues;
@@ -929,8 +930,8 @@ public abstract partial class BaseAI
     private bool HandleAggressor(FightMode acqType)
     {
         if (acqType != FightMode.Aggressor ||
-            Mobile.Aggressors.Count > 0 ||
-            Mobile.Aggressed.Count > 0 ||
+            Mobile.HasAggressors ||
+            Mobile.HasAggressed ||
             Mobile.FactionAllegiance != null ||
             Mobile.EthicAllegiance != null)
         {

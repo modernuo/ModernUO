@@ -1,5 +1,6 @@
 using System;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.Engines.VeteranRewards;
 using Server.Factions;
 using Server.Gumps;
@@ -118,10 +119,8 @@ public partial class SoulStone : Item, ISecurable
 
     private static bool CheckCombat(Mobile m, TimeSpan time)
     {
-        for (var i = 0; i < m.Aggressed.Count; ++i)
+        foreach (var info in m.Aggressed)
         {
-            var info = m.Aggressed[i];
-
             if (Core.Now - info.LastCombatTime < time)
             {
                 return true;

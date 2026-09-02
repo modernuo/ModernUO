@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Server.Collections;
 using Server.Engines.ConPVP;
 using Server.Engines.PartySystem;
 using Server.Factions;
@@ -413,6 +414,15 @@ namespace Server.Misc
                 return Notoriety.CanBeAttacked;
             }
 
+            // A controlled pet is fair game to anyone who has attacked both the pet and its master:
+            // the pet's own record of the attacker refreshes on every hit, so the pet stays grey
+            // while the attacker keeps hitting it and reverts two minutes after they stop.
+            if (bcTarg?.ControlMaster is { } petMaster && petMaster != source &&
+                CheckAggressor(bcTarg.Aggressors, source) && CheckAggressor(petMaster.Aggressors, source))
+            {
+                return Notoriety.CanBeAttacked;
+            }
+
             if (source.Player && !target.Player && pmFrom != null && bcTarg != null)
             {
                 var master = bcTarg.GetMaster();
@@ -544,11 +554,11 @@ namespace Server.Misc
 
         public static bool IsSummoned(BaseCreature c) => c?.Summoned == true;
 
-        public static bool CheckAggressor(List<AggressorInfo> list, Mobile target)
+        public static bool CheckAggressor(in ValueLinkList<AggressorInfo> list, Mobile target)
         {
-            for (var i = 0; i < list.Count; ++i)
+            foreach (var info in list)
             {
-                if (list[i].Attacker == target)
+                if (info.Attacker == target)
                 {
                     return true;
                 }
@@ -557,12 +567,10 @@ namespace Server.Misc
             return false;
         }
 
-        public static bool CheckAggressed(List<AggressorInfo> list, Mobile target)
+        public static bool CheckAggressed(in ValueLinkList<AggressorInfo> list, Mobile target)
         {
-            for (var i = 0; i < list.Count; ++i)
+            foreach (var info in list)
             {
-                var info = list[i];
-
                 if (!info.CriminalAggression && info.Defender == target)
                 {
                     return true;

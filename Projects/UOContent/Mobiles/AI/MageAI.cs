@@ -1,4 +1,5 @@
 using System;
+using Server.Collections;
 using Server.Items;
 using Server.Spells;
 using Server.Spells.Fifth;
@@ -857,9 +858,6 @@ public class MageAI : BaseAI
 
         if (activeOnly)
         {
-            var aggressed = Mobile.Aggressed;
-            var aggressors = Mobile.Aggressors;
-
             Mobile active = null;
             var activePrio = 0.0;
 
@@ -877,9 +875,8 @@ public class MageAI : BaseAI
                 }
             }
 
-            for (var i = 0; i < aggressed.Count; ++i)
+            foreach (var info in Mobile.Aggressed)
             {
-                var info = aggressed[i];
                 var m = info.Defender;
 
                 if (m != comb && m.Combatant == Mobile && Mobile.InRange(m, Mobile.RangePerception) && CanDispel(m))
@@ -899,9 +896,8 @@ public class MageAI : BaseAI
                 }
             }
 
-            for (var i = 0; i < aggressors.Count; ++i)
+            foreach (var info in Mobile.Aggressors)
             {
-                var info = aggressors[i];
                 var m = info.Attacker;
 
                 if (m != comb && m.Combatant == Mobile && Mobile.InRange(m, Mobile.RangePerception) && CanDispel(m))
