@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using ModernUO.CodeGeneratedEvents;
+using Server.Collections;
 using Server.Gumps;
 using Server.Misc;
 using Server.Mobiles;

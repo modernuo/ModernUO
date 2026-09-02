@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using ModernUO.CodeGeneratedEvents;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.Engines.PartySystem;
 using Server.Factions;
 using Server.Gumps;
@@ -2236,10 +2237,7 @@ public partial class DuelContext
                     continue;
                 }
 
-                mob.RemoveAggressed(dp.Mobile);
-                mob.RemoveAggressor(dp.Mobile);
-                dp.Mobile.RemoveAggressed(mob);
-                dp.Mobile.RemoveAggressor(mob);
+                mob.RemoveAggression(dp.Mobile);
             }
         }
     }
