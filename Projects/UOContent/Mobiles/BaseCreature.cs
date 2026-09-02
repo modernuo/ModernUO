@@ -3123,14 +3123,12 @@ namespace Server.Mobiles
             return base.OnBeforeDeath();
         }
 
-        public int ComputeBonusDamage(List<DamageEntry> list, Mobile m)
+        public int ComputeBonusDamage(in ValueLinkList<DamageEntry> list, Mobile m)
         {
             var bonus = 0;
 
-            for (var i = list.Count - 1; i >= 0; --i)
+            foreach (var de in list.ByDescending())
             {
-                var de = list[i];
-
                 if (de.Damager == m || de.Damager is not BaseCreature bc)
                 {
                     continue;

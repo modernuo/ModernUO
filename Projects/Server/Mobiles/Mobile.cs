@@ -968,6 +968,8 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     /// Damage entries ordered least recent (head) to most recent (tail). Expired entries are
     /// pruned on access. Enumerate with <c>foreach</c> (ascending) or <c>.ByDescending()</c>.
     /// Mutate only through <see cref="RegisterDamage"/> and <see cref="ClearDamageEntries"/>.
+    /// Calling a ValueLinkList mutator on this reference compiles, but operates on a defensive copy
+    /// while still unlinking the real nodes — it silently corrupts the list.
     /// </summary>
     public ref readonly ValueLinkList<DamageEntry> DamageEntries
     {
@@ -5763,6 +5765,16 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     // Entries are kept in LastDamage order, so expired entries are always a head prefix.
     private void PruneExpiredDamageEntries()
     {
+#if DEBUG
+        for (var node = _damageEntries._first; node != null; node = node.Next)
+        {
+            Debug.Assert(
+                node.Next == null || node.Next.LastDamage >= node.LastDamage,
+                "Damage entries must be ordered by LastDamage ascending."
+            );
+        }
+#endif
+
         var first = _damageEntries._first;
 
         if (first?.HasExpired != true)

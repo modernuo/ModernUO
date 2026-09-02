@@ -1182,11 +1182,6 @@ public partial class ChampionSpawn : Item
 
         foreach (var de in m.DamageEntries)
         {
-            if (de.HasExpired)
-            {
-                continue;
-            }
-
             var damager = de.Damager;
             var master = damager.GetDamageMaster(m);
 
