@@ -42,7 +42,7 @@ public delegate void PromptCallback(Mobile from, string text);
 
 public delegate void PromptStateCallback<in T>(Mobile from, string text, T state);
 
-public class DamageEntry
+public class DamageEntry : IValueLinkListNode<DamageEntry>
 {
     public DamageEntry(Mobile damager) => Damager = damager;
 
@@ -57,6 +57,11 @@ public class DamageEntry
     public List<DamageEntry> Responsible { get; set; }
 
     public static TimeSpan ExpireDelay { get; set; } = TimeSpan.FromMinutes(2.0);
+
+    // Intrusive links for Mobile._damageEntries. Sub-entries in Responsible never join a list.
+    public DamageEntry Next { get; set; }
+    public DamageEntry Previous { get; set; }
+    public bool OnLinkList { get; set; }
 }
 
 [Flags]
@@ -377,7 +382,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         Aggressors = new List<AggressorInfo>();
         Aggressed = new List<AggressorInfo>();
         NextSkillTime = Core.TickCount;
-        DamageEntries = new List<DamageEntry>();
     }
 
     // Sectors
@@ -958,7 +962,21 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
     public static VisibleDamageType VisibleDamageType { get; set; }
 
-    public List<DamageEntry> DamageEntries { get; private set; }
+    private ValueLinkList<DamageEntry> _damageEntries;
+
+    /// <summary>
+    /// Damage entries ordered least recent (head) to most recent (tail). Expired entries are
+    /// pruned on access. Enumerate with <c>foreach</c> (ascending) or <c>.ByDescending()</c>.
+    /// Mutate only through <see cref="RegisterDamage"/> and <see cref="ClearDamageEntries"/>.
+    /// </summary>
+    public ref readonly ValueLinkList<DamageEntry> DamageEntries
+    {
+        get
+        {
+            PruneExpiredDamageEntries();
+            return ref _damageEntries;
+        }
+    }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public Mobile LastKiller { get; set; }
@@ -2020,10 +2038,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                     Aggressors[i].CanReportMurder = false;
                 }
 
-                if (DamageEntries.Count > 0)
-                {
-                    DamageEntries.Clear(); // reset damage entries on full HP
-                }
+                ClearDamageEntries(); // reset damage entries on full HP
             }
             else if (CanRegenHits)
             {
@@ -5745,24 +5760,44 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         }
     }
 
+    // Entries are kept in LastDamage order, so expired entries are always a head prefix.
+    private void PruneExpiredDamageEntries()
+    {
+        var first = _damageEntries._first;
+
+        if (first?.HasExpired != true)
+        {
+            return;
+        }
+
+        var firstLive = first.Next;
+
+        while (firstLive?.HasExpired == true)
+        {
+            firstLive = firstLive.Next;
+        }
+
+        if (firstLive == null)
+        {
+            _damageEntries.RemoveAll();
+        }
+        else
+        {
+            _damageEntries.RemoveAllBefore(firstLive);
+        }
+    }
+
+    public void ClearDamageEntries() => _damageEntries.RemoveAll();
+
     public Mobile FindMostRecentDamager(bool allowSelf) => FindMostRecentDamageEntry(allowSelf)?.Damager;
 
     public DamageEntry FindMostRecentDamageEntry(bool allowSelf)
     {
-        for (var i = DamageEntries.Count - 1; i >= 0; --i)
+        PruneExpiredDamageEntries();
+
+        for (var de = _damageEntries._last; de != null; de = de.Previous)
         {
-            if (i >= DamageEntries.Count)
-            {
-                continue;
-            }
-
-            var de = DamageEntries[i];
-
-            if (de.HasExpired)
-            {
-                DamageEntries.RemoveAt(i);
-            }
-            else if (allowSelf || de.Damager != this)
+            if (allowSelf || de.Damager != this)
             {
                 return de;
             }
@@ -5775,21 +5810,11 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
     public DamageEntry FindLeastRecentDamageEntry(bool allowSelf)
     {
-        for (var i = 0; i < DamageEntries.Count; ++i)
+        PruneExpiredDamageEntries();
+
+        for (var de = _damageEntries._first; de != null; de = de.Next)
         {
-            if (i < 0)
-            {
-                continue;
-            }
-
-            var de = DamageEntries[i];
-
-            if (de.HasExpired)
-            {
-                DamageEntries.RemoveAt(i);
-                --i;
-            }
-            else if (allowSelf || de.Damager != this)
+            if (allowSelf || de.Damager != this)
             {
                 return de;
             }
@@ -5800,24 +5825,17 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
     public Mobile FindMostTotalDamager(bool allowSelf) => FindMostTotalDamageEntry(allowSelf)?.Damager;
 
+    // Walks most recent first with a strict comparison so the most recent entry wins ties,
+    // matching the previous reverse-indexed loop.
     public DamageEntry FindMostTotalDamageEntry(bool allowSelf)
     {
+        PruneExpiredDamageEntries();
+
         DamageEntry mostTotal = null;
 
-        for (var i = DamageEntries.Count - 1; i >= 0; --i)
+        for (var de = _damageEntries._last; de != null; de = de.Previous)
         {
-            if (i >= DamageEntries.Count)
-            {
-                continue;
-            }
-
-            var de = DamageEntries[i];
-
-            if (de.HasExpired)
-            {
-                DamageEntries.RemoveAt(i);
-            }
-            else if ((allowSelf || de.Damager != this) && (mostTotal == null || de.DamageGiven > mostTotal.DamageGiven))
+            if ((allowSelf || de.Damager != this) && (mostTotal == null || de.DamageGiven > mostTotal.DamageGiven))
             {
                 mostTotal = de;
             }
@@ -5830,46 +5848,28 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
     public DamageEntry FindLeastTotalDamageEntry(bool allowSelf)
     {
-        DamageEntry mostTotal = null;
+        PruneExpiredDamageEntries();
 
-        for (var i = DamageEntries.Count - 1; i >= 0; --i)
+        DamageEntry leastTotal = null;
+
+        for (var de = _damageEntries._last; de != null; de = de.Previous)
         {
-            if (i >= DamageEntries.Count)
+            if ((allowSelf || de.Damager != this) && (leastTotal == null || de.DamageGiven < leastTotal.DamageGiven))
             {
-                continue;
-            }
-
-            var de = DamageEntries[i];
-
-            if (de.HasExpired)
-            {
-                DamageEntries.RemoveAt(i);
-            }
-            else if ((allowSelf || de.Damager != this) && (mostTotal == null || de.DamageGiven < mostTotal.DamageGiven))
-            {
-                mostTotal = de;
+                leastTotal = de;
             }
         }
 
-        return mostTotal;
+        return leastTotal;
     }
 
     public DamageEntry FindDamageEntryFor(Mobile m)
     {
-        for (var i = DamageEntries.Count - 1; i >= 0; --i)
+        PruneExpiredDamageEntries();
+
+        for (var de = _damageEntries._last; de != null; de = de.Previous)
         {
-            if (i >= DamageEntries.Count)
-            {
-                continue;
-            }
-
-            var de = DamageEntries[i];
-
-            if (de.HasExpired)
-            {
-                DamageEntries.RemoveAt(i);
-            }
-            else if (de.Damager == m)
+            if (de.Damager == m)
             {
                 return de;
             }
@@ -5887,8 +5887,13 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         de.DamageGiven += amount;
         de.LastDamage = Core.Now;
 
-        DamageEntries.Remove(de);
-        DamageEntries.Add(de);
+        // Move to the tail so the list stays in LastDamage order.
+        if (de.OnLinkList)
+        {
+            _damageEntries.Remove(de);
+        }
+
+        _damageEntries.AddLast(de);
 
         var master = from.GetDamageMaster(this);
 
@@ -7819,7 +7824,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         AutoPageNotify = true;
         Aggressors = new List<AggressorInfo>();
         Aggressed = new List<AggressorInfo>();
-        DamageEntries = new List<DamageEntry>();
 
         NextSkillTime = Core.TickCount;
     }
