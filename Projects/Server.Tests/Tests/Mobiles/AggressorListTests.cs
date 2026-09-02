@@ -23,6 +23,17 @@ public class AggressorListTests
         return result;
     }
 
+    private static List<Mobile> Defenders(Mobile attacker)
+    {
+        var result = new List<Mobile>();
+        foreach (var info in attacker.Aggressed)
+        {
+            result.Add(info.Defender);
+        }
+
+        return result;
+    }
+
     [Fact]
     public void FreshMobile_HasEmptyListsAndNoAggression()
     {
@@ -129,6 +140,63 @@ public class AggressorListTests
     }
 
     [Fact]
+    public void RepeatAggression_RefreshesEveryDuplicateOnce()
+    {
+        var start = Core._now;
+        var victim = new TestMobile();
+        var a = new TestMobile();
+
+        try
+        {
+            // Two one-sided entries for the same attacker, as the pet-defense path produces.
+            victim.AddAggressor(a, criminal: false);
+            victim.AddAggressor(a, criminal: false);
+
+            Core._now = start + TimeSpan.FromSeconds(30);
+            victim.AggressiveAction(a, criminal: false);
+
+            Assert.Equal(2, victim.Aggressors.Count); // refreshed in place, no third entry
+
+            foreach (var info in victim.Aggressors)
+            {
+                Assert.Equal(Core._now, info.LastCombatTime);
+            }
+        }
+        finally
+        {
+            Core._now = start;
+            victim.Delete();
+            a.Delete();
+        }
+    }
+
+    [Fact]
+    public void RepeatAggression_RelinksMiddleEntryToTail()
+    {
+        var victim = new TestMobile();
+        var a = new TestMobile();
+        var b = new TestMobile();
+        var c = new TestMobile();
+
+        try
+        {
+            victim.AggressiveAction(a, criminal: false);
+            victim.AggressiveAction(b, criminal: false);
+            victim.AggressiveAction(c, criminal: false);
+            victim.AggressiveAction(b, criminal: false); // b was in the middle
+
+            Assert.Equal(new[] { a, c, b }, Attackers(victim));
+        }
+        finally
+        {
+            victim.Delete();
+            a.Delete();
+            b.Delete();
+            c.Delete();
+        }
+    }
+
+    [Fact]
     public void RemoveAggressor_UnlinksAndEmpties()
     {
         var victim = new TestMobile();
@@ -147,6 +215,9 @@ public class AggressorListTests
 
             Assert.Equal(0, victim.Aggressors.Count);
             Assert.False(victim.HasAggressors);
+
+            // The entry has been returned to the pool; Next/Previous/OnLinkList are the only
+            // members safe to read after Free().
             Assert.False(entry.OnLinkList);
             Assert.Null(entry.Next);
             Assert.Null(entry.Previous);
@@ -180,27 +251,35 @@ public class AggressorListTests
     }
 
     [Fact]
-    public void Expiry_PopsOnlyTheExpiredHeadPrefix_OnBothSides()
+    public void Expiry_RemovesExpiredEntries_OnBothSides()
     {
         var start = Core._now;
         var victim = new TestMobile();
         var a = new TestMobile();
         var b = new TestMobile();
+        var c = new TestMobile();
+        var d = new TestMobile();
 
         try
         {
-            victim.AggressiveAction(a, criminal: false);
+            victim.AggressiveAction(a, criminal: false); // a attacks victim
+            c.AggressiveAction(victim, criminal: false); // victim attacks c
 
             Core._now = start + TimeSpan.FromMinutes(1);
-            victim.AggressiveAction(b, criminal: false);
+            victim.AggressiveAction(b, criminal: false); // b attacks victim
+            d.AggressiveAction(victim, criminal: false); // victim attacks d
 
-            // a is 2.5 min old (expired at 2 min); b is 1.5 min old (live)
+            // a and c are 2.5 min old (expired at 2 min); b and d are 1.5 min old (live)
             Core._now = start + TimeSpan.FromMinutes(2.5);
             victim.CheckAggrExpire();
 
             Assert.Equal(new[] { b }, Attackers(victim));
-            Assert.Equal(0, a.Aggressed.Count);   // peer entry removed too
+            Assert.Equal(new[] { d }, Defenders(victim));
+
+            Assert.Equal(0, a.Aggressed.Count);    // peer entries removed too
+            Assert.Equal(0, c.Aggressors.Count);
             Assert.Equal(1, b.Aggressed.Count);
+            Assert.Equal(1, d.Aggressors.Count);
         }
         finally
         {
@@ -208,6 +287,8 @@ public class AggressorListTests
             victim.Delete();
             a.Delete();
             b.Delete();
+            c.Delete();
+            d.Delete();
         }
     }
 
