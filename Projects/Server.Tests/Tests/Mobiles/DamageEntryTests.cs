@@ -100,6 +100,27 @@ public class DamageEntryTests
     }
 
     [Fact]
+    public void FindLeastRecent_HonorsAllowSelf()
+    {
+        var victim = new TestMobile();
+        var a = new TestMobile();
+
+        try
+        {
+            victim.RegisterDamage(10, victim); // self is least recent, so the head is the one to skip
+            victim.RegisterDamage(10, a);
+
+            Assert.Same(victim, victim.FindLeastRecentDamager(true));
+            Assert.Same(a, victim.FindLeastRecentDamager(false));
+        }
+        finally
+        {
+            victim.Delete();
+            a.Delete();
+        }
+    }
+
+    [Fact]
     public void FindTotal_PicksByDamage_MostRecentWinsTies()
     {
         var victim = new TestMobile();
@@ -114,6 +135,32 @@ public class DamageEntryTests
             victim.RegisterDamage(1, c);
 
             Assert.Same(b, victim.FindMostTotalDamager(true));
+            Assert.Same(c, victim.FindLeastTotalDamager(true));
+        }
+        finally
+        {
+            victim.Delete();
+            a.Delete();
+            b.Delete();
+            c.Delete();
+        }
+    }
+
+    [Fact]
+    public void FindLeastTotal_MostRecentWinsTies()
+    {
+        var victim = new TestMobile();
+        var a = new TestMobile();
+        var b = new TestMobile();
+        var c = new TestMobile();
+
+        try
+        {
+            victim.RegisterDamage(30, a);
+            victim.RegisterDamage(5, b);
+            victim.RegisterDamage(5, c); // ties b for the minimum; c is more recent
+
+            Assert.Same(a, victim.FindMostTotalDamager(true));
             Assert.Same(c, victim.FindLeastTotalDamager(true));
         }
         finally
@@ -197,6 +244,8 @@ public class DamageEntryTests
             Assert.False(ea.OnLinkList);
             Assert.False(eb.OnLinkList);
             Assert.Null(ea.Next);
+            Assert.Null(ea.Previous);
+            Assert.Null(eb.Next);
             Assert.Null(eb.Previous);
         }
         finally
@@ -220,6 +269,7 @@ public class DamageEntryTests
             victim.RegisterDamage(10, a);
             Assert.Equal(1, victim.DamageEntries.Count);
 
+            // Also stops the HitsTimer the Hits = 10 write started, so the test leaves no timer behind.
             victim.Hits = victim.HitsMax;
 
             Assert.Equal(0, victim.DamageEntries.Count);
