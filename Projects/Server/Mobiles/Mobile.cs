@@ -451,14 +451,8 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
     public object Party { get; set; }
 
-    /// <summary>
-    /// Active skill mods, or <c>null</c> when none are active. The list is created on the
-    /// first <see cref="AddSkillMod"/> and released when the last mod is removed.
-    /// </summary>
     public List<SkillMod> SkillMods => _skillMods;
-
     public List<StatMod> StatMods => _statMods;
-
     public List<ResistanceMod> ResistanceMods => _resistanceMods;
 
     [CommandProperty(AccessLevel.GameMaster)]
