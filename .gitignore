@@ -64,3 +64,10 @@
 # Ignore everything under tools/ except the operator scripts checked in below.
 /tools/*
 !/tools/Export-IpBlocklist.ps1
+!/tools/knowledge-graph/
+
+# graphify knowledge-graph build output (regenerate with /graphify; see
+# dev-docs/knowledge-graph.md). The graph is a derived artifact -- tens of MB
+# and stale the moment main moves -- so it is hosted, not committed.
+/graphify-out
+/tools/knowledge-graph/dist
