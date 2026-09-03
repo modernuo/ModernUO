@@ -1,0 +1,35 @@
+# graphify corpus definition for ModernUO
+#
+# Anything matched here is kept OUT of the knowledge graph built by /graphify.
+# Patterns use gitignore syntax and are merged on top of .gitignore, so this
+# file only ever narrows the corpus further.
+#
+# The goal: the graph should contain the shipped source of the server and its
+# game content -- nothing generated, nothing vendored, nothing local-only.
+#
+# Keep every pattern rooted with a leading "/". Unrooted gitignore patterns
+# match at any depth, so a bare "tools/" would also swallow
+# Projects/UOContent/Items/Skill Items/Tools/ and silently drop 31 crafting
+# tool files from the graph. Rooted patterns match only the top-level directory
+# they name.
+
+# Generated serialization migration snapshots (~3,850 JSON files, machine-written)
+/Projects/*/Migrations/
+
+# Prose that documents the code rather than being the code. dev-docs/ is a
+# large hand-written corpus about ModernUO internals; catalog it separately
+# if you ever want a docs graph, but it drowns the code graph when merged in.
+/dev-docs/
+
+# Runtime data, decorations, and vendored third-party material
+/Distribution/
+/THIRD-PARTY-NOTICES/
+/branding/
+/tools/
+
+# Local-only and agent scratch directories (untracked or developer-specific)
+/docs/
+/.claude/
+/.superpowers/
+/.wt-*/
+/ModernUO.sln.DotSettings.user

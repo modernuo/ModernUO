@@ -35,6 +35,7 @@ Apply these when writing or reviewing `.cs` files under `Projects/`.
 
 | Topic | File |
 |---|---|
+| Knowledge graph (hosted codebase map: what calls what, impact analysis) | `dev-docs/knowledge-graph.md` |
 | Code standards & LINQ tiers | `dev-docs/code-standards.md` |
 | Serialization system | `dev-docs/serialization.md` |
 | Content patterns (Items, Mobiles, Creatures) | `dev-docs/content-patterns.md` |
@@ -87,6 +88,7 @@ Then copy only the relevant skill files based on the task:
 | String building / formatting | `modernuo-string-handling` |
 | Code review / audit | `modernuo-code-audit` |
 | Any `.cs` file edit | `modernuo-code-audit` (always offer for code changes) |
+| Orienting in unfamiliar code, "what calls X", impact analysis | `modernuo-knowledge-graph` |
 | **RunUO Migration** | |
 | Migrate any RunUO script | `migrate-from-runuo/migrate-foundation` (always), plus system-specific skills below |
 | Migrate Item/Mobile/Creature | `migrate-from-runuo/migrate-foundation`, `migrate-from-runuo/migrate-serialization`, `migrate-from-runuo/migrate-items-mobiles` |
