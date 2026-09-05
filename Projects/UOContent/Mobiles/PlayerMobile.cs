@@ -2749,7 +2749,7 @@ namespace Server.Mobiles
                 return false;
             }
 
-            if (bc?.Controlled == true && this == bc.ControlMaster)
+            if (Core.ML && bc?.Controlled == true && this == bc.ControlMaster)
             {
                 return false;
             }
