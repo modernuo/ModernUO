@@ -498,25 +498,22 @@ namespace Server.Guilds
         }
     }
 
-    public class WarTimer : Timer
+    public class GuildMaintenanceTimer : Timer
     {
-        public WarTimer() : base(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(1.0))
+        public GuildMaintenanceTimer() : base(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(1.0))
         {
         }
 
         public static void Initialize()
         {
-            if (Guild.NewGuildSystem)
-            {
-                new WarTimer().Start();
-            }
+            new GuildMaintenanceTimer().Start();
         }
 
         protected override void OnTick()
         {
             foreach (var g in World.Guilds.Values)
             {
-                (g as Guild)?.CheckExpiredWars();
+                (g as Guild)?.RunMaintenance();
             }
         }
     }
@@ -1100,8 +1097,18 @@ namespace Server.Guilds
             list.TrimExcess();
         }
 
-        public override void Serialize(IGenericWriter writer)
+        /// <summary>
+        /// Periodic bookkeeping that used to ride on every world save: the daily fealty
+        /// recalculation, war expiry, and the alliance leadership check. Saves must be pure,
+        /// so this runs from <see cref="GuildMaintenanceTimer"/> instead.
+        /// </summary>
+        public void RunMaintenance()
         {
+            if (Disbanded)
+            {
+                return;
+            }
+
             if (LastFealty + TimeSpan.FromDays(1.0) < Core.Now)
             {
                 CalculateGuildmaster();
@@ -1110,7 +1117,10 @@ namespace Server.Guilds
             CheckExpiredWars();
 
             Alliance?.CheckLeader();
+        }
 
+        public override void Serialize(IGenericWriter writer)
+        {
             writer.Write(5); // version
 
             writer.Write(PendingWars.Count);
