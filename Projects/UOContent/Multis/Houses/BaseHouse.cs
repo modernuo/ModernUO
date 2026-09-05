@@ -31,6 +31,8 @@ namespace Server.Multis
         private DecayLevel m_CurrentStage;
 
         private DecayLevel m_LastDecayLevel;
+        private bool _wasUndecayable;       // not serialized: decay tick state only
+        private DateTime _nextLockdownSweep; // not serialized
 
         private Mobile m_Owner;
 
@@ -198,19 +200,58 @@ namespace Server.Multis
         {
             get
             {
-                DecayLevel result;
-
                 if (!CanDecay)
                 {
+                    return DecayLevel.Ageless;
+                }
+
+                if (DynamicDecay.Enabled)
+                {
+                    var stage = m_CurrentStage;
+
+                    if (stage == DecayLevel.Collapsed && (HasRentedVendors || VendorInventories.Count > 0))
+                    {
+                        return DecayLevel.DemolitionPending;
+                    }
+
+                    return stage;
+                }
+
+                return GetOldDecayLevel();
+            }
+        }
+
+        /// <summary>
+        /// Advances decay bookkeeping. Runs from the decay tick, never from a read: a getter that
+        /// writes persisted fields makes every house record change on every read.
+        /// </summary>
+        public virtual void UpdateDecay()
+        {
+            if (!CanDecay)
+            {
+                if (DynamicDecay.Enabled && m_CurrentStage != DecayLevel.Ageless)
+                {
+                    ResetDynamicDecay();
+                }
+
+                _wasUndecayable = true;
+            }
+            else
+            {
+                if (_wasUndecayable)
+                {
+                    // Leaving the undecayable state counts as a refresh, which the old getter
+                    // guaranteed by restamping LastRefreshed on every read while undecayable.
+                    _wasUndecayable = false;
+                    LastRefreshed = Core.Now;
+
                     if (DynamicDecay.Enabled)
                     {
                         ResetDynamicDecay();
                     }
-
-                    LastRefreshed = Core.Now;
-                    result = DecayLevel.Ageless;
                 }
-                else if (DynamicDecay.Enabled)
+
+                if (DynamicDecay.Enabled)
                 {
                     var stage = m_CurrentStage;
 
@@ -218,32 +259,19 @@ namespace Server.Multis
                     {
                         SetDynamicDecay(++stage);
                     }
-
-                    if (stage == DecayLevel.Collapsed && (HasRentedVendors || VendorInventories.Count > 0))
-                    {
-                        result = DecayLevel.DemolitionPending;
-                    }
-                    else
-                    {
-                        result = stage;
-                    }
                 }
-                else
+            }
+
+            var level = DecayLevel;
+
+            if (level != m_LastDecayLevel)
+            {
+                m_LastDecayLevel = level;
+
+                if (Sign?.GettingProperties == false)
                 {
-                    result = GetOldDecayLevel();
+                    Sign.InvalidateProperties();
                 }
-
-                if (result != m_LastDecayLevel)
-                {
-                    m_LastDecayLevel = result;
-
-                    if (Sign?.GettingProperties == false)
-                    {
-                        Sign.InvalidateProperties();
-                    }
-                }
-
-                return result;
             }
         }
 
@@ -582,6 +610,7 @@ namespace Server.Multis
                 return false;
             }
 
+            UpdateDecay();
             var oldLevel = DecayLevel;
 
             LastRefreshed = Core.Now;
@@ -596,8 +625,18 @@ namespace Server.Multis
             return oldLevel > DecayLevel.LikeNew;
         }
 
+        private static readonly TimeSpan LockdownSweepInterval = TimeSpan.FromMinutes(10.0);
+
         public virtual bool CheckDecay()
         {
+            UpdateDecay();
+
+            if (_nextLockdownSweep <= Core.Now)
+            {
+                _nextLockdownSweep = Core.Now + LockdownSweepInterval;
+                SweepLockedDownContainers();
+            }
+
             if (!Deleted && DecayLevel == DecayLevel.Collapsed)
             {
                 Timer.StartTimer(Decay_Sandbox);
@@ -605,6 +644,32 @@ namespace Server.Multis
             }
 
             return false;
+        }
+
+        // Items in locked down containers that are not locked down themselves must decay.
+        // This used to run inside Serialize on every world save; saves must be pure.
+        private void SweepLockedDownContainers()
+        {
+            for (var i = 0; i < LockDowns.Count; ++i)
+            {
+                if (LockDowns[i] is not Container cont || cont is BaseBoard or Aquarium or FishBowl)
+                {
+                    continue;
+                }
+
+                var children = cont.Items;
+
+                for (var j = 0; j < children.Count; ++j)
+                {
+                    var child = children[j];
+
+                    if (child.Decays && !child.IsLockedDown && !child.IsSecure &&
+                        child.LastMoved + child.DecayTime <= Core.Now)
+                    {
+                        Timer.StartTimer(child.Delete);
+                    }
+                }
+            }
         }
 
         public virtual void KillVendors()
@@ -2969,28 +3034,6 @@ namespace Server.Multis
 
             writer.Write(MaxLockDowns);
             writer.Write(MaxSecures);
-
-            // Items in locked down containers that aren't locked down themselves must decay!
-            for (var i = 0; i < LockDowns.Count; ++i)
-            {
-                var item = LockDowns[i];
-
-                if (item is Container cont && !(cont is BaseBoard or Aquarium or FishBowl))
-                {
-                    var children = cont.Items;
-
-                    for (var j = 0; j < children.Count; ++j)
-                    {
-                        var child = children[j];
-
-                        if (child.Decays && !child.IsLockedDown && !child.IsSecure &&
-                            child.LastMoved + child.DecayTime <= Core.Now)
-                        {
-                            Timer.StartTimer(child.Delete);
-                        }
-                    }
-                }
-            }
         }
 
         public override void Deserialize(IGenericReader reader)
