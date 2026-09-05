@@ -427,8 +427,7 @@ namespace Server.Misc
                 if (Core.ML && master != null)
                 {
                     if (source == master && CheckAggressor(bcTarg.Aggressors, source) ||
-                        CheckAggressor(source.Aggressors, bcTarg) ||
-                        (CheckAggressor(bcTarg.Aggressors, source) && CheckAggressor(master.Aggressors, source)))
+                        CheckAggressor(source.Aggressors, bcTarg))
                     {
                         return Notoriety.CanBeAttacked;
                     }
@@ -491,15 +490,6 @@ namespace Server.Misc
                 {
                     return Notoriety.CanBeAttacked;
                 }
-            }
-
-            // A controlled pet is fair game to anyone who has attacked both the pet and its master:
-            // the pet's own record of the attacker refreshes on every hit, so the pet stays grey
-            // while the attacker keeps hitting it and reverts two minutes after they stop.
-            if (bcTarg?.ControlMaster is { } petMaster && petMaster != source &&
-                CheckAggressor(bcTarg.Aggressors, source) && CheckAggressor(petMaster.Aggressors, source))
-            {
-                return Notoriety.CanBeAttacked;
             }
 
             if (CheckAggressor(source.Aggressors, target))
