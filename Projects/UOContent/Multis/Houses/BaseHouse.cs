@@ -2467,10 +2467,8 @@ namespace Server.Multis
                 return false;
             }
 
-            for (var i = 0; i < m.Aggressed.Count; ++i)
+            foreach (var info in m.Aggressed)
             {
-                var info = m.Aggressed[i];
-
                 if (info.Defender.Player && info.Defender.Alive &&
                     Core.Now - info.LastCombatTime < HouseRegion.CombatHeatDelay &&
                     (m.Guild is not Guild attackerGuild || info.Defender.Guild is not Guild defenderGuild ||

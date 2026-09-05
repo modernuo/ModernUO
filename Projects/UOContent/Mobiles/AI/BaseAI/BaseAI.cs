@@ -14,6 +14,7 @@
  ************************************************************************/
 
 using System;
+using Server.Collections;
 using Server.Engines.Quests.Necro;
 using Server.Engines.Spawners;
 using Server.Engines.Virtues;
@@ -929,8 +930,8 @@ public abstract partial class BaseAI
     private bool HandleAggressor(FightMode acqType)
     {
         if (acqType != FightMode.Aggressor ||
-            Mobile.Aggressors.Count > 0 ||
-            Mobile.Aggressed.Count > 0 ||
+            Mobile.HasAggressors ||
+            Mobile.HasAggressed ||
             Mobile.FactionAllegiance != null ||
             Mobile.EthicAllegiance != null)
         {
@@ -1034,26 +1035,32 @@ public abstract partial class BaseAI
         return !valid && (acqType != FightMode.Evil || (bc?.GetMaster()?.Karma ?? m.Karma) >= 0);
     }
 
+    // "Engaged with us": either of us targets the other now, or an aggression record between us
+    // is still live (refreshed on every exchange, expires AggressorInfo.ExpireDelay after the last).
+    // The record checks survive a player leaving war mode or switching targets; Combatant does not.
     private bool IsHostile(Mobile from) =>
         Mobile.Combatant == from || from.Combatant == Mobile || IsAggressor(from) || IsAggressed(from);
 
+    // from attacked us
     private bool IsAggressor(Mobile from)
     {
         foreach (var aggressor in Mobile.Aggressors)
         {
-            if (aggressor.Defender == from)
+            if (aggressor.Attacker == from && !aggressor.Expired)
             {
                 return true;
             }
         }
+
         return false;
     }
 
+    // we attacked from
     private bool IsAggressed(Mobile from)
     {
         foreach (var aggressed in Mobile.Aggressed)
         {
-            if (aggressed.Attacker == from)
+            if (aggressed.Defender == from && !aggressed.Expired)
             {
                 return true;
             }
