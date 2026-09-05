@@ -160,16 +160,6 @@ public abstract class BaseContainer : Container
         DisplayTo(from);
     }
 
-    /* Note: base class insertion; we cannot serialize anything here */
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-    }
 }
 
 [SerializationGenerator(0, false)]
