@@ -14,6 +14,7 @@ using Server.Engines.Virtues;
 using Server.Ethics;
 using Server.Factions;
 using Server.Items;
+using Server.Logging;
 using Server.Misc;
 using Server.Multis;
 using Server.Network;
@@ -137,6 +138,16 @@ namespace Server.Mobiles
     [SerializationGenerator(23, false)]
     public abstract partial class BaseCreature : Mobile, IHonorTarget, IQuestGiver
     {
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(BaseCreature));
+
+        // Last-resort pace for a creature whose elided speeds cannot be restored from the
+        // table (it changed or vanished since the save); a 0-delay AI timer would spin at
+        // wheel resolution. Matches the Medium bucket in Data/npc-speeds.json.
+        private const double FallbackActiveSpeed = 0.25;
+        private const double FallbackPassiveSpeed = 0.5;
+
+        private static bool _loggedMissingSpeeds;
+
         public enum Allegiance
         {
             None,
@@ -821,6 +832,15 @@ namespace Server.Mobiles
 
             GetSpeeds(out var activeSpeed, out var passiveSpeed);
             GetMoveSpeeds(out _activeMoveSpeed, out _passiveMoveSpeed);
+
+            if (activeSpeed <= 0 || passiveSpeed <= 0)
+            {
+                // Construction is the one place that refuses: a 0-delay creature spins
+                // its AI timer at wheel resolution.
+                throw new InvalidOperationException(
+                    $"{GetType()} constructed without speeds - is Data/npc-speeds.json missing?"
+                );
+            }
 
             ActiveSpeed = activeSpeed;
             PassiveSpeed = passiveSpeed;
@@ -2345,6 +2365,24 @@ namespace Server.Mobiles
         private void AfterDeserialization()
         {
             NextReacquireTime = Core.TickCount;
+
+            if (_activeSpeed <= 0 || _passiveSpeed <= 0)
+            {
+                if (!_loggedMissingSpeeds)
+                {
+                    _loggedMissingSpeeds = true;
+                    logger.Error(
+                        "{Type} loaded without speeds - is Data/npc-speeds.json missing or changed? Pacing at {Active}/{Passive}.",
+                        GetType(),
+                        FallbackActiveSpeed,
+                        FallbackPassiveSpeed
+                    );
+                }
+
+                _activeSpeed = FallbackActiveSpeed;
+                _passiveSpeed = FallbackPassiveSpeed;
+                _currentSpeed = _passiveSpeed;
+            }
 
             if (Core.AOS && NameHue == 0x35)
             {
@@ -5094,11 +5132,20 @@ namespace Server.Mobiles
 
         private NPCSpeeds.SpeedClassEntry SpeedEntry => _speedEntry ??= NPCSpeeds.FindEntry(this);
 
+        // Consulted at construction and, through the speed SaveFlags, on every save and
+        // every elided load - so it never throws. Without a table entry the creature is
+        // its own reference: its serialized speeds stand, and the constructor is the one
+        // caller that refuses to proceed on a missing table.
         public virtual void GetSpeeds(out double activeSpeed, out double passiveSpeed)
         {
-            var entry = SpeedEntry ?? throw new InvalidOperationException(
-                $"{GetType()} has no speed entry - is {"Data/npc-speeds.json"} missing?"
-            );
+            var entry = SpeedEntry;
+
+            if (entry == null)
+            {
+                activeSpeed = _activeSpeed;
+                passiveSpeed = _passiveSpeed;
+                return;
+            }
 
             activeSpeed = entry.ActiveSpeed;
             passiveSpeed = entry.PassiveSpeed;
