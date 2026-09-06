@@ -154,7 +154,7 @@ namespace Server.Mobiles
         public static bool UnderEffect(Mobile m) => m_Table.ContainsKey(m);
 
         [OnEvent(nameof(PlayerMobile.PlayerDeathEvent))]
-        [OnEvent(nameof(CreatureDeathEvent))]
+        [OnEvent(nameof(CreatureEvents.CreatureDeathEvent))]
         public static void StopEffect(Mobile m, bool message = false)
         {
             if (m_Table.Remove(m, out var timer))

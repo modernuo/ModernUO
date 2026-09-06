@@ -99,8 +99,8 @@ public abstract class MonsterAbility
     {
     }
 
-    [OnEvent(nameof(BaseCreature.CreatureDeathEvent))]
-    [OnEvent(nameof(BaseCreature.CreatureDeletedEvent))]
+    [OnEvent(nameof(CreatureEvents.CreatureDeathEvent))]
+    [OnEvent(nameof(CreatureEvents.CreatureDeletedEvent))]
     public static void InvalidateNextAbilityTriggers(BaseCreature source)
     {
         var abilities = source.GetMonsterAbilities();

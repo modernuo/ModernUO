@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using ModernUO.CodeGeneratedEvents;
-using Server.Collections;
 using Server.Logging;
 using Server.Misc;
 using Server.Mobiles;

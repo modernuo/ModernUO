@@ -151,8 +151,8 @@ public class BloodOathSpell : NecromancerSpell, ITargetingSpell<Mobile>
     // shared timer from either the caster or the target key, so a single call per mobile is enough.
     [OnEvent(nameof(PlayerMobile.PlayerDeathEvent))]
     [OnEvent(nameof(PlayerMobile.PlayerDeletedEvent))]
-    [OnEvent(nameof(BaseCreature.CreatureDeathEvent))]
-    [OnEvent(nameof(BaseCreature.CreatureDeletedEvent))]
+    [OnEvent(nameof(CreatureEvents.CreatureDeathEvent))]
+    [OnEvent(nameof(CreatureEvents.CreatureDeletedEvent))]
     public static void OnCurseEnds(Mobile m) => RemoveCurse(m);
 
     private class ExpireTimer : Timer
