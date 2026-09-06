@@ -53,7 +53,7 @@ public partial class BraceletOfBinding : BaseBracelet, TranslocationItem
     [CommandProperty(AccessLevel.GameMaster)]
     public BraceletOfBinding Bound
     {
-        get => _bound?.Deleted == true ? null : _bound;
+        get => _bound?.Deleted != false ? null : _bound;
         set
         {
             if (_bound != value)
