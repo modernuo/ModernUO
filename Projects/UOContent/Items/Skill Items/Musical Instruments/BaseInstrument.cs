@@ -92,6 +92,7 @@ public abstract partial class BaseInstrument : Item, ICraftable, ISlayer
         {
             UnscaleUses();
             _quality = value;
+            this.MarkDirty();
             InvalidateProperties();
             ScaleUses();
         }
@@ -109,6 +110,7 @@ public abstract partial class BaseInstrument : Item, ICraftable, ISlayer
         set
         {
             _usesRemaining = value;
+            this.MarkDirty();
             InvalidateProperties();
         }
     }

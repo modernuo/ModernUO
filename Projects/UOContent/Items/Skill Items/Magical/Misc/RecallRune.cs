@@ -42,6 +42,7 @@ public partial class RecallRune : Item
         set
         {
             _house = value;
+            this.MarkDirty();
             CalculateHue();
             InvalidateProperties();
         }
