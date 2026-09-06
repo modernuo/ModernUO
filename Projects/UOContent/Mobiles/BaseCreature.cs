@@ -5923,14 +5923,7 @@ namespace Server.Mobiles
 
                 c.Say(1043255, c.Name); // ~1_NAME~ appears to have decided that is better off without a master!
                 c.Loyalty = BaseCreature.MaxLoyalty;
-                c.IsBonded = false;
-                c.BondingBegin = DateTime.MinValue;
-                c.OwnerAbandonTime = DateTime.MinValue;
-                c.ControlTarget = null;
-                // Release directly: a creature left alone with its AI disabled would
-                // otherwise never release and permanently hold its owner's follower slots.
                 c.AIObject.DoOrderRelease();
-                c.DropBackpack();
             }
 
             while (toRemove.Count > 0)

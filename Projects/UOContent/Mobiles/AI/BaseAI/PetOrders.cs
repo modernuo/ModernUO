@@ -13,6 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.  *
  ************************************************************************/
 
+using System;
+
 namespace Server.Mobiles;
 
 public abstract partial class BaseAI
@@ -457,9 +459,22 @@ public abstract partial class BaseAI
         return best;
     }
 
+    /// <summary>
+    /// The whole release: the master is cleared here, so this runs once, synchronously, from
+    /// the Release order handler or the loyalty drain, never from Obey.
+    /// </summary>
     public virtual bool DoOrderRelease()
     {
         DebugSay("I have been released to the wild.");
+
+        Mobile.ControlTarget = null;
+        Mobile.FocusMob = null;
+        Mobile.Warmode = false;
+        Mobile.Combatant = null;
+        Mobile.BondingBegin = DateTime.MinValue;
+        Mobile.OwnerAbandonTime = DateTime.MinValue;
+        Mobile.IsBonded = false;
+        Mobile.SetControlMaster(null);
 
         var spawner = Mobile.Spawner;
 
