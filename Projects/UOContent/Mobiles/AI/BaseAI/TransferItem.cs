@@ -156,7 +156,7 @@ internal sealed partial class TransferItem : Item
 
     private void TransferPetOwnership(Mobile from, Mobile to)
     {
-        if (_creature.Summoned)
+        if (_creature.SummonMaster != null)
         {
             _creature.SummonMaster = to;
         }

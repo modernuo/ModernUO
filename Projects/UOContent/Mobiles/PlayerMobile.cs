@@ -3602,7 +3602,7 @@ namespace Server.Mobiles
                 {
                     pet.SetControlMaster(this);
 
-                    if (pet.Summoned)
+                    if (pet.SummonMaster != null)
                     {
                         pet.SummonMaster = this;
                     }

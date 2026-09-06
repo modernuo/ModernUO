@@ -228,7 +228,7 @@ public partial class BallOfSummoning : Item, TranslocationItem
         {
             pet.SetControlMaster(from);
 
-            if (pet.Summoned)
+            if (pet.SummonMaster != null)
             {
                 pet.SummonMaster = from;
             }
