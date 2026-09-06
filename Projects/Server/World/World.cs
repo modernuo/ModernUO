@@ -122,6 +122,8 @@ public static class World
         UseMultiThreadedSaves = ServerConfiguration.GetOrUpdateSetting("world.useMultithreadedSaves", true);
     }
 
+    internal static void SetSavePathForTest(string path) => SavePath = path;
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void WaitForWriteCompletion() => _diskWriteHandle.WaitOne();
 
@@ -194,6 +196,9 @@ public static class World
 
         logger.Information("Loading world");
         var watch = Stopwatch.StartNew();
+
+        // A complete save left staged by an interrupted publish is newer than Saves/.
+        RecoverStagedSave();
 
         Persistence.Load(SavePath);
         EventSink.InvokeWorldLoad();
@@ -271,6 +276,10 @@ public static class World
     {
         try
         {
+            // Finish a publish that failed after its files were complete, before the new
+            // save can overwrite the staging directory. Off-loop: directory work only.
+            RecoverStagedSave();
+
             // Allocate the heaps for the GC
             foreach (var worker in _threadWorkers)
             {
@@ -394,17 +403,7 @@ public static class World
             logger.Information("Writing world save snapshot");
 
             Persistence.WriteSnapshotAll(snapshotPath);
-
-            try
-            {
-                EventSink.InvokeWorldSavePostSnapshot(SavePath, snapshotPath);
-                PathUtility.MoveDirectoryContents(snapshotPath, SavePath);
-                Directory.SetLastWriteTimeUtc(SavePath, Core.Now);
-            }
-            catch (Exception ex)
-            {
-                Persistence.TraceException(ex);
-            }
+            PublishSnapshot(snapshotPath);
 
             watch.Stop();
             logger.Information("Writing world save snapshot {Status} ({Duration:F2} seconds)", "done", watch.Elapsed.TotalSeconds);
@@ -419,6 +418,103 @@ public static class World
 
         _diskWriteHandle.Set();
         Core.LoopContext.Post(FinishWorldSave);
+    }
+
+    /// <summary>
+    /// The staging directory next to <see cref="SavePath" />. A snapshot moves here as soon as
+    /// its files are complete, before anything touches the previous save, so whatever fails
+    /// afterwards a complete newest save is on disk and <see cref="RecoverStagedSave" /> can
+    /// finish publishing it.
+    /// </summary>
+    internal static string StagedSavePath => SavePath + ".next";
+
+    /// <summary>
+    /// Publishes a complete snapshot: stage it, let subscribers archive the previous save
+    /// (<see cref="EventSink.WorldSavePostSnapshot" />, which is how the previous Saves/ ends
+    /// up in Backups/), then put the staged save in place. Before this protocol the previous
+    /// save was moved away first, and a subscriber or the final move failing left nothing
+    /// at Saves/ until the next save.
+    /// </summary>
+    private static void PublishSnapshot(string snapshotPath)
+    {
+        var staging = StagedSavePath;
+
+        if (Directory.Exists(staging))
+        {
+            // Recovery ran before this save and failed to publish it; do not destroy it.
+            SetAside(staging, "unpublished");
+        }
+
+        MoveDirectory(snapshotPath, staging);
+        PublishStagedSave(archive: true);
+    }
+
+    private static void PublishStagedSave(bool archive)
+    {
+        var staging = StagedSavePath;
+
+        if (archive)
+        {
+            EventSink.InvokeWorldSavePostSnapshot(SavePath, staging);
+        }
+
+        if (Directory.Exists(SavePath))
+        {
+            // No subscriber archived the previous save (or it failed part way). Keep it.
+            SetAside(SavePath, "previous");
+        }
+
+        MoveDirectory(staging, SavePath);
+        Directory.SetLastWriteTimeUtc(SavePath, Core.Now);
+    }
+
+    /// <summary>
+    /// Finishes an interrupted publish: a staged directory is always a complete save newer than
+    /// <see cref="SavePath" />. Runs at boot (before load, when archive subscribers are not
+    /// wired yet) and before every save. Whatever is at Saves/ is set aside, never deleted.
+    /// </summary>
+    internal static void RecoverStagedSave()
+    {
+        var staging = StagedSavePath;
+
+        if (!Directory.Exists(staging))
+        {
+            return;
+        }
+
+        logger.Warning(
+            "A complete world save was staged at {Staging} but never published; publishing it now.",
+            staging
+        );
+
+        PublishStagedSave(archive: false);
+    }
+
+    private static void SetAside(string path, string reason)
+    {
+        var aside = $"{path}.{reason}-{Core.Now:yyyy-MM-dd-HH-mm-ss-fff}";
+        MoveDirectory(path, aside);
+        logger.Warning("Set aside {Path} as {Aside}; delete or archive it by hand.", path, aside);
+    }
+
+    /// <summary>
+    /// Renames a directory when the volume allows it (atomic), otherwise moves its contents.
+    /// </summary>
+    private static void MoveDirectory(string source, string destination)
+    {
+        try
+        {
+            Directory.Move(source, destination);
+        }
+        catch (IOException)
+        {
+            if (Directory.Exists(destination))
+            {
+                throw;
+            }
+
+            PathUtility.MoveDirectoryContents(source, destination);
+        }
     }
 
     private static void FinishWorldSave()
