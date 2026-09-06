@@ -31,8 +31,7 @@ namespace Server.Multis
         private DecayLevel m_CurrentStage;
 
         private DecayLevel m_LastDecayLevel;
-        private bool _wasUndecayable;       // not serialized: decay tick state only
-        private DateTime _nextLockdownSweep; // not serialized
+        private bool _wasUndecayable; // not serialized: decay tick state only
 
         private Mobile m_Owner;
 
@@ -625,23 +624,9 @@ namespace Server.Multis
             return oldLevel > DecayLevel.LikeNew;
         }
 
-        private static readonly TimeSpan LockdownSweepInterval = TimeSpan.FromMinutes(10.0);
-
         public virtual bool CheckDecay()
         {
             UpdateDecay();
-
-            if (_nextLockdownSweep == DateTime.MinValue)
-            {
-                // Spread houses across the interval so each decay tick sweeps ~1/10 of them
-                // instead of every house at once.
-                _nextLockdownSweep = Core.Now + TimeSpan.FromSeconds(LockdownSweepInterval.TotalSeconds * Utility.RandomDouble());
-            }
-            else if (_nextLockdownSweep <= Core.Now)
-            {
-                _nextLockdownSweep = Core.Now + LockdownSweepInterval;
-                SweepLockedDownContainers();
-            }
 
             if (!Deleted && DecayLevel == DecayLevel.Collapsed)
             {
@@ -650,32 +635,6 @@ namespace Server.Multis
             }
 
             return false;
-        }
-
-        // Items in locked down containers that are not locked down themselves must decay.
-        // This used to run inside Serialize on every world save; saves must be pure.
-        private void SweepLockedDownContainers()
-        {
-            for (var i = 0; i < LockDowns.Count; ++i)
-            {
-                if (LockDowns[i] is not Container cont || cont is BaseBoard or Aquarium or FishBowl)
-                {
-                    continue;
-                }
-
-                var children = cont.Items;
-
-                for (var j = 0; j < children.Count; ++j)
-                {
-                    var child = children[j];
-
-                    if (child.Decays && !child.IsLockedDown && !child.IsSecure &&
-                        child.LastMoved + child.DecayTime <= Core.Now)
-                    {
-                        Timer.StartTimer(child.Delete);
-                    }
-                }
-            }
         }
 
         public virtual void KillVendors()
