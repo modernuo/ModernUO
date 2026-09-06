@@ -26,8 +26,7 @@ public static class NPCSpeeds
     public static int MinIdleSeconds { get; private set; }
     public static int MaxIdleSeconds { get; private set; }
 
-    // Null when the table is unloaded (test fixtures). Creatures cache the result — the
-    // table is immutable after Configure.
+    // Null when the table is unloaded (test fixtures). Immutable after Configure, so creatures cache it.
     public static SpeedClassEntry FindEntry(BaseCreature bc)
     {
         if ((bc.SpeedClass == SpeedLevel.None || !_speedsByLevel.TryGetValue(bc.SpeedClass, out var sp)) &&

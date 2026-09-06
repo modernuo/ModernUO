@@ -140,9 +140,7 @@ namespace Server.Mobiles
     {
         private static readonly ILogger logger = LogFactory.GetLogger(typeof(BaseCreature));
 
-        // Last-resort pace for a creature whose elided speeds cannot be restored from the
-        // table (it changed or vanished since the save); a 0-delay AI timer would spin at
-        // wheel resolution. Matches the Medium bucket in Data/npc-speeds.json.
+        // Medium bucket; used when an elided load finds no table entry (a 0-delay AI timer would spin).
         private const double FallbackActiveSpeed = 0.25;
         private const double FallbackPassiveSpeed = 0.5;
 
@@ -264,8 +262,7 @@ namespace Server.Mobiles
         };
 
         // --- Serialized state ---------------------------------------------------------
-        // Nearly every field is behind a [SaveFlag] so a creature that matches its
-        // defaults (including npc-speeds table values) writes only the version and flags.
+        // Fields matching their defaults (including npc-speeds table values) are elided by [SaveFlag].
 
         [SerializableField(0, setter: "private")]
         private AIType _defaultAI;
@@ -449,7 +446,7 @@ namespace Server.Mobiles
             InvalidateProperties();
         }
 
-        // Field 15: ControlMaster (hand-written property; follower bookkeeping brackets the assignment)
+        // Follower bookkeeping brackets the assignment, so the property is hand-written.
         private Mobile _controlMaster;
 
         private bool ShouldSerializeControlMaster() => _controlMaster != null;
@@ -468,7 +465,7 @@ namespace Server.Mobiles
 
         private bool ShouldSerializeControlDest() => _controlDest != Point3D.Zero;
 
-        // Field 18: ControlOrder (hand-written property; order logic must run on equal re-assignment)
+        // Order logic must run on equal re-assignment, so the property is hand-written.
         private OrderType _controlOrder;
 
         private bool ShouldSerializeControlOrder() => _controlOrder != OrderType.None;
@@ -480,7 +477,7 @@ namespace Server.Mobiles
 
         private bool ShouldSerializeMinTameSkill() => _minTameSkill != 0;
 
-        // Field 20: Tamable (hand-written property; custom getter masks paragons)
+        // The getter masks paragons, so the property is hand-written.
         private bool _tamable;
 
         private bool ShouldSerializeTamable() => _tamable;
@@ -506,7 +503,7 @@ namespace Server.Mobiles
 
         private bool ShouldSerializeSummonEnd() => _summoned;
 
-        // Field 23: SummonMaster (hand-written property; follower bookkeeping brackets the assignment)
+        // Follower bookkeeping brackets the assignment, so the property is hand-written.
         private Mobile _summonMaster;
 
         private bool ShouldSerializeSummonMaster() => _summonMaster != null;
@@ -726,7 +723,7 @@ namespace Server.Mobiles
 
         private bool ShouldSerializeHasGeneratedLoot() => _hasGeneratedLoot;
 
-        // Field 48: IsParagon (hand-written property; the setter converts, which must not run at load)
+        // The setter converts the creature, which must not run at load, so the property is hand-written.
         private bool _isParagon;
 
         private bool ShouldSerializeIsParagon() => _isParagon;
@@ -762,7 +759,7 @@ namespace Server.Mobiles
         [DeserializeTimer(nameof(DeserializePendingDeleteTimer))]
         private Timer _pendingDeleteTimer;
 
-        // Stabled and controlled pets never resume a delete countdown (legacy parity).
+        // Stabled and controlled pets never resume a delete countdown.
         private bool ShouldSerializePendingDeleteTimer() =>
             _pendingDeleteTimer?.Running == true && !IsStabled && !(_controlled && _controlMaster != null);
 
@@ -835,8 +832,7 @@ namespace Server.Mobiles
 
             if (activeSpeed <= 0 || passiveSpeed <= 0)
             {
-                // Construction is the one place that refuses: a 0-delay creature spins
-                // its AI timer at wheel resolution.
+                // A 0-delay creature would spin its AI timer; only construction refuses.
                 throw new InvalidOperationException(
                     $"{GetType()} constructed without speeds - is Data/npc-speeds.json missing?"
                 );
@@ -2394,8 +2390,7 @@ namespace Server.Mobiles
                 new UnsummonTimer(this, _summonEnd - Core.Now).Start();
             }
 
-            // Abandoned-pet fallback: a pet with a former owner but no persisted delete
-            // countdown still despawns (legacy loads restore their own timer above).
+            // An abandoned pet with no persisted countdown still despawns.
             if (_pendingDeleteTimer == null && LastOwner != null && !_controlled && !IsStabled)
             {
                 _pendingDeleteTimer = new DeleteTimer(this, TimeSpan.FromDays(3.0));
@@ -5126,16 +5121,13 @@ namespace Server.Mobiles
         // If this needs to be serialized, recommend creating a hash or registry id. Don't serialize strings.
         public virtual SpeedLevel SpeedClass => SpeedLevel.None;
 
-        // Resolved once per creature; serialization consults the table four times per mob
-        // per save (and again on elided loads), so the dictionary walk must not repeat.
+        // Cached: the speed SaveFlags consult this on every save and elided load.
         private NPCSpeeds.SpeedClassEntry _speedEntry;
 
         private NPCSpeeds.SpeedClassEntry SpeedEntry => _speedEntry ??= NPCSpeeds.FindEntry(this);
 
-        // Consulted at construction and, through the speed SaveFlags, on every save and
-        // every elided load - so it never throws. Without a table entry the creature is
-        // its own reference: its serialized speeds stand, and the constructor is the one
-        // caller that refuses to proceed on a missing table.
+        // Never throws: the speed SaveFlags call this on every save and elided load. Without a
+        // table entry the serialized speeds stand; only the constructor refuses.
         public virtual void GetSpeeds(out double activeSpeed, out double passiveSpeed)
         {
             var entry = SpeedEntry;
@@ -5160,8 +5152,8 @@ namespace Server.Mobiles
             passiveMoveSpeed = entry?.PassiveMoveSpeed ?? 0;
         }
 
-        // Pre-v22 saves carry no movement clock. Think speeds matching today's GetSpeeds
-        // mean never hand-tuned: adopt today's move values; tuned creatures keep inheriting.
+        // Pre-v22 saves have no movement clock: untuned creatures adopt the table's move
+        // values, hand-tuned ones keep inheriting.
         internal void MigrateMoveSpeeds()
         {
             GetSpeeds(out var activeSpeed, out var passiveSpeed);

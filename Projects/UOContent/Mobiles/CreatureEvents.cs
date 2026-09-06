@@ -2,9 +2,7 @@ using ModernUO.CodeGeneratedEvents;
 
 namespace Server.Mobiles;
 
-// Hosts BaseCreature's generated events. They cannot live on BaseCreature itself: the
-// events generator and the serialization generator each emit a [GeneratedCode] partial for
-// the declaring type, and the attribute does not allow duplicates (CS0579).
+// Hosts BaseCreature's generated events: two generators cannot both emit [GeneratedCode] on one type (CS0579).
 public static partial class CreatureEvents
 {
     [GeneratedEvent(nameof(CreatureDeathEvent))]
