@@ -631,7 +631,13 @@ namespace Server.Multis
         {
             UpdateDecay();
 
-            if (_nextLockdownSweep <= Core.Now)
+            if (_nextLockdownSweep == DateTime.MinValue)
+            {
+                // Spread houses across the interval so each decay tick sweeps ~1/10 of them
+                // instead of every house at once.
+                _nextLockdownSweep = Core.Now + TimeSpan.FromSeconds(LockdownSweepInterval.TotalSeconds * Utility.RandomDouble());
+            }
+            else if (_nextLockdownSweep <= Core.Now)
             {
                 _nextLockdownSweep = Core.Now + LockdownSweepInterval;
                 SweepLockedDownContainers();
