@@ -61,7 +61,7 @@ public class HorseBreederGump : FactionGump
 
         if (m_From.Followers + horse.ControlSlots > m_From.FollowersMax)
         {
-            // TODO: Message?
+            m_From.SendLocalizedMessage(1049607); // You have too many followers to control that creature.
             horse.Delete();
         }
         else
@@ -79,9 +79,7 @@ public class HorseBreederGump : FactionGump
             else if (pack.ConsumeTotal(typeof(Silver), FactionWarHorse.SilverPrice) &&
                      pack.ConsumeTotal(typeof(Gold), FactionWarHorse.GoldPrice))
             {
-                horse.Controlled = true;
-                horse.ControlMaster = m_From;
-
+                horse.SetControlMaster(m_From);
                 horse.ControlOrder = OrderType.Follow;
                 horse.ControlTarget = m_From;
 

@@ -144,6 +144,7 @@ public class JailSystem : GenericPersistence
                     bc.Internalize();
 
                     bc.SetControlMaster(null);
+                    bc.SummonMaster = null;
 
                     bc.IsStabled = true;
                     bc.StabledBy = from;

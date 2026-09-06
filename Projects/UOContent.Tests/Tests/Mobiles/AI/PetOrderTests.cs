@@ -177,6 +177,38 @@ public class PetOrderTests : IDisposable
     }
 
     [Fact]
+    public void ReleaseOrder_ClearsTheMaster_AndStartsTheDeleteCountdown()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        pet.IsBonded = true;
+        var followers = master.Followers;
+
+        pet.ControlOrder = OrderType.Release;
+
+        Assert.False(pet.Controlled);
+        Assert.Null(pet.ControlMaster);
+        Assert.False(pet.IsBonded);
+        Assert.Equal(followers - pet.ControlSlots, master.Followers);
+        Assert.True(pet.PendingDeleteTimer?.Running);
+        Assert.Equal(pet.Location, pet.Home);
+    }
+
+    [Fact]
+    public void LoyaltyRelease_ClearsTheMaster_AndStartsTheDeleteCountdown()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        var followers = master.Followers;
+
+        // What the loyalty drain calls when loyalty reaches zero.
+        pet.AIObject.DoOrderRelease();
+
+        Assert.False(pet.Controlled);
+        Assert.Null(pet.ControlMaster);
+        Assert.Equal(followers - pet.ControlSlots, master.Followers);
+        Assert.True(pet.PendingDeleteTimer?.Running);
+    }
+
+    [Fact]
     public void Release_WithoutSpawner_AnchorsHomeToCurrentLocation()
     {
         var loc = new Point3D(1010, 1010, 0);

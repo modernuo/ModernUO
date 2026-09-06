@@ -261,15 +261,8 @@ public abstract partial class BaseAI
         }
 
         _commandIssuer?.RevealingAction();
-        Mobile.ControlTarget = null;
-        Mobile.FocusMob = null;
-        Mobile.Warmode = false;
-        Mobile.Combatant = null;
         Mobile.PlaySound(Mobile.GetIdleSound());
-        Mobile.BondingBegin = DateTime.MinValue;
-        Mobile.OwnerAbandonTime = DateTime.MinValue;
-        Mobile.IsBonded = false;
-        Mobile.SetControlMaster(null);
+        DoOrderRelease();
         _commandIssuer = null;
     }
 

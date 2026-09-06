@@ -448,7 +448,7 @@ public abstract partial class BaseAI
         {
             Mobile.SetControlMaster(e.Mobile);
 
-            if (Mobile.Summoned)
+            if (Mobile.SummonMaster != null)
             {
                 Mobile.SummonMaster = e.Mobile;
             }
