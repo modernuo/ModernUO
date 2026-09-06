@@ -1,11 +1,18 @@
 using System;
 using ModernUO.Serialization;
+using Server.Mobiles;
 
 namespace Server.Systems.JailSystem;
 
 [SerializationGenerator(0)]
 public partial class JailRecord
 {
+    [DirtyTrackingEntity]
+    [CanBeNull]
+    private PlayerMobile _player;
+
+    public JailRecord(PlayerMobile player) => _player = player;
+
     [SerializableField(0)]
     private int _jailCount;
 

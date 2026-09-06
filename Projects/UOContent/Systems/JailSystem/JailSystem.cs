@@ -42,7 +42,7 @@ public class JailSystem : GenericPersistence
 
     // Jail map, change this for custom maps
     public static readonly Map JailMap = Map.Felucca;
-    private static readonly JailRecord EmptyRecord = new();
+    private static readonly JailRecord EmptyRecord = new(null);
 
     private static readonly HashSet<PlayerMobile> CurrentlyBeingJailed = [];
     private static readonly Dictionary<PlayerMobile, JailRecord> PlayerJailRecords = [];
@@ -96,7 +96,7 @@ public class JailSystem : GenericPersistence
 
         if (!PlayerJailRecords.TryGetValue(player, out var record))
         {
-            PlayerJailRecords[player] = record = new JailRecord();
+            PlayerJailRecords[player] = record = new JailRecord(player);
         }
 
         record.JailCount++;
@@ -409,7 +409,7 @@ public class JailSystem : GenericPersistence
         for (var i = 0; i < count; i++)
         {
             var player = reader.ReadEntity<PlayerMobile>();
-            var record = new JailRecord();
+            var record = new JailRecord(player);
             record.Deserialize(reader);
 
             if (player != null)

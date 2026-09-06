@@ -35,8 +35,6 @@ namespace Server.Items
         // solution must know its chest to mark it dirty.
         public PuzzleChestSolution(PuzzleChest chest) : this() => _chest = chest;
 
-        internal void AttachTo(PuzzleChest chest) => _chest ??= chest;
-
         // Transient solutions (player guesses being edited in a gump) have no owning chest.
         public PuzzleChestSolution() =>
             _cylinders = [RandomCylinder(), RandomCylinder(), RandomCylinder(), RandomCylinder(), RandomCylinder()];
@@ -190,13 +188,8 @@ namespace Server.Items
         public PuzzleChestSolutionAndTime(PuzzleChest chest, DateTime when, PuzzleChestSolution solution)
             : base(chest, solution) => _when = when;
 
+        // The generator deserializes guesses through this constructor so each one knows its chest.
         public PuzzleChestSolutionAndTime(PuzzleChest chest) : base(chest)
-        {
-        }
-
-        // Generator 4.0.0 constructs dictionary values without the owner; PuzzleChest relinks
-        // them after deserialization. Declared after the owner constructor on purpose.
-        public PuzzleChestSolutionAndTime()
         {
         }
     }
@@ -222,16 +215,6 @@ namespace Server.Items
         [AfterDeserialization]
         private void AfterDeserialization()
         {
-            _solution?.AttachTo(this);
-
-            if (_guesses != null)
-            {
-                foreach (var guess in _guesses.Values)
-                {
-                    guess.AttachTo(this);
-                }
-            }
-
             // Validate hints array length - regenerate if mismatched
             if (_hints.Length != HintsCount)
             {

@@ -197,11 +197,6 @@ public partial class PlayerVendor : Mobile
     [AfterDeserialization]
     private void AfterDeserialization()
     {
-        foreach (var vendorItem in _sellItems.Values)
-        {
-            vendorItem.AttachTo(this);
-        }
-
         var delay = _nextPayTime - Core.Now;
 
         _payTimer = new PayTimer(this, delay > TimeSpan.Zero ? delay : TimeSpan.Zero);

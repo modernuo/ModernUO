@@ -8,6 +8,13 @@ namespace Server.Engines.Virtues;
 [SerializationGenerator(1)]
 public partial class VirtueContext
 {
+    [DirtyTrackingEntity]
+    private PlayerMobile _player;
+
+    public PlayerMobile Player => _player;
+
+    public VirtueContext(PlayerMobile player) => _player = player;
+
     private void MigrateFrom(V0Content content)
     {
         // Save-flagged values arrive as nullables; unset flags fall back to the same

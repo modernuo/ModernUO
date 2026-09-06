@@ -16,6 +16,7 @@ public partial class ChampionTitleContext
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _harrower;
 
+    [DirtyTrackingEntity]
     private PlayerMobile _player;
 
     public PlayerMobile Player => _player;
@@ -45,7 +46,7 @@ public partial class ChampionTitleContext
                 throw new NotImplementedException($"Cannot find ChampionSpawnType value {type}.");
             }
 
-            title = new ChampionTitle();
+            title = new ChampionTitle(this);
             title.Deserialize(reader);
         }
     }
@@ -290,7 +291,7 @@ public partial class ChampionTitleContext
             return null;
         }
 
-        return title ??= new ChampionTitle();
+        return title ??= new ChampionTitle(this);
     }
 
     public void SetValue(ChampionSpawnType type, int value)
@@ -313,7 +314,7 @@ public partial class ChampionTitleContext
         }
         else
         {
-            title = new ChampionTitle();
+            title = new ChampionTitle(this);
         }
 
         title.Value = value;

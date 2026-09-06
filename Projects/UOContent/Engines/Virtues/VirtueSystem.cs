@@ -99,7 +99,7 @@ public class VirtueSystem : GenericPersistence
         for (var i = 0; i < contextCount; i++)
         {
             var player = reader.ReadEntity<PlayerMobile>();
-            var virtues = new VirtueContext();
+            var virtues = new VirtueContext(player);
             virtues.Deserialize(reader);
 
             if (player != null && virtues.IsUsed())
@@ -122,7 +122,7 @@ public class VirtueSystem : GenericPersistence
         ref var context = ref CollectionsMarshal.GetValueRefOrAddDefault(_playerVirtues, from, out var exists);
         if (!exists)
         {
-            context = new VirtueContext();
+            context = new VirtueContext(from);
         }
 
         return context;

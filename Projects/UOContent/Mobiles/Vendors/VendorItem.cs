@@ -19,15 +19,9 @@ public partial class VendorItem
     [SerializableField(3)]
     private DateTime _created;
 
+    // The generator deserializes dictionary values through this constructor so every entry
+    // knows its vendor.
     public VendorItem(PlayerVendor vendor) => _vendor = vendor;
-
-    // Generator 4.0.0 constructs dictionary values without the owner; PlayerVendor relinks
-    // them after deserialization. Declared after the owner constructor on purpose.
-    public VendorItem()
-    {
-    }
-
-    internal void AttachTo(PlayerVendor vendor) => _vendor ??= vendor;
 
     public VendorItem(PlayerVendor vendor, Item item, int price, string description, DateTime created)
     {
