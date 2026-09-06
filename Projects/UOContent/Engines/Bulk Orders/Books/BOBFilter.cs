@@ -5,6 +5,11 @@ namespace Server.Engines.BulkOrders;
 [SerializationGenerator(2)]
 public partial class BOBFilter
 {
+    [DirtyTrackingEntity]
+    private IEntity _owner;
+
+    public BOBFilter(IEntity owner) => _owner = owner;
+
     [SerializableField(0)]
     [SaveFlag(nameof(ShouldSerializeType))]
     private int _type;

@@ -155,7 +155,7 @@ public partial class BaseTalisman : Item, IAosItem
 
     public bool ShouldSerializeProtection() => !_protection.IsEmpty;
 
-    private TalismanAttribute ProtectionDefaultValue() => new();
+    private TalismanAttribute ProtectionDefaultValue() => new(this);
 
     [SerializedIgnoreDupe]
     [InvalidateProperties]
@@ -166,7 +166,7 @@ public partial class BaseTalisman : Item, IAosItem
 
     public bool ShouldSerializeKiller() => !_killer.IsEmpty;
 
-    private TalismanAttribute KillerDefaultValue() => new();
+    private TalismanAttribute KillerDefaultValue() => new(this);
 
     [SerializedIgnoreDupe]
     [InvalidateProperties]
@@ -177,7 +177,7 @@ public partial class BaseTalisman : Item, IAosItem
 
     public bool ShouldSerializeSummoner() => !_summoner.IsEmpty;
 
-    private TalismanAttribute SummonerDefaultValue() => new();
+    private TalismanAttribute SummonerDefaultValue() => new(this);
 
     [InvalidateProperties]
     [SerializableField(5)]
@@ -267,9 +267,9 @@ public partial class BaseTalisman : Item, IAosItem
     {
         Layer = Layer.Talisman;
 
-        _protection = new TalismanAttribute();
-        _killer = new TalismanAttribute();
-        _summoner = new TalismanAttribute();
+        _protection = new TalismanAttribute(this);
+        _killer = new TalismanAttribute(this);
+        _summoner = new TalismanAttribute(this);
         Attributes = new AosAttributes(this);
         SkillBonuses = new AosSkillBonuses(this);
     }
@@ -319,9 +319,9 @@ public partial class BaseTalisman : Item, IAosItem
             return;
         }
 
-        talisman._summoner = new TalismanAttribute(_summoner);
-        talisman._protection = new TalismanAttribute(_protection);
-        talisman._killer = new TalismanAttribute(_killer);
+        talisman._summoner = new TalismanAttribute(talisman, _summoner);
+        talisman._protection = new TalismanAttribute(talisman, _protection);
+        talisman._killer = new TalismanAttribute(talisman, _killer);
         talisman.Attributes = new AosAttributes(newItem, Attributes);
         talisman.SkillBonuses = new AosSkillBonuses(newItem, SkillBonuses);
     }
@@ -660,17 +660,17 @@ public partial class BaseTalisman : Item, IAosItem
 
     public virtual void SetSummoner(Type type, TextDefinition name)
     {
-        _summoner = new TalismanAttribute(type, name);
+        _summoner = new TalismanAttribute(this, type, name);
     }
 
     public virtual void SetProtection(Type type, TextDefinition name, int amount)
     {
-        _protection = new TalismanAttribute(type, name, amount);
+        _protection = new TalismanAttribute(this, type, name, amount);
     }
 
     public virtual void SetKiller(Type type, TextDefinition name, int amount)
     {
-        _killer = new TalismanAttribute(type, name, amount);
+        _killer = new TalismanAttribute(this, type, name, amount);
     }
 
     public virtual void StartTimer()
@@ -712,18 +712,18 @@ public partial class BaseTalisman : Item, IAosItem
 
     public static Type GetRandomSummonType() => _summons.RandomElement();
 
-    public static TalismanAttribute GetRandomSummoner()
+    public static TalismanAttribute GetRandomSummoner(BaseTalisman owner)
     {
         if (Utility.RandomDouble() < 0.975)
         {
-            return new TalismanAttribute();
+            return new TalismanAttribute(owner);
         }
 
         var num = Utility.Random(_summons.Length);
 
         return num > 14
-            ? new TalismanAttribute(_summons[num], _summonLabels[num], 10)
-            : new TalismanAttribute(_summons[num], _summonLabels[num]);
+            ? new TalismanAttribute(owner, _summons[num], _summonLabels[num], 10)
+            : new TalismanAttribute(owner, _summons[num], _summonLabels[num]);
     }
 
     public static TalismanRemoval GetRandomRemoval()
@@ -736,32 +736,32 @@ public partial class BaseTalisman : Item, IAosItem
         return TalismanRemoval.None;
     }
 
-    public static TalismanAttribute GetRandomKiller() => GetRandomKiller(true);
+    public static TalismanAttribute GetRandomKiller(BaseTalisman owner) => GetRandomKiller(owner, true);
 
-    public static TalismanAttribute GetRandomKiller(bool includingNone)
+    public static TalismanAttribute GetRandomKiller(BaseTalisman owner, bool includingNone)
     {
         if (includingNone && Utility.RandomBool())
         {
-            return new TalismanAttribute();
+            return new TalismanAttribute(owner);
         }
 
         var num = Utility.Random(_killers.Length);
 
-        return new TalismanAttribute(_killers[num], _killerLabels[num], Utility.RandomMinMax(10, 100));
+        return new TalismanAttribute(owner, _killers[num], _killerLabels[num], Utility.RandomMinMax(10, 100));
     }
 
-    public static TalismanAttribute GetRandomProtection() => GetRandomProtection(true);
+    public static TalismanAttribute GetRandomProtection(BaseTalisman owner) => GetRandomProtection(owner, true);
 
-    public static TalismanAttribute GetRandomProtection(bool includingNone)
+    public static TalismanAttribute GetRandomProtection(BaseTalisman owner, bool includingNone)
     {
         if (includingNone && Utility.RandomBool())
         {
-            return new TalismanAttribute();
+            return new TalismanAttribute(owner);
         }
 
         var num = Utility.Random(_killers.Length);
 
-        return new TalismanAttribute(_killers[num], _killerLabels[num], Utility.RandomMinMax(5, 60));
+        return new TalismanAttribute(owner, _killers[num], _killerLabels[num], Utility.RandomMinMax(5, 60));
     }
 
     public static SkillName GetRandomSkill() => _skills.RandomElement();

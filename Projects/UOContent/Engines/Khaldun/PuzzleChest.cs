@@ -23,11 +23,21 @@ namespace Server.Items
     [SerializationGenerator(1)]
     public partial class PuzzleChestSolution
     {
+        [DirtyTrackingEntity]
+        private PuzzleChest _chest;
+
         [SerializableField(0)]
         private PuzzleChestCylinder[] _cylinders;
 
         public const int Length = 5;
 
+        // Declared first: the generator picks the first matching constructor, and a deserialized
+        // solution must know its chest to mark it dirty.
+        public PuzzleChestSolution(PuzzleChest chest) : this() => _chest = chest;
+
+        internal void AttachTo(PuzzleChest chest) => _chest ??= chest;
+
+        // Transient solutions (player guesses being edited in a gump) have no owning chest.
         public PuzzleChestSolution() =>
             _cylinders = [RandomCylinder(), RandomCylinder(), RandomCylinder(), RandomCylinder(), RandomCylinder()];
 
@@ -41,6 +51,9 @@ namespace Server.Items
             _cylinders = new PuzzleChestCylinder[Length];
             solution.Cylinders.AsSpan().CopyTo(Cylinders);
         }
+
+        protected PuzzleChestSolution(PuzzleChest chest, PuzzleChestSolution solution) : this(solution) =>
+            _chest = chest;
 
         private void Deserialize(IGenericReader reader, int version)
         {
@@ -174,9 +187,15 @@ namespace Server.Items
         [SerializableField(0)]
         private DateTime _when;
 
-        public PuzzleChestSolutionAndTime(DateTime when, PuzzleChestSolution solution) : base(solution) => _when = when;
+        public PuzzleChestSolutionAndTime(PuzzleChest chest, DateTime when, PuzzleChestSolution solution)
+            : base(chest, solution) => _when = when;
 
-        // For serialization
+        public PuzzleChestSolutionAndTime(PuzzleChest chest) : base(chest)
+        {
+        }
+
+        // Generator 4.0.0 constructs dictionary values without the owner; PuzzleChest relinks
+        // them after deserialization. Declared after the owner constructor on purpose.
         public PuzzleChestSolutionAndTime()
         {
         }
@@ -203,6 +222,16 @@ namespace Server.Items
         [AfterDeserialization]
         private void AfterDeserialization()
         {
+            _solution?.AttachTo(this);
+
+            if (_guesses != null)
+            {
+                foreach (var guess in _guesses.Values)
+                {
+                    guess.AttachTo(this);
+                }
+            }
+
             // Validate hints array length - regenerate if mismatched
             if (_hints.Length != HintsCount)
             {
@@ -214,7 +243,7 @@ namespace Server.Items
 
         private void Deserialize(IGenericReader reader, int version)
         {
-            _solution = new PuzzleChestSolution();
+            _solution = new PuzzleChestSolution(this);
             _solution.Deserialize(reader);
 
             var length = reader.ReadEncodedInt();
@@ -238,7 +267,7 @@ namespace Server.Items
             for (var i = 0; i < guessCount; i++)
             {
                 var m = reader.ReadEntity<Mobile>();
-                (_guesses[m] = new PuzzleChestSolutionAndTime()).Deserialize(reader);
+                (_guesses[m] = new PuzzleChestSolutionAndTime(this)).Deserialize(reader);
             }
         }
 
@@ -329,7 +358,7 @@ namespace Server.Items
             }
             else
             {
-                (_guesses ??= []).Add(m, new PuzzleChestSolutionAndTime(Core.Now, solution));
+                (_guesses ??= []).Add(m, new PuzzleChestSolutionAndTime(this, Core.Now, solution));
                 StartCleanupTimer();
 
                 m.SendGump(new StatusGump(correctCylinders, correctColors));
@@ -525,7 +554,7 @@ namespace Server.Items
                 }
             }
 
-            Solution = new PuzzleChestSolution();
+            Solution = new PuzzleChestSolution(this);
         }
 
         private void StartCleanupTimer()

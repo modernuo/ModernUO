@@ -28,7 +28,7 @@
       "type": "Server.Engines.BulkOrders.BOBFilter",
       "rule": "RawSerializableMigrationRule",
       "ruleArguments": [
-        ""
+        "DeserializationRequiresParent"
       ]
     },
     {

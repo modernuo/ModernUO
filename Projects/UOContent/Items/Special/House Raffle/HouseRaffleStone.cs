@@ -16,6 +16,9 @@ namespace Server.Items;
 [SerializationGenerator(0)]
 public partial class RaffleEntry
 {
+    [DirtyTrackingEntity]
+    private HouseRaffleStone _stone;
+
     [SerializableField(0, setter: "private")]
     private Mobile _from;
 
@@ -25,15 +28,17 @@ public partial class RaffleEntry
     [SerializableField(2, setter: "private")]
     private DateTime _date;
 
-    public RaffleEntry(Mobile from)
+    public RaffleEntry(HouseRaffleStone stone, Mobile from)
     {
+        _stone = stone;
         _from = from;
         _address = from?.NetState?.Address ?? IPAddress.None;
         _date = Core.Now;
     }
 
-    public RaffleEntry()
+    public RaffleEntry(HouseRaffleStone stone)
     {
+        _stone = stone;
         _from = null;
         _address = null;
         _date = Core.Now;
@@ -454,7 +459,7 @@ public partial class HouseRaffleStone : Item
             if (_ticketPrice == 0 || from.Backpack?.ConsumeTotal(typeof(Gold), _ticketPrice) == true ||
                 Banker.Withdraw(from, _ticketPrice))
             {
-                AddToEntries(new RaffleEntry(from));
+                AddToEntries(new RaffleEntry(this, from));
 
                 from.SendMessage(MessageHue, "You have successfully entered the plot's raffle.");
             }
@@ -539,7 +544,7 @@ public partial class HouseRaffleStone : Item
 
         for (var i = 0; i < entryCount; i++)
         {
-            var entry = new RaffleEntry();
+            var entry = new RaffleEntry(this);
             entry.Deserialize(reader);
 
             if (entry.From == null)

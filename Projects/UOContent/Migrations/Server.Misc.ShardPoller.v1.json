@@ -38,7 +38,7 @@
       "ruleArguments": [
         "Server.Misc.ShardPollOption",
         "RawSerializableMigrationRule",
-        ""
+        "DeserializationRequiresParent"
       ]
     }
   ]

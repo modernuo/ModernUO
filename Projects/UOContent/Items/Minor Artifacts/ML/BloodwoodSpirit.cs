@@ -13,7 +13,7 @@ public partial class BloodwoodSpirit : BaseTalisman
 
         Removal = TalismanRemoval.Damage;
         Blessed = GetRandomBlessed();
-        Protection = GetRandomProtection(false);
+        Protection = GetRandomProtection(this, false);
 
         SkillBonuses.SetValues(0, SkillName.SpiritSpeak, 10.0);
         SkillBonuses.SetValues(1, SkillName.Necromancy, 5.0);

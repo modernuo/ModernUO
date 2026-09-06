@@ -20,7 +20,7 @@
       "type": "Server.Items.PlayerBBMessage",
       "rule": "RawSerializableMigrationRule",
       "ruleArguments": [
-        "",
+        "DeserializationRequiresParent",
         "@CanBeNull"
       ]
     },
@@ -31,7 +31,7 @@
       "ruleArguments": [
         "Server.Items.PlayerBBMessage",
         "RawSerializableMigrationRule",
-        ""
+        "DeserializationRequiresParent"
       ]
     }
   ]

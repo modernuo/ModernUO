@@ -7,6 +7,9 @@ namespace Server.Mobiles;
 [SerializationGenerator(0, false)]
 public partial class VendorItem
 {
+    [DirtyTrackingEntity]
+    private PlayerVendor _vendor;
+
     [SerializableField(0)]
     private Item _item;
 
@@ -16,12 +19,19 @@ public partial class VendorItem
     [SerializableField(3)]
     private DateTime _created;
 
+    public VendorItem(PlayerVendor vendor) => _vendor = vendor;
+
+    // Generator 4.0.0 constructs dictionary values without the owner; PlayerVendor relinks
+    // them after deserialization. Declared after the owner constructor on purpose.
     public VendorItem()
     {
     }
 
-    public VendorItem(Item item, int price, string description, DateTime created)
+    internal void AttachTo(PlayerVendor vendor) => _vendor ??= vendor;
+
+    public VendorItem(PlayerVendor vendor, Item item, int price, string description, DateTime created)
     {
+        _vendor = vendor;
         _item = item;
         _price = price;
         _description = description ?? "";

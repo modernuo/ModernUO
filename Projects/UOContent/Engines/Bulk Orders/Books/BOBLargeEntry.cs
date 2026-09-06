@@ -26,7 +26,7 @@ public partial class BOBLargeEntry : BaseBOBEntry
 
         for (var i = 0; i < _entries.Length; ++i)
         {
-            _entries[i] = new BOBLargeSubEntry(bod.Entries[i]);
+            _entries[i] = new BOBLargeSubEntry(this, bod.Entries[i]);
         }
     }
 
@@ -76,7 +76,7 @@ public partial class BOBLargeEntry : BaseBOBEntry
 
         for (var i = 0; i < Entries.Length; ++i)
         {
-            _entries[i] = new BOBLargeSubEntry();
+            _entries[i] = new BOBLargeSubEntry(this);
             _entries[i].Deserialize(reader);
         }
     }

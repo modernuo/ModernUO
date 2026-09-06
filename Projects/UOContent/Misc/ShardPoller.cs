@@ -187,7 +187,7 @@ public partial class ShardPoller : Item
 
         for (var i = 0; i < _options.Length; ++i)
         {
-            var option = _options[i] = new ShardPollOption();
+            var option = _options[i] = new ShardPollOption(this);
             option.Deserialize(reader);
         }
     }
@@ -212,15 +212,23 @@ public partial class ShardPoller : Item
 [SerializationGenerator(1, false)]
 public partial class ShardPollOption
 {
+    [DirtyTrackingEntity]
+    private ShardPoller _poller;
+
     private int _lineBreaks = -1;
 
     [SerializableField(1)]
     private IPAddress[] _voters;
 
-    public ShardPollOption() => _voters = [];
-
-    public ShardPollOption(string title)
+    public ShardPollOption(ShardPoller poller)
     {
+        _poller = poller;
+        _voters = [];
+    }
+
+    public ShardPollOption(ShardPoller poller, string title)
+    {
+        _poller = poller;
         _title = title;
         _voters = [];
     }
@@ -600,7 +608,7 @@ public partial class ShardPollPrompt : Prompt
 
             if (_option == null)
             {
-                _poller.AddOption(new ShardPollOption(text));
+                _poller.AddOption(new ShardPollOption(_poller, text));
             }
             else
             {

@@ -7,6 +7,9 @@ namespace Server.Items;
 [SerializationGenerator(1, false)]
 public partial class TalismanAttribute
 {
+    [DirtyTrackingEntity]
+    private BaseTalisman _owner;
+
     [SerializableField(0)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private Type _type;
@@ -19,12 +22,12 @@ public partial class TalismanAttribute
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _amount;
 
-    public TalismanAttribute() : this(null, null)
-    {
-    }
+    public TalismanAttribute(BaseTalisman owner) => _owner = owner;
 
-    public TalismanAttribute(TalismanAttribute copy)
+    public TalismanAttribute(BaseTalisman owner, TalismanAttribute copy)
     {
+        _owner = owner;
+
         if (copy != null)
         {
             _type = copy.Type;
@@ -33,8 +36,9 @@ public partial class TalismanAttribute
         }
     }
 
-    public TalismanAttribute(Type type, TextDefinition name, int amount = 0)
+    public TalismanAttribute(BaseTalisman owner, Type type, TextDefinition name, int amount = 0)
     {
+        _owner = owner;
         _type = type;
         _name = name;
         _amount = amount;

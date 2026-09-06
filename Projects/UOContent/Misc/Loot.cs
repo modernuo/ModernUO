@@ -738,7 +738,7 @@ namespace Server
         {
             var talisman = new BaseTalisman(BaseTalisman.GetRandomItemID());
 
-            talisman.Summoner = BaseTalisman.GetRandomSummoner();
+            talisman.Summoner = BaseTalisman.GetRandomSummoner(talisman);
 
             if (talisman.Summoner.IsEmpty)
             {
@@ -758,8 +758,8 @@ namespace Server
 
             talisman.Blessed = BaseTalisman.GetRandomBlessed();
             talisman.Slayer = BaseTalisman.GetRandomSlayer();
-            talisman.Protection = BaseTalisman.GetRandomProtection();
-            talisman.Killer = BaseTalisman.GetRandomKiller();
+            talisman.Protection = BaseTalisman.GetRandomProtection(talisman);
+            talisman.Killer = BaseTalisman.GetRandomKiller(talisman);
             talisman.Skill = BaseTalisman.GetRandomSkill();
             talisman.ExceptionalBonus = BaseTalisman.GetRandomExceptional();
             talisman.SuccessBonus = BaseTalisman.GetRandomSuccessful();
