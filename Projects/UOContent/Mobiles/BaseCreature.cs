@@ -1065,6 +1065,7 @@ namespace Server.Mobiles
                     _currentAI = _defaultAI;
                 }
 
+                this.MarkDirty();
                 ChangeAIType(_currentAI);
             }
         }
@@ -2566,11 +2567,7 @@ namespace Server.Mobiles
                 AIObject = null;
             }
 
-            if (_pendingDeleteTimer != null)
-            {
-                _pendingDeleteTimer.Stop();
-                _pendingDeleteTimer = null;
-            }
+            StopPendingDeleteTimer();
 
             FocusMob = null;
 
@@ -3643,12 +3640,7 @@ namespace Server.Mobiles
                 ControlTarget = null;
                 ControlOrder = OrderType.Come;
 
-
-                if (_pendingDeleteTimer != null)
-                {
-                    _pendingDeleteTimer.Stop();
-                    _pendingDeleteTimer = null;
-                }
+                StopPendingDeleteTimer();
             }
 
             Guild = null;
@@ -4147,15 +4139,7 @@ namespace Server.Mobiles
             }
         }
 
-        public void StopDeleteTimer()
-        {
-            if (_pendingDeleteTimer != null)
-            {
-                _pendingDeleteTimer.Stop();
-                _pendingDeleteTimer = null;
-                this.MarkDirty();
-            }
-        }
+        public void StopDeleteTimer() => StopPendingDeleteTimer();
 
         public void SpillAcid(int amount)
         {
@@ -4969,6 +4953,7 @@ namespace Server.Mobiles
                     }
             }
 
+            this.MarkDirty();
             UpdateResistances();
         }
 
@@ -4985,8 +4970,6 @@ namespace Server.Mobiles
 
                 Skills[name].Cap = Skills[name].Base;
             }
-
-            this.MarkDirty();
         }
 
         public void SetSkill(SkillName name, double min, double max)
