@@ -426,8 +426,14 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         get => GetTempFlag(LockedDownFlag);
         set
         {
+            if (GetTempFlag(LockedDownFlag) == value)
+            {
+                return;
+            }
+
             SetTempFlag(LockedDownFlag, value);
             InvalidateProperties();
+            OnSecurityChanged();
         }
     }
 
@@ -437,8 +443,26 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         get => GetTempFlag(SecureFlag);
         set
         {
+            if (GetTempFlag(SecureFlag) == value)
+            {
+                return;
+            }
+
             SetTempFlag(SecureFlag, value);
             InvalidateProperties();
+            OnSecurityChanged();
+        }
+    }
+
+    // Lockdown and secure status decide whether this item and, for a container, its direct
+    // contents are decay-eligible (see CanDecay); re-evaluate both.
+    private void OnSecurityChanged()
+    {
+        UpdateDecayRegistration();
+
+        if (this is Container container)
+        {
+            container.UpdateContentsDecayRegistration();
         }
     }
 
@@ -2351,10 +2375,15 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
     public bool AtPoint(int x, int y) => m_Location.m_X == x && m_Location.m_Y == y;
 
-    public virtual bool CanDecay() => Decays && Parent == null && Map != Map.Internal;
+    // Ground items decay; so do the direct contents of a container whose ContentsDecay is true
+    // (a locked-down, non-secure house container), unless the content item is itself locked
+    // down or secured. Nested containers do not propagate: only direct children qualify.
+    public virtual bool CanDecay() =>
+        Decays && Map != Map.Internal &&
+        (Parent == null || Parent is Container { ContentsDecay: true } && !IsLockedDown && !IsSecure);
 
     public virtual bool OnDecay() =>
-        CanDecay() && Region.Find(Location, Map).OnDecay(this);
+        CanDecay() && Region.Find(GetWorldLocation(), Map).OnDecay(this);
 
     public DateTime ScheduledDecayTime
     {

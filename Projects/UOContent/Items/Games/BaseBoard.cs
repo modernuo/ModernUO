@@ -11,6 +11,8 @@ namespace Server.Items;
 [SerializationGenerator(2, false)]
 public abstract partial class BaseBoard : Container, ISecurable
 {
+    public override bool ContentsDecay => false; // pieces are part of the board
+
     [SerializedIgnoreDupe]
     [SerializableField(0)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]

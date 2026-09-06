@@ -34,6 +34,21 @@ public abstract class Persistence
 
     public bool Register() => _registry.Add(this);
 
+    /// <summary>Every registered entity persistence (Items, Mobiles, Guilds, Accounts, ...), in priority order.</summary>
+    public static IEnumerable<IGenericEntityPersistence> EntityPersistences
+    {
+        get
+        {
+            foreach (var entry in _registry)
+            {
+                if (entry is IGenericEntityPersistence entityPersistence)
+                {
+                    yield return entityPersistence;
+                }
+            }
+        }
+    }
+
     public void Unregister() => _registry.Remove(this);
 
     public static void Load(string path)

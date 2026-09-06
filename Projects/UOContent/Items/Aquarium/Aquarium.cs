@@ -13,6 +13,8 @@ namespace Server.Items
     [SerializationGenerator(4, false)]
     public partial class Aquarium : BaseAddonContainer
     {
+        public override bool ContentsDecay => false; // fish and decorations are part of the aquarium
+
         public static readonly TimeSpan EvaluationInterval = TimeSpan.FromDays(1);
 
         private static readonly Type[] m_Decorations =

@@ -153,6 +153,27 @@ public partial class Container : Item
 
     public virtual bool IsDecoContainer => !Movable && !IsLockedDown && !IsSecure && Parent == null && !LiftOverride;
 
+    /// <summary>
+    /// True when this container's direct contents decay on their own schedule: a locked-down,
+    /// non-secure container in a house. Containers whose contents are part of the object
+    /// (game boards, aquariums) override this to false.
+    /// </summary>
+    public virtual bool ContentsDecay => IsLockedDown && !IsSecure;
+
+    /// <summary>
+    /// Re-evaluates decay registration for every direct child. Call when
+    /// <see cref="ContentsDecay" /> may have changed.
+    /// </summary>
+    public void UpdateContentsDecayRegistration()
+    {
+        var items = Items;
+
+        for (var i = 0; i < items.Count; i++)
+        {
+            items[i].UpdateDecayRegistration();
+        }
+    }
+
     public static int GlobalMaxItems { get; set; } = 125;
 
     public static int GlobalMaxWeight { get; set; } = 400;

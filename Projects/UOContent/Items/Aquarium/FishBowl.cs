@@ -8,6 +8,8 @@ namespace Server.Items
     [SerializationGenerator(0, false)]
     public partial class FishBowl : BaseContainer
     {
+        public override bool ContentsDecay => false; // the fish is part of the bowl
+
         [Constructible]
         public FishBowl() : base(0x241C)
         {
