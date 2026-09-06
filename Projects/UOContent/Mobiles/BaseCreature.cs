@@ -3172,6 +3172,7 @@ namespace Server.Mobiles
             if (!Summoned && !NoKillAwards && !_hasGeneratedLoot)
             {
                 _hasGeneratedLoot = true;
+                this.MarkDirty();
                 GenerateLoot(false);
             }
 
@@ -4142,6 +4143,7 @@ namespace Server.Mobiles
                 StopDeleteTimer();
                 _pendingDeleteTimer = new DeleteTimer(this, TimeSpan.FromDays(3.0));
                 _pendingDeleteTimer.Start();
+                this.MarkDirty();
             }
         }
 
@@ -4151,6 +4153,7 @@ namespace Server.Mobiles
             {
                 _pendingDeleteTimer.Stop();
                 _pendingDeleteTimer = null;
+                this.MarkDirty();
             }
         }
 
@@ -4420,6 +4423,7 @@ namespace Server.Mobiles
                 if (Core.SE)
                 {
                     _loyalty = MaxLoyalty;
+                    this.MarkDirty();
                 }
                 else if (_loyalty < MaxLoyalty)
                 {
@@ -4428,6 +4432,7 @@ namespace Server.Mobiles
                     if (loyaltyIncrease > 0)
                     {
                         _loyalty = Math.Min(MaxLoyalty, _loyalty + loyaltyIncrease);
+                        this.MarkDirty();
                         SayTo(from, 502060); // Your pet looks happier.
                     }
                 }
@@ -4740,6 +4745,7 @@ namespace Server.Mobiles
         {
             _activeMoveSpeed = 0;
             _passiveMoveSpeed = 0;
+            this.MarkDirty();
         }
 
         /// <summary>
@@ -4757,6 +4763,8 @@ namespace Server.Mobiles
             {
                 _passiveMoveSpeed *= scalar;
             }
+
+            this.MarkDirty();
         }
 
         /// <summary>
@@ -4786,6 +4794,8 @@ namespace Server.Mobiles
             {
                 _passiveMoveSpeed = passiveMoveSpeed;
             }
+
+            this.MarkDirty();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -4794,16 +4804,13 @@ namespace Server.Mobiles
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetCurrentSpeedToPassive() => CurrentSpeed = PassiveSpeed;
 
-        public void SetDamage(int val)
-        {
-            _damageMin = val;
-            _damageMax = val;
-        }
+        public void SetDamage(int val) => SetDamage(val, val);
 
         public void SetDamage(int min, int max)
         {
             _damageMin = min;
             _damageMax = max;
+            this.MarkDirty();
         }
 
         public void SetHits(int val)
@@ -4978,6 +4985,8 @@ namespace Server.Mobiles
 
                 Skills[name].Cap = Skills[name].Base;
             }
+
+            this.MarkDirty();
         }
 
         public void SetSkill(SkillName name, double min, double max)
