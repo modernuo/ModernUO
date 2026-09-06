@@ -158,6 +158,7 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
                     _selfPosition,
                     _selfLength
                 );
+                throw;
             }
 
             binPosition += _selfLength;
@@ -205,6 +206,7 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
                 }
                 catch (Exception error)
                 {
+                    // Never publish a partial snapshot: entities missing from the idx are deleted on load.
                     logger.Error(
                         error,
                         "Error writing segment: (Thread: {Thread} - {Start}, {Records} records)",
@@ -212,6 +214,7 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
                         segment.HeapStart,
                         segment.RecordCount
                     );
+                    throw;
                 }
             }
         }
@@ -318,9 +321,7 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
     private ushort GetTypeIndex(T entity)
     {
         // Every path into EntitiesBySerial registers the type first, so this cannot fire.
-        // If it ever does, the segment-level catch in WriteSnapshot logs it and moves on —
-        // the failed segment's records are dropped from the idx while binPosition rewinds,
-        // so treat any occurrence as a serious bug in an insertion path, not a bad entity.
+        // If it does, the save fails; treat it as a bug in an insertion path, not a bad entity.
         if (!_typeIndexes.TryGetValue(entity.GetType(), out var typeIndex))
         {
             throw new InvalidOperationException(

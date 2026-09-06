@@ -79,6 +79,12 @@ public class SerializationThreadWorker
     internal List<IGenericSerializable> BufferEntities => _bufferEntities;
 
     /// <summary>
+    /// First serializer exception during the drain. The drain continues so the handshake
+    /// completes; the loop fails the save once every worker has paused.
+    /// </summary>
+    public Exception Error { get; private set; }
+
+    /// <summary>
     /// Releases the write logs after the snapshot is written so serialized entity
     /// references don't linger between saves. Capacity is retained: the logs regrow to
     /// the same size every save.
@@ -155,6 +161,25 @@ public class SerializationThreadWorker
 
     private long ProcessChunk(in SerializationChunkSource.Chunk chunk, BufferWriter writer)
     {
+        try
+        {
+            return ProcessChunkCore(in chunk, writer);
+        }
+        catch (Exception ex)
+        {
+            Error ??= ex;
+
+            if (chunk.Buffer != null)
+            {
+                _chunkSource.Return(chunk.Buffer, chunk.Count);
+            }
+
+            return 0;
+        }
+    }
+
+    private long ProcessChunkCore(in SerializationChunkSource.Chunk chunk, BufferWriter writer)
+    {
         if (chunk.Single != null)
         {
             // Self-payloads are written to their own file, so they record placement on the
@@ -213,6 +238,7 @@ public class SerializationThreadWorker
     public void DrainInline()
     {
         ReleaseWriteLogs();
+        Error = null;
 
         var writer = new BufferWriter(_heap, true);
         var entities = 0L;
@@ -238,6 +264,7 @@ public class SerializationThreadWorker
         while (worker._startEvent.WaitOne())
         {
             worker.ReleaseWriteLogs();
+            worker.Error = null;
 
             var writer = new BufferWriter(worker._heap, true);
             var entities = 0L;

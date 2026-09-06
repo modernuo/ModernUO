@@ -20,7 +20,7 @@ internal class RoundTripEntity : ISerializable
     {
     }
 
-    public void Serialize(IGenericWriter writer)
+    public virtual void Serialize(IGenericWriter writer)
     {
         writer.Write(Value);
         writer.Write(Name);
@@ -31,6 +31,15 @@ internal class RoundTripEntity : ISerializable
         Value = reader.ReadInt();
         Name = reader.ReadString();
     }
+}
+
+internal class ThrowingRoundTripEntity : RoundTripEntity
+{
+    public ThrowingRoundTripEntity(Serial serial) : base(serial)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer) => throw new InvalidOperationException("broken serializer");
 }
 
 [Collection("Sequential Server Tests")]
@@ -158,6 +167,145 @@ public class GenericEntityPersistenceRoundTripTests
 
             World._threadWorkers = previousWorkers;
             AssemblyHandler.Assemblies = previousAssemblies;
+            Directory.Delete(dir, true);
+        }
+    }
+
+    /// <summary>
+    /// A serializer throwing on a worker used to be an unhandled exception on that thread.
+    /// The worker records it, finishes the drain so the handshake completes, and the loop
+    /// fails the save.
+    /// </summary>
+    [Fact]
+    public void SerializerException_IsRecordedOnTheWorker_AndTheDrainCompletes()
+    {
+        var source = new SerializationChunkSource();
+        var workers = new SerializationThreadWorker[2];
+        for (var i = 0; i < workers.Length; i++)
+        {
+            workers[i] = new SerializationThreadWorker(i, source);
+            workers[i].AllocateHeap();
+        }
+
+        var persistence = new RoundTripPersistence(2002);
+
+        try
+        {
+            for (var i = 1; i <= 100; i++)
+            {
+                var serial = (Serial)(uint)i;
+                persistence.EntitiesBySerial[serial] = i == 50
+                    ? new ThrowingRoundTripEntity(serial)
+                    : new RoundTripEntity(serial) { Value = i, Name = $"entity-{i}" };
+            }
+
+            foreach (var worker in workers)
+            {
+                worker.Wake();
+            }
+
+            source.SetOwner(persistence);
+            Assert.True(persistence.TrySnapshotEntries(out var slotCount));
+            source.PushSlotRanges(persistence, slotCount);
+            source.Flush();
+
+            foreach (var worker in workers)
+            {
+                worker.Sleep();
+            }
+
+            Exception error = null;
+            foreach (var worker in workers)
+            {
+                error ??= worker.Error;
+            }
+
+            Assert.IsType<InvalidOperationException>(error);
+            persistence.PostWorldSave();
+
+            // The next drain starts clean.
+            foreach (var worker in workers)
+            {
+                worker.Wake();
+            }
+
+            foreach (var worker in workers)
+            {
+                worker.Sleep();
+                Assert.Null(worker.Error);
+            }
+        }
+        finally
+        {
+            persistence.Unregister();
+
+            foreach (var worker in workers)
+            {
+                worker.Exit();
+            }
+        }
+    }
+
+    /// <summary>
+    /// A segment that cannot be written used to be logged and dropped, publishing a save
+    /// without those entities (the loader then deletes them). It now fails the save.
+    /// </summary>
+    [Fact]
+    public void WriteSnapshot_FailsTheSave_InsteadOfDroppingASegment()
+    {
+        var source = new SerializationChunkSource();
+        var workers = new SerializationThreadWorker[2];
+        for (var i = 0; i < workers.Length; i++)
+        {
+            workers[i] = new SerializationThreadWorker(i, source);
+            workers[i].AllocateHeap();
+        }
+
+        var previousWorkers = World._threadWorkers;
+        World._threadWorkers = workers;
+
+        var persistence = new RoundTripPersistence(2003);
+        var dir = Path.Combine(Path.GetTempPath(), $"muo-segmentfail-{Guid.NewGuid():N}");
+        Directory.CreateDirectory(dir);
+
+        try
+        {
+            for (var i = 1; i <= 100; i++)
+            {
+                var serial = (Serial)(uint)i;
+                persistence.EntitiesBySerial[serial] = new RoundTripEntity(serial) { Value = i, Name = $"entity-{i}" };
+            }
+
+            // Deliberately not registered: the writer cannot index the type.
+
+            foreach (var worker in workers)
+            {
+                worker.Wake();
+            }
+
+            source.SetOwner(persistence);
+            Assert.True(persistence.TrySnapshotEntries(out var slotCount));
+            source.PushSlotRanges(persistence, slotCount);
+            source.Flush();
+
+            foreach (var worker in workers)
+            {
+                worker.Sleep();
+            }
+
+            Assert.Throws<InvalidOperationException>(() => persistence.WriteSnapshot(dir));
+            persistence.PostWorldSave();
+        }
+        finally
+        {
+            persistence.Unregister();
+
+            foreach (var worker in workers)
+            {
+                worker.Exit();
+            }
+
+            World._threadWorkers = previousWorkers;
             Directory.Delete(dir, true);
         }
     }
