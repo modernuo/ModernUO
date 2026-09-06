@@ -322,22 +322,51 @@ public static class World
             }
 
             Persistence.SerializeAll();
-            PauseSerializationThreads();
-            LogWorkerBalance();
-
-            EventSink.InvokeWorldSave();
         }
         catch (Exception ex)
         {
             exception = ex;
         }
 
-        WorldState = WorldState.WritingSave;
-        ThreadPool.QueueUserWorkItem(WriteFiles, snapshotPath);
+        // Even a failed publish leaves workers spinning on the queue: always join them, and
+        // treat a serializer failure on any worker (or on the inline drain) as a failed save.
+        try
+        {
+            PauseSerializationThreads();
+        }
+        catch (Exception ex)
+        {
+            exception ??= ex;
+        }
+
+        for (var i = 0; i < _threadWorkers.Length; i++)
+        {
+            exception ??= _threadWorkers[i].Error;
+        }
+
+        if (exception == null)
+        {
+            LogWorkerBalance();
+
+            try
+            {
+                EventSink.InvokeWorldSave();
+            }
+            catch (Exception ex)
+            {
+                // A save handler failing does not invalidate the serialized snapshot.
+                logger.Error(ex, "A WorldSave handler failed");
+                Persistence.TraceException(ex);
+            }
+        }
+
         watch.Stop();
 
         if (exception == null)
         {
+            WorldState = WorldState.WritingSave;
+            ThreadPool.QueueUserWorkItem(WriteFiles, snapshotPath);
+
             var duration = watch.Elapsed.TotalSeconds;
             logger.Information("Saving world {Status} ({Duration:F2} seconds)", "done", duration);
 
@@ -345,10 +374,14 @@ public static class World
         }
         else
         {
+            // Nothing is written: the previous save stays authoritative.
             logger.Error(exception, "Saving world {Status}", "failed");
             Persistence.TraceException(exception);
 
             BroadcastStaff(0x35, true, "World save failed! Check the logs!");
+
+            _diskWriteHandle.Set();
+            FinishWorldSave();
         }
     }
 
