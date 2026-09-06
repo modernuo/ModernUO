@@ -1,5 +1,6 @@
 using System;
 using ModernUO.Serialization;
+using Server.Collections;
 
 namespace Server.Mobiles;
 
@@ -76,14 +77,25 @@ public partial class ShadowWispFamiliar : BaseFamiliar
 
             var friendly = true;
 
-            for (var j = 0; friendly && j < caster.Aggressors.Count; ++j)
+            foreach (var info in caster.Aggressors)
             {
-                friendly = caster.Aggressors[j].Attacker != m;
+                if (info.Attacker == m)
+                {
+                    friendly = false;
+                    break;
+                }
             }
 
-            for (var j = 0; friendly && j < caster.Aggressed.Count; ++j)
+            if (friendly)
             {
-                friendly = caster.Aggressed[j].Defender != m;
+                foreach (var info in caster.Aggressed)
+                {
+                    if (info.Defender == m)
+                    {
+                        friendly = false;
+                        break;
+                    }
+                }
             }
 
             if (friendly)

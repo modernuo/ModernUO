@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using Server.Collections;
 using Server.Engines.ConPVP;
 using Server.Factions;
 using Server.Gumps;
@@ -257,10 +258,8 @@ public sealed class HelpGump : DynamicGump
 
     public static bool CheckCombat(Mobile m)
     {
-        for (var i = 0; i < m.Aggressed.Count; ++i)
+        foreach (var info in m.Aggressed)
         {
-            var info = m.Aggressed[i];
-
             if (Core.Now - info.LastCombatTime < TimeSpan.FromSeconds(30.0))
             {
                 return true;

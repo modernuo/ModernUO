@@ -1,4 +1,5 @@
 using System;
+using Server.Collections;
 using Server.Factions.AI;
 using Server.Items;
 using Server.Mobiles;
@@ -114,12 +115,8 @@ namespace Server.Factions
                     return true;
                 }
 
-                var list = m.Aggressed;
-
-                for (var i = 0; i < list.Count; ++i)
+                foreach (var ai in m.Aggressed)
                 {
-                    var ai = list[i];
-
                     if (ai.Defender is BaseFactionGuard bf && bf.Faction == ourFaction)
                     {
                         return true;

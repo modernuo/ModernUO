@@ -2567,11 +2567,6 @@ namespace Server.Mobiles
         {
             base.AggressiveAction(aggressor, criminal);
 
-            if (ControlMaster != null && NotorietyHandlers.CheckAggressor(ControlMaster.Aggressors, aggressor))
-            {
-                aggressor.Aggressors.Add(AggressorInfo.Create(this, aggressor, true));
-            }
-
             var ct = m_ControlOrder;
 
             if (AIObject != null)
@@ -2727,24 +2722,16 @@ namespace Server.Mobiles
                 return;
             }
 
-            var list = Aggressors;
-
-            for (var i = 0; i < list.Count; ++i)
+            foreach (var ai in Aggressors)
             {
-                var ai = list[i];
-
                 if (ai.Attacker == target)
                 {
                     return;
                 }
             }
 
-            list = Aggressed;
-
-            for (var i = 0; i < list.Count; ++i)
+            foreach (var ai in Aggressed)
             {
-                var ai = list[i];
-
                 if (ai.Defender == target)
                 {
                     var master = GetMaster();
@@ -3123,7 +3110,7 @@ namespace Server.Mobiles
             return base.OnBeforeDeath();
         }
 
-        public int ComputeBonusDamage(in ValueLinkList<DamageEntry> list, Mobile m)
+        public static int ComputeBonusDamage(in ValueLinkList<DamageEntry> list, Mobile m)
         {
             var bonus = 0;
 
@@ -3324,24 +3311,16 @@ namespace Server.Mobiles
                 SendIncomingPacket();
 
                 // TODO: This can be done in Parallel if there are lots of them.
-                var aggressors = Aggressors;
-
-                for (var i = 0; i < aggressors.Count; ++i)
+                foreach (var info in Aggressors)
                 {
-                    var info = aggressors[i];
-
                     if (info.Attacker.Combatant == this)
                     {
                         info.Attacker.Combatant = null;
                     }
                 }
 
-                var aggressed = Aggressed;
-
-                for (var i = 0; i < aggressed.Count; ++i)
+                foreach (var info in Aggressed)
                 {
-                    var info = aggressed[i];
-
                     if (info.Defender.Combatant == this)
                     {
                         info.Defender.Combatant = null;
