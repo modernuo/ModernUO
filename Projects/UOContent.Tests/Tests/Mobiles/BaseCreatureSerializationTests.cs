@@ -166,6 +166,80 @@ public class BaseCreatureSerializationTests : IDisposable
         Assert.Equal(master, copy.LastOwner);
     }
 
+    [Fact]
+    public void UncontrolledSummon_KeepsItsSummonMaster()
+    {
+        var bc = NewCreature();
+        var master = new PlayerMobile(World.NewMobile);
+        master.DefaultMobileInit();
+        World.AddEntity(master);
+        _created.Add(master);
+
+        // Energy vortex-style: summoned with a master, never controlled.
+        bc.Summoned = true;
+        bc.SummonMaster = master;
+
+        var copy = Load(Snapshot(bc));
+
+        Assert.True(copy.Summoned);
+        Assert.False(copy.Controlled);
+        Assert.Equal(master, copy.SummonMaster);
+        Assert.Null(copy.ControlMaster);
+    }
+
+    private sealed class VendorStub : BaseVendor
+    {
+        private static readonly List<SBInfo> _sbInfos = [];
+
+        public VendorStub() : base("the stub")
+        {
+        }
+
+        public VendorStub(Serial serial) : base(serial)
+        {
+        }
+
+        protected override List<SBInfo> SBInfos => _sbInfos;
+
+        public override void InitSBInfo()
+        {
+        }
+
+        public override void InitOutfit()
+        {
+        }
+
+        public override void GetSpeeds(out double activeSpeed, out double passiveSpeed)
+        {
+            activeSpeed = 0.3;
+            passiveSpeed = 0.6;
+        }
+    }
+
+    // BaseVendor is generated on top of the generated BaseCreature; the chain must write
+    // and read both sections in order with exact consumption.
+    [Fact]
+    public void GeneratedVendorChain_RoundTrips()
+    {
+        var vendor = new VendorStub();
+        _created.Add(vendor);
+        vendor.Home = new Point3D(1500, 1600, 0);
+        vendor.RangeHome = 2;
+
+        var buffer = Snapshot(vendor);
+
+        var copy = new VendorStub(World.NewMobile);
+        _created.Add(copy);
+        var reader = new BufferReader(buffer);
+        copy.Deserialize(reader);
+
+        Assert.Equal(buffer.Length, reader.Position);
+        Assert.Equal(AIType.AI_Vendor, copy.AI);
+        Assert.Equal(FightMode.None, copy.FightMode);
+        Assert.Equal(new Point3D(1500, 1600, 0), copy.Home);
+        Assert.Equal(2, copy.RangeHome);
+    }
+
     private sealed class MobileStub : Mobile
     {
         public MobileStub() => Body = 0xC9;
@@ -176,62 +250,62 @@ public class BaseCreatureSerializationTests : IDisposable
     // Mobile section (identical layout for every Mobile subclass) followed by this tail.
     private static void WriteLegacyV22Tail(IGenericWriter writer)
     {
-            writer.Write(22);                      // version
-            writer.Write((int)AIType.AI_Melee);    // current AI
-            writer.Write((int)AIType.AI_Melee);    // default AI
-            writer.Write(10);                      // RangePerception
-            writer.Write(1);                       // RangeFight
-            writer.Write(0);                       // Team
-            writer.Write(0.3);                     // active (matches the stub table)
-            writer.Write(0.6);                     // passive
-            writer.Write(0.6);                     // current
-            writer.Write(2000);                    // Home X
-            writer.Write(2100);                    // Home Y
-            writer.Write(7);                       // Home Z
-            writer.Write(6);                       // RangeHome
-            writer.Write((int)FightMode.Closest);
-            writer.Write(false);                   // controlled
-            writer.Write((Mobile)null);            // control master
-            writer.Write((Mobile)null);            // control target
-            writer.Write(Point3D.Zero);            // control dest
-            writer.Write((int)OrderType.None);
-            writer.Write(0.0);                     // min tame skill
-            writer.Write(true);                    // tamable
-            writer.Write(false);                   // summoned
-            writer.Write(2);                       // control slots
-            writer.Write(73);                      // loyalty
-            writer.Write((Item)null);              // waypoint
-            writer.Write((Mobile)null);            // summon master
-            writer.Write(180);                     // hits seed
-            writer.Write(-1);                      // stam seed
-            writer.Write(-1);                      // mana seed
-            writer.Write(7);                       // damage min
-            writer.Write(14);                      // damage max
-            writer.Write(30);                      // phys resist
-            writer.Write(100);                     // phys damage
-            writer.Write(10);                      // fire resist
-            writer.Write(0);                       // fire damage
-            writer.Write(0);                       // cold resist
-            writer.Write(0);                       // cold damage
-            writer.Write(0);                       // poison resist
-            writer.Write(0);                       // poison damage
-            writer.Write(0);                       // energy resist
-            writer.Write(0);                       // energy damage
-            writer.Write(new List<Mobile>());      // owners
-            writer.Write(false);                   // dead pet
-            writer.Write(false);                   // bonded
-            writer.Write(DateTime.MinValue);       // bonding begin
-            writer.Write(DateTime.MinValue);       // abandon time
-            writer.Write(true);                    // has generated loot
-            writer.Write(false);                   // paragon
-            writer.Write(false);                   // has friends
-            writer.Write(false);                   // remove if untamed
-            writer.Write(0);                       // remove step
-            writer.Write(TimeSpan.Zero);           // delete time left
-            writer.Write((string)null);            // corpse name override
-            writer.Write((Map)null);               // home map
-            writer.Write(0.0);                     // active move speed (v22)
-            writer.Write(0.0);                     // passive move speed (v22)
+        writer.Write(22);                      // version
+        writer.Write((int)AIType.AI_Melee);    // current AI
+        writer.Write((int)AIType.AI_Melee);    // default AI
+        writer.Write(10);                      // RangePerception
+        writer.Write(1);                       // RangeFight
+        writer.Write(0);                       // Team
+        writer.Write(0.3);                     // active (matches the stub table)
+        writer.Write(0.6);                     // passive
+        writer.Write(0.6);                     // current
+        writer.Write(2000);                    // Home X
+        writer.Write(2100);                    // Home Y
+        writer.Write(7);                       // Home Z
+        writer.Write(6);                       // RangeHome
+        writer.Write((int)FightMode.Closest);
+        writer.Write(false);                   // controlled
+        writer.Write((Mobile)null);            // control master
+        writer.Write((Mobile)null);            // control target
+        writer.Write(Point3D.Zero);            // control dest
+        writer.Write((int)OrderType.None);
+        writer.Write(0.0);                     // min tame skill
+        writer.Write(true);                    // tamable
+        writer.Write(false);                   // summoned
+        writer.Write(2);                       // control slots
+        writer.Write(73);                      // loyalty
+        writer.Write((Item)null);              // waypoint
+        writer.Write((Mobile)null);            // summon master
+        writer.Write(180);                     // hits seed
+        writer.Write(-1);                      // stam seed
+        writer.Write(-1);                      // mana seed
+        writer.Write(7);                       // damage min
+        writer.Write(14);                      // damage max
+        writer.Write(30);                      // phys resist
+        writer.Write(100);                     // phys damage
+        writer.Write(10);                      // fire resist
+        writer.Write(0);                       // fire damage
+        writer.Write(0);                       // cold resist
+        writer.Write(0);                       // cold damage
+        writer.Write(0);                       // poison resist
+        writer.Write(0);                       // poison damage
+        writer.Write(0);                       // energy resist
+        writer.Write(0);                       // energy damage
+        writer.Write(new List<Mobile>());      // owners
+        writer.Write(false);                   // dead pet
+        writer.Write(false);                   // bonded
+        writer.Write(DateTime.MinValue);       // bonding begin
+        writer.Write(DateTime.MinValue);       // abandon time
+        writer.Write(true);                    // has generated loot
+        writer.Write(false);                   // paragon
+        writer.Write(false);                   // has friends
+        writer.Write(false);                   // remove if untamed
+        writer.Write(0);                       // remove step
+        writer.Write(TimeSpan.Zero);           // delete time left
+        writer.Write((string)null);            // corpse name override
+        writer.Write((Map)null);               // home map
+        writer.Write(0.0);                     // active move speed (v22)
+        writer.Write(0.0);                     // passive move speed (v22)
     }
 
     [Fact]
