@@ -28,7 +28,17 @@ namespace Server;
 
 public interface IGenericEntityPersistence
 {
+    string Name { get; }
+
+    int EntityCount { get; }
+
     void DeserializeIndexes(string savePath, Dictionary<ulong, string> typesDb);
+
+    /// <summary>
+    /// Enumerates the live entities. Diagnostics only: the dictionary must not be mutated while
+    /// enumerating, so callers snapshot the sequence before doing anything that can add or delete.
+    /// </summary>
+    IEnumerable<ISerializable> EnumerateEntities();
 }
 
 public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPersistence, ISlotRangeSource
@@ -84,6 +94,16 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
     }
 
     public Dictionary<Serial, T> EntitiesBySerial { get; } = new();
+
+    public int EntityCount => EntitiesBySerial.Count;
+
+    public IEnumerable<ISerializable> EnumerateEntities()
+    {
+        foreach (var entity in EntitiesBySerial.Values)
+        {
+            yield return entity;
+        }
+    }
 
     public GenericEntityPersistence(string name, int priority, uint minSerial, uint maxSerial) : this(
         name,
