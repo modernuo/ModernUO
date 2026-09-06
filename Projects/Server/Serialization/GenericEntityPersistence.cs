@@ -206,8 +206,7 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
                 }
                 catch (Exception error)
                 {
-                    // A partial snapshot must never be published: every entity missing from the
-                    // idx is deleted at the next load. Fail the save and keep the previous one.
+                    // Never publish a partial snapshot: entities missing from the idx are deleted on load.
                     logger.Error(
                         error,
                         "Error writing segment: (Thread: {Thread} - {Start}, {Records} records)",
@@ -322,8 +321,7 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
     private ushort GetTypeIndex(T entity)
     {
         // Every path into EntitiesBySerial registers the type first, so this cannot fire.
-        // If it ever does, WriteSnapshot logs it and fails the save (the previous save stays),
-        // so treat any occurrence as a serious bug in an insertion path, not a bad entity.
+        // If it does, the save fails; treat it as a bug in an insertion path, not a bad entity.
         if (!_typeIndexes.TryGetValue(entity.GetType(), out var typeIndex))
         {
             throw new InvalidOperationException(

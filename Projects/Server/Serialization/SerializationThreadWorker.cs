@@ -79,9 +79,8 @@ public class SerializationThreadWorker
     internal List<IGenericSerializable> BufferEntities => _bufferEntities;
 
     /// <summary>
-    /// The first exception a serializer threw on this worker during the drain. The drain
-    /// continues so the queue empties and the handshake completes; the loop reads this after
-    /// every worker paused and fails the save instead of letting the worker thread die.
+    /// First serializer exception during the drain. The drain continues so the handshake
+    /// completes; the loop fails the save once every worker has paused.
     /// </summary>
     public Exception Error { get; private set; }
 

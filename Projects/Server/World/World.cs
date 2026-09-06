@@ -197,7 +197,6 @@ public static class World
         logger.Information("Loading world");
         var watch = Stopwatch.StartNew();
 
-        // A complete save left staged by an interrupted publish is newer than Saves/.
         RecoverStagedSave();
 
         Persistence.Load(SavePath);
@@ -276,8 +275,6 @@ public static class World
     {
         try
         {
-            // Finish a publish that failed after its files were complete, before the new
-            // save can overwrite the staging directory. Off-loop: directory work only.
             RecoverStagedSave();
 
             // Allocate the heaps for the GC
@@ -337,8 +334,7 @@ public static class World
             exception = ex;
         }
 
-        // Even a failed publish leaves workers spinning on the queue: always join them, and
-        // treat a serializer failure on any worker (or on the inline drain) as a failed save.
+        // Always join the workers; any serializer exception fails the save.
         try
         {
             PauseSerializationThreads();
@@ -363,7 +359,6 @@ public static class World
             }
             catch (Exception ex)
             {
-                // A save handler failing does not invalidate the serialized snapshot.
                 logger.Error(ex, "A WorldSave handler failed");
                 Persistence.TraceException(ex);
             }
@@ -383,7 +378,6 @@ public static class World
         }
         else
         {
-            // Nothing is written: the previous save stays authoritative.
             logger.Error(exception, "Saving world {Status}", "failed");
             Persistence.TraceException(exception);
 
@@ -421,27 +415,18 @@ public static class World
     }
 
     /// <summary>
-    /// The staging directory next to <see cref="SavePath" />. A snapshot moves here as soon as
-    /// its files are complete, before anything touches the previous save, so whatever fails
-    /// afterwards a complete newest save is on disk and <see cref="RecoverStagedSave" /> can
-    /// finish publishing it.
+    /// A complete snapshot is staged here before the previous save is touched; a staged
+    /// directory is always a complete save newer than <see cref="SavePath" />.
     /// </summary>
     internal static string StagedSavePath => SavePath + ".next";
 
-    /// <summary>
-    /// Publishes a complete snapshot: stage it, let subscribers archive the previous save
-    /// (<see cref="EventSink.WorldSavePostSnapshot" />, which is how the previous Saves/ ends
-    /// up in Backups/), then put the staged save in place. Before this protocol the previous
-    /// save was moved away first, and a subscriber or the final move failing left nothing
-    /// at Saves/ until the next save.
-    /// </summary>
+    // Stage, let subscribers archive the previous save, then rename the staged save into place.
     private static void PublishSnapshot(string snapshotPath)
     {
         var staging = StagedSavePath;
 
         if (Directory.Exists(staging))
         {
-            // Recovery ran before this save and failed to publish it; do not destroy it.
             SetAside(staging, "unpublished");
         }
 
@@ -460,7 +445,6 @@ public static class World
 
         if (Directory.Exists(SavePath))
         {
-            // No subscriber archived the previous save (or it failed part way). Keep it.
             SetAside(SavePath, "previous");
         }
 
@@ -469,9 +453,8 @@ public static class World
     }
 
     /// <summary>
-    /// Finishes an interrupted publish: a staged directory is always a complete save newer than
-    /// <see cref="SavePath" />. Runs at boot (before load, when archive subscribers are not
-    /// wired yet) and before every save. Whatever is at Saves/ is set aside, never deleted.
+    /// Finishes an interrupted publish. Runs at boot (before load) and before every save;
+    /// whatever is at Saves/ is set aside, never deleted.
     /// </summary>
     internal static void RecoverStagedSave()
     {
@@ -497,9 +480,7 @@ public static class World
         logger.Warning("Set aside {Path} as {Aside}; delete or archive it by hand.", path, aside);
     }
 
-    /// <summary>
-    /// Renames a directory when the volume allows it (atomic), otherwise moves its contents.
-    /// </summary>
+    // Atomic rename on one volume, file-by-file move otherwise.
     private static void MoveDirectory(string source, string destination)
     {
         try
