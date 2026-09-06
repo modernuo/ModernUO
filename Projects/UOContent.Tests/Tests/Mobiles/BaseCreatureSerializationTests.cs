@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Server;
+using Server.Items;
 using Server.Mobiles;
 using Xunit;
 
@@ -15,12 +16,18 @@ namespace UOContent.Tests.Mobiles;
 public class BaseCreatureSerializationTests : IDisposable
 {
     private readonly List<Mobile> _created = new();
+    private readonly List<Item> _createdItems = new();
 
     public void Dispose()
     {
         for (var i = 0; i < _created.Count; i++)
         {
             _created[i].Delete();
+        }
+
+        for (var i = 0; i < _createdItems.Count; i++)
+        {
+            _createdItems[i].Delete();
         }
     }
 
@@ -29,6 +36,8 @@ public class BaseCreatureSerializationTests : IDisposable
         public CreatureStub() : base(AIType.AI_Melee) => Body = 0xC9;
 
         public CreatureStub(Serial serial) : base(serial) => Body = 0xC9;
+
+        public DateTime SummonEndValue => SummonEnd;
 
         // Stands in for the npc-speeds table (unconfigured in the test fixture).
         public override void GetSpeeds(out double activeSpeed, out double passiveSpeed)
@@ -49,6 +58,16 @@ public class BaseCreatureSerializationTests : IDisposable
         var bc = new CreatureStub();
         _created.Add(bc);
         return bc;
+    }
+
+    // ReadEntity resolves references through the world table, so the master must be registered.
+    private PlayerMobile NewMaster()
+    {
+        var master = new PlayerMobile(World.NewMobile);
+        master.DefaultMobileInit();
+        World.AddEntity(master);
+        _created.Add(master);
+        return master;
     }
 
     private static byte[] Snapshot(Mobile m)
@@ -108,10 +127,7 @@ public class BaseCreatureSerializationTests : IDisposable
     public void PopulatedCreature_RoundTrips()
     {
         var bc = NewCreature();
-        var master = new PlayerMobile(World.NewMobile);
-        master.DefaultMobileInit();
-        World.AddEntity(master); // ReadEntity resolves the reference through the world table
-        _created.Add(master);
+        var master = NewMaster();
 
         bc.Tamable = true;
         bc.MinTameSkill = 47.1;
@@ -170,10 +186,7 @@ public class BaseCreatureSerializationTests : IDisposable
     public void UncontrolledSummon_KeepsItsSummonMaster()
     {
         var bc = NewCreature();
-        var master = new PlayerMobile(World.NewMobile);
-        master.DefaultMobileInit();
-        World.AddEntity(master);
-        _created.Add(master);
+        var master = NewMaster();
 
         // Energy vortex-style: summoned with a master, never controlled.
         bc.Summoned = true;
@@ -185,6 +198,38 @@ public class BaseCreatureSerializationTests : IDisposable
         Assert.False(copy.Controlled);
         Assert.Equal(master, copy.SummonMaster);
         Assert.Null(copy.ControlMaster);
+    }
+
+    [Fact]
+    public void ReferenceFields_RoundTrip()
+    {
+        var bc = NewCreature();
+        var friend = NewMaster();
+        var wayPoint = new WayPoint();
+        _createdItems.Add(wayPoint);
+
+        bc.AddPetFriend(friend);
+        bc.CurrentWayPoint = wayPoint;
+        bc.HomeMap = Map.Felucca;
+
+        var copy = Load(Snapshot(bc));
+
+        Assert.Equal(friend, Assert.Single(copy.Friends));
+        Assert.Equal(wayPoint, copy.CurrentWayPoint);
+        Assert.Equal(Map.Felucca, copy.HomeMap);
+    }
+
+    [Fact]
+    public void RunningDeleteTimer_RoundTrips()
+    {
+        var bc = NewCreature();
+        bc.BeginDeleteTimer();
+        Assert.True(bc.DeleteTimeLeft > TimeSpan.Zero);
+
+        var copy = Load(Snapshot(bc));
+
+        // Anchored: the remaining countdown survives, not the absolute deadline.
+        Assert.InRange(copy.DeleteTimeLeft, TimeSpan.FromDays(3.0) - TimeSpan.FromSeconds(5), TimeSpan.FromDays(3.0));
     }
 
     private sealed class VendorStub : BaseVendor
@@ -248,7 +293,14 @@ public class BaseCreatureSerializationTests : IDisposable
     // Byte-authentic replica of the pre-codegen v22 tail — fossilized so the legacy
     // upgrade path stays covered without an old save binary. The full stream is a plain
     // Mobile section (identical layout for every Mobile subclass) followed by this tail.
-    private static void WriteLegacyV22Tail(IGenericWriter writer)
+    private static void WriteLegacyV22Tail(
+        IGenericWriter writer,
+        bool controlled = false,
+        Mobile controlMaster = null,
+        bool summoned = false,
+        Mobile summonMaster = null,
+        DateTime summonEnd = default
+    )
     {
         writer.Write(22);                      // version
         writer.Write((int)AIType.AI_Melee);    // current AI
@@ -264,18 +316,23 @@ public class BaseCreatureSerializationTests : IDisposable
         writer.Write(7);                       // Home Z
         writer.Write(6);                       // RangeHome
         writer.Write((int)FightMode.Closest);
-        writer.Write(false);                   // controlled
-        writer.Write((Mobile)null);            // control master
+        writer.Write(controlled);
+        writer.Write(controlMaster);
         writer.Write((Mobile)null);            // control target
         writer.Write(Point3D.Zero);            // control dest
         writer.Write((int)OrderType.None);
         writer.Write(0.0);                     // min tame skill
         writer.Write(true);                    // tamable
-        writer.Write(false);                   // summoned
+        writer.Write(summoned);
+        if (summoned)
+        {
+            writer.WriteAnchoredTime(summonEnd);
+        }
+
         writer.Write(2);                       // control slots
         writer.Write(73);                      // loyalty
         writer.Write((Item)null);              // waypoint
-        writer.Write((Mobile)null);            // summon master
+        writer.Write(summonMaster);
         writer.Write(180);                     // hits seed
         writer.Write(-1);                      // stam seed
         writer.Write(-1);                      // mana seed
@@ -308,8 +365,13 @@ public class BaseCreatureSerializationTests : IDisposable
         writer.Write(0.0);                     // passive move speed (v22)
     }
 
-    [Fact]
-    public void LegacyV22Stream_LoadsThroughLegacyPath()
+    private CreatureStub LoadLegacyV22(
+        bool controlled = false,
+        Mobile controlMaster = null,
+        bool summoned = false,
+        Mobile summonMaster = null,
+        DateTime summonEnd = default
+    )
     {
         // Every serialized BaseCreature starts with the Mobile base section; a plain
         // Mobile donor produces a byte-authentic one.
@@ -319,7 +381,7 @@ public class BaseCreatureSerializationTests : IDisposable
 
         var writer = new BufferWriter(true);
         donor.Serialize(writer);
-        WriteLegacyV22Tail(writer);
+        WriteLegacyV22Tail(writer, controlled, controlMaster, summoned, summonMaster, summonEnd);
 
         var buffer = new byte[writer.Position];
         writer.Buffer.AsSpan(0, (int)writer.Position).CopyTo(buffer);
@@ -330,6 +392,14 @@ public class BaseCreatureSerializationTests : IDisposable
         copy.Deserialize(reader);
 
         Assert.Equal(buffer.Length, reader.Position);
+        return copy;
+    }
+
+    [Fact]
+    public void LegacyV22Stream_LoadsThroughLegacyPath()
+    {
+        var copy = LoadLegacyV22();
+
         Assert.Equal(10, copy.RangePerception);
         Assert.Equal(new Point3D(2000, 2100, 7), copy.Home);
         Assert.Equal(6, copy.RangeHome);
@@ -346,5 +416,40 @@ public class BaseCreatureSerializationTests : IDisposable
         // pace falls back to the think clock.
         Assert.Equal(0, copy.ActiveMoveSpeed);
         Assert.Equal(0.6, copy.CurrentMoveSpeed); // passive mode, inheriting
+    }
+
+    // ControlMaster and SummonMaster are independent references: a summon master can
+    // exist without Summoned (EnragedCreature), and a controlled summon carries both.
+    [Theory]
+    [InlineData(true, true, false, false)]  // controlled pet
+    [InlineData(true, true, true, true)]    // controlled summon, SummonEnd on the wire
+    [InlineData(false, false, false, true)] // EnragedCreature shape: SummonMaster only
+    public void LegacyV22Stream_KeepsBothMasterReferences(
+        bool controlled,
+        bool hasControlMaster,
+        bool summoned,
+        bool hasSummonMaster
+    )
+    {
+        var master = NewMaster();
+        var summonEnd = Core.Now + TimeSpan.FromMinutes(5);
+
+        var copy = LoadLegacyV22(
+            controlled,
+            hasControlMaster ? master : null,
+            summoned,
+            hasSummonMaster ? master : null,
+            summonEnd
+        );
+
+        Assert.Equal(controlled, copy.Controlled);
+        Assert.Equal(summoned, copy.Summoned);
+        Assert.Equal(hasControlMaster ? master : null, copy.ControlMaster);
+        Assert.Equal(hasSummonMaster ? master : null, copy.SummonMaster);
+
+        if (summoned)
+        {
+            Assert.InRange(copy.SummonEndValue, summonEnd - TimeSpan.FromSeconds(1), summonEnd + TimeSpan.FromSeconds(1));
+        }
     }
 }

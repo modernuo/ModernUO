@@ -214,7 +214,7 @@ public class MoveSpeedTests : IDisposable
         var reader = new BufferReader(buffer);
         copy.Deserialize(reader);
 
-        // The v22 tail is the last block; exact consumption catches any offset mistake.
+        // The BaseCreature tail is the last block; exact consumption catches any offset mistake.
         Assert.Equal(buffer.Length, reader.Position);
         Assert.Equal(overridden ? 0.45 : 0, copy.ActiveMoveSpeed);
         Assert.Equal(overridden ? 0.9 : 0, copy.PassiveMoveSpeed);
