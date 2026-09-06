@@ -28,6 +28,10 @@ public abstract partial class BaseBOBEntry : IBOBEntry
 
     public bool Deleted { get; private set; }
 
+    public bool SaveDirty { get; set; }
+
+    public long SavePlacement { get; set; }
+
     public BaseBOBEntry()
     {
         Serial = BOBEntries.NewBOBEntry;

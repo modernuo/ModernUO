@@ -77,13 +77,19 @@ public class ShadowDictionaryEntriesTests
 
             var source = (ISlotRangeSource)persistence;
             var writer = new BufferWriter(new byte[dict.Count * 16], true);
-            var lengths = new List<int>();
+            var worker = SerializationThreadWorker.CreateInline(0, new SerializationChunkSource());
 
             // Serialize in worker-sized slices, like the drain does.
             var serialized = 0;
             for (var offset = 0; offset < slotCount; offset += 4096)
             {
-                serialized += source.SerializeRange(writer, lengths, offset, Math.Min(4096, slotCount - offset));
+                serialized += source.SerializeRange(worker, writer, offset, Math.Min(4096, slotCount - offset));
+            }
+
+            var lengths = new List<int>(worker.Statuses.Count);
+            foreach (var status in worker.Statuses)
+            {
+                lengths.Add(SlotStatus.Length(status));
             }
 
             Assert.Equal(dict.Count, serialized);

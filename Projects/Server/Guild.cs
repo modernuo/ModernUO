@@ -52,6 +52,12 @@ public abstract class BaseGuild : ISerializable
     [CommandProperty(AccessLevel.GameMaster, readOnly: true)]
     public DateTime Created { get; set; } = Core.Now;
 
+    [IgnoreDupe]
+    public bool SaveDirty { get; set; }
+
+    [IgnoreDupe]
+    public long SavePlacement { get; set; }
+
     public abstract void Serialize(IGenericWriter writer);
 
     public abstract void Deserialize(IGenericReader reader);

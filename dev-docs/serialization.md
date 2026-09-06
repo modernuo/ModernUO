@@ -563,6 +563,49 @@ The `Deserialize` function exists **only** to handle deserialization of entities
 
 ---
 
+## Delta Saves
+
+A world save freezes the game loop while every entity serializes. Delta saves cut that freeze by not
+serializing entities that have not changed: the snapshot writer copies their previous record from the
+last save file instead, and the files on disk stay complete, ordinary saves. The whole mechanism rests
+on `MarkDirty()`: an entity whose serialized state changes without a mark keeps stale bytes on disk
+until something catches it. That is why generated setters and collection mutators mark for you, and
+why every hand-written mutation of a serialized field must call `this.MarkDirty()`.
+
+**Modes** (`world.delta.mode`, changeable at runtime with `[DeltaSave mode`):
+
+| Mode | What happens |
+|---|---|
+| `off` (default) | Every entity serializes, as before. Placements are still tracked so the mode can be raised later. |
+| `verify` | Every entity serializes; clean entities of trusted types are compared byte for byte with their previous record off-loop. Every mismatch is logged with type and serials. No freeze savings: this is how a shard qualifies its content before `on`. |
+| `on` | Clean entities of trusted types are copied instead of serialized. A fresh random sample (`world.delta.sampleRate`, default 1 %) is serialized and compared each save. |
+
+**Trust** is per concrete type. A type is *eligible* when every class from it up to the root that
+implements `ISerializable` (`Item`, `Mobile`, `BaseGuild`, `Account`, ...) carries either
+`[SerializationGenerator]` or `[AuditedDirtyTracking("who, when")]`, and none carries
+`[VolatileSerializedState]` (the generator emits it for serialized timers and delta timestamps). One
+hand-written, unaudited class anywhere in the chain makes the whole subtree serialize every save.
+`[AuditedDirtyTracking]` is a promise that the class calls `MarkDirty()` after every mutation of its
+serialized state; put it on a class only after auditing every write path, and run `verify` on a live
+copy before trusting it in production.
+
+**When verification finds a mismatch**, the type is denylisted (`world.delta.denylist`, also
+`[DeltaSave deny|trust <type>`), an error is logged, staff are told, and another save is scheduled a
+minute later so any copied instances of that type are rewritten. The staleness window is one save
+interval for one type, and it is never silent.
+
+**Every save is full** on the first save after boot (anchored timestamps were shifted at load, so the
+old bytes no longer match), after any failed save, every `world.delta.fullSaveEvery` saves (default
+24), and on `[DeltaSave full`. A full save in `on` mode still verifies every clean trusted entity, so
+it doubles as a 100 % check.
+
+`[DeltaSave` shows the mode, the per-persistence trusted type counts, and the last save's counters;
+`[DeltaSave report` lists the types caught since boot. `[SaveStability` is the complement: it
+serializes every entity twice across real time and reports types whose bytes drift with no mutation
+at all (impure `Serialize` methods).
+
+---
+
 ## Extension Methods
 
 From `Projects/Server/Serialization/ISerializableExtensions.cs`:

@@ -271,7 +271,7 @@ public class SerializationChunkSourceTests
 
             foreach (var worker in workers)
             {
-                var lengths = worker.Lengths;
+                var lengths = worker.Statuses;
                 var bufferEntities = worker.BufferEntities;
 
                 foreach (var segment in worker.Segments)
@@ -283,7 +283,7 @@ public class SerializationChunkSourceTests
                     for (var i = 0; i < segment.RecordCount; i++)
                     {
                         var entity = (TestEntity)bufferEntities[segment.EntitiesStart + i];
-                        var length = lengths[segment.LengthsStart + i];
+                        var length = SlotStatus.Length(lengths[segment.StatusStart + i]);
 
                         Assert.True(seen.Add(entity));
                         Assert.Equal(entity.PayloadSize, length);
