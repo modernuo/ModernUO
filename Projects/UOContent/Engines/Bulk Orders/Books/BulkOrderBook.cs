@@ -43,7 +43,7 @@ public partial class BulkOrderBook : Item, ISecurable
         LootType = LootType.Blessed;
 
         _entries = [];
-        _filter = new BOBFilter();
+        _filter = new BOBFilter(this);
 
         _level = SecureLevel.CoOwners;
     }
@@ -224,7 +224,7 @@ public partial class BulkOrderBook : Item, ISecurable
 
         _bookName = reader.ReadString();
 
-        _filter = new BOBFilter();
+        _filter = new BOBFilter(this);
         _filter.Deserialize(reader);
 
         var count = reader.ReadEncodedInt();

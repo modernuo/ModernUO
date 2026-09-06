@@ -58,6 +58,7 @@ public partial class MurderContext
         _lastMurderTime = Core.Now;
     }
 
+    [DirtyTrackingEntity]
     public PlayerMobile _player;
 
     public PlayerMobile Player => _player;

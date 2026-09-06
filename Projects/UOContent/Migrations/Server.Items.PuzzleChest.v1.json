@@ -7,7 +7,7 @@
       "type": "Server.Items.PuzzleChestSolution",
       "rule": "RawSerializableMigrationRule",
       "ruleArguments": [
-        ""
+        "DeserializationRequiresParent"
       ]
     },
     {
@@ -32,7 +32,7 @@
         "Server.Items.PuzzleChestSolutionAndTime",
         "RawSerializableMigrationRule",
         "2",
-        "",
+        "DeserializationRequiresParent",
         "@CanBeNull"
       ]
     }

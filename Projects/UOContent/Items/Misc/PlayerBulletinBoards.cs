@@ -74,13 +74,13 @@ public abstract partial class BasePlayerBB : Item, ISecurable
 
         if (_greeting != null)
         {
-            board.Greeting = new PlayerBBMessage(_greeting.Time, _greeting.Poster, _greeting.Message);
+            board.Greeting = new PlayerBBMessage(board, _greeting.Time, _greeting.Poster, _greeting.Message);
         }
 
         for (var i = 0; i < _messages.Count; i++)
         {
             var message = _messages[i];
-            board.AddToMessages(new PlayerBBMessage(message.Time, message.Poster, message.Message));
+            board.AddToMessages(new PlayerBBMessage(board, message.Time, message.Poster, message.Message));
         }
     }
 
@@ -176,7 +176,7 @@ public abstract partial class BasePlayerBB : Item, ISecurable
 
             if (text.Length > 0)
             {
-                var message = new PlayerBBMessage(Core.Now, from, text);
+                var message = new PlayerBBMessage(board, Core.Now, from, text);
 
                 if (_greeting)
                 {
@@ -265,6 +265,9 @@ public abstract partial class BasePlayerBB : Item, ISecurable
 [SerializationGenerator(0)]
 public partial class PlayerBBMessage
 {
+    [DirtyTrackingEntity]
+    private BasePlayerBB _board;
+
     [SerializableField(0)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private DateTime _time;
@@ -277,12 +280,11 @@ public partial class PlayerBBMessage
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private string _message;
 
-    public PlayerBBMessage()
-    {
-    }
+    public PlayerBBMessage(BasePlayerBB board) => _board = board;
 
-    public PlayerBBMessage(DateTime time, Mobile poster, string message)
+    public PlayerBBMessage(BasePlayerBB board, DateTime time, Mobile poster, string message)
     {
+        _board = board;
         _time = time;
         _poster = poster;
         _message = message;

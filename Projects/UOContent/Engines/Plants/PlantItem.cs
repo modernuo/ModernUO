@@ -96,6 +96,7 @@ public partial class PlantItem : Item, ISecurable
             var ratio = PlantSystem != null ? (double)PlantSystem.Hits / PlantSystem.MaxHits : 1.0;
 
             _plantStatus = value;
+            this.MarkDirty();
 
             if (_plantStatus >= PlantStatus.DecorativePlant)
             {

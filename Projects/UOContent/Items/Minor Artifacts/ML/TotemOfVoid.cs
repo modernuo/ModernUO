@@ -14,7 +14,7 @@ public partial class TotemOfVoid : BaseTalisman
         MaxChargeTime = 1800;
 
         Blessed = GetRandomBlessed();
-        Protection = GetRandomProtection(false);
+        Protection = GetRandomProtection(this, false);
 
         Attributes.RegenHits = 2;
         Attributes.LowerManaCost = 10;

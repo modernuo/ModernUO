@@ -9,7 +9,7 @@
       "ruleArguments": [
         "Server.Engines.BulkOrders.BOBLargeSubEntry",
         "RawSerializableMigrationRule",
-        ""
+        "DeserializationRequiresParent"
       ]
     }
   ]

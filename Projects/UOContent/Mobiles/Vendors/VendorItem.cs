@@ -7,6 +7,9 @@ namespace Server.Mobiles;
 [SerializationGenerator(0, false)]
 public partial class VendorItem
 {
+    [DirtyTrackingEntity]
+    private PlayerVendor _vendor;
+
     [SerializableField(0)]
     private Item _item;
 
@@ -16,12 +19,13 @@ public partial class VendorItem
     [SerializableField(3)]
     private DateTime _created;
 
-    public VendorItem()
-    {
-    }
+    // The generator deserializes dictionary values through this constructor so every entry
+    // knows its vendor.
+    public VendorItem(PlayerVendor vendor) => _vendor = vendor;
 
-    public VendorItem(Item item, int price, string description, DateTime created)
+    public VendorItem(PlayerVendor vendor, Item item, int price, string description, DateTime created)
     {
+        _vendor = vendor;
         _item = item;
         _price = price;
         _description = description ?? "";

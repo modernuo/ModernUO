@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.Collections;
 using Server.ContextMenus;
 using Server.Engines.BulkOrders;
@@ -24,7 +25,8 @@ namespace Server.Mobiles
         ThighBoots
     }
 
-    public abstract class BaseVendor : BaseCreature, IVendor
+    [SerializationGenerator(2, false)]
+    public abstract partial class BaseVendor : BaseCreature, IVendor
     {
         private static readonly ILogger logger = LogFactory.GetLogger(typeof(BaseVendor));
         private const int MaxSell = 500;
@@ -1297,106 +1299,25 @@ namespace Server.Mobiles
             Region.GetRegion<GuardedRegion>()?.CheckVendorAccess(this, from) != false ||
             Region != from.Region && from.Region.GetRegion<GuardedRegion>()?.CheckVendorAccess(this, from) != false;
 
-        public override void Serialize(IGenericWriter writer)
+        [AfterDeserialization]
+        private void AfterDeserialization()
         {
-            base.Serialize(writer);
-
-            writer.Write(1); // version
-
-            var sbInfos = SBInfos;
-
-            for (var i = 0; i < sbInfos?.Count; ++i)
-            {
-                var sbInfo = sbInfos[i];
-                var buyInfo = sbInfo.BuyInfo;
-
-                for (var j = 0; j < buyInfo?.Count; ++j)
-                {
-                    var gbi = buyInfo[j];
-
-                    var maxAmount = gbi.MaxAmount;
-
-                    var doubled = maxAmount switch
-                    {
-                        40  => 1,
-                        80  => 2,
-                        160 => 3,
-                        320 => 4,
-                        640 => 5,
-                        999 => 6,
-                        _   => 0
-                    };
-
-                    if (doubled > 0)
-                    {
-                        writer.WriteEncodedInt(1 + j * sbInfos.Count + i);
-                        writer.WriteEncodedInt(doubled);
-                    }
-                }
-            }
-
-            writer.WriteEncodedInt(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
             LoadSBInfo();
-
-            var sbInfos = SBInfos;
-
-            switch (version)
-            {
-                case 1:
-                    {
-                        int index;
-
-                        while ((index = reader.ReadEncodedInt()) > 0)
-                        {
-                            var doubled = reader.ReadEncodedInt();
-
-                            if (sbInfos != null)
-                            {
-                                index -= 1;
-                                var sbInfoIndex = index % sbInfos.Count;
-                                var buyInfoIndex = index / sbInfos.Count;
-
-                                if (sbInfoIndex >= 0 && sbInfoIndex < sbInfos.Count)
-                                {
-                                    var sbInfo = sbInfos[sbInfoIndex];
-                                    var buyInfo = sbInfo.BuyInfo;
-
-                                    if (buyInfo != null && buyInfoIndex >= 0 && buyInfoIndex < buyInfo.Count)
-                                    {
-                                        var gbi = buyInfo[buyInfoIndex];
-
-                                        var amount = doubled switch
-                                        {
-                                            1 => 40,
-                                            2 => 80,
-                                            3 => 160,
-                                            4 => 320,
-                                            5 => 640,
-                                            6 => 999,
-                                            _ => 20
-                                        };
-
-                                        gbi.Amount = gbi.MaxAmount = amount;
-                                    }
-                                }
-                            }
-                        }
-
-                        break;
-                    }
-            }
 
             if (IsParagon)
             {
                 IsParagon = false;
+            }
+        }
+
+        // Version 1 persisted which buy entries had grown restock amounts, packed by index into
+        // the live SBInfos tables. Restock is transient now: it rebuilds from SBInfos on load, so
+        // the pairs are read and discarded.
+        private void Deserialize(IGenericReader reader, int version)
+        {
+            while (reader.ReadEncodedInt() > 0)
+            {
+                reader.ReadEncodedInt();
             }
         }
 

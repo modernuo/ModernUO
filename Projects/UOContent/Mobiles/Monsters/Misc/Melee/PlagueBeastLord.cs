@@ -52,9 +52,9 @@ namespace Server.Mobiles
             VirtualArmor = 50;
         }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        [SerializableProperty(3)]
-        public Mobile OpenedBy { get; set; }
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        [SerializableField(3)]
+        private Mobile _openedBy;
 
 
         [CommandProperty(AccessLevel.GameMaster)]

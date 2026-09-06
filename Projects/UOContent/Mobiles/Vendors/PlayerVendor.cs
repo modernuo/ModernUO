@@ -188,7 +188,7 @@ public partial class PlayerVendor : Mobile
         for (var i = 0; i < count; i++)
         {
             var item = reader.ReadEntity<Item>();
-            var vi = new VendorItem();
+            var vi = new VendorItem(this);
             vi.Deserialize(reader);
             _sellItems[item] = vi;
         }
@@ -447,7 +447,7 @@ public partial class PlayerVendor : Mobile
     {
         RemoveVendorItem(item);
 
-        var vi = new VendorItem(item, price, description, created);
+        var vi = new VendorItem(this, item, price, description, created);
         ReplaceInSellItems(item, vi);
 
         item.InvalidateProperties();

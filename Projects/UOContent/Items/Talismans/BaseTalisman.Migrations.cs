@@ -26,19 +26,19 @@ public partial class BaseTalisman
             BlessedFor = reader.ReadEntity<Mobile>();
         }
 
-        _protection = new TalismanAttribute();
+        _protection = new TalismanAttribute(this);
         if (GetOldSaveFlag(flags, OldSaveFlag.Protection))
         {
             _protection.Deserialize(reader);
         }
 
-        _killer = new TalismanAttribute();
+        _killer = new TalismanAttribute(this);
         if (GetOldSaveFlag(flags, OldSaveFlag.Killer))
         {
             _killer.Deserialize(reader);
         }
 
-        _summoner = new TalismanAttribute();
+        _summoner = new TalismanAttribute(this);
         if (GetOldSaveFlag(flags, OldSaveFlag.Summoner))
         {
             _summoner.Deserialize(reader);

@@ -6,6 +6,9 @@ namespace Server.Engines.BulkOrders;
 [SerializationGenerator(0)]
 public partial class BOBLargeSubEntry
 {
+    [DirtyTrackingEntity]
+    private BOBLargeEntry _parent;
+
     [SerializableField(0, setter: "private")]
     private Type _itemType;
 
@@ -21,12 +24,11 @@ public partial class BOBLargeSubEntry
     [SerializableField(3, setter: "private")]
     private int _graphic;
 
-    public BOBLargeSubEntry()
-    {
-    }
+    public BOBLargeSubEntry(BOBLargeEntry parent) => _parent = parent;
 
-    public BOBLargeSubEntry(LargeBulkEntry lbe)
+    public BOBLargeSubEntry(BOBLargeEntry parent, LargeBulkEntry lbe)
     {
+        _parent = parent;
         _itemType = lbe.Details.Type;
         _amountCur = lbe.Amount;
         _number = lbe.Details.Number;

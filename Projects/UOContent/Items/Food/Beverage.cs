@@ -350,6 +350,7 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
         set
         {
             _quantity = Math.Clamp(value, 0, MaxQuantity);
+            this.MarkDirty();
 
             InvalidateProperties();
 

@@ -195,6 +195,7 @@ namespace Server.Items
             {
                 UnscaleDurability();
                 _quality = value;
+                this.MarkDirty();
                 ScaleDurability();
             }
         }
@@ -213,6 +214,7 @@ namespace Server.Items
             {
                 UnscaleDurability();
                 _durability = value;
+                this.MarkDirty();
                 ScaleDurability();
             }
         }
@@ -246,6 +248,7 @@ namespace Server.Items
                     UnscaleDurability();
 
                     _resource = value;
+                    this.MarkDirty();
 
                     if (CraftItem.RetainsColor(GetType()))
                     {

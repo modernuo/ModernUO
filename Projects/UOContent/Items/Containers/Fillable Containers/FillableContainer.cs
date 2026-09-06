@@ -53,6 +53,7 @@ public abstract partial class FillableContainer : LockableContainer
 
             ClearContents();
             _contentType = value;
+            this.MarkDirty();
             Respawn();
         }
     }

@@ -308,6 +308,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
         {
             _walkingRange = value;
             InvalidateProperties();
+            this.MarkDirty();
         }
     }
 

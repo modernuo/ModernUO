@@ -21,7 +21,11 @@ namespace Server.Mobiles
         public int DevourGoal
         {
             get => IsParagon ? _devourGoal + 25 : _devourGoal;
-            set => _devourGoal = value;
+            set
+            {
+                _devourGoal = value;
+                this.MarkDirty();
+            }
         }
 
         [Constructible]

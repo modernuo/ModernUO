@@ -55,7 +55,7 @@
         "Server.Mobiles.VendorItem",
         "RawSerializableMigrationRule",
         "1",
-        ""
+        "DeserializationRequiresParent"
       ]
     }
   ]

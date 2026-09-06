@@ -199,7 +199,7 @@ namespace Server.Mobiles
             VisibilityList = new List<Mobile>();
             PermaFlags = new List<Mobile>();
 
-            BOBFilter = new BOBFilter();
+            BOBFilter = new BOBFilter(this);
 
             m_GameTime = TimeSpan.Zero;
             m_GuildRank = RankDefinition.Lowest;
@@ -2958,7 +2958,7 @@ namespace Server.Mobiles
                 case 13: // just removed m_PaidInsurance list
                 case 12:
                     {
-                        BOBFilter = new BOBFilter();
+                        BOBFilter = new BOBFilter(this);
                         BOBFilter.Deserialize(reader);
                         goto case 11;
                     }
@@ -3081,7 +3081,7 @@ namespace Server.Mobiles
             }
 
             PermaFlags ??= new List<Mobile>();
-            BOBFilter ??= new BOBFilter();
+            BOBFilter ??= new BOBFilter(this);
 
             // Default to member if going from older version to new version (only time it should be null)
             m_GuildRank ??= RankDefinition.Member;
