@@ -1188,10 +1188,8 @@ namespace Server.Mobiles
             }
         }
 
-        // Fires on every assignment, not only changes: a reissued order is a command
-        // (retarget, break off combat, re-anchor Home). A raw assignment is a system-issued
-        // order with no issuer; player commands go through IssueOrder so the reveal hits the
-        // mobile that actually gave the command.
+        // Fires on every assignment, not only changes: a reissued order is a command (retarget, re-anchor).
+        // A raw assignment is system-issued; player commands go through IssueOrder.
         [SerializableProperty(18, useField: nameof(_controlOrder))]
         [SaveFlag(nameof(ShouldSerializeControlOrder))]
         [CommandProperty(AccessLevel.GameMaster)]
@@ -1202,9 +1200,8 @@ namespace Server.Mobiles
         }
 
         /// <summary>
-        /// Gives this pet a command. <paramref name="issuer"/> is whoever gave it (the speaker, the
-        /// clicking player, the targeter) or null for a system-issued order; it is the only mobile the
-        /// command reveals. <paramref name="target"/> replaces <see cref="ControlTarget"/> first.
+        /// Gives this pet a command. <paramref name="issuer"/> (null = system-issued) is the only mobile
+        /// revealed; <paramref name="target"/> replaces <see cref="ControlTarget"/> first.
         /// </summary>
         public void IssueOrder(OrderType order, Mobile issuer, Mobile target = null)
         {
@@ -1212,10 +1209,8 @@ namespace Server.Mobiles
             SetControlOrder(order, issuer, false);
         }
 
-        // The single entry for every order change. The AI's Issue phase runs synchronously and
-        // returns the order to rest in; transient orders (Drop, Friend, Release, Stop, ...) resolve
-        // here, in a loop, until the order rests. `resuming` marks a fallback to the standing
-        // command: no persistent re-derivation, no Home re-anchor, no flourish.
+        // The single entry for every order change: runs the Issue phase and loops until the returned order
+        // rests. `resuming` = fallback to the standing order (no re-derivation, no flourish).
         internal void SetControlOrder(OrderType order, Mobile issuer, bool resuming)
         {
             var ai = AIObject;
@@ -1228,26 +1223,24 @@ namespace Server.Mobiles
                 {
                     var next = ai.IssueOrder(order, previous, issuer, resuming);
 
-                    // A nested assignment (SetControlMaster(null) inside Release, Kill() inside a
-                    // summoned release) has already resolved itself; it wins.
+                    // A nested assignment (SetControlMaster(null), Kill()) already resolved itself; it wins.
                     if (_controlOrder != order || next == order)
                     {
                         break;
                     }
 
-                    // A shard override that keeps returning a different order must not hang the loop.
                     System.Diagnostics.Debug.Assert(depth < 8, "pet order resolution did not converge");
 
                     if (depth >= 8)
                     {
-                        // Extension failure: rest at the standing order without running its Issue.
+                        // Non-converging override: rest at the standing order.
                         _controlOrder = ai.PersistentOrder;
                         break;
                     }
 
                     previous = order;
                     order = next;
-                    issuer = null;   // chained orders are system resolutions; the command already revealed
+                    issuer = null; // chained resolutions reveal nobody
                     resuming = true;
                     _controlOrder = order;
                 }

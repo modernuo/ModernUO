@@ -105,7 +105,7 @@ internal sealed class InternalEntry : ContextMenuEntry
             return;
         }
 
-        // Same control roll speech requires; a refused roll costs loyalty and offers no gump.
+        // Same control roll as speech.
         if (bc.CheckControlChance(from))
         {
             from.SendGump(new ConfirmReleaseGump(from, bc));

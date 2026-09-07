@@ -326,9 +326,7 @@ public class PetOrderTests : IDisposable
             Core.Expansion = previous;
         }
     }
-    // The parameterless ctor is the one that allocates the serial, runs DefaultMobileInit and
-    // initializes PermaFlags/BOBFilter; the Serial ctor leaves those to Deserialize. Player is
-    // what character creation sets, and the friend/transfer orders require a real player.
+    // The parameterless ctor fully initializes a player; the Serial ctor leaves that to Deserialize.
     private PlayerMobile SpawnPlayer(Point3D loc)
     {
         var pm = new PlayerMobile { Player = true };
@@ -350,7 +348,7 @@ public class PetOrderTests : IDisposable
         Assert.Equal(OrderType.Follow, pet.ControlOrder); // never rests at Friend
         Assert.True(BaseAI.IsRestableOrder(pet.ControlOrder));
 
-        // A tick must not re-run the refusal: the order is already Follow, so Obey follows.
+        // Obey must not repeat the refusal.
         pet.AIObject.Obey();
         Assert.Equal(OrderType.Follow, pet.ControlOrder);
     }
@@ -478,8 +476,7 @@ public class PetOrderTests : IDisposable
         Assert.Equal(1, pet.CombatantSets);
         Assert.True(pet.Warmode);
 
-        // The stand-down must not drop Warmode for Attack: doing so nulls Combatant through the
-        // Warmode setter, and the re-issue would then replay DoHarmful and the anger sound.
+        // Dropping Warmode would null Combatant and make the re-issue replay DoHarmful.
         pet.IssueOrder(OrderType.Attack, master, victim);
 
         Assert.Equal(1, pet.CombatantSets);
@@ -497,7 +494,7 @@ public class PetOrderTests : IDisposable
 
         pet.IssueOrder(OrderType.Attack, master, victim);
 
-        // What BaseAI.OnAggressiveAction does when a closer attacker swings at the pet.
+        // what OnAggressiveAction does
         pet.Combatant = other;
         Assert.Same(other, pet.Combatant);
 
@@ -643,7 +640,7 @@ public class PetOrderTests : IDisposable
         var (_, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
         pet.ControlOrder = OrderType.Follow;          // persistent = Follow
 
-        // Simulate a pre-refactor save resting at Rename: deserialization assigns the field raw.
+        // a pre-refactor save resting at Rename
         var field = typeof(BaseCreature).GetField("_controlOrder", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
         field!.SetValue(pet, OrderType.Rename);
         Assert.Equal(OrderType.Rename, pet.ControlOrder);
@@ -710,8 +707,7 @@ public class PetOrderTests : IDisposable
         Assert.Equal(OrderType.Follow, pet.ControlOrder);
     }
 
-    // A pet resting at Come with no standing order (a fresh tame, or the state a load produces)
-    // must settle into a standing order on its own.
+    // Come with no standing order (fresh tame or post-load) must settle into one.
     [Fact]
     public void RestingCome_WithNoStandingOrder_SettlesIntoStayBesideTheMaster()
     {
@@ -726,10 +722,8 @@ public class PetOrderTests : IDisposable
         Assert.Equal(pet.Location, pet.Home);
     }
 
-    // Risk 1 in the spec: load assigns the field raw and never runs the Issue phase. The copy is
-    // given an AI first (the Issue gate is `ai != null`), and the probe is Home: it is field 12,
-    // read before ControlOrder (18) and after Location, so a setter-routed load would run IssueStay
-    // and re-anchor Home to the restored Location. A Stay pet saved away from its post shows it.
+    // Load never runs the Issue phase. Home (field 12) is read before ControlOrder (18); with an AI
+    // present, a setter-routed load would re-anchor Home to the restored Location.
     [Fact]
     public void ControlOrder_RoundTrips_AndLoadDoesNotRunIssue()
     {
@@ -746,13 +740,13 @@ public class PetOrderTests : IDisposable
 
         var copy = new PetTestStub(World.NewMobile);
         _created.Add(copy);
-        copy.ChangeAIType(AIType.AI_Animal); // open the Issue gate for the duration of the field read
+        copy.ChangeAIType(AIType.AI_Animal); // the Issue gate is ai != null
 
         copy.Deserialize(new BufferReader(buffer));
 
         Assert.Equal(OrderType.Stay, copy.ControlOrder);
         Assert.Equal(new Point3D(1020, 1000, 0), copy.Location);
-        Assert.Equal(post, copy.Home); // not re-anchored to Location: IssueStay did not run on load
+        Assert.Equal(post, copy.Home); // not re-anchored
     }
 
     [Fact]
@@ -783,9 +777,7 @@ public class PetOrderTests : IDisposable
 
         Assert.Equal(OrderType.Stay, pet.ControlOrder);
         Assert.Equal(post, pet.Home);
-        // Observable "once": the Come->Stay transition below would re-anchor if Stay were re-issued
-        // after a move, so move the pet and re-send the same utterance with only the named keyword —
-        // it must be ignored because the speech starts with "all", not the pet's name.
+        // The named keyword alone must be ignored: the speech starts with "all", not the name.
         pet.MoveToWorld(new Point3D(1010, 1010, 0), pet.Map);
         pet.AIObject.OnSpeech(new SpeechEventArgs(master, "all stay", MessageType.Regular, 0x3B2, [0x16F]));
         Assert.Equal(post, pet.Home);
@@ -852,7 +844,7 @@ public class PetOrderTests : IDisposable
     public void ContextMenuRelease_RollsControlChance()
     {
         var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
-        pet.MinTameSkill = 120.0; // master has 0 taming: GetControlChance is below zero -> the roll always fails
+        pet.MinTameSkill = 120.0; // control chance below zero: the roll always fails
         master.Skills.AnimalTaming.Base = 0;
         master.Skills.AnimalLore.Base = 0;
         pet.Loyalty = 50;

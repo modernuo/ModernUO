@@ -161,7 +161,7 @@ internal sealed partial class TransferItem : Item
             _creature.SummonMaster = to;
         }
 
-        _creature.ClearPetFriends(); // the previous owner's friends do not carry over
+        _creature.ClearPetFriends();
         _creature.IssueOrder(OrderType.Follow, null, to);
         _creature.BondingBegin = DateTime.MinValue;
         _creature.OwnerAbandonTime = DateTime.MinValue;

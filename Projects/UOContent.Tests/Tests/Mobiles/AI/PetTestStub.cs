@@ -23,10 +23,7 @@ public class PetTestStub : BaseCreature
         passiveSpeed = 0.4;
     }
 
-    // Counts the Combatant writes that actually land, so tests can prove an order writes it once.
-    // The base setter ignores a re-assignment of the same mobile, so a re-issued order that does
-    // not null Combatant first leaves this at one - which is the point: a second effective write
-    // would replay DoHarmful and the target's anger sound.
+    // Effective (value-changing, non-null) Combatant writes; a re-issue on the same target must not add one.
     public int CombatantSets { get; private set; }
 
     public override Mobile Combatant

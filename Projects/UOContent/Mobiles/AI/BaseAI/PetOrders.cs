@@ -17,21 +17,17 @@ using System;
 
 namespace Server.Mobiles;
 
-// Pet orders live here, one place per order, in two phases:
-//   Issue  — runs once, synchronously, from BaseCreature.SetControlOrder on every assignment.
-//            Sets state and emits (message, sound, reveal). Returns the order to rest in.
-//   Tick   — DoOrderXxx, runs from Obey every AI tick while Controlled. Moves, fights, transitions.
-// Restable orders (None, Come, Guard, Attack, Stay, Follow) return themselves from Issue and have
-// a tick. Transient orders (Drop, Friend, Unfriend, Transfer, Release, Rename, Stop, Patrol) do
-// their whole job in Issue and return the order to rest in; they never reach Obey.
+// One place per order, two phases. Issue runs once, synchronously, from BaseCreature.SetControlOrder:
+// sets state, emits, returns the order to rest in. Tick (DoOrderXxx) runs from Obey while Controlled:
+// moves, fights, transitions. Only None/Come/Guard/Attack/Stay/Follow rest; every other order resolves
+// inside Issue and never reaches Obey.
 public abstract partial class BaseAI
 {
-    // The standing command a pet falls back to when a transient order completes: None, Stay,
-    // Follow, or Guard. Runtime-only (not serialized); reset to None on load and derived from
-    // master proximity on login. See PetLoginHandler.
+    // The standing command a transient order falls back to (None/Stay/Follow/Guard). Runtime-only:
+    // None after load, derived at login. See PetLoginHandler.
     internal OrderType PersistentOrder { get; private set; } = OrderType.None;
 
-    // Orders a pet may rest in between ticks. Everything else resolves inside IssueOrder.
+    // Orders that may rest between ticks.
     public static bool IsRestableOrder(OrderType order) =>
         order is OrderType.None or OrderType.Come or OrderType.Guard or OrderType.Attack or OrderType.Stay
             or OrderType.Follow;
@@ -44,8 +40,7 @@ public abstract partial class BaseAI
     public static bool IsDeadPetOrder(OrderType order) =>
         order is OrderType.Guard or OrderType.Attack or OrderType.Transfer or OrderType.Drop;
 
-    // Who a standing Follow follows. ControlTarget is overwritten by every targeted command
-    // (Friend, Transfer, Rename via the menu), so a resumed Follow restores it from here.
+    // Target of the standing Follow; targeted commands overwrite ControlTarget, a resume restores it from here.
     private Mobile _persistentTarget;
 
     // The controlled-pet wander anchor (Home) is a pure function of the persistent command.
@@ -56,8 +51,7 @@ public abstract partial class BaseAI
         Mobile.Home = order is OrderType.Follow or OrderType.Guard ? Point3D.Zero : Mobile.Location;
     }
 
-    // Adopt a standing order restored from a save without re-anchoring: Home and ControlTarget
-    // were saved with it.
+    // Adopt a saved standing order; Home and ControlTarget were saved with it.
     internal void RestorePersistentOrder(OrderType order)
     {
         PersistentOrder = order;
@@ -68,9 +62,8 @@ public abstract partial class BaseAI
     private void ResumePersistentOrder() => Mobile.SetControlOrder(PersistentOrder, null, true);
 
     /// <summary>
-    /// Issue phase. <paramref name="issuer"/> is who gave the command (null for system-issued)
-    /// and is the only mobile revealed. <paramref name="resuming"/> marks a fallback to the
-    /// standing order. Returns the order to rest in.
+    /// Issue phase. <paramref name="issuer"/> is the only mobile revealed (null = system-issued);
+    /// <paramref name="resuming"/> marks a fallback to the standing order. Returns the order to rest in.
     /// </summary>
     public virtual OrderType IssueOrder(OrderType order, OrderType previous, Mobile issuer, bool resuming)
     {
@@ -83,15 +76,9 @@ public abstract partial class BaseAI
 
         issuer?.RevealingAction();
 
-        // Every command starts from a neutral posture, except the two that re-arm below and must
-        // not flap through it. Dropping Warmode also nulls Combatant (the Mobile setter does that
-        // on the false transition), so leaving it set for Attack is what keeps Attack's single
-        // Combatant write a no-op when the same target is re-issued - a second effective write
-        // would replay DoHarmful and the target's anger sound. Guard opens in war stance, so a
-        // false->true flap there would send two war-mode packets and two Delta(Flags). Neither of
-        // the two clears Combatant directly either: Attack writes it once in its own Issue phase,
-        // and Guard's tick re-validates the current combatant through FindGuardTarget - nulling it
-        // here would drop Warmode through the Mobile setter only for IssueGuard to raise it again.
+        // Neutral posture for every command except Attack and Guard: dropping Warmode nulls Combatant through
+        // the Mobile setter, which would turn Attack's single Combatant write into a re-write (DoHarmful again)
+        // and flap Guard's war stance.
         Mobile.FocusMob = null;
 
         if (order is not (OrderType.Attack or OrderType.Guard))
@@ -115,7 +102,7 @@ public abstract partial class BaseAI
             OrderType.Follow   => IssueFollow(resuming),
             OrderType.Transfer => IssueTransfer(),
             OrderType.Rename   => IssueRename(issuer),
-            _                  => PersistentOrder // Patrol and anything unimplemented rests at the standing order
+            _                  => PersistentOrder // Patrol and anything unimplemented
         };
     }
 
@@ -138,7 +125,7 @@ public abstract partial class BaseAI
 
         if (resuming)
         {
-            Mobile.ControlTarget = null; // a transient's target (friend, recipient) does not carry over
+            Mobile.ControlTarget = null; // a transient's target does not carry over
         }
         else
         {
@@ -155,7 +142,7 @@ public abstract partial class BaseAI
 
         if (resuming)
         {
-            // Back to whoever the standing Follow was following, never a transient's target.
+            // the standing Follow's target, never a transient's
             Mobile.ControlTarget = _persistentTarget?.Deleted == false ? _persistentTarget : Mobile.ControlMaster;
         }
         else
@@ -206,9 +193,7 @@ public abstract partial class BaseAI
         return OrderType.Attack;
     }
 
-    // "Stop" cancels the active order based on what the pet was doing: Follow/Guard -> idle (None)
-    // where it stands; Stay -> keep staying at its post; anything transient -> resume the standing
-    // command.
+    // Stop: Follow/Guard -> idle here; Stay -> keep the post; anything transient -> the standing order.
     private OrderType IssueStop(OrderType previous)
     {
         Mobile.ControlTarget = null;
@@ -227,8 +212,7 @@ public abstract partial class BaseAI
                 }
             default:
                 {
-                    // No standing order to resume: idle where it stands, anchored (a Zero Home
-                    // would idle-wander without bounds; a vendor-bought pet hits this path).
+                    // No standing order: idle here, anchored (a Zero Home wanders without bounds).
                     if (PersistentOrder == OrderType.None)
                     {
                         SetPersistentOrder(OrderType.None);
@@ -339,7 +323,6 @@ public abstract partial class BaseAI
 
         Mobile.AddPetFriend(to);
 
-        // Follow the new friend.
         Mobile.ControlTarget = to;
         SetPersistentOrder(OrderType.Follow);
         return OrderType.Follow;
@@ -373,7 +356,6 @@ public abstract partial class BaseAI
 
         Mobile.RemovePetFriend(to);
 
-        // Back to the master's side.
         Mobile.ControlTarget = from;
         SetPersistentOrder(OrderType.Follow);
         return OrderType.Follow;
@@ -429,10 +411,7 @@ public abstract partial class BaseAI
             return PersistentOrder;
         }
 
-        // The old tick version also tested Combatant != null, but the stand-down has already cleared
-        // Combatant by the time this runs, so the gate is intentionally relaxed to the aggressor
-        // lists and the combat cooldown: a pet whose fight left no aggressor entries and whose
-        // NextCombatTime has elapsed is transferable.
+        // The stand-down already cleared Combatant; the aggressor lists and the combat cooldown gate this.
         if (Mobile.Aggressors.Count > 0 || Mobile.Aggressed.Count > 0 || Core.TickCount - Mobile.NextCombatTime < 0)
         {
             from.SendMessage("You can not transfer a pet while in combat.");
@@ -475,9 +454,8 @@ public abstract partial class BaseAI
         to.SendLocalizedMessage(toMessage, args);
     }
 
-    // The whole release. The master is cleared here (SetControlMaster(null) assigns
-    // ControlOrder = None underneath us, which the funnel's fixed-point loop respects), so this
-    // is the only release entry point: the Release order, from a player or from the loyalty drain.
+    // The whole release and its only entry point (player order or loyalty drain). SetControlMaster(null)
+    // assigns ControlOrder = None underneath; the funnel keeps the nested write.
     private OrderType IssueRelease()
     {
         if (Mobile.Summoned)
@@ -501,9 +479,10 @@ public abstract partial class BaseAI
         Mobile.BondingBegin = DateTime.MinValue;
         Mobile.OwnerAbandonTime = DateTime.MinValue;
         Mobile.IsBonded = false;
-        Mobile.ClearPetFriends();      // the old owner's friends must not command the next owner's pet
-        PersistentOrder = OrderType.None; // nor may the old standing order survive a re-tame
-        _persistentTarget = null;         // and nothing here may keep pointing at the ex-master
+        // Nothing of the old master survives a re-tame.
+        Mobile.ClearPetFriends();
+        PersistentOrder = OrderType.None;
+        _persistentTarget = null;
         Mobile.SetControlMaster(null);
 
         var spawner = Mobile.Spawner;
@@ -515,8 +494,7 @@ public abstract partial class BaseAI
         }
         else
         {
-            // No spawner to return to: anchor where it stands so it idle-wanders here
-            // instead of pathing toward a stale (e.g. former stay) anchor.
+            // No spawner: anchor here rather than path toward a stale stay anchor.
             Mobile.Home = Mobile.Location;
             Action = ActionType.Wander;
         }
@@ -554,8 +532,7 @@ public abstract partial class BaseAI
         return PersistentOrder;
     }
 
-    // Tick phase. Only restable orders arrive here; anything else came from a save that predates
-    // synchronous resolution and falls back to the standing command.
+    // Only restable orders arrive here; anything else is a pre-refactor save and resumes the standing order.
     public virtual bool Obey()
     {
         if (Mobile.Deleted)
@@ -750,7 +727,7 @@ public abstract partial class BaseAI
         {
             this.DebugSayFormatted($"Attacking target: {Mobile.ControlTarget?.Name}");
 
-            // An aggressor can steal Combatant mid-fight (OnAggressiveAction); the commanded target wins.
+            // OnAggressiveAction can swap Combatant; the commanded target wins.
             if (Mobile.Combatant != Mobile.ControlTarget)
             {
                 Mobile.Combatant = Mobile.ControlTarget;

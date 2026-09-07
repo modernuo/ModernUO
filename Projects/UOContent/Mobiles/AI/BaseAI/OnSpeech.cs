@@ -48,7 +48,7 @@ public abstract partial class BaseAI
             }
         }
 
-        // Staff first: a GM's "<name> obey" must reach a pet somebody else already controls.
+        // Staff first, so "<name> obey" reaches a controlled pet.
         if (e.Mobile.AccessLevel >= AccessLevel.GameMaster && HandleGMCommands(e))
         {
             return;
@@ -56,8 +56,7 @@ public abstract partial class BaseAI
 
         if (Mobile.Controlled && Mobile.Commandable)
         {
-            // "<name> <command>" addresses this pet; "all <command>" addresses every pet in range.
-            // Exactly one of the two runs, so one utterance issues one order.
+            // Exactly one handler per utterance: named addresses this pet, "all" every pet in range.
             if (WasNamed(e.Speech))
             {
                 NamedOnSpeechPet(e);
@@ -442,7 +441,7 @@ public abstract partial class BaseAI
     {
         this.DebugSayFormatted($"Command is from GM: {e.Mobile.Name}, Target: {Mobile.ControlTarget?.Name ?? "None or Unknown"}");
 
-        // The mass form ("all obey") is for wild creatures; a controlled pet must be named.
+        // "all obey" is for wild creatures; a controlled pet must be named.
         if (!Mobile.FindMyName(e.Speech, !Mobile.Controlled) || !e.Speech.InsensitiveContains("obey"))
         {
             return false;

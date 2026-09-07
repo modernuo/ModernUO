@@ -502,7 +502,7 @@ public partial class BaseTalisman : Item, IAosItem
                     );
 
                     mob.Summoned = false;
-                    mob.IssueOrder(OrderType.Follow, null, from); // Friend needs a target; a fresh summon follows its owner
+                    mob.IssueOrder(OrderType.Follow, null, from);
 
                     _creature = mob;
                 }
