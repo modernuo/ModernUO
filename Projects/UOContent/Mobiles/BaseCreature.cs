@@ -1189,25 +1189,73 @@ namespace Server.Mobiles
         }
 
         // Fires on every assignment, not only changes: a reissued order is a command
-        // (retarget, break off combat, re-anchor Home). Handlers receive the previous order.
+        // (retarget, break off combat, re-anchor Home). A raw assignment is a system-issued
+        // order with no issuer; player commands go through IssueOrder so the reveal hits the
+        // mobile that actually gave the command.
         [SerializableProperty(18, useField: nameof(_controlOrder))]
         [SaveFlag(nameof(ShouldSerializeControlOrder))]
         [CommandProperty(AccessLevel.GameMaster)]
         public OrderType ControlOrder
         {
             get => _controlOrder;
-            set
+            set => SetControlOrder(value, null, false);
+        }
+
+        /// <summary>
+        /// Gives this pet a command. <paramref name="issuer"/> is whoever gave it (the speaker, the
+        /// clicking player, the targeter) or null for a system-issued order; it is the only mobile the
+        /// command reveals. <paramref name="target"/> replaces <see cref="ControlTarget"/> first.
+        /// </summary>
+        public void IssueOrder(OrderType order, Mobile issuer, Mobile target = null)
+        {
+            ControlTarget = target;
+            SetControlOrder(order, issuer, false);
+        }
+
+        // The single entry for every order change. The AI's Issue phase runs synchronously and
+        // returns the order to rest in; transient orders (Drop, Friend, Release, Stop, ...) resolve
+        // here, in a loop, until the order rests. `resuming` marks a fallback to the standing
+        // command: no persistent re-derivation, no Home re-anchor, no flourish.
+        internal void SetControlOrder(OrderType order, Mobile issuer, bool resuming)
+        {
+            var ai = AIObject;
+            var previous = _controlOrder;
+            _controlOrder = order;
+
+            if (ai != null)
             {
-                var previous = _controlOrder;
-                _controlOrder = value;
+                for (var depth = 0; ; depth++)
+                {
+                    var next = ai.IssueOrder(order, previous, issuer, resuming);
 
-                AIObject?.OnCurrentOrderChanged(previous);
+                    // A nested assignment (SetControlMaster(null) inside Release, Kill() inside a
+                    // summoned release) has already resolved itself; it wins.
+                    if (_controlOrder != order || next == order)
+                    {
+                        break;
+                    }
 
-                InvalidateProperties();
+                    // A shard override that keeps returning a different order must not hang the loop.
+                    System.Diagnostics.Debug.Assert(depth < 8, "pet order resolution did not converge");
 
-                _controlMaster?.InvalidateProperties();
-                this.MarkDirty();
+                    if (depth >= 8)
+                    {
+                        break;
+                    }
+
+                    previous = order;
+                    order = next;
+                    issuer = null;   // chained orders are system resolutions; the command already revealed
+                    resuming = true;
+                    _controlOrder = order;
+                }
+
+                System.Diagnostics.Debug.Assert(Deleted || BaseAI.IsRestableOrder(_controlOrder), "a transient pet order rested");
             }
+
+            InvalidateProperties();
+            _controlMaster?.InvalidateProperties();
+            this.MarkDirty();
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
@@ -4239,12 +4287,20 @@ namespace Server.Mobiles
 
         public virtual void AddPetFriend(Mobile m)
         {
-            Friends ??= new List<Mobile>();
-
+            Friends ??= [];
             Friends.Add(m);
+            this.MarkDirty();
         }
 
-        public virtual void RemovePetFriend(Mobile m) => Friends?.Remove(m);
+        public virtual void RemovePetFriend(Mobile m)
+        {
+            if (Friends?.Remove(m) == true)
+            {
+                this.MarkDirty();
+            }
+        }
+
+        public virtual void ClearPetFriends() => Friends = null; // generated setter marks dirty
 
         public virtual bool IsFriend(Mobile m) =>
             OppositionGroup?.IsEnemy(this, m) != true && m is BaseCreature c && _team == c._team
@@ -5923,7 +5979,7 @@ namespace Server.Mobiles
 
                 c.Say(1043255, c.Name); // ~1_NAME~ appears to have decided that is better off without a master!
                 c.Loyalty = BaseCreature.MaxLoyalty;
-                c.AIObject.DoOrderRelease();
+                c.ControlOrder = OrderType.Release;
             }
 
             while (toRemove.Count > 0)

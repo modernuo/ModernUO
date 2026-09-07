@@ -17,49 +17,565 @@ using System;
 
 namespace Server.Mobiles;
 
+// Pet orders live here, one place per order, in two phases:
+//   Issue  — runs once, synchronously, from BaseCreature.SetControlOrder on every assignment.
+//            Sets state and emits (message, sound, reveal). Returns the order to rest in.
+//   Tick   — DoOrderXxx, runs from Obey every AI tick while Controlled. Moves, fights, transitions.
+// Restable orders (None, Come, Guard, Attack, Stay, Follow) return themselves from Issue and have
+// a tick. Transient orders (Drop, Friend, Unfriend, Transfer, Release, Rename, Stop, Patrol) do
+// their whole job in Issue and return the order to rest in; they never reach Obey.
 public abstract partial class BaseAI
 {
-    // The standing command a pet falls back to when a transient order (Attack/Come/Drop)
-    // completes: None, Stay, Follow, or Guard. Runtime-only (not serialized); reset to None
-    // on load and derived from master proximity on login. See PetLoginHandler.
+    // The standing command a pet falls back to when a transient order completes: None, Stay,
+    // Follow, or Guard. Runtime-only (not serialized); reset to None on load and derived from
+    // master proximity on login. See PetLoginHandler.
     internal OrderType PersistentOrder { get; private set; } = OrderType.None;
 
-    // Guards anchor/persistent derivation while we resume a fallback order, so a resume
-    // never re-derives the persistent command or re-anchors Home. See OnCurrentOrderChanged.
-    private bool _resolvingOrder;
+    // Orders a pet may rest in between ticks. Everything else resolves inside IssueOrder.
+    public static bool IsRestableOrder(OrderType order) =>
+        order is OrderType.None or OrderType.Come or OrderType.Guard or OrderType.Attack or OrderType.Stay
+            or OrderType.Follow;
+
+    // Orders a pet friend (not the master) may give.
+    public static bool IsFriendOrder(OrderType order) =>
+        order is OrderType.Follow or OrderType.Stay or OrderType.Stop;
+
+    // Orders a dead bonded pet refuses.
+    public static bool IsDeadPetOrder(OrderType order) =>
+        order is OrderType.Guard or OrderType.Attack or OrderType.Transfer or OrderType.Drop;
+
+    // Who a standing Follow follows. ControlTarget is overwritten by every targeted command
+    // (Friend, Transfer, Rename via the menu), so a resumed Follow restores it from here.
+    private Mobile _persistentTarget;
 
     // The controlled-pet wander anchor (Home) is a pure function of the persistent command.
     internal void SetPersistentOrder(OrderType order)
     {
         PersistentOrder = order;
+        _persistentTarget = order == OrderType.Follow ? Mobile.ControlTarget : null;
         Mobile.Home = order is OrderType.Follow or OrderType.Guard ? Point3D.Zero : Mobile.Location;
     }
 
-    // Resume the persistent command without re-deriving the persistent order or anchor.
-    private void ResumePersistentOrder()
+    // Resume the standing command without re-deriving it or re-anchoring Home.
+    private void ResumePersistentOrder() => Mobile.SetControlOrder(PersistentOrder, null, true);
+
+    /// <summary>
+    /// Issue phase. <paramref name="issuer"/> is who gave the command (null for system-issued)
+    /// and is the only mobile revealed. <paramref name="resuming"/> marks a fallback to the
+    /// standing order. Returns the order to rest in.
+    /// </summary>
+    public virtual OrderType IssueOrder(OrderType order, OrderType previous, Mobile issuer, bool resuming)
     {
-        _resolvingOrder = true;
-        Mobile.ControlOrder = PersistentOrder;
-        _resolvingOrder = false;
+        if (Mobile.Deleted)
+        {
+            return order;
+        }
+
+        AITimer.Prod();
+
+        issuer?.RevealingAction();
+
+        // Every command starts from a neutral posture; Attack and Guard re-arm below. Attack
+        // assigns its own Combatant exactly once, so it is not nulled first.
+        Mobile.FocusMob = null;
+        Mobile.Warmode = false;
+
+        if (order != OrderType.Attack)
+        {
+            Mobile.Combatant = null;
+        }
+
+        return order switch
+        {
+            OrderType.None     => IssueNone(),
+            OrderType.Come     => IssueCome(),
+            OrderType.Drop     => IssueDrop(),
+            OrderType.Friend   => IssueFriend(),
+            OrderType.Unfriend => IssueUnfriend(),
+            OrderType.Guard    => IssueGuard(resuming),
+            OrderType.Attack   => IssueAttack(),
+            OrderType.Release  => IssueRelease(),
+            OrderType.Stay     => IssueStay(resuming),
+            OrderType.Stop     => IssueStop(previous),
+            OrderType.Follow   => IssueFollow(resuming),
+            OrderType.Transfer => IssueTransfer(),
+            OrderType.Rename   => IssueRename(issuer),
+            _                  => PersistentOrder // Patrol and anything unimplemented rests at the standing order
+        };
     }
 
-    public virtual bool Obey() =>
-        !Mobile.Deleted && Mobile.ControlOrder switch
+    private OrderType IssueNone()
+    {
+        Mobile.ControlTarget = null;
+        Mobile.SetCurrentSpeedToPassive();
+        return OrderType.None;
+    }
+
+    private OrderType IssueCome()
+    {
+        Mobile.SetCurrentSpeedToActive();
+        return OrderType.Come;
+    }
+
+    private OrderType IssueStay(bool resuming)
+    {
+        Mobile.SetCurrentSpeedToPassive();
+
+        if (resuming)
         {
-            OrderType.None     => DoOrderNone(),
-            OrderType.Come     => DoOrderCome(),
-            OrderType.Drop     => DoOrderDrop(),
-            OrderType.Friend   => DoOrderFriend(),
-            OrderType.Unfriend => DoOrderUnfriend(),
-            OrderType.Guard    => DoOrderGuard(),
-            OrderType.Attack   => DoOrderAttack(),
-            OrderType.Release  => DoOrderRelease(),
-            OrderType.Stay     => DoOrderStay(),
-            OrderType.Stop     => DoOrderStop(),
-            OrderType.Follow   => DoOrderFollow(),
-            OrderType.Transfer => DoOrderTransfer(),
-            _                  => false
-        };
+            Mobile.ControlTarget = null; // a transient's target (friend, recipient) does not carry over
+        }
+        else
+        {
+            SetPersistentOrder(OrderType.Stay); // anchors Home at the post
+            Mobile.PlaySound(Mobile.GetIdleSound());
+        }
+
+        return OrderType.Stay;
+    }
+
+    private OrderType IssueFollow(bool resuming)
+    {
+        Mobile.SetCurrentSpeedToActive();
+
+        if (resuming)
+        {
+            // Back to whoever the standing Follow was following, never a transient's target.
+            Mobile.ControlTarget = _persistentTarget?.Deleted == false ? _persistentTarget : Mobile.ControlMaster;
+        }
+        else
+        {
+            SetPersistentOrder(OrderType.Follow); // Home = Zero, remembers the target
+            Mobile.PlaySound(Mobile.GetIdleSound());
+        }
+
+        return OrderType.Follow;
+    }
+
+    private OrderType IssueGuard(bool resuming)
+    {
+        Mobile.Warmode = true; // the guard order opens in war stance
+        Mobile.SetCurrentSpeedToActive();
+
+        if (resuming)
+        {
+            Mobile.ControlTarget = null;
+        }
+        else
+        {
+            SetPersistentOrder(OrderType.Guard);
+            Mobile.PlaySound(Mobile.GetAttackSound());
+            Mobile.ControlMaster?.SendLocalizedMessage(1049671, Mobile.Name);
+            // ~1_NAME~ is now guarding you.
+        }
+
+        return OrderType.Guard;
+    }
+
+    private OrderType IssueAttack()
+    {
+        var target = Mobile.ControlTarget;
+        var valid = target?.Deleted == false && target.Alive;
+
+        Mobile.FocusMob = valid ? target : null;
+        Mobile.Combatant = valid ? target : null; // the one Combatant write of the Attack command
+
+        if (valid)
+        {
+            Action = ActionType.Combat;
+        }
+
+        Mobile.Warmode = true;
+        Mobile.SetCurrentSpeedToActive();
+        Mobile.PlaySound(Mobile.GetAttackSound());
+        return OrderType.Attack;
+    }
+
+    // "Stop" cancels the active order based on what the pet was doing: Follow/Guard -> idle (None)
+    // where it stands; Stay -> keep staying at its post; anything transient -> resume the standing
+    // command.
+    private OrderType IssueStop(OrderType previous)
+    {
+        Mobile.ControlTarget = null;
+
+        switch (previous)
+        {
+            case OrderType.Stay:
+                {
+                    return OrderType.Stay; // resumed: anchor untouched
+                }
+            case OrderType.Follow:
+            case OrderType.Guard:
+                {
+                    SetPersistentOrder(OrderType.None); // cancel the standing order; idle anchor = here
+                    return OrderType.None;
+                }
+            default:
+                {
+                    // No standing order to resume: idle where it stands, anchored (a Zero Home
+                    // would idle-wander without bounds; a vendor-bought pet hits this path).
+                    if (PersistentOrder == OrderType.None)
+                    {
+                        SetPersistentOrder(OrderType.None);
+                    }
+
+                    return PersistentOrder;
+                }
+        }
+    }
+
+    private OrderType IssueDrop()
+    {
+        if (!Mobile.IsDeadPet && Mobile.CanDrop)
+        {
+            this.DebugSayFormatted($"I am ordered to drop my items by {Mobile.ControlMaster?.Name ?? "Unknown"}.");
+            DropItems();
+        }
+
+        return PersistentOrder;
+    }
+
+    private void DropItems()
+    {
+        var pack = Mobile.Backpack;
+
+        if (pack == null)
+        {
+            return;
+        }
+
+        var items = pack.Items;
+
+        for (var i = items.Count - 1; i >= 0; --i)
+        {
+            if (i < items.Count)
+            {
+                items[i].MoveToWorld(Mobile.Location, Mobile.Map);
+            }
+        }
+    }
+
+    private OrderType IssueFriend()
+    {
+        var from = Mobile.ControlMaster;
+        var to = Mobile.ControlTarget;
+
+        if (from?.Deleted != false)
+        {
+            return PersistentOrder;
+        }
+
+        var youngFrom = from is PlayerMobile { Young: true };
+        var youngTo = to is PlayerMobile { Young: true };
+
+        if (youngFrom && !youngTo)
+        {
+            from.SendLocalizedMessage(502040);
+            // As a young player, you may not friend pets to older players.
+            return PersistentOrder;
+        }
+
+        if (!youngFrom && youngTo)
+        {
+            from.SendLocalizedMessage(502041);
+            // As an older player, you may not friend pets to young players.
+            return PersistentOrder;
+        }
+
+        if (to?.Deleted != false || from == to || !to.Player)
+        {
+            Mobile.PublicOverheadMessage(MessageType.Regular, 0x3B2, 502039);
+            // *looks confused*
+            return PersistentOrder;
+        }
+
+        if (!from.CanBeBeneficial(to, true))
+        {
+            return PersistentOrder;
+        }
+
+        if (from.HasTrade || to.HasTrade)
+        {
+            (from.HasTrade ? from : to).SendLocalizedMessage(1070947);
+            // You cannot friend a pet with a trade pending
+            return PersistentOrder;
+        }
+
+        if (Mobile.IsPetFriend(to))
+        {
+            from.SendLocalizedMessage(1049691);
+            // That person is already a friend.
+            return PersistentOrder;
+        }
+
+        if (!Mobile.AllowNewPetFriend)
+        {
+            from.SendLocalizedMessage(1005482);
+            // Your pet does not seem to be interested in making new friends right now.
+            return PersistentOrder;
+        }
+
+        from.SendLocalizedMessage(1049676, $"{Mobile.Name}\t{to.Name}");
+        // ~1_NAME~ will now accept movement commands from ~2_NAME~.
+
+        to.SendLocalizedMessage(1043246, $"{from.Name}\t{Mobile.Name}");
+        // ~1_NAME~ has granted you the ability to give orders to their pet ~2_PET_NAME~.
+        // This creature will now consider you as a friend.
+
+        Mobile.AddPetFriend(to);
+
+        // Follow the new friend.
+        Mobile.ControlTarget = to;
+        SetPersistentOrder(OrderType.Follow);
+        return OrderType.Follow;
+    }
+
+    private OrderType IssueUnfriend()
+    {
+        var from = Mobile.ControlMaster;
+        var to = Mobile.ControlTarget;
+
+        if (from?.Deleted != false || to?.Deleted != false || from == to || !to.Player)
+        {
+            Mobile.PublicOverheadMessage(MessageType.Regular, 0x3B2, 502039);
+            // *looks confused*
+            return PersistentOrder;
+        }
+
+        if (!Mobile.IsPetFriend(to))
+        {
+            from.SendLocalizedMessage(1070953);
+            // That person is not a friend.
+            return PersistentOrder;
+        }
+
+        from.SendLocalizedMessage(1070951, $"{Mobile.Name}\t{to.Name}");
+        // ~1_NAME~ will no longer accept movement commands from ~2_NAME~.
+
+        to.SendLocalizedMessage(1070952, $"{from.Name}\t{Mobile.Name}");
+        // ~1_NAME~ has no longer granted you the ability to give orders to their pet ~2_PET_NAME~.
+        // This creature will no longer consider you as a friend.
+
+        Mobile.RemovePetFriend(to);
+
+        // Back to the master's side.
+        Mobile.ControlTarget = from;
+        SetPersistentOrder(OrderType.Follow);
+        return OrderType.Follow;
+    }
+
+    private OrderType IssueTransfer()
+    {
+        if (Mobile.IsDeadPet)
+        {
+            return PersistentOrder;
+        }
+
+        var from = Mobile.ControlMaster;
+        var to = Mobile.ControlTarget;
+
+        if (from?.Deleted != false || to?.Deleted != false || from == to || !to.Player)
+        {
+            return PersistentOrder;
+        }
+
+        this.DebugSayFormatted($"Beginning transfer with {to.Name}");
+
+        var youngFrom = from is PlayerMobile { Young: true };
+        var youngTo = to is PlayerMobile { Young: true };
+
+        if (youngFrom && !youngTo)
+        {
+            from.SendLocalizedMessage(502040);
+            // As a young player, you may not friend pets to older players.
+            return PersistentOrder;
+        }
+
+        if (!youngFrom && youngTo)
+        {
+            from.SendLocalizedMessage(502041);
+            // As an older player, you may not friend pets to young players.
+            return PersistentOrder;
+        }
+
+        if (!Mobile.CanBeControlledBy(to))
+        {
+            SendTransferRefusalMessages(from, to, 1043248, 1043249);
+            // 1043248: The pet refuses to be transferred because it will not obey ~1_NAME~.~3_BLANK~
+            // 1043249: The pet will not accept you as a master because it does not trust you.~3_BLANK~
+            return PersistentOrder;
+        }
+
+        if (!Mobile.CanBeControlledBy(from))
+        {
+            SendTransferRefusalMessages(from, to, 1043250, 1043251);
+            // 1043250: The pet refuses to be transferred because it will not obey you sufficiently.~3_BLANK~
+            // 1043251: The pet will not accept you as a master because it does not trust ~2_NAME~.~3_BLANK~
+            return PersistentOrder;
+        }
+
+        if (Mobile.Aggressors.Count > 0 || Mobile.Aggressed.Count > 0 || Core.TickCount - Mobile.NextCombatTime < 0)
+        {
+            from.SendMessage("You can not transfer a pet while in combat.");
+            to.SendMessage("You can not transfer a pet while in combat.");
+            return PersistentOrder;
+        }
+
+        var fromState = from.NetState;
+        var toState = to.NetState;
+
+        if (fromState == null || toState == null)
+        {
+            return PersistentOrder;
+        }
+
+        if (from.HasTrade || to.HasTrade)
+        {
+            from.SendLocalizedMessage(1010507);
+            // You cannot transfer a pet with a trade pending
+            to.SendLocalizedMessage(1010507);
+            // You cannot transfer a pet with a trade pending
+            return PersistentOrder;
+        }
+
+        var container = fromState.AddTrade(toState);
+        container.DropItem(new TransferItem(Mobile));
+
+        // Hold position while the trade window is open.
+        Mobile.PlaySound(Mobile.GetIdleSound());
+        Mobile.SetCurrentSpeedToPassive();
+        SetPersistentOrder(OrderType.Stay);
+        return OrderType.Stay;
+    }
+
+    private static void SendTransferRefusalMessages(Mobile from, Mobile to, int fromMessage, int toMessage)
+    {
+        var args = $"{to.Name}\t{from.Name}\t ";
+
+        from.SendLocalizedMessage(fromMessage, args);
+        to.SendLocalizedMessage(toMessage, args);
+    }
+
+    // The whole release. The master is cleared here (SetControlMaster(null) assigns
+    // ControlOrder = None underneath us, which the funnel's fixed-point loop respects), so this
+    // is the only release entry point: the Release order, from a player or from the loyalty drain.
+    private OrderType IssueRelease()
+    {
+        if (Mobile.Summoned)
+        {
+            Mobile.Kill();
+
+            // A vetoed death leaves the summon controlled; it keeps its standing order.
+            return Mobile.Deleted || !Mobile.Alive ? OrderType.None : PersistentOrder;
+        }
+
+        DebugSay("I have been released to the wild.");
+
+        if (!string.IsNullOrEmpty(Mobile.Name))
+        {
+            Mobile.Name = null;
+        }
+
+        Mobile.PlaySound(Mobile.GetIdleSound());
+
+        Mobile.ControlTarget = null;
+        Mobile.BondingBegin = DateTime.MinValue;
+        Mobile.OwnerAbandonTime = DateTime.MinValue;
+        Mobile.IsBonded = false;
+        Mobile.ClearPetFriends();      // the old owner's friends must not command the next owner's pet
+        PersistentOrder = OrderType.None; // nor may the old standing order survive a re-tame
+        Mobile.SetControlMaster(null);
+
+        var spawner = Mobile.Spawner;
+
+        if (spawner != null)
+        {
+            Mobile.Home = spawner.GetSpawnPosition(Mobile, spawner.Map);
+            Mobile.RangeHome = spawner.WalkingRange;
+        }
+        else
+        {
+            // No spawner to return to: anchor where it stands so it idle-wanders here
+            // instead of pathing toward a stale (e.g. former stay) anchor.
+            Mobile.Home = Mobile.Location;
+            Action = ActionType.Wander;
+        }
+
+        if (Mobile.DeleteOnRelease || Mobile.IsDeadPet)
+        {
+            Mobile.Delete();
+        }
+        else
+        {
+            Mobile.BeginDeleteTimer();
+
+            if (Mobile.CanDrop)
+            {
+                Mobile.DropBackpack();
+            }
+        }
+
+        return OrderType.None;
+    }
+
+    protected virtual OrderType IssueRename(Mobile issuer)
+    {
+        var to = issuer ?? Mobile.ControlMaster;
+
+        if (Mobile.Summoned)
+        {
+            to?.SendMessage("You cannot rename a summoned creature.");
+        }
+        else
+        {
+            to?.SendMessage("Change name on pet health bar.");
+        }
+
+        return PersistentOrder;
+    }
+
+    // Tick phase. Only restable orders arrive here; anything else came from a save that predates
+    // synchronous resolution and falls back to the standing command.
+    public virtual bool Obey()
+    {
+        if (Mobile.Deleted)
+        {
+            return false;
+        }
+
+        switch (Mobile.ControlOrder)
+        {
+            case OrderType.None:
+                {
+                    return DoOrderNone();
+                }
+            case OrderType.Come:
+                {
+                    return DoOrderCome();
+                }
+            case OrderType.Guard:
+                {
+                    return DoOrderGuard();
+                }
+            case OrderType.Attack:
+                {
+                    return DoOrderAttack();
+                }
+            case OrderType.Stay:
+                {
+                    return DoOrderStay();
+                }
+            case OrderType.Follow:
+                {
+                    return DoOrderFollow();
+                }
+            default:
+                {
+                    ResumePersistentOrder();
+                    return true;
+                }
+        }
+    }
 
     public virtual bool DoOrderNone()
     {
@@ -142,154 +658,6 @@ public abstract partial class BaseAI
         }
     }
 
-    public virtual bool DoOrderDrop()
-    {
-        if (Mobile.IsDeadPet || !Mobile.CanDrop)
-        {
-            return true;
-        }
-
-        this.DebugSayFormatted($"I am ordered to drop my items by {Mobile.ControlMaster?.Name ?? "Unknown"}.");
-
-        DropItems();
-        ResumePersistentOrder();
-        return true;
-    }
-
-    private void DropItems()
-    {
-        var pack = Mobile.Backpack;
-
-        if (pack == null)
-        {
-            return;
-        }
-
-        var items = pack.Items;
-
-        for (var i = items.Count - 1; i >= 0; --i)
-        {
-            if (i < items.Count)
-            {
-                items[i].MoveToWorld(Mobile.Location, Mobile.Map);
-            }
-        }
-    }
-
-    public virtual bool DoOrderFriend()
-    {
-        var from = Mobile.ControlMaster;
-        var to = Mobile.ControlTarget;
-
-        HandleFriendRequest(from, to);
-        return true;
-    }
-
-    private void HandleFriendRequest(Mobile from, Mobile to)
-    {
-        var youngFrom = from is PlayerMobile mobile && mobile.Young;
-        var youngTo = to is PlayerMobile playerMobile && playerMobile.Young;
-
-        if (youngFrom && !youngTo)
-        {
-            from.SendLocalizedMessage(502040);
-            // As a young player, you may not friend pets to older players.
-            return;
-        }
-
-        if (!youngFrom && youngTo)
-        {
-            from.SendLocalizedMessage(502041);
-            // As an older player, you may not friend pets to young players.
-            return;
-        }
-
-        if (!from.CanBeBeneficial(to, true))
-        {
-            return;
-        }
-
-        if (to?.Deleted != false || from == to || !to.Player)
-        {
-            Mobile.PublicOverheadMessage(MessageType.Regular, 0x3B2, 502039);
-            // *looks confused*
-            return;
-        }
-
-        if (from.HasTrade || to.HasTrade)
-        {
-            (from.HasTrade ? from : to).SendLocalizedMessage(1070947);
-            // You cannot friend a pet with a trade pending
-            return;
-        }
-
-        if (Mobile.IsPetFriend(to))
-        {
-            from.SendLocalizedMessage(1049691);
-            // That person is already a friend.
-            ResumePersistentOrder();
-            return;
-        }
-
-        if (!Mobile.AllowNewPetFriend)
-        {
-            from.SendLocalizedMessage(1005482);
-            // Your pet does not seem to be interested in making new friends right now.
-            return;
-        }
-
-        from.SendLocalizedMessage(1049676, $"{Mobile.Name}\t{to.Name}");
-        // ~1_NAME~ will now accept movement commands from ~2_NAME~.
-
-        to.SendLocalizedMessage(1043246, $"{from.Name}\t{Mobile.Name}");
-        // ~1_NAME~ has granted you the ability to give orders to their pet ~2_PET_NAME~.
-        // This creature will now consider you as a friend.
-
-        Mobile.AddPetFriend(to);
-
-        Mobile.ControlTarget = to;
-        Mobile.ControlOrder = OrderType.Follow;
-    }
-
-    public virtual bool DoOrderUnfriend()
-    {
-        var from = Mobile.ControlMaster;
-        var to = Mobile.ControlTarget;
-
-        HandleUnfriendRequest(from, to);
-        return true;
-    }
-
-    private void HandleUnfriendRequest(Mobile from, Mobile to)
-    {
-        if (from?.Deleted != false || to?.Deleted != false || from == to || !to.Player)
-        {
-            Mobile.PublicOverheadMessage(MessageType.Regular, 0x3B2, 502039);
-            // *looks confused*
-            return;
-        }
-
-        if (!Mobile.IsPetFriend(to))
-        {
-            from.SendLocalizedMessage(1070953);
-            // That person is not a friend.
-            ResumePersistentOrder();
-            return;
-        }
-
-        from.SendLocalizedMessage(1070951, $"{Mobile.Name}\t{to.Name}");
-        // ~1_NAME~ will no longer accept movement commands from ~2_NAME~.
-
-        to.SendLocalizedMessage(1070952, $"{from.Name}\t{Mobile.Name}");
-        // ~1_NAME~ has no longer granted you the ability to give orders to their pet ~2_PET_NAME~.
-        // This creature will no longer consider you as a friend.
-
-        Mobile.RemovePetFriend(to);
-
-        Mobile.ControlTarget = from;
-        Mobile.ControlOrder = OrderType.Follow;
-    }
-
     public virtual bool DoOrderGuard()
     {
         var controlMaster = Mobile.ControlMaster;
@@ -360,8 +728,6 @@ public abstract partial class BaseAI
         }
         else
         {
-            Mobile.Combatant = Mobile.ControlTarget;
-
             this.DebugSayFormatted($"Attacking target: {Mobile.ControlTarget?.Name}");
 
             Think();
@@ -377,7 +743,6 @@ public abstract partial class BaseAI
     {
         DebugSay("Target is either dead, hidden, or out of range.");
 
-        Mobile.ControlTarget = Mobile.ControlMaster;
         ResumePersistentOrder();
 
         // A resumed Guard engages through its own scan; other fallbacks chain an explicit Attack.
@@ -391,9 +756,7 @@ public abstract partial class BaseAI
 
         if (next != null)
         {
-            Mobile.ControlTarget = next;
-            Mobile.ControlOrder = OrderType.Attack;
-            Mobile.Combatant = next;
+            Mobile.IssueOrder(OrderType.Attack, null, next);
 
             this.DebugSayFormatted($"{next.Name} is still hostile! Engaging...");
 
@@ -459,55 +822,6 @@ public abstract partial class BaseAI
         return best;
     }
 
-    /// <summary>
-    /// The whole release: the master is cleared here, so this runs once, synchronously, from
-    /// the Release order handler or the loyalty drain, never from Obey.
-    /// </summary>
-    public virtual bool DoOrderRelease()
-    {
-        DebugSay("I have been released to the wild.");
-
-        Mobile.ControlTarget = null;
-        Mobile.FocusMob = null;
-        Mobile.Warmode = false;
-        Mobile.Combatant = null;
-        Mobile.BondingBegin = DateTime.MinValue;
-        Mobile.OwnerAbandonTime = DateTime.MinValue;
-        Mobile.IsBonded = false;
-        Mobile.SetControlMaster(null);
-
-        var spawner = Mobile.Spawner;
-
-        if (spawner != null)
-        {
-            Mobile.Home = spawner.GetSpawnPosition(Mobile, spawner.Map);
-            Mobile.RangeHome = spawner.WalkingRange;
-        }
-        else
-        {
-            // No spawner to return to: anchor where it stands so it idle-wanders here
-            // instead of pathing toward a stale (e.g. former stay) anchor.
-            Mobile.Home = Mobile.Location;
-            Action = ActionType.Wander;
-        }
-
-        if (Mobile.DeleteOnRelease || Mobile.IsDeadPet)
-        {
-            Mobile.Delete();
-        }
-        else
-        {
-            Mobile.BeginDeleteTimer();
-
-            if (Mobile.CanDrop)
-            {
-                Mobile.DropBackpack();
-            }
-        }
-
-        return true;
-    }
-
     public virtual bool DoOrderStay()
     {
         if (CheckHerding())
@@ -527,104 +841,5 @@ public abstract partial class BaseAI
         }
 
         return true;
-    }
-
-    // Stop is resolved into another order in OnCurrentOrderChanged and never rests as the
-    // active order; this is a defensive no-op.
-    public virtual bool DoOrderStop() => true;
-
-    public virtual bool DoOrderTransfer()
-    {
-        if (Mobile.IsDeadPet)
-        {
-            return true;
-        }
-
-        var from = Mobile.ControlMaster;
-        var to = Mobile.ControlTarget;
-
-        if (from?.Deleted == false && to?.Deleted == false && from != to && to.Player)
-        {
-            this.DebugSayFormatted($"Beginning transfer with {to.Name}");
-
-            var youngFrom = from is PlayerMobile mobile && mobile.Young;
-            var youngTo = to is PlayerMobile playerMobile && playerMobile.Young;
-
-            if (youngFrom && !youngTo)
-            {
-                from.SendLocalizedMessage(502040);
-                // As a young player, you may not friend pets to older players.
-                ResumePersistentOrder();
-                return true;
-            }
-
-            if (!youngFrom && youngTo)
-            {
-                from.SendLocalizedMessage(502041);
-                // As an older player, you may not friend pets to young players.
-                ResumePersistentOrder();
-                return true;
-            }
-
-            if (!Mobile.CanBeControlledBy(to))
-            {
-                SendTransferRefusalMessages(from, to, 1043248, 1043249);
-                // 1043248: The pet refuses to be transferred because it will not obey ~1_NAME~.~3_BLANK~
-                // 1043249: The pet will not accept you as a master because it does not trust you.~3_BLANK~
-                ResumePersistentOrder();
-                return true;
-            }
-
-            if (!Mobile.CanBeControlledBy(from))
-            {
-                SendTransferRefusalMessages(from, to, 1043250, 1043251);
-                // 1043250: The pet refuses to be transferred because it will not obey you sufficiently.~3_BLANK~
-                // 1043251: The pet will not accept you as a master because it does not trust ~2_NAME~.~3_BLANK~
-                ResumePersistentOrder();
-                return true;
-            }
-
-            if (Mobile.Combatant != null || Mobile.Aggressors.Count > 0 ||
-                Mobile.Aggressed.Count > 0 || Core.TickCount < Mobile.NextCombatTime)
-            {
-                from.SendMessage("You can not transfer a pet while in combat.");
-                to.SendMessage("You can not transfer a pet while in combat.");
-                ResumePersistentOrder();
-                return true;
-            }
-
-            var fromState = from.NetState;
-            var toState = to.NetState;
-
-            if (fromState == null || toState == null)
-            {
-                ResumePersistentOrder();
-                return true;
-            }
-
-            if (from.HasTrade || to.HasTrade)
-            {
-                from.SendLocalizedMessage(1010507);
-                // You cannot transfer a pet with a trade pending
-                to.SendLocalizedMessage(1010507);
-                // You cannot transfer a pet with a trade pending
-                ResumePersistentOrder();
-                return true;
-            }
-
-            var container = fromState.AddTrade(toState);
-            container.DropItem(new TransferItem(Mobile));
-        }
-
-        Mobile.ControlOrder = OrderType.Stay;
-        return true;
-    }
-
-    private static void SendTransferRefusalMessages(Mobile from, Mobile to, int fromMessage, int toMessage)
-    {
-        var args = $"{to.Name}\t{from.Name}\t ";
-
-        from.SendLocalizedMessage(fromMessage, args);
-        to.SendLocalizedMessage(toMessage, args);
     }
 }

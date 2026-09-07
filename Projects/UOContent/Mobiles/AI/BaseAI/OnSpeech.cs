@@ -330,9 +330,7 @@ public abstract partial class BaseAI
     {
         if (isOwner && Mobile.CheckControlChance(from))
         {
-            _commandIssuer = from;
-            Mobile.ControlTarget = null;
-            Mobile.ControlOrder = OrderType.Come;
+            Mobile.IssueOrder(OrderType.Come, from);
         }
     }
 
@@ -340,9 +338,7 @@ public abstract partial class BaseAI
     {
         if (isOwner && Mobile.CheckControlChance(from))
         {
-            _commandIssuer = from;
-            Mobile.ControlTarget = null;
-            Mobile.ControlOrder = OrderType.Guard;
+            Mobile.IssueOrder(OrderType.Guard, from);
         }
     }
 
@@ -350,9 +346,7 @@ public abstract partial class BaseAI
     {
         if (Mobile.CheckControlChance(from))
         {
-            _commandIssuer = from;
-            Mobile.ControlTarget = target;
-            Mobile.ControlOrder = order;
+            Mobile.IssueOrder(order, from, target);
         }
     }
 
@@ -360,7 +354,6 @@ public abstract partial class BaseAI
     {
         if (isOwner)
         {
-            _commandIssuer = from;
             BeginPickTarget(from, OrderType.Attack);
         }
     }
@@ -370,9 +363,7 @@ public abstract partial class BaseAI
         if (isOwner && !Mobile.IsDeadPet && !Mobile.Summoned && WasNamed(speech)
             && Mobile.CheckControlChance(from))
         {
-            _commandIssuer = from;
-            Mobile.ControlTarget = null;
-            Mobile.ControlOrder = OrderType.Drop;
+            Mobile.IssueOrder(OrderType.Drop, from);
         }
     }
 
@@ -413,7 +404,7 @@ public abstract partial class BaseAI
             }
             else
             {
-                Mobile.ControlOrder = OrderType.Release;
+                Mobile.IssueOrder(OrderType.Release, from);
             }
         }
     }

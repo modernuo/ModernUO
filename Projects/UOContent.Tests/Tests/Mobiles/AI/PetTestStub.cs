@@ -25,6 +25,23 @@ public class PetTestStub : BaseCreature
 
     public override bool CheckIdle() => ForceIdle || base.CheckIdle();
 
+    // Counts non-null Combatant assignments so tests can prove an order writes it once.
+    public int CombatantSets { get; private set; }
+
+    public override Mobile Combatant
+    {
+        get => base.Combatant;
+        set
+        {
+            if (value != null)
+            {
+                CombatantSets++;
+            }
+
+            base.Combatant = value;
+        }
+    }
+
     public PetTestStub(Serial serial) : base(serial)
     {
     }

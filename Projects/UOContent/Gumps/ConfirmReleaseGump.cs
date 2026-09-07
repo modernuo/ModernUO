@@ -42,7 +42,6 @@ public class ConfirmReleaseGump : StaticGump<ConfirmReleaseGump>
             return;
         }
 
-        _pet.ControlTarget = null;
-        _pet.ControlOrder = OrderType.Release;
+        _pet.IssueOrder(OrderType.Release, _from);
     }
 }
