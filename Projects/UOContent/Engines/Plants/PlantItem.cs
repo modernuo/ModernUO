@@ -73,7 +73,15 @@ public partial class PlantItem : Item, ISecurable
     {
         get
         {
-            InitializePropertyList(_oldClientPropertyList ??= new ObjectPropertyList(this));
+            // Build once, like Item.PropertyList. Initializing on every read appended another copy
+            // of every property to the same list. InvalidateProperties rebuilds it, Reset first.
+            if (_oldClientPropertyList == null)
+            {
+                var list = new ObjectPropertyList(this);
+                _oldClientPropertyList = list;
+                InitializePropertyList(list);
+            }
+
             return _oldClientPropertyList;
         }
     }

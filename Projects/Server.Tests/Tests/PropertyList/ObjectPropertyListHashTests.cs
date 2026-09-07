@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Server;
 using Xunit;
 
@@ -26,9 +27,8 @@ public class ObjectPropertyListHashTests
         return opl.Hash;
     }
 
-    // The reported edge case: two properties sharing the same argument. Under the old incremental
-    // XOR fold the argument was mixed in twice and cancelled itself out, so "10%" and "5%" produced
-    // an identical revision and the client never re-requested the tooltip.
+    // Two properties sharing an argument: the XOR fold mixed it in twice and cancelled it, so
+    // "10%" and "5%" produced the same revision and the client kept the stale tooltip.
     [Fact]
     public void RepeatedArgument_DoesNotCancelOut()
     {
@@ -47,8 +47,7 @@ public class ObjectPropertyListHashTests
         Assert.NotEqual(ten, five);
     }
 
-    // XOR is self-inverse, so any value mixed in an even number of times vanished entirely --
-    // an argument-less property added twice used to leave the hash untouched.
+    // XOR is self-inverse: any value mixed in an even number of times vanished.
     [Fact]
     public void DuplicateProperty_ChangesHash()
     {
@@ -58,8 +57,7 @@ public class ObjectPropertyListHashTests
         Assert.NotEqual(once, twice);
     }
 
-    // XOR is commutative, so emission order used to be invisible to the hash even though it is
-    // plainly visible in the tooltip.
+    // XOR is commutative, so emission order was invisible to the hash but visible in the tooltip.
     [Fact]
     public void PropertyOrder_ChangesHash()
     {
@@ -69,7 +67,6 @@ public class ObjectPropertyListHashTests
         Assert.NotEqual(forward, reversed);
     }
 
-    // Two properties trading arguments cancelled in exactly the same way as the reported case.
     [Fact]
     public void SwappedArguments_ChangeHash()
     {
@@ -88,10 +85,8 @@ public class ObjectPropertyListHashTests
         Assert.Equal(first, second);
     }
 
-    // Terminate writes the bare hash into 0xD6 while SendOPLInfo writes Hash (bit 30 set); the
-    // client recovers one from the other by masking off 0x40000000, which only holds while the
-    // hash itself stays below that bit. An empty list must also stay non-zero -- the client
-    // parks revision 0 as its "nothing cached" sentinel.
+    // The client masks 0x40000000 off the 0xDC revision to match the 0xD6 hash, so the hash has
+    // to stay below that bit.
     [Fact]
     public void Hash_StaysWithinTheRevisionMask()
     {
@@ -102,6 +97,41 @@ public class ObjectPropertyListHashTests
         opl.Terminate();
 
         Assert.Equal(0x40000000, opl.Hash & ~0x3FFFFFF);
+    }
+
+    // 6- and 8-byte blocks take xxHash3's short-input paths. They still avalanche across all 26
+    // kept bits, so a counter ticking down never repeats the revision it just had.
+    [Fact]
+    public void ShortNumericArguments_ConsecutiveValuesDiffer()
+    {
+        var previous = BuildHash((1060584, "0"));
+
+        for (var charges = 1; charges < 20000; charges++)
+        {
+            var current = BuildHash((1060584, charges.ToString()));
+            Assert.NotEqual(previous, current);
+            previous = current;
+        }
+    }
+
+    [Fact]
+    public void SmallPropertyBlocks_StayWellDistributed()
+    {
+        const int count = 20000;
+
+        var withArgument = new HashSet<int>();
+        var withoutArgument = new HashSet<int>();
+
+        for (var i = 0; i < count; i++)
+        {
+            withArgument.Add(BuildHash((1060584, i.ToString())));
+            withoutArgument.Add(BuildHash((1060000 + i, null)));
+        }
+
+        // Birthday expects ~3 collisions over a 26-bit space; allow an order of magnitude so the
+        // bound holds for any seed. A hash that stopped mixing collapses far past it.
+        Assert.True(withArgument.Count >= count - 30, $"8-byte blocks: {withArgument.Count}/{count}");
+        Assert.True(withoutArgument.Count >= count - 30, $"6-byte blocks: {withoutArgument.Count}/{count}");
     }
 
     [Fact]

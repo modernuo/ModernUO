@@ -49,11 +49,8 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
     // 0xD6 header: packet id, length, unknown, serial, unknown, hash. Properties start after it.
     private const int HeaderLength = 15;
 
-    // The hash is only a cache revision. The client stores whatever we send it and compares it for
-    // equality -- it never recomputes it -- so the algorithm is ours to pick, but the width is not:
-    // both 0xD6 and 0xDC carry a 4-byte revision, and Terminate writes the bare hash into 0xD6
-    // while SendOPLInfo writes Hash with bit 30 set. The client recovers one from the other by
-    // masking off 0x40000000, which only holds while the hash itself stays below that bit.
+    // Terminate writes the bare hash into 0xD6, SendOPLInfo writes Hash with bit 30 set, and the
+    // client recovers one from the other by masking off 0x40000000. The hash must stay below it.
     private const int HashMask = 0x3FFFFFF;
 
     private int _hash;
@@ -130,17 +127,9 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
             Resize(length);
         }
 
-        // Hash the finished property block rather than accumulating per-property. The bytes we
-        // already wrote -- cliloc, length prefix, and UTF-16 text, in emission order -- are the
-        // exact content the client renders, so anything that changes the tooltip changes the hash.
-        // The previous incremental fold XOR'd each cliloc and a Marvin hash of each argument
-        // together, and XOR is both commutative and self-inverse: reordered properties collided,
-        // and any value mixed in an even number of times cancelled outright. Two properties sharing
-        // one argument (e.g. a "~1_val~%" chance repeated in a name and a description) therefore
-        // hashed identically no matter what the value was, and the client never refreshed.
-        //
-        // It is also cheaper: one xxHash3 pass replaces a Marvin hash per string property over
-        // those same bytes. A 12-property, 302-byte tooltip measured 70.5ns before, 27ns after.
+        // xxHash3 over the finished property block. Order and repetition sensitive, unlike the
+        // XOR fold it replaces, which collided whenever properties were reordered or shared an
+        // argument.
         _hash = (int)(HashUtility.ComputeHash64(_buffer.AsSpan(HeaderLength, _bufferPos - HeaderLength)) & HashMask);
 
         var writer = new SpanWriter(_buffer);
