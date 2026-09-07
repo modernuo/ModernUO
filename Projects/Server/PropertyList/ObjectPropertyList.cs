@@ -46,6 +46,13 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
     // under the empirically confirmed ~510-char ceiling. For multi-line content use AddChunked().
     public const int MaxArgumentLength = 504;
 
+    // 0xD6 header: packet id, length, unknown, serial, unknown, hash. Properties start after it.
+    private const int HeaderLength = 15;
+
+    // Terminate writes the bare hash into 0xD6, SendOPLInfo writes Hash with bit 30 set, and the
+    // client recovers one from the other by masking off 0x40000000. The hash must stay below it.
+    private const int HashMask = 0x3FFFFFF;
+
     private int _hash;
     private int _stringNumbersIndex;
     private byte[] _buffer;
@@ -89,7 +96,7 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
 
     public void Reset()
     {
-        _bufferPos = 15;
+        _bufferPos = HeaderLength;
         _hash = 0;
         _stringNumbersIndex = 0;
         Header = 0;
@@ -120,6 +127,11 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
             Resize(length);
         }
 
+        // xxHash3 over the finished property block. Order and repetition sensitive, unlike the
+        // XOR fold it replaces, which collided whenever properties were reordered or shared an
+        // argument.
+        _hash = (int)(HashUtility.ComputeHash64(_buffer.AsSpan(HeaderLength, _bufferPos - HeaderLength)) & HashMask);
+
         var writer = new SpanWriter(_buffer);
         writer.Seek(_bufferPos, SeekOrigin.Begin);
         writer.Write(0);
@@ -127,12 +139,6 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
         writer.Seek(11, SeekOrigin.Begin);
         writer.Write(_hash);
         writer.WritePacketLength();
-    }
-
-    private void AddHash(int val)
-    {
-        _hash ^= val & 0x3FFFFFF;
-        _hash ^= (val >> 26) & 0x3F;
     }
 
     public void Add(int number)
@@ -147,8 +153,6 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
             Header = number;
             HeaderArgs = "";
         }
-
-        AddHash(number);
 
         var length = _bufferPos + 6;
         while (length > _buffer.Length)
@@ -245,9 +249,6 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
             HeaderArgs = chars.ToString();
         }
 
-        AddHash(number);
-        AddHash(string.GetHashCode(chars, StringComparison.Ordinal));
-
         var strLength = chars.Length * 2;
         var length = _bufferPos + 6 + strLength;
         while (length > _buffer.Length)
@@ -294,9 +295,6 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
             Header = number;
             HeaderArgs = chars.ToString();
         }
-
-        AddHash(number);
-        AddHash(string.GetHashCode(chars, StringComparison.Ordinal));
 
         var strLength = chars.Length * 2;
         var length = _bufferPos + 6 + strLength;
