@@ -1925,12 +1925,9 @@ namespace Server.Mobiles
 
         public virtual void CheckDistracted(Mobile from)
         {
-            if (Utility.RandomDouble() < .10)
+            if (from != null && Utility.RandomDouble() < .10)
             {
-                ControlTarget = from;
-                ControlOrder = OrderType.Attack;
-                Combatant = from;
-                Warmode = true;
+                IssueOrder(OrderType.Attack, null, from);
             }
         }
 
@@ -2736,7 +2733,7 @@ namespace Server.Mobiles
 
             if (AIObject != null)
             {
-                if (!Core.ML || ct != OrderType.Follow && ct != OrderType.Stop && ct != OrderType.Stay)
+                if (!Core.ML || ct != OrderType.Follow && ct != OrderType.Stay)
                 {
                     AIObject.OnAggressiveAction(aggressor);
                 }
@@ -2763,10 +2760,9 @@ namespace Server.Mobiles
             }
 
             if (aggressor.ChangingCombatant && (_controlled || _summoned) &&
-                (ct == OrderType.Come || !Core.ML && ct == OrderType.Stay || ct is OrderType.Stop or OrderType.None or OrderType.Follow))
+                (ct == OrderType.Come || !Core.ML && ct == OrderType.Stay || ct is OrderType.None or OrderType.Follow))
             {
-                ControlTarget = aggressor;
-                ControlOrder = OrderType.Attack;
+                IssueOrder(OrderType.Attack, null, aggressor);
             }
             else if (Combatant == null && !BardPacified)
             {
@@ -3467,8 +3463,7 @@ namespace Server.Mobiles
                 Mana = 0;
 
                 IsDeadPet = true;
-                ControlTarget = ControlMaster;
-                ControlOrder = OrderType.Follow;
+                IssueOrder(OrderType.Follow, null, ControlMaster);
 
                 ProcessDelta();
                 SendIncomingPacket();

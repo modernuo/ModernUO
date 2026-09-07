@@ -86,9 +86,7 @@ namespace Server.Mobiles
             if (!Core.SE && Utility.RandomDouble() < 0.2 && attacker is BaseCreature c && c.Controlled &&
                 c.ControlMaster != null)
             {
-                c.ControlTarget = c.ControlMaster;
-                c.ControlOrder = OrderType.Attack;
-                c.Combatant = c.ControlMaster;
+                c.IssueOrder(OrderType.Attack, null, c.ControlMaster);
             }
         }
     }

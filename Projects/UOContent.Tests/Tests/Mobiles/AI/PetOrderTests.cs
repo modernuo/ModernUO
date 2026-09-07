@@ -540,6 +540,24 @@ public class PetOrderTests : IDisposable
     }
 
     [Fact]
+    public void PetDeath_IssuesFollowMaster_WithoutRevealingAnyone()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        pet.IsBonded = true;
+        pet.ControlOrder = OrderType.Stay;
+        pet.ControlTarget = null;
+        master.Hidden = true;
+
+        pet.Kill(); // bonded pet death -> IsDeadPet, follows the master
+
+        Assert.True(pet.IsDeadPet);
+        Assert.Equal(OrderType.Follow, pet.ControlOrder);
+        Assert.Same(master, pet.ControlTarget);
+        Assert.True(master.Hidden);
+        Assert.False(pet.Warmode);
+    }
+
+    [Fact]
     public void ObeyOnALegacyTransientOrder_FallsBackToPersistent()
     {
         var (_, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));

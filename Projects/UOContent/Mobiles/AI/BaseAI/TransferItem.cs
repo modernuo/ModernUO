@@ -161,12 +161,11 @@ internal sealed partial class TransferItem : Item
             _creature.SummonMaster = to;
         }
 
-        _creature.ControlTarget = to;
-        _creature.ControlOrder = OrderType.Follow;
+        _creature.ClearPetFriends(); // the previous owner's friends do not carry over
+        _creature.IssueOrder(OrderType.Follow, null, to);
         _creature.BondingBegin = DateTime.MinValue;
         _creature.OwnerAbandonTime = DateTime.MinValue;
         _creature.IsBonded = false;
-        _creature.PlaySound(_creature.GetIdleSound());
 
         var args = $"{from.Name}\t{_creature.Name}\t{to.Name}";
         from.SendLocalizedMessage(1043253, args);
