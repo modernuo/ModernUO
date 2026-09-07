@@ -244,6 +244,52 @@ public class PetOrderTests : IDisposable
     }
 
     [Fact]
+    public void Login_RestoredStay_KeepsItsPostAnchor()
+    {
+        var post = new Point3D(1005, 1005, 0);
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), post);
+        pet.ControlOrder = OrderType.Stay; // Home = post
+        pet.ChangeAIType(pet.AI);          // what AfterDeserialization does: fresh AI, PersistentOrder = None
+        Assert.Equal(OrderType.None, pet.AIObject.PersistentOrder);
+
+        PetLoginHandler.DeriveFollowerOrders(master); // master within 12 tiles
+
+        Assert.Equal(OrderType.Stay, pet.ControlOrder);
+        Assert.Equal(OrderType.Stay, pet.AIObject.PersistentOrder);
+        Assert.Equal(post, pet.Home); // not zeroed by a proximity-derived Follow
+    }
+
+    [Fact]
+    public void Login_RestoredNone_NearMaster_IssuesFollow()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        pet.ControlOrder = OrderType.Follow;
+        pet.ControlOrder = OrderType.Stop; // -> None, no standing order
+        pet.ChangeAIType(pet.AI);
+        master.Hidden = true;
+
+        PetLoginHandler.DeriveFollowerOrders(master);
+
+        Assert.Equal(OrderType.Follow, pet.ControlOrder);
+        Assert.Same(master, pet.ControlTarget);
+        Assert.Equal(OrderType.Follow, pet.AIObject.PersistentOrder);
+        Assert.True(master.Hidden); // system-issued: nobody revealed
+    }
+
+    [Fact]
+    public void Login_RestoredAttack_FarFromMaster_IssuesStay()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1040, 1000, 0));
+        pet.ControlOrder = OrderType.Attack; // rests with no valid target
+        pet.ChangeAIType(pet.AI);
+
+        PetLoginHandler.DeriveFollowerOrders(master);
+
+        Assert.Equal(OrderType.Stay, pet.ControlOrder);
+        Assert.Equal(pet.Location, pet.Home);
+    }
+
+    [Fact]
     public void Stop_WhileFollowing_CancelsToIdle_NonML()
     {
         var previous = Core.Expansion;

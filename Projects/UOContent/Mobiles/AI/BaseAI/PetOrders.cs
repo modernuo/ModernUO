@@ -56,6 +56,14 @@ public abstract partial class BaseAI
         Mobile.Home = order is OrderType.Follow or OrderType.Guard ? Point3D.Zero : Mobile.Location;
     }
 
+    // Adopt a standing order restored from a save without re-anchoring: Home and ControlTarget
+    // were saved with it.
+    internal void RestorePersistentOrder(OrderType order)
+    {
+        PersistentOrder = order;
+        _persistentTarget = order == OrderType.Follow ? Mobile.ControlTarget : null;
+    }
+
     // Resume the standing command without re-deriving it or re-anchoring Home.
     private void ResumePersistentOrder() => Mobile.SetControlOrder(PersistentOrder, null, true);
 
