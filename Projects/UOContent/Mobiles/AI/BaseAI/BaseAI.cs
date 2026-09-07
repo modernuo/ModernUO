@@ -26,6 +26,9 @@ namespace Server.Mobiles;
 
 public abstract partial class BaseAI
 {
+    // How far a guarding pet may drift from its master before it closes the gap.
+    internal const int GuardRange = 3;
+
     // Last-known-position tracking: recorded while the combatant is in LOS; drives the
     // guard-time investigation and the instant re-engage.
     private const int GuardGraceDuration = 10_000;

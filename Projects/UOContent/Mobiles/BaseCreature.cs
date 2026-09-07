@@ -1103,6 +1103,14 @@ namespace Server.Mobiles
         // (RunUO's forced 0.3, without its TransformMoveDelay inflation to 0.6).
         private const double HerdingMoveSpeed = 0.3;
 
+        /// <summary>
+        /// Seconds per step while closing on the master under a standing order (AOS pet
+        /// sprint). A cap, not an override: a creature configured faster keeps its own pace.
+        /// 0 disables it, which is how earlier eras follow.
+        /// </summary>
+        [CommandProperty(AccessLevel.GameMaster)]
+        public virtual double FollowMoveSpeed => Core.AOS ? 0.1 : 0;
+
         [CommandProperty(AccessLevel.GameMaster)]
         public IPoint2D TargetLocation
         {
@@ -1112,9 +1120,9 @@ namespace Server.Mobiles
 
         /// <summary>
         /// Resolved seconds per step: a verbatim active/passive <see cref="CurrentSpeed"/>
-        /// maps to the matching movement value; a bespoke pace (e.g. the pet-order 0.1 sprint)
-        /// stays fused to both clocks. A herded creature is always driven at
-        /// <see cref="HerdingMoveSpeed"/>.
+        /// maps to the matching movement value; a bespoke pace stays fused to both clocks. A
+        /// herded creature is always driven at <see cref="HerdingMoveSpeed"/>, and a pet
+        /// closing on its master is capped at <see cref="FollowMoveSpeed"/>.
         /// </summary>
         [CommandProperty(AccessLevel.GameMaster)]
         public double CurrentMoveSpeed
@@ -1126,17 +1134,26 @@ namespace Server.Mobiles
                     return HerdingMoveSpeed;
                 }
 
+                double speed;
+
                 if (_currentSpeed == _activeSpeed)
                 {
-                    return _activeMoveSpeed > 0 ? _activeMoveSpeed : _activeSpeed;
+                    speed = _activeMoveSpeed > 0 ? _activeMoveSpeed : _activeSpeed;
                 }
-
-                if (_currentSpeed == _passiveSpeed)
+                else if (_currentSpeed == _passiveSpeed)
                 {
-                    return _passiveMoveSpeed > 0 ? _passiveMoveSpeed : _passiveSpeed;
+                    speed = _passiveMoveSpeed > 0 ? _passiveMoveSpeed : _passiveSpeed;
+                }
+                else
+                {
+                    speed = _currentSpeed;
                 }
 
-                return _currentSpeed;
+                var followSpeed = FollowMoveSpeed;
+
+                return followSpeed > 0 && AIObject?.IsPacingToMaster() == true
+                    ? Math.Min(followSpeed, speed)
+                    : speed;
             }
         }
 

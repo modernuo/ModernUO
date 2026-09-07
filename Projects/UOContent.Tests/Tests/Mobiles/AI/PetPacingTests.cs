@@ -54,9 +54,126 @@ public class PetPacingTests : IDisposable
         Assert.Equal(0.2, pet.CurrentSpeed);
     }
 
-    // AOS: following the master sprints at a bespoke 0.1 on both clocks.
+    // The follow pace caps the step delay and leaves the think clock on the active value.
     [Fact]
-    public void FollowMaster_ObeySprints()
+    public void FollowMaster_PacesStepsWithoutInflatingTheThinkClock()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        pet.SetMoveSpeed(0.3, 0.9);
+
+        pet.ControlTarget = master;
+        pet.ControlOrder = OrderType.Follow; // fixture era is EJ
+
+        Assert.Equal(0.2, pet.CurrentSpeed);     // active think, not the follow pace
+        Assert.Equal(0.1, pet.CurrentMoveSpeed); // capped at the follow pace
+    }
+
+    // A creature configured faster than the follow pace keeps its own.
+    [Fact]
+    public void FollowMaster_KeepsAFasterConfiguredPace()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        pet.SetMoveSpeed(0.05, 0.9);
+
+        pet.ControlTarget = master;
+        pet.ControlOrder = OrderType.Follow;
+
+        Assert.Equal(0.05, pet.CurrentMoveSpeed);
+    }
+
+    // The move-clock override survives the order: it is capped while following, not overwritten.
+    [Fact]
+    public void FollowMaster_LeavesTheConfiguredMoveClockAlone()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        pet.SetMoveSpeed(0.3, 0.9);
+
+        pet.ControlTarget = master;
+        pet.ControlOrder = OrderType.Follow;
+        pet.AIObject.Obey();
+        pet.ControlOrder = OrderType.Stay;
+
+        Assert.Equal(0.3, pet.ActiveMoveSpeed);
+        Assert.Equal(0.9, pet.PassiveMoveSpeed);
+        Assert.Equal(0.9, pet.CurrentMoveSpeed); // resting on its own passive pace again
+    }
+
+    // Pre-AOS pets follow at their own pace; nothing caps them.
+    [Fact]
+    public void FollowMaster_PreAOS_KeepsItsOwnPace()
+    {
+        var previous = Core.Expansion;
+
+        try
+        {
+            Core.Expansion = Expansion.UOR;
+            var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+            pet.SetMoveSpeed(0.3, 0.9);
+
+            pet.ControlTarget = master;
+            pet.ControlOrder = OrderType.Follow;
+
+            Assert.Equal(0.2, pet.CurrentSpeed);
+            Assert.Equal(0.3, pet.CurrentMoveSpeed);
+        }
+        finally
+        {
+            Core.Expansion = previous;
+        }
+    }
+
+    private sealed class SprintingPet : PetTestStub
+    {
+        public override double FollowMoveSpeed => 0.125;
+    }
+
+    // A shard paces follows in any era by overriding the property, not by patching the AI.
+    [Fact]
+    public void FollowMoveSpeedOverride_PacesFollowsInAnyEra()
+    {
+        var previous = Core.Expansion;
+
+        try
+        {
+            Core.Expansion = Expansion.UOR;
+            var master = new PlayerMobile(World.NewMobile);
+            master.DefaultMobileInit();
+            master.MoveToWorld(new Point3D(1000, 1000, 0), Map.Felucca);
+            _created.Add(master);
+
+            var pet = new SprintingPet();
+            pet.MoveToWorld(new Point3D(1001, 1000, 0), Map.Felucca);
+            pet.SetControlMaster(master);
+            _created.Add(pet);
+            pet.SetMoveSpeed(0.3, 0.9);
+
+            pet.ControlTarget = master;
+            pet.ControlOrder = OrderType.Follow;
+
+            Assert.Equal(0.125, pet.CurrentMoveSpeed);
+        }
+        finally
+        {
+            Core.Expansion = previous;
+        }
+    }
+
+    // A guarding pet outside guard range closes at the follow pace, thinking on its active clock.
+    [Fact]
+    public void GuardReturn_PacesStepsWithoutInflatingTheThinkClock()
+    {
+        var (_, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1006, 1000, 0));
+        pet.SetMoveSpeed(0.3, 0.9);
+
+        pet.ControlOrder = OrderType.Guard;
+
+        Assert.Equal(0.2, pet.CurrentSpeed);
+        Assert.Equal(0.1, pet.CurrentMoveSpeed);
+    }
+
+    // Obeying the follow order must not write the pace into either clock.
+    [Fact]
+    public void FollowMaster_ObeyKeepsTheThinkClockActive()
     {
         var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
         pet.SetMoveSpeed(0.3, 0.9);
@@ -66,7 +183,7 @@ public class PetPacingTests : IDisposable
         pet.ControlOrder = OrderType.Follow; // fixture era is EJ
         pet.AIObject.Obey();
 
-        Assert.Equal(0.1, pet.CurrentSpeed);
+        Assert.Equal(0.2, pet.CurrentSpeed);
         Assert.Equal(0.1, pet.CurrentMoveSpeed);
     }
 

@@ -643,12 +643,6 @@ public abstract partial class BaseAI
 
         this.DebugSayFormatted($"I am ordered to follow {Mobile.ControlTarget?.Name}.");
 
-        // AOS: sprint after the master (bespoke 0.1 paces both clocks).
-        if (Core.AOS && Mobile.ControlTarget == Mobile.ControlMaster && Mobile.Combatant == null)
-        {
-            Mobile.CurrentSpeed = 0.1;
-        }
-
         if (currentDistance > 1)
         {
             WalkMobileRange(Mobile.ControlTarget, 1, 1, 2);
@@ -688,23 +682,15 @@ public abstract partial class BaseAI
 
             var distance = (int)Mobile.GetDistanceToSqrt(controlMaster);
 
-            if (distance > 3)
-            {
-                // AOS: sprint back (bespoke 0.1 paces both clocks); earlier eras run active.
-                if (Core.AOS)
-                {
-                    Mobile.CurrentSpeed = 0.1;
-                }
-                else
-                {
-                    Mobile.SetCurrentSpeedToActive();
-                }
+            // Alert either way; FollowMoveSpeed caps the steps of the return itself.
+            Mobile.SetCurrentSpeedToActive();
 
-                WalkMobileRange(controlMaster, 1, 1, 3);
+            if (distance > GuardRange)
+            {
+                WalkMobileRange(controlMaster, 1, 1, GuardRange);
             }
             else
             {
-                Mobile.SetCurrentSpeedToActive(); // alert at the master's side
                 WalkRandom(3, 1, 1);
             }
         }

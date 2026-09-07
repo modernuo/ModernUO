@@ -612,6 +612,24 @@ public abstract partial class BaseAI
         Mobile.ControlTarget == Mobile.ControlMaster &&
         Mobile.Combatant == null;
 
+    // A pet closing on its master under a standing order: following it, or guarding from
+    // outside guard range. BaseCreature.FollowMoveSpeed caps the step delay while this holds.
+    public bool IsPacingToMaster()
+    {
+        if (!Mobile.Controlled || Mobile.Combatant != null)
+        {
+            return false;
+        }
+
+        return Mobile.ControlOrder switch
+        {
+            OrderType.Follow => Mobile.ControlTarget == Mobile.ControlMaster,
+            OrderType.Guard  => Mobile.ControlMaster?.Deleted == false &&
+                                (int)Mobile.GetDistanceToSqrt(Mobile.ControlMaster) > GuardRange,
+            _                => false
+        };
+    }
+
     // A pet executing a movement order outside combat; its order handler owns its speed.
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsObeyingMoveOrder() =>
