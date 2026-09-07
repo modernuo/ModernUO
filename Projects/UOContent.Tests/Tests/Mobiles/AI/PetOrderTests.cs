@@ -572,4 +572,98 @@ public class PetOrderTests : IDisposable
 
         Assert.Equal(OrderType.Follow, pet.ControlOrder);
     }
+
+    [Fact]
+    public void SpeechCommand_FromAFriend_RevealsTheFriend_NotTheMaster()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        var friend = SpawnPlayer(new Point3D(1002, 1000, 0));
+        pet.AddPetFriend(friend);
+        master.Hidden = true;
+        friend.Hidden = true;
+
+        // "all stay" keyword 0x170
+        pet.AIObject.OnSpeech(new SpeechEventArgs(friend, "all stay", MessageType.Regular, 0x3B2, [0x170]));
+
+        Assert.Equal(OrderType.Stay, pet.ControlOrder);
+        Assert.False(friend.Hidden);
+        Assert.True(master.Hidden);
+    }
+
+    [Fact]
+    public void ContextMenuCommand_FromAFriend_RevealsTheFriend_NotTheMaster()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        var friend = SpawnPlayer(new Point3D(1002, 1000, 0));
+        pet.AddPetFriend(friend);
+        master.Hidden = true;
+        friend.Hidden = true;
+
+        new InternalEntry(3006114, 14, OrderType.Stay, true).OnClick(friend, pet); // Command: Stay
+
+        Assert.Equal(OrderType.Stay, pet.ControlOrder);
+        Assert.False(friend.Hidden);
+        Assert.True(master.Hidden);
+    }
+
+    [Fact]
+    public void ContextMenuCommand_FromAFriend_RefusesNonFriendOrders()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        var friend = SpawnPlayer(new Point3D(1002, 1000, 0));
+        pet.AddPetFriend(friend);
+        pet.ControlOrder = OrderType.Follow;
+
+        new InternalEntry(3006107, 14, OrderType.Guard, true).OnClick(friend, pet); // Command: Guard
+
+        Assert.Equal(OrderType.Follow, pet.ControlOrder);
+    }
+
+    [Fact]
+    public void ContextMenuRename_LeavesThePetOnARestableOrder()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        pet.ControlOrder = OrderType.Follow;
+
+        new InternalEntry(3006098, 14, OrderType.Rename, true).OnClick(master, pet); // Rename
+
+        Assert.Equal(OrderType.Follow, pet.ControlOrder);
+    }
+
+    // A pet resting at Come with no standing order (a fresh tame, or the state a load produces)
+    // must settle into a standing order on its own.
+    [Fact]
+    public void RestingCome_WithNoStandingOrder_SettlesIntoStayBesideTheMaster()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        Assert.Equal(OrderType.Come, pet.ControlOrder);
+        Assert.Equal(OrderType.None, pet.AIObject.PersistentOrder);
+
+        pet.AIObject.Obey(); // within 2 tiles -> Stay
+
+        Assert.Equal(OrderType.Stay, pet.ControlOrder);
+        Assert.Equal(OrderType.Stay, pet.AIObject.PersistentOrder);
+        Assert.Equal(pet.Location, pet.Home);
+    }
+
+    // Risk 1 in the spec: a save taken while a transient-ish order (Come) rests must reload as is.
+    [Fact]
+    public void ControlOrder_RoundTrips_AndLoadDoesNotRunIssue()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        Assert.Equal(OrderType.Come, pet.ControlOrder);
+
+        var writer = new BufferWriter(true);
+        pet.Serialize(writer);
+        var buffer = new byte[writer.Position];
+        writer.Buffer.AsSpan(0, (int)writer.Position).CopyTo(buffer);
+
+        var copy = new PetTestStub(World.NewMobile);
+        _created.Add(copy);
+        master.Hidden = true;
+        copy.Deserialize(new BufferReader(buffer));
+
+        Assert.Equal(OrderType.Come, copy.ControlOrder);
+        Assert.True(master.Hidden); // no Issue on load
+    }
 }
