@@ -1,4 +1,4 @@
-/*************************************************************************
+﻿/*************************************************************************
  * ModernUO                                                              *
  * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
@@ -48,16 +48,24 @@ public abstract partial class BaseAI
             }
         }
 
-        if (Mobile.Controlled && Mobile.Commandable)
+        // Staff first: a GM's "<name> obey" must reach a pet somebody else already controls.
+        if (e.Mobile.AccessLevel >= AccessLevel.GameMaster && HandleGMCommands(e))
         {
-            AllOnSpeechPet(e);
-            NamedOnSpeechPet(e);
             return;
         }
 
-        if (e.Mobile.AccessLevel >= AccessLevel.GameMaster)
+        if (Mobile.Controlled && Mobile.Commandable)
         {
-            HandleGMCommands(e);
+            // "<name> <command>" addresses this pet; "all <command>" addresses every pet in range.
+            // Exactly one of the two runs, so one utterance issues one order.
+            if (WasNamed(e.Speech))
+            {
+                NamedOnSpeechPet(e);
+            }
+            else
+            {
+                AllOnSpeechPet(e);
+            }
         }
     }
 
@@ -158,7 +166,7 @@ public abstract partial class BaseAI
         {
             case 0x164: // all come
                 {
-                    HandleComeCommand(e.Mobile, true);
+                    HandleComeCommand(e.Mobile, isOwner);
                     break;
                 }
             case 0x165: // all follow
@@ -169,7 +177,7 @@ public abstract partial class BaseAI
             case 0x166: // all guard
             case 0x16B: // all guard me
                 {
-                    HandleGuardCommand(e.Mobile, true);
+                    HandleGuardCommand(e.Mobile, isOwner);
                     break;
                 }
             case 0x167: // all stop
@@ -180,7 +188,7 @@ public abstract partial class BaseAI
             case 0x168: // all kill
             case 0x169: // all attack
                 {
-                    HandleAttackCommand(e.Mobile, true);
+                    HandleAttackCommand(e.Mobile, isOwner);
                     break;
                 }
             case 0x16C: // all follow me
@@ -230,12 +238,12 @@ public abstract partial class BaseAI
         {
             case 0x155: // *come
                 {
-                    HandleComeCommand(e.Mobile, true);
+                    HandleComeCommand(e.Mobile, isOwner);
                     break;
                 }
             case 0x156: // *drop
                 {
-                    HandleDropCommand(e.Mobile, true, e.Speech);
+                    HandleDropCommand(e.Mobile, isOwner);
                     break;
                 }
             case 0x15A: // *follow
@@ -245,18 +253,18 @@ public abstract partial class BaseAI
                 }
             case 0x15B: // *friend
                 {
-                    HandleFriendCommand(e.Mobile, true, e.Speech);
+                    HandleFriendCommand(e.Mobile, isOwner);
                     break;
                 }
             case 0x15C: // *guard
                 {
-                    HandleGuardCommand(e.Mobile, true);
+                    HandleGuardCommand(e.Mobile, isOwner);
                     break;
                 }
             case 0x15D: // *kill
             case 0x15E: // *attack
                 {
-                    HandleAttackCommand(e.Mobile, true);
+                    HandleAttackCommand(e.Mobile, isOwner);
                     break;
                 }
             case 0x161: // *stop
@@ -271,12 +279,12 @@ public abstract partial class BaseAI
                 }
             case 0x16D: // *release
                 {
-                    HandleReleaseCommand(e.Mobile, true, e.Speech);
+                    HandleReleaseCommand(e.Mobile, isOwner);
                     break;
                 }
             case 0x16E: // *transfer
                 {
-                    HandleTransferCommand(e.Mobile, true, e.Speech);
+                    HandleTransferCommand(e.Mobile, isOwner);
                     break;
                 }
             case 0x16F: // *stay
@@ -358,18 +366,17 @@ public abstract partial class BaseAI
         }
     }
 
-    private void HandleDropCommand(Mobile from, bool isOwner, string speech)
+    private void HandleDropCommand(Mobile from, bool isOwner)
     {
-        if (isOwner && !Mobile.IsDeadPet && !Mobile.Summoned && WasNamed(speech)
-            && Mobile.CheckControlChance(from))
+        if (isOwner && !Mobile.IsDeadPet && !Mobile.Summoned && Mobile.CheckControlChance(from))
         {
             Mobile.IssueOrder(OrderType.Drop, from);
         }
     }
 
-    private void HandleFriendCommand(Mobile from, bool isOwner, string speech)
+    private void HandleFriendCommand(Mobile from, bool isOwner)
     {
-        if (isOwner && WasNamed(speech) && Mobile.CheckControlChance(from))
+        if (isOwner && Mobile.CheckControlChance(from))
         {
             if (Mobile.Summoned || Mobile is GrizzledMare)
             {
@@ -389,14 +396,14 @@ public abstract partial class BaseAI
         }
     }
 
-    private void HandleReleaseCommand(Mobile from, bool isOwner, string speech)
+    private void HandleReleaseCommand(Mobile from, bool isOwner)
     {
         if (!isOwner)
         {
             return;
         }
 
-        if (WasNamed(speech) && Mobile.CheckControlChance(from))
+        if (Mobile.CheckControlChance(from))
         {
             if (!Mobile.Summoned)
             {
@@ -409,9 +416,9 @@ public abstract partial class BaseAI
         }
     }
 
-    private void HandleTransferCommand(Mobile from, bool isOwner, string speech)
+    private void HandleTransferCommand(Mobile from, bool isOwner)
     {
-        if (isOwner && !Mobile.IsDeadPet && WasNamed(speech) && Mobile.CheckControlChance(from))
+        if (isOwner && !Mobile.IsDeadPet && Mobile.CheckControlChance(from))
         {
             if (Mobile.Summoned || Mobile is GrizzledMare)
             {
@@ -431,18 +438,22 @@ public abstract partial class BaseAI
         }
     }
 
-    private void HandleGMCommands(SpeechEventArgs e)
+    private bool HandleGMCommands(SpeechEventArgs e)
     {
         this.DebugSayFormatted($"Command is from GM: {e.Mobile.Name}, Target: {Mobile.ControlTarget?.Name ?? "None or Unknown"}");
 
-        if (Mobile.FindMyName(e.Speech, true) && e.Speech.InsensitiveContains("obey"))
+        if (!Mobile.FindMyName(e.Speech, true) || !e.Speech.InsensitiveContains("obey"))
         {
-            Mobile.SetControlMaster(e.Mobile);
-
-            if (Mobile.SummonMaster != null)
-            {
-                Mobile.SummonMaster = e.Mobile;
-            }
+            return false;
         }
+
+        Mobile.SetControlMaster(e.Mobile);
+
+        if (Mobile.SummonMaster != null)
+        {
+            Mobile.SummonMaster = e.Mobile;
+        }
+
+        return true;
     }
 }

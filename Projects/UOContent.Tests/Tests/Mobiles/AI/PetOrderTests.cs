@@ -674,4 +674,96 @@ public class PetOrderTests : IDisposable
         Assert.Equal(new Point3D(1020, 1000, 0), copy.Location);
         Assert.Equal(post, copy.Home); // not re-anchored to Location: IssueStay did not run on load
     }
+
+    [Fact]
+    public void SpeechCommand_WithoutThePetsName_IsIgnored()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        pet.Name = "Rex";
+        pet.ControlOrder = OrderType.Stay;
+
+        // bare "come" (keyword 0x155) with no name: not for this pet
+        pet.AIObject.OnSpeech(new SpeechEventArgs(master, "come", MessageType.Regular, 0x3B2, [0x155]));
+        Assert.Equal(OrderType.Stay, pet.ControlOrder);
+
+        pet.AIObject.OnSpeech(new SpeechEventArgs(master, "Rex come", MessageType.Regular, 0x3B2, [0x155]));
+        Assert.Equal(OrderType.Come, pet.ControlOrder);
+    }
+
+    [Fact]
+    public void AllCommand_IssuesOnce()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        pet.Name = "Rex";
+        pet.ControlOrder = OrderType.Follow;
+        var post = pet.Location;
+
+        // The client emits both 0x170 ("all stay") and 0x16F ("*stay") for "all stay".
+        pet.AIObject.OnSpeech(new SpeechEventArgs(master, "all stay", MessageType.Regular, 0x3B2, [0x170, 0x16F]));
+
+        Assert.Equal(OrderType.Stay, pet.ControlOrder);
+        Assert.Equal(post, pet.Home);
+        // Observable "once": the Come->Stay transition below would re-anchor if Stay were re-issued
+        // after a move, so move the pet and re-send the same utterance with only the named keyword —
+        // it must be ignored because the speech starts with "all", not the pet's name.
+        pet.MoveToWorld(new Point3D(1010, 1010, 0), pet.Map);
+        pet.AIObject.OnSpeech(new SpeechEventArgs(master, "all stay", MessageType.Regular, 0x3B2, [0x16F]));
+        Assert.Equal(post, pet.Home);
+    }
+
+    [Fact]
+    public void SpeechCommand_FromAFriend_CannotComeGuardOrDrop()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        pet.Name = "Rex";
+        var friend = SpawnPlayer(new Point3D(1002, 1000, 0));
+        pet.AddPetFriend(friend);
+        pet.ControlOrder = OrderType.Stay;
+        var post = pet.Home;
+
+        pet.AIObject.OnSpeech(new SpeechEventArgs(friend, "Rex come", MessageType.Regular, 0x3B2, [0x155]));
+        Assert.Equal(OrderType.Stay, pet.ControlOrder);
+
+        pet.AIObject.OnSpeech(new SpeechEventArgs(friend, "Rex guard", MessageType.Regular, 0x3B2, [0x15C]));
+        Assert.Equal(OrderType.Stay, pet.ControlOrder);
+        Assert.Equal(OrderType.Stay, pet.AIObject.PersistentOrder);
+
+        pet.IsBonded = true; // CanDrop
+        pet.AIObject.OnSpeech(new SpeechEventArgs(friend, "Rex drop", MessageType.Regular, 0x3B2, [0x156]));
+        Assert.Equal(OrderType.Stay, pet.ControlOrder);
+        Assert.Equal(post, pet.Home); // never re-issued
+
+        // The friend can still Stay/Follow/Stop.
+        pet.AIObject.OnSpeech(new SpeechEventArgs(friend, "Rex follow me", MessageType.Regular, 0x3B2, [0x163]));
+        Assert.Equal(OrderType.Follow, pet.ControlOrder);
+        Assert.Same(friend, pet.ControlTarget);
+    }
+
+    [Fact]
+    public void GMObey_TakesControlOfACommandablePet()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        pet.Name = "Rex";
+        var gm = SpawnPlayer(new Point3D(1002, 1000, 0));
+        gm.AccessLevel = AccessLevel.GameMaster;
+
+        pet.AIObject.OnSpeech(new SpeechEventArgs(gm, "Rex obey", MessageType.Regular, 0x3B2, []));
+
+        Assert.Same(gm, pet.ControlMaster);
+    }
+
+    [Fact]
+    public void ContextMenuRelease_RollsControlChance()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        pet.MinTameSkill = 120.0; // master has 0 taming: GetControlChance is below zero -> the roll always fails
+        master.Skills.AnimalTaming.Base = 0;
+        master.Skills.AnimalLore.Base = 0;
+        pet.Loyalty = 50;
+
+        new InternalEntry(3006118, 14, OrderType.Release, true).OnClick(master, pet); // Release
+
+        Assert.Equal(47, pet.Loyalty); // a refused control roll costs 3 loyalty (CheckControlChance)
+        Assert.True(pet.Controlled);
+    }
 }

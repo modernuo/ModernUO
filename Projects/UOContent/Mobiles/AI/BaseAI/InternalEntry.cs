@@ -1,4 +1,4 @@
-/*************************************************************************
+﻿/*************************************************************************
  * ModernUO                                                              *
  * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
@@ -105,7 +105,11 @@ internal sealed class InternalEntry : ContextMenuEntry
             return;
         }
 
-        from.SendGump(new ConfirmReleaseGump(from, bc));
+        // Same control roll speech requires; a refused roll costs loyalty and offers no gump.
+        if (bc.CheckControlChance(from))
+        {
+            from.SendGump(new ConfirmReleaseGump(from, bc));
+        }
     }
 
     private void HandleDefaultOrder(Mobile from, BaseCreature bc)
