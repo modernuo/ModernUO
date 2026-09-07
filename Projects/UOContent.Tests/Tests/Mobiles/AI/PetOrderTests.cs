@@ -68,6 +68,59 @@ public class PetOrderTests : IDisposable
     }
 
     [Fact]
+    public void Stop_WhileAttacking_ResumedFollowTargetsTheMaster()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        pet.ControlTarget = master;
+        pet.ControlOrder = OrderType.Follow; // persistent = Follow
+        pet.ControlOrder = OrderType.Attack; // transient
+        Assert.Equal(OrderType.Follow, pet.AIObject.PersistentOrder);
+
+        pet.ControlOrder = OrderType.Stop;
+
+        Assert.Equal(OrderType.Follow, pet.ControlOrder);
+        Assert.Equal(master, pet.ControlTarget);
+    }
+
+    [Fact]
+    public void Stop_WhileAttacking_ResumedFollowKeepsAPetFriendAsItsTarget()
+    {
+        var (_, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        var friend = new PlayerMobile(World.NewMobile);
+        friend.DefaultMobileInit();
+        friend.MoveToWorld(new Point3D(1002, 1000, 0), pet.Map);
+        _created.Add(friend);
+
+        var victim = new PetTestStub();
+        victim.MoveToWorld(new Point3D(1003, 1000, 0), pet.Map);
+        _created.Add(victim);
+
+        pet.ControlTarget = friend;          // a pet friend said "all follow me"
+        pet.ControlOrder = OrderType.Follow;
+        pet.ControlTarget = victim;          // then "all kill" — the attack order takes the target
+        pet.ControlOrder = OrderType.Attack;
+
+        pet.ControlOrder = OrderType.Stop;
+
+        Assert.Equal(OrderType.Follow, pet.ControlOrder);
+        Assert.Equal(friend, pet.ControlTarget); // still the friend, not the owner
+    }
+
+    [Fact]
+    public void Stop_WhileAttacking_ResumedFollowSurvivesTheNextThink()
+    {
+        var (_, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        pet.ControlOrder = OrderType.Follow;
+        pet.ControlOrder = OrderType.Attack;
+        pet.ControlOrder = OrderType.Stop; // resumes Follow
+
+        pet.AIObject.Obey();
+
+        Assert.Equal(OrderType.Follow, pet.ControlOrder); // not dropped to idle
+        Assert.Equal(OrderType.Follow, pet.AIObject.PersistentOrder);
+    }
+
+    [Fact]
     public void Stop_WhileFollowing_CancelsToIdleNone()
     {
         var (_, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1002, 1000, 0));

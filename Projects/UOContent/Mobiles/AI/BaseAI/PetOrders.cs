@@ -28,16 +28,30 @@ public abstract partial class BaseAI
     // never re-derives the persistent command or re-anchors Home. See OnCurrentOrderChanged.
     private bool _resolvingOrder;
 
+    // Who a standing Follow follows: usually the master, but a pet friend can point it
+    // elsewhere ("all follow me"). Runtime-only, like PersistentOrder.
+    private Mobile _persistentFollowTarget;
+
     // The controlled-pet wander anchor (Home) is a pure function of the persistent command.
     internal void SetPersistentOrder(OrderType order)
     {
         PersistentOrder = order;
+        _persistentFollowTarget = order == OrderType.Follow ? Mobile.ControlTarget ?? Mobile.ControlMaster : null;
         Mobile.Home = order is OrderType.Follow or OrderType.Guard ? Point3D.Zero : Mobile.Location;
     }
 
     // Resume the persistent command without re-deriving the persistent order or anchor.
     private void ResumePersistentOrder()
     {
+        // The ending order owns ControlTarget and leaves it cleared or pointing elsewhere;
+        // without a target DoOrderFollow cancels itself to idle on the next think.
+        if (PersistentOrder == OrderType.Follow)
+        {
+            Mobile.ControlTarget = _persistentFollowTarget?.Deleted == false
+                ? _persistentFollowTarget
+                : Mobile.ControlMaster;
+        }
+
         _resolvingOrder = true;
         Mobile.ControlOrder = PersistentOrder;
         _resolvingOrder = false;
