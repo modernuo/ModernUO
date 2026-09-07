@@ -646,12 +646,18 @@ public class PetOrderTests : IDisposable
         Assert.Equal(pet.Location, pet.Home);
     }
 
-    // Risk 1 in the spec: a save taken while a transient-ish order (Come) rests must reload as is.
+    // Risk 1 in the spec: load assigns the field raw and never runs the Issue phase. The copy is
+    // given an AI first (the Issue gate is `ai != null`), and the probe is Home: it is field 12,
+    // read before ControlOrder (18) and after Location, so a setter-routed load would run IssueStay
+    // and re-anchor Home to the restored Location. A Stay pet saved away from its post shows it.
     [Fact]
     public void ControlOrder_RoundTrips_AndLoadDoesNotRunIssue()
     {
-        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
-        Assert.Equal(OrderType.Come, pet.ControlOrder);
+        var post = new Point3D(1001, 1000, 0);
+        var (_, pet) = Spawn(new Point3D(1000, 1000, 0), post);
+        pet.ControlOrder = OrderType.Stay;                     // Home = post
+        pet.MoveToWorld(new Point3D(1020, 1000, 0), pet.Map);  // displaced: Home != Location
+        Assert.Equal(post, pet.Home);
 
         var writer = new BufferWriter(true);
         pet.Serialize(writer);
@@ -660,10 +666,12 @@ public class PetOrderTests : IDisposable
 
         var copy = new PetTestStub(World.NewMobile);
         _created.Add(copy);
-        master.Hidden = true;
+        copy.ChangeAIType(AIType.AI_Animal); // open the Issue gate for the duration of the field read
+
         copy.Deserialize(new BufferReader(buffer));
 
-        Assert.Equal(OrderType.Come, copy.ControlOrder);
-        Assert.True(master.Hidden); // no Issue on load
+        Assert.Equal(OrderType.Stay, copy.ControlOrder);
+        Assert.Equal(new Point3D(1020, 1000, 0), copy.Location);
+        Assert.Equal(post, copy.Home); // not re-anchored to Location: IssueStay did not run on load
     }
 }
