@@ -88,16 +88,15 @@ public abstract partial class BaseAI
         // on the false transition), so leaving it set for Attack is what keeps Attack's single
         // Combatant write a no-op when the same target is re-issued - a second effective write
         // would replay DoHarmful and the target's anger sound. Guard opens in war stance, so a
-        // false->true flap there would send two war-mode packets and two Delta(Flags).
+        // false->true flap there would send two war-mode packets and two Delta(Flags). Neither of
+        // the two clears Combatant directly either: Attack writes it once in its own Issue phase,
+        // and Guard's tick re-validates the current combatant through FindGuardTarget - nulling it
+        // here would drop Warmode through the Mobile setter only for IssueGuard to raise it again.
         Mobile.FocusMob = null;
 
         if (order is not (OrderType.Attack or OrderType.Guard))
         {
             Mobile.Warmode = false; // also nulls Combatant via the setter
-        }
-
-        if (order != OrderType.Attack)
-        {
             Mobile.Combatant = null;
         }
 
@@ -430,9 +429,10 @@ public abstract partial class BaseAI
             return PersistentOrder;
         }
 
-        // The old tick version also tested Combatant != null; the common stand-down nulls Combatant
-        // before this runs, so that clause is dead and the gate rests on the aggressor lists and
-        // the combat cooldown.
+        // The old tick version also tested Combatant != null, but the stand-down has already cleared
+        // Combatant by the time this runs, so the gate is intentionally relaxed to the aggressor
+        // lists and the combat cooldown: a pet whose fight left no aggressor entries and whose
+        // NextCombatTime has elapsed is transferable.
         if (Mobile.Aggressors.Count > 0 || Mobile.Aggressed.Count > 0 || Core.TickCount - Mobile.NextCombatTime < 0)
         {
             from.SendMessage("You can not transfer a pet while in combat.");
@@ -749,6 +749,12 @@ public abstract partial class BaseAI
         else
         {
             this.DebugSayFormatted($"Attacking target: {Mobile.ControlTarget?.Name}");
+
+            // An aggressor can steal Combatant mid-fight (OnAggressiveAction); the commanded target wins.
+            if (Mobile.Combatant != Mobile.ControlTarget)
+            {
+                Mobile.Combatant = Mobile.ControlTarget;
+            }
 
             Think();
         }

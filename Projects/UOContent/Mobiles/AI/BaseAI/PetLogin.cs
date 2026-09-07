@@ -58,8 +58,11 @@ public static class PetLoginHandler
             var near = bc.Map == master.Map && bc.GetDistanceToSqrt(master) <= FollowRange;
             var derived = near ? OrderType.Follow : OrderType.Stay;
 
-            ai.SetPersistentOrder(derived);
+            // ControlTarget first: SetPersistentOrder captures it as the Follow anchor, and the
+            // saved target is whatever the pet was doing when the world saved (a mid-Attack save
+            // still holds the victim there), which must not outlive the login.
             bc.ControlTarget = near ? master : null;
+            ai.SetPersistentOrder(derived);
             bc.SetControlOrder(derived, null, true);
         }
     }

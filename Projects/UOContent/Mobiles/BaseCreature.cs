@@ -1240,6 +1240,8 @@ namespace Server.Mobiles
 
                     if (depth >= 8)
                     {
+                        // Extension failure: rest at the standing order without running its Issue.
+                        _controlOrder = ai.PersistentOrder;
                         break;
                     }
 

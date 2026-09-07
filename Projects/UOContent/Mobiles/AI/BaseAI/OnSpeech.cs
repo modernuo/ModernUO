@@ -1,4 +1,4 @@
-﻿/*************************************************************************
+/*************************************************************************
  * ModernUO                                                              *
  * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
@@ -442,7 +442,8 @@ public abstract partial class BaseAI
     {
         this.DebugSayFormatted($"Command is from GM: {e.Mobile.Name}, Target: {Mobile.ControlTarget?.Name ?? "None or Unknown"}");
 
-        if (!Mobile.FindMyName(e.Speech, true) || !e.Speech.InsensitiveContains("obey"))
+        // The mass form ("all obey") is for wild creatures; a controlled pet must be named.
+        if (!Mobile.FindMyName(e.Speech, !Mobile.Controlled) || !e.Speech.InsensitiveContains("obey"))
         {
             return false;
         }

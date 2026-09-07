@@ -290,6 +290,21 @@ public class PetOrderTests : IDisposable
     }
 
     [Fact]
+    public void Login_RestoredAttack_NearMaster_FollowsTheMaster_NotTheVictim()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        var victim = SpawnPlayer(new Point3D(1003, 1000, 0));
+        pet.IssueOrder(OrderType.Attack, master, victim); // saved mid-fight: ControlTarget = victim
+        pet.ChangeAIType(pet.AI);                          // post-load fresh AI
+
+        PetLoginHandler.DeriveFollowerOrders(master);
+
+        Assert.Equal(OrderType.Follow, pet.ControlOrder);
+        Assert.Same(master, pet.ControlTarget);
+        Assert.Equal(OrderType.Follow, pet.AIObject.PersistentOrder);
+    }
+
+    [Fact]
     public void Stop_WhileFollowing_CancelsToIdle_NonML()
     {
         var previous = Core.Expansion;
@@ -471,6 +486,25 @@ public class PetOrderTests : IDisposable
         Assert.True(pet.Warmode);
         Assert.Same(victim, pet.Combatant);
         Assert.Same(victim, pet.FocusMob);
+    }
+
+    [Fact]
+    public void OrderedAttack_ReassertsTheCommandedTarget_AfterAnAggressorStealsCombatant()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        var victim = SpawnPlayer(new Point3D(1003, 1000, 0));
+        var other = SpawnPlayer(new Point3D(1002, 1000, 0));
+
+        pet.IssueOrder(OrderType.Attack, master, victim);
+
+        // What BaseAI.OnAggressiveAction does when a closer attacker swings at the pet.
+        pet.Combatant = other;
+        Assert.Same(other, pet.Combatant);
+
+        pet.AIObject.Obey(); // the tick puts the kill order back on the commanded target
+
+        Assert.Same(victim, pet.Combatant);
+        Assert.Equal(OrderType.Attack, pet.ControlOrder);
     }
 
     [Fact]
@@ -795,6 +829,22 @@ public class PetOrderTests : IDisposable
 
         pet.AIObject.OnSpeech(new SpeechEventArgs(gm, "Rex obey", MessageType.Regular, 0x3B2, []));
 
+        Assert.Same(gm, pet.ControlMaster);
+    }
+
+    [Fact]
+    public void GMAllObey_DoesNotTakeControlledPets()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        pet.Name = "Rex";
+        var gm = SpawnPlayer(new Point3D(1002, 1000, 0));
+        gm.AccessLevel = AccessLevel.GameMaster;
+
+        // The mass form is for wild creatures; a controlled pet must be named.
+        pet.AIObject.OnSpeech(new SpeechEventArgs(gm, "all obey", MessageType.Regular, 0x3B2, []));
+        Assert.Same(master, pet.ControlMaster);
+
+        pet.AIObject.OnSpeech(new SpeechEventArgs(gm, "Rex obey", MessageType.Regular, 0x3B2, []));
         Assert.Same(gm, pet.ControlMaster);
     }
 
