@@ -408,6 +408,26 @@ public class PetOrderTests : IDisposable
     }
 
     [Fact]
+    public void ReIssuedAttack_OnTheSameTarget_DoesNotRewriteCombatantOrFlapWarmode()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        var victim = SpawnPlayer(new Point3D(1003, 1000, 0));
+
+        pet.IssueOrder(OrderType.Attack, master, victim);
+        Assert.Equal(1, pet.CombatantSets);
+        Assert.True(pet.Warmode);
+
+        // The stand-down must not drop Warmode for Attack: doing so nulls Combatant through the
+        // Warmode setter, and the re-issue would then replay DoHarmful and the anger sound.
+        pet.IssueOrder(OrderType.Attack, master, victim);
+
+        Assert.Equal(1, pet.CombatantSets);
+        Assert.True(pet.Warmode);
+        Assert.Same(victim, pet.Combatant);
+        Assert.Same(victim, pet.FocusMob);
+    }
+
+    [Fact]
     public void Rename_WhileFollowing_KeepsFollowingTheMaster()
     {
         var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));

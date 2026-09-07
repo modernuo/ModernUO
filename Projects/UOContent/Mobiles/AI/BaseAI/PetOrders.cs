@@ -75,10 +75,18 @@ public abstract partial class BaseAI
 
         issuer?.RevealingAction();
 
-        // Every command starts from a neutral posture; Attack and Guard re-arm below. Attack
-        // assigns its own Combatant exactly once, so it is not nulled first.
+        // Every command starts from a neutral posture, except the two that re-arm below and must
+        // not flap through it. Dropping Warmode also nulls Combatant (the Mobile setter does that
+        // on the false transition), so leaving it set for Attack is what keeps Attack's single
+        // Combatant write a no-op when the same target is re-issued - a second effective write
+        // would replay DoHarmful and the target's anger sound. Guard opens in war stance, so a
+        // false->true flap there would send two war-mode packets and two Delta(Flags).
         Mobile.FocusMob = null;
-        Mobile.Warmode = false;
+
+        if (order is not (OrderType.Attack or OrderType.Guard))
+        {
+            Mobile.Warmode = false; // also nulls Combatant via the setter
+        }
 
         if (order != OrderType.Attack)
         {
@@ -414,6 +422,9 @@ public abstract partial class BaseAI
             return PersistentOrder;
         }
 
+        // The old tick version also tested Combatant != null; the common stand-down nulls Combatant
+        // before this runs, so that clause is dead and the gate rests on the aggressor lists and
+        // the combat cooldown.
         if (Mobile.Aggressors.Count > 0 || Mobile.Aggressed.Count > 0 || Core.TickCount - Mobile.NextCombatTime < 0)
         {
             from.SendMessage("You can not transfer a pet while in combat.");
@@ -484,6 +495,7 @@ public abstract partial class BaseAI
         Mobile.IsBonded = false;
         Mobile.ClearPetFriends();      // the old owner's friends must not command the next owner's pet
         PersistentOrder = OrderType.None; // nor may the old standing order survive a re-tame
+        _persistentTarget = null;         // and nothing here may keep pointing at the ex-master
         Mobile.SetControlMaster(null);
 
         var spawner = Mobile.Spawner;
