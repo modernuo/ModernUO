@@ -60,7 +60,8 @@ public partial class SpawnerEntry
     /// </summary>
     protected BaseSpawner Parent => _parent;
 
-    internal void SetParent(BaseSpawner parent)
+    /// <summary>Re-parents this entry. Public so out-of-tree owners can call it from AdoptEntries.</summary>
+    public void SetParent(BaseSpawner parent)
     {
         _parent = parent;
         _spawned ??= [];

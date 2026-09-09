@@ -152,6 +152,40 @@ public class SpawnerHookTests
     }
 
     [Fact]
+    public void Hooks_FireForItemEntries()
+    {
+        var spawner = Place();
+        spawner.AddEntry("Gold", 100, 1, false);
+        spawner.Log.Clear();
+
+        spawner.Spawn();
+
+        Assert.Equal(
+            ["before:Gold", "configure:Gold", "position:Gold", "spawned:Gold"],
+            spawner.Log
+        );
+        Assert.IsAssignableFrom<Item>(Assert.Single(spawner.Spawned).Key);
+
+        spawner.Delete();
+    }
+
+    [Fact]
+    public void NextSpawn_OnStoppedSpawner_FiresOnStarted()
+    {
+        var spawner = Place();
+        spawner.AddEntry("Rabbit", 100, 1, false);
+        spawner.Stop();
+        spawner.Log.Clear();
+
+        spawner.NextSpawn = TimeSpan.FromSeconds(5);
+
+        Assert.True(spawner.Running);
+        Assert.Equal(["started"], spawner.Log);
+
+        spawner.Delete();
+    }
+
+    [Fact]
     public void OnBeforeSpawn_CanVeto()
     {
         var spawner = Place();

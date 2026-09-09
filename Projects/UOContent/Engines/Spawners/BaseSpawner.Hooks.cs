@@ -2,12 +2,16 @@ namespace Server.Engines.Spawners;
 
 public abstract partial class BaseSpawner
 {
-    /// <summary>Called after the timer starts (Start(), Running = true).</summary>
+    /// <summary>
+    /// Called after the timer starts (Start(), Running = true, NextSpawn on a stopped spawner).
+    /// Not called for construction (<c>InitSpawn</c>) or deserialization; subclasses initialise
+    /// run state in their constructor and <c>[AfterDeserialization]</c>.
+    /// </summary>
     protected virtual void OnStarted()
     {
     }
 
-    /// <summary>Called after the timer stops (Stop(), Running = false, Reset()).</summary>
+    /// <summary>Called after the timer stops (Stop(), Running = false), and only if it was running.</summary>
     protected virtual void OnStopped()
     {
     }
@@ -15,7 +19,11 @@ public abstract partial class BaseSpawner
     /// <summary>Veto point before an entry's entity is constructed. Return false to skip this attempt.</summary>
     protected virtual bool OnBeforeSpawn(SpawnerEntry entry) => true;
 
-    /// <summary>Runs after property application and before positioning, so computed properties apply first.</summary>
+    /// <summary>
+    /// Runs after property application and before positioning, so computed properties apply first.
+    /// The entity is not yet in <see cref="Spawned"/>, has no <c>Spawner</c> set, and is still on
+    /// the internal map.
+    /// </summary>
     protected virtual void OnConfigureSpawned(SpawnerEntry entry, ISpawnable spawned)
     {
     }
