@@ -99,17 +99,21 @@ internal sealed class InternalEntry : ContextMenuEntry
 
     private void HandleReleaseOrder(Mobile from, BaseCreature bc)
     {
-        if (bc.Summoned)
+        // Relinquishing control is not exerting it: whoever can command the creature may
+        // dismiss it, with no roll and no loyalty either way. A refused roll would only
+        // drain loyalty toward the involuntary release the drain performs anyway.
+        if (!bc.CanBeControlledBy(from))
         {
-            HandleDefaultOrder(from, bc);
             return;
         }
 
-        // Same control roll as speech.
-        if (bc.CheckControlChance(from))
+        if (bc.Summoned)
         {
-            from.SendGump(new ConfirmReleaseGump(from, bc));
+            bc.IssueOrder(OrderType.Release, from);
+            return;
         }
+
+        from.SendGump(new ConfirmReleaseGump(from, bc));
     }
 
     private void HandleDefaultOrder(Mobile from, BaseCreature bc)

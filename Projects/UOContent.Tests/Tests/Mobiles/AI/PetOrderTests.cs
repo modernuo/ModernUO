@@ -893,18 +893,43 @@ public class PetOrderTests : IDisposable
         Assert.Same(gm, pet.ControlMaster);
     }
 
+    // Release is relinquishing control, not exerting it: no roll, so no loyalty either way.
     [Fact]
-    public void ContextMenuRelease_RollsControlChance()
+    public void MenuRelease_TouchesNoLoyalty()
     {
         var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
-        pet.MinTameSkill = 120.0; // control chance below zero: the roll always fails
-        master.Skills.AnimalTaming.Base = 0;
-        master.Skills.AnimalLore.Base = 0;
         pet.Loyalty = 50;
 
         new InternalEntry(3006118, 14, OrderType.Release, true).OnClick(master, pet); // Release
 
-        Assert.Equal(47, pet.Loyalty); // a refused control roll costs 3 loyalty (CheckControlChance)
+        Assert.Equal(50, pet.Loyalty); // no roll: neither the +1 for passing nor the -3 for failing
+    }
+
+    [Fact]
+    public void SpeechRelease_TouchesNoLoyalty()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        pet.Name = "Rex";
+        pet.Loyalty = 50;
+
+        pet.AIObject.OnSpeech(new SpeechEventArgs(master, "Rex release", MessageType.Regular, 0x3B2, [0x16D]));
+
+        Assert.Equal(50, pet.Loyalty);
+    }
+
+    // A creature nobody could command is still not released out from under the roll's replacement.
+    [Fact]
+    public void MenuRelease_OnAnUncontrollablePet_IsRefusedWithoutCost()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        pet.MinTameSkill = 120.0; // control chance at or below zero
+        master.Skills.AnimalTaming.Base = 0;
+        master.Skills.AnimalLore.Base = 0;
+        pet.Loyalty = 50;
+
+        new InternalEntry(3006118, 14, OrderType.Release, true).OnClick(master, pet);
+
+        Assert.Equal(50, pet.Loyalty); // refused, but never punished
         Assert.True(pet.Controlled);
     }
 }

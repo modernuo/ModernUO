@@ -402,17 +402,19 @@ public abstract partial class BaseAI
             return;
         }
 
-        if (Mobile.CheckControlChance(from))
+        // No control roll: see InternalEntry.HandleReleaseOrder.
+        if (!Mobile.CanBeControlledBy(from))
         {
-            if (!Mobile.Summoned)
-            {
-                from.SendGump(new ConfirmReleaseGump(from, Mobile));
-            }
-            else
-            {
-                Mobile.IssueOrder(OrderType.Release, from);
-            }
+            return;
         }
+
+        if (Mobile.Summoned)
+        {
+            Mobile.IssueOrder(OrderType.Release, from);
+            return;
+        }
+
+        from.SendGump(new ConfirmReleaseGump(from, Mobile));
     }
 
     private void HandleTransferCommand(Mobile from, bool isOwner)
