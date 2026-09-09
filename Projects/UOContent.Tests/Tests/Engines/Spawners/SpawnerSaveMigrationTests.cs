@@ -1,3 +1,4 @@
+using System;
 using Server;
 using Server.Items;
 
@@ -14,5 +15,13 @@ internal static class SpawnerBlob
         var writer = new BufferWriter(true);
         item.Serialize(writer);
         return writer.Buffer[..(int)writer.Position];
+    }
+
+    public static T Read<T>(byte[] bytes, Serial serial) where T : Item
+    {
+        var item = (T)Activator.CreateInstance(typeof(T), serial)!;
+        var reader = new BufferReader(bytes);
+        item.Deserialize(reader);
+        return item;
     }
 }

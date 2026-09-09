@@ -876,7 +876,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
 
         foreach (var spawnerEntry in Entries)
         {
-            if (!spawnerEntry.IsFull)
+            if (!spawnerEntry.IsFull && !spawnerEntry.Disabled)
             {
                 probsum += spawnerEntry.SpawnedProbability;
             }
@@ -892,7 +892,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
         for (var i = 0; i < Entries.Count; i++)
         {
             var entry = Entries[i];
-            if (entry.IsFull)
+            if (entry.IsFull || entry.Disabled)
             {
                 continue;
             }

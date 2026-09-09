@@ -5,7 +5,7 @@ using Server.Json;
 
 namespace Server.Engines.Spawners;
 
-[SerializationGenerator(1, false)]
+[SerializationGenerator(2, false)]
 public partial class SpawnerEntry
 {
     [DirtyTrackingEntity]
@@ -35,6 +35,41 @@ public partial class SpawnerEntry
     [SerializedJsonIgnore]
     [SerializableField(5)]
     private List<ISpawnable> _spawned;
+
+    private bool ShouldSerializeDisabled() => _disabled;
+
+    /// <summary>
+    /// Locked entries are skipped by weighted selection; live spawns are untouched.
+    /// Stored inverted so the common (enabled) case writes nothing.
+    /// </summary>
+    [SaveFlag(nameof(ShouldSerializeDisabled))]
+    [SerializableField(6)]
+    [SerializedJsonPropertyName("disabled")]
+    private bool _disabled;
+
+    [JsonIgnore]
+    public bool Enabled
+    {
+        get => !_disabled;
+        set => Disabled = !value;
+    }
+
+    internal void SetParent(BaseSpawner parent)
+    {
+        _parent = parent;
+        _spawned ??= [];
+    }
+
+    private void MigrateFrom(V1Content content)
+    {
+        _spawnedName = content.SpawnedName;
+        _spawnedProbability = content.SpawnedProbability;
+        _spawnedMaxCount = content.SpawnedMaxCount;
+        _properties = content.Properties;
+        _parameters = content.Parameters;
+        _spawned = content.Spawned ?? [];
+        _disabled = false;
+    }
 
     public SpawnerEntry(BaseSpawner parent)
     {
