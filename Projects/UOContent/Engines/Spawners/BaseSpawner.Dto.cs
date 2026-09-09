@@ -53,7 +53,7 @@ public abstract partial class BaseSpawner
     }
 
     /// <summary>The square spawn bounds a homeRange radius represents (centered on the location).</summary>
-    private protected static Rectangle3D BoundsFromHomeRange(Point3D location, int homeRange)
+    protected static Rectangle3D BoundsFromHomeRange(Point3D location, int homeRange)
     {
         int z;
         int depth;
@@ -78,7 +78,7 @@ public abstract partial class BaseSpawner
         );
     }
 
-    private protected string DtoName
+    protected string DtoName
     {
         get
         {
@@ -91,17 +91,17 @@ public abstract partial class BaseSpawner
     // MaxDelay/Team/SpawnLocationIsHome match their property and are referenced directly in ToDto.)
 
     // Raw field; the public WalkingRange is computed (falls back to HomeRange).
-    private protected int DtoWalkingRange => _walkingRange;
+    protected int DtoWalkingRange => _walkingRange;
 
     // Abandoned is a transient runtime state, not persisted -> map to Automatic (omitted).
-    private protected SpawnPositionMode DtoSpawnPositionMode =>
+    protected SpawnPositionMode DtoSpawnPositionMode =>
         _spawnPositionMode == SpawnPositionMode.Abandoned ? SpawnPositionMode.Automatic : _spawnPositionMode;
 
     // Runtime treats 0 as DefaultMaxSpawnAttempts -> map the default to 0 (omitted).
-    private protected int DtoMaxSpawnAttempts => _maxSpawnAttempts == DefaultMaxSpawnAttempts ? 0 : _maxSpawnAttempts;
+    protected int DtoMaxSpawnAttempts => _maxSpawnAttempts == DefaultMaxSpawnAttempts ? 0 : _maxSpawnAttempts;
 
     // The radius if SpawnBounds is exactly what it reconstructs (lossless square); otherwise -1.
-    private protected int DtoHomeRange
+    protected int DtoHomeRange
     {
         get
         {
