@@ -31,7 +31,7 @@ public partial class Spawner
             MaxDelay = MaxDelay,
             Team = Team,
             WalkingRange = DtoWalkingRange,
-            Entries = Entries,
+            Entries = EntryList,
             SpawnLocationIsHome = SpawnLocationIsHome,
             SpawnPositionMode = DtoSpawnPositionMode,
             MaxSpawnAttempts = DtoMaxSpawnAttempts,

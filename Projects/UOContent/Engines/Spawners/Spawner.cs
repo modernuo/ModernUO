@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using ModernUO.Serialization;
 
 namespace Server.Engines.Spawners;
 
-[SerializationGenerator(1)]
+[SerializationGenerator(2)]
 public partial class Spawner : BaseSpawner
 {
     /// <summary>
@@ -32,6 +34,11 @@ public partial class Spawner : BaseSpawner
             this.MarkDirty();
         }
     }
+
+    // Owned here (v2) rather than on BaseSpawner so subclasses can store their own entry type.
+    [SerializedIgnoreDupe]
+    [SerializableField(2, getter: "protected", setter: "private")]
+    private List<SpawnerEntry> _entryList = [];
 
     [Constructible(AccessLevel.Developer)]
     public Spawner()
@@ -63,8 +70,61 @@ public partial class Spawner : BaseSpawner
 
     protected override ReadOnlySpan<Rectangle3D> GetAllSpawnBounds() => new(ref _spawnBounds);
 
+    public override IReadOnlyList<SpawnerEntry> Entries => _entryList;
+
+    protected override ReadOnlySpan<SpawnerEntry> EntrySpan => CollectionsMarshal.AsSpan(_entryList);
+
+    protected override SpawnerEntry CreateEntry(
+        string name,
+        int probability,
+        int maxCount,
+        string properties,
+        string parameters
+    ) => new(this, name, probability, maxCount, properties, parameters);
+
+    protected override void AddEntryCore(SpawnerEntry entry) => AddToEntryList(entry);
+
+    protected override bool RemoveEntryCore(SpawnerEntry entry)
+    {
+        if (!_entryList.Contains(entry))
+        {
+            return false;
+        }
+
+        RemoveFromEntryList(entry);
+        return true;
+    }
+
+    protected override void ClearEntriesCore() => ClearEntryList();
+
+    protected override void AdoptEntries(IReadOnlyList<SpawnerEntry> entries)
+    {
+        var list = entries as List<SpawnerEntry> ?? new List<SpawnerEntry>(entries);
+        for (var i = 0; i < list.Count; i++)
+        {
+            list[i].SetParent(this);
+        }
+
+        EntryList = list;
+    }
+
     private void MigrateFrom(V0Content content)
     {
-        // V0 had no fields in Spawner, new v1 field _useSpiralScan defaults to false
+        // V0 had no fields in Spawner; v1 added _useSpiralScan (false), v2 owns the entry list,
+        // which BaseSpawner's migration hands over through AdoptEntries.
+    }
+
+    private void MigrateFrom(V1Content content)
+    {
+        _useSpiralScan = content.UseSpiralScan;
+        _spawnBounds = content.SpawnBounds ?? default;
+        // _entryList was adopted by BaseSpawner.MigrateFrom(V12Content) before this ran.
+    }
+
+    [AfterDeserialization]
+    private void AfterDeserialization()
+    {
+        _entryList ??= [];
+        RebuildSpawned();
     }
 }

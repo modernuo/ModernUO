@@ -160,8 +160,9 @@ public class SpawnerGump : Gump
         var totalSpawned = 0;
         var totalWeight = 0;
 
-        foreach (var spawnerEntry in _spawner.Entries)
+        for (var i = 0; i < _spawner.Entries.Count; i++)
         {
+            var spawnerEntry = _spawner.Entries[i];
             totalSpawned += spawner.CountSpawns(spawnerEntry);
             totalWeight += spawnerEntry.SpawnedProbability;
         }
@@ -424,7 +425,7 @@ public class SpawnerGump : Gump
                 }
         }
 
-        if (_entry != null && _spawner.Entries?.Contains(_entry) == true)
+        if (_entry != null && HasEntry(_spawner, _entry))
         {
             state.Mobile.SendGump(new SpawnerGump(_spawner, _entry, _page));
         }
@@ -432,5 +433,21 @@ public class SpawnerGump : Gump
         {
             state.Mobile.SendGump(new SpawnerGump(_spawner, null, _page));
         }
+    }
+
+    // Entries is an IReadOnlyList view onto the owner's list, so there is no Contains member.
+    private static bool HasEntry(BaseSpawner spawner, SpawnerEntry entry)
+    {
+        var entries = spawner.Entries;
+
+        for (var i = 0; i < entries.Count; i++)
+        {
+            if (entries[i] == entry)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

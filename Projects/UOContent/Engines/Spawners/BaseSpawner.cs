@@ -40,7 +40,7 @@ public enum SpawnPositionMode : byte
     Abandoned = 3
 }
 
-[SerializationGenerator(12, false)]
+[SerializationGenerator(13, false)]
 public abstract partial class BaseSpawner : Item, ISpawner
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(BaseSpawner));
@@ -61,15 +61,11 @@ public abstract partial class BaseSpawner : Item, ISpawner
     [SerializedCommandProperty(AccessLevel.Developer)]
     private bool _returnOnDeactivate;
 
-    [SerializedIgnoreDupe]
-    [SerializableField(2, setter: "private")]
-    private List<SpawnerEntry> _entries;
-
     private int _walkingRange = -1;
 
     private bool ShouldSerializeWayPoint() => _wayPoint != null;
 
-    [SerializableField(4)]
+    [SerializableField(3)]
     [SaveFlag(nameof(ShouldSerializeWayPoint))]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private WayPoint _wayPoint;
@@ -77,7 +73,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
     private bool ShouldSerializeGroup() => _group;
 
     [InvalidateProperties]
-    [SerializableField(5)]
+    [SerializableField(4)]
     [SaveFlag(nameof(ShouldSerializeGroup))]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private bool _group;
@@ -87,7 +83,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
     private TimeSpan MinDelayDefault() => DefaultMinDelay;
 
     [InvalidateProperties]
-    [SerializableField(6)]
+    [SerializableField(5)]
     [SaveFlag(nameof(ShouldSerializeMinDelay), nameof(MinDelayDefault))]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private TimeSpan _minDelay;
@@ -97,7 +93,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
     private TimeSpan MaxDelayDefault() => DefaultMaxDelay;
 
     [InvalidateProperties]
-    [SerializableField(7)]
+    [SerializableField(6)]
     [SaveFlag(nameof(ShouldSerializeMaxDelay), nameof(MaxDelayDefault))]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private TimeSpan _maxDelay;
@@ -105,7 +101,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
     private bool ShouldSerializeTeam() => _team != 0;
 
     [InvalidateProperties]
-    [SerializableField(9)]
+    [SerializableField(8)]
     [SaveFlag(nameof(ShouldSerializeTeam))]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private int _team;
@@ -126,14 +122,14 @@ public abstract partial class BaseSpawner : Item, ISpawner
     private bool ShouldSerializeSpawnLocationIsHome() => _spawnLocationIsHome;
 
     [InvalidateProperties]
-    [SerializableField(11)]
+    [SerializableField(10)]
     [SaveFlag(nameof(ShouldSerializeSpawnLocationIsHome))]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private bool _spawnLocationIsHome;
 
     private bool ShouldSerializeEnd() => _end != default;
 
-    [SerializableField(12)]
+    [SerializableField(11)]
     [SaveFlag(nameof(ShouldSerializeEnd))]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private DateTime _end;
@@ -144,7 +140,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
     private bool ShouldSerializeSpawnPositionMode() =>
         _spawnPositionMode is not SpawnPositionMode.Automatic and not SpawnPositionMode.Abandoned;
 
-    [SerializableField(13)]
+    [SerializableField(12)]
     [SaveFlag(nameof(ShouldSerializeSpawnPositionMode))]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private SpawnPositionMode _spawnPositionMode;
@@ -158,7 +154,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
 
     private int MaxSpawnAttemptsDefault() => DefaultMaxSpawnAttempts;
 
-    [SerializableField(14)]
+    [SerializableField(13)]
     [SaveFlag(nameof(ShouldSerializeMaxSpawnAttempts), nameof(MaxSpawnAttemptsDefault))]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private int _maxSpawnAttempts;
@@ -300,7 +296,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
     public Dictionary<ISpawnable, SpawnerEntry> Spawned { get; private set; }
 
     [CommandProperty(AccessLevel.Developer)]
-    [SerializableProperty(3, nameof(_walkingRange))]
+    [SerializableProperty(2, nameof(_walkingRange))]
     public int WalkingRange
     {
         get => _walkingRange > 0 ? _walkingRange : HomeRange;
@@ -312,7 +308,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
         }
     }
 
-    [SerializableField(8, fieldChanged: nameof(OnCountChanged))]
+    [SerializableField(7, fieldChanged: nameof(OnCountChanged))]
     [SerializedCommandProperty(AccessLevel.Developer)]
     [InvalidateProperties]
     private int _count;
@@ -329,7 +325,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
         }
     }
 
-    [SerializableProperty(10)]
+    [SerializableProperty(9)]
     [CommandProperty(AccessLevel.Developer)]
     public bool Running
     {
@@ -641,20 +637,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
         {
             newSpawner._guid = Guid.NewGuid();
             newSpawner.Spawned = new Dictionary<ISpawnable, SpawnerEntry>();
-            newSpawner.Entries = [];
-
-            for (var i = 0; i < Entries.Count; i++)
-            {
-                var entry = Entries[i];
-                newSpawner.AddEntry(
-                    entry.SpawnedName,
-                    entry.SpawnedProbability,
-                    entry.SpawnedMaxCount,
-                    false,
-                    entry.Properties,
-                    entry.Parameters
-                );
-            }
+            CopyEntriesTo(newSpawner);
         }
     }
 
@@ -698,25 +681,6 @@ public abstract partial class BaseSpawner : Item, ISpawner
         }
     }
 
-    public SpawnerEntry AddEntry(
-        string creaturename,
-        int probability = 100,
-        int amount = 1,
-        bool dotimer = true,
-        string properties = null,
-        string parameters = null
-    )
-    {
-        var entry = new SpawnerEntry(this, creaturename, probability, amount, properties, parameters);
-        AddToEntries(entry);
-        if (dotimer)
-        {
-            DoTimer(TimeSpan.FromSeconds(1));
-        }
-
-        return entry;
-    }
-
     public void InitSpawn(int amount, TimeSpan minDelay, TimeSpan maxDelay, int team = 0, Rectangle3D spawnBounds = default)
     {
         Visible = false;
@@ -737,7 +701,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
             HomeRange = 4;
         }
 
-        Entries = [];
+        ClearEntriesCore();
         Spawned = new Dictionary<ISpawnable, SpawnerEntry>();
 
         DoTimer(TimeSpan.FromSeconds(1));
@@ -819,11 +783,10 @@ public abstract partial class BaseSpawner : Item, ISpawner
 
     public void Defrag()
     {
-        Entries ??= [];
-
-        for (var i = 0; i < Entries.Count; ++i)
+        var entries = EntrySpan;
+        for (var i = 0; i < entries.Length; i++)
         {
-            Entries[i].Defrag(this);
+            entries[i].Defrag(this);
         }
     }
 
@@ -867,15 +830,17 @@ public abstract partial class BaseSpawner : Item, ISpawner
     {
         Defrag();
 
-        if (Entries.Count <= 0 || IsFull)
+        var entries = EntrySpan;
+        if (entries.Length <= 0 || IsFull)
         {
             return;
         }
 
         var probsum = 0;
 
-        foreach (var spawnerEntry in Entries)
+        for (var i = 0; i < entries.Length; i++)
         {
+            var spawnerEntry = entries[i];
             if (!spawnerEntry.IsFull && !spawnerEntry.Disabled)
             {
                 probsum += spawnerEntry.SpawnedProbability;
@@ -889,9 +854,9 @@ public abstract partial class BaseSpawner : Item, ISpawner
 
         var rand = Utility.RandomMinMax(1, probsum);
 
-        for (var i = 0; i < Entries.Count; i++)
+        for (var i = 0; i < entries.Length; i++)
         {
-            var entry = Entries[i];
+            var entry = entries[i];
             if (entry.IsFull || entry.Disabled)
             {
                 continue;
@@ -1221,27 +1186,6 @@ public abstract partial class BaseSpawner : Item, ISpawner
         return entry.Spawned.Count;
     }
 
-    public void RemoveEntry(SpawnerEntry entry)
-    {
-        Defrag();
-
-        for (var i = entry.Spawned.Count - 1; i >= 0; i--)
-        {
-            var e = entry.Spawned[i];
-            entry.Spawned.RemoveAt(i);
-            e?.Delete();
-        }
-
-        Entries.Remove(entry);
-
-        if (_running && !IsFull && _timer?.Running != true)
-        {
-            DoTimer();
-        }
-
-        InvalidateProperties();
-    }
-
     public void RemoveSpawn(int index) // Entry
     {
         if (index >= 0 && index < Entries.Count)
@@ -1269,9 +1213,10 @@ public abstract partial class BaseSpawner : Item, ISpawner
     {
         Defrag();
 
-        for (var i = 0; i < Entries.Count; i++)
+        var entries = EntrySpan;
+        for (var i = 0; i < entries.Length; i++)
         {
-            var entry = Entries[i];
+            var entry = entries[i];
 
             for (var j = entry.Spawned.Count - 1; j >= 0; j--)
             {
@@ -1327,18 +1272,6 @@ public abstract partial class BaseSpawner : Item, ISpawner
                 256
             );
         }
-
-        Spawned = new Dictionary<ISpawnable, SpawnerEntry>();
-
-        foreach (var entry in Entries)
-        {
-            foreach (var spawned in entry.Spawned)
-            {
-                Spawned.Add(spawned, entry);
-            }
-        }
-
-        DoTimer(_end - Core.Now);
     }
 
     private class InternalTimer : Timer
