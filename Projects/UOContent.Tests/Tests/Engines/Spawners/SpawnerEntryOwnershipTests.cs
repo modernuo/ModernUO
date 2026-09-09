@@ -113,4 +113,46 @@ public class SpawnerEntryOwnershipTests
         source.Delete();
         target.Delete();
     }
+
+    [Fact]
+    public void CopyEntriesTo_Self_IsNoOp()
+    {
+        var spawner = new Spawner(1, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(2), 0, default, "Rabbit", "Bird");
+        var first = spawner.Entries[0];
+        var second = spawner.Entries[1];
+
+        spawner.CopyEntriesTo(spawner);
+
+        Assert.Equal(2, spawner.Entries.Count);
+        Assert.Same(first, spawner.Entries[0]);
+        Assert.Same(second, spawner.Entries[1]);
+
+        spawner.Delete();
+    }
+
+    [Fact]
+    public void RemoveEntry_ForeignEntry_IsIgnored()
+    {
+        var a = new Spawner(1, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(2), 0, default, "Rabbit");
+        var b = new Spawner(1, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(2), 0, default, "Bird");
+
+        var foreign = b.Entries[0];
+        var spawned = new Item(0x1f13);
+        foreign.AddToSpawned(spawned);
+
+        a.RemoveEntry(foreign);
+
+        Assert.Single(a.Entries);
+        Assert.Equal("Rabbit", a.Entries[0].SpawnedName);
+        Assert.Single(b.Entries);
+        Assert.Same(foreign, b.Entries[0]);
+
+        // A foreign entry's live spawns must survive a RemoveEntry on the wrong spawner.
+        Assert.False(spawned.Deleted);
+        Assert.Single(foreign.Spawned);
+
+        spawned.Delete();
+        a.Delete();
+        b.Delete();
+    }
 }

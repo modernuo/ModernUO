@@ -73,8 +73,14 @@ public abstract partial class BaseSpawner
     public void RemoveEntry(SpawnerEntry entry)
     {
         Defrag();
+
+        // Ownership check first: a foreign entry must not have its spawns deleted by us.
+        if (!RemoveEntryCore(entry))
+        {
+            return;
+        }
+
         RemoveSpawn(entry);
-        RemoveEntryCore(entry);
 
         if (_running && !IsFull && _timer?.Running != true)
         {
@@ -95,6 +101,12 @@ public abstract partial class BaseSpawner
     /// <summary>Replaces <paramref name="target"/>'s entries with clones of this spawner's entries.</summary>
     public void CopyEntriesTo(BaseSpawner target)
     {
+        // Copying onto ourselves would clear the source (deleting its live spawns) and copy nothing.
+        if (ReferenceEquals(target, this))
+        {
+            return;
+        }
+
         target.ClearEntries();
 
         var entries = EntrySpan;
