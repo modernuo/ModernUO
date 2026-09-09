@@ -1,0 +1,34 @@
+{
+  "version": 2,
+  "type": "Server.Engines.Spawners.Spawner",
+  "properties": [
+    {
+      "name": "UseSpiralScan",
+      "type": "bool",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "SpawnBounds",
+      "type": "Server.Rectangle3D",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Rect3D"
+      ]
+    },
+    {
+      "name": "EntryList",
+      "type": "System.Collections.Generic.List\u003CServer.Engines.Spawners.SpawnerEntry\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "Server.Engines.Spawners.SpawnerEntry",
+        "RawSerializableMigrationRule",
+        "DeserializationRequiresParent"
+      ]
+    }
+  ]
+}
