@@ -388,6 +388,97 @@ public class PetOrderTests : IDisposable
         return pm;
     }
 
+    // Administrative commands are not a change of what the pet is doing: it keeps fighting.
+    [Fact]
+    public void Drop_MidAttack_KeepsTheAttackAndItsTarget()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        var victim = new PetTestStub();
+        victim.MoveToWorld(new Point3D(1003, 1000, 0), pet.Map);
+        _created.Add(victim);
+
+        pet.ControlOrder = OrderType.Follow; // standing order
+        pet.IssueOrder(OrderType.Attack, master, victim);
+
+        pet.IssueOrder(OrderType.Drop, master);
+
+        Assert.Equal(OrderType.Attack, pet.ControlOrder);
+        Assert.Same(victim, pet.ControlTarget);
+        Assert.Same(victim, pet.Combatant);
+    }
+
+    [Fact]
+    public void Rename_MidAttack_KeepsTheAttack()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        var victim = new PetTestStub();
+        victim.MoveToWorld(new Point3D(1003, 1000, 0), pet.Map);
+        _created.Add(victim);
+
+        pet.ControlOrder = OrderType.Follow;
+        pet.IssueOrder(OrderType.Attack, master, victim);
+
+        pet.IssueOrder(OrderType.Rename, master);
+
+        Assert.Equal(OrderType.Attack, pet.ControlOrder);
+        Assert.Same(victim, pet.ControlTarget);
+    }
+
+    [Fact]
+    public void FriendRefusal_MidAttack_KeepsTheAttack()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        var friend = SpawnPlayer(new Point3D(1002, 1000, 0));
+        pet.AddPetFriend(friend); // already a friend -> refusal
+        var victim = new PetTestStub();
+        victim.MoveToWorld(new Point3D(1003, 1000, 0), pet.Map);
+        _created.Add(victim);
+
+        pet.ControlOrder = OrderType.Follow;
+        pet.IssueOrder(OrderType.Attack, master, victim);
+
+        pet.IssueOrder(OrderType.Friend, master, friend);
+
+        Assert.Equal(OrderType.Attack, pet.ControlOrder);
+        Assert.Same(victim, pet.ControlTarget);
+    }
+
+    // Nothing to resume into: the interrupted attack's target is gone.
+    [Fact]
+    public void Drop_MidAttack_WithTheTargetGone_FallsBackToTheStandingOrder()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        var victim = new PetTestStub();
+        victim.MoveToWorld(new Point3D(1003, 1000, 0), pet.Map);
+        _created.Add(victim);
+
+        pet.ControlOrder = OrderType.Follow;
+        pet.IssueOrder(OrderType.Attack, master, victim);
+        victim.Delete();
+
+        pet.IssueOrder(OrderType.Drop, master);
+
+        Assert.Equal(OrderType.Follow, pet.ControlOrder);
+    }
+
+    // Resuming an attack must not re-run the aggression that ordering it performed.
+    [Fact]
+    public void Drop_MidAttack_DoesNotRepeatTheHarm()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        var victim = new PetTestStub();
+        victim.MoveToWorld(new Point3D(1003, 1000, 0), pet.Map);
+        _created.Add(victim);
+
+        pet.ControlOrder = OrderType.Follow;
+        pet.IssueOrder(OrderType.Attack, master, victim);
+        var aggressors = victim.Aggressors.Count;
+
+        pet.IssueOrder(OrderType.Drop, master);
+
+        Assert.Equal(aggressors, victim.Aggressors.Count);
+    }
+
     [Fact]
     public void Friend_Refused_RestsAtPersistentOrder_AndObeyDoesNotRepeat()
     {

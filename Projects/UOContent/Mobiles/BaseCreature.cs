@@ -1222,13 +1222,19 @@ namespace Server.Mobiles
         /// </summary>
         public void IssueOrder(OrderType order, Mobile issuer, Mobile target = null)
         {
+            // The order being interrupted owns the outgoing target; an administrative command
+            // that resumes it needs the target back. See BaseAI.ResumeInterrupted.
+            var interrupted = ControlTarget;
             ControlTarget = target;
-            SetControlOrder(order, issuer, false);
+            SetControlOrder(order, issuer, false, interrupted);
         }
 
         // The single entry for every order change: runs the Issue phase and loops until the returned order
         // rests. `resuming` = fallback to the standing order (no re-derivation, no flourish).
-        internal void SetControlOrder(OrderType order, Mobile issuer, bool resuming)
+        internal void SetControlOrder(OrderType order, Mobile issuer, bool resuming) =>
+            SetControlOrder(order, issuer, resuming, ControlTarget);
+
+        internal void SetControlOrder(OrderType order, Mobile issuer, bool resuming, Mobile interruptedTarget)
         {
             var ai = AIObject;
             var previous = _controlOrder;
@@ -1238,7 +1244,7 @@ namespace Server.Mobiles
             {
                 for (var depth = 0; ; depth++)
                 {
-                    var next = ai.IssueOrder(order, previous, issuer, resuming);
+                    var next = ai.IssueOrder(order, previous, issuer, resuming, interruptedTarget);
 
                     // A nested assignment (SetControlMaster(null), Kill()) already resolved itself; it wins.
                     if (_controlOrder != order || next == order)

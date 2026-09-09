@@ -37,6 +37,12 @@ public abstract partial class BaseAI
         order is OrderType.Follow or OrderType.Stay or OrderType.Stop;
 
     // Orders a dead bonded pet refuses.
+    // Orders that are not a change of what the pet is doing: the two combat orders, plus the
+    // administrative ones. Everything else stands the pet down before it runs.
+    private static bool KeepsCombatPosture(OrderType order) =>
+        order is OrderType.Attack or OrderType.Guard or OrderType.Drop or OrderType.Friend
+            or OrderType.Unfriend or OrderType.Rename;
+
     public static bool IsDeadPetOrder(OrderType order) =>
         order is OrderType.Guard or OrderType.Attack or OrderType.Transfer or OrderType.Drop;
 
@@ -58,6 +64,21 @@ public abstract partial class BaseAI
         _persistentTarget = order == OrderType.Follow ? Mobile.ControlTarget : null;
     }
 
+    // Where an administrative command (Drop, Friend, Unfriend, Rename) hands control back:
+    // to whatever the pet was doing, target and all. The standing order is the fallback for
+    // an interrupted order that cannot resume — a transient, or an attack whose target is gone.
+    private OrderType ResumeInterrupted(OrderType previous, Mobile interruptedTarget)
+    {
+        if (!IsRestableOrder(previous) ||
+            previous == OrderType.Attack && IsInvalidControlTarget(interruptedTarget))
+        {
+            return PersistentOrder;
+        }
+
+        Mobile.ControlTarget = interruptedTarget;
+        return previous;
+    }
+
     // Resume the standing command without re-deriving it or re-anchoring Home.
     private void ResumePersistentOrder() => Mobile.SetControlOrder(PersistentOrder, null, true);
 
@@ -65,7 +86,9 @@ public abstract partial class BaseAI
     /// Issue phase. <paramref name="issuer"/> is the only mobile revealed (null = system-issued);
     /// <paramref name="resuming"/> marks a fallback to the standing order. Returns the order to rest in.
     /// </summary>
-    public virtual OrderType IssueOrder(OrderType order, OrderType previous, Mobile issuer, bool resuming)
+    public virtual OrderType IssueOrder(
+        OrderType order, OrderType previous, Mobile issuer, bool resuming, Mobile interruptedTarget
+    )
     {
         if (Mobile.Deleted)
         {
@@ -81,7 +104,7 @@ public abstract partial class BaseAI
         // and flap Guard's war stance.
         Mobile.FocusMob = null;
 
-        if (order is not (OrderType.Attack or OrderType.Guard))
+        if (!KeepsCombatPosture(order))
         {
             Mobile.Warmode = false; // also nulls Combatant via the setter
             Mobile.Combatant = null;
@@ -91,17 +114,17 @@ public abstract partial class BaseAI
         {
             OrderType.None     => IssueNone(),
             OrderType.Come     => IssueCome(),
-            OrderType.Drop     => IssueDrop(),
-            OrderType.Friend   => IssueFriend(),
-            OrderType.Unfriend => IssueUnfriend(),
+            OrderType.Drop     => IssueDrop(previous, interruptedTarget),
+            OrderType.Friend   => IssueFriend(previous, interruptedTarget),
+            OrderType.Unfriend => IssueUnfriend(previous, interruptedTarget),
             OrderType.Guard    => IssueGuard(resuming),
-            OrderType.Attack   => IssueAttack(),
+            OrderType.Attack   => IssueAttack(resuming),
             OrderType.Release  => IssueRelease(),
             OrderType.Stay     => IssueStay(resuming),
             OrderType.Stop     => IssueStop(previous),
             OrderType.Follow   => IssueFollow(resuming),
             OrderType.Transfer => IssueTransfer(),
-            OrderType.Rename   => IssueRename(issuer),
+            OrderType.Rename   => IssueRename(issuer, previous, interruptedTarget),
             _                  => PersistentOrder // Patrol and anything unimplemented
         };
     }
@@ -174,7 +197,7 @@ public abstract partial class BaseAI
         return OrderType.Guard;
     }
 
-    private OrderType IssueAttack()
+    private OrderType IssueAttack(bool resuming)
     {
         var target = Mobile.ControlTarget;
         var valid = target?.Deleted == false && target.Alive;
@@ -189,7 +212,15 @@ public abstract partial class BaseAI
 
         Mobile.Warmode = true;
         Mobile.SetCurrentSpeedToActive();
-        Mobile.PlaySound(Mobile.GetAttackSound());
+
+        // Resuming an interrupted attack is not a new command: no bark. The Combatant write
+        // above is idempotent - the setter early-outs on an unchanged value - so the harm the
+        // original order did is not repeated either.
+        if (!resuming)
+        {
+            Mobile.PlaySound(Mobile.GetAttackSound());
+        }
+
         return OrderType.Attack;
     }
 
@@ -223,7 +254,7 @@ public abstract partial class BaseAI
         }
     }
 
-    private OrderType IssueDrop()
+    private OrderType IssueDrop(OrderType previous, Mobile interruptedTarget)
     {
         if (!Mobile.IsDeadPet && Mobile.CanDrop)
         {
@@ -231,7 +262,7 @@ public abstract partial class BaseAI
             DropItems();
         }
 
-        return PersistentOrder;
+        return ResumeInterrupted(previous, interruptedTarget);
     }
 
     private void DropItems()
@@ -254,14 +285,14 @@ public abstract partial class BaseAI
         }
     }
 
-    private OrderType IssueFriend()
+    private OrderType IssueFriend(OrderType previous, Mobile interruptedTarget)
     {
         var from = Mobile.ControlMaster;
         var to = Mobile.ControlTarget;
 
         if (from?.Deleted != false)
         {
-            return PersistentOrder;
+            return ResumeInterrupted(previous, interruptedTarget);
         }
 
         var youngFrom = from is PlayerMobile { Young: true };
@@ -271,47 +302,47 @@ public abstract partial class BaseAI
         {
             from.SendLocalizedMessage(502040);
             // As a young player, you may not friend pets to older players.
-            return PersistentOrder;
+            return ResumeInterrupted(previous, interruptedTarget);
         }
 
         if (!youngFrom && youngTo)
         {
             from.SendLocalizedMessage(502041);
             // As an older player, you may not friend pets to young players.
-            return PersistentOrder;
+            return ResumeInterrupted(previous, interruptedTarget);
         }
 
         if (to?.Deleted != false || from == to || !to.Player)
         {
             Mobile.PublicOverheadMessage(MessageType.Regular, 0x3B2, 502039);
             // *looks confused*
-            return PersistentOrder;
+            return ResumeInterrupted(previous, interruptedTarget);
         }
 
         if (!from.CanBeBeneficial(to, true))
         {
-            return PersistentOrder;
+            return ResumeInterrupted(previous, interruptedTarget);
         }
 
         if (from.HasTrade || to.HasTrade)
         {
             (from.HasTrade ? from : to).SendLocalizedMessage(1070947);
             // You cannot friend a pet with a trade pending
-            return PersistentOrder;
+            return ResumeInterrupted(previous, interruptedTarget);
         }
 
         if (Mobile.IsPetFriend(to))
         {
             from.SendLocalizedMessage(1049691);
             // That person is already a friend.
-            return PersistentOrder;
+            return ResumeInterrupted(previous, interruptedTarget);
         }
 
         if (!Mobile.AllowNewPetFriend)
         {
             from.SendLocalizedMessage(1005482);
             // Your pet does not seem to be interested in making new friends right now.
-            return PersistentOrder;
+            return ResumeInterrupted(previous, interruptedTarget);
         }
 
         from.SendLocalizedMessage(1049676, $"{Mobile.Name}\t{to.Name}");
@@ -328,7 +359,7 @@ public abstract partial class BaseAI
         return OrderType.Follow;
     }
 
-    private OrderType IssueUnfriend()
+    private OrderType IssueUnfriend(OrderType previous, Mobile interruptedTarget)
     {
         var from = Mobile.ControlMaster;
         var to = Mobile.ControlTarget;
@@ -337,14 +368,14 @@ public abstract partial class BaseAI
         {
             Mobile.PublicOverheadMessage(MessageType.Regular, 0x3B2, 502039);
             // *looks confused*
-            return PersistentOrder;
+            return ResumeInterrupted(previous, interruptedTarget);
         }
 
         if (!Mobile.IsPetFriend(to))
         {
             from.SendLocalizedMessage(1070953);
             // That person is not a friend.
-            return PersistentOrder;
+            return ResumeInterrupted(previous, interruptedTarget);
         }
 
         from.SendLocalizedMessage(1070951, $"{Mobile.Name}\t{to.Name}");
@@ -516,7 +547,7 @@ public abstract partial class BaseAI
         return OrderType.None;
     }
 
-    protected virtual OrderType IssueRename(Mobile issuer)
+    protected virtual OrderType IssueRename(Mobile issuer, OrderType previous, Mobile interruptedTarget)
     {
         var to = issuer ?? Mobile.ControlMaster;
 
@@ -529,7 +560,7 @@ public abstract partial class BaseAI
             to?.SendMessage("Change name on pet health bar.");
         }
 
-        return PersistentOrder;
+        return ResumeInterrupted(previous, interruptedTarget);
     }
 
     // Only restable orders arrive here; anything else is a pre-refactor save and resumes the standing order.
