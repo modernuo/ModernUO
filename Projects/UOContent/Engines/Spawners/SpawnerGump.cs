@@ -65,6 +65,17 @@ public class SpawnerGump : Gump
 
             AddButton(38, 22 * i + 21 + offset, 0xFA2, 0xFA4, GetButtonID(2, 1 + i * 2)); // Delete
 
+            if (entry != null)
+            {
+                AddButton(
+                    22,
+                    22 * i + 23 + offset,
+                    entry.Disabled ? 0xD2 : 0xD3,
+                    entry.Disabled ? 0xD3 : 0xD2,
+                    GetButtonID(3, i)
+                ); // Enabled toggle (checked = enabled)
+            }
+
             AddImageTiled(71, 22 * i + 20 + offset, 161, 23, 0xA40); // creature text box
             AddImageTiled(72, 22 * i + 21 + offset, 159, 21, 0xBBC); // creature text box
 
@@ -106,7 +117,7 @@ public class SpawnerGump : Gump
                 22 * i + 21 + offset,
                 156,
                 21,
-                (flags & EntryFlags.InvalidType) != 0 ? 33 : 0,
+                (flags & EntryFlags.InvalidType) != 0 ? 33 : entry?.Disabled == true ? 0x3B2 : 0,
                 textIndex,
                 name
             );
@@ -418,6 +429,18 @@ public class SpawnerGump : Gump
                         {
                             _spawner.RemoveSpawn(entryIndex);
                         }
+                    }
+
+                    CreateArray(info, state.Mobile, _spawner);
+                    break;
+                }
+            case 3: // Enable/disable entry
+                {
+                    var entryIndex = index + _page * 13;
+                    if (entryIndex >= 0 && entryIndex < _spawner.Entries.Count)
+                    {
+                        var entry = _spawner.Entries[entryIndex];
+                        entry.Disabled = !entry.Disabled;
                     }
 
                     CreateArray(info, state.Mobile, _spawner);
