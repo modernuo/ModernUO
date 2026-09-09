@@ -78,11 +78,33 @@ public partial class HookRecordingSpawner : Spawner
         for (var i = 0; i < entries.Count; i++)
         {
             var e = entries[i];
-            var te = e as TestEntry ?? (TestEntry)CloneEntry(e);
+            TestEntry te;
+            if (e is TestEntry existing)
+            {
+                te = existing;
+            }
+            else
+            {
+                // CloneEntry does not copy spawns, so a converted entry would orphan its creatures.
+                te = (TestEntry)CloneEntry(e);
+                TransferSpawned(e, te);
+            }
+
             te.SetParent(this);
             AddToTestEntries(te);
         }
     }
+
+    /// <summary>Test hook: adopt entries built elsewhere, exercising the conversion path.</summary>
+    public void AdoptForTest(IReadOnlyList<SpawnerEntry> entries) => AdoptEntries(entries);
+
+    /// <summary>Test hook: rebuild the Spawned registry without a full save round trip.</summary>
+    public void RebuildSpawnedForTest() => RebuildSpawned();
+
+    // The base class rebuilds Spawned from Spawner's own (empty) list before _testEntries has been
+    // read, so this owner has to rebuild again once its list exists.
+    [AfterDeserialization]
+    private void AfterDeserialization() => RebuildSpawned();
 
     protected override SpawnerEntry CloneEntry(SpawnerEntry source)
     {
@@ -226,16 +248,55 @@ public class SpawnerHookTests
         var spawner = Place();
         spawner.AddEntry("Rabbit", 100, 1, false);
         ((TestEntry)spawner.Entries[0]).Tag = "kept";
+        spawner.Spawn();
+        Assert.Single(spawner.Spawned);
 
         var loaded = SpawnerBlob.Read<HookRecordingSpawner>(SpawnerBlob.Write(spawner), (Serial)0x40009999);
         Assert.Equal("kept", ((TestEntry)loaded.Entries[0]).Tag);
 
+        // The owner's [AfterDeserialization] has to rebuild Spawned from its own list: the base
+        // class's runs before _testEntries has been read.
+        Assert.Single(loaded.Entries[0].Spawned);
+        Assert.Single(loaded.Spawned);
+
         var copy = new HookRecordingSpawner();
         spawner.Dupe(copy);
         Assert.Equal("kept", ((TestEntry)copy.Entries[0]).Tag);
+        Assert.Empty(copy.Entries[0].Spawned);
 
+        // `loaded` shares the live creature with `spawner`; deleting the spawner deletes it.
         spawner.Delete();
         loaded.Delete();
         copy.Delete();
+    }
+
+    [Fact]
+    public void AdoptEntries_ConvertsForeignEntries_KeepingLiveSpawns()
+    {
+        var source = new Spawner();
+        source.InitSpawn(1, TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(10));
+        source.MoveToWorld(new Point3D(1502, 1502, 0), Map.Felucca);
+        source.AddEntry("Rabbit", 100, 1, false);
+        source.Spawn();
+        var rabbit = Assert.Single(source.Spawned).Key;
+
+        var adopter = Place();
+        adopter.AdoptForTest(source.Entries);
+
+        var adopted = Assert.Single(adopter.Entries);
+        Assert.IsType<TestEntry>(adopted);
+        Assert.Equal("Rabbit", adopted.SpawnedName);
+        Assert.Same(rabbit, Assert.Single(adopted.Spawned));
+        Assert.Empty(source.Entries[0].Spawned);
+
+        adopter.RebuildSpawnedForTest();
+        Assert.Same(rabbit, Assert.Single(adopter.Spawned).Key);
+
+        // The adopter owns the creature now, so deleting the source must leave it alone.
+        source.Delete();
+        Assert.False(rabbit.Deleted);
+
+        adopter.Delete();
+        Assert.True(rabbit.Deleted);
     }
 }
