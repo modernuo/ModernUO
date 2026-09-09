@@ -1409,7 +1409,7 @@ namespace Server.Mobiles
                     else
                     {
                         // An offer may be available in about ~1_hours~ hours.
-                        vendor.SayTo(vendor, 1049039, $"{Math.Ceiling(totalSeconds / 3600):F0}");
+                        vendor.SayTo(from, 1049039, $"{Math.Ceiling(totalSeconds / 3600):F0}");
                     }
 
                     vendor.SpeechHue = oldSpeechHue;
