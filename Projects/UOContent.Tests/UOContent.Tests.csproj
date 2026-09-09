@@ -16,6 +16,9 @@
         <ProjectReference Include="..\Server.Tests\Server.Tests.csproj" />
         <DataFiles Include="$(SolutionDir)\Distribution\Data\**" />
     </ItemGroup>
+    <ItemGroup>
+        <None Include="Tests/Engines/Spawners/Fixtures/*.bin" CopyToOutputDirectory="PreserveNewest" />
+    </ItemGroup>
     <Target Name="CopyData" AfterTargets="AfterBuild">
         <Copy SourceFiles="@(DataFiles)" DestinationFolder="$(OutDir)\Data\%(RecursiveDir)" />
     </Target>
