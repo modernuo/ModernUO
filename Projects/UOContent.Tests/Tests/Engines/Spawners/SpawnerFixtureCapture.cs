@@ -26,13 +26,13 @@ public class SpawnerFixtureCapture
         spawner.Entries[1].Properties = "Hue 33";
         File.WriteAllBytes(Path.Combine(dir, "spawner.v12-v1.bin"), SpawnerBlob.Write(spawner));
 
-        var proximity = new ProximitySpawner(1, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(2), 0, default, 5, "boo", true, "Rat")
+        var proximity = new ProximitySpawner(1, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(2), 0, default, 5, "boo", true, "Rat", "Bird")
         {
             Name = "FixtureProximity"
         };
         File.WriteAllBytes(Path.Combine(dir, "proximity.v12-v1-v0.bin"), SpawnerBlob.Write(proximity));
 
-        var region = new RegionSpawner(1, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(2), 0, "Orc")
+        var region = new RegionSpawner(1, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(2), 0, "Orc", "Troll")
         {
             Name = "FixtureRegion"
         };
