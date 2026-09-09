@@ -1,4 +1,7 @@
 using System;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
 using System.Text.Json;
 using Server;
 using Server.Engines.Spawners;
@@ -154,5 +157,93 @@ public class SpawnerEntryOwnershipTests
         spawned.Delete();
         a.Delete();
         b.Delete();
+    }
+
+    // Manual benchmark harness. Skipped in normal CI/test runs; run it directly (temporarily
+    // removing the Skip) to collect numbers when evaluating the spawn-path performance impact
+    // of a change. See task-7-report.md for recorded before/after numbers.
+    [Fact(Skip = "manual benchmark")]
+    public void Benchmark_SpawnPath_Manual()
+    {
+        const int iterations = 100_000;
+        const int warmup = 1_000;
+
+        var report = new StringBuilder();
+        report.AppendLine();
+
+        foreach (var entryCount in new[] { 1, 10, 50 })
+        {
+            var spawner = new Spawner(1000, TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(10));
+            spawner.MoveToWorld(new Point3D(1500, 1500, 0), Map.Felucca);
+
+            // SpawnedMaxCount = 0 makes every entry IsFull immediately, so Spawn() walks the
+            // entry list to compute probsum, finds it <= 0, and returns without constructing
+            // anything. This isolates the O(entries) selection cost from spawn/construction cost.
+            for (var i = 0; i < entryCount; i++)
+            {
+                spawner.AddEntry("Rabbit", 100, 0, false);
+            }
+
+            for (var i = 0; i < warmup; i++)
+            {
+                spawner.Spawn();
+            }
+
+            var sw = Stopwatch.StartNew();
+            for (var i = 0; i < iterations; i++)
+            {
+                spawner.Spawn();
+            }
+
+            sw.Stop();
+
+            var nsPerCall = sw.Elapsed.TotalMilliseconds * 1_000_000.0 / iterations;
+            report.AppendLine(
+                $"Spawn() entries={entryCount,2}: {nsPerCall,8:F1} ns/call  ({iterations} iterations, {sw.ElapsedMilliseconds} ms total)"
+            );
+
+            spawner.Delete();
+        }
+
+        {
+            var spawner = new Spawner(1000, TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(10));
+            spawner.MoveToWorld(new Point3D(1500, 1500, 0), Map.Felucca);
+
+            for (var i = 0; i < 10; i++)
+            {
+                spawner.AddEntry("Rabbit", 100, 1, false);
+            }
+
+            spawner.Spawn();
+            Assert.Single(spawner.Spawned);
+            var rabbit = spawner.Spawned.Keys.First();
+
+            for (var i = 0; i < warmup; i++)
+            {
+                spawner.Remove(rabbit);
+            }
+
+            var sw = Stopwatch.StartNew();
+            for (var i = 0; i < iterations; i++)
+            {
+                // Idempotent after the first successful removal; every call still runs
+                // Defrag() over the spawner's entries.
+                spawner.Remove(rabbit);
+            }
+
+            sw.Stop();
+
+            var nsPerCall = sw.Elapsed.TotalMilliseconds * 1_000_000.0 / iterations;
+            report.AppendLine(
+                $"Remove(ISpawnable) entries=10: {nsPerCall,8:F1} ns/call  ({iterations} iterations, {sw.ElapsedMilliseconds} ms total)"
+            );
+
+            (rabbit as Mobile)?.Delete();
+            spawner.Delete();
+        }
+
+        // Throw so the numbers surface in test output when this Fact is run manually
+        // (Skip removed temporarily) - Console.WriteLine is not surfaced by the runner.
+        throw new Xunit.Sdk.XunitException(report.ToString());
     }
 }
