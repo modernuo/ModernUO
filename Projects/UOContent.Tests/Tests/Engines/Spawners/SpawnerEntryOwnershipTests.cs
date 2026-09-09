@@ -1,11 +1,11 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Text.Json;
 using Server;
 using Server.Engines.Spawners;
 using Server.Tests;
+using Server.Text;
 using Xunit;
 
 namespace UOContent.Tests.Engines.Spawners;
@@ -161,15 +161,15 @@ public class SpawnerEntryOwnershipTests
 
     // Manual benchmark harness. Skipped in normal CI/test runs; run it directly (temporarily
     // removing the Skip) to collect numbers when evaluating the spawn-path performance impact
-    // of a change. See task-7-report.md for recorded before/after numbers.
+    // of a change. The numbers are printed through the thrown assertion message below.
     [Fact(Skip = "manual benchmark")]
     public void Benchmark_SpawnPath_Manual()
     {
         const int iterations = 100_000;
         const int warmup = 1_000;
 
-        var report = new StringBuilder();
-        report.AppendLine();
+        var report = new ValueStringBuilder(stackalloc char[512]);
+        report.Append('\n', 1);
 
         foreach (var entryCount in new[] { 1, 10, 50 })
         {
@@ -198,8 +198,8 @@ public class SpawnerEntryOwnershipTests
             sw.Stop();
 
             var nsPerCall = sw.Elapsed.TotalMilliseconds * 1_000_000.0 / iterations;
-            report.AppendLine(
-                $"Spawn() entries={entryCount,2}: {nsPerCall,8:F1} ns/call  ({iterations} iterations, {sw.ElapsedMilliseconds} ms total)"
+            report.Append(
+                $"Spawn() entries={entryCount,2}: {nsPerCall,8:F1} ns/call  ({iterations} iterations, {sw.ElapsedMilliseconds} ms total)\n"
             );
 
             spawner.Delete();
@@ -234,8 +234,8 @@ public class SpawnerEntryOwnershipTests
             sw.Stop();
 
             var nsPerCall = sw.Elapsed.TotalMilliseconds * 1_000_000.0 / iterations;
-            report.AppendLine(
-                $"Remove(ISpawnable) entries=10: {nsPerCall,8:F1} ns/call  ({iterations} iterations, {sw.ElapsedMilliseconds} ms total)"
+            report.Append(
+                $"Remove(ISpawnable) entries=10: {nsPerCall,8:F1} ns/call  ({iterations} iterations, {sw.ElapsedMilliseconds} ms total)\n"
             );
 
             (rabbit as Mobile)?.Delete();
@@ -244,6 +244,9 @@ public class SpawnerEntryOwnershipTests
 
         // Throw so the numbers surface in test output when this Fact is run manually
         // (Skip removed temporarily) - Console.WriteLine is not surfaced by the runner.
-        throw new Xunit.Sdk.XunitException(report.ToString());
+        var summary = report.ToString();
+        report.Dispose();
+
+        throw new Xunit.Sdk.XunitException(summary);
     }
 }

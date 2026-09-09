@@ -63,13 +63,13 @@ public class SpawnerGump : Gump
                 ); // Unexpand
             }
 
-            AddButton(38, 22 * i + 21 + offset, 0xFA2, 0xFA4, GetButtonID(2, 1 + i * 2)); // Delete
+            AddButton(46, 22 * i + 21 + offset, 0xFA2, 0xFA4, GetButtonID(2, 1 + i * 2)); // Delete
 
             if (entry != null)
             {
                 AddButton(
                     22,
-                    22 * i + 23 + offset,
+                    22 * i + 21 + offset,
                     entry.Disabled ? 0xD2 : 0xD3,
                     entry.Disabled ? 0xD3 : 0xD2,
                     GetButtonID(3, i)

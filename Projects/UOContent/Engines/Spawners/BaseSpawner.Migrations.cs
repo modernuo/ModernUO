@@ -78,6 +78,8 @@ public abstract partial class BaseSpawner
         _team = content.Team ?? 0;
         _running = content.Running;
         _spawnLocationIsHome = content.SpawnLocationIsHome;
+        // A clear End save flag means the blob stored no end time (_end == default); a running spawner
+        // re-arms immediately either way, because DoTimer clamps a non-positive delay to Core.Now.
         _end = _running ? content.End ?? Core.Now : Core.Now;
         _spawnPositionMode = content.SpawnPositionMode ?? SpawnPositionMode.Automatic;
         _maxSpawnAttempts = content.MaxSpawnAttempts ?? DefaultMaxSpawnAttempts;
