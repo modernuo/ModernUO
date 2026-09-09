@@ -110,8 +110,11 @@ public abstract partial class BaseSpawner
         InvalidateProperties();
     }
 
-    /// <summary>Deletes every live spawn and removes every entry.</summary>
-    public void ClearEntries()
+    /// <summary>
+    /// Deletes every live spawn and removes every entry. Named for the deletion: before entry ownership
+    /// moved to the owner, the generator emitted a <c>ClearEntries()</c> here that only emptied the list.
+    /// </summary>
+    public void RemoveAllEntries()
     {
         RemoveSpawns();
         ClearEntriesCore();
@@ -127,7 +130,7 @@ public abstract partial class BaseSpawner
             return;
         }
 
-        target.ClearEntries();
+        target.RemoveAllEntries();
 
         var entries = EntrySpan;
         for (var i = 0; i < entries.Length; i++)

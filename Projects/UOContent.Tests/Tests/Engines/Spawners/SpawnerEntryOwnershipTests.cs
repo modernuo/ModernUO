@@ -61,7 +61,7 @@ public class SpawnerEntryOwnershipTests
         Assert.Single(spawner.Entries);
         Assert.Same(b, spawner.Entries[0]);
 
-        spawner.ClearEntries();
+        spawner.RemoveAllEntries();
         Assert.Empty(spawner.Entries);
 
         spawner.Delete();

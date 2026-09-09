@@ -99,7 +99,9 @@ public partial class Spawner : BaseSpawner
 
     protected override void AdoptEntries(IReadOnlyList<SpawnerEntry> entries)
     {
-        var list = entries as List<SpawnerEntry> ?? new List<SpawnerEntry>(entries);
+        // Always copy: taking ownership of a caller's List<SpawnerEntry> would alias it, so a later
+        // mutation on either side would silently show up on the other.
+        var list = new List<SpawnerEntry>(entries);
         for (var i = 0; i < list.Count; i++)
         {
             list[i].SetParent(this);
