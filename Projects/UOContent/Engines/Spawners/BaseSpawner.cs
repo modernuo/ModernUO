@@ -772,13 +772,19 @@ public abstract partial class BaseSpawner : Item, ISpawner
         {
             _running = true;
             DoTimer();
+            OnStarted();
         }
     }
 
     public void Stop()
     {
+        var wasRunning = _running;
         _timer?.Stop();
         _running = false;
+        if (wasRunning)
+        {
+            OnStopped();
+        }
     }
 
     public void Defrag()
@@ -975,6 +981,11 @@ public abstract partial class BaseSpawner : Item, ISpawner
             return false;
         }
 
+        if (!OnBeforeSpawn(entry))
+        {
+            return false;
+        }
+
         try
         {
             IEntity entity = null;
@@ -1060,6 +1071,11 @@ public abstract partial class BaseSpawner : Item, ISpawner
                 }
             }
 
+            if (entity is ISpawnable configured)
+            {
+                OnConfigureSpawned(entry, configured);
+            }
+
             if (entity is Mobile m)
             {
                 Spawned.Add(m, entry);
@@ -1067,7 +1083,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
 
                 // var spawnLocation = m is BaseVendor ? Location : GetSpawnPosition(m, map);
 
-                var spawnLocation = GetSpawnPosition(m, map);
+                var spawnLocation = GetSpawnPosition(entry, m, map);
 
                 m.OnBeforeSpawn(spawnLocation, map);
                 m.MoveToWorld(spawnLocation, map);
@@ -1098,13 +1114,14 @@ public abstract partial class BaseSpawner : Item, ISpawner
 
                 m.Spawner = this;
                 m.OnAfterSpawn();
+                OnSpawned(entry, m);
             }
             else if (entity is Item item)
             {
                 Spawned.Add(item, entry);
                 entry.AddToSpawned(item);
 
-                var loc = GetSpawnPosition(item, map);
+                var loc = GetSpawnPosition(entry, item, map);
 
                 item.OnBeforeSpawn(loc, map);
 
@@ -1112,6 +1129,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
 
                 item.Spawner = this;
                 item.OnAfterSpawn();
+                OnSpawned(entry, item);
             }
             else
             {

@@ -3453,6 +3453,11 @@ namespace Server.Mobiles
 
         public override void OnDeath(Container c)
         {
+            if (Spawner is BaseSpawner spawner)
+            {
+                spawner.NotifySpawnedDeath(this, LastKiller);
+            }
+
             if (IsBonded)
             {
                 Effects.PlaySound(this, GetDeathSound());

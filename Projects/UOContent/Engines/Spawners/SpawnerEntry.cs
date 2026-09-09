@@ -54,6 +54,12 @@ public partial class SpawnerEntry
         set => Disabled = !value;
     }
 
+    /// <summary>
+    /// The spawner that owns this entry. Derived entry types declare it as their
+    /// <c>[DirtyTrackingEntity]</c>; the generator only inspects the type it is generating.
+    /// </summary>
+    protected BaseSpawner Parent => _parent;
+
     internal void SetParent(BaseSpawner parent)
     {
         _parent = parent;
