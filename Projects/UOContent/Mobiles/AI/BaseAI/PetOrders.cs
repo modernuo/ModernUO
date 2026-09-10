@@ -43,6 +43,11 @@ public abstract partial class BaseAI
         order is OrderType.Attack or OrderType.Guard or OrderType.Drop or OrderType.Friend
             or OrderType.Unfriend or OrderType.Rename;
 
+    // Publish 51's stand-down commands: told to do any of these, a pet will not attack anything,
+    // even if it is attacked. Stop resolves to None, which is its resting form ("may wander").
+    public static bool IsStandDownOrder(OrderType order) =>
+        order is OrderType.Follow or OrderType.Come or OrderType.Stay or OrderType.None;
+
     public static bool IsDeadPetOrder(OrderType order) =>
         order is OrderType.Guard or OrderType.Attack or OrderType.Transfer or OrderType.Drop;
 

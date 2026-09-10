@@ -1388,6 +1388,16 @@ namespace Server.Mobiles
 
         public static bool BondingEnabled { get; private set; }
 
+        /// <summary>
+        /// Publish 51: a pet told to follow, come, stay or stop "will not attack anything, even
+        /// if it is attacked". Guard and attack are unaffected. The publish (March 2008) has no
+        /// step of its own on the expansion ladder, so it rides ML, and the setting carries the
+        /// rest: shards outside that era commonly want the behaviour either way.
+        /// </summary>
+        public static bool PetsStandDownOnCommand { get; private set; }
+
+        public virtual bool StandsDownOnCommand => PetsStandDownOnCommand;
+
         public virtual bool IsBondable => BondingEnabled && !Summoned;
         public virtual TimeSpan BondingDelay => TimeSpan.FromDays(7.0);
         public virtual TimeSpan BondingAbandonDelay => TimeSpan.FromDays(1.0);
@@ -2751,7 +2761,7 @@ namespace Server.Mobiles
 
             if (AIObject != null)
             {
-                if (!Core.ML || ct != OrderType.Follow && ct != OrderType.Stay)
+                if (!StandsDownOnCommand || !BaseAI.IsStandDownOrder(ct))
                 {
                     AIObject.OnAggressiveAction(aggressor);
                 }
@@ -2777,8 +2787,8 @@ namespace Server.Mobiles
                 }
             }
 
-            if (aggressor.ChangingCombatant && (_controlled || _summoned) &&
-                (ct == OrderType.Come || !Core.ML && ct == OrderType.Stay || ct is OrderType.None or OrderType.Follow))
+            // Only reachable when the pet does not stand down: the orders above returned early.
+            if (aggressor.ChangingCombatant && (_controlled || _summoned) && BaseAI.IsStandDownOrder(ct))
             {
                 IssueOrder(OrderType.Attack, null, aggressor);
             }
@@ -4220,6 +4230,7 @@ namespace Server.Mobiles
         public static void Configure()
         {
             BondingEnabled = ServerConfiguration.GetSetting("taming.enableBonding", Core.LBR);
+            PetsStandDownOnCommand = ServerConfiguration.GetSetting("taming.petsStandDownOnCommand", Core.ML);
         }
 
         public void BeginDeleteTimer()
