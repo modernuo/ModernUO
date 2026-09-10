@@ -359,9 +359,7 @@ public abstract partial class BaseAI
 
         Mobile.AddPetFriend(to);
 
-        Mobile.ControlTarget = to;
-        SetPersistentOrder(OrderType.Follow);
-        return OrderType.Follow;
+        return ResumeInterrupted(previous, interruptedTarget);
     }
 
     private OrderType IssueUnfriend(OrderType previous, Mobile interruptedTarget)
@@ -392,9 +390,7 @@ public abstract partial class BaseAI
 
         Mobile.RemovePetFriend(to);
 
-        Mobile.ControlTarget = from;
-        SetPersistentOrder(OrderType.Follow);
-        return OrderType.Follow;
+        return ResumeInterrupted(previous, interruptedTarget);
     }
 
     private OrderType IssueTransfer()

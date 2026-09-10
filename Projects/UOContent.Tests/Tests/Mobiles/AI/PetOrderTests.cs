@@ -511,19 +511,36 @@ public class PetOrderTests : IDisposable
     }
 
     [Fact]
-    public void Friend_Accepted_FollowsTheNewFriend()
+    public void Friend_Accepted_LeavesTheStandingOrderAlone()
     {
-        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
-        pet.ControlOrder = OrderType.Stay;
+        var post = new Point3D(1001, 1000, 0);
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), post);
+        pet.ControlOrder = OrderType.Stay; // the owner's standing order, anchored at the post
         var friend = SpawnPlayer(new Point3D(1002, 1000, 0));
 
         pet.IssueOrder(OrderType.Friend, master, friend);
 
         Assert.True(pet.IsPetFriend(friend));
-        Assert.Equal(OrderType.Follow, pet.ControlOrder);
-        Assert.Equal(OrderType.Follow, pet.AIObject.PersistentOrder);
-        Assert.Same(friend, pet.ControlTarget);
-        Assert.Equal(Point3D.Zero, pet.Home);
+        Assert.Equal(OrderType.Stay, pet.ControlOrder);            // still staying
+        Assert.Equal(OrderType.Stay, pet.AIObject.PersistentOrder); // owner's order not rewritten
+        Assert.Equal(post, pet.Home);                               // and not re-anchored
+    }
+
+    [Fact]
+    public void Unfriend_Accepted_LeavesTheStandingOrderAlone()
+    {
+        var post = new Point3D(1001, 1000, 0);
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), post);
+        var friend = SpawnPlayer(new Point3D(1002, 1000, 0));
+        pet.AddPetFriend(friend);
+        pet.ControlOrder = OrderType.Stay;
+
+        pet.IssueOrder(OrderType.Unfriend, master, friend);
+
+        Assert.False(pet.IsPetFriend(friend));
+        Assert.Equal(OrderType.Stay, pet.ControlOrder);
+        Assert.Equal(OrderType.Stay, pet.AIObject.PersistentOrder);
+        Assert.Equal(post, pet.Home);
     }
 
     [Fact]
