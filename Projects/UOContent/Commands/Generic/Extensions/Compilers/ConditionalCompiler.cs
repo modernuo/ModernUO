@@ -195,11 +195,31 @@ namespace Server.Commands.Generic
         public static IConditional Compile(Type objectType, ICondition[] conditions) =>
             new CompiledConditional(Build(objectType, conditions).Compile());
 
-        public static Expression<Func<object, bool>> Build(Type objectType, ICondition[] conditions)
-        {
-            var obj = Expression.Parameter(typeof(object), "obj");
-            var target = Expression.Variable(objectType, "target");
+        public static Expression<Func<object, bool>> Build(Type objectType, ICondition[] conditions) =>
+            Lambda(objectType, target => Conjunction(target, conditions));
 
+        /// <summary>
+        /// A disjunction of conjunctions -- <c>(a and b) or (c and d)</c> -- as one lambda, for
+        /// callers that would otherwise compile every group separately and loop over them.
+        /// </summary>
+        public static Expression<Func<object, bool>> Build(Type objectType, ICondition[][] groups) =>
+            Lambda(
+                objectType,
+                target =>
+                {
+                    Expression body = groups.Length > 0 ? Conjunction(target, groups[0]) : Expression.Constant(false);
+
+                    for (var i = 1; i < groups.Length; ++i)
+                    {
+                        body = Expression.OrElse(body, Conjunction(target, groups[i]));
+                    }
+
+                    return body;
+                }
+            );
+
+        private static Expression Conjunction(ParameterExpression target, ICondition[] conditions)
+        {
             Expression body = conditions.Length > 0 ? conditions[0].Build(target) : Expression.Constant(true);
 
             for (var i = 1; i < conditions.Length; ++i)
@@ -207,11 +227,19 @@ namespace Server.Commands.Generic
                 body = Expression.AndAlso(body, conditions[i].Build(target));
             }
 
+            return body;
+        }
+
+        private static Expression<Func<object, bool>> Lambda(Type objectType, Func<ParameterExpression, Expression> body)
+        {
+            var obj = Expression.Parameter(typeof(object), "obj");
+            var target = Expression.Variable(objectType, "target");
+
             return Expression.Lambda<Func<object, bool>>(
                 Expression.Block(
                     [target],
                     Expression.Assign(target, Expression.TypeAs(obj, objectType)),
-                    body
+                    body(target)
                 ),
                 obj
             );

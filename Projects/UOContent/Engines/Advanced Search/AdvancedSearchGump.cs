@@ -767,11 +767,12 @@ public class AdvancedSearchGump : Gump
 
             var ignoreQueue = new ConcurrentQueue<IEntity>();
             var results = new ConcurrentQueue<AdvancedSearchResult>();
+            var predicates = new AdvancedSearchConditions.Cache();
             var worldLocation = new WorldLocation(from.Location, from.Map);
 
             for (var i = 0; i < _threadWorkers.Length; i++)
             {
-                (_threadWorkers[i] ??= new AdvancedSearchThreadWorker()).Wake(worldLocation, Filter, results, ignoreQueue);
+                (_threadWorkers[i] ??= new AdvancedSearchThreadWorker()).Wake(worldLocation, Filter, results, ignoreQueue, predicates);
             }
 
             var type = Filter.FilterType ? Filter.Type : null;
