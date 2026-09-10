@@ -21,7 +21,7 @@ namespace Server.Commands.Generic
             ExtensionInfo.Register(ExtInfo);
         }
 
-        public override void Optimize(Mobile from, Type baseType, ref AssemblyEmitter assembly)
+        public override void Optimize(Mobile from, Type baseType)
         {
             if (baseType == null)
             {
