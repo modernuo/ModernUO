@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using Server;
 using Server.Engines.AdvancedSearch;
 using Server.Items;
@@ -44,6 +45,56 @@ public class AdvancedSearchWorkerTests
         finally
         {
             item.Delete();
+            worker.Exit();
+        }
+    }
+
+    // End to end through Wake/Push/Sleep on real entities: the property test is compiled on the
+    // worker, memoized per type, and applied to items and mobiles alike.
+    [Fact]
+    public void Worker_PropertyTest_FiltersItemsAndMobiles()
+    {
+        var worker = new AdvancedSearchThreadWorker();
+        var results = new ConcurrentQueue<AdvancedSearchResult>();
+        var ignore = new ConcurrentQueue<IEntity>();
+        var filter = new AdvancedSearchFilter
+        {
+            FilterPropertyTest = true,
+            PropertyTest = "Hue > 0",
+        };
+
+        var plain = new Item(0x1);
+        var hued = new Item(0x1) { Hue = 42 };
+        var huedToo = new Gold(1) { Hue = 7 };
+        var mobile = new Mobile { Hue = 1002 };
+
+        try
+        {
+            worker.Wake(new WorldLocation(Point3D.Zero, Map.Felucca), filter, results, ignore);
+            worker.Push(plain);
+            worker.Push(hued);
+            worker.Push(huedToo);
+            worker.Push(mobile);
+            worker.Sleep();
+
+            var matched = new HashSet<IEntity>();
+            foreach (var r in results)
+            {
+                matched.Add(r.Entity);
+            }
+
+            Assert.Equal(3, matched.Count);
+            Assert.Contains(hued, matched);
+            Assert.Contains(huedToo, matched);
+            Assert.Contains(mobile, matched);
+            Assert.DoesNotContain(plain, matched);
+        }
+        finally
+        {
+            plain.Delete();
+            hued.Delete();
+            huedToo.Delete();
+            mobile.Delete();
             worker.Exit();
         }
     }
