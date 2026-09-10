@@ -121,6 +121,8 @@ namespace Server.Mobiles
 
         public virtual bool IsTokunoVendor => Map == Map.Tokuno;
 
+        public virtual bool IsTerMurVendor => Map == Map.TerMur;
+
         public virtual VendorShoeType ShoeType => VendorShoeType.Shoes;
 
         public DateTime LastRestock { get; set; }

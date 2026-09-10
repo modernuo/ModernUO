@@ -29,6 +29,12 @@ namespace Server.Mobiles
         public override void InitSBInfo()
         {
             m_SBInfos.Add(new SBScribe());
+
+            if (Core.SE && IsTokunoVendor || Core.SA && IsTerMurVendor)
+            {
+                m_SBInfos.Add(new SBSamurai());
+                m_SBInfos.Add(new SBNinja());
+            }
         }
 
         public override void InitOutfit()
