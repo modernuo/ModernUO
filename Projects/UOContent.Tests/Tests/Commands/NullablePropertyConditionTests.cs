@@ -12,8 +12,6 @@ namespace UOContent.Tests.Commands;
 // satisfies no relation, just as C#'s lifted operators would have it.
 public class NullablePropertyConditionTests
 {
-    private const string Pending = "Nullable<T> properties are not supported by the conditional compiler yet.";
-
     public class Subject
     {
         [CommandProperty(AccessLevel.GameMaster)]
@@ -39,7 +37,7 @@ public class NullablePropertyConditionTests
         return conditional.CheckCondition(subject);
     }
 
-    [Fact(Skip = Pending)]
+    [Fact]
     public void SetValueComparesByEquality()
     {
         var subject = new Subject { Count = 5 };
@@ -50,7 +48,7 @@ public class NullablePropertyConditionTests
         Assert.False(Check(subject, "Count", ComparisonOperator.NotEqual, "5"));
     }
 
-    [Fact(Skip = Pending)]
+    [Fact]
     public void SetValueComparesRelationally()
     {
         var subject = new Subject { Count = 5 };
@@ -61,7 +59,7 @@ public class NullablePropertyConditionTests
         Assert.True(Check(subject, "Count", ComparisonOperator.LesserEqual, "5"));
     }
 
-    [Fact(Skip = Pending)]
+    [Fact]
     public void UnsetValueEqualsNull()
     {
         Assert.True(Check(new Subject(), "Count", ComparisonOperator.Equal, "null"));
@@ -70,7 +68,7 @@ public class NullablePropertyConditionTests
     }
 
     // Lifted semantics: null is never greater, lesser, or equal to a value -- only unequal.
-    [Fact(Skip = Pending)]
+    [Fact]
     public void UnsetValueSatisfiesNoRelation()
     {
         var subject = new Subject();
@@ -84,7 +82,7 @@ public class NullablePropertyConditionTests
     }
 
     // A struct that compares through CompareTo rather than a primitive operator.
-    [Fact(Skip = Pending)]
+    [Fact]
     public void NullableStructComparesThroughCompareTo()
     {
         var set = new Subject { Delay = TimeSpan.FromSeconds(5) };
@@ -101,7 +99,7 @@ public class NullablePropertyConditionTests
         Assert.False(Check(unset, "Delay", ComparisonOperator.Lesser, "00:00:04"));
     }
 
-    [Fact(Skip = Pending)]
+    [Fact]
     public void NullableEnumComparesByNameAndOrder()
     {
         var set = new Subject { Skill = SkillName.Magery };
@@ -116,5 +114,30 @@ public class NullablePropertyConditionTests
         Assert.True(Check(unset, "Skill", ComparisonOperator.Equal, "null"));
         Assert.False(Check(unset, "Skill", ComparisonOperator.Equal, "Magery"));
         Assert.False(Check(unset, "Skill", ComparisonOperator.Greater, "Alchemy"));
+    }
+
+    // `sort by` on a nullable: values order by the underlying type and an unset value takes a
+    // consistent place at one end, the same convention a null reference already had.
+    [Fact]
+    public void SortingOnANullableOrdersValuesAndPlacesUnsetConsistently()
+    {
+        var prop = new Property("Count");
+        prop.BindTo(typeof(Subject), PropertyAccess.Read);
+
+        var comparer = SortCompiler.Compile<object>(typeof(Subject), [new OrderInfo(prop, true)]);
+
+        var low = new Subject { Count = 1 };
+        var high = new Subject { Count = 2 };
+        var unset = new Subject();
+
+        Assert.True(comparer.Compare(low, high) < 0);
+        Assert.True(comparer.Compare(high, low) > 0);
+        Assert.Equal(0, comparer.Compare(low, low));
+
+        var forward = comparer.Compare(high, unset);
+
+        Assert.NotEqual(0, forward);
+        Assert.Equal(-Math.Sign(forward), Math.Sign(comparer.Compare(unset, high)));
+        Assert.Equal(0, comparer.Compare(unset, new Subject()));
     }
 }

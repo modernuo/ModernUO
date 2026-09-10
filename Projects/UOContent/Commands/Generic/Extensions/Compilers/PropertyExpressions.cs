@@ -89,15 +89,23 @@ public static class PropertyExpressions
 
     /// <summary>
     /// A boolean test of <paramref name="a" /> against <paramref name="b" />. Integral primitives
-    /// and enums compare with the operator itself -- lifted over <c>Nullable&lt;T&gt;</c>, and on
-    /// the unsigned types as unsigned; nothing here widens to a signed type. Everything else goes
-    /// through <see cref="TryCompare" /> and tests the sign of the result. False when the type
-    /// has no <c>CompareTo</c> at all, in which case only equality is meaningful.
+    /// and enums compare with the operator itself -- on the unsigned types as unsigned; nothing
+    /// here widens to a signed type. Everything else goes through <see cref="TryCompare" /> and
+    /// tests the sign of the result. <c>Nullable&lt;T&gt;</c> is lifted either way, as C# lifts it:
+    /// two nulls are equal, a null and a value are unequal, and a null satisfies no relation.
+    /// (A null <em>reference</em> keeps the ordering <see cref="TryCompare" /> gives it.) False
+    /// when the type has no <c>CompareTo</c> at all, in which case only equality is meaningful.
     /// </summary>
     public static bool TryRelational(Expression a, Expression b, ComparisonOperator op, out Expression test)
     {
         var type = a.Type;
-        var nonNullable = Nullable.GetUnderlyingType(type) ?? type;
+        var underlying = Nullable.GetUnderlyingType(type);
+        var nonNullable = underlying ?? type;
+
+        if (underlying != null && !underlying.IsEnum && !IsIntegral(underlying))
+        {
+            return TryLiftedRelational(a, b, op, out test);
+        }
 
         if (nonNullable.IsEnum)
         {
@@ -105,15 +113,15 @@ public static class PropertyExpressions
             // read the underlying integer. Convert lifts over Nullable<E> on its own.
             if (op is not (ComparisonOperator.Equal or ComparisonOperator.NotEqual))
             {
-                var underlying = Enum.GetUnderlyingType(nonNullable);
+                var integer = Enum.GetUnderlyingType(nonNullable);
 
-                if (nonNullable != type)
+                if (underlying != null)
                 {
-                    underlying = typeof(Nullable<>).MakeGenericType(underlying);
+                    integer = typeof(Nullable<>).MakeGenericType(integer);
                 }
 
-                a = Expression.Convert(a, underlying);
-                b = Expression.Convert(b, underlying);
+                a = Expression.Convert(a, integer);
+                b = Expression.Convert(b, integer);
             }
 
             test = Relational(a, b, op);
@@ -133,6 +141,48 @@ public static class PropertyExpressions
         }
 
         test = Relational(comparison, Expression.Constant(0), op);
+        return true;
+    }
+
+    // Nullable<T> over a type that compares through CompareTo: the values compare when both are
+    // present, and the HasValue flags decide otherwise, the way the language lifts an operator.
+    private static bool TryLiftedRelational(Expression a, Expression b, ComparisonOperator op, out Expression test)
+    {
+        var left = Expression.Variable(a.Type, "left");
+        var right = Expression.Variable(a.Type, "right");
+
+        var couldCompare = TryCompareValues(
+            Expression.Property(left, "Value"),
+            Expression.Property(right, "Value"),
+            1,
+            out var comparison
+        );
+
+        if (!couldCompare)
+        {
+            test = null;
+            return false;
+        }
+
+        var leftHasValue = Expression.Property(left, "HasValue");
+        var rightHasValue = Expression.Property(right, "HasValue");
+        var both = Expression.AndAlso(leftHasValue, rightHasValue);
+        var relation = Relational(comparison, Expression.Constant(0), op);
+
+        Expression lifted = op switch
+        {
+            ComparisonOperator.Equal    => Expression.Condition(both, relation, Expression.Equal(leftHasValue, rightHasValue)),
+            ComparisonOperator.NotEqual => Expression.Condition(both, relation, Expression.NotEqual(leftHasValue, rightHasValue)),
+            _                           => Expression.AndAlso(both, relation)
+        };
+
+        test = Expression.Block(
+            [left, right],
+            Expression.Assign(left, a),
+            Expression.Assign(right, b),
+            lifted
+        );
+
         return true;
     }
 
