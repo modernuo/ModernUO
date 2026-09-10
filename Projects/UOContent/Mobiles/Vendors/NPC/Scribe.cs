@@ -30,7 +30,7 @@ namespace Server.Mobiles
         {
             m_SBInfos.Add(new SBScribe());
 
-            if (Core.SE && IsTokunoVendor)
+            if (Core.SE && IsTokunoVendor || Core.SA && IsTerMurVendor)
             {
                 m_SBInfos.Add(new SBSamurai());
                 m_SBInfos.Add(new SBNinja());
