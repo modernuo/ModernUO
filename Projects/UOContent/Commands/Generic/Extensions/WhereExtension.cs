@@ -22,7 +22,7 @@ namespace Server.Commands.Generic
                 throw new InvalidOperationException("Insanity.");
             }
 
-            Conditional.Compile(ref assembly);
+            Conditional.Compile();
         }
 
         public override void Parse(Mobile from, string[] arguments, int offset, int size)
