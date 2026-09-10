@@ -1,252 +1,95 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Reflection.Emit;
+using System.Linq.Expressions;
 
 namespace Server.Commands.Generic
 {
     public static class DistinctCompiler
     {
-        public static IComparer<T> Compile<T>(AssemblyEmitter assembly, Type objectType, Property[] props)
+        private sealed class DistinctComparer<T> : IComparer<T>, IEqualityComparer<T>
         {
-            var typeBuilder = assembly.DefineType(
-                "__distinct",
-                TypeAttributes.Public,
-                typeof(object)
+            private readonly Comparison<T> _compare;
+            private readonly Func<T, int> _hash;
+
+            public DistinctComparer(Comparison<T> compare, Func<T, int> hash)
+            {
+                _compare = compare;
+                _hash = hash;
+            }
+
+            public int Compare(T x, T y) => _compare(x, y);
+
+            public bool Equals(T x, T y) => _compare(x, y) == 0;
+
+            public int GetHashCode(T obj) => _hash(obj);
+        }
+
+        /// <summary>
+        /// A comparer that treats two objects as the same when every one of
+        /// <paramref name="props" /> reads equal on both. Ordering is the sort compiler's, all
+        /// ascending, so the result doubles as an <see cref="IEqualityComparer{T}" />.
+        /// </summary>
+        public static IComparer<T> Compile<T>(Type objectType, Property[] props)
+        {
+            var signs = new int[props.Length];
+            Array.Fill(signs, 1);
+
+            return new DistinctComparer<T>(
+                SortCompiler.Build<T>(objectType, props, signs).Compile(),
+                BuildHash<T>(objectType, props).Compile()
             );
+        }
+
+        // XOR of each property's hash; a null reference hashes to 0 and an int hashes to itself.
+        public static Expression<Func<T, int>> BuildHash<T>(Type objectType, Property[] props)
+        {
+            var arg = Expression.Parameter(typeof(T), "obj");
+            var target = Expression.Variable(objectType, "target");
+
+            Expression hash = Expression.Constant(0);
+
+            for (var i = 0; i < props.Length; ++i)
             {
-                var ctor = typeBuilder.DefineConstructor(
-                    MethodAttributes.Public,
-                    CallingConventions.Standard,
-                    Type.EmptyTypes
-                );
+                var part = HashOf(target, props[i]);
 
-                var il = ctor.GetILGenerator();
-
-                // : base()
-                il.Emit(OpCodes.Ldarg_0);
-                il.Emit(
-                    OpCodes.Call,
-                    typeof(T).GetConstructor(Type.EmptyTypes) ??
-                    throw new Exception($"Could not find empty constructor for type {typeof(T).FullName}")
-                );
-
-                // return;
-                il.Emit(OpCodes.Ret);
+                hash = i == 0 ? part : Expression.ExclusiveOr(hash, part);
             }
 
-            typeBuilder.AddInterfaceImplementation(typeof(IComparer<T>));
+            return Expression.Lambda<Func<T, int>>(
+                Expression.Block(
+                    [target],
+                    Expression.Assign(target, Expression.TypeAs(arg, objectType)),
+                    hash
+                ),
+                arg
+            );
+        }
 
-            MethodBuilder compareMethod;
+        private static Expression HashOf(Expression target, Property prop)
+        {
+            var read = PropertyExpressions.ChainOrDefault(target, prop);
+            var type = prop.Type;
+
+            if (type == typeof(int))
             {
-                var emitter = new MethodEmitter(typeBuilder);
-
-                emitter.Define(
-                    /*  name  */ "Compare",
-                    /*  attr  */
-                    MethodAttributes.Public | MethodAttributes.Virtual,
-                    /* return */
-                    typeof(int),
-                    /* params */
-                    new[] { typeof(T), typeof(T) }
-                );
-
-                var a = emitter.CreateLocal(objectType);
-                var b = emitter.CreateLocal(objectType);
-
-                var v = emitter.CreateLocal(typeof(int));
-
-                emitter.LoadArgument(1);
-                emitter.CastAs(objectType);
-                emitter.StoreLocal(a);
-
-                emitter.LoadArgument(2);
-                emitter.CastAs(objectType);
-                emitter.StoreLocal(b);
-
-                emitter.Load(0);
-                emitter.StoreLocal(v);
-
-                var end = emitter.CreateLabel();
-
-                for (var i = 0; i < props.Length; ++i)
-                {
-                    if (i > 0)
-                    {
-                        emitter.LoadLocal(v);
-                        emitter.BranchIfTrue(end);
-                    }
-
-                    var prop = props[i];
-
-                    emitter.LoadLocal(a);
-                    emitter.Chain(prop);
-
-                    var couldCompare =
-                        emitter.CompareTo(
-                            1,
-                            () =>
-                            {
-                                emitter.LoadLocal(b);
-                                emitter.Chain(prop);
-                            }
-                        );
-
-                    if (!couldCompare)
-                    {
-                        throw new InvalidOperationException("Property is not comparable.");
-                    }
-
-                    emitter.StoreLocal(v);
-                }
-
-                emitter.MarkLabel(end);
-
-                emitter.LoadLocal(v);
-                emitter.Return();
-
-                typeBuilder.DefineMethodOverride(
-                    emitter.Method,
-                    typeof(IComparer<T>).GetMethod(
-                        "Compare",
-                        new[]
-                        {
-                            typeof(T),
-                            typeof(T)
-                        }
-                    ) ?? throw new Exception($"No Compare method found for type {typeof(T).FullName}")
-                );
-
-                compareMethod = emitter.Method;
+                return read;
             }
 
-            typeBuilder.AddInterfaceImplementation(typeof(IEqualityComparer<T>));
+            var value = Expression.Variable(type, prop.Binding);
+            var getHashCode = type.GetMethod("GetHashCode", Type.EmptyTypes) ?? typeof(object).GetMethod("GetHashCode", Type.EmptyTypes)!;
+
+            Expression hash = Expression.Call(value, getHashCode);
+
+            if (!type.IsValueType)
             {
-                var emitter = new MethodEmitter(typeBuilder);
-
-                emitter.Define(
-                    /*  name  */ "Equals",
-                    /*  attr  */
-                    MethodAttributes.Public | MethodAttributes.Virtual,
-                    /* return */
-                    typeof(bool),
-                    /* params */
-                    new[] { typeof(T), typeof(T) }
-                );
-
-                emitter.Generator.Emit(OpCodes.Ldarg_0);
-                emitter.Generator.Emit(OpCodes.Ldarg_1);
-                emitter.Generator.Emit(OpCodes.Ldarg_2);
-
-                emitter.Generator.Emit(OpCodes.Call, compareMethod);
-
-                emitter.Generator.Emit(OpCodes.Ldc_I4_0);
-
-                emitter.Generator.Emit(OpCodes.Ceq);
-
-                emitter.Generator.Emit(OpCodes.Ret);
-
-                typeBuilder.DefineMethodOverride(
-                    emitter.Method,
-                    typeof(IEqualityComparer<T>).GetMethod(
-                        "Equals",
-                        new[]
-                        {
-                            typeof(T),
-                            typeof(T)
-                        }
-                    ) ?? throw new Exception($"No Equals method found for type {typeof(T).FullName}")
+                hash = Expression.Condition(
+                    Expression.ReferenceNotEqual(value, Expression.Constant(null, type)),
+                    hash,
+                    Expression.Constant(0)
                 );
             }
 
-            {
-                var emitter = new MethodEmitter(typeBuilder);
-
-                emitter.Define(
-                    /*  name  */ "GetHashCode",
-                    /*  attr  */
-                    MethodAttributes.Public | MethodAttributes.Virtual,
-                    /* return */
-                    typeof(int),
-                    /* params */
-                    new[] { typeof(T) }
-                );
-
-                var obj = emitter.CreateLocal(objectType);
-
-                emitter.LoadArgument(1);
-                emitter.CastAs(objectType);
-                emitter.StoreLocal(obj);
-
-                for (var i = 0; i < props.Length; ++i)
-                {
-                    var prop = props[i];
-
-                    emitter.LoadLocal(obj);
-                    emitter.Chain(prop);
-
-                    var active = emitter.Active;
-
-                    var getHashCode = active.GetMethod("GetHashCode", Type.EmptyTypes)
-                                      ?? typeof(T).GetMethod("GetHashCode", Type.EmptyTypes);
-
-                    if (active != typeof(int))
-                    {
-                        if (!active.IsValueType)
-                        {
-                            var value = emitter.AcquireTemp(active);
-
-                            var valueNotNull = emitter.CreateLabel();
-                            var done = emitter.CreateLabel();
-
-                            emitter.StoreLocal(value);
-                            emitter.LoadLocal(value);
-
-                            emitter.BranchIfTrue(valueNotNull);
-
-                            emitter.Load(0);
-                            emitter.Pop(typeof(int));
-
-                            emitter.Branch(done);
-
-                            emitter.MarkLabel(valueNotNull);
-
-                            emitter.LoadLocal(value);
-                            emitter.Call(getHashCode);
-
-                            emitter.ReleaseTemp(value);
-
-                            emitter.MarkLabel(done);
-                        }
-                        else
-                        {
-                            emitter.Call(getHashCode);
-                        }
-                    }
-
-                    if (i > 0)
-                    {
-                        emitter.Xor();
-                    }
-                }
-
-                emitter.Return();
-
-                typeBuilder.DefineMethodOverride(
-                    emitter.Method,
-                    typeof(IEqualityComparer<T>).GetMethod(
-                        "GetHashCode",
-                        new[]
-                        {
-                            typeof(T)
-                        }
-                    ) ?? throw new Exception($"No GetHashCode method found for type {typeof(T).FullName}")
-                );
-            }
-
-            var comparerType = typeBuilder.CreateType();
-
-            return comparerType.CreateInstance<IComparer<T>>();
+            return Expression.Block([value], Expression.Assign(value, read), hash);
         }
     }
 }
