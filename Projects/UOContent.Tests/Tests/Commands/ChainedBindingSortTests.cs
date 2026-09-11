@@ -94,9 +94,7 @@ public class ChainedBindingSortTests : IDisposable
         Assert.Equal(0, comparer.Compare(blank, alsoBlank));
     }
 
-    // Ordering a value-typed chain when the intermediate is null: it reads as default(int), so
-    // blanks sort below real clilocs rather than throwing. ConditionalCompilerEdgeTests covers
-    // the non-null ordering and the distinct case; this is the gap it leaves.
+    // A null intermediate on a value-typed chain reads as default(int) rather than throwing.
     [Fact]
     public void SortingOnAValueTypeChainStillSurvivesANullIntermediate()
     {

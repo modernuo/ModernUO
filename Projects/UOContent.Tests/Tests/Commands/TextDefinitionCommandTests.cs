@@ -5,10 +5,8 @@ using Xunit;
 
 namespace UOContent.Tests.Commands;
 
-// The command layer reaches a TextDefinition through four doors -- [set, [add, spawner Props and
-// the props gump -- and all four funnel through Types.TryParse. Commands.Split has already thrown
-// the caller's quotes away by then, so "0" and 0 arrive identical; the only way to say which one
-// you meant is an in-band marker.
+// Commands.Split strips quotes before any parser runs, so "0" and 0 arrive identical -- the
+// markers are the only way to say which was meant. See dev-docs/generic-commands.md.
 public class TextDefinitionParsingTests
 {
     private static TextDefinition Parse(string value)
@@ -29,7 +27,7 @@ public class TextDefinitionParsingTests
         Assert.Null(td.String);
     }
 
-    // '#' is what ToString() already emits for a cliloc, so this closes the round trip.
+    // ToString() already emits '#', so this closes the round trip.
     [Fact]
     public void ClilocMarkerRoundTripsThroughToString()
     {
@@ -54,7 +52,7 @@ public class TextDefinitionParsingTests
         Assert.Equal(expected, td.String);
     }
 
-    // Bare integers keep meaning "cliloc" so existing spawners and scripts are unaffected.
+    // Bare integers stay clilocs, so existing content is unaffected.
     [Fact]
     public void BareZeroStaysAnEmptyCliloc()
     {
@@ -65,8 +63,7 @@ public class TextDefinitionParsingTests
         Assert.Null(td.String);
     }
 
-    // GetValue() fills the props-gump edit box. A string that would read back as something else
-    // has to come out quoted or pressing OK silently converts it.
+    // GetValue() fills the props-gump edit box; an ambiguous string must come out quoted.
     [Theory]
     [InlineData("1060847")]
     [InlineData("0")]
@@ -95,8 +92,7 @@ public class TextDefinitionParsingTests
     }
 }
 
-// [get emits @"null" for a string whose value is literally "null" so the two can be told apart.
-// [set has to decode it or the value you copy out of [get is not the value you can paste back in.
+// [get emits @"null" for the literal string "null"; [set has to decode it to round trip.
 [Collection("Sequential UOContent Tests")]
 public class StringEscapeRoundTripTests
 {

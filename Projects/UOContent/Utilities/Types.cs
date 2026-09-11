@@ -192,8 +192,8 @@ namespace Server
             return false;
         }
 
-        // @"..." means "the literal text inside", for the cases where the bare text would be read
-        // as something else. Shared with TextDefinition, which needs it for digits.
+        // @"..." is the literal text inside, for values the bare text would be read as something
+        // else. See dev-docs/generic-commands.md.
         private static bool TryGetQuotedLiteral(string value, out string literal)
         {
             if (value?.Length >= 3 && value[0] == '@' && value[1] == '"' && value[^1] == '"')
@@ -207,9 +207,7 @@ namespace Server
         }
 
         /// <summary>
-        /// <see cref="TryParse" /> for callers that have nowhere to put an error string and want
-        /// a bad value to stop them -- the `where` clause building a comparison constant, which
-        /// reports the failure to the staff member who typed it.
+        /// <see cref="TryParse" /> for callers with nowhere to put an error string.
         /// </summary>
         public static object ParseOrThrow(Type type, string value)
         {
@@ -275,10 +273,7 @@ namespace Server
 
             if (IsType(type, OfString))
             {
-                // Round trip with InternalGetValue, which writes @"null" for the literal string
-                // "null" so it can be told apart from the null sentinel. Without the decode here,
-                // the value [get hands a GM is not a value [set will take back. The same @"..."
-                // convention is understood by TextDefinition.TryParse.
+                // Decodes what InternalGetValue writes, so [get output pastes back into [set.
                 constructed = TryGetQuotedLiteral(value, out var literal) ? literal : value;
                 return null;
             }

@@ -327,11 +327,8 @@ public static class PropertyExpressions
     }
 
     /// <summary>
-    /// The right-hand side of a condition as a typed constant. A string is resolved by
-    /// <see cref="Types.ParseOrThrow" /> -- the same parser behind <c>[set</c>, <c>[add</c>,
-    /// spawner props, the props gump and Advanced Search -- so type names, entity serials, hex
-    /// numerics, enum names, the <c>@"..."</c> literal and TextDefinition's own <c>#</c> marker
-    /// all mean here what they mean everywhere else.
+    /// The right-hand side of a condition as a typed constant, resolved by the same parser behind
+    /// <c>[set</c> and <c>[add</c>. See <c>dev-docs/generic-commands.md</c>.
     /// </summary>
     public static ConstantExpression Constant(Type type, object value)
     {
@@ -347,8 +344,7 @@ public static class PropertyExpressions
     {
         var underlying = Nullable.GetUnderlyingType(type);
 
-        // `where` has always spelled a null constant as a bare `null`, where [set uses (-null-).
-        // This stays ahead of the shared parser, which reads a bare `null` as the text "null".
+        // `where` spells null as a bare `null`, not [set's (-null-), so it precedes the parser.
         if (text == "null" && (underlying != null || !type.IsValueType))
         {
             return null;

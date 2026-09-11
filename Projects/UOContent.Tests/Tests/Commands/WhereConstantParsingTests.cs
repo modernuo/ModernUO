@@ -8,10 +8,8 @@ using Xunit;
 
 namespace UOContent.Tests.Commands;
 
-// The `where` clause parsed its comparison constants itself instead of going through
-// Types.TryParse, which is what [set, [add, spawner props, the props gump and Advanced Search all
-// use. It only ever looked for a static Parse(string, IFormatProvider) on the property type, so a
-// Type-valued or entity-valued property -- neither of which has one -- threw rather than resolving.
+// `where` constants resolve through Types.TryParse like every other command. Type- and
+// entity-valued properties have no static Parse, so the old local parser threw on them.
 [Collection("Sequential UOContent Tests")]
 public class WhereConstantParsingTests : IDisposable
 {
@@ -95,8 +93,7 @@ public class WhereConstantParsingTests : IDisposable
         Assert.False(Check(s, "Thing", (item.Serial + 1).ToString()));
     }
 
-    // `where` has always spelled a null constant as a bare `null`; [set uses (-null-). That
-    // difference has to survive the unification or every `= null` clause silently changes meaning.
+    // `where` spells null as a bare `null`, not [set's (-null-); every existing clause relies on it.
     [Fact]
     public void BareNullStillMeansNull()
     {

@@ -69,10 +69,8 @@ public class TextDefinition : IEquatable<object>, IEquatable<TextDefinition>, IS
         String != null ? $"\"{String}\"" : null;
 
     /// <summary>
-    /// The editable text form, shown in the props gump's set gump. Whatever this writes,
-    /// <see cref="TryParse(ReadOnlySpan{char}, IFormatProvider, out TextDefinition)" /> has to read
-    /// back unchanged -- so a string that would otherwise come back as a cliloc is quoted. The
-    /// check is a real round trip rather than a pattern, so it cannot drift away from the parser.
+    /// The editable text form. Quotes a string that <c>TryParse</c> would not read back unchanged;
+    /// the check is a real round trip so it cannot drift from the parser.
     /// </summary>
     public string GetValue()
     {
@@ -155,17 +153,9 @@ public class TextDefinition : IEquatable<object>, IEquatable<TextDefinition>, IS
     }
 
     /// <summary>
-    /// Reads the text form a staff member types into the props gump or the <c>[set</c> command.
-    /// The command tokenizer strips real quotes before any of this is reached, so the markers have
-    /// to travel inside the value itself:
-    /// <list type="bullet">
-    ///   <item><c>#1234</c> -- an explicit cliloc; the form <see cref="ToString" /> writes.</item>
-    ///   <item><c>1234</c> / <c>0x4D2</c> -- a cliloc; the form scripts and spawner props have
-    ///     always written, kept so existing content keeps working.</item>
-    ///   <item><c>@"1234"</c> -- the literal text <c>1234</c>, which would otherwise read back as
-    ///     a cliloc. <see cref="GetValue" /> writes this form for exactly those strings.</item>
-    /// </list>
-    /// Always succeeds: anything that is not a cliloc is a string.
+    /// <c>#1234</c> or a bare <c>1234</c>/<c>0x4D2</c> is a cliloc; <c>@"1234"</c> is the literal
+    /// text. Always succeeds -- anything that is not a cliloc is a string.
+    /// See <c>dev-docs/generic-commands.md</c>.
     /// </summary>
     public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider provider, out TextDefinition result)
     {

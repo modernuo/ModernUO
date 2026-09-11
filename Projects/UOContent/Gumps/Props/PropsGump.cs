@@ -305,10 +305,8 @@ namespace Server.Gumps
                             from.SendGump(new PropertiesGump(from, mobile, m_Stack, m_List, m_Page));
                             from.SendGump(new SkillsGump(from, mobile));
                         }
-                        // TextDefinition is both [PropertyObject] and parsable, so it has to be
-                        // caught ahead of the [PropertyObject] branch below or that one wins.
-                        // Drilling into it is a dead end anyway -- Number and String are get-only --
-                        // so route it to the text editor, which knows how to read and parse one.
+                        // Must stay ahead of [PropertyObject]: TextDefinition carries that
+                        // attribute, but Number and String are get-only so drilling in is a dead end.
                         else if (IsType(type, OfText))
                         {
                             from.SendGump(new SetGump(prop, from, m_Object, this));

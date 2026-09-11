@@ -11,11 +11,8 @@ using Xunit;
 
 namespace UOContent.Tests.Gumps;
 
-// TextDefinition is both [PropertyObject] and parsable. The props gump checks [PropertyObject]
-// first, so without an explicit branch a TextDefinition row drills into a read-only Number/String
-// gump (or, when the value is null, silently redraws the same page) instead of opening an editor.
-// It broke exactly that way once already: #1217 added [PropertyObject] to TextDefinition and
-// hijacked the routing that #765 had left working. These tests pin the routing down.
+// TextDefinition carries [PropertyObject], which the props gump checks before its parsable
+// fallback -- so the row needs an explicit branch or it drills into a read-only dead end.
 [Collection("Sequential UOContent Tests")]
 public class PropsGumpTextDefinitionTests : IDisposable
 {
@@ -120,8 +117,7 @@ public class PropsGumpTextDefinitionTests : IDisposable
         Assert.NotNull(ns.FindGump<SetGump>());
     }
 
-    // The null case is the one that looks most broken in-game: the PropertyObject branch has no
-    // object to drill into, so it re-sends the same page and the button appears to do nothing.
+    // With no object to drill into, the old path re-sent the same page and looked inert.
     [Fact]
     public void PressingSetOnANullTextDefinitionOpensTheEditor()
     {
@@ -133,8 +129,7 @@ public class PropsGumpTextDefinitionTests : IDisposable
         Assert.NotNull(ns.FindGump<SetGump>());
     }
 
-    // Numeric input always wins and becomes a cliloc -- the same rule TextDefinition.Parse gives
-    // the [set command -- so "0" yields cliloc 0 (an empty definition), never the string "0".
+    // Numeric input always wins, so "0" is cliloc 0 (empty), never the string "0".
     [Theory]
     [InlineData("1060847", 1060847, null)]
     [InlineData("0", 0, null)]
@@ -156,8 +151,7 @@ public class PropsGumpTextDefinitionTests : IDisposable
         Assert.Equal(expectedString, tp.Message.String);
     }
 
-    // A string that looks like a cliloc has to survive a trip through the editor untouched. The
-    // edit box is seeded from GetValue(), so that is the text a GM sees and presses OK on.
+    // The edit box is seeded from GetValue(), so a cliloc-looking string must survive the trip.
     [Fact]
     public void EditorPreservesAStringThatLooksLikeACliloc()
     {
