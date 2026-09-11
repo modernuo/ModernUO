@@ -819,6 +819,8 @@ public class AdvancedSearchGump : Gump
                         }
                     }
 
+                    resultsList.Sort(AdvancedSearchResultSerialComparer.Instance);
+
                     SearchResults = resultsList.ToArray();
 
                     // Force the GC to collect the results
