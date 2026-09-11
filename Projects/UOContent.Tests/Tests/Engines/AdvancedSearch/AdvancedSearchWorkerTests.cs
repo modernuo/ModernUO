@@ -99,6 +99,60 @@ public class AdvancedSearchWorkerTests
         }
     }
 
+    // The map boxes are independent checks. Ticking several used to reject everything, because
+    // each ticked map was applied as "must be on this map"; an entity on any ticked map passes.
+    [Fact]
+    public void Worker_SeveralMapsTicked_MatchesAnyOfThem()
+    {
+        var worker = new AdvancedSearchThreadWorker();
+        var results = new ConcurrentQueue<AdvancedSearchResult>();
+        var ignore = new ConcurrentQueue<IEntity>();
+        var filter = new AdvancedSearchFilter
+        {
+            FilterFelucca = true,
+            FilterTrammel = true,
+            FilterInternalMap = true,
+            HideValidInternalMap = false,
+        };
+
+        var fel = new Item(0x1);
+        fel.MoveToWorld(new Point3D(1000, 1000, 0), Map.Felucca);
+        var tram = new Item(0x1);
+        tram.MoveToWorld(new Point3D(1000, 1000, 0), Map.Trammel);
+        var internalItem = new Item(0x1); // starts on Map.Internal
+        var malas = new Item(0x1);
+        malas.MoveToWorld(new Point3D(1000, 1000, 0), Map.Malas);
+
+        try
+        {
+            worker.Wake(new WorldLocation(Point3D.Zero, Map.Felucca), filter, results, ignore);
+            worker.Push(fel);
+            worker.Push(tram);
+            worker.Push(internalItem);
+            worker.Push(malas);
+            worker.Sleep();
+
+            var matched = new HashSet<IEntity>();
+            foreach (var r in results)
+            {
+                matched.Add(r.Entity);
+            }
+
+            Assert.Contains(fel, matched);
+            Assert.Contains(tram, matched);
+            Assert.Contains(internalItem, matched);
+            Assert.DoesNotContain(malas, matched);
+        }
+        finally
+        {
+            fel.Delete();
+            tram.Delete();
+            internalItem.Delete();
+            malas.Delete();
+            worker.Exit();
+        }
+    }
+
     [Fact]
     public void Worker_DeletedEntity_IsSkipped()
     {

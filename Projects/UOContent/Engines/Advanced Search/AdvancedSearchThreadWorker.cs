@@ -164,15 +164,7 @@ public class AdvancedSearchThreadWorker
             return null;
         }
 
-        // Check for valid map
-        if (_filter.FilterFelucca && entity.Map != Map.Felucca ||
-            _filter.FilterTrammel && entity.Map != Map.Trammel ||
-            _filter.FilterIlshenar && entity.Map != Map.Ilshenar ||
-            _filter.FilterMalas && entity.Map != Map.Malas ||
-            _filter.FilterTokuno && entity.Map != Map.Tokuno ||
-            _filter.FilterTerMur && entity.Map != Map.TerMur ||
-            _filter.FilterInternalMap && entity.Map != Map.Internal ||
-            _filter.FilterNullMap && entity.Map != null)
+        if (!OnASelectedMap(entity.Map))
         {
             return null;
         }
@@ -212,6 +204,38 @@ public class AdvancedSearchThreadWorker
         }
 
         return null;
+    }
+
+    // The map boxes are independent checks, so several can be ticked at once: an entity passes when
+    // its map is any of them. With none ticked there is no map constraint.
+    private bool OnASelectedMap(Map map)
+    {
+        var f = _filter;
+
+        var anySelected = f.FilterFelucca || f.FilterTrammel || f.FilterIlshenar || f.FilterMalas ||
+                          f.FilterTokuno || f.FilterTerMur || f.FilterInternalMap || f.FilterNullMap;
+
+        if (!anySelected)
+        {
+            return true;
+        }
+
+        if (map == null)
+        {
+            return f.FilterNullMap;
+        }
+
+        if (map == Map.Internal)
+        {
+            return f.FilterInternalMap;
+        }
+
+        return map == Map.Felucca && f.FilterFelucca ||
+               map == Map.Trammel && f.FilterTrammel ||
+               map == Map.Ilshenar && f.FilterIlshenar ||
+               map == Map.Malas && f.FilterMalas ||
+               map == Map.Tokuno && f.FilterTokuno ||
+               map == Map.TerMur && f.FilterTerMur;
     }
 
     private static bool IsValidInternal(Item item)
