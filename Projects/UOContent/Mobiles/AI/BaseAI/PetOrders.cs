@@ -17,41 +17,33 @@ using System;
 
 namespace Server.Mobiles;
 
-// One place per order, two phases. Issue runs once, synchronously, from BaseCreature.SetControlOrder:
-// sets state, emits, returns the order to rest in. Tick (DoOrderXxx) runs from Obey while Controlled:
-// moves, fights, transitions. Only None/Come/Guard/Attack/Stay/Follow rest; every other order resolves
-// inside Issue and never reaches Obey.
 public abstract partial class BaseAI
 {
-    // The standing command a transient order falls back to (None/Stay/Follow/Guard). Runtime-only:
-    // None after load, derived at login. See PetLoginHandler.
+    // Runtime-only: None after a load until PetLoginHandler derives it.
     internal OrderType PersistentOrder { get; private set; } = OrderType.None;
 
-    // Orders that may rest between ticks.
     public static bool IsRestableOrder(OrderType order) =>
         order is OrderType.None or OrderType.Come or OrderType.Guard or OrderType.Attack or OrderType.Stay
             or OrderType.Follow;
 
-    // Orders a pet friend (not the master) may give.
     public static bool IsFriendOrder(OrderType order) =>
         order is OrderType.Follow or OrderType.Stay or OrderType.Stop;
 
-    // Orders a dead bonded pet refuses.
-    // Orders that are not a change of what the pet is doing: the two combat orders, plus the
-    // administrative ones. Everything else stands the pet down before it runs.
+    // Everything else stands the pet down before it runs.
     private static bool KeepsCombatPosture(OrderType order) =>
         order is OrderType.Attack or OrderType.Guard or OrderType.Drop or OrderType.Friend
             or OrderType.Unfriend or OrderType.Rename;
 
-    // Publish 51's stand-down commands: told to do any of these, a pet will not attack anything,
-    // even if it is attacked. Stop resolves to None, which is its resting form ("may wander").
+    // Publish 51: told any of these, a pet "will not attack anything, even if it is attacked".
+    // Stop resolves to None, which is its resting form ("and may wander").
     public static bool IsStandDownOrder(OrderType order) =>
         order is OrderType.Follow or OrderType.Come or OrderType.Stay or OrderType.None;
 
+    // Orders a dead bonded pet refuses.
     public static bool IsDeadPetOrder(OrderType order) =>
         order is OrderType.Guard or OrderType.Attack or OrderType.Transfer or OrderType.Drop;
 
-    // Target of the standing Follow; targeted commands overwrite ControlTarget, a resume restores it from here.
+    // A targeted command overwrites ControlTarget; a resumed Follow restores it from here.
     private Mobile _persistentTarget;
 
     // The controlled-pet wander anchor (Home) is a pure function of the persistent command.
@@ -69,9 +61,8 @@ public abstract partial class BaseAI
         _persistentTarget = order == OrderType.Follow ? Mobile.ControlTarget : null;
     }
 
-    // Where an administrative command (Drop, Friend, Unfriend, Rename) hands control back:
-    // to whatever the pet was doing, target and all. The standing order is the fallback for
-    // an interrupted order that cannot resume — a transient, or an attack whose target is gone.
+    // The standing order is the fallback only for an interrupted order that cannot resume: a
+    // transient, or an attack whose target is gone.
     private OrderType ResumeInterrupted(OrderType previous, Mobile interruptedTarget)
     {
         if (!IsRestableOrder(previous) ||
@@ -104,9 +95,8 @@ public abstract partial class BaseAI
 
         issuer?.RevealingAction();
 
-        // Neutral posture for every command except Attack and Guard: dropping Warmode nulls Combatant through
-        // the Mobile setter, which would turn Attack's single Combatant write into a re-write (DoHarmful again)
-        // and flap Guard's war stance.
+        // Dropping Warmode nulls Combatant through the Mobile setter, which would turn Attack's
+        // single Combatant write into a re-write (DoHarmful again) and flap Guard's war stance.
         Mobile.FocusMob = null;
 
         if (!KeepsCombatPosture(order))
@@ -218,9 +208,8 @@ public abstract partial class BaseAI
         Mobile.Warmode = true;
         Mobile.SetCurrentSpeedToActive();
 
-        // Resuming an interrupted attack is not a new command: no bark. The Combatant write
-        // above is idempotent - the setter early-outs on an unchanged value - so the harm the
-        // original order did is not repeated either.
+        // A resumed attack is not a new command: no bark. The Combatant write above is
+        // idempotent (the setter early-outs unchanged), so its aggression is not repeated.
         if (!resuming)
         {
             Mobile.PlaySound(Mobile.GetAttackSound());
@@ -486,8 +475,7 @@ public abstract partial class BaseAI
         to.SendLocalizedMessage(toMessage, args);
     }
 
-    // The whole release and its only entry point (player order or loyalty drain). SetControlMaster(null)
-    // assigns ControlOrder = None underneath; the funnel keeps the nested write.
+    // SetControlMaster(null) assigns ControlOrder = None underneath; the funnel keeps that write.
     private OrderType IssueRelease()
     {
         if (Mobile.Summoned)
@@ -612,8 +600,7 @@ public abstract partial class BaseAI
 
         Mobile.Warmode = IsValidCombatant(Mobile.Combatant);
 
-        // Pure idle: gently wander near the anchor, with CheckIdle rest periods. Pets resume
-        // a standing order via ResumePersistentOrder, not by re-deriving it here.
+        // A standing order is resumed through ResumePersistentOrder, never re-derived here.
         WalkRandomIdle();
         return true;
     }

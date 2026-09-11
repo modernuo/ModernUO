@@ -99,9 +99,8 @@ internal sealed class InternalEntry : ContextMenuEntry
 
     private void HandleReleaseOrder(Mobile from, BaseCreature bc)
     {
-        // Relinquishing control is not exerting it: whoever can command the creature may
-        // dismiss it, with no roll and no loyalty either way. A refused roll would only
-        // drain loyalty toward the involuntary release the drain performs anyway.
+        // No roll: a refused one would only drain loyalty toward the involuntary release the
+        // drain performs anyway. Whoever can command the creature may dismiss it.
         if (!bc.CanBeControlledBy(from))
         {
             return;

@@ -108,8 +108,7 @@ public class PetRetaliationTests : IDisposable
         Assert.Same(attacker, pet.Combatant);
     }
 
-    // A stand-down pet stays down however long it is beaten on: no damage callback may put it
-    // back into combat behind the policy's back.
+    // No damage callback may put a stand-down pet back into combat behind the policy's back.
     [Theory]
     [InlineData(Expansion.AOS, false)]
     [InlineData(Expansion.AOS, true)]

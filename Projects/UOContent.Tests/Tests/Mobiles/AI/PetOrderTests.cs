@@ -1025,7 +1025,7 @@ public class PetOrderTests : IDisposable
         Assert.Equal(50, pet.Loyalty);
     }
 
-    // A creature nobody could command is still not released out from under the roll's replacement.
+    // A creature nobody can command is not released either.
     [Fact]
     public void MenuRelease_OnAnUncontrollablePet_IsRefusedWithoutCost()
     {

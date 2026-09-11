@@ -25,8 +25,8 @@ public static class PetLoginHandler
     [OnEvent(nameof(PlayerMobile.PlayerLoginEvent))]
     public static void OnLogin(PlayerMobile pm) => DeriveFollowerOrders(pm);
 
-    // PersistentOrder is runtime-only; ControlOrder and Home are saved. A saved standing order is
-    // adopted as is; a pet saved mid-transient gets Follow near the master, else Stay, issued silently.
+    // PersistentOrder is runtime-only; ControlOrder and Home are saved. A pet saved mid-transient
+    // gets Follow near the master, else Stay.
     public static void DeriveFollowerOrders(PlayerMobile master)
     {
         if (master?.AllFollowers == null)
@@ -55,8 +55,8 @@ public static class PetLoginHandler
             var near = bc.Map == master.Map && bc.GetDistanceToSqrt(master) <= FollowRange;
             var derived = near ? OrderType.Follow : OrderType.Stay;
 
-            // ControlTarget first: SetPersistentOrder records it as the Follow target, and a mid-Attack
-            // save still holds the victim.
+            // ControlTarget first: SetPersistentOrder records it as the Follow target, and a
+            // mid-Attack save still holds the victim.
             bc.ControlTarget = near ? master : null;
             ai.SetPersistentOrder(derived);
             bc.SetControlOrder(derived, null, true);

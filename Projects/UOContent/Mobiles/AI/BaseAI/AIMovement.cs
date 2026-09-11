@@ -612,8 +612,8 @@ public abstract partial class BaseAI
         Mobile.ControlTarget == Mobile.ControlMaster &&
         Mobile.Combatant == null;
 
-    // A pet closing on its master under a standing order: following it, or guarding from
-    // outside guard range. BaseCreature.FollowMoveSpeed caps the step delay while this holds.
+    // Following its master, or guarding from outside guard range. FollowMoveSpeed caps the step
+    // delay while this holds.
     public bool IsPacingToMaster()
     {
         if (!Mobile.Controlled || Mobile.Combatant != null)

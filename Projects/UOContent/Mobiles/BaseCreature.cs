@@ -1101,9 +1101,8 @@ namespace Server.Mobiles
         private const double HerdingMoveSpeed = 0.3;
 
         /// <summary>
-        /// Seconds per step while closing on the master under a standing order (AOS pet
-        /// sprint). A cap, not an override: a creature configured faster keeps its own pace.
-        /// 0 disables it, which is how earlier eras follow.
+        /// Seconds per step while closing on the master under a standing order. A cap, not an
+        /// override: a creature configured faster keeps its own pace. 0 disables it.
         /// </summary>
         [CommandProperty(AccessLevel.GameMaster)]
         public virtual double FollowMoveSpeed => Core.AOS ? 0.1 : 0;
@@ -1219,15 +1218,14 @@ namespace Server.Mobiles
         /// </summary>
         public void IssueOrder(OrderType order, Mobile issuer, Mobile target = null)
         {
-            // The order being interrupted owns the outgoing target; an administrative command
-            // that resumes it needs the target back. See BaseAI.ResumeInterrupted.
+            // The interrupted order owns this; BaseAI.ResumeInterrupted hands it back.
             var interrupted = ControlTarget;
             ControlTarget = target;
             SetControlOrder(order, issuer, false, interrupted);
         }
 
-        // The single entry for every order change: runs the Issue phase and loops until the returned order
-        // rests. `resuming` = fallback to the standing order (no re-derivation, no flourish).
+        // Loops until the Issue phase returns an order that rests. `resuming` = falling back to
+        // the standing order: no re-derivation, no flourish.
         internal void SetControlOrder(OrderType order, Mobile issuer, bool resuming) =>
             SetControlOrder(order, issuer, resuming, ControlTarget);
 
@@ -1387,9 +1385,8 @@ namespace Server.Mobiles
 
         /// <summary>
         /// Publish 51: a pet told to follow, come, stay or stop "will not attack anything, even
-        /// if it is attacked". Guard and attack are unaffected. The publish (March 2008) has no
-        /// step of its own on the expansion ladder, so it rides ML, and the setting carries the
-        /// rest: shards outside that era commonly want the behaviour either way.
+        /// if it is attacked". Guard and attack are unaffected. The publish has no step of its own
+        /// on the expansion ladder, so it rides ML and the setting carries the rest.
         /// </summary>
         public static bool PetsStandDownOnCommand { get; private set; }
 
