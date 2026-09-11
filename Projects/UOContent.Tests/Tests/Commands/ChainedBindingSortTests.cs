@@ -94,6 +94,20 @@ public class ChainedBindingSortTests : IDisposable
         Assert.Equal(0, comparer.Compare(blank, alsoBlank));
     }
 
+    // A null intermediate on a value-typed chain reads as default(int) rather than throwing.
+    [Fact]
+    public void SortingOnAValueTypeChainStillSurvivesANullIntermediate()
+    {
+        var valued = Teleporter(TextDefinition.Of(1000));
+        var blank = Teleporter(null);
+
+        var comparer = Sorter("Message.Number");
+
+        // A null Message reads as default(int) == 0, so it sorts below cliloc 1000.
+        Assert.True(comparer.Compare(blank, valued) < 0);
+        Assert.True(comparer.Compare(valued, blank) > 0);
+    }
+
     // An unchained binding never had the problem and must keep working untouched.
     [Fact]
     public void SortingOnAPlainBindingIsUnchanged()

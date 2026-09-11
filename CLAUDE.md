@@ -44,6 +44,7 @@ Apply these when writing or reviewing `.cs` files under `Projects/`.
 | Object property lists (tooltips) | `dev-docs/property-lists.md` |
 | Gump (UI dialog) system | `dev-docs/gump-system.md` |
 | Commands & targeting | `dev-docs/commands-targeting.md` |
+| Generic commands (`where`/`order by`/`distinct`, dot notation, `@""` literals, `[batch`, `[interface`) | `dev-docs/generic-commands.md` |
 | Event system | `dev-docs/events.md` |
 | Threading model | `dev-docs/threading-model.md` |
 | Server hardware requirements | `dev-docs/server-requirements.md` |

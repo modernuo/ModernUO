@@ -339,3 +339,9 @@ public override void OnCast()
 | `Projects/Server/Targeting/TargetCancelType.cs` | Cancel types |
 | `Projects/Server/Targeting/LandTarget.cs` | Land target |
 | `Projects/Server/Targeting/StaticTarget.cs` | Static target |
+
+## See Also
+
+- `dev-docs/generic-commands.md` — the generic command system: scopes, `where` conditions,
+  `order by` / `distinct` / `limit`, dot notation, value and quoting syntax, `[interface`, `[batch`.
+- <https://muo.gg/commands> — the full command list, regenerated with distro updates.

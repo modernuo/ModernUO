@@ -68,7 +68,26 @@ public class TextDefinition : IEquatable<object>, IEquatable<TextDefinition>, IS
         Number > 0 ? $"{Number} (0x{Number:X})" :
         String != null ? $"\"{String}\"" : null;
 
-    public string GetValue() => Number > 0 ? Number.ToString() : String ?? "";
+    /// <summary>
+    /// The editable text form. Quotes a string that <c>TryParse</c> would not read back unchanged;
+    /// the check is a real round trip so it cannot drift from the parser.
+    /// </summary>
+    public string GetValue()
+    {
+        if (Number > 0)
+        {
+            return Number.ToString();
+        }
+
+        if (String == null)
+        {
+            return "";
+        }
+
+        return TryParse(String, null, out var parsed) && parsed.Number == 0 && parsed.String == String
+            ? String
+            : $"@\"{String}\"";
+    }
 
     public static implicit operator TextDefinition(int v) => Of(v);
 
@@ -120,15 +139,7 @@ public class TextDefinition : IEquatable<object>, IEquatable<TextDefinition>, IS
 
     public static bool operator !=(TextDefinition left, TextDefinition right) => !Equals(left, right);
 
-    public static TextDefinition Parse(string value)
-    {
-        if (value == null)
-        {
-            return null;
-        }
-
-        return Utility.ToInt32(value, out var i) ? Of(i) : Of(value);
-    }
+    public static TextDefinition Parse(string value) => value == null ? null : Parse(value.AsSpan(), null);
 
     public static TextDefinition Parse(string s, IFormatProvider provider) => Parse(s.AsSpan(), provider);
 
@@ -137,13 +148,30 @@ public class TextDefinition : IEquatable<object>, IEquatable<TextDefinition>, IS
 
     public static TextDefinition Parse(ReadOnlySpan<char> s, IFormatProvider provider)
     {
-        // We don't trim
-        return int.TryParse(s, provider, out var label) ? Of(label) : Of(s);
+        TryParse(s, provider, out var result);
+        return result;
     }
 
+    /// <summary>
+    /// <c>#1234</c> or a bare <c>1234</c>/<c>0x4D2</c> is a cliloc; <c>@"1234"</c> is the literal
+    /// text. Always succeeds -- anything that is not a cliloc is a string.
+    /// See <c>dev-docs/generic-commands.md</c>.
+    /// </summary>
     public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider provider, out TextDefinition result)
     {
-        if (int.TryParse(s, provider, out var label))
+        if (TryGetQuotedLiteral(s, out var literal))
+        {
+            result = Of(literal);
+            return true;
+        }
+
+        if (s.Length > 1 && s[0] == '#' && Utility.ToInt32(s[1..], out var marked))
+        {
+            result = Of(marked);
+            return true;
+        }
+
+        if (Utility.ToInt32(s, out var label))
         {
             result = Of(label);
             return true;
@@ -152,5 +180,17 @@ public class TextDefinition : IEquatable<object>, IEquatable<TextDefinition>, IS
         // We don't trim
         result = Of(s);
         return true;
+    }
+
+    private static bool TryGetQuotedLiteral(ReadOnlySpan<char> s, out ReadOnlySpan<char> literal)
+    {
+        if (s.Length >= 3 && s[0] == '@' && s[1] == '"' && s[^1] == '"')
+        {
+            literal = s[2..^1];
+            return true;
+        }
+
+        literal = default;
+        return false;
     }
 }

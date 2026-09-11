@@ -305,6 +305,12 @@ namespace Server.Gumps
                             from.SendGump(new PropertiesGump(from, mobile, m_Stack, m_List, m_Page));
                             from.SendGump(new SkillsGump(from, mobile));
                         }
+                        // Must stay ahead of [PropertyObject]: TextDefinition carries that
+                        // attribute, but Number and String are get-only so drilling in is a dead end.
+                        else if (IsType(type, OfText))
+                        {
+                            from.SendGump(new SetGump(prop, from, m_Object, this));
+                        }
                         else if (HasAttribute(type, OfPropertyObject, true))
                         {
                             from.SendGump(

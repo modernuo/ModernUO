@@ -192,6 +192,35 @@ namespace Server
             return false;
         }
 
+        // @"..." is the literal text inside, for values the bare text would be read as something
+        // else. See dev-docs/generic-commands.md.
+        private static bool TryGetQuotedLiteral(string value, out string literal)
+        {
+            if (value?.Length >= 3 && value[0] == '@' && value[1] == '"' && value[^1] == '"')
+            {
+                literal = value[2..^1];
+                return true;
+            }
+
+            literal = null;
+            return false;
+        }
+
+        /// <summary>
+        /// <see cref="TryParse" /> for callers with nowhere to put an error string.
+        /// </summary>
+        public static object ParseOrThrow(Type type, string value)
+        {
+            var error = TryParse(type, value, out var constructed);
+
+            if (error != null)
+            {
+                throw new InvalidOperationException(error);
+            }
+
+            return constructed;
+        }
+
         // Do not use this in "Parse" methods, it may cause a stack overflow
         public static string TryParse(Type type, string value, out object constructed)
         {
@@ -244,7 +273,8 @@ namespace Server
 
             if (IsType(type, OfString))
             {
-                constructed = value;
+                // Decodes what InternalGetValue writes, so [get output pastes back into [set.
+                constructed = TryGetQuotedLiteral(value, out var literal) ? literal : value;
                 return null;
             }
 
