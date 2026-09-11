@@ -94,6 +94,22 @@ public class ChainedBindingSortTests : IDisposable
         Assert.Equal(0, comparer.Compare(blank, alsoBlank));
     }
 
+    // Ordering a value-typed chain when the intermediate is null: it reads as default(int), so
+    // blanks sort below real clilocs rather than throwing. ConditionalCompilerEdgeTests covers
+    // the non-null ordering and the distinct case; this is the gap it leaves.
+    [Fact]
+    public void SortingOnAValueTypeChainStillSurvivesANullIntermediate()
+    {
+        var valued = Teleporter(TextDefinition.Of(1000));
+        var blank = Teleporter(null);
+
+        var comparer = Sorter("Message.Number");
+
+        // A null Message reads as default(int) == 0, so it sorts below cliloc 1000.
+        Assert.True(comparer.Compare(blank, valued) < 0);
+        Assert.True(comparer.Compare(valued, blank) > 0);
+    }
+
     // An unchained binding never had the problem and must keep working untouched.
     [Fact]
     public void SortingOnAPlainBindingIsUnchanged()

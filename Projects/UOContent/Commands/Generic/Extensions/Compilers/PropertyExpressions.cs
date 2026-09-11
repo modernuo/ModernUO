@@ -327,10 +327,11 @@ public static class PropertyExpressions
     }
 
     /// <summary>
-    /// The right-hand side of a condition as a typed constant. A string is parsed the way the
-    /// props gump would parse it: <c>null</c> for a reference or nullable type, <c>@"null"</c>
-    /// for the literal string, names for enums, hex with a <c>0x</c> prefix for the numerics,
-    /// and the type's own static <c>Parse</c> for everything else.
+    /// The right-hand side of a condition as a typed constant. A string is resolved by
+    /// <see cref="Types.ParseOrThrow" /> -- the same parser behind <c>[set</c>, <c>[add</c>,
+    /// spawner props, the props gump and Advanced Search -- so type names, entity serials, hex
+    /// numerics, enum names, the <c>@"..."</c> literal and TextDefinition's own <c>#</c> marker
+    /// all mean here what they mean everywhere else.
     /// </summary>
     public static ConstantExpression Constant(Type type, object value)
     {
@@ -346,62 +347,13 @@ public static class PropertyExpressions
     {
         var underlying = Nullable.GetUnderlyingType(type);
 
+        // `where` has always spelled a null constant as a bare `null`, where [set uses (-null-).
+        // This stays ahead of the shared parser, which reads a bare `null` as the text "null".
         if (text == "null" && (underlying != null || !type.IsValueType))
         {
             return null;
         }
 
-        var target = underlying ?? type;
-
-        if (target == typeof(string))
-        {
-            return text == @"@""null""" ? "null" : text;
-        }
-
-        if (target.IsEnum)
-        {
-            return Enum.Parse(target, text, true);
-        }
-
-        if (target == typeof(bool))
-        {
-            return bool.Parse(text);
-        }
-
-        var parseNumber = target.GetMethod(
-            "Parse",
-            BindingFlags.Public | BindingFlags.Static,
-            null,
-            Types.ParseStringNumericParamTypes,
-            null
-        );
-
-        if (parseNumber != null)
-        {
-            var style = NumberStyles.Integer;
-
-            if (text.InsensitiveStartsWith("0x"))
-            {
-                style = NumberStyles.HexNumber;
-                text = text[2..];
-            }
-
-            return parseNumber.Invoke(null, [text, style]);
-        }
-
-        var parseGeneral = target.GetMethod(
-            "Parse",
-            BindingFlags.Public | BindingFlags.Static,
-            null,
-            Types.ParseStringParamTypes,
-            null
-        );
-
-        if (parseGeneral != null)
-        {
-            return parseGeneral.Invoke(null, [text, null]);
-        }
-
-        throw new InvalidOperationException($"Unable to convert string \"{text}\" into type '{type}'.");
+        return Types.ParseOrThrow(underlying ?? type, text);
     }
 }

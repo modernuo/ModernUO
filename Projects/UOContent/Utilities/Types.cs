@@ -206,6 +206,23 @@ namespace Server
             return false;
         }
 
+        /// <summary>
+        /// <see cref="TryParse" /> for callers that have nowhere to put an error string and want
+        /// a bad value to stop them -- the `where` clause building a comparison constant, which
+        /// reports the failure to the staff member who typed it.
+        /// </summary>
+        public static object ParseOrThrow(Type type, string value)
+        {
+            var error = TryParse(type, value, out var constructed);
+
+            if (error != null)
+            {
+                throw new InvalidOperationException(error);
+            }
+
+            return constructed;
+        }
+
         // Do not use this in "Parse" methods, it may cause a stack overflow
         public static string TryParse(Type type, string value, out object constructed)
         {
