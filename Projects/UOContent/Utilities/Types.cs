@@ -192,6 +192,20 @@ namespace Server
             return false;
         }
 
+        // @"..." means "the literal text inside", for the cases where the bare text would be read
+        // as something else. Shared with TextDefinition, which needs it for digits.
+        private static bool TryGetQuotedLiteral(string value, out string literal)
+        {
+            if (value?.Length >= 3 && value[0] == '@' && value[1] == '"' && value[^1] == '"')
+            {
+                literal = value[2..^1];
+                return true;
+            }
+
+            literal = null;
+            return false;
+        }
+
         // Do not use this in "Parse" methods, it may cause a stack overflow
         public static string TryParse(Type type, string value, out object constructed)
         {
@@ -244,7 +258,11 @@ namespace Server
 
             if (IsType(type, OfString))
             {
-                constructed = value;
+                // Round trip with InternalGetValue, which writes @"null" for the literal string
+                // "null" so it can be told apart from the null sentinel. Without the decode here,
+                // the value [get hands a GM is not a value [set will take back. The same @"..."
+                // convention is understood by TextDefinition.TryParse.
+                constructed = TryGetQuotedLiteral(value, out var literal) ? literal : value;
                 return null;
             }
 
