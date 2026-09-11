@@ -27,15 +27,13 @@ namespace Server.Commands.Generic
 
         public bool HasCompiled => m_Conditionals != null;
 
-        public void Compile(ref AssemblyEmitter emitter)
+        public void Compile()
         {
-            emitter ??= new AssemblyEmitter("__dynamic");
-
             m_Conditionals = new IConditional[m_Conditions.Length];
 
             for (var i = 0; i < m_Conditionals.Length; ++i)
             {
-                m_Conditionals[i] = ConditionalCompiler.Compile(emitter, Type, m_Conditions[i], i);
+                m_Conditionals[i] = ConditionalCompiler.Compile(Type, m_Conditions[i]);
             }
         }
 
@@ -48,9 +46,7 @@ namespace Server.Commands.Generic
 
             if (!HasCompiled)
             {
-                AssemblyEmitter emitter = null;
-
-                Compile(ref emitter);
+                Compile();
             }
 
             for (var i = 0; i < m_Conditionals.Length; ++i)

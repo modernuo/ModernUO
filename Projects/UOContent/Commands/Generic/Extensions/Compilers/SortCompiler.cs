@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Reflection.Emit;
+using System.Linq.Expressions;
 
 namespace Server.Commands.Generic
 {
@@ -47,120 +46,83 @@ namespace Server.Commands.Generic
 
     public static class SortCompiler
     {
-        public static IComparer<T> Compile<T>(AssemblyEmitter assembly, Type objectType, OrderInfo[] orders)
+        public static IComparer<T> Compile<T>(Type objectType, OrderInfo[] orders)
         {
-            var typeBuilder = assembly.DefineType(
-                "__sort",
-                TypeAttributes.Public,
-                typeof(T)
+            var properties = new Property[orders.Length];
+            var signs = new int[orders.Length];
+
+            for (var i = 0; i < orders.Length; ++i)
+            {
+                properties[i] = orders[i].Property;
+                signs[i] = orders[i].Sign;
+            }
+
+            return Comparer<T>.Create(Build<T>(objectType, properties, signs).Compile());
+        }
+
+        /// <summary>
+        /// A <see cref="Comparison{T}" /> over <paramref name="properties" />, taken in order: the
+        /// first property that orders the two objects decides, each multiplied by its sign. Both
+        /// arguments are cast to <paramref name="objectType" /> first; the bindings are read from
+        /// that.
+        /// </summary>
+        public static Expression<Comparison<T>> Build<T>(Type objectType, Property[] properties, int[] signs)
+        {
+            var x = Expression.Parameter(typeof(T), "x");
+            var y = Expression.Parameter(typeof(T), "y");
+
+            var a = Expression.Variable(objectType, "a");
+            var b = Expression.Variable(objectType, "b");
+
+            return Expression.Lambda<Comparison<T>>(
+                Expression.Block(
+                    [a, b],
+                    Expression.Assign(a, Expression.TypeAs(x, objectType)),
+                    Expression.Assign(b, Expression.TypeAs(y, objectType)),
+                    Ordered(a, b, properties, signs, 0)
+                ),
+                x,
+                y
             );
+        }
+
+        private static Expression Ordered(Expression a, Expression b, Property[] properties, int[] signs, int index)
+        {
+            if (index >= properties.Length)
             {
-                var ctor = typeBuilder.DefineConstructor(
-                    MethodAttributes.Public,
-                    CallingConventions.Standard,
-                    Type.EmptyTypes
-                );
-
-                var il = ctor.GetILGenerator();
-
-                // : base()
-                il.Emit(OpCodes.Ldarg_0);
-                il.Emit(
-                    OpCodes.Call,
-                    typeof(T).GetConstructor(Type.EmptyTypes) ??
-                    throw new Exception($"Could not find empty constructor for type {typeof(T).FullName}")
-                );
-
-                // return;
-                il.Emit(OpCodes.Ret);
+                return Expression.Constant(0);
             }
 
-            typeBuilder.AddInterfaceImplementation(typeof(IComparer<T>));
+            var prop = properties[index];
+
+            var couldCompare = PropertyExpressions.TryCompare(
+                PropertyExpressions.ChainOrDefault(a, prop),
+                PropertyExpressions.ChainOrDefault(b, prop),
+                signs[index],
+                out var comparison
+            );
+
+            if (!couldCompare)
             {
-                var emitter = new MethodEmitter(typeBuilder);
-
-                emitter.Define(
-                    /*  name  */ "Compare",
-                    /*  attr  */
-                    MethodAttributes.Public | MethodAttributes.Virtual,
-                    /* return */
-                    typeof(int),
-                    /* params */
-                    new[] { typeof(T), typeof(T) }
-                );
-
-                var a = emitter.CreateLocal(objectType);
-                var b = emitter.CreateLocal(objectType);
-
-                var v = emitter.CreateLocal(typeof(int));
-
-                emitter.LoadArgument(1);
-                emitter.CastAs(objectType);
-                emitter.StoreLocal(a);
-
-                emitter.LoadArgument(2);
-                emitter.CastAs(objectType);
-                emitter.StoreLocal(b);
-
-                emitter.Load(0);
-                emitter.StoreLocal(v);
-
-                var end = emitter.CreateLabel();
-
-                for (var i = 0; i < orders.Length; ++i)
-                {
-                    if (i > 0)
-                    {
-                        emitter.LoadLocal(v);
-                        emitter.BranchIfTrue(end);
-                    }
-
-                    var orderInfo = orders[i];
-
-                    var prop = orderInfo.Property;
-                    var sign = orderInfo.Sign;
-
-                    emitter.LoadLocal(a);
-                    emitter.Chain(prop);
-
-                    var couldCompare =
-                        emitter.CompareTo(
-                            sign,
-                            () =>
-                            {
-                                emitter.LoadLocal(b);
-                                emitter.Chain(prop);
-                            }
-                        );
-
-                    if (!couldCompare)
-                    {
-                        throw new InvalidOperationException("Property is not comparable.");
-                    }
-
-                    emitter.StoreLocal(v);
-                }
-
-                emitter.MarkLabel(end);
-
-                emitter.LoadLocal(v);
-                emitter.Return();
-
-                typeBuilder.DefineMethodOverride(
-                    emitter.Method,
-                    typeof(IComparer<T>).GetMethod(
-                        "Compare",
-                        new[]
-                        {
-                            typeof(T),
-                            typeof(T)
-                        }
-                    ) ?? throw new Exception($"No Compare method found for type {typeof(T).FullName}")
-                );
+                throw new InvalidOperationException("Property is not comparable.");
             }
 
-            var comparerType = typeBuilder.CreateType();
-            return comparerType.CreateInstance<IComparer<T>>();
+            if (index == properties.Length - 1)
+            {
+                return comparison;
+            }
+
+            var v = Expression.Variable(typeof(int), "v");
+
+            return Expression.Block(
+                [v],
+                Expression.Assign(v, comparison),
+                Expression.Condition(
+                    Expression.NotEqual(v, Expression.Constant(0)),
+                    v,
+                    Ordered(a, b, properties, signs, index + 1)
+                )
+            );
         }
     }
 }

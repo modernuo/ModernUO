@@ -20,7 +20,7 @@ namespace Server.Commands.Generic
             ExtensionInfo.Register(ExtInfo);
         }
 
-        public override void Optimize(Mobile from, Type baseType, ref AssemblyEmitter assembly)
+        public override void Optimize(Mobile from, Type baseType)
         {
             if (baseType == null)
             {
@@ -33,9 +33,7 @@ namespace Server.Commands.Generic
                 order.Property.CheckAccess(from);
             }
 
-            assembly ??= new AssemblyEmitter("__dynamic");
-
-            m_Comparer = SortCompiler.Compile<object>(assembly, baseType, m_Orders.ToArray());
+            m_Comparer = SortCompiler.Compile<object>(baseType, m_Orders.ToArray());
         }
 
         public override void Parse(Mobile from, string[] arguments, int offset, int size)

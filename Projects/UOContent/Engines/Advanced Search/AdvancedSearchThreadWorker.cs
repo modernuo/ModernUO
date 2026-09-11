@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Concurrent;
-using System.Reflection;
 using System.Threading;
 using Server.Items;
 using Server.Logging;
@@ -21,7 +20,6 @@ namespace Server.Engines.AdvancedSearch;
 public class AdvancedSearchThreadWorker
 {
     private static readonly ILogger _logger = LogFactory.GetLogger(typeof(AdvancedSearchThreadWorker));
-    private static readonly ConcurrentDictionary<Type, PropertyInfo[]> _propCache = new();
 
     private readonly Thread _thread;
     private readonly AutoResetEvent _startEvent; // Main thread tells the thread to start working
@@ -33,6 +31,7 @@ public class AdvancedSearchThreadWorker
     private ConcurrentQueue<IEntity> _ignoreQueue;
     private WorldLocation _worldLocation;
     private AdvancedSearchFilter _filter;
+    private AdvancedSearchConditions.Cache _predicates;
 
     public AdvancedSearchThreadWorker()
     {
@@ -46,17 +45,23 @@ public class AdvancedSearchThreadWorker
         _thread.Start(this);
     }
 
+    /// <param name="predicates">
+    /// Compiled property-test memo for this search. Shared across the workers so a type is
+    /// compiled once per search rather than once per worker; a lone worker may leave it null.
+    /// </param>
     public void Wake(
         WorldLocation worldLocation,
         AdvancedSearchFilter filter,
         ConcurrentQueue<AdvancedSearchResult> results,
-        ConcurrentQueue<IEntity> ignoreQueue
+        ConcurrentQueue<IEntity> ignoreQueue,
+        AdvancedSearchConditions.Cache predicates = null
     )
     {
         _worldLocation = worldLocation;
         _filter = filter;
         _ignoreQueue = ignoreQueue;
         _results = results;
+        _predicates = predicates ?? new AdvancedSearchConditions.Cache();
         _startEvent.Set();
     }
 
@@ -108,6 +113,7 @@ public class AdvancedSearchThreadWorker
                 {
                     worker._results = null;
                     worker._filter = null;
+                    worker._predicates = null; // a compiled constant may pin an entity resolved by serial
                     break;
                 }
                 else
@@ -158,15 +164,7 @@ public class AdvancedSearchThreadWorker
             return null;
         }
 
-        // Check for valid map
-        if (_filter.FilterFelucca && entity.Map != Map.Felucca ||
-            _filter.FilterTrammel && entity.Map != Map.Trammel ||
-            _filter.FilterIlshenar && entity.Map != Map.Ilshenar ||
-            _filter.FilterMalas && entity.Map != Map.Malas ||
-            _filter.FilterTokuno && entity.Map != Map.Tokuno ||
-            _filter.FilterTerMur && entity.Map != Map.TerMur ||
-            _filter.FilterInternalMap && entity.Map != Map.Internal ||
-            _filter.FilterNullMap && entity.Map != null)
+        if (!OnASelectedMap(entity.Map))
         {
             return null;
         }
@@ -206,6 +204,38 @@ public class AdvancedSearchThreadWorker
         }
 
         return null;
+    }
+
+    // The map boxes are independent checks, so several can be ticked at once: an entity passes when
+    // its map is any of them. With none ticked there is no map constraint.
+    private bool OnASelectedMap(Map map)
+    {
+        var f = _filter;
+
+        var anySelected = f.FilterFelucca || f.FilterTrammel || f.FilterIlshenar || f.FilterMalas ||
+                          f.FilterTokuno || f.FilterTerMur || f.FilterInternalMap || f.FilterNullMap;
+
+        if (!anySelected)
+        {
+            return true;
+        }
+
+        if (map == null)
+        {
+            return f.FilterNullMap;
+        }
+
+        if (map == Map.Internal)
+        {
+            return f.FilterInternalMap;
+        }
+
+        return map == Map.Felucca && f.FilterFelucca ||
+               map == Map.Trammel && f.FilterTrammel ||
+               map == Map.Ilshenar && f.FilterIlshenar ||
+               map == Map.Malas && f.FilterMalas ||
+               map == Map.Tokuno && f.FilterTokuno ||
+               map == Map.TerMur && f.FilterTerMur;
     }
 
     private static bool IsValidInternal(Item item)
@@ -249,8 +279,7 @@ public class AdvancedSearchThreadWorker
             return null;
         }
 
-        if (_filter.FilterPropertyTest &&
-            (string.IsNullOrWhiteSpace(_filter.PropertyTest) || !EvaluateRecursive(item, _filter.PropertyTest)))
+        if (_filter.FilterPropertyTest && !PassesPropertyTest(item))
         {
             return null;
         }
@@ -273,8 +302,7 @@ public class AdvancedSearchThreadWorker
             return null;
         }
 
-        if (_filter.FilterPropertyTest &&
-            (string.IsNullOrWhiteSpace(_filter.PropertyTest) || !EvaluateRecursive(mobile, _filter.PropertyTest)))
+        if (_filter.FilterPropertyTest && !PassesPropertyTest(mobile))
         {
             return null;
         }
@@ -353,58 +381,13 @@ public class AdvancedSearchThreadWorker
         }
     }
 
-    private static bool EvaluateRecursive(IEntity entity, ReadOnlySpan<char> span) =>
-        AdvancedSearchUtilities.EvaluateBoolean(span, entity, static (e, leaf) => EvaluateSingleExpression(e, leaf));
-
-    private static bool EvaluateSingleExpression(IEntity entity, ReadOnlySpan<char> expression)
+    // The test is compiled once per runtime type for the search and memoized; after that each
+    // entity costs a dictionary lookup and a delegate call.
+    private bool PassesPropertyTest(IEntity entity)
     {
-        expression = expression.Trim();
-        if (expression.Length == 0)
-        {
-            return false;
-        }
+        var test = _filter.PropertyTest;
 
-        var negate = false;
-        if (expression[0] == '~')
-        {
-            negate = true;
-            expression = expression[1..];
-        }
-
-        var operatorSpan = AdvancedSearchUtilities.FindOperatorIndex(expression, out var operatorIndex);
-        if (operatorSpan.Length == 0)
-        {
-            return false;
-        }
-
-        var propertyName = expression[..operatorIndex].Trim();
-        var valuePart = expression[(operatorIndex + operatorSpan.Length)..].Trim();
-
-        if (valuePart.Length == 0)
-        {
-            return false;
-        }
-
-        var properties = _propCache.GetOrAdd(entity.GetType(), static t => t.GetProperties());
-        PropertyInfo property = null;
-        for (var i = 0; i < properties.Length; ++i)
-        {
-            var p = properties[i];
-            if (p.CanRead && p.Name.InsensitiveEquals(propertyName))
-            {
-                property = p;
-                break;
-            }
-        }
-
-        if (property == null)
-        {
-            return false;
-        }
-
-        var propertyValue = property.GetValue(entity);
-        var result = AdvancedSearchUtilities.CompareValues(property.PropertyType, propertyValue, valuePart, operatorSpan);
-
-        return negate ? !result : result;
+        return !string.IsNullOrWhiteSpace(test) &&
+               AdvancedSearchConditions.GetPredicate(_predicates, entity.GetType(), test)(entity);
     }
 }

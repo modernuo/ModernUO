@@ -95,11 +95,9 @@ namespace Server.Commands.Generic
 
             parsed.Sort((a, b) => a.Order - b.Order);
 
-            AssemblyEmitter emitter = null;
-
             foreach (var update in parsed)
             {
-                update.Optimize(from, baseType, ref emitter);
+                update.Optimize(from, baseType);
             }
 
             if (size != args.Length)
@@ -129,7 +127,7 @@ namespace Server.Commands.Generic
 
         public int Order => Info.Order;
 
-        public virtual void Optimize(Mobile from, Type baseType, ref AssemblyEmitter assembly)
+        public virtual void Optimize(Mobile from, Type baseType)
         {
         }
 
