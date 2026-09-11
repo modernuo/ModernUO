@@ -25,9 +25,8 @@ public static class PetLoginHandler
     [OnEvent(nameof(PlayerMobile.PlayerLoginEvent))]
     public static void OnLogin(PlayerMobile pm) => DeriveFollowerOrders(pm);
 
-    // The persistent command is runtime-only and reset to None on load. When the master logs
-    // in we give each controlled pet that still has no standing command a sane one, inferred
-    // from proximity: near master -> Follow, otherwise Stay.
+    // PersistentOrder is runtime-only; ControlOrder and Home are saved. A pet saved mid-transient
+    // gets Follow near the master, else Stay.
     public static void DeriveFollowerOrders(PlayerMobile master)
     {
         if (master?.AllFollowers == null)
@@ -37,14 +36,30 @@ public static class PetLoginHandler
 
         foreach (var follower in master.AllFollowers)
         {
-            if (follower is BaseCreature { Controlled: true, Deleted: false } bc
-                && bc.ControlMaster == master
-                && bc.AIObject is { } ai
-                && ai.PersistentOrder == OrderType.None)
+            if (follower is not BaseCreature { Controlled: true, Deleted: false } bc
+                || bc.ControlMaster != master
+                || bc.AIObject is not { } ai
+                || ai.PersistentOrder != OrderType.None)
             {
-                var near = bc.Map == master.Map && bc.GetDistanceToSqrt(master) <= FollowRange;
-                ai.SetPersistentOrder(near ? OrderType.Follow : OrderType.Stay);
+                continue;
             }
+
+            var restored = bc.ControlOrder;
+
+            if (restored is OrderType.Stay or OrderType.Follow or OrderType.Guard)
+            {
+                ai.RestorePersistentOrder(restored);
+                continue;
+            }
+
+            var near = bc.Map == master.Map && bc.GetDistanceToSqrt(master) <= FollowRange;
+            var derived = near ? OrderType.Follow : OrderType.Stay;
+
+            // ControlTarget first: SetPersistentOrder records it as the Follow target, and a
+            // mid-Attack save still holds the victim.
+            bc.ControlTarget = near ? master : null;
+            ai.SetPersistentOrder(derived);
+            bc.SetControlOrder(derived, null, true);
         }
     }
 }

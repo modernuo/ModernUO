@@ -45,8 +45,9 @@ public class GuardFollowTests
         // Without a move intent, guard-following only steps on the think grid.
         Assert.True(hasIntent, "guard-following must register a move intent");
 
-        // AOS return sprint on both clocks; the per-step speed flip must not undo it.
-        Assert.Equal(0.1, currentSpeed);
+        // The return is paced by FollowMoveSpeed; the think clock stays on the active value
+        // and the per-step speed flip must not undo either.
+        Assert.Equal(0.2, currentSpeed);
         Assert.Equal(0.1, currentMoveSpeed);
     }
 

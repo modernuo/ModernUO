@@ -252,8 +252,8 @@ public class PetOrderTests : IDisposable
         var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
         var followers = master.Followers;
 
-        // What the loyalty drain calls when loyalty reaches zero.
-        pet.AIObject.DoOrderRelease();
+        // What the loyalty drain assigns when loyalty reaches zero.
+        pet.ControlOrder = OrderType.Release;
 
         Assert.False(pet.Controlled);
         Assert.Null(pet.ControlMaster);
@@ -270,7 +270,7 @@ public class PetOrderTests : IDisposable
         pet.Home = new Point3D(800, 800, 0); // simulate a stale anchor
         pet.Spawner = null;
 
-        pet.AIObject.DoOrderRelease();
+        pet.ControlOrder = OrderType.Release;
 
         Assert.Equal(loc, pet.Home); // released where it stands, not the stale point
     }
@@ -297,6 +297,67 @@ public class PetOrderTests : IDisposable
     }
 
     [Fact]
+    public void Login_RestoredStay_KeepsItsPostAnchor()
+    {
+        var post = new Point3D(1005, 1005, 0);
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), post);
+        pet.ControlOrder = OrderType.Stay; // Home = post
+        pet.ChangeAIType(pet.AI);          // what AfterDeserialization does: fresh AI, PersistentOrder = None
+        Assert.Equal(OrderType.None, pet.AIObject.PersistentOrder);
+
+        PetLoginHandler.DeriveFollowerOrders(master); // master within 12 tiles
+
+        Assert.Equal(OrderType.Stay, pet.ControlOrder);
+        Assert.Equal(OrderType.Stay, pet.AIObject.PersistentOrder);
+        Assert.Equal(post, pet.Home); // not zeroed by a proximity-derived Follow
+    }
+
+    [Fact]
+    public void Login_RestoredNone_NearMaster_IssuesFollow()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        pet.ControlOrder = OrderType.Follow;
+        pet.ControlOrder = OrderType.Stop; // -> None, no standing order
+        pet.ChangeAIType(pet.AI);
+        master.Hidden = true;
+
+        PetLoginHandler.DeriveFollowerOrders(master);
+
+        Assert.Equal(OrderType.Follow, pet.ControlOrder);
+        Assert.Same(master, pet.ControlTarget);
+        Assert.Equal(OrderType.Follow, pet.AIObject.PersistentOrder);
+        Assert.True(master.Hidden); // system-issued: nobody revealed
+    }
+
+    [Fact]
+    public void Login_RestoredAttack_FarFromMaster_IssuesStay()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1040, 1000, 0));
+        pet.ControlOrder = OrderType.Attack; // rests with no valid target
+        pet.ChangeAIType(pet.AI);
+
+        PetLoginHandler.DeriveFollowerOrders(master);
+
+        Assert.Equal(OrderType.Stay, pet.ControlOrder);
+        Assert.Equal(pet.Location, pet.Home);
+    }
+
+    [Fact]
+    public void Login_RestoredAttack_NearMaster_FollowsTheMaster_NotTheVictim()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        var victim = SpawnPlayer(new Point3D(1003, 1000, 0));
+        pet.IssueOrder(OrderType.Attack, master, victim); // saved mid-fight: ControlTarget = victim
+        pet.ChangeAIType(pet.AI);                          // post-load fresh AI
+
+        PetLoginHandler.DeriveFollowerOrders(master);
+
+        Assert.Equal(OrderType.Follow, pet.ControlOrder);
+        Assert.Same(master, pet.ControlTarget);
+        Assert.Equal(OrderType.Follow, pet.AIObject.PersistentOrder);
+    }
+
+    [Fact]
     public void Stop_WhileFollowing_CancelsToIdle_NonML()
     {
         var previous = Core.Expansion;
@@ -317,5 +378,666 @@ public class PetOrderTests : IDisposable
         {
             Core.Expansion = previous;
         }
+    }
+    // The parameterless ctor fully initializes a player; the Serial ctor leaves that to Deserialize.
+    private PlayerMobile SpawnPlayer(Point3D loc)
+    {
+        var pm = new PlayerMobile { Player = true };
+        pm.MoveToWorld(loc, Map.Felucca);
+        _created.Add(pm);
+        return pm;
+    }
+
+    // Administrative commands are not a change of what the pet is doing: it keeps fighting.
+    [Fact]
+    public void Drop_MidAttack_KeepsTheAttackAndItsTarget()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        var victim = new PetTestStub();
+        victim.MoveToWorld(new Point3D(1003, 1000, 0), pet.Map);
+        _created.Add(victim);
+
+        pet.ControlOrder = OrderType.Follow; // standing order
+        pet.IssueOrder(OrderType.Attack, master, victim);
+
+        pet.IssueOrder(OrderType.Drop, master);
+
+        Assert.Equal(OrderType.Attack, pet.ControlOrder);
+        Assert.Same(victim, pet.ControlTarget);
+        Assert.Same(victim, pet.Combatant);
+    }
+
+    [Fact]
+    public void Rename_MidAttack_KeepsTheAttack()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        var victim = new PetTestStub();
+        victim.MoveToWorld(new Point3D(1003, 1000, 0), pet.Map);
+        _created.Add(victim);
+
+        pet.ControlOrder = OrderType.Follow;
+        pet.IssueOrder(OrderType.Attack, master, victim);
+
+        pet.IssueOrder(OrderType.Rename, master);
+
+        Assert.Equal(OrderType.Attack, pet.ControlOrder);
+        Assert.Same(victim, pet.ControlTarget);
+    }
+
+    [Fact]
+    public void FriendRefusal_MidAttack_KeepsTheAttack()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        var friend = SpawnPlayer(new Point3D(1002, 1000, 0));
+        pet.AddPetFriend(friend); // already a friend -> refusal
+        var victim = new PetTestStub();
+        victim.MoveToWorld(new Point3D(1003, 1000, 0), pet.Map);
+        _created.Add(victim);
+
+        pet.ControlOrder = OrderType.Follow;
+        pet.IssueOrder(OrderType.Attack, master, victim);
+
+        pet.IssueOrder(OrderType.Friend, master, friend);
+
+        Assert.Equal(OrderType.Attack, pet.ControlOrder);
+        Assert.Same(victim, pet.ControlTarget);
+    }
+
+    // Nothing to resume into: the interrupted attack's target is gone.
+    [Fact]
+    public void Drop_MidAttack_WithTheTargetGone_FallsBackToTheStandingOrder()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        var victim = new PetTestStub();
+        victim.MoveToWorld(new Point3D(1003, 1000, 0), pet.Map);
+        _created.Add(victim);
+
+        pet.ControlOrder = OrderType.Follow;
+        pet.IssueOrder(OrderType.Attack, master, victim);
+        victim.Delete();
+
+        pet.IssueOrder(OrderType.Drop, master);
+
+        Assert.Equal(OrderType.Follow, pet.ControlOrder);
+    }
+
+    // Resuming an attack must not re-run the aggression that ordering it performed.
+    [Fact]
+    public void Drop_MidAttack_DoesNotRepeatTheHarm()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        var victim = new PetTestStub();
+        victim.MoveToWorld(new Point3D(1003, 1000, 0), pet.Map);
+        _created.Add(victim);
+
+        pet.ControlOrder = OrderType.Follow;
+        pet.IssueOrder(OrderType.Attack, master, victim);
+        var aggressors = victim.Aggressors.Count;
+
+        pet.IssueOrder(OrderType.Drop, master);
+
+        Assert.Equal(aggressors, victim.Aggressors.Count);
+    }
+
+    [Fact]
+    public void Friend_Refused_RestsAtPersistentOrder_AndObeyDoesNotRepeat()
+    {
+        var (_, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        pet.ControlOrder = OrderType.Follow;          // persistent = Follow
+        var friend = SpawnPlayer(new Point3D(1002, 1000, 0));
+        pet.AddPetFriend(friend);                     // already a friend -> refusal 1049691
+
+        pet.IssueOrder(OrderType.Friend, pet.ControlMaster, friend);
+
+        Assert.Equal(OrderType.Follow, pet.ControlOrder); // never rests at Friend
+        Assert.True(BaseAI.IsRestableOrder(pet.ControlOrder));
+
+        // Obey must not repeat the refusal.
+        pet.AIObject.Obey();
+        Assert.Equal(OrderType.Follow, pet.ControlOrder);
+    }
+
+    [Fact]
+    public void Unfriend_OfNonFriend_RestsAtPersistentOrder()
+    {
+        var (_, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        pet.ControlOrder = OrderType.Stay;            // persistent = Stay
+        var stranger = SpawnPlayer(new Point3D(1002, 1000, 0));
+
+        pet.IssueOrder(OrderType.Unfriend, pet.ControlMaster, stranger);
+
+        Assert.Equal(OrderType.Stay, pet.ControlOrder);
+        Assert.Equal(OrderType.Stay, pet.AIObject.PersistentOrder);
+    }
+
+    [Fact]
+    public void Friend_Accepted_LeavesTheStandingOrderAlone()
+    {
+        var post = new Point3D(1001, 1000, 0);
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), post);
+        pet.ControlOrder = OrderType.Stay; // the owner's standing order, anchored at the post
+        var friend = SpawnPlayer(new Point3D(1002, 1000, 0));
+
+        pet.IssueOrder(OrderType.Friend, master, friend);
+
+        Assert.True(pet.IsPetFriend(friend));
+        Assert.Equal(OrderType.Stay, pet.ControlOrder);            // still staying
+        Assert.Equal(OrderType.Stay, pet.AIObject.PersistentOrder); // owner's order not rewritten
+        Assert.Equal(post, pet.Home);                               // and not re-anchored
+    }
+
+    [Fact]
+    public void Unfriend_Accepted_LeavesTheStandingOrderAlone()
+    {
+        var post = new Point3D(1001, 1000, 0);
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), post);
+        var friend = SpawnPlayer(new Point3D(1002, 1000, 0));
+        pet.AddPetFriend(friend);
+        pet.ControlOrder = OrderType.Stay;
+
+        pet.IssueOrder(OrderType.Unfriend, master, friend);
+
+        Assert.False(pet.IsPetFriend(friend));
+        Assert.Equal(OrderType.Stay, pet.ControlOrder);
+        Assert.Equal(OrderType.Stay, pet.AIObject.PersistentOrder);
+        Assert.Equal(post, pet.Home);
+    }
+
+    [Fact]
+    public void Rename_RestsAtARestableOrder()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        pet.ControlOrder = OrderType.Follow;
+
+        pet.IssueOrder(OrderType.Rename, master);
+
+        Assert.Equal(OrderType.Follow, pet.ControlOrder);
+        Assert.True(BaseAI.IsRestableOrder(pet.ControlOrder));
+    }
+
+    [Fact]
+    public void Drop_OnAPetThatCannotDrop_StillResolves()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        pet.ControlOrder = OrderType.Stay;
+        pet.IsDeadPet = true; // refuses to drop
+
+        pet.IssueOrder(OrderType.Drop, master);
+
+        Assert.Equal(OrderType.Stay, pet.ControlOrder);
+    }
+
+    [Fact]
+    public void Stop_ResolvesToARestableOrder_FromEveryPrevious()
+    {
+        var (_, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        OrderType[] previousOrders = [OrderType.Come, OrderType.Attack, OrderType.Guard, OrderType.Follow, OrderType.Stay, OrderType.None];
+
+        for (var i = 0; i < previousOrders.Length; i++)
+        {
+            pet.ControlOrder = previousOrders[i];
+            pet.ControlOrder = OrderType.Stop;
+            Assert.True(BaseAI.IsRestableOrder(pet.ControlOrder));
+            Assert.NotEqual(OrderType.Stop, pet.ControlOrder);
+        }
+    }
+
+    [Fact]
+    public void IssueOrder_RevealsTheIssuer_NeverTheMaster()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        var friend = SpawnPlayer(new Point3D(1002, 1000, 0));
+        pet.AddPetFriend(friend);
+        master.Hidden = true;
+        friend.Hidden = true;
+
+        pet.IssueOrder(OrderType.Stay, friend);
+
+        Assert.False(friend.Hidden);
+        Assert.True(master.Hidden);
+    }
+
+    [Fact]
+    public void SystemIssuedOrder_RevealsNobody()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        master.Hidden = true;
+
+        pet.ControlOrder = OrderType.Follow; // raw assignment = system-issued
+
+        Assert.True(master.Hidden);
+    }
+
+    [Fact]
+    public void EndPickTarget_Attack_SetsCombatantAndFocus()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        var victim = SpawnPlayer(new Point3D(1003, 1000, 0));
+
+        pet.AIObject.EndPickTarget(master, victim, OrderType.Attack);
+
+        Assert.Equal(OrderType.Attack, pet.ControlOrder);
+        Assert.Same(victim, pet.ControlTarget);
+        Assert.Same(victim, pet.Combatant);
+        Assert.Same(victim, pet.FocusMob);
+        Assert.True(pet.Warmode);
+        Assert.Equal(1, pet.CombatantSets); // the Issue phase is the only writer
+
+        pet.AIObject.Obey(); // the tick does not rewrite it
+        Assert.Equal(1, pet.CombatantSets);
+    }
+
+    [Fact]
+    public void ReIssuedAttack_OnTheSameTarget_DoesNotRewriteCombatantOrFlapWarmode()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        var victim = SpawnPlayer(new Point3D(1003, 1000, 0));
+
+        pet.IssueOrder(OrderType.Attack, master, victim);
+        Assert.Equal(1, pet.CombatantSets);
+        Assert.True(pet.Warmode);
+
+        // Dropping Warmode would null Combatant and make the re-issue replay DoHarmful.
+        pet.IssueOrder(OrderType.Attack, master, victim);
+
+        Assert.Equal(1, pet.CombatantSets);
+        Assert.True(pet.Warmode);
+        Assert.Same(victim, pet.Combatant);
+        Assert.Same(victim, pet.FocusMob);
+    }
+
+    [Fact]
+    public void OrderedAttack_ReassertsTheCommandedTarget_AfterAnAggressorStealsCombatant()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        var victim = SpawnPlayer(new Point3D(1003, 1000, 0));
+        var other = SpawnPlayer(new Point3D(1002, 1000, 0));
+
+        pet.IssueOrder(OrderType.Attack, master, victim);
+
+        // what OnAggressiveAction does
+        pet.Combatant = other;
+        Assert.Same(other, pet.Combatant);
+
+        pet.AIObject.Obey(); // the tick puts the kill order back on the commanded target
+
+        Assert.Same(victim, pet.Combatant);
+        Assert.Equal(OrderType.Attack, pet.ControlOrder);
+    }
+
+    [Fact]
+    public void Rename_WhileFollowing_KeepsFollowingTheMaster()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        pet.IssueOrder(OrderType.Follow, master, master);
+
+        pet.IssueOrder(OrderType.Rename, master); // the menu passes no target
+
+        Assert.Equal(OrderType.Follow, pet.ControlOrder);
+        Assert.Same(master, pet.ControlTarget); // restored, not null
+
+        pet.AIObject.Obey();
+        Assert.Equal(OrderType.Follow, pet.ControlOrder); // no "no one to follow" -> None
+    }
+
+    [Fact]
+    public void TransferRefused_ResumesFollowingTheMaster_NotTheRecipient()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        pet.IssueOrder(OrderType.Follow, master, master);
+        var recipient = SpawnPlayer(new Point3D(1002, 1000, 0)); // no NetState -> the transfer is refused
+
+        pet.IssueOrder(OrderType.Transfer, master, recipient);
+
+        Assert.Equal(OrderType.Follow, pet.ControlOrder);
+        Assert.Same(master, pet.ControlTarget);
+        Assert.True(pet.Controlled);
+        Assert.Same(master, pet.ControlMaster);
+    }
+
+    [Fact]
+    public void SameOrderTwice_ReRunsIssue()
+    {
+        var postA = new Point3D(1005, 1005, 0);
+        var (_, pet) = Spawn(new Point3D(1000, 1000, 0), postA);
+        pet.ControlOrder = OrderType.Stay; // Home = A
+        pet.MoveToWorld(new Point3D(1050, 1050, 0), pet.Map);
+
+        pet.ControlOrder = OrderType.Stay; // reissued: re-anchor
+
+        Assert.Equal(pet.Location, pet.Home);
+    }
+
+    [Fact]
+    public void LoyaltyRelease_AndManualRelease_ProduceTheSameEndState()
+    {
+        var (masterA, petA) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        var (masterB, petB) = Spawn(new Point3D(1100, 1100, 0), new Point3D(1101, 1100, 0));
+        petA.Name = "Rex";
+        petB.Name = "Rex";
+        petA.IsBonded = true;
+        petB.IsBonded = true;
+
+        petA.IssueOrder(OrderType.Release, masterA); // player
+        petB.ControlOrder = OrderType.Release;       // what the loyalty drain does
+
+        PetTestStub[] pets = [petA, petB];
+
+        for (var i = 0; i < pets.Length; i++)
+        {
+            var pet = pets[i];
+            Assert.False(pet.Controlled);
+            Assert.Null(pet.ControlMaster);
+            Assert.False(pet.IsBonded);
+            Assert.Null(pet.Name);
+            Assert.Equal(OrderType.None, pet.ControlOrder);
+            Assert.True(pet.PendingDeleteTimer?.Running);
+            Assert.Equal(pet.Location, pet.Home);
+        }
+
+        Assert.Equal(masterA.Followers, masterB.Followers);
+    }
+
+    [Fact]
+    public void SummonedPet_Released_IsKilledNotReleased()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        pet.Summoned = true;
+        pet.SummonMaster = master;
+
+        pet.ControlOrder = OrderType.Release;
+
+        Assert.True(pet.Deleted || !pet.Alive);
+    }
+
+    [Fact]
+    public void Stop_WithNoStandingOrder_IdlesAnchoredWhereItStands()
+    {
+        var (_, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        Assert.Equal(OrderType.Come, pet.ControlOrder); // fresh tame: no standing order, Home = Zero
+        Assert.Equal(Point3D.Zero, pet.Home);
+
+        pet.ControlOrder = OrderType.Stop; // what a vendor does after SetControlMaster(buyer)
+
+        Assert.Equal(OrderType.None, pet.ControlOrder);
+        Assert.Equal(pet.Location, pet.Home); // anchored: no unbounded wander
+    }
+
+    [Fact]
+    public void Release_ClearsFriendsAndTheStandingOrder()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        var friend = SpawnPlayer(new Point3D(1002, 1000, 0));
+        pet.AddPetFriend(friend);
+        pet.ControlOrder = OrderType.Guard; // persistent = Guard
+
+        pet.IssueOrder(OrderType.Release, master);
+
+        Assert.False(pet.IsPetFriend(friend));
+        Assert.Equal(OrderType.None, pet.AIObject.PersistentOrder);
+    }
+
+    [Fact]
+    public void PetDeath_IssuesFollowMaster_WithoutRevealingAnyone()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        pet.IsBonded = true;
+        pet.ControlOrder = OrderType.Stay;
+        pet.ControlTarget = null;
+        master.Hidden = true;
+
+        pet.Kill(); // bonded pet death -> IsDeadPet, follows the master
+
+        Assert.True(pet.IsDeadPet);
+        Assert.Equal(OrderType.Follow, pet.ControlOrder);
+        Assert.Same(master, pet.ControlTarget);
+        Assert.True(master.Hidden);
+        Assert.False(pet.Warmode);
+    }
+
+    [Fact]
+    public void ObeyOnALegacyTransientOrder_FallsBackToPersistent()
+    {
+        var (_, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        pet.ControlOrder = OrderType.Follow;          // persistent = Follow
+
+        // a pre-refactor save resting at Rename
+        var field = typeof(BaseCreature).GetField("_controlOrder", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+        field!.SetValue(pet, OrderType.Rename);
+        Assert.Equal(OrderType.Rename, pet.ControlOrder);
+
+        pet.AIObject.Obey();
+
+        Assert.Equal(OrderType.Follow, pet.ControlOrder);
+    }
+
+    [Fact]
+    public void SpeechCommand_FromAFriend_RevealsTheFriend_NotTheMaster()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        var friend = SpawnPlayer(new Point3D(1002, 1000, 0));
+        pet.AddPetFriend(friend);
+        master.Hidden = true;
+        friend.Hidden = true;
+
+        // "all stay" keyword 0x170
+        pet.AIObject.OnSpeech(new SpeechEventArgs(friend, "all stay", MessageType.Regular, 0x3B2, [0x170]));
+
+        Assert.Equal(OrderType.Stay, pet.ControlOrder);
+        Assert.False(friend.Hidden);
+        Assert.True(master.Hidden);
+    }
+
+    [Fact]
+    public void ContextMenuCommand_FromAFriend_RevealsTheFriend_NotTheMaster()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        var friend = SpawnPlayer(new Point3D(1002, 1000, 0));
+        pet.AddPetFriend(friend);
+        master.Hidden = true;
+        friend.Hidden = true;
+
+        new InternalEntry(3006114, 14, OrderType.Stay, true).OnClick(friend, pet); // Command: Stay
+
+        Assert.Equal(OrderType.Stay, pet.ControlOrder);
+        Assert.False(friend.Hidden);
+        Assert.True(master.Hidden);
+    }
+
+    [Fact]
+    public void ContextMenuCommand_FromAFriend_RefusesNonFriendOrders()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        var friend = SpawnPlayer(new Point3D(1002, 1000, 0));
+        pet.AddPetFriend(friend);
+        pet.ControlOrder = OrderType.Follow;
+
+        new InternalEntry(3006107, 14, OrderType.Guard, true).OnClick(friend, pet); // Command: Guard
+
+        Assert.Equal(OrderType.Follow, pet.ControlOrder);
+    }
+
+    [Fact]
+    public void ContextMenuRename_LeavesThePetOnARestableOrder()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        pet.ControlOrder = OrderType.Follow;
+
+        new InternalEntry(3006098, 14, OrderType.Rename, true).OnClick(master, pet); // Rename
+
+        Assert.Equal(OrderType.Follow, pet.ControlOrder);
+    }
+
+    // Come with no standing order (fresh tame or post-load) must settle into one.
+    [Fact]
+    public void RestingCome_WithNoStandingOrder_SettlesIntoStayBesideTheMaster()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        Assert.Equal(OrderType.Come, pet.ControlOrder);
+        Assert.Equal(OrderType.None, pet.AIObject.PersistentOrder);
+
+        pet.AIObject.Obey(); // within 2 tiles -> Stay
+
+        Assert.Equal(OrderType.Stay, pet.ControlOrder);
+        Assert.Equal(OrderType.Stay, pet.AIObject.PersistentOrder);
+        Assert.Equal(pet.Location, pet.Home);
+    }
+
+    // Load never runs the Issue phase. Home (field 12) is read before ControlOrder (18); with an AI
+    // present, a setter-routed load would re-anchor Home to the restored Location.
+    [Fact]
+    public void ControlOrder_RoundTrips_AndLoadDoesNotRunIssue()
+    {
+        var post = new Point3D(1001, 1000, 0);
+        var (_, pet) = Spawn(new Point3D(1000, 1000, 0), post);
+        pet.ControlOrder = OrderType.Stay;                     // Home = post
+        pet.MoveToWorld(new Point3D(1020, 1000, 0), pet.Map);  // displaced: Home != Location
+        Assert.Equal(post, pet.Home);
+
+        var writer = new BufferWriter(true);
+        pet.Serialize(writer);
+        var buffer = new byte[writer.Position];
+        writer.Buffer.AsSpan(0, (int)writer.Position).CopyTo(buffer);
+
+        var copy = new PetTestStub(World.NewMobile);
+        _created.Add(copy);
+        copy.ChangeAIType(AIType.AI_Animal); // the Issue gate is ai != null
+
+        copy.Deserialize(new BufferReader(buffer));
+
+        Assert.Equal(OrderType.Stay, copy.ControlOrder);
+        Assert.Equal(new Point3D(1020, 1000, 0), copy.Location);
+        Assert.Equal(post, copy.Home); // not re-anchored
+    }
+
+    [Fact]
+    public void SpeechCommand_WithoutThePetsName_IsIgnored()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        pet.Name = "Rex";
+        pet.ControlOrder = OrderType.Stay;
+
+        // bare "come" (keyword 0x155) with no name: not for this pet
+        pet.AIObject.OnSpeech(new SpeechEventArgs(master, "come", MessageType.Regular, 0x3B2, [0x155]));
+        Assert.Equal(OrderType.Stay, pet.ControlOrder);
+
+        pet.AIObject.OnSpeech(new SpeechEventArgs(master, "Rex come", MessageType.Regular, 0x3B2, [0x155]));
+        Assert.Equal(OrderType.Come, pet.ControlOrder);
+    }
+
+    [Fact]
+    public void AllCommand_IssuesOnce()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        pet.Name = "Rex";
+        pet.ControlOrder = OrderType.Follow;
+        var post = pet.Location;
+
+        // The client emits both 0x170 ("all stay") and 0x16F ("*stay") for "all stay".
+        pet.AIObject.OnSpeech(new SpeechEventArgs(master, "all stay", MessageType.Regular, 0x3B2, [0x170, 0x16F]));
+
+        Assert.Equal(OrderType.Stay, pet.ControlOrder);
+        Assert.Equal(post, pet.Home);
+        // The named keyword alone must be ignored: the speech starts with "all", not the name.
+        pet.MoveToWorld(new Point3D(1010, 1010, 0), pet.Map);
+        pet.AIObject.OnSpeech(new SpeechEventArgs(master, "all stay", MessageType.Regular, 0x3B2, [0x16F]));
+        Assert.Equal(post, pet.Home);
+    }
+
+    [Fact]
+    public void SpeechCommand_FromAFriend_CannotComeGuardOrDrop()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        pet.Name = "Rex";
+        var friend = SpawnPlayer(new Point3D(1002, 1000, 0));
+        pet.AddPetFriend(friend);
+        pet.ControlOrder = OrderType.Stay;
+        var post = pet.Home;
+
+        pet.AIObject.OnSpeech(new SpeechEventArgs(friend, "Rex come", MessageType.Regular, 0x3B2, [0x155]));
+        Assert.Equal(OrderType.Stay, pet.ControlOrder);
+
+        pet.AIObject.OnSpeech(new SpeechEventArgs(friend, "Rex guard", MessageType.Regular, 0x3B2, [0x15C]));
+        Assert.Equal(OrderType.Stay, pet.ControlOrder);
+        Assert.Equal(OrderType.Stay, pet.AIObject.PersistentOrder);
+
+        pet.IsBonded = true; // CanDrop
+        pet.AIObject.OnSpeech(new SpeechEventArgs(friend, "Rex drop", MessageType.Regular, 0x3B2, [0x156]));
+        Assert.Equal(OrderType.Stay, pet.ControlOrder);
+        Assert.Equal(post, pet.Home); // never re-issued
+
+        // The friend can still Stay/Follow/Stop.
+        pet.AIObject.OnSpeech(new SpeechEventArgs(friend, "Rex follow me", MessageType.Regular, 0x3B2, [0x163]));
+        Assert.Equal(OrderType.Follow, pet.ControlOrder);
+        Assert.Same(friend, pet.ControlTarget);
+    }
+
+    [Fact]
+    public void GMObey_TakesControlOfACommandablePet()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        pet.Name = "Rex";
+        var gm = SpawnPlayer(new Point3D(1002, 1000, 0));
+        gm.AccessLevel = AccessLevel.GameMaster;
+
+        pet.AIObject.OnSpeech(new SpeechEventArgs(gm, "Rex obey", MessageType.Regular, 0x3B2, []));
+
+        Assert.Same(gm, pet.ControlMaster);
+    }
+
+    [Fact]
+    public void GMAllObey_DoesNotTakeControlledPets()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        pet.Name = "Rex";
+        var gm = SpawnPlayer(new Point3D(1002, 1000, 0));
+        gm.AccessLevel = AccessLevel.GameMaster;
+
+        // The mass form is for wild creatures; a controlled pet must be named.
+        pet.AIObject.OnSpeech(new SpeechEventArgs(gm, "all obey", MessageType.Regular, 0x3B2, []));
+        Assert.Same(master, pet.ControlMaster);
+
+        pet.AIObject.OnSpeech(new SpeechEventArgs(gm, "Rex obey", MessageType.Regular, 0x3B2, []));
+        Assert.Same(gm, pet.ControlMaster);
+    }
+
+    // Release is relinquishing control, not exerting it: no roll, so no loyalty either way.
+    [Fact]
+    public void MenuRelease_TouchesNoLoyalty()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        pet.Loyalty = 50;
+
+        new InternalEntry(3006118, 14, OrderType.Release, true).OnClick(master, pet); // Release
+
+        Assert.Equal(50, pet.Loyalty); // no roll: neither the +1 for passing nor the -3 for failing
+    }
+
+    [Fact]
+    public void SpeechRelease_TouchesNoLoyalty()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        pet.Name = "Rex";
+        pet.Loyalty = 50;
+
+        pet.AIObject.OnSpeech(new SpeechEventArgs(master, "Rex release", MessageType.Regular, 0x3B2, [0x16D]));
+
+        Assert.Equal(50, pet.Loyalty);
+    }
+
+    // A creature nobody can command is not released either.
+    [Fact]
+    public void MenuRelease_OnAnUncontrollablePet_IsRefusedWithoutCost()
+    {
+        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        pet.MinTameSkill = 120.0; // control chance at or below zero
+        master.Skills.AnimalTaming.Base = 0;
+        master.Skills.AnimalLore.Base = 0;
+        pet.Loyalty = 50;
+
+        new InternalEntry(3006118, 14, OrderType.Release, true).OnClick(master, pet);
+
+        Assert.Equal(50, pet.Loyalty); // refused, but never punished
+        Assert.True(pet.Controlled);
     }
 }

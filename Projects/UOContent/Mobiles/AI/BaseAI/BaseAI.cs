@@ -26,6 +26,9 @@ namespace Server.Mobiles;
 
 public abstract partial class BaseAI
 {
+    // How far a guarding pet may drift from its master before it closes the gap.
+    internal const int GuardRange = 3;
+
     // Last-known-position tracking: recorded while the combatant is in LOS; drives the
     // guard-time investigation and the instant re-engage.
     private const int GuardGraceDuration = 10_000;
@@ -35,7 +38,6 @@ public abstract partial class BaseAI
     private ActionType _action;
     public long _nextDetectHidden;
     public DateTime _lastOrder = DateTime.MinValue;
-    public Mobile _commandIssuer;
 
     private Mobile _lkpTarget;
     private Point3D _lkpLocation;
@@ -160,15 +162,7 @@ public abstract partial class BaseAI
 
         if (Mobile.CheckControlChance(from))
         {
-            Mobile.ControlTarget = target;
-            Mobile.ControlOrder = order;
-
-            if (order == OrderType.Attack)
-            {
-                Mobile.FocusMob = target;
-                Mobile.Combatant = target;
-                Action = ActionType.Combat;
-            }
+            Mobile.IssueOrder(order, from, target);
         }
     }
 
@@ -188,7 +182,7 @@ public abstract partial class BaseAI
             return false;
         }
 
-        if (isFriend && order is not (OrderType.Follow or OrderType.Stay or OrderType.Stop))
+        if (isFriend && !IsFriendOrder(order))
         {
             return false;
         }

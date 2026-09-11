@@ -93,8 +93,6 @@ namespace Server.Mobiles
 
         public override FoodType FavoriteFood => FoodType.None;
 
-        public override bool CanBeDistracted => false;
-
         public override string DefaultName => "a golem";
 
         public override bool DeleteOnRelease => true;

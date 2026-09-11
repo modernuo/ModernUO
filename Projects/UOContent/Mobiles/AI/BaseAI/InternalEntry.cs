@@ -47,7 +47,7 @@ internal sealed class InternalEntry : ContextMenuEntry
         return from.CheckAlive() && bc != null && !bc.Deleted && bc.Controlled;
     }
 
-    private bool IsInvalidOrderForDeadPet(BaseCreature bc) => bc.IsDeadPet && _order is OrderType.Guard or OrderType.Attack or OrderType.Transfer or OrderType.Drop;
+    private bool IsInvalidOrderForDeadPet(BaseCreature bc) => bc.IsDeadPet && BaseAI.IsDeadPetOrder(_order);
 
     private static bool IsOwnerOrFriend(Mobile from, BaseCreature bc, out bool isFriend)
     {
@@ -56,7 +56,7 @@ internal sealed class InternalEntry : ContextMenuEntry
         return isOwner || isFriend;
     }
 
-    private bool IsInvalidOrderForFriend(bool isFriend) => isFriend && _order is not (OrderType.Follow or OrderType.Stay or OrderType.Stop);
+    private bool IsInvalidOrderForFriend(bool isFriend) => isFriend && !BaseAI.IsFriendOrder(_order);
 
     private void HandleOrder(Mobile from, BaseCreature bc)
     {
@@ -99,9 +99,16 @@ internal sealed class InternalEntry : ContextMenuEntry
 
     private void HandleReleaseOrder(Mobile from, BaseCreature bc)
     {
+        // No roll: a refused one would only drain loyalty toward the involuntary release the
+        // drain performs anyway. Whoever can command the creature may dismiss it.
+        if (!bc.CanBeControlledBy(from))
+        {
+            return;
+        }
+
         if (bc.Summoned)
         {
-            HandleDefaultOrder(from, bc);
+            bc.IssueOrder(OrderType.Release, from);
             return;
         }
 
@@ -112,8 +119,7 @@ internal sealed class InternalEntry : ContextMenuEntry
     {
         if (bc.CheckControlChance(from))
         {
-            bc.ControlTarget = null;
-            bc.ControlOrder = _order;
+            bc.IssueOrder(_order, from);
         }
     }
 }

@@ -23,6 +23,23 @@ public class PetTestStub : BaseCreature
         passiveSpeed = 0.4;
     }
 
+    // Effective (value-changing, non-null) Combatant writes; a re-issue on the same target must not add one.
+    public int CombatantSets { get; private set; }
+
+    public override Mobile Combatant
+    {
+        get => base.Combatant;
+        set
+        {
+            if (value != null && base.Combatant != value)
+            {
+                CombatantSets++;
+            }
+
+            base.Combatant = value;
+        }
+    }
+
     public override bool CheckIdle() => ForceIdle || base.CheckIdle();
 
     public PetTestStub(Serial serial) : base(serial)

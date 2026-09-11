@@ -27,7 +27,8 @@ description: >
    (`ActiveSpeed`/`PassiveSpeed`, seconds per AI decision) and move
    (`ActiveMoveSpeed`/`PassiveMoveSpeed`, seconds per step; inherits think until
    overridden). Prefer `npc-speeds.json` buckets (`SpeedClass`); `SetSpeed()` sets think
-   AND clears move overrides, `SetMoveSpeed()` sets move only. The client `Running` bit is
+   AND clears move overrides, `SetMoveSpeed()` sets move only. Herding and pacing to a
+   master (`FollowMoveSpeed`) cap the resolved pace without writing either clock. The client `Running` bit is
    derived from the step pace (`BaseAI.ShouldRun`); movement APIs take no run argument --
    see `dev-docs/content-patterns.md` § Creature Speeds. Reaction time to approaching
    enemies is `AcquireOnApproachDelay` (TimeSpan gradient; `Zero` = paragon snap, 2s

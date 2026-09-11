@@ -284,6 +284,17 @@ ClearMoveSpeed();            // back to inheriting the think clock
 All four are `[props`-tunable per instance (move values: set `0` to re-inherit); per-instance
 move overrides serialize. Being badly hurt slows steps, never decisions (RunUO parity).
 
+Two conditions cap the resolved step pace without touching either clock, so nothing is
+stored and nothing needs undoing when the condition ends:
+
+- **Herding** — a creature with a `TargetLocation` is driven at a fixed `HerdingMoveSpeed`.
+- **Pacing to the master** — a pet following its master, or guarding from outside guard
+  range, is capped at `FollowMoveSpeed` (AOS 0.1, earlier eras 0; RunUO's pet sprint). It is
+  a cap, not an override: a creature configured faster keeps its own pace, and its
+  `ActiveMoveSpeed`/`PassiveMoveSpeed` are left untouched. Override the virtual to change
+  the pace or to enable it in an era that has it off. Decisions are unaffected — a following
+  pet thinks on its active clock.
+
 The client's `Running` bit is derived from the step pace, never passed by callers
 (`BaseAI.ShouldRun`, stamped in `DoMoveImpl`): a step shorter than the client's walk
 interpolation — 400 ms on foot, 200 ms mounted/flying (`Movement.WalkFootDelay` /

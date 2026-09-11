@@ -48,16 +48,23 @@ public abstract partial class BaseAI
             }
         }
 
-        if (Mobile.Controlled && Mobile.Commandable)
+        // Staff first, so "<name> obey" reaches a controlled pet.
+        if (e.Mobile.AccessLevel >= AccessLevel.GameMaster && HandleGMCommands(e))
         {
-            AllOnSpeechPet(e);
-            NamedOnSpeechPet(e);
             return;
         }
 
-        if (e.Mobile.AccessLevel >= AccessLevel.GameMaster)
+        if (Mobile.Controlled && Mobile.Commandable)
         {
-            HandleGMCommands(e);
+            // Exactly one handler per utterance: named addresses this pet, "all" every pet in range.
+            if (WasNamed(e.Speech))
+            {
+                NamedOnSpeechPet(e);
+            }
+            else
+            {
+                AllOnSpeechPet(e);
+            }
         }
     }
 
@@ -158,7 +165,7 @@ public abstract partial class BaseAI
         {
             case 0x164: // all come
                 {
-                    HandleComeCommand(e.Mobile, true);
+                    HandleComeCommand(e.Mobile, isOwner);
                     break;
                 }
             case 0x165: // all follow
@@ -169,7 +176,7 @@ public abstract partial class BaseAI
             case 0x166: // all guard
             case 0x16B: // all guard me
                 {
-                    HandleGuardCommand(e.Mobile, true);
+                    HandleGuardCommand(e.Mobile, isOwner);
                     break;
                 }
             case 0x167: // all stop
@@ -180,7 +187,7 @@ public abstract partial class BaseAI
             case 0x168: // all kill
             case 0x169: // all attack
                 {
-                    HandleAttackCommand(e.Mobile, true);
+                    HandleAttackCommand(e.Mobile, isOwner);
                     break;
                 }
             case 0x16C: // all follow me
@@ -230,12 +237,12 @@ public abstract partial class BaseAI
         {
             case 0x155: // *come
                 {
-                    HandleComeCommand(e.Mobile, true);
+                    HandleComeCommand(e.Mobile, isOwner);
                     break;
                 }
             case 0x156: // *drop
                 {
-                    HandleDropCommand(e.Mobile, true, e.Speech);
+                    HandleDropCommand(e.Mobile, isOwner);
                     break;
                 }
             case 0x15A: // *follow
@@ -245,18 +252,18 @@ public abstract partial class BaseAI
                 }
             case 0x15B: // *friend
                 {
-                    HandleFriendCommand(e.Mobile, true, e.Speech);
+                    HandleFriendCommand(e.Mobile, isOwner);
                     break;
                 }
             case 0x15C: // *guard
                 {
-                    HandleGuardCommand(e.Mobile, true);
+                    HandleGuardCommand(e.Mobile, isOwner);
                     break;
                 }
             case 0x15D: // *kill
             case 0x15E: // *attack
                 {
-                    HandleAttackCommand(e.Mobile, true);
+                    HandleAttackCommand(e.Mobile, isOwner);
                     break;
                 }
             case 0x161: // *stop
@@ -271,12 +278,12 @@ public abstract partial class BaseAI
                 }
             case 0x16D: // *release
                 {
-                    HandleReleaseCommand(e.Mobile, true, e.Speech);
+                    HandleReleaseCommand(e.Mobile, isOwner);
                     break;
                 }
             case 0x16E: // *transfer
                 {
-                    HandleTransferCommand(e.Mobile, true, e.Speech);
+                    HandleTransferCommand(e.Mobile, isOwner);
                     break;
                 }
             case 0x16F: // *stay
@@ -330,9 +337,7 @@ public abstract partial class BaseAI
     {
         if (isOwner && Mobile.CheckControlChance(from))
         {
-            _commandIssuer = from;
-            Mobile.ControlTarget = null;
-            Mobile.ControlOrder = OrderType.Come;
+            Mobile.IssueOrder(OrderType.Come, from);
         }
     }
 
@@ -340,9 +345,7 @@ public abstract partial class BaseAI
     {
         if (isOwner && Mobile.CheckControlChance(from))
         {
-            _commandIssuer = from;
-            Mobile.ControlTarget = null;
-            Mobile.ControlOrder = OrderType.Guard;
+            Mobile.IssueOrder(OrderType.Guard, from);
         }
     }
 
@@ -350,9 +353,7 @@ public abstract partial class BaseAI
     {
         if (Mobile.CheckControlChance(from))
         {
-            _commandIssuer = from;
-            Mobile.ControlTarget = target;
-            Mobile.ControlOrder = order;
+            Mobile.IssueOrder(order, from, target);
         }
     }
 
@@ -360,25 +361,21 @@ public abstract partial class BaseAI
     {
         if (isOwner)
         {
-            _commandIssuer = from;
             BeginPickTarget(from, OrderType.Attack);
         }
     }
 
-    private void HandleDropCommand(Mobile from, bool isOwner, string speech)
+    private void HandleDropCommand(Mobile from, bool isOwner)
     {
-        if (isOwner && !Mobile.IsDeadPet && !Mobile.Summoned && WasNamed(speech)
-            && Mobile.CheckControlChance(from))
+        if (isOwner && !Mobile.IsDeadPet && !Mobile.Summoned && Mobile.CheckControlChance(from))
         {
-            _commandIssuer = from;
-            Mobile.ControlTarget = null;
-            Mobile.ControlOrder = OrderType.Drop;
+            Mobile.IssueOrder(OrderType.Drop, from);
         }
     }
 
-    private void HandleFriendCommand(Mobile from, bool isOwner, string speech)
+    private void HandleFriendCommand(Mobile from, bool isOwner)
     {
-        if (isOwner && WasNamed(speech) && Mobile.CheckControlChance(from))
+        if (isOwner && Mobile.CheckControlChance(from))
         {
             if (Mobile.Summoned || Mobile is GrizzledMare)
             {
@@ -398,29 +395,31 @@ public abstract partial class BaseAI
         }
     }
 
-    private void HandleReleaseCommand(Mobile from, bool isOwner, string speech)
+    private void HandleReleaseCommand(Mobile from, bool isOwner)
     {
         if (!isOwner)
         {
             return;
         }
 
-        if (WasNamed(speech) && Mobile.CheckControlChance(from))
+        // No control roll: see InternalEntry.HandleReleaseOrder.
+        if (!Mobile.CanBeControlledBy(from))
         {
-            if (!Mobile.Summoned)
-            {
-                from.SendGump(new ConfirmReleaseGump(from, Mobile));
-            }
-            else
-            {
-                Mobile.ControlOrder = OrderType.Release;
-            }
+            return;
         }
+
+        if (Mobile.Summoned)
+        {
+            Mobile.IssueOrder(OrderType.Release, from);
+            return;
+        }
+
+        from.SendGump(new ConfirmReleaseGump(from, Mobile));
     }
 
-    private void HandleTransferCommand(Mobile from, bool isOwner, string speech)
+    private void HandleTransferCommand(Mobile from, bool isOwner)
     {
-        if (isOwner && !Mobile.IsDeadPet && WasNamed(speech) && Mobile.CheckControlChance(from))
+        if (isOwner && !Mobile.IsDeadPet && Mobile.CheckControlChance(from))
         {
             if (Mobile.Summoned || Mobile is GrizzledMare)
             {
@@ -440,18 +439,23 @@ public abstract partial class BaseAI
         }
     }
 
-    private void HandleGMCommands(SpeechEventArgs e)
+    private bool HandleGMCommands(SpeechEventArgs e)
     {
         this.DebugSayFormatted($"Command is from GM: {e.Mobile.Name}, Target: {Mobile.ControlTarget?.Name ?? "None or Unknown"}");
 
-        if (Mobile.FindMyName(e.Speech, true) && e.Speech.InsensitiveContains("obey"))
+        // "all obey" is for wild creatures; a controlled pet must be named.
+        if (!Mobile.FindMyName(e.Speech, !Mobile.Controlled) || !e.Speech.InsensitiveContains("obey"))
         {
-            Mobile.SetControlMaster(e.Mobile);
-
-            if (Mobile.SummonMaster != null)
-            {
-                Mobile.SummonMaster = e.Mobile;
-            }
+            return false;
         }
+
+        Mobile.SetControlMaster(e.Mobile);
+
+        if (Mobile.SummonMaster != null)
+        {
+            Mobile.SummonMaster = e.Mobile;
+        }
+
+        return true;
     }
 }

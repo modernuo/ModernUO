@@ -1059,9 +1059,6 @@ namespace Server.Mobiles
 
         public virtual bool CanDestroyObstacles => false;
 
-        // OSI followers were distracted by attacks well into AoS; removed around ML.
-        public virtual bool CanBeDistracted => !Core.ML;
-
         public override bool ShouldCheckStatTimers => false;
 
         public virtual bool CanAngerOnTame => false;
@@ -1103,6 +1100,13 @@ namespace Server.Mobiles
         // (RunUO's forced 0.3, without its TransformMoveDelay inflation to 0.6).
         private const double HerdingMoveSpeed = 0.3;
 
+        /// <summary>
+        /// Seconds per step while closing on the master under a standing order. A cap, not an
+        /// override: a creature configured faster keeps its own pace. 0 disables it.
+        /// </summary>
+        [CommandProperty(AccessLevel.GameMaster)]
+        public virtual double FollowMoveSpeed => Core.AOS ? 0.1 : 0;
+
         [CommandProperty(AccessLevel.GameMaster)]
         public IPoint2D TargetLocation
         {
@@ -1112,9 +1116,9 @@ namespace Server.Mobiles
 
         /// <summary>
         /// Resolved seconds per step: a verbatim active/passive <see cref="CurrentSpeed"/>
-        /// maps to the matching movement value; a bespoke pace (e.g. the pet-order 0.1 sprint)
-        /// stays fused to both clocks. A herded creature is always driven at
-        /// <see cref="HerdingMoveSpeed"/>.
+        /// maps to the matching movement value; a bespoke pace stays fused to both clocks. A
+        /// herded creature is always driven at <see cref="HerdingMoveSpeed"/>, and a pet
+        /// closing on its master is capped at <see cref="FollowMoveSpeed"/>.
         /// </summary>
         [CommandProperty(AccessLevel.GameMaster)]
         public double CurrentMoveSpeed
@@ -1126,17 +1130,26 @@ namespace Server.Mobiles
                     return HerdingMoveSpeed;
                 }
 
+                double speed;
+
                 if (_currentSpeed == _activeSpeed)
                 {
-                    return _activeMoveSpeed > 0 ? _activeMoveSpeed : _activeSpeed;
+                    speed = _activeMoveSpeed > 0 ? _activeMoveSpeed : _activeSpeed;
                 }
-
-                if (_currentSpeed == _passiveSpeed)
+                else if (_currentSpeed == _passiveSpeed)
                 {
-                    return _passiveMoveSpeed > 0 ? _passiveMoveSpeed : _passiveSpeed;
+                    speed = _passiveMoveSpeed > 0 ? _passiveMoveSpeed : _passiveSpeed;
+                }
+                else
+                {
+                    speed = _currentSpeed;
                 }
 
-                return _currentSpeed;
+                var followSpeed = FollowMoveSpeed;
+
+                return followSpeed > 0 && AIObject?.IsPacingToMaster() == true
+                    ? Math.Min(followSpeed, speed)
+                    : speed;
             }
         }
 
@@ -1188,26 +1201,74 @@ namespace Server.Mobiles
             }
         }
 
-        // Fires on every assignment, not only changes: a reissued order is a command
-        // (retarget, break off combat, re-anchor Home). Handlers receive the previous order.
+        // Fires on every assignment, not only changes: a reissued order is a command (retarget, re-anchor).
+        // A raw assignment is system-issued; player commands go through IssueOrder.
         [SerializableProperty(18, useField: nameof(_controlOrder))]
         [SaveFlag(nameof(ShouldSerializeControlOrder))]
         [CommandProperty(AccessLevel.GameMaster)]
         public OrderType ControlOrder
         {
             get => _controlOrder;
-            set
+            set => SetControlOrder(value, null, false);
+        }
+
+        /// <summary>
+        /// Gives this pet a command. <paramref name="issuer"/> (null = system-issued) is the only mobile
+        /// revealed; <paramref name="target"/> replaces <see cref="ControlTarget"/> first.
+        /// </summary>
+        public void IssueOrder(OrderType order, Mobile issuer, Mobile target = null)
+        {
+            // The interrupted order owns this; BaseAI.ResumeInterrupted hands it back.
+            var interrupted = ControlTarget;
+            ControlTarget = target;
+            SetControlOrder(order, issuer, false, interrupted);
+        }
+
+        // Loops until the Issue phase returns an order that rests. `resuming` = falling back to
+        // the standing order: no re-derivation, no flourish.
+        internal void SetControlOrder(OrderType order, Mobile issuer, bool resuming) =>
+            SetControlOrder(order, issuer, resuming, ControlTarget);
+
+        internal void SetControlOrder(OrderType order, Mobile issuer, bool resuming, Mobile interruptedTarget)
+        {
+            var ai = AIObject;
+            var previous = _controlOrder;
+            _controlOrder = order;
+
+            if (ai != null)
             {
-                var previous = _controlOrder;
-                _controlOrder = value;
+                for (var depth = 0; ; depth++)
+                {
+                    var next = ai.IssueOrder(order, previous, issuer, resuming, interruptedTarget);
 
-                AIObject?.OnCurrentOrderChanged(previous);
+                    // A nested assignment (SetControlMaster(null), Kill()) already resolved itself; it wins.
+                    if (_controlOrder != order || next == order)
+                    {
+                        break;
+                    }
 
-                InvalidateProperties();
+                    System.Diagnostics.Debug.Assert(depth < 8, "pet order resolution did not converge");
 
-                _controlMaster?.InvalidateProperties();
-                this.MarkDirty();
+                    if (depth >= 8)
+                    {
+                        // Non-converging override: rest at the standing order.
+                        _controlOrder = ai.PersistentOrder;
+                        break;
+                    }
+
+                    previous = order;
+                    order = next;
+                    issuer = null; // chained resolutions reveal nobody
+                    resuming = true;
+                    _controlOrder = order;
+                }
+
+                System.Diagnostics.Debug.Assert(Deleted || BaseAI.IsRestableOrder(_controlOrder), "a transient pet order rested");
             }
+
+            InvalidateProperties();
+            _controlMaster?.InvalidateProperties();
+            this.MarkDirty();
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
@@ -1321,6 +1382,15 @@ namespace Server.Mobiles
         public virtual bool CanShout => false;
 
         public static bool BondingEnabled { get; private set; }
+
+        /// <summary>
+        /// Publish 51: a pet told to follow, come, stay or stop "will not attack anything, even
+        /// if it is attacked". Guard and attack are unaffected. The publish has no step of its own
+        /// on the expansion ladder, so it rides ML and the setting carries the rest.
+        /// </summary>
+        public static bool PetsStandDownOnCommand { get; private set; }
+
+        public virtual bool StandsDownOnCommand => PetsStandDownOnCommand;
 
         public virtual bool IsBondable => BondingEnabled && !Summoned;
         public virtual TimeSpan BondingDelay => TimeSpan.FromDays(7.0);
@@ -1875,17 +1945,6 @@ namespace Server.Mobiles
             BardPacified = false;
         }
 
-        public virtual void CheckDistracted(Mobile from)
-        {
-            if (Utility.RandomDouble() < .10)
-            {
-                ControlTarget = from;
-                ControlOrder = OrderType.Attack;
-                Combatant = from;
-                Warmode = true;
-            }
-        }
-
         public override void OnDamage(int amount, Mobile from, bool willKill)
         {
             if (BardPacified && (HitsMax - Hits) * 0.001 > Utility.RandomDouble())
@@ -1927,21 +1986,11 @@ namespace Server.Mobiles
 
             ReceivedHonorContext?.OnTargetDamaged(from, amount);
 
-            if (!willKill && CanBeDistracted && ControlOrder == OrderType.Follow)
-            {
-                CheckDistracted(from);
-            }
-
             base.OnDamage(amount, from, willKill);
         }
 
         public virtual void OnDamagedBySpell(Mobile from, int damage)
         {
-            if (CanBeDistracted && ControlOrder == OrderType.Follow)
-            {
-                CheckDistracted(from);
-            }
-
             TriggerAbility(MonsterAbilityTrigger.TakeSpellDamage, from);
         }
 
@@ -2688,7 +2737,7 @@ namespace Server.Mobiles
 
             if (AIObject != null)
             {
-                if (!Core.ML || ct != OrderType.Follow && ct != OrderType.Stop && ct != OrderType.Stay)
+                if (!StandsDownOnCommand || !BaseAI.IsStandDownOrder(ct))
                 {
                     AIObject.OnAggressiveAction(aggressor);
                 }
@@ -2714,11 +2763,10 @@ namespace Server.Mobiles
                 }
             }
 
-            if (aggressor.ChangingCombatant && (_controlled || _summoned) &&
-                (ct == OrderType.Come || !Core.ML && ct == OrderType.Stay || ct is OrderType.Stop or OrderType.None or OrderType.Follow))
+            // Only reachable when the pet does not stand down: the orders above returned early.
+            if (aggressor.ChangingCombatant && (_controlled || _summoned) && BaseAI.IsStandDownOrder(ct))
             {
-                ControlTarget = aggressor;
-                ControlOrder = OrderType.Attack;
+                IssueOrder(OrderType.Attack, null, aggressor);
             }
             else if (Combatant == null && !BardPacified)
             {
@@ -3419,8 +3467,7 @@ namespace Server.Mobiles
                 Mana = 0;
 
                 IsDeadPet = true;
-                ControlTarget = ControlMaster;
-                ControlOrder = OrderType.Follow;
+                IssueOrder(OrderType.Follow, null, ControlMaster);
 
                 ProcessDelta();
                 SendIncomingPacket();
@@ -4159,6 +4206,7 @@ namespace Server.Mobiles
         public static void Configure()
         {
             BondingEnabled = ServerConfiguration.GetSetting("taming.enableBonding", Core.LBR);
+            PetsStandDownOnCommand = ServerConfiguration.GetSetting("taming.petsStandDownOnCommand", Core.ML);
         }
 
         public void BeginDeleteTimer()
@@ -4239,12 +4287,20 @@ namespace Server.Mobiles
 
         public virtual void AddPetFriend(Mobile m)
         {
-            Friends ??= new List<Mobile>();
-
+            Friends ??= [];
             Friends.Add(m);
+            this.MarkDirty();
         }
 
-        public virtual void RemovePetFriend(Mobile m) => Friends?.Remove(m);
+        public virtual void RemovePetFriend(Mobile m)
+        {
+            if (Friends?.Remove(m) == true)
+            {
+                this.MarkDirty();
+            }
+        }
+
+        public virtual void ClearPetFriends() => Friends = null; // generated setter marks dirty
 
         public virtual bool IsFriend(Mobile m) =>
             OppositionGroup?.IsEnemy(this, m) != true && m is BaseCreature c && _team == c._team
@@ -5923,7 +5979,7 @@ namespace Server.Mobiles
 
                 c.Say(1043255, c.Name); // ~1_NAME~ appears to have decided that is better off without a master!
                 c.Loyalty = BaseCreature.MaxLoyalty;
-                c.AIObject.DoOrderRelease();
+                c.ControlOrder = OrderType.Release;
             }
 
             while (toRemove.Count > 0)
