@@ -108,6 +108,47 @@ public class PetRetaliationTests : IDisposable
         Assert.Same(attacker, pet.Combatant);
     }
 
+    // A stand-down pet stays down however long it is beaten on: no damage callback may put it
+    // back into combat behind the policy's back.
+    [Theory]
+    [InlineData(Expansion.AOS, false)]
+    [InlineData(Expansion.AOS, true)]
+    [InlineData(Expansion.ML, false)]
+    [InlineData(Expansion.ML, true)]
+    public void StandDownPet_StaysDown_ThroughRepeatedDamage(Expansion era, bool spellDamage)
+    {
+        var previous = Core.Expansion;
+
+        try
+        {
+            Core.Expansion = era;
+            var (master, pet) = Spawn<StandDownPet>();
+            Order(pet, master, OrderType.Follow);
+            var attacker = Attack(pet);
+
+            Assert.Equal(OrderType.Follow, pet.ControlOrder); // the initial aggression stood down
+
+            for (var i = 0; i < 500 && pet.ControlOrder == OrderType.Follow; i++)
+            {
+                if (spellDamage)
+                {
+                    pet.OnDamagedBySpell(attacker, 1);
+                }
+                else
+                {
+                    pet.OnDamage(1, attacker, false);
+                }
+            }
+
+            Assert.Equal(OrderType.Follow, pet.ControlOrder);
+            Assert.Null(pet.Combatant);
+        }
+        finally
+        {
+            Core.Expansion = previous;
+        }
+    }
+
     // "Guard: the pet should guard as it does currently."
     [Fact]
     public void GuardingPet_StillFights_UnderStandDown()

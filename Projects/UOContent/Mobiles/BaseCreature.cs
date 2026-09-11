@@ -1059,9 +1059,6 @@ namespace Server.Mobiles
 
         public virtual bool CanDestroyObstacles => false;
 
-        // OSI followers were distracted by attacks well into AoS; removed around ML.
-        public virtual bool CanBeDistracted => !Core.ML;
-
         public override bool ShouldCheckStatTimers => false;
 
         public virtual bool CanAngerOnTame => false;
@@ -1951,14 +1948,6 @@ namespace Server.Mobiles
             BardPacified = false;
         }
 
-        public virtual void CheckDistracted(Mobile from)
-        {
-            if (from != null && Utility.RandomDouble() < .10)
-            {
-                IssueOrder(OrderType.Attack, null, from);
-            }
-        }
-
         public override void OnDamage(int amount, Mobile from, bool willKill)
         {
             if (BardPacified && (HitsMax - Hits) * 0.001 > Utility.RandomDouble())
@@ -2000,21 +1989,11 @@ namespace Server.Mobiles
 
             ReceivedHonorContext?.OnTargetDamaged(from, amount);
 
-            if (!willKill && CanBeDistracted && ControlOrder == OrderType.Follow)
-            {
-                CheckDistracted(from);
-            }
-
             base.OnDamage(amount, from, willKill);
         }
 
         public virtual void OnDamagedBySpell(Mobile from, int damage)
         {
-            if (CanBeDistracted && ControlOrder == OrderType.Follow)
-            {
-                CheckDistracted(from);
-            }
-
             TriggerAbility(MonsterAbilityTrigger.TakeSpellDamage, from);
         }
 
