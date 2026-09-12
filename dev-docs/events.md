@@ -247,9 +247,9 @@ public static void HandlePlayerLogin(PlayerMobile player)
 Generated events dispatch statically inside `UOContent`; content that other assemblies must observe exposes a
 plain `static event` instead (shape: `Projects/UOContent/Engines/Help/HelpEvents.cs`).
 
-- `SkillEvents.SkillChecked` -- `Action<Mobile, Skill, bool success>`, raised once per `SkillCheck.CheckSkill`
-  after gains. Not raised when the skill cap is zero or when a `Mobile_SkillCheck*` wrapper short-circuits
-  (missing skill, too difficult, no challenge) before reaching `CheckSkill`. Fires for every `Mobile`.
+- `SkillEvents.SkillUsed` -- `Action<Mobile, Skill, bool success>`, raised once per skill attempt from the
+  four `Mobile_SkillCheck*` handlers with the attempt's outcome, including attempts resolved without a roll
+  (too difficult, no challenge). Not raised when the mobile lacks the skill. Fires for every `Mobile`.
 
 ---
 
