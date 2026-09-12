@@ -350,6 +350,17 @@ Thread Pool:    Preserialize() → ... → WriteFiles()
 
 The main thread blocks during `Snapshot()` to ensure consistent state, then the disk I/O happens asynchronously.
 
+Delta saves (`dev-docs/serialization.md` § Delta Saves) add two cross-thread rules to this pipeline:
+
+- `Preserialize()` decides the save plan off-loop (validating the previous save files and sizing the
+  heaps); the loop reads `DeltaSaves.Plan` only after the snapshot request `Preserialize()` posts, so the
+  handoff orders the publication.
+- The writer thread stores each written record's `ISerializable.SavePlacement` on the entity during
+  `WritingSave`. That field is writer-owned during the write and freeze-owned otherwise; the two never
+  overlap because `Save()` waits for the previous write to finish. It is the one sanctioned entity write
+  off-loop, and it is safe only because the value is advisory: any failed save forces the next one to
+  serialize everything, so a placement is always either valid or ignored.
+
 ## Best Practices
 
 1. **Never use concurrency primitives in game code** -- they add overhead for no benefit
