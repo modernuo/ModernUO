@@ -78,6 +78,11 @@ public abstract record SpawnerDto
     [JsonPropertyOrder(11)]
     public bool SpawnLocationIsHome { get; init; }
 
+    /// <summary>All dead, then respawn together. Mirrors <see cref="BaseSpawner.Group"/>.</summary>
+    [JsonPropertyName("group")]
+    [JsonPropertyOrder(11)]
+    public bool Group { get; init; }
+
     [JsonPropertyName("spawnPositionMode")]
     [JsonPropertyOrder(12)]
     public SpawnPositionMode SpawnPositionMode { get; init; }

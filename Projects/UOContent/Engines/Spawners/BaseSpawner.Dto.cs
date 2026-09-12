@@ -37,6 +37,7 @@ public abstract partial class BaseSpawner
 
         InitSpawn(dto.Count, dto.MinDelay, dto.MaxDelay, dto.Team, SpawnBounds);
 
+        _group = dto.Group;
         _walkingRange = dto.WalkingRange;
         _spawnLocationIsHome = dto.SpawnLocationIsHome;
         _spawnPositionMode = dto.SpawnPositionMode;
