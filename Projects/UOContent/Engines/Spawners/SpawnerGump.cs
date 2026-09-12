@@ -19,12 +19,12 @@ public class SpawnerGump : Gump
 
         AddPage(0);
 
-        AddBackground(0, 0, 346, 400 + (_entry != null ? 44 : 0), 5054);
-        AddAlphaRegion(0, 0, 346, 400 + (_entry != null ? 44 : 0));
+        AddBackground(0, 0, 369, 400 + (_entry != null ? 44 : 0), 5054);
+        AddAlphaRegion(0, 0, 369, 400 + (_entry != null ? 44 : 0));
 
-        AddHtml(240, 1, 250, 20, "<BASEFONT COLOR=#F4F4F4>#</BASEFONT>");
-        AddHtml(271, 1, 250, 20, "<BASEFONT COLOR=#F4F4F4>Max</BASEFONT>");
-        AddHtml(311, 1, 250, 20, "<BASEFONT COLOR=#F4F4F4>Prb</BASEFONT>");
+        AddHtml(263, 1, 250, 20, "<BASEFONT COLOR=#F4F4F4>#</BASEFONT>");
+        AddHtml(294, 1, 250, 20, "<BASEFONT COLOR=#F4F4F4>Max</BASEFONT>");
+        AddHtml(334, 1, 250, 20, "<BASEFONT COLOR=#F4F4F4>Prb</BASEFONT>");
 
         // AddLabel( 95, 1, 0, "Creatures List" );
 
@@ -45,7 +45,7 @@ public class SpawnerGump : Gump
             if (entry == null || _entry != entry)
             {
                 AddButton(
-                    5,
+                    28,
                     22 * i + 21 + offset,
                     entry != null ? 0xFBA : 0xFA5,
                     entry != null ? 0xFBC : 0xFA7,
@@ -55,7 +55,7 @@ public class SpawnerGump : Gump
             else
             {
                 AddButton(
-                    5,
+                    28,
                     22 * i + 21 + offset,
                     0xFBB,
                     0xFBC,
@@ -63,30 +63,35 @@ public class SpawnerGump : Gump
                 ); // Unexpand
             }
 
-            AddButton(46, 22 * i + 21 + offset, 0xFA2, 0xFA4, GetButtonID(2, 1 + i * 2)); // Delete
+            AddButton(61, 22 * i + 21 + offset, 0xFA2, 0xFA4, GetButtonID(2, 1 + i * 2)); // Delete
 
             if (entry != null)
             {
-                AddButton(
-                    22,
-                    22 * i + 21 + offset,
-                    entry.Disabled ? 0xD2 : 0xD3,
-                    entry.Disabled ? 0xD3 : 0xD2,
-                    GetButtonID(3, i)
-                ); // Enabled toggle (checked = enabled)
+                if (entry.Disabled)
+                {
+                    AddButton(9, 22 * i + 24 + offset, 0x82C, 0x82C, GetButtonID(3, i)); // Locked, press to unlock
+                }
+                else
+                {
+                    AddButton(7, 22 * i + 24 + offset, 0x2C88, 0x2C89, GetButtonID(3, i)); // Unlocked, press to lock
+                }
             }
 
-            AddImageTiled(71, 22 * i + 20 + offset, 161, 23, 0xA40); // creature text box
-            AddImageTiled(72, 22 * i + 21 + offset, 159, 21, 0xBBC); // creature text box
+            // Locked entries render on a grey tile as labels instead of text entries, so they can't be edited
+            var locked = entry?.Disabled == true;
+            var fieldTile = locked ? 0x23F4 : 0xBBC;
 
-            AddImageTiled(235, 22 * i + 20 + offset, 35, 23, 0xA40); // count html label
-            AddImageTiled(236, 22 * i + 21 + offset, 33, 21, 0xE14); // count html label
+            AddImageTiled(94, 22 * i + 20 + offset, 161, 23, 0xA40); // creature text box
+            AddImageTiled(95, 22 * i + 21 + offset, 159, 21, fieldTile); // creature text box
 
-            AddImageTiled(267, 22 * i + 20 + offset, 35, 23, 0xA40); // maxcount text box
-            AddImageTiled(268, 22 * i + 21 + offset, 33, 21, 0xBBC); // maxcount text box
+            AddImageTiled(258, 22 * i + 20 + offset, 35, 23, 0xA40); // count html label
+            AddImageTiled(259, 22 * i + 21 + offset, 33, 21, 0xE14); // count html label
 
-            AddImageTiled(305, 22 * i + 20 + offset, 35, 23, 0xA40); // probability text box
-            AddImageTiled(306, 22 * i + 21 + offset, 33, 21, 0xBBC); // probability text box
+            AddImageTiled(290, 22 * i + 20 + offset, 35, 23, 0xA40); // maxcount text box
+            AddImageTiled(291, 22 * i + 21 + offset, 33, 21, fieldTile); // maxcount text box
+
+            AddImageTiled(328, 22 * i + 20 + offset, 35, 23, 0xA40); // probability text box
+            AddImageTiled(329, 22 * i + 21 + offset, 33, 21, fieldTile); // probability text box
 
             string name;
             string probability;
@@ -102,7 +107,7 @@ public class SpawnerGump : Gump
 
                 var count = spawner.CountSpawns(entry);
 
-                AddHtml(235, 22 * i + 20 + offset + 1, 35, 15, $"<BASEFONT COLOR={GetCountColor(count, entry.SpawnedMaxCount)}><div align=RIGHT>{count}<BASEFONT COLOR=#F4F4F4>/</BASEFONT></div></BASEFONT>");
+                AddHtml(258, 22 * i + 20 + offset + 1, 35, 15, $"<BASEFONT COLOR={GetCountColor(count, entry.SpawnedMaxCount)}><div align=RIGHT>{count}<BASEFONT COLOR=#F4F4F4>/</BASEFONT></div></BASEFONT>");
             }
             else
             {
@@ -111,47 +116,44 @@ public class SpawnerGump : Gump
                 maxCount = "";
             }
 
-            // creature
-            AddTextEntry(
-                75,
-                22 * i + 21 + offset,
-                156,
-                21,
-                (flags & EntryFlags.InvalidType) != 0 ? 33 : entry?.Disabled == true ? 0x3B2 : 0,
-                textIndex,
-                name
-            );
-            AddTextEntry(270, 22 * i + 21 + offset, 30, 21, 0, textIndex + 1, maxCount);    // max count
-            AddTextEntry(308, 22 * i + 21 + offset, 30, 21, 0, textIndex + 2, probability); // probability
+            var nameHue = (flags & EntryFlags.InvalidType) != 0 ? 33 : 0;
+
+            if (locked)
+            {
+                AddLabelCropped(98, 22 * i + 21 + offset, 156, 21, nameHue, name);     // creature
+                AddLabelCropped(293, 22 * i + 21 + offset, 30, 21, 0, maxCount);       // max count
+                AddLabelCropped(331, 22 * i + 21 + offset, 30, 21, 0, probability);    // probability
+            }
+            else
+            {
+                AddTextEntry(98, 22 * i + 21 + offset, 156, 21, nameHue, textIndex, name);         // creature
+                AddTextEntry(293, 22 * i + 21 + offset, 30, 21, 0, textIndex + 1, maxCount);    // max count
+                AddTextEntry(331, 22 * i + 21 + offset, 30, 21, 0, textIndex + 2, probability); // probability
+            }
 
             if (entry != null && _entry == entry)
             {
                 AddLabel(5, 22 * i + 42, 0x384, "Params");
-                AddImageTiled(55, 22 * i + 42, 253, 23, 0xA40); // Parameters
-                AddImageTiled(56, 22 * i + 43, 251, 21, 0xBBC); // Parameters
+                AddImageTiled(55, 22 * i + 42, 276, 23, 0xA40); // Parameters
+                AddImageTiled(56, 22 * i + 43, 274, 21, fieldTile); // Parameters
 
                 AddLabel(5, 22 * i + 64, 0x384, "Props");
-                AddImageTiled(55, 22 * i + 64, 253, 23, 0xA40); // Properties
-                AddImageTiled(56, 22 * i + 65, 251, 21, 0xBBC); // Properties
+                AddImageTiled(55, 22 * i + 64, 276, 23, 0xA40); // Properties
+                AddImageTiled(56, 22 * i + 65, 274, 21, fieldTile); // Properties
 
-                AddTextEntry(
-                    59,
-                    22 * i + 42,
-                    248,
-                    21,
-                    (flags & EntryFlags.InvalidParams) != 0 ? 33 : 0,
-                    textIndex + 3,
-                    entry.Parameters
-                ); // parameters
-                AddTextEntry(
-                    59,
-                    22 * i + 62,
-                    248,
-                    21,
-                    (flags & EntryFlags.InvalidProps) != 0 ? 33 : 0,
-                    textIndex + 4,
-                    entry.Properties
-                ); // properties
+                var paramsHue = (flags & EntryFlags.InvalidParams) != 0 ? 33 : 0;
+                var propsHue = (flags & EntryFlags.InvalidProps) != 0 ? 33 : 0;
+
+                if (locked)
+                {
+                    AddLabelCropped(59, 22 * i + 42, 271, 21, paramsHue, entry.Parameters); // parameters
+                    AddLabelCropped(59, 22 * i + 62, 271, 21, propsHue, entry.Properties);  // properties
+                }
+                else
+                {
+                    AddTextEntry(59, 22 * i + 42, 271, 21, paramsHue, textIndex + 3, entry.Parameters); // parameters
+                    AddTextEntry(59, 22 * i + 62, 271, 21, propsHue, textIndex + 4, entry.Properties);  // properties
+                }
 
                 offset += 44;
             }
@@ -169,17 +171,24 @@ public class SpawnerGump : Gump
         }
 
         var totalSpawned = 0;
+        var totalMax = 0;
         var totalWeight = 0;
 
         for (var i = 0; i < _spawner.Entries.Count; i++)
         {
             var spawnerEntry = _spawner.Entries[i];
             totalSpawned += spawner.CountSpawns(spawnerEntry);
-            totalWeight += spawnerEntry.SpawnedProbability;
+
+            if (!spawnerEntry.Disabled)
+            {
+                totalMax += spawnerEntry.SpawnedMaxCount;
+                totalWeight += spawnerEntry.SpawnedProbability;
+            }
         }
 
-        AddHtml(232, 308 + offset, 35, 20, Html.Center($"{totalSpawned}", 0xF4F4F4));
-        AddHtml(270, 308 + offset, 35, 20, Html.Center($"{totalWeight}", 0xF4F4F4));
+        AddHtml(258, 308 + offset, 35, 20, Html.Center($"{totalSpawned}", 0xF4F4F4));
+        AddHtml(290, 308 + offset, 35, 20, Html.Center($"{totalMax}", 0xF4F4F4));
+        AddHtml(328, 308 + offset, 35, 20, Html.Center($"{totalWeight}", 0xF4F4F4));
 
         AddHtml(5, 1, 161, 20, $"<BASEFONT COLOR=#FFEA00>{spawner.Name}</BASEFONT><BASEFONT COLOR={GetCountColor(totalSpawned, spawner.Count)}> ({totalSpawned}/{spawner.Count})</BASEFONT>");
 
@@ -198,28 +207,28 @@ public class SpawnerGump : Gump
         AddButton(90, 369 + offset, 0xFA8, 0xFAA, GetButtonID(1, 4));
         AddLabel(123, 369 + offset, 0x384, "Total Respawn");
 
-        AddButton(260, 347 + offset, 0xFB7, 0xFB9, GetButtonID(1, 5));
-        AddLabel(293, 347 + offset, 0x384, "Save");
+        AddButton(283, 347 + offset, 0xFB7, 0xFB9, GetButtonID(1, 5));
+        AddLabel(316, 347 + offset, 0x384, "Save");
 
-        AddButton(260, 369 + offset, 0xFB1, 0xFB3, 0);
-        AddLabel(293, 369 + offset, 0x384, "Cancel");
+        AddButton(283, 369 + offset, 0xFB1, 0xFB3, 0);
+        AddLabel(316, 369 + offset, 0x384, "Cancel");
 
         if (_page > 0)
         {
-            AddButton(200, 308 + offset, 0x15E3, 0x15E7, GetButtonID(1, 0));
+            AddButton(223, 308 + offset, 0x15E3, 0x15E7, GetButtonID(1, 0));
         }
         else
         {
-            AddImage(200, 308 + offset, 0x25EA);
+            AddImage(223, 308 + offset, 0x25EA);
         }
 
         if ((_page + 1) * 13 <= _spawner.Entries.Count)
         {
-            AddButton(217, 308 + offset, 0x15E1, 0x15E5, GetButtonID(1, 1));
+            AddButton(240, 308 + offset, 0x15E1, 0x15E5, GetButtonID(1, 1));
         }
         else
         {
-            AddImage(217, 308 + offset, 0x25E6);
+            AddImage(240, 308 + offset, 0x25E6);
         }
     }
 
