@@ -26,9 +26,8 @@ public class NetStateSendBufferTests
         return data;
     }
 
-    // A chunk's compressed length is only knowable by compressing it. Random bytes inflate, so a
-    // short random prefix lands under the target; a zero costs two bits, so appending zeros walks the
-    // compressed length up one byte at a time and cannot step over the target.
+    // Compressed length is only knowable by compressing; a short random prefix lands under the
+    // target, then appending zeros (2 bits each) walks it up one byte at a time without overshooting.
     private static byte[] CompressesToExactly(int compressedLength, int seed)
     {
         var randomLength = compressedLength * 5 / 8;
@@ -183,9 +182,9 @@ public class NetStateSendBufferTests
 
         try
         {
-            // No Slice() between sends: nothing drains, so the fill lands in the base buffer as written.
-            // Random bytes never compress smaller than themselves, and every chunk is sized off what is
-            // left (worst Huffman ratio 11/8, plus headroom), so the fill cannot overflow on its own.
+            // No Slice() between sends, so nothing drains; each chunk is sized off what's left (worst
+            // Huffman ratio 11/8, plus headroom) since random bytes never compress smaller than
+            // themselves, so the fill cannot overflow before it's full.
             var seed = 600;
             while (ns._socket.SendBuffer.WritableBytes > 4096)
             {
@@ -193,15 +192,13 @@ public class NetStateSendBufferTests
                 SendAndRecord(Pattern(Math.Min(baseSize / 8, (writable - 2048) * 8 / 11), seed++));
             }
 
-            // Completely full, which is the branch under test: Send() has no span to compress into.
+            // Buffer now full: Send() has no span to compress into.
             SendAndRecord(CompressesToExactly(ns._socket.SendBuffer.WritableBytes, seed));
             Assert.Equal(0, ns._socket.SendBuffer.WritableBytes);
             Assert.Equal(baseSize, ns._socket.SendBuffer.PhysicalSize);
 
-            // Raw, this is larger than everything the full buffer has left; compressed it is a quarter
-            // of its size, so one tier is all it needs. Growing against the raw length instead demands
-            // the whole packet's worth of writable space, which refuses at the maximum on a shard whose
-            // maximum is near its base size.
+            // Raw, this exceeds what's left; compressed it is a quarter of that, so one tier suffices -
+            // growing against the raw length instead would demand the whole packet's worth of space.
             SendAndRecord(new byte[Math.Min(baseSize * 3 / 4, NetworkCompression.DefiniteOverflow)]);
 
             Assert.True(ns.Running);
@@ -258,9 +255,8 @@ public class NetStateSendBufferTests
 
         try
         {
-            // Shrinking the peer's receive buffer and never reading stalls the transfer: the posted
-            // send stays outstanding, so the second write has to grow around bytes still in flight
-            // rather than around bytes merely queued.
+            // Shrinking the peer's receive buffer stalls the transfer: the first send stays in flight,
+            // so the second write has to grow around bytes in flight, not merely queued.
             client.ReceiveBufferSize = 4096;
 
             var first = Pattern(baseSize / 2, 300);

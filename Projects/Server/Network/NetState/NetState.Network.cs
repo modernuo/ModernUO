@@ -36,8 +36,8 @@ public partial class NetState
     private const long DefaultSendBufferGrowthBudget = 1024L * 1024 * 256; // 256 MB
     private const int DefaultMemoryCeilingPercent = 80;
 
-    // The transport enumerates its tiers from the base size up to this; larger values overflow that
-    // enumeration, so a configured maximum is capped here rather than failing at socket creation.
+    // Transport tiers run from the base size up to this; a larger configured maximum is capped here
+    // instead of overflowing that enumeration at socket creation.
     private const int TransportMaxSendBufferSize = 1024 * 1024 * 256; // 256 MB
     private const int MaxConnections = 4096;         // Max concurrent connections
 
@@ -45,8 +45,7 @@ public partial class NetState
     private static long _sendBufferGrowthBudget;
     private static int _memoryCeilingPercent;
 
-    // Sampled once at configure and refreshed by the maintenance sweep; see UnderMemoryCeiling.
-    // Internal so a test can force the ceiling.
+    // Sampled at configure, refreshed by the maintenance sweep; internal so a test can force it.
     internal static long _availableMemoryBytes;
 
     private static Timer.DelayCallTimer _maintenanceTimer;
@@ -181,7 +180,7 @@ public partial class NetState
             return;
         }
 
-        // Cheap, and the figure moves when the container's limit is resized under us.
+        // Cheap, and the container's limit can change out from under it.
         _availableMemoryBytes = GC.GetGCMemoryInfo().TotalAvailableMemoryBytes;
 
         var ceilingRefusals = _ceilingRefusals;
@@ -226,8 +225,8 @@ public partial class NetState
         CoercePowerOfTwoSetting(key, ServerConfiguration.GetOrUpdateSetting(key, defaultValue), minimum);
 
     /// <summary>
-    /// Coerces a buffer-size setting to a power of two between <paramref name="minimum"/> and the
-    /// transport's hard ceiling. Split from the setting read so it can be exercised on values.
+    /// Clamps to a power of two between <paramref name="minimum"/> and the transport ceiling; split
+    /// from the setting read so tests can exercise it on values directly.
     /// </summary>
     internal static int CoercePowerOfTwoSetting(string key, int configured, int minimum)
     {
@@ -272,8 +271,8 @@ public partial class NetState
     }
 
     /// <summary>
-    /// Coerces the shared growth budget: a negative budget is meaningless, and a positive budget
-    /// below one tier slab could never grow anything.
+    /// A negative budget disables growth; a budget under one tier slab is raised to the minimum,
+    /// since it could never grow anything.
     /// </summary>
     internal static long CoerceSendBufferGrowthBudget(long configured, int sendBufferSize, int maxSendBufferSize)
     {
@@ -288,8 +287,7 @@ public partial class NetState
             return configured;
         }
 
-        // The transport allocates tier buffers a slab at a time; raise a too-small budget to the
-        // minimum rather than fail at startup.
+        // Tier buffers are allocated a slab at a time.
         var minimumBudget = RingSocketManager.MinimumSendBufferGrowthBudget(sendBufferSize);
         if (configured < minimumBudget)
         {
