@@ -1,7 +1,5 @@
-using System;
 using Server;
 using Server.Misc;
-using Server.Tests;
 using Xunit;
 
 namespace UOContent.Tests;
@@ -81,8 +79,22 @@ public class SkillEventsTests
         var from = new Mobile();
         var skill = from.Skills[SkillName.Mining];
 
-        Assert.True(SkillCheck.CheckSkill(from, skill, null, 1.0));
+        var calls = 0;
 
-        from.Delete();
+        void Handler(Mobile m, Skill s, bool ok) => calls++;
+
+        try
+        {
+            // Subscribe and detach again so the invocation list is provably back to empty without reflection.
+            SkillEvents.SkillChecked += Handler;
+            SkillEvents.SkillChecked -= Handler;
+
+            Assert.True(SkillCheck.CheckSkill(from, skill, null, 1.0));
+            Assert.Equal(0, calls);
+        }
+        finally
+        {
+            from.Delete();
+        }
     }
 }

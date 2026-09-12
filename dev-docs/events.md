@@ -240,7 +240,9 @@ public static void HandlePlayerLogin(PlayerMobile player)
 - `PlayerMobile.PlayerDeathEvent` -- Player dies
 - `BaseCreature.CreatureDeathEvent` -- Creature dies
 
-### Static content events (subscribable from any assembly)
+---
+
+## Static Content Events
 
 Generated events dispatch statically inside `UOContent`, so code in another assembly cannot subscribe to
 them. Content that must be observable across assemblies exposes a plain `static event` instead (see
@@ -249,6 +251,17 @@ them. Content that must be observable across assemblies exposes a plain `static 
 - `SkillEvents.SkillChecked` -- `Action<Mobile, Skill, bool success>`, raised once per
   `SkillCheck.CheckSkill` after gains are applied. Not raised when the mobile's skill cap is zero and the
   check returns early.
+
+  **It does not observe every skill check.** The four `Mobile_SkillCheck*` wrappers that `Mobile` dispatches
+  through return before reaching `CheckSkill` when the mobile has no such skill, when the check is too
+  difficult (`value < minSkill`, or `chance < 0.0`) and when it is no challenge (`value >= maxSkill`,
+  `minSkill >= maxSkill`, or `chance >= 1.0`) -- so a trivially successful check by a high-skill mobile
+  returns `true` without raising. Every skill check in `UOContent` goes through those wrappers, combat
+  included; a caller that invokes `CheckSkill` directly always raises.
+
+  It fires for every `Mobile`, not only players -- pets and monsters roll skill checks in combat too, so
+  subscribers usually filter on `PlayerMobile`. `CheckSkill` does not test `from.Deleted`, so a subscriber
+  must not assume the mobile is still in the world.
 
 ---
 
