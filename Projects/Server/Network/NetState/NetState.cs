@@ -527,6 +527,25 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         return true;
     }
 
+    // Demotes a drained socket once the hold since its last growth has passed. The pool keeps the
+    // larger buffer on hand; the socket only needs to stop occupying it.
+    internal bool TryShrinkSendBuffer(long curTicks)
+    {
+        if (!_sendBufferGrown || _socket == null || curTicks - (_sendBufferGrewAt + SendBufferHoldMs) < 0)
+        {
+            return false;
+        }
+
+        if (!_socketManager.TryShrinkSendBuffer(_socket))
+        {
+            return false;
+        }
+
+        _sendBufferGrown = false;
+        logger.Debug("{NetState}: send buffer returned to {Size}", this, _socket.SendBuffer.PhysicalSize);
+        return true;
+    }
+
     public void Send(ReadOnlySpan<byte> span)
     {
         if (span == ReadOnlySpan<byte>.Empty || this.CannotSendPackets())

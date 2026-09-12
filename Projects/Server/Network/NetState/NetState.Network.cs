@@ -170,6 +170,33 @@ public partial class NetState
             maxSendBufferSize: MaxSendBufferSize,
             sendBufferGrowthBudget: _sendBufferGrowthBudget
         );
+
+        Timer.DelayCall(TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1), MaintainSendBuffers);
+    }
+
+    internal static void MaintainSendBuffers()
+    {
+        if (_socketManager == null)
+        {
+            return;
+        }
+
+        var stats = _socketManager.Maintain();
+        if (stats.BuffersReleased > 0 || stats.GrowthRefusals > 0)
+        {
+            logger.Information(
+                "Send buffer tiers: {Capacity} bytes, {InUse} in use, floor {Floor}, released {Released}, growth refused {Refused}",
+                stats.TierCapacityBytes,
+                stats.TierInUse,
+                stats.TierRetainFloor,
+                stats.BuffersReleased,
+                stats.GrowthRefusals
+            );
+        }
+        else
+        {
+            logger.Debug("Send buffer tiers: {Capacity} bytes, {InUse} in use, floor {Floor}", stats.TierCapacityBytes, stats.TierInUse, stats.TierRetainFloor);
+        }
     }
 
     /// <summary>
@@ -527,6 +554,7 @@ public partial class NetState
                         {
                             // Update activity check on successful send
                             nsSend.NextActivityCheck = curTicks + 30000;
+                            nsSend.TryShrinkSendBuffer(curTicks);
                         }
                         break;
                     }
@@ -658,6 +686,7 @@ public partial class NetState
             foreach (var ns in Instances)
             {
                 ns.CheckAlive(curTicks);
+                ns.TryShrinkSendBuffer(curTicks);
             }
         }
         catch (Exception ex)

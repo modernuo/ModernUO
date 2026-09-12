@@ -147,6 +147,43 @@ public class NetStateSendBufferTests
     }
 
     [Fact]
+    public void Shrink_AfterDrainAndHold_ReturnsToBase()
+    {
+        var ns = CreateAuthenticatedNetState(out var client);
+        var baseSize = ns._socket.SendBuffer.PhysicalSize;
+
+        try
+        {
+            var chunk = baseSize / 4;
+            for (var i = 0; i < 6; i++)
+            {
+                ns.Send(Pattern(chunk, i));
+            }
+
+            Assert.True(ns._sendBufferGrown);
+            ReadAll(client, chunk * 6);
+
+            // Let the last send completion land before judging the drain
+            for (var i = 0; i < 20; i++)
+            {
+                NetState.Slice();
+                System.Threading.Thread.Sleep(5);
+            }
+
+            var grewAt = ns._sendBufferGrewAt;
+            Assert.False(ns.TryShrinkSendBuffer(grewAt + NetState.SendBufferHoldMs - 1));
+            Assert.True(ns.TryShrinkSendBuffer(grewAt + NetState.SendBufferHoldMs));
+            Assert.Equal(baseSize, ns._socket.SendBuffer.PhysicalSize);
+            Assert.False(ns._sendBufferGrown);
+        }
+        finally
+        {
+            ns.Dispose();
+            client.Close();
+        }
+    }
+
+    [Fact]
     public void Send_PastTheMaximum_FallsBackToExhaustion()
     {
         var ns = CreateAuthenticatedNetState(out var client);
