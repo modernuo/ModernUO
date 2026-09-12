@@ -221,7 +221,6 @@ public class SpawnerEntryOwnershipTests
             var sw = Stopwatch.StartNew();
             for (var i = 0; i < iterations; i++)
             {
-                // Idempotent after the first call; still runs Defrag() over the entries.
                 spawner.Remove(rabbit);
             }
 

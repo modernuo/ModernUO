@@ -35,8 +35,7 @@ public partial class Spawner : BaseSpawner
         }
     }
 
-    // Owned here (v2) rather than on BaseSpawner so subclasses can store their own entry type.
-    // Null until the first entry is added; deserialization assigns its own list.
+    // Owned by the concrete class so subclasses can store their own entry type; null until the first entry.
     [SerializedIgnoreDupe]
     [SerializableField(2, getter: "protected", setter: "private")]
     private List<SpawnerEntry> _entryList;
@@ -128,7 +127,7 @@ public partial class Spawner : BaseSpawner
 
     private void MigrateFrom(V0Content content)
     {
-        // v0 had no fields; the entry list arrives through BaseSpawner's AdoptEntries.
+        // v0 had no fields.
     }
 
     private void MigrateFrom(V1Content content)

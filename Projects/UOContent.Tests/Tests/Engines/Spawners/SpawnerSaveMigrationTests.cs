@@ -8,7 +8,6 @@ using Xunit;
 
 namespace UOContent.Tests.Engines.Spawners;
 
-// Byte-for-byte save blobs through the same BufferWriter path production saves use.
 internal static class SpawnerBlob
 {
     public static byte[] Write(Item item)

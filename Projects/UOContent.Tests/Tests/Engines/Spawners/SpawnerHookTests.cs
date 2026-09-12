@@ -33,7 +33,6 @@ public partial class TestEntry : SpawnerEntry
 [SerializationGenerator(0)]
 public partial class HookRecordingSpawner : Spawner
 {
-    // Null until the first entry; deserialization assigns its own list.
     [SerializedIgnoreDupe]
     [SerializableField(0)]
     private List<TestEntry> _testEntries;

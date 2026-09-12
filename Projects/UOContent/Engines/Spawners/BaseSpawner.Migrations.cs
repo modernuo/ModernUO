@@ -83,7 +83,6 @@ public abstract partial class BaseSpawner
         _spawnPositionMode = content.SpawnPositionMode ?? SpawnPositionMode.Automatic;
         _maxSpawnAttempts = content.MaxSpawnAttempts ?? DefaultMaxSpawnAttempts;
 
-        // Entries moved to the concrete owner in v13.
         AdoptEntries(content.Entries ?? []);
     }
 

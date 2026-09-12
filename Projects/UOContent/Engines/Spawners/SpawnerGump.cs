@@ -458,7 +458,6 @@ public class SpawnerGump : Gump
         }
     }
 
-    // Entries is an IReadOnlyList view onto the owner's list, so there is no Contains member.
     private static bool HasEntry(BaseSpawner spawner, SpawnerEntry entry)
     {
         var entries = spawner.Entries;
