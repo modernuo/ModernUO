@@ -54,7 +54,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     private bool _disconnectQueued; // Queued for disconnect processing (after flush)
     private long[] _packetThrottles;
     private long[] _packetCounts;
-    private string _disconnectReason = string.Empty;
+    internal string _disconnectReason = string.Empty;
 
     internal ParserState _parserState = ParserState.AwaitingNextPacket;
     internal ProtocolState _protocolState = ProtocolState.AwaitingSeed;
@@ -294,7 +294,8 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
         for (var i = Trades.Count - 1; i >= 0; --i)
         {
-            if (Trades != null)
+            // Cancel() -> Close() -> RemoveTrade() nulls the list once it empties
+            if (Trades == null)
             {
                 break;
             }
@@ -489,6 +490,12 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
             return;
         }
 
+        // Closing (disconnected event seen, or inside Dispose). The socket is going away; nothing to report.
+        if (!_running || _socket == null)
+        {
+            return;
+        }
+
         // Never drop silently: the client would stay connected while missing game state.
         if (!GetSendBuffer(out var buffer))
         {
@@ -552,6 +559,13 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     /// </remarks>
     private void SendBufferExhausted(int needed, int writable)
     {
+        // Already on the way out. Every further packet this tick fails the same way; one report is enough,
+        // and the first one carries the reason worth keeping.
+        if (_disconnectQueued)
+        {
+            return;
+        }
+
         var sendBuffer = _socket?.SendBuffer;
         var unacked = sendBuffer?.InFlightBytes ?? 0;
         var capacity = sendBuffer?.PhysicalSize ?? 0;
@@ -1124,7 +1138,9 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     /// <summary>
     /// Requests a graceful disconnect. The disconnect is queued and processed after the flush
-    /// queue in Slice(), ensuring Send() calls made in the same tick are processed first.
+    /// queue in Slice(), ensuring Send() calls made before that handoff are processed first.
+    /// Once the socket has the disconnect, further sends are dropped (see CannotSendPackets) so
+    /// the transport can drain what is buffered and close.
     /// </summary>
     public void Disconnect(string reason)
     {
