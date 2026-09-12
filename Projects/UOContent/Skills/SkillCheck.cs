@@ -141,6 +141,7 @@ public static class SkillCheck
             }
         }
 
+        SkillEvents.InvokeSkillChecked(from, skill, success);
         return success;
     }
 

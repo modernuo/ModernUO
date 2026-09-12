@@ -240,6 +240,16 @@ public static void HandlePlayerLogin(PlayerMobile player)
 - `PlayerMobile.PlayerDeathEvent` -- Player dies
 - `BaseCreature.CreatureDeathEvent` -- Creature dies
 
+### Static content events (subscribable from any assembly)
+
+Generated events dispatch statically inside `UOContent`, so code in another assembly cannot subscribe to
+them. Content that must be observable across assemblies exposes a plain `static event` instead (see
+`Projects/UOContent/Engines/Help/HelpEvents.cs` for the shape).
+
+- `SkillEvents.SkillChecked` -- `Action<Mobile, Skill, bool success>`, raised once per
+  `SkillCheck.CheckSkill` after gains are applied. Not raised when the mobile's skill cap is zero and the
+  check returns early.
+
 ---
 
 ## Event Args Pooling Pattern
