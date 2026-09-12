@@ -68,12 +68,13 @@ Optional systems can add substantially more. The pathfinding prebake
 (`pathfinding.prebakeMaps`) peaks above 1 GB of heap while baking. Budget for it or leave it off on
 small hosts.
 
-Network buffers are minor by comparison: 64 KB receive plus a configurable send buffer per
-connection. Send memory is `network.sendBufferSize` at rest and can grow to
-`network.sendBufferMaxSize` under load. Shared send-buffer tier memory is capped by
-`network.sendBufferGrowthBudget`, and growth is refused when process memory exceeds
-`network.memoryCeilingPercent` of available memory. The worst case is the base send-buffer size
-times the connection count, plus the shared growth budget.
+Network buffers are 64 KB receive plus a configurable send buffer per connection. Send memory is
+`network.sendBufferSize` at rest and can grow to `network.sendBufferMaxSize` under load. Shared
+send-buffer tier memory is capped by `network.sendBufferGrowthBudget`, and growth is refused when
+process memory exceeds `network.memoryCeilingPercent` of available memory. The worst case is the
+base send-buffer size times the connection count, plus the shared growth budget: at the defaults,
+100 players is roughly 32 MB at rest, and the growth budget can add up to another 256 MB under
+load.
 
 ModernUO runs **Workstation GC**, which is the right default for small hosts. Do not switch to
 Server GC on a 2-core box.
@@ -114,9 +115,9 @@ See the README for the full supported list. Two things are worth calling out:
 | `world.useMultithreadedSaves` | `true` | Set `false` on 2-core hosts so saves do not contend with the game loop. |
 | `pathfinding.prebakeMaps` | varies | Leave off on memory-constrained hosts; it peaks above 1 GB while baking. |
 | `network.sendBufferSize` | 256 KB | Lower it if you are memory-bound with many connections. |
-| `network.sendBufferMaxSize` | 2097152 | Maximum send-buffer size for a connection under load. |
-| `network.sendBufferGrowthBudget` | 268435456 | Cap shared memory used by the larger send-buffer tiers. |
-| `network.memoryCeilingPercent` | 80 | Refuse send-buffer growth above this percentage of available memory. |
+| `network.sendBufferMaxSize` | 2 MB (`2097152`) | Ceiling a single connection's send buffer can grow to under load. Lower it on memory-constrained hosts; raise it if slow clients are disconnected with "send buffer exhausted". |
+| `network.sendBufferGrowthBudget` | 256 MB (`268435456`) | Cap on the shared memory the larger send-buffer tiers may use. Lower it on memory-constrained hosts. |
+| `network.memoryCeilingPercent` | 80% | Refuse send-buffer growth once the process is above this share of available memory. |
 | `autoArchive.*` retention | 24h/30d/12m | Reduce if disk is tight. |
 
 ## Am I undersized?
