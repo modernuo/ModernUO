@@ -47,8 +47,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     private static readonly HashSet<NetState> _instances = new(2048);
     public static HashSet<NetState> Instances => _instances;
 
-    // _availableMemoryBytes is the GC's container-aware available-memory figure, a heuristic against
-    // starving the host rather than a hard process bound; it fails open when 0 or unpopulated.
+    // GC's container-aware figure: a heuristic, not a hard bound; fails open when unpopulated
     private static bool UnderMemoryCeiling() =>
         _memoryCeilingPercent <= 0 ||
         _availableMemoryBytes <= 0 ||
@@ -58,7 +57,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     private static long _memoryCeilingWarnedAt;
     private static bool _memoryCeilingWarned;
 
-    // Drained and reset by MaintainSendBuffers; budget refusals are counted by the transport instead.
+    // Reset by MaintainSendBuffers; the transport counts budget refusals
     private static int _ceilingRefusals;
     private static int _capRefusals;
 
@@ -518,7 +517,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         return true;
     }
 
-    // For compression, which can't know its output size up front except by growing and retrying.
+    // One tier; compression learns its output size by retrying
     internal bool TryGrowSendBufferOneTier()
     {
         if (_socket == null)
@@ -543,8 +542,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
         if (!_socketManager.TryGrowSendBuffer(_socket))
         {
-            // At the per-connection cap; any other refusal came from the shared budget, which the
-            // transport counts itself.
+            // At the cap; the transport counts budget refusals
             if (_socket.SendBuffer.PhysicalSize >= MaxSendBufferSize)
             {
                 _capRefusals++;
@@ -559,7 +557,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         return true;
     }
 
-    // The pool keeps the larger buffer on hand; shrinking here only stops the socket occupying it.
+    // The pool retains the larger buffer
     internal bool TryShrinkSendBuffer(long curTicks)
     {
         if (!_sendBufferGrown || _socket == null || curTicks - (_sendBufferGrewAt + SendBufferHoldMs) < 0)
@@ -601,8 +599,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
             // Never drop silently: the client would stay connected while missing game state.
             if (!GetSendBuffer(out var buffer))
             {
-                // No span to compress into yet; compression may shrink the payload, so growing to the
-                // raw length would over-commit. Grow one tier and let the retry loop below finish it.
+                // Full; the compressed size is unknown, so grow one tier and let the retry loop finish
                 var grown = CompressionEnabled ? TryGrowSendBufferOneTier() : TryGrowSendBuffer(length);
 
                 if (!grown || !GetSendBuffer(out buffer))
@@ -619,15 +616,14 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
                 if (length <= 0)
                 {
-                    // Past this input length Compress refuses unconditionally, so growth cannot help.
+                    // Compress refuses this length outright; growth cannot help
                     if (span.Length > NetworkCompression.DefiniteOverflow)
                     {
                         SendBufferExhausted(span.Length);
                         return;
                     }
 
-                    // Compressed length is unknown until compressed; a 2N+4 target (worst Huffman
-                    // ratio 11/8) over-states it, so grow a tier at a time and retry instead.
+                    // Output size is unknown until compressed; grow a tier and retry
                     while (length <= 0 && TryGrowSendBufferOneTier() && GetSendBuffer(out buffer))
                     {
                         length = NetworkCompression.Compress(span, buffer);
@@ -693,8 +689,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
             return;
         }
 
-        // Read fresh: a caller that grew a tier and was then refused still holds the pre-growth span,
-        // which would contradict the reported capacity.
+        // Read fresh; the caller's span may predate a growth
         var sendBuffer = _socket?.SendBuffer;
         var writable = sendBuffer?.WritableBytes ?? 0;
         var unacked = sendBuffer?.InFlightBytes ?? 0;

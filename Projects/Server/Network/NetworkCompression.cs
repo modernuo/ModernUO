@@ -19,7 +19,7 @@ public static class NetworkCompression
     // Fixed overhead, in bits, per compression call
     private const int TerminalCodeLength = 4;
 
-    // Past this input length, no output span is large enough; Compress returns 0 unconditionally.
+    // Compress returns 0 for longer input regardless of the output span
     internal const int DefiniteOverflow = (BufferSize * 8 - TerminalCodeLength) / MinimalCodeLength;
 
     // Packed Table: High 16 bits = Length, Low 16 bits = Value

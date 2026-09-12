@@ -36,8 +36,7 @@ public partial class NetState
     private const long DefaultSendBufferGrowthBudget = 1024L * 1024 * 256; // 256 MB
     private const int DefaultMemoryCeilingPercent = 80;
 
-    // Transport tiers run from the base size up to this; a larger configured maximum is capped here
-    // instead of overflowing that enumeration at socket creation.
+    // Transport ceiling; larger values overflow its tier enumeration
     private const int TransportMaxSendBufferSize = 1024 * 1024 * 256; // 256 MB
     private const int MaxConnections = 4096;         // Max concurrent connections
 
@@ -45,7 +44,7 @@ public partial class NetState
     private static long _sendBufferGrowthBudget;
     private static int _memoryCeilingPercent;
 
-    // Sampled at configure, refreshed by the maintenance sweep; internal so a test can force it.
+    // Refreshed by the maintenance sweep; internal for tests
     internal static long _availableMemoryBytes;
 
     private static Timer.DelayCallTimer _maintenanceTimer;
@@ -180,7 +179,7 @@ public partial class NetState
             return;
         }
 
-        // Cheap, and the container's limit can change out from under it.
+        // Container limits can change
         _availableMemoryBytes = GC.GetGCMemoryInfo().TotalAvailableMemoryBytes;
 
         var ceilingRefusals = _ceilingRefusals;
@@ -225,8 +224,7 @@ public partial class NetState
         CoercePowerOfTwoSetting(key, ServerConfiguration.GetOrUpdateSetting(key, defaultValue), minimum);
 
     /// <summary>
-    /// Clamps to a power of two between <paramref name="minimum"/> and the transport ceiling; split
-    /// from the setting read so tests can exercise it on values directly.
+    /// Clamps to a power of two between <paramref name="minimum"/> and the transport ceiling.
     /// </summary>
     internal static int CoercePowerOfTwoSetting(string key, int configured, int minimum)
     {
@@ -260,7 +258,7 @@ public partial class NetState
 
         if (!BitOperations.IsPow2(size))
         {
-            // The ceiling is itself a power of two, so rounding up can never cross it.
+            // Rounding up cannot cross the ceiling, itself a power of two
             var rounded = (int)BitOperations.RoundUpToPowerOf2((uint)size);
 
             logger.Warning("{Key} {Configured} is not a power of two; using {Adjusted}", key, configured, rounded);
@@ -271,8 +269,7 @@ public partial class NetState
     }
 
     /// <summary>
-    /// A negative budget disables growth; a budget under one tier slab is raised to the minimum,
-    /// since it could never grow anything.
+    /// Negative disables growth; below one tier slab is raised to the minimum.
     /// </summary>
     internal static long CoerceSendBufferGrowthBudget(long configured, int sendBufferSize, int maxSendBufferSize)
     {

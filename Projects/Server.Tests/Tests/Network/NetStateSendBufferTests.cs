@@ -26,8 +26,7 @@ public class NetStateSendBufferTests
         return data;
     }
 
-    // Compressed length is only knowable by compressing; a short random prefix lands under the
-    // target, then appending zeros (2 bits each) walks it up one byte at a time without overshooting.
+    // A random prefix lands under the target; zeros (2 bits each) walk it up a byte at a time
     private static byte[] CompressesToExactly(int compressedLength, int seed)
     {
         var randomLength = compressedLength * 5 / 8;
@@ -71,8 +70,7 @@ public class NetStateSendBufferTests
         return received;
     }
 
-    // The peer having read everything is not the same as the send buffer being free: the completion
-    // that releases the bytes still has to land on the loop.
+    // Peer receipt does not free the buffer; the completion must land first
     private static void WaitForDrain(NetState ns)
     {
         var deadline = Stopwatch.StartNew();
@@ -100,7 +98,7 @@ public class NetStateSendBufferTests
 
         try
         {
-            // No Slice() between sends: nothing drains, so the base buffer overflows on its own
+            // No Slice(): nothing drains, so the base buffer overflows
             var chunk = baseSize / 4;
             var expected = new byte[chunk * 6];
             for (var i = 0; i < 6; i++)
@@ -133,7 +131,7 @@ public class NetStateSendBufferTests
 
         try
         {
-            // No Slice() between sends: compressed output accumulates until the base buffer overflows.
+            // No Slice(): compressed output accumulates until the base overflows
             var chunkLength = baseSize / 4;
             var expected = new byte[(chunkLength * 2 + 4) * 6];
             var scratch = new byte[chunkLength * 2 + 4];
@@ -182,9 +180,7 @@ public class NetStateSendBufferTests
 
         try
         {
-            // No Slice() between sends, so nothing drains; each chunk is sized off what's left (worst
-            // Huffman ratio 11/8, plus headroom) since random bytes never compress smaller than
-            // themselves, so the fill cannot overflow before it's full.
+            // Chunks sized so the fill cannot overflow (random bytes never compress; ratio at most 11/8)
             var seed = 600;
             while (ns._socket.SendBuffer.WritableBytes > 4096)
             {
@@ -192,13 +188,12 @@ public class NetStateSendBufferTests
                 SendAndRecord(Pattern(Math.Min(baseSize / 8, (writable - 2048) * 8 / 11), seed++));
             }
 
-            // Buffer now full: Send() has no span to compress into.
+            // Full; no span to compress into
             SendAndRecord(CompressesToExactly(ns._socket.SendBuffer.WritableBytes, seed));
             Assert.Equal(0, ns._socket.SendBuffer.WritableBytes);
             Assert.Equal(baseSize, ns._socket.SendBuffer.PhysicalSize);
 
-            // Raw, this exceeds what's left; compressed it is a quarter of that, so one tier suffices -
-            // growing against the raw length instead would demand the whole packet's worth of space.
+            // Raw exceeds the remainder; compressed fits in one tier
             SendAndRecord(new byte[Math.Min(baseSize * 3 / 4, NetworkCompression.DefiniteOverflow)]);
 
             Assert.True(ns.Running);
@@ -229,7 +224,7 @@ public class NetStateSendBufferTests
             first.CopyTo(expected, 0);
             second.CopyTo(expected, first.Length);
 
-            // The first send leaves a non-empty remainder that is too small for the second send.
+            // Remainder too small for the second send
             ns.Send(first);
             ns.Send(second);
 
@@ -255,15 +250,14 @@ public class NetStateSendBufferTests
 
         try
         {
-            // Shrinking the peer's receive buffer stalls the transfer: the first send stays in flight,
-            // so the second write has to grow around bytes in flight, not merely queued.
+            // A small peer buffer keeps the first send in flight through the growth
             client.ReceiveBufferSize = 4096;
 
             var first = Pattern(baseSize / 2, 300);
             var second = Pattern(baseSize / 2 + 1, 301);
 
             ns.Send(first);
-            NetState.Slice(); // posts the first send; loopback stalls once the peer's buffer fills
+            NetState.Slice(); // posts the first send
             Assert.True(ns._socket.SendBuffer.InFlightBytes > 0);
 
             ns.Send(second);
@@ -336,8 +330,7 @@ public class NetStateSendBufferTests
             ReadAll(client, chunk * 6);
             WaitForDrain(ns);
 
-            // The sweep is the only thing that shrinks an idle connection in production; nothing here
-            // calls TryShrinkSendBuffer itself.
+            // The sweep shrinks; nothing here calls TryShrinkSendBuffer
             Core._tickCount = ns._sendBufferGrewAt + NetState.SendBufferHoldMs;
             NetState.CheckAllAlive();
 
@@ -414,10 +407,9 @@ public class NetStateSendBufferTests
         try
         {
             ns.Disconnect("test");
-            NetState.Slice(); // hands the disconnect to the socket; it is draining from here
+            NetState.Slice(); // handoff
 
-            // CannotSendPackets short-circuits before any growth; keeping the buffer from draining is
-            // the last thing a closing connection needs.
+            // CannotSendPackets short-circuits before any growth
             ns.Send(Pattern(baseSize * 2, 500));
 
             Assert.Equal(baseSize, ns._socket.SendBuffer.PhysicalSize);
@@ -447,13 +439,13 @@ public class NetStateSendBufferTests
 
         Assert.Equal(0L, NetState.CoerceSendBufferGrowthBudget(-1, sendBufferSize, maxSendBufferSize));
 
-        // Zero is a deliberate "never grow", not a too-small budget
+        // zero means never grow
         Assert.Equal(0L, NetState.CoerceSendBufferGrowthBudget(0, sendBufferSize, maxSendBufferSize));
 
         Assert.Equal(minimum, NetState.CoerceSendBufferGrowthBudget(1, sendBufferSize, maxSendBufferSize));
         Assert.Equal(minimum * 4, NetState.CoerceSendBufferGrowthBudget(minimum * 4, sendBufferSize, maxSendBufferSize));
 
-        // Growth is off when the maximum is the base size, so the budget is taken as configured
+        // growth off; budget untouched
         Assert.Equal(1L, NetState.CoerceSendBufferGrowthBudget(1, sendBufferSize, sendBufferSize));
     }
 }
