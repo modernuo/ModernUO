@@ -61,6 +61,9 @@ public partial class NetState
     /// </summary>
     public static IIORingGroup Ring => _socketManager?.Ring;
 
+    // Test hook: lets a test drive the socket into the states the transport reaches on its own.
+    internal static RingSocketManager SocketManager => _socketManager;
+
     /// <summary>
     /// Waits for network I/O completions or until the specified timeout expires.
     /// Used by the game loop to sleep efficiently while remaining responsive to network events.
