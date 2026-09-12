@@ -74,8 +74,10 @@ boot the network holds `network.initialBufferSlabs` slab(s) of each pool — at 
 receive slab and one 8 MB send slab, about 10 MB — and allocates another slab only when the
 population needs one. Each slab covers 32 connections at the 4096-connection maximum. After 15
 quiet minutes idle slabs are trimmed back towards current usage, never past the last 15 minutes'
-peak, at one slab per pool per minute and never below `network.initialBufferSlabs`; a shard that drops from 4096 players to a handful
-therefore takes about two hours to shrink fully.
+peak, at one slab per pool per minute and never below `network.initialBufferSlabs`. Only the
+newest slab is trimmed, and buffers are handed out from the oldest slab first, so ordinary churn
+empties the newest slabs; a shard that drops from 4096 players to a handful takes about two hours
+to shrink fully, longer if a long-lived connection still holds a buffer in a newer slab.
 
 Send memory per connection is `network.sendBufferSize` at rest and can grow to
 `network.sendBufferMaxSize` under load. Shared send-buffer tier memory is capped by
