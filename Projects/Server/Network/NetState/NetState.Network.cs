@@ -545,6 +545,11 @@ public partial class NetState
                 // - Waits for in-flight I/O to complete
                 // - Ensures buffers aren't released while kernel is still using them
                 ns._socket.Disconnect();
+
+                if (ns._socket.DisconnectPending)
+                {
+                    ns.ArmDrainDeadline(curTicks);
+                }
             }
         }
 

@@ -194,6 +194,31 @@ public class NetStateDisconnectTests
     }
 
     [Fact]
+    public void PendingDisconnect_ForceClosesAfterDrainTimeout()
+    {
+        var ns = CreateAuthenticatedNetState();
+
+        try
+        {
+            ns.Disconnect("test");
+            NetState.Slice(); // handoff; the in-flight recv keeps it pending and arms the deadline
+
+            Assert.True(ns._socket.DisconnectPending);
+            var armed = Core.TickCount;
+
+            ns.CheckAlive(armed + NetState.DrainTimeoutMs - 1);
+            Assert.True(ns._socket.Connected);
+
+            ns.CheckAlive(armed + NetState.DrainTimeoutMs);
+            Assert.False(ns._socket.Connected);
+        }
+        finally
+        {
+            ns.Dispose();
+        }
+    }
+
+    [Fact]
     public void SendBufferExhausted_WhileDisconnectQueued_KeepsFirstReason()
     {
         var ns = CreateAuthenticatedNetState();
