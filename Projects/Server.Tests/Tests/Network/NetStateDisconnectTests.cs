@@ -225,12 +225,10 @@ public class NetStateDisconnectTests
 
         try
         {
-            var capacity = ns._socket.SendBuffer.PhysicalSize;
+            ns.Send(new byte[NetState.MaxSendBufferSize + 1]); // cannot fit; queues the disconnect
+            ns.Send(new byte[NetState.MaxSendBufferSize + 2]); // same tick; must not re-report
 
-            ns.Send(new byte[capacity + 1]); // cannot fit; queues the disconnect
-            ns.Send(new byte[capacity + 2]); // same tick; must not re-report
-
-            Assert.Contains($"needed {capacity + 1}", ns._disconnectReason);
+            Assert.Contains($"needed {NetState.MaxSendBufferSize + 1}", ns._disconnectReason);
         }
         finally
         {

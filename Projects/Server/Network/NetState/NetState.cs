@@ -47,6 +47,13 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     private static readonly HashSet<NetState> _instances = new(2048);
     public static HashSet<NetState> Instances => _instances;
 
+    // Replaced by tests. Working set against the container-aware available memory.
+    internal static Func<bool> UnderMemoryCeiling = static () =>
+        Environment.WorkingSet < GC.GetGCMemoryInfo().TotalAvailableMemoryBytes / 100 * _memoryCeilingPercent;
+
+    private static long _memoryCeilingWarnedAt;
+    private static bool _memoryCeilingWarned;
+
     private readonly string _toString;
     private ClientVersion _version;
     private bool _running = true;
@@ -58,6 +65,10 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     internal string _disconnectReason = string.Empty;
     private long _drainDeadline;
     private bool _drainDeadlineArmed;
+
+    internal bool _sendBufferGrown;
+    internal long _sendBufferGrewAt;
+    internal const long SendBufferHoldMs = 30000;
 
     internal ParserState _parserState = ParserState.AwaitingNextPacket;
     internal ProtocolState _protocolState = ProtocolState.AwaitingSeed;
@@ -480,6 +491,42 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         return buffer.Length > 0;
     }
 
+    // Grows until `needed` fits or growth is refused. Refusal leaves the caller on today's path.
+    internal bool TryGrowSendBuffer(int needed)
+    {
+        if (_socket == null)
+        {
+            return false;
+        }
+
+        while (_socket.SendBuffer.WritableBytes < needed)
+        {
+            if (!UnderMemoryCeiling())
+            {
+                var now = Core.TickCount;
+                if (!_memoryCeilingWarned || now - _memoryCeilingWarnedAt >= 60000)
+                {
+                    _memoryCeilingWarned = true;
+                    _memoryCeilingWarnedAt = now;
+                    logger.Warning("Send buffer growth refused: process is above {Percent}% of available memory", _memoryCeilingPercent);
+                }
+
+                return false;
+            }
+
+            if (!_socketManager.TryGrowSendBuffer(_socket))
+            {
+                return false;
+            }
+
+            _sendBufferGrown = true;
+            _sendBufferGrewAt = Core.TickCount;
+            logger.Debug("{NetState}: send buffer grown to {Size}", this, _socket.SendBuffer.PhysicalSize);
+        }
+
+        return true;
+    }
+
     public void Send(ReadOnlySpan<byte> span)
     {
         if (span == ReadOnlySpan<byte>.Empty || this.CannotSendPackets())
@@ -502,8 +549,11 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         // Never drop silently: the client would stay connected while missing game state.
         if (!GetSendBuffer(out var buffer))
         {
-            SendBufferExhausted(length, 0);
-            return;
+            if (!TryGrowSendBuffer(length) || !GetSendBuffer(out buffer))
+            {
+                SendBufferExhausted(length, buffer.Length);
+                return;
+            }
         }
 
         try
@@ -513,17 +563,31 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
             {
                 length = NetworkCompression.Compress(span, buffer);
 
-                // 0 means nothing was written, whether it did not fit or the input was too large.
                 if (length <= 0)
                 {
-                    SendBufferExhausted(span.Length, buffer.Length);
-                    return;
+                    if (!TryGrowSendBuffer(span.Length * 2 + 4) || !GetSendBuffer(out buffer))
+                    {
+                        SendBufferExhausted(span.Length, buffer.Length);
+                        return;
+                    }
+
+                    length = NetworkCompression.Compress(span, buffer);
+                    if (length <= 0)
+                    {
+                        SendBufferExhausted(span.Length, buffer.Length);
+                        return;
+                    }
                 }
             }
             else if (span.Length > buffer.Length)
             {
-                SendBufferExhausted(span.Length, buffer.Length);
-                return;
+                if (!TryGrowSendBuffer(span.Length) || !GetSendBuffer(out buffer))
+                {
+                    SendBufferExhausted(span.Length, buffer.Length);
+                    return;
+                }
+
+                span.CopyTo(buffer);
             }
             else
             {

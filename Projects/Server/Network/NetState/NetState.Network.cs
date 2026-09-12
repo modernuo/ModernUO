@@ -32,7 +32,14 @@ public partial class NetState
     private const int RecvBufferSize = 1024 * 64;    // 64KB recv buffers
     private const int DefaultSendBufferSize = 1024 * 256;  // 256KB send buffers
     private const int MinSendBufferSize = 1024 * 64;       // Platform allocation granularity
+    private const int DefaultMaxSendBufferSize = 1024 * 1024 * 2;          // 2 MB
+    private const long DefaultSendBufferGrowthBudget = 1024L * 1024 * 256; // 256 MB
+    private const int DefaultMemoryCeilingPercent = 80;
     private const int MaxConnections = 4096;         // Max concurrent connections
+
+    internal static int MaxSendBufferSize { get; private set; }
+    private static long _sendBufferGrowthBudget;
+    private static int _memoryCeilingPercent;
 
     private static readonly Queue<NetState> _disposed = [];
     private static readonly TimeSpan ConnectingSocketIdleLimit = TimeSpan.FromMilliseconds(5000); // 5 seconds
@@ -121,16 +128,36 @@ public partial class NetState
         // latency is roughly completion RTT / this value.
         var maxOutstandingSends = ServerConfiguration.GetOrUpdateSetting("network.maxOutstandingSends", 32);
 
-        // Initialize IORingGroup
-        var ring = IORingGroup.Create(
-            queueSize: MaxConnections * 2,
-            maxConnections: MaxConnections,
-            maxOutstandingSends: maxOutstandingSends
-        );
-
         // Per-connection send buffer: the lever for "send buffer exhausted" disconnects, and the
         // per-connection memory ceiling.
         var sendBufferSize = GetSendBufferSize();
+        MaxSendBufferSize = GetPowerOfTwoSetting("network.sendBufferMaxSize", DefaultMaxSendBufferSize, sendBufferSize);
+        _sendBufferGrowthBudget = ServerConfiguration.GetOrUpdateSetting("network.sendBufferGrowthBudget", DefaultSendBufferGrowthBudget);
+        _memoryCeilingPercent = Math.Clamp(ServerConfiguration.GetOrUpdateSetting("network.memoryCeilingPercent", DefaultMemoryCeilingPercent), 1, 100);
+
+        // The transport allocates tier buffers a slab at a time; a positive budget below one slab
+        // could never grow anything, so raise it to the minimum rather than fail at startup.
+        if (MaxSendBufferSize > sendBufferSize && _sendBufferGrowthBudget > 0)
+        {
+            var minimumBudget = RingSocketManager.MinimumSendBufferGrowthBudget(sendBufferSize);
+            if (_sendBufferGrowthBudget < minimumBudget)
+            {
+                logger.Warning(
+                    "network.sendBufferGrowthBudget {Configured} is below one tier slab; using {Minimum}",
+                    _sendBufferGrowthBudget,
+                    minimumBudget
+                );
+                _sendBufferGrowthBudget = minimumBudget;
+            }
+        }
+
+        const int maxBufferSlabs = 32;
+        var ring = IORingGroup.Create(
+            queueSize: MaxConnections * 2,
+            maxConnections: MaxConnections,
+            maxOutstandingSends: maxOutstandingSends,
+            maxRegisteredBuffers: RingSocketManager.RequiredRegisteredBuffers(MaxConnections, sendBufferSize, MaxSendBufferSize, _sendBufferGrowthBudget, maxBufferSlabs)
+        );
 
         // Create socket manager which handles buffer pools and socket lifecycle
         _socketManager = new RingSocketManager(
@@ -139,7 +166,9 @@ public partial class NetState
             recvBufferSize: RecvBufferSize,
             sendBufferSize: sendBufferSize,
             initialBufferSlabs: 8,
-            maxBufferSlabs: 32
+            maxBufferSlabs: maxBufferSlabs,
+            maxSendBufferSize: MaxSendBufferSize,
+            sendBufferGrowthBudget: _sendBufferGrowthBudget
         );
     }
 
@@ -148,10 +177,13 @@ public partial class NetState
     /// allocation granularity. IORingBuffer requires this and would otherwise throw at socket
     /// creation rather than at startup.
     /// </summary>
-    private static int GetSendBufferSize()
+    private static int GetSendBufferSize() =>
+        GetPowerOfTwoSetting("network.sendBufferSize", DefaultSendBufferSize, MinSendBufferSize);
+
+    private static int GetPowerOfTwoSetting(string key, int defaultValue, int minimum)
     {
-        var configured = ServerConfiguration.GetOrUpdateSetting("network.sendBufferSize", DefaultSendBufferSize);
-        var size = Math.Max(MinSendBufferSize, configured);
+        var configured = ServerConfiguration.GetOrUpdateSetting(key, defaultValue);
+        var size = Math.Max(minimum, configured);
 
         if (!BitOperations.IsPow2(size))
         {
@@ -161,9 +193,10 @@ public partial class NetState
         if (size != configured)
         {
             logger.Warning(
-                "network.sendBufferSize {Configured} is not a power of two of at least {Minimum}; using {Adjusted}",
+                "{Key} {Configured} is not a power of two of at least {Minimum}; using {Adjusted}",
+                key,
                 configured,
-                MinSendBufferSize,
+                minimum,
                 size
             );
         }
