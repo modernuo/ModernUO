@@ -78,17 +78,19 @@ public abstract record SpawnerDto
     [JsonPropertyOrder(11)]
     public bool SpawnLocationIsHome { get; init; }
 
+    // Order values are unique on purpose: STJ's JsonPropertyOrder ties are documented as
+    // undefined between equal values, so every field gets its own slot.
     /// <summary>All dead, then respawn together. Mirrors <see cref="BaseSpawner.Group"/>.</summary>
     [JsonPropertyName("group")]
-    [JsonPropertyOrder(11)]
+    [JsonPropertyOrder(12)]
     public bool Group { get; init; }
 
     [JsonPropertyName("spawnPositionMode")]
-    [JsonPropertyOrder(12)]
+    [JsonPropertyOrder(13)]
     public SpawnPositionMode SpawnPositionMode { get; init; }
 
     [JsonPropertyName("maxSpawnAttempts")]
-    [JsonPropertyOrder(13)]
+    [JsonPropertyOrder(14)]
     public int MaxSpawnAttempts { get; init; }
 
     // Compact square-bounds form, -1 when absent. Written only when >= 0 (ShouldSerialize, since 0
@@ -200,15 +202,15 @@ public sealed record ProximitySpawnerDto : SpawnerDto
     public Rectangle3D SpawnBounds { get; init; }
 
     [JsonPropertyName("triggerRange")]
-    [JsonPropertyOrder(14)]
+    [JsonPropertyOrder(15)]
     public int TriggerRange { get; init; }
 
     [JsonPropertyName("spawnMessage")]
-    [JsonPropertyOrder(15)]
+    [JsonPropertyOrder(16)]
     public TextDefinition SpawnMessage { get; init; }
 
     [JsonPropertyName("instant")]
-    [JsonPropertyOrder(16)]
+    [JsonPropertyOrder(17)]
     public bool Instant { get; init; }
 
     [JsonPropertyName("entries")]
