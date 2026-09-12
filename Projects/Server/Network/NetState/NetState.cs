@@ -546,18 +546,18 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
             return;
         }
 
-        // Never drop silently: the client would stay connected while missing game state.
-        if (!GetSendBuffer(out var buffer))
-        {
-            if (!TryGrowSendBuffer(length) || !GetSendBuffer(out buffer))
-            {
-                SendBufferExhausted(length, buffer.Length);
-                return;
-            }
-        }
-
         try
         {
+            // Never drop silently: the client would stay connected while missing game state.
+            if (!GetSendBuffer(out var buffer))
+            {
+                if (!TryGrowSendBuffer(length) || !GetSendBuffer(out buffer))
+                {
+                    SendBufferExhausted(length, buffer.Length);
+                    return;
+                }
+            }
+
             // Apply encoding first (e.g., compression from UOContent)
             if (CompressionEnabled)
             {

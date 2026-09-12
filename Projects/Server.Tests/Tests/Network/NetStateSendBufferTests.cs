@@ -76,6 +76,77 @@ public class NetStateSendBufferTests
     }
 
     [Fact]
+    public void Send_CompressedGrowth_RetriesAndStreamStaysIntact()
+    {
+        var ns = CreateAuthenticatedNetState(out var client);
+        ns.CompressionEnabled = true;
+        var baseSize = ns._socket.SendBuffer.PhysicalSize;
+
+        try
+        {
+            // No Slice() between sends: compressed output accumulates until the base buffer overflows.
+            var chunkLength = baseSize / 4;
+            var expected = new byte[(chunkLength * 2 + 4) * 6];
+            var scratch = new byte[chunkLength * 2 + 4];
+            var expectedLength = 0;
+            for (var i = 0; i < 6; i++)
+            {
+                var data = Pattern(chunkLength, i + 100);
+                var compressedLength = NetworkCompression.Compress(data, scratch);
+                Assert.True(compressedLength > 0);
+                scratch.AsSpan(0, compressedLength).CopyTo(expected.AsSpan(expectedLength));
+                expectedLength += compressedLength;
+                ns.Send(data);
+            }
+
+            Assert.True(ns.Running);
+            Assert.Equal(string.Empty, ns._disconnectReason);
+            Assert.True(ns._socket.SendBuffer.PhysicalSize > baseSize);
+            Assert.True(ns._sendBufferGrown);
+
+            Array.Resize(ref expected, expectedLength);
+            Assert.Equal(expected, ReadAll(client, expected.Length));
+        }
+        finally
+        {
+            ns.Dispose();
+            client.Close();
+        }
+    }
+
+    [Fact]
+    public void Send_WithPartialRemainder_GrowsAndCopiesFullPayload()
+    {
+        var ns = CreateAuthenticatedNetState(out var client);
+        var baseSize = ns._socket.SendBuffer.PhysicalSize;
+
+        try
+        {
+            var first = Pattern(baseSize / 2, 200);
+            var second = Pattern(baseSize / 2 + 1, 201);
+            var expected = new byte[first.Length + second.Length];
+            first.CopyTo(expected, 0);
+            second.CopyTo(expected, first.Length);
+
+            // The first send leaves a non-empty remainder that is too small for the second send.
+            ns.Send(first);
+            ns.Send(second);
+
+            Assert.True(ns.Running);
+            Assert.Equal(string.Empty, ns._disconnectReason);
+            Assert.True(ns._socket.SendBuffer.PhysicalSize > baseSize);
+            Assert.True(ns._sendBufferGrown);
+
+            Assert.Equal(expected, ReadAll(client, expected.Length));
+        }
+        finally
+        {
+            ns.Dispose();
+            client.Close();
+        }
+    }
+
+    [Fact]
     public void Send_PastTheMaximum_FallsBackToExhaustion()
     {
         var ns = CreateAuthenticatedNetState(out var client);
