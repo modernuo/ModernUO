@@ -61,7 +61,7 @@ public partial class NetState
     /// </summary>
     public static IIORingGroup Ring => _socketManager?.Ring;
 
-    // Test hook: lets a test drive the socket into the states the transport reaches on its own.
+    // Test hook
     internal static RingSocketManager SocketManager => _socketManager;
 
     /// <summary>
@@ -110,8 +110,7 @@ public partial class NetState
             return;
         }
 
-        // Seed from a real tick: the counter can start deeply negative (host pass-through), and a zero
-        // default would then suppress the alive sweep until it crossed zero.
+        // Seed from a real tick; a zero default suppresses the sweep when ticks start negative
         _nextAliveCheck = Core.TickCount;
 
         // Initialize IP rate limiter

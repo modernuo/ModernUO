@@ -294,7 +294,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
         for (var i = Trades.Count - 1; i >= 0; --i)
         {
-            // Cancel() -> Close() -> RemoveTrade() nulls the list once it empties
+            // RemoveTrade() nulls the list once empty
             if (Trades == null)
             {
                 break;
@@ -490,7 +490,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
             return;
         }
 
-        // Closing (disconnected event seen, or inside Dispose). The socket is going away; nothing to report.
+        // Closing; nothing to report
         if (!_running || _socket == null)
         {
             return;
@@ -559,8 +559,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     /// </remarks>
     private void SendBufferExhausted(int needed, int writable)
     {
-        // Already on the way out. Every further packet this tick fails the same way; one report is enough,
-        // and the first one carries the reason worth keeping.
+        // One report per disconnect; the first reason wins
         if (_disconnectQueued)
         {
             return;
@@ -1137,10 +1136,8 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     }
 
     /// <summary>
-    /// Requests a graceful disconnect. The disconnect is queued and processed after the flush
-    /// queue in Slice(), ensuring Send() calls made before that handoff are processed first.
-    /// Once the socket has the disconnect, further sends are dropped (see CannotSendPackets) so
-    /// the transport can drain what is buffered and close.
+    /// Requests a graceful disconnect. Processed after the flush queue in Slice(): sends made before
+    /// that handoff are flushed first, sends after it are dropped (see CannotSendPackets).
     /// </summary>
     public void Disconnect(string reason)
     {

@@ -4,9 +4,7 @@ using Xunit;
 namespace Server.Tests.Network;
 
 /// <summary>
-/// Send-side behaviour of a NetState that is on its way out. A disconnect is handed to the socket
-/// in Slice(); from then on the transport drains what is buffered and closes. Nothing new may be
-/// written, or the drain never finishes and every refused packet logs an exhaustion warning.
+/// Send-side behaviour of a NetState after its disconnect is handed to the socket.
 /// </summary>
 [Collection("Sequential Server Tests")]
 public class NetStateDisconnectTests
@@ -14,7 +12,7 @@ public class NetStateDisconnectTests
     private static NetState CreateAuthenticatedNetState()
     {
         var ns = PacketTestUtilities.CreateTestNetState();
-        ns.Account = new MockAccount(); // keeps the unattached-socket sweep off this connection
+        ns.Account = new MockAccount(); // skips the unattached-socket sweep
         return ns;
     }
 
@@ -36,7 +34,7 @@ public class NetStateDisconnectTests
         try
         {
             ns.Disconnect("test");
-            NetState.Slice(); // hands the disconnect to the socket; a recv is in flight so it stays pending
+            NetState.Slice(); // handoff; the in-flight recv keeps it pending
 
             Assert.True(ns.Running);
             Assert.True(ns._socket.DisconnectPending);
@@ -58,8 +56,8 @@ public class NetStateDisconnectTests
     {
         var ns = CreateAuthenticatedNetState();
 
-        // What RingSocket.Disconnect() does when nothing is in flight: Connected drops at once, DisconnectPending
-        // never turns on, and the Disconnected event that stops the NetState only lands on the next Slice().
+        // Immediate branch of RingSocket.Disconnect(): Connected drops, DisconnectPending never set,
+        // Disconnected event lands next Slice()
         try
         {
             NetState.SocketManager.DisconnectImmediate(ns._socket);
@@ -88,8 +86,8 @@ public class NetStateDisconnectTests
         {
             var capacity = ns._socket.SendBuffer.PhysicalSize;
 
-            ns.Send(new byte[capacity + 1]); // cannot fit: first exhaustion queues the disconnect
-            ns.Send(new byte[capacity + 2]); // same tick, before Slice(): must not re-report
+            ns.Send(new byte[capacity + 1]); // cannot fit; queues the disconnect
+            ns.Send(new byte[capacity + 2]); // same tick; must not re-report
 
             Assert.Contains($"needed {capacity + 1}", ns._disconnectReason);
         }

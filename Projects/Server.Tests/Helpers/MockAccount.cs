@@ -5,7 +5,7 @@ using Server.Accounting;
 namespace Server.Tests.Network;
 
 /// <summary>
-/// Minimal IAccount for tests that need a NetState to look authenticated.
+/// Minimal IAccount so a test NetState looks authenticated.
 /// </summary>
 public class MockAccount : IAccount
 {
