@@ -36,6 +36,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     private const int HuePickerCap = 512;
     private const int MenuCap = 512;
     private const int PacketPerSecondThreshold = 3000;
+    internal const long DrainTimeoutMs = 10000; // graceful disconnect gets this long to drain
 
     private static readonly Queue<NetState> _flushPending = new(2048);
     private static readonly Queue<NetState> _pendingDisconnects = new(256); // Processed AFTER flush
@@ -54,7 +55,9 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     private bool _disconnectQueued; // Queued for disconnect processing (after flush)
     private long[] _packetThrottles;
     private long[] _packetCounts;
-    private string _disconnectReason = string.Empty;
+    internal string _disconnectReason = string.Empty;
+    private long _drainDeadline;
+    private bool _drainDeadlineArmed;
 
     internal ParserState _parserState = ParserState.AwaitingNextPacket;
     internal ProtocolState _protocolState = ProtocolState.AwaitingSeed;
@@ -294,7 +297,8 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
         for (var i = Trades.Count - 1; i >= 0; --i)
         {
-            if (Trades != null)
+            // RemoveTrade() nulls the list once empty
+            if (Trades == null)
             {
                 break;
             }
@@ -489,6 +493,12 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
             return;
         }
 
+        // Closing; nothing to report
+        if (!_running || _socket == null)
+        {
+            return;
+        }
+
         // Never drop silently: the client would stay connected while missing game state.
         if (!GetSendBuffer(out var buffer))
         {
@@ -552,6 +562,12 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     /// </remarks>
     private void SendBufferExhausted(int needed, int writable)
     {
+        // One report per disconnect; the first reason wins
+        if (_disconnectQueued)
+        {
+            return;
+        }
+
         var sendBuffer = _socket?.SendBuffer;
         var unacked = sendBuffer?.InFlightBytes ?? 0;
         var capacity = sendBuffer?.PhysicalSize ?? 0;
@@ -1053,31 +1069,52 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         return ParserState.AwaitingNextPacket;
     }
 
+    // Bounds the graceful drain. Send completions keep NextActivityCheck moving, so a slow peer
+    // could otherwise hold a closing socket open indefinitely.
+    internal void ArmDrainDeadline(long curTicks)
+    {
+        if (!_drainDeadlineArmed)
+        {
+            _drainDeadlineArmed = true;
+            _drainDeadline = curTicks + DrainTimeoutMs;
+        }
+    }
+
     public void CheckAlive(long curTicks)
     {
-        if (_socket == null || NextActivityCheck - curTicks >= 0)
+        if (_socket == null)
         {
             return;
         }
 
         if (_socket.DisconnectPending)
         {
-            LogInfo("Force disconnecting stuck socket...");
-            _socketManager.DisconnectImmediate(_socket);
-        }
-        else
-        {
-            // Authenticated pre-game clients (login screens): send keep-alive instead of disconnecting.
-            // The 0xBD ClientVersionRequest resets NextActivityCheck via DataSent.
-            if (_account != null && Mobile == null)
+            ArmDrainDeadline(curTicks); // transport-initiated drains are first seen here
+
+            if (curTicks - _drainDeadline >= 0 || NextActivityCheck - curTicks < 0)
             {
-                this.SendClientVersionRequest();
-                return;
+                LogInfo("Force disconnecting stuck socket...");
+                _socketManager.DisconnectImmediate(_socket);
             }
 
-            LogInfo("Disconnecting due to inactivity...");
-            Disconnect("Disconnecting due to inactivity.");
+            return;
         }
+
+        if (NextActivityCheck - curTicks >= 0)
+        {
+            return;
+        }
+
+        // Authenticated pre-game clients (login screens): send keep-alive instead of disconnecting.
+        // The 0xBD ClientVersionRequest resets NextActivityCheck via DataSent.
+        if (_account != null && Mobile == null)
+        {
+            this.SendClientVersionRequest();
+            return;
+        }
+
+        LogInfo("Disconnecting due to inactivity...");
+        Disconnect("Disconnecting due to inactivity.");
     }
 
     public void Trace(ReadOnlySpan<byte> buffer)
@@ -1123,8 +1160,8 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     }
 
     /// <summary>
-    /// Requests a graceful disconnect. The disconnect is queued and processed after the flush
-    /// queue in Slice(), ensuring Send() calls made in the same tick are processed first.
+    /// Requests a graceful disconnect. Processed after the flush queue in Slice(): sends made before
+    /// that handoff are flushed first, sends after it are dropped (see CannotSendPackets).
     /// </summary>
     public void Disconnect(string reason)
     {

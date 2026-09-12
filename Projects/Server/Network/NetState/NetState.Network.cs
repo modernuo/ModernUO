@@ -61,6 +61,9 @@ public partial class NetState
     /// </summary>
     public static IIORingGroup Ring => _socketManager?.Ring;
 
+    // Test hook
+    internal static RingSocketManager SocketManager => _socketManager;
+
     /// <summary>
     /// Waits for network I/O completions or until the specified timeout expires.
     /// Used by the game loop to sleep efficiently while remaining responsive to network events.
@@ -106,6 +109,9 @@ public partial class NetState
         {
             return;
         }
+
+        // Seed from a real tick; a zero default suppresses the sweep when ticks start negative
+        _nextAliveCheck = Core.TickCount;
 
         // Initialize IP rate limiter
         _ipRateLimiter = new IPRateLimiter(10, 10000, 1000, 2.0, 3_600_000, Core.ClosingTokenSource.Token);
@@ -539,6 +545,11 @@ public partial class NetState
                 // - Waits for in-flight I/O to complete
                 // - Ensures buffers aren't released while kernel is still using them
                 ns._socket.Disconnect();
+
+                if (ns._socket.DisconnectPending)
+                {
+                    ns.ArmDrainDeadline(curTicks);
+                }
             }
         }
 

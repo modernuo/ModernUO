@@ -6,8 +6,8 @@ public static class OutgoingPackets
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool CannotSendPackets(this NetState ns) =>
-        // Do not check for NetState.Running. Packets are sent to a "disconnected" socket as part of the OnDisconnect events
-        // up until the socket is closed. Closing the connection is done synchronously, therefore packets will not be sent
-        // once the Mobile.NetState is null.
-        ns == null || ns.SocketHandle == 0 || ns.BlockAllPackets;
+        // Running is not checked: sends between Disconnect() and the Slice() handoff must still go out.
+        // After the handoff the socket is draining (DisconnectPending) or closing (!Connected); new writes
+        // only keep the buffer from draining.
+        ns == null || ns.SocketHandle == 0 || !ns._socket.Connected || ns._socket.DisconnectPending || ns.BlockAllPackets;
 }
