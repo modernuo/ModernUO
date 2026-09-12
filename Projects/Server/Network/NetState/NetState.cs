@@ -56,7 +56,9 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     // therefore a heuristic guard against starving the host, not a hard bound on the process. An
     // unpopulated figure (<= 0) fails open: refusing growth on a number we do not have would
     // disconnect players for no reason.
-    internal static Func<bool> UnderMemoryCeiling = static () =>
+    // network.memoryCeilingPercent 0 turns the check off; an unpopulated GC figure fails open.
+    private static bool UnderMemoryCeiling() =>
+        _memoryCeilingPercent <= 0 ||
         _availableMemoryBytes <= 0 ||
         Environment.WorkingSet < _availableMemoryBytes / 100 * _memoryCeilingPercent;
 

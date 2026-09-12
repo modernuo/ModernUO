@@ -46,7 +46,8 @@ public partial class NetState
     private static int _memoryCeilingPercent;
 
     // Sampled once at configure and refreshed by the maintenance sweep; see UnderMemoryCeiling.
-    private static long _availableMemoryBytes;
+    // Internal so a test can force the ceiling.
+    internal static long _availableMemoryBytes;
 
     private static Timer.DelayCallTimer _maintenanceTimer;
 
@@ -146,7 +147,8 @@ public partial class NetState
             sendBufferSize,
             MaxSendBufferSize
         );
-        _memoryCeilingPercent = Math.Clamp(ServerConfiguration.GetOrUpdateSetting("network.memoryCeilingPercent", DefaultMemoryCeilingPercent), 1, 100);
+        // 0 disables the ceiling
+        _memoryCeilingPercent = Math.Clamp(ServerConfiguration.GetOrUpdateSetting("network.memoryCeilingPercent", DefaultMemoryCeilingPercent), 0, 100);
         _availableMemoryBytes = GC.GetGCMemoryInfo().TotalAvailableMemoryBytes;
 
         const int maxBufferSlabs = 32;

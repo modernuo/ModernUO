@@ -304,7 +304,7 @@ public class NetStateSendBufferTests
     [Fact]
     public void Send_AboveMemoryCeiling_DoesNotGrow()
     {
-        var previous = NetState.UnderMemoryCeiling;
+        var previous = NetState._availableMemoryBytes;
         NetState ns = null;
         Socket client = null;
 
@@ -312,7 +312,7 @@ public class NetStateSendBufferTests
         {
             ns = CreateAuthenticatedNetState(out client);
             var baseSize = ns._socket.SendBuffer.PhysicalSize;
-            NetState.UnderMemoryCeiling = static () => false;
+            NetState._availableMemoryBytes = 1; // any working set is above 80% of one byte
 
             for (var i = 0; i < 6; i++)
             {
@@ -324,7 +324,7 @@ public class NetStateSendBufferTests
         }
         finally
         {
-            NetState.UnderMemoryCeiling = previous;
+            NetState._availableMemoryBytes = previous;
             ns?.Dispose();
             client?.Close();
         }

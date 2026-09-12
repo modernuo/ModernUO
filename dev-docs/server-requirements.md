@@ -117,7 +117,7 @@ See the README for the full supported list. Two things are worth calling out:
 | `network.sendBufferSize` | 256 KB | Lower it if you are memory-bound with many connections. |
 | `network.sendBufferMaxSize` | 2 MB (`2097152`) | Ceiling a single connection's send buffer can grow to under load. Lower it on memory-constrained hosts; raise it if slow clients are disconnected with "send buffer exhausted". |
 | `network.sendBufferGrowthBudget` | 256 MB (`268435456`) | Cap on the shared memory the larger send-buffer tiers may use. Lower it on memory-constrained hosts. |
-| `network.memoryCeilingPercent` | 80% | Refuse send-buffer growth once the process is above this share of available memory. |
+| `network.memoryCeilingPercent` | 80% | Refuse send-buffer growth once the process is above this share of available memory; 0 turns the check off. |
 | `autoArchive.*` retention | 24h/30d/12m | Reduce if disk is tight. |
 
 ## Am I undersized?
