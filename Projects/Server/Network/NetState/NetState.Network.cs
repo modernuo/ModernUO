@@ -36,7 +36,7 @@ public partial class NetState
     private const long DefaultSendBufferGrowthBudget = 1024L * 1024 * 256; // 256 MB
     private const int DefaultMemoryCeilingPercent = 80;
     private const int DefaultInitialBufferSlabs = 1;   // one slab of each base pool warm at boot
-    private const int DefaultMaxBufferSlabs = 128;     // 32 connections per slab at MaxConnections
+    internal const int DefaultMaxBufferSlabs = 128;    // 32 connections per slab at MaxConnections
 
     // Transport ceiling; larger values overflow its tier enumeration
     private const int TransportMaxSendBufferSize = 1024 * 1024 * 256; // 256 MB
@@ -239,7 +239,7 @@ public partial class NetState
     /// Slabs each base pool is divided into, after the transport applies its minimum slab size.
     /// </summary>
     internal static int BasePoolSlabCount(int maxBufferSlabs) =>
-        (MaxConnections - 1) / RingSocketManager.BasePoolSlabSize(MaxConnections, maxBufferSlabs) + 1;
+        RingSocketManager.BasePoolSlabCount(MaxConnections, maxBufferSlabs);
 
     /// <summary>
     /// Clamps the base-pool slab divisor. Fewer than one slab is meaningless, and more slabs than

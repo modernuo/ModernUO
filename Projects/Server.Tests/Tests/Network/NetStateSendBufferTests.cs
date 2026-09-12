@@ -483,7 +483,7 @@ public class NetStateSendBufferTests
     public void Ring_RegisteredBufferTable_MatchesTheConfiguredSlabCount()
     {
         var manager = NetState.SocketManager;
-        var maxBufferSlabs = NetState.CoerceMaxBufferSlabs(ServerConfiguration.GetSetting("network.maxBufferSlabs", 128));
+        var maxBufferSlabs = NetState.CoerceMaxBufferSlabs(ServerConfiguration.GetSetting("network.maxBufferSlabs", NetState.DefaultMaxBufferSlabs));
 
         // A table smaller than this throws at manager construction
         Assert.Equal(
