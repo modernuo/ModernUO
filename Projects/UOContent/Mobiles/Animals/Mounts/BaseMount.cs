@@ -3,6 +3,7 @@ using System;
 using Server.Items;
 using Server.Misc;
 using Server.Multis;
+using Server.Regions;
 using Server.Targeting;
 
 namespace Server.Mobiles;
@@ -286,6 +287,12 @@ public abstract partial class BaseMount : BaseCreature, IMount
 
         if (mob is PlayerMobile mobile)
         {
+            if (mobile.Region is BaseRegion { MountsAllowed: false })
+            {
+                mobile.SendLocalizedMessage(1042317); // You may not ride at this time
+                result = false;
+            }
+
             if (mobile.MountBlockReason != BlockMountType.None)
             {
                 mobile.SendLocalizedMessage((int)mobile.MountBlockReason);
