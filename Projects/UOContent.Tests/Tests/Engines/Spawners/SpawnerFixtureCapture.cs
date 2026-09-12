@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Reflection;
 using Server.Engines.Spawners;
 using Server.Tests;
 using Xunit;
@@ -9,12 +10,16 @@ namespace UOContent.Tests.Engines.Spawners;
 [Collection("Sequential UOContent Tests")]
 public class SpawnerFixtureCapture
 {
-    // Run once, on the commit BEFORE the entry-ownership change, with
-    // MODERNUO_CAPTURE_SPAWNER_FIXTURES=1, to freeze the legacy save layout as test input.
+    // Freezes the BaseSpawner v12 save layout as test input; refuses to run against newer code.
     [SkippableFact]
     public void CaptureLegacyBlobs()
     {
         Skip.If(Environment.GetEnvironmentVariable("MODERNUO_CAPTURE_SPAWNER_FIXTURES") != "1");
+
+        var version = (int)typeof(BaseSpawner)
+            .GetField("SerializationVersion", BindingFlags.NonPublic | BindingFlags.Static)!
+            .GetRawConstantValue()!;
+        Assert.True(version == 12, $"Fixtures must be captured with BaseSpawner v12; current version is {version}.");
 
         var dir = Path.Combine(AppContext.BaseDirectory, "Tests", "Engines", "Spawners", "Fixtures");
         Directory.CreateDirectory(dir);

@@ -19,7 +19,6 @@ public class SpawnerDtoEntryTests
 
         var json = SpawnerJsonSerializer.SerializeCompact(new List<SpawnerDto> { spawner.ToDto() });
 
-        // entries is an array of objects, so it expands; each entry is inlined ({ "name": ... }).
         Assert.Contains("\"entries\": [\n      { \"name\": \"Rabbit\"", json);
         Assert.Contains("{ \"name\": \"Bird\"", json);
         Assert.Equal(1, CountOccurrences(json, "\"disabled\": true"));

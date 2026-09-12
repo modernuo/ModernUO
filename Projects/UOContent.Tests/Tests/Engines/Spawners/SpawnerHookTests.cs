@@ -13,8 +13,7 @@ namespace UOContent.Tests.Engines.Spawners;
 [SerializationGenerator(0)]
 public partial class TestEntry : SpawnerEntry
 {
-    // The generator only looks at the declared type for dirty tracking, so a derived entry must
-    // re-declare the owning spawner even though SpawnerEntry already tracks it.
+    // Dirty tracking is resolved on the declared type, so a derived entry re-declares its owner.
     [DirtyTrackingEntity]
     private BaseSpawner Owner => Parent;
 
@@ -85,7 +84,6 @@ public partial class HookRecordingSpawner : Spawner
             }
             else
             {
-                // CloneEntry does not copy spawns, so a converted entry would orphan its creatures.
                 te = (TestEntry)CloneEntry(e);
                 TransferSpawned(e, te);
             }
@@ -101,8 +99,7 @@ public partial class HookRecordingSpawner : Spawner
     /// <summary>Test hook: rebuild the Spawned registry without a full save round trip.</summary>
     public void RebuildSpawnedForTest() => RebuildSpawned();
 
-    // The base class rebuilds Spawned from Spawner's own (empty) list before _testEntries has been
-    // read, so this owner has to rebuild again once its list exists.
+    // Spawner's rebuild runs before _testEntries is read; rebuild again here.
     [AfterDeserialization]
     private void AfterDeserialization() => RebuildSpawned();
 
@@ -254,8 +251,6 @@ public class SpawnerHookTests
         var loaded = SpawnerBlob.Read<HookRecordingSpawner>(SpawnerBlob.Write(spawner), (Serial)0x40009999);
         Assert.Equal("kept", ((TestEntry)loaded.Entries[0]).Tag);
 
-        // The owner's [AfterDeserialization] has to rebuild Spawned from its own list: the base
-        // class's runs before _testEntries has been read.
         Assert.Single(loaded.Entries[0].Spawned);
         Assert.Single(loaded.Spawned);
 
@@ -264,7 +259,6 @@ public class SpawnerHookTests
         Assert.Equal("kept", ((TestEntry)copy.Entries[0]).Tag);
         Assert.Empty(copy.Entries[0].Spawned);
 
-        // `loaded` shares the live creature with `spawner`; deleting the spawner deletes it.
         spawner.Delete();
         loaded.Delete();
         copy.Delete();
@@ -292,7 +286,6 @@ public class SpawnerHookTests
         adopter.RebuildSpawnedForTest();
         Assert.Same(rabbit, Assert.Single(adopter.Spawned).Key);
 
-        // The adopter owns the creature now, so deleting the source must leave it alone.
         source.Delete();
         Assert.False(rabbit.Deleted);
 

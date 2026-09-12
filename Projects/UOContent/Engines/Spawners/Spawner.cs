@@ -99,8 +99,7 @@ public partial class Spawner : BaseSpawner
 
     protected override void AdoptEntries(IReadOnlyList<SpawnerEntry> entries)
     {
-        // Always copy: taking ownership of a caller's List<SpawnerEntry> would alias it, so a later
-        // mutation on either side would silently show up on the other.
+        // Copy, never alias the caller's list.
         var list = new List<SpawnerEntry>(entries);
         for (var i = 0; i < list.Count; i++)
         {
@@ -112,15 +111,14 @@ public partial class Spawner : BaseSpawner
 
     private void MigrateFrom(V0Content content)
     {
-        // V0 had no fields in Spawner; v1 added _useSpiralScan (false), v2 owns the entry list,
-        // which BaseSpawner's migration hands over through AdoptEntries.
+        // v0 had no fields; the entry list arrives through BaseSpawner's AdoptEntries.
     }
 
     private void MigrateFrom(V1Content content)
     {
         _useSpiralScan = content.UseSpiralScan;
         _spawnBounds = content.SpawnBounds ?? default;
-        // _entryList was adopted by BaseSpawner.MigrateFrom(V12Content) before this ran.
+        // _entryList was already adopted by BaseSpawner.MigrateFrom(V12Content).
     }
 
     [AfterDeserialization]

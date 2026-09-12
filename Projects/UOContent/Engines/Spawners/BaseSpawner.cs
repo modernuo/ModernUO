@@ -350,7 +350,14 @@ public abstract partial class BaseSpawner : Item, ISpawner
     public TimeSpan NextSpawn
     {
         get => _running && _timer?.Running == true ? End - Core.Now : TimeSpan.Zero;
-        set => StartCore(value);
+        set
+        {
+            if (BeginStart())
+            {
+                DoTimer(value);
+                OnStarted();
+            }
+        }
     }
 
     public virtual Point3D HomeLocation => Location;
@@ -759,31 +766,25 @@ public abstract partial class BaseSpawner : Item, ISpawner
         }
     }
 
-    public void Start() => StartCore(null);
+    public void Start()
+    {
+        if (BeginStart())
+        {
+            DoTimer();
+            OnStarted();
+        }
+    }
 
-    /// <summary>
-    /// The single start path: guards, flips <see cref="Running"/>, arms the timer, then fires
-    /// <see cref="OnStarted"/>. A null <paramref name="delay"/> means "roll one from Min/MaxDelay".
-    /// </summary>
-    private void StartCore(TimeSpan? delay)
+    /// <summary>Guards and flips <see cref="Running"/>. Callers arm the timer and fire <see cref="OnStarted"/>.</summary>
+    private bool BeginStart()
     {
         if (_running || Entries.Count == 0)
         {
-            return;
+            return false;
         }
 
         _running = true;
-
-        if (delay.HasValue)
-        {
-            DoTimer(delay.Value);
-        }
-        else
-        {
-            DoTimer();
-        }
-
-        OnStarted();
+        return true;
     }
 
     public void Stop()

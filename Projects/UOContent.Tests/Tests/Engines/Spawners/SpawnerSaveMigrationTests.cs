@@ -8,10 +8,7 @@ using Xunit;
 
 namespace UOContent.Tests.Engines.Spawners;
 
-// Serializes an item through the same BufferWriter path production saves use, producing an
-// exact byte-for-byte blob of the current on-disk save layout. Used both to capture the
-// legacy fixtures (SpawnerFixtureCapture) and, in a later task, to feed those fixtures
-// through the post-migration deserializer.
+// Byte-for-byte save blobs through the same BufferWriter path production saves use.
 internal static class SpawnerBlob
 {
     public static byte[] Write(Item item)

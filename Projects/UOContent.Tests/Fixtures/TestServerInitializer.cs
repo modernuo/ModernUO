@@ -109,8 +109,7 @@ internal static class TestServerInitializer
             World.Load();
             World.ExitSerializationThreads();
             DecayScheduler.Configure();
-            // Data/npc-speeds.json. Without it every BaseCreature constructor throws, so no test
-            // can spawn a creature (production runs this via AssemblyHandler.Invoke("Configure")).
+            // Without npc-speeds.json every BaseCreature constructor throws.
             Server.Mobiles.NPCSpeeds.Configure();
             Server.Engines.Spawners.SpawnerJsonSerializer.Configure();
 

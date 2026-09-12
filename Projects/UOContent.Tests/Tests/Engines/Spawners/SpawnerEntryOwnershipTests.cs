@@ -150,7 +150,6 @@ public class SpawnerEntryOwnershipTests
         Assert.Single(b.Entries);
         Assert.Same(foreign, b.Entries[0]);
 
-        // A foreign entry's live spawns must survive a RemoveEntry on the wrong spawner.
         Assert.False(spawned.Deleted);
         Assert.Single(foreign.Spawned);
 
@@ -159,9 +158,7 @@ public class SpawnerEntryOwnershipTests
         b.Delete();
     }
 
-    // Manual benchmark harness. Skipped in normal CI/test runs; run it directly (temporarily
-    // removing the Skip) to collect numbers when evaluating the spawn-path performance impact
-    // of a change. The numbers are printed through the thrown assertion message below.
+    // Manual: remove the Skip, run, and read the numbers from the thrown assertion.
     [Fact(Skip = "manual benchmark")]
     public void Benchmark_SpawnPath_Manual()
     {
@@ -176,9 +173,7 @@ public class SpawnerEntryOwnershipTests
             var spawner = new Spawner(1000, TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(10));
             spawner.MoveToWorld(new Point3D(1500, 1500, 0), Map.Felucca);
 
-            // SpawnedMaxCount = 0 makes every entry IsFull immediately, so Spawn() walks the
-            // entry list to compute probsum, finds it <= 0, and returns without constructing
-            // anything. This isolates the O(entries) selection cost from spawn/construction cost.
+            // SpawnedMaxCount = 0 keeps every entry full, so Spawn() does selection only.
             for (var i = 0; i < entryCount; i++)
             {
                 spawner.AddEntry("Rabbit", 100, 0, false);
@@ -226,8 +221,7 @@ public class SpawnerEntryOwnershipTests
             var sw = Stopwatch.StartNew();
             for (var i = 0; i < iterations; i++)
             {
-                // Idempotent after the first successful removal; every call still runs
-                // Defrag() over the spawner's entries.
+                // Idempotent after the first call; still runs Defrag() over the entries.
                 spawner.Remove(rabbit);
             }
 
@@ -242,8 +236,6 @@ public class SpawnerEntryOwnershipTests
             spawner.Delete();
         }
 
-        // Throw so the numbers surface in test output when this Fact is run manually
-        // (Skip removed temporarily) - Console.WriteLine is not surfaced by the runner.
         var summary = report.ToString();
         report.Dispose();
 
