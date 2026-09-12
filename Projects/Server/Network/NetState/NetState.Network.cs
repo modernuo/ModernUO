@@ -48,6 +48,9 @@ public partial class NetState
     internal static long _availableMemoryBytes;
 
     private static Timer.DelayCallTimer _maintenanceTimer;
+    private static long _lastTierCapacityBytes;
+    private static int _lastTierInUse;
+    private static int _lastTierRetainFloor;
 
     private static readonly Queue<NetState> _disposed = [];
     private static readonly TimeSpan ConnectingSocketIdleLimit = TimeSpan.FromMilliseconds(5000); // 5 seconds
@@ -188,9 +191,17 @@ public partial class NetState
         _capRefusals = 0;
 
         var stats = _socketManager.Maintain();
-        if (stats.BuffersReleased > 0 || stats.GrowthRefusals > 0 || capRefusals > 0 || ceilingRefusals > 0)
+        var changed = stats.TierCapacityBytes != _lastTierCapacityBytes ||
+                      stats.TierInUse != _lastTierInUse ||
+                      stats.TierRetainFloor != _lastTierRetainFloor;
+        _lastTierCapacityBytes = stats.TierCapacityBytes;
+        _lastTierInUse = stats.TierInUse;
+        _lastTierRetainFloor = stats.TierRetainFloor;
+
+        // Quiet unless something moved
+        if (changed || stats.BuffersReleased > 0 || stats.GrowthRefusals > 0 || capRefusals > 0 || ceilingRefusals > 0)
         {
-            logger.Information(
+            logger.Debug(
                 "Send buffer tiers: {Capacity} bytes of tier capacity, {InUse} buffers in use, floor {Floor} buffers, released {Released}, refused: budget {BudgetRefusals}, at max {CapRefusals}, ceiling {CeilingRefusals}",
                 stats.TierCapacityBytes,
                 stats.TierInUse,
@@ -199,15 +210,6 @@ public partial class NetState
                 stats.GrowthRefusals,
                 capRefusals,
                 ceilingRefusals
-            );
-        }
-        else
-        {
-            logger.Debug(
-                "Send buffer tiers: {Capacity} bytes of tier capacity, {InUse} buffers in use, floor {Floor} buffers",
-                stats.TierCapacityBytes,
-                stats.TierInUse,
-                stats.TierRetainFloor
             );
         }
     }
