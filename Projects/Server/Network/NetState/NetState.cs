@@ -47,6 +47,20 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     private static readonly HashSet<NetState> _instances = new(2048);
     public static HashSet<NetState> Instances => _instances;
 
+    // GC's container-aware figure: a heuristic, not a hard bound; fails open when unpopulated
+    private static bool UnderMemoryCeiling() =>
+        _memoryCeilingPercent <= 0 ||
+        _availableMemoryBytes <= 0 ||
+        Environment.WorkingSet < _availableMemoryBytes / 100 * _memoryCeilingPercent;
+
+    private const long MemoryCeilingWarnIntervalMs = 60000;
+    private static long _memoryCeilingWarnedAt;
+    private static bool _memoryCeilingWarned;
+
+    // Reset by MaintainSendBuffers; the transport counts budget refusals
+    private static int _ceilingRefusals;
+    private static int _capRefusals;
+
     private readonly string _toString;
     private ClientVersion _version;
     private bool _running = true;
@@ -58,6 +72,10 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     internal string _disconnectReason = string.Empty;
     private long _drainDeadline;
     private bool _drainDeadlineArmed;
+
+    internal bool _sendBufferGrown;
+    internal long _sendBufferGrewAt;
+    internal const long SendBufferHoldMs = 30000;
 
     internal ParserState _parserState = ParserState.AwaitingNextPacket;
     internal ProtocolState _protocolState = ProtocolState.AwaitingSeed;
@@ -480,6 +498,83 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         return buffer.Length > 0;
     }
 
+    // Grows tier by tier until `needed` fits or a tier is refused.
+    internal bool TryGrowSendBuffer(int needed)
+    {
+        if (_socket == null)
+        {
+            return false;
+        }
+
+        while (_socket.SendBuffer.WritableBytes < needed)
+        {
+            if (!TryGrowSendBufferOneTier())
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    // One tier; compression learns its output size by retrying
+    internal bool TryGrowSendBufferOneTier()
+    {
+        if (_socket == null)
+        {
+            return false;
+        }
+
+        if (!UnderMemoryCeiling())
+        {
+            _ceilingRefusals++;
+
+            var now = Core.TickCount;
+            if (!_memoryCeilingWarned || now - (_memoryCeilingWarnedAt + MemoryCeilingWarnIntervalMs) >= 0)
+            {
+                _memoryCeilingWarned = true;
+                _memoryCeilingWarnedAt = now;
+                logger.Warning("Send buffer growth refused: process is above {Percent}% of available memory", _memoryCeilingPercent);
+            }
+
+            return false;
+        }
+
+        if (!_socketManager.TryGrowSendBuffer(_socket))
+        {
+            // At the cap; the transport counts budget refusals
+            if (_socket.SendBuffer.PhysicalSize >= MaxSendBufferSize)
+            {
+                _capRefusals++;
+            }
+
+            return false;
+        }
+
+        _sendBufferGrown = true;
+        _sendBufferGrewAt = Core.TickCount;
+        logger.Debug("{NetState}: send buffer grown to {Size}", this, _socket.SendBuffer.PhysicalSize);
+        return true;
+    }
+
+    // The pool retains the larger buffer
+    internal bool TryShrinkSendBuffer(long curTicks)
+    {
+        if (!_sendBufferGrown || _socket == null || curTicks - (_sendBufferGrewAt + SendBufferHoldMs) < 0)
+        {
+            return false;
+        }
+
+        if (!_socketManager.TryShrinkSendBuffer(_socket))
+        {
+            return false;
+        }
+
+        _sendBufferGrown = false;
+        logger.Debug("{NetState}: send buffer returned to {Size}", this, _socket.SendBuffer.PhysicalSize);
+        return true;
+    }
+
     public void Send(ReadOnlySpan<byte> span)
     {
         if (span == ReadOnlySpan<byte>.Empty || this.CannotSendPackets())
@@ -499,31 +594,57 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
             return;
         }
 
-        // Never drop silently: the client would stay connected while missing game state.
-        if (!GetSendBuffer(out var buffer))
-        {
-            SendBufferExhausted(length, 0);
-            return;
-        }
-
         try
         {
+            // Never drop silently: the client would stay connected while missing game state.
+            if (!GetSendBuffer(out var buffer))
+            {
+                // Full; the compressed size is unknown, so grow one tier and let the retry loop finish
+                var grown = CompressionEnabled ? TryGrowSendBufferOneTier() : TryGrowSendBuffer(length);
+
+                if (!grown || !GetSendBuffer(out buffer))
+                {
+                    SendBufferExhausted(length);
+                    return;
+                }
+            }
+
             // Apply encoding first (e.g., compression from UOContent)
             if (CompressionEnabled)
             {
                 length = NetworkCompression.Compress(span, buffer);
 
-                // 0 means nothing was written, whether it did not fit or the input was too large.
                 if (length <= 0)
                 {
-                    SendBufferExhausted(span.Length, buffer.Length);
-                    return;
+                    // Compress refuses this length outright; growth cannot help
+                    if (span.Length > NetworkCompression.DefiniteOverflow)
+                    {
+                        SendBufferExhausted(span.Length);
+                        return;
+                    }
+
+                    // Output size is unknown until compressed; grow a tier and retry
+                    while (length <= 0 && TryGrowSendBufferOneTier() && GetSendBuffer(out buffer))
+                    {
+                        length = NetworkCompression.Compress(span, buffer);
+                    }
+
+                    if (length <= 0)
+                    {
+                        SendBufferExhausted(span.Length);
+                        return;
+                    }
                 }
             }
             else if (span.Length > buffer.Length)
             {
-                SendBufferExhausted(span.Length, buffer.Length);
-                return;
+                if (!TryGrowSendBuffer(span.Length) || !GetSendBuffer(out buffer))
+                {
+                    SendBufferExhausted(span.Length);
+                    return;
+                }
+
+                span.CopyTo(buffer);
             }
             else
             {
@@ -560,7 +681,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     /// High unacked means a slow client holding the buffer; needed approaching capacity means the
     /// buffer is too small for this shard and network.sendBufferSize should be raised.
     /// </remarks>
-    private void SendBufferExhausted(int needed, int writable)
+    private void SendBufferExhausted(int needed)
     {
         // One report per disconnect; the first reason wins
         if (_disconnectQueued)
@@ -568,7 +689,9 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
             return;
         }
 
+        // Read fresh; the caller's span may predate a growth
         var sendBuffer = _socket?.SendBuffer;
+        var writable = sendBuffer?.WritableBytes ?? 0;
         var unacked = sendBuffer?.InFlightBytes ?? 0;
         var capacity = sendBuffer?.PhysicalSize ?? 0;
 
