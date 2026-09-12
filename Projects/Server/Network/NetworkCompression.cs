@@ -19,8 +19,8 @@ public static class NetworkCompression
     // Fixed overhead, in bits, per compression call
     private const int TerminalCodeLength = 4;
 
-    // If our input exceeds this length, we cannot possibly compress it within the buffer
-    private const int DefiniteOverflow = (BufferSize * 8 - TerminalCodeLength) / MinimalCodeLength;
+    // Compress returns 0 for longer input regardless of the output span
+    internal const int DefiniteOverflow = (BufferSize * 8 - TerminalCodeLength) / MinimalCodeLength;
 
     // Packed Table: High 16 bits = Length, Low 16 bits = Value
     private static readonly uint[] _packedHuffmanTable = new uint[257];
