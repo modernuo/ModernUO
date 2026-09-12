@@ -1,3 +1,5 @@
+using System.Diagnostics;
+using System.Net.Sockets;
 using Server.Network;
 using Xunit;
 
@@ -74,6 +76,59 @@ public class NetStateDisconnectTests
         finally
         {
             ns.Dispose();
+        }
+    }
+
+    [Fact]
+    public void Send_BeforeDisconnect_IsDeliveredThenPeerSeesEof()
+    {
+        var ns = PacketTestUtilities.CreateTestNetState(out var client);
+        ns.Account = new MockAccount();
+
+        try
+        {
+            byte[] payload = [0x8C, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+            ns.Send(payload);
+            ns.Disconnect("redirect");
+            NetState.Slice(); // flush, then handoff
+
+            Assert.True(ns._socket.DisconnectPending);
+
+            var received = new byte[payload.Length];
+            var total = 0;
+            var deadline = Stopwatch.StartNew();
+
+            while (total < payload.Length && deadline.ElapsedMilliseconds < 5000)
+            {
+                NetState.Slice();
+                if (client.Poll(1000, SelectMode.SelectRead))
+                {
+                    var read = client.Receive(received, total, payload.Length - total, SocketFlags.None);
+                    Assert.NotEqual(0, read);
+                    total += read;
+                }
+            }
+
+            Assert.Equal(payload, received);
+
+            // FIN follows once the send completes
+            var eof = -1;
+            while (eof != 0 && deadline.ElapsedMilliseconds < 5000)
+            {
+                NetState.Slice();
+                if (client.Poll(1000, SelectMode.SelectRead))
+                {
+                    eof = client.Receive(received);
+                }
+            }
+
+            Assert.Equal(0, eof);
+        }
+        finally
+        {
+            ns.Dispose();
+            client.Close();
         }
     }
 

@@ -20,7 +20,13 @@ public static class PacketTestUtilities
     /// Uses a real Socket and RingSocket with actual buffers.
     /// Must be disposed after use (use 'using' statement).
     /// </summary>
-    public static NetState CreateTestNetState()
+    public static NetState CreateTestNetState() => CreateTestNetState(out _);
+
+    /// <summary>
+    /// As <see cref="CreateTestNetState()"/>, also handing back the peer socket so a test can read what the
+    /// server delivered.
+    /// </summary>
+    public static NetState CreateTestNetState(out Socket client)
     {
         NetState.Slice(); // Process disconnects/disposes
 
@@ -65,6 +71,7 @@ public static class PacketTestUtilities
         var testSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         testSocket.Connect(IPAddress.Loopback, _testPort);
         _testSocketClients.Add(testSocket);
+        client = testSocket;
 
         // Slice until we have a new NetState instance added
         // AcceptEx is asynchronous, so we may need to wait/retry
