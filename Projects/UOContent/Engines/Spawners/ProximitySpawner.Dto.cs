@@ -33,6 +33,7 @@ public partial class ProximitySpawner
             WalkingRange = DtoWalkingRange,
             Entries = EntryList ?? [],
             SpawnLocationIsHome = SpawnLocationIsHome,
+            Group = Group,
             SpawnPositionMode = DtoSpawnPositionMode,
             MaxSpawnAttempts = DtoMaxSpawnAttempts,
             HomeRange = homeRange,

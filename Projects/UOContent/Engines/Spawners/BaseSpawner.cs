@@ -822,7 +822,11 @@ public abstract partial class BaseSpawner : Item, ISpawner
         return remove && Spawned.Remove(spawned);
     }
 
-    public void OnTick()
+    /// <summary>
+    /// Timer callback. Override to gate or reorder tick work; manual <see cref="Spawn"/> does not
+    /// pass through here.
+    /// </summary>
+    public virtual void OnTick()
     {
         if (_group)
         {

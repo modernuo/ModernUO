@@ -31,6 +31,7 @@ public partial class RegionSpawner
         WalkingRange = DtoWalkingRange,
         Entries = EntryList ?? [],
         SpawnLocationIsHome = SpawnLocationIsHome,
+        Group = Group,
         SpawnPositionMode = DtoSpawnPositionMode,
         MaxSpawnAttempts = DtoMaxSpawnAttempts,
         Region = SpawnRegion?.Name
