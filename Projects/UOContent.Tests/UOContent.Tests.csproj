@@ -11,10 +11,15 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="xunit.SkippableFact" Version="1.5.61" />
+        <PackageReference Include="ModernUO.Serialization.Generator" Version="4.1.0" PrivateAssets="all" />
         <ProjectReference Include="..\Server\Server.csproj" />
         <ProjectReference Include="..\UOContent\UOContent.csproj" />
         <ProjectReference Include="..\Server.Tests\Server.Tests.csproj" />
         <DataFiles Include="$(SolutionDir)\Distribution\Data\**" />
+    </ItemGroup>
+    <ItemGroup>
+        <None Include="Tests/Engines/Spawners/Fixtures/*.bin" CopyToOutputDirectory="PreserveNewest" />
+        <AdditionalFiles Include="Migrations/*.v*.json" />
     </ItemGroup>
     <Target Name="CopyData" AfterTargets="AfterBuild">
         <Copy SourceFiles="@(DataFiles)" DestinationFolder="$(OutDir)\Data\%(RecursiveDir)" />

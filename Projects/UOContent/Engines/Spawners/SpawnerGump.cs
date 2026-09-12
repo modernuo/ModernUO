@@ -63,7 +63,18 @@ public class SpawnerGump : Gump
                 ); // Unexpand
             }
 
-            AddButton(38, 22 * i + 21 + offset, 0xFA2, 0xFA4, GetButtonID(2, 1 + i * 2)); // Delete
+            AddButton(46, 22 * i + 21 + offset, 0xFA2, 0xFA4, GetButtonID(2, 1 + i * 2)); // Delete
+
+            if (entry != null)
+            {
+                AddButton(
+                    22,
+                    22 * i + 21 + offset,
+                    entry.Disabled ? 0xD2 : 0xD3,
+                    entry.Disabled ? 0xD3 : 0xD2,
+                    GetButtonID(3, i)
+                ); // Enabled toggle (checked = enabled)
+            }
 
             AddImageTiled(71, 22 * i + 20 + offset, 161, 23, 0xA40); // creature text box
             AddImageTiled(72, 22 * i + 21 + offset, 159, 21, 0xBBC); // creature text box
@@ -106,7 +117,7 @@ public class SpawnerGump : Gump
                 22 * i + 21 + offset,
                 156,
                 21,
-                (flags & EntryFlags.InvalidType) != 0 ? 33 : 0,
+                (flags & EntryFlags.InvalidType) != 0 ? 33 : entry?.Disabled == true ? 0x3B2 : 0,
                 textIndex,
                 name
             );
@@ -160,8 +171,9 @@ public class SpawnerGump : Gump
         var totalSpawned = 0;
         var totalWeight = 0;
 
-        foreach (var spawnerEntry in _spawner.Entries)
+        for (var i = 0; i < _spawner.Entries.Count; i++)
         {
+            var spawnerEntry = _spawner.Entries[i];
             totalSpawned += spawner.CountSpawns(spawnerEntry);
             totalWeight += spawnerEntry.SpawnedProbability;
         }
@@ -422,9 +434,21 @@ public class SpawnerGump : Gump
                     CreateArray(info, state.Mobile, _spawner);
                     break;
                 }
+            case 3: // Enable/disable entry
+                {
+                    var entryIndex = index + _page * 13;
+                    if (entryIndex >= 0 && entryIndex < _spawner.Entries.Count)
+                    {
+                        var entry = _spawner.Entries[entryIndex];
+                        entry.Disabled = !entry.Disabled;
+                    }
+
+                    CreateArray(info, state.Mobile, _spawner);
+                    break;
+                }
         }
 
-        if (_entry != null && _spawner.Entries?.Contains(_entry) == true)
+        if (_entry != null && HasEntry(_spawner, _entry))
         {
             state.Mobile.SendGump(new SpawnerGump(_spawner, _entry, _page));
         }
@@ -432,5 +456,20 @@ public class SpawnerGump : Gump
         {
             state.Mobile.SendGump(new SpawnerGump(_spawner, null, _page));
         }
+    }
+
+    private static bool HasEntry(BaseSpawner spawner, SpawnerEntry entry)
+    {
+        var entries = spawner.Entries;
+
+        for (var i = 0; i < entries.Count; i++)
+        {
+            if (entries[i] == entry)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -42,13 +42,9 @@ public abstract partial class BaseSpawner
         _spawnPositionMode = dto.SpawnPositionMode;
         _maxSpawnAttempts = dto.MaxSpawnAttempts;
 
-        if (dto.Entries != null)
+        if (dto.EntryView != null)
         {
-            for (var i = 0; i < dto.Entries.Count; i++)
-            {
-                var entry = dto.Entries[i];
-                AddEntry(entry.SpawnedName, entry.SpawnedProbability, entry.SpawnedMaxCount, false, entry.Properties, entry.Parameters);
-            }
+            AdoptEntries(dto.EntryView);
         }
     }
 

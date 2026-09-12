@@ -13,7 +13,7 @@ public abstract partial class BaseSpawner
     {
         _guid = content.Guid;
         _returnOnDeactivate = content.ReturnOnDeactivate;
-        _entries = content.Entries;
+        AdoptEntries(content.Entries ?? []);
         _walkingRange = content.WalkingRange;
         _wayPoint = content.WayPoint;
         _group = content.Group;
@@ -41,7 +41,7 @@ public abstract partial class BaseSpawner
     {
         _guid = content.Guid;
         _returnOnDeactivate = content.ReturnOnDeactivate;
-        _entries = content.Entries;
+        AdoptEntries(content.Entries ?? []);
         _walkingRange = content.WalkingRange;
         _wayPoint = content.WayPoint;
         _group = content.Group;
@@ -65,20 +65,43 @@ public abstract partial class BaseSpawner
         _maxSpawnAttempts = DefaultMaxSpawnAttempts;
     }
 
+    private void MigrateFrom(V12Content content)
+    {
+        _guid = content.Guid;
+        _returnOnDeactivate = content.ReturnOnDeactivate;
+        _walkingRange = content.WalkingRange;
+        _wayPoint = content.WayPoint;
+        _group = content.Group;
+        _minDelay = content.MinDelay ?? DefaultMinDelay;
+        _maxDelay = content.MaxDelay ?? DefaultMaxDelay;
+        _count = content.Count;
+        _team = content.Team ?? 0;
+        _running = content.Running;
+        _spawnLocationIsHome = content.SpawnLocationIsHome;
+        // End is unsaved when default; a running spawner re-arms immediately either way (DoTimer clamps).
+        _end = _running ? content.End ?? Core.Now : Core.Now;
+        _spawnPositionMode = content.SpawnPositionMode ?? SpawnPositionMode.Automatic;
+        _maxSpawnAttempts = content.MaxSpawnAttempts ?? DefaultMaxSpawnAttempts;
+
+        AdoptEntries(content.Entries ?? []);
+    }
+
     private void Deserialize(IGenericReader reader, int version)
     {
         _guid = reader.ReadGuid();
         _returnOnDeactivate = reader.ReadBool();
 
         var count = reader.ReadInt();
-        _entries = new List<SpawnerEntry>(count);
+        var entries = new List<SpawnerEntry>(count);
 
         for (var i = 0; i < count; ++i)
         {
             var entry = new SpawnerEntry(this);
             entry.Deserialize(reader);
-            _entries.Add(entry);
+            entries.Add(entry);
         }
+
+        AdoptEntries(entries);
 
         _walkingRange = reader.ReadInt();
         _wayPoint = reader.ReadEntity<WayPoint>();

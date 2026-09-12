@@ -447,8 +447,9 @@ public class SpawnerControllerGump : DynamicGump
 
     private static bool SearchSpawnerCreatures(BaseSpawner spawner, string searchPattern)
     {
-        foreach (var entry in spawner.Entries)
+        for (var i = 0; i < spawner.Entries.Count; i++)
         {
+            var entry = spawner.Entries[i];
             if (entry.SpawnedName?.InsensitiveContains(searchPattern) == true)
             {
                 return true;
@@ -486,17 +487,9 @@ public class SpawnerControllerGump : DynamicGump
 
     public static void CopyEntry(BaseSpawner spawner, BaseSpawner target)
     {
-        if (spawner.Entries?.Count > 0)
+        if (spawner.Entries.Count > 0)
         {
-            target.Entries?.Clear();
-
-            for (var i = 0; i < spawner.Entries.Count; i++)
-            {
-                var item = spawner.Entries[i];
-                var targetEntry = target.AddEntry(item.SpawnedName, item.SpawnedProbability, item.SpawnedMaxCount);
-                targetEntry.Properties = item.Properties;
-                targetEntry.Parameters = item.Parameters;
-            }
+            spawner.CopyEntriesTo(target);
         }
     }
 

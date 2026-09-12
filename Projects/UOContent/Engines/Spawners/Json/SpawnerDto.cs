@@ -74,11 +74,6 @@ public abstract record SpawnerDto
     [JsonPropertyOrder(9)]
     public int WalkingRange { get; init; }
 
-    [JsonPropertyName("entries")]
-    [JsonPropertyOrder(10)]
-    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
-    public List<SpawnerEntry> Entries { get; init; }
-
     [JsonPropertyName("spawnLocationIsHome")]
     [JsonPropertyOrder(11)]
     public bool SpawnLocationIsHome { get; init; }
@@ -96,6 +91,10 @@ public abstract record SpawnerDto
     [JsonPropertyName("homeRange")]
     [JsonPropertyOrder(8)]
     public int HomeRange { get; init; } = -1;
+
+    /// <summary>The entries carried by the concrete record, in its own entry type. Never serialized directly.</summary>
+    [JsonIgnore]
+    public abstract IReadOnlyList<SpawnerEntry> EntryView { get; }
 
     /// <summary>Constructs the empty concrete spawner Item for this DTO.</summary>
     protected abstract BaseSpawner CreateEmpty();
@@ -125,6 +124,14 @@ public sealed record SpawnerDataDto : SpawnerDto
     [JsonPropertyOrder(8)]
     public Rectangle3D SpawnBounds { get; init; }
 
+    [JsonPropertyName("entries")]
+    [JsonPropertyOrder(10)]
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
+    public List<SpawnerEntry> Entries { get; init; }
+
+    [JsonIgnore]
+    public override IReadOnlyList<SpawnerEntry> EntryView => Entries;
+
     protected override BaseSpawner CreateEmpty() => new Spawner();
 
     public override BaseSpawner ToSpawner()
@@ -153,6 +160,14 @@ public sealed record RegionSpawnerDto : SpawnerDto
     [JsonPropertyName("region")]
     [JsonPropertyOrder(8)]
     public string Region { get; init; }
+
+    [JsonPropertyName("entries")]
+    [JsonPropertyOrder(10)]
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
+    public List<SpawnerEntry> Entries { get; init; }
+
+    [JsonIgnore]
+    public override IReadOnlyList<SpawnerEntry> EntryView => Entries;
 
     protected override BaseSpawner CreateEmpty() => new RegionSpawner();
 
@@ -190,6 +205,14 @@ public sealed record ProximitySpawnerDto : SpawnerDto
     [JsonPropertyName("instant")]
     [JsonPropertyOrder(16)]
     public bool Instant { get; init; }
+
+    [JsonPropertyName("entries")]
+    [JsonPropertyOrder(10)]
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
+    public List<SpawnerEntry> Entries { get; init; }
+
+    [JsonIgnore]
+    public override IReadOnlyList<SpawnerEntry> EntryView => Entries;
 
     protected override BaseSpawner CreateEmpty() => new ProximitySpawner();
 

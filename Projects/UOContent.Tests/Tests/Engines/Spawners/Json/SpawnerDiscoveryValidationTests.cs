@@ -11,12 +11,16 @@ public class SpawnerDiscoveryValidationTests
     [JsonDiscoverableType("dup")]
     private sealed record DupA : SpawnerDto
     {
+        public override IReadOnlyList<SpawnerEntry> EntryView => null;
+
         protected override BaseSpawner CreateEmpty() => new Spawner();
     }
 
     [JsonDiscoverableType("dup")]
     private sealed record DupB : SpawnerDto
     {
+        public override IReadOnlyList<SpawnerEntry> EntryView => null;
+
         protected override BaseSpawner CreateEmpty() => new Spawner();
     }
 
