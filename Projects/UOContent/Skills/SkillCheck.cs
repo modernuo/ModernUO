@@ -48,6 +48,13 @@ public static class SkillCheck
             return false;
         }
 
+        var success = CheckLocation(from, skill, minSkill, maxSkill);
+        SkillEvents.InvokeSkillUsed(from, skill, success);
+        return success;
+    }
+
+    private static bool CheckLocation(Mobile from, Skill skill, double minSkill, double maxSkill)
+    {
         var value = skill.Value;
 
         if (value < minSkill)
@@ -76,6 +83,13 @@ public static class SkillCheck
             return false;
         }
 
+        var success = CheckDirectLocation(from, skill, chance);
+        SkillEvents.InvokeSkillUsed(from, skill, success);
+        return success;
+    }
+
+    private static bool CheckDirectLocation(Mobile from, Skill skill, double chance)
+    {
         if (chance < 0.0)
         {
             return false; // Too difficult
@@ -156,6 +170,13 @@ public static class SkillCheck
             return false;
         }
 
+        var success = CheckTarget(from, skill, target, minSkill, maxSkill);
+        SkillEvents.InvokeSkillUsed(from, skill, success);
+        return success;
+    }
+
+    private static bool CheckTarget(Mobile from, Skill skill, object target, double minSkill, double maxSkill)
+    {
         var value = skill.Value;
 
         if (value < minSkill)
@@ -182,6 +203,13 @@ public static class SkillCheck
             return false;
         }
 
+        var success = CheckDirectTarget(from, skill, target, chance);
+        SkillEvents.InvokeSkillUsed(from, skill, success);
+        return success;
+    }
+
+    private static bool CheckDirectTarget(Mobile from, Skill skill, object target, double chance)
+    {
         if (chance < 0.0)
         {
             return false; // Too difficult

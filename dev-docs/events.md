@@ -242,6 +242,17 @@ public static void HandlePlayerLogin(PlayerMobile player)
 
 ---
 
+## Static Content Events
+
+Generated events dispatch statically inside `UOContent`; content that other assemblies must observe exposes a
+plain `static event` instead (shape: `Projects/UOContent/Engines/Help/HelpEvents.cs`).
+
+- `SkillEvents.SkillUsed` -- `Action<Mobile, Skill, bool success>`, raised once per skill attempt from the
+  four `Mobile_SkillCheck*` handlers with the attempt's outcome, including attempts resolved without a roll
+  (too difficult, no challenge). Not raised when the mobile lacks the skill. Fires for every `Mobile`.
+
+---
+
 ## Event Args Pooling Pattern
 
 Some EventArgs use object pooling to avoid allocation in hot paths:
