@@ -29,7 +29,6 @@ public class SkillEventsTests
         SkillEvents.SkillChecked += Handler;
         try
         {
-            // Utility.RandomDouble() is in [0, 1), so a chance of 1.0 always succeeds and 0.0 always fails.
             var guaranteed = SkillCheck.CheckSkill(from, skill, null, 1.0);
             Assert.True(guaranteed);
             Assert.Equal(1, calls);
@@ -85,7 +84,6 @@ public class SkillEventsTests
 
         try
         {
-            // Subscribe and detach again so the invocation list is provably back to empty without reflection.
             SkillEvents.SkillChecked += Handler;
             SkillEvents.SkillChecked -= Handler;
 
