@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Sockets;
 using System.Network;
@@ -23,6 +24,30 @@ public class NetStateSendBufferTests
         var data = new byte[length];
         new System.Random(seed).NextBytes(data);
         return data;
+    }
+
+    // A chunk's compressed length is only knowable by compressing it. Random bytes inflate, so a
+    // short random prefix lands under the target; a zero costs two bits, so appending zeros walks the
+    // compressed length up one byte at a time and cannot step over the target.
+    private static byte[] CompressesToExactly(int compressedLength, int seed)
+    {
+        var randomLength = compressedLength * 5 / 8;
+        var data = new byte[compressedLength * 8];
+        Pattern(randomLength, seed).CopyTo(data, 0);
+
+        var scratch = new byte[compressedLength * 2 + 16];
+        for (var length = randomLength; length < data.Length; length++)
+        {
+            var compressed = NetworkCompression.Compress(data.AsSpan(0, length), scratch);
+            Assert.InRange(compressed, 1, compressedLength);
+
+            if (compressed == compressedLength)
+            {
+                return data[..length];
+            }
+        }
+
+        throw new InvalidOperationException($"No chunk compresses to exactly {compressedLength} bytes");
     }
 
     private static byte[] ReadAll(Socket client, int length)
@@ -131,6 +156,60 @@ public class NetStateSendBufferTests
 
             Array.Resize(ref expected, expectedLength);
             Assert.Equal(expected, ReadAll(client, expected.Length));
+        }
+        finally
+        {
+            ns.Dispose();
+            client.Close();
+        }
+    }
+
+    [Fact]
+    public void Send_CompressedGrowth_FullBuffer_GrowsOneTierAndFits()
+    {
+        var ns = CreateAuthenticatedNetState(out var client);
+        ns.CompressionEnabled = true;
+        var baseSize = ns._socket.SendBuffer.PhysicalSize;
+        var expected = new List<byte>(baseSize * 2);
+
+        void SendAndRecord(byte[] data)
+        {
+            var scratch = new byte[data.Length * 2 + 4];
+            var compressedLength = NetworkCompression.Compress(data, scratch);
+            Assert.True(compressedLength > 0);
+            expected.AddRange(scratch.AsSpan(0, compressedLength));
+            ns.Send(data);
+        }
+
+        try
+        {
+            // No Slice() between sends: nothing drains, so the fill lands in the base buffer as written.
+            // Random bytes never compress smaller than themselves, and every chunk is sized off what is
+            // left (worst Huffman ratio 11/8, plus headroom), so the fill cannot overflow on its own.
+            var seed = 600;
+            while (ns._socket.SendBuffer.WritableBytes > 4096)
+            {
+                var writable = ns._socket.SendBuffer.WritableBytes;
+                SendAndRecord(Pattern(Math.Min(baseSize / 8, (writable - 2048) * 8 / 11), seed++));
+            }
+
+            // Completely full, which is the branch under test: Send() has no span to compress into.
+            SendAndRecord(CompressesToExactly(ns._socket.SendBuffer.WritableBytes, seed));
+            Assert.Equal(0, ns._socket.SendBuffer.WritableBytes);
+            Assert.Equal(baseSize, ns._socket.SendBuffer.PhysicalSize);
+
+            // Raw, this is larger than everything the full buffer has left; compressed it is a quarter
+            // of its size, so one tier is all it needs. Growing against the raw length instead demands
+            // the whole packet's worth of writable space, which refuses at the maximum on a shard whose
+            // maximum is near its base size.
+            SendAndRecord(new byte[Math.Min(baseSize * 3 / 4, NetworkCompression.DefiniteOverflow)]);
+
+            Assert.True(ns.Running);
+            Assert.Equal(string.Empty, ns._disconnectReason);
+            Assert.Equal(baseSize * 2, ns._socket.SendBuffer.PhysicalSize);
+            Assert.True(ns._sendBufferGrown);
+
+            Assert.Equal(expected.ToArray(), ReadAll(client, expected.Count));
         }
         finally
         {

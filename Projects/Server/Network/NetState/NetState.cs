@@ -612,7 +612,14 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
             // Never drop silently: the client would stay connected while missing game state.
             if (!GetSendBuffer(out var buffer))
             {
-                if (!TryGrowSendBuffer(length) || !GetSendBuffer(out buffer))
+                // The buffer is completely full, so there is no span to compress into yet. With
+                // compression on the raw length is the wrong target - the packet may compress to a
+                // fraction of it, and demanding the raw length manufactures exhaustion at the
+                // maximum for a packet that would have fit. Take one tier to get a span, then let
+                // the compression path below grow per tier for as long as Compress refuses.
+                var grown = CompressionEnabled ? TryGrowSendBufferOneTier() : TryGrowSendBuffer(length);
+
+                if (!grown || !GetSendBuffer(out buffer))
                 {
                     SendBufferExhausted(length);
                     return;
