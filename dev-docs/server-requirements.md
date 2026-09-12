@@ -73,8 +73,8 @@ two pools that grow and shrink with the population rather than being sized for a
 boot the network holds `network.initialBufferSlabs` slab(s) of each pool — at the defaults one 2 MB
 receive slab and one 8 MB send slab, about 10 MB — and allocates another slab only when the
 population needs one. Each slab covers 32 connections at the 4096-connection maximum. After 15
-quiet minutes idle slabs are trimmed back towards the recent peak at one slab per pool per minute,
-never below `network.initialBufferSlabs`; a shard that drops from 4096 players to a handful
+quiet minutes idle slabs are trimmed back towards current usage, never past the last 15 minutes'
+peak, at one slab per pool per minute and never below `network.initialBufferSlabs`; a shard that drops from 4096 players to a handful
 therefore takes about two hours to shrink fully.
 
 Send memory per connection is `network.sendBufferSize` at rest and can grow to
@@ -127,7 +127,7 @@ See the README for the full supported list. Two things are worth calling out:
 | `network.sendBufferGrowthBudget` | 256 MB (`268435456`) | Cap on the shared memory the larger send-buffer tiers may use. Lower it on memory-constrained hosts. |
 | `network.memoryCeilingPercent` | 80% | Refuse send-buffer growth once the process is above this share of available memory; 0 turns the check off. |
 | `network.initialBufferSlabs` | `1` | Slabs of each base pool held from boot, and the floor the trim never goes below. Raise it on a large shard to pre-warm the pools instead of paying for a slab as the population climbs. |
-| `network.maxBufferSlabs` | `128` | Divides the connection maximum into base-pool slabs: 32 connections per slab at the default. Raise it for finer slabs on a small host (the slab floor is 16 buffers). It is not a connection or memory cap — both pools still reach the connection maximum. |
+| `network.maxBufferSlabs` | `128` | Divides the connection maximum into base-pool slabs: a slab holds `MaxConnections / maxBufferSlabs` connections, 32 at the default. Raise it for finer slabs on a small host (the slab floor is 16 buffers); lowering it makes each slab, and the boot allocation, larger. It is not a connection or memory cap — both pools still reach the connection maximum. |
 | `autoArchive.*` retention | 24h/30d/12m | Reduce if disk is tight. |
 
 ## Am I undersized?
