@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.Net.Sockets;
 using Server.Network;
@@ -115,6 +116,66 @@ public class NetStateDisconnectTests
             // FIN follows once the send completes
             var eof = -1;
             while (eof != 0 && deadline.ElapsedMilliseconds < 5000)
+            {
+                NetState.Slice();
+                if (client.Poll(1000, SelectMode.SelectRead))
+                {
+                    eof = client.Receive(received);
+                }
+            }
+
+            Assert.Equal(0, eof);
+        }
+        finally
+        {
+            ns.Dispose();
+            client.Close();
+        }
+    }
+
+    [Fact]
+    public void Send_LargeBeforeDisconnect_IsFullyDrainedThenPeerSeesEof()
+    {
+        var ns = PacketTestUtilities.CreateTestNetState(out var client);
+        ns.Account = new MockAccount();
+
+        try
+        {
+            // Several posts' worth, larger than the loopback kernel buffers, so the drain spans completions
+            const int chunk = 32 * 1024;
+            var payload = new byte[6 * chunk];
+            new System.Random(7).NextBytes(payload);
+
+            for (var offset = 0; offset < payload.Length; offset += chunk)
+            {
+                ns.Send(payload.AsSpan(offset, chunk));
+            }
+
+            ns.Disconnect("redirect");
+            NetState.Slice(); // flush, then handoff
+
+            Assert.True(ns._socket.DisconnectPending);
+
+            var received = new byte[payload.Length];
+            var total = 0;
+            var deadline = Stopwatch.StartNew();
+
+            while (total < payload.Length && deadline.ElapsedMilliseconds < 10000)
+            {
+                NetState.Slice();
+                if (client.Poll(1000, SelectMode.SelectRead))
+                {
+                    var read = client.Receive(received, total, payload.Length - total, SocketFlags.None);
+                    Assert.NotEqual(0, read);
+                    total += read;
+                }
+            }
+
+            Assert.Equal(payload.Length, total);
+            Assert.Equal(payload, received);
+
+            var eof = -1;
+            while (eof != 0 && deadline.ElapsedMilliseconds < 10000)
             {
                 NetState.Slice();
                 if (client.Poll(1000, SelectMode.SelectRead))
