@@ -33,9 +33,10 @@ public partial class TestEntry : SpawnerEntry
 [SerializationGenerator(0)]
 public partial class HookRecordingSpawner : Spawner
 {
+    // Null until the first entry; deserialization assigns its own list.
     [SerializedIgnoreDupe]
     [SerializableField(0)]
-    private List<TestEntry> _testEntries = [];
+    private List<TestEntry> _testEntries;
 
     public List<string> Log { get; } = [];
     public bool VetoNext { get; set; }
@@ -48,7 +49,7 @@ public partial class HookRecordingSpawner : Spawner
     {
     }
 
-    public override IReadOnlyList<SpawnerEntry> Entries => _testEntries;
+    public override IReadOnlyList<SpawnerEntry> Entries => _testEntries ?? (IReadOnlyList<SpawnerEntry>)Array.Empty<SpawnerEntry>();
 
     protected override ReadOnlySpan<SpawnerEntry> EntrySpan =>
         ReadOnlySpan<SpawnerEntry>.CastUp(CollectionsMarshal.AsSpan(_testEntries));
@@ -56,11 +57,15 @@ public partial class HookRecordingSpawner : Spawner
     protected override SpawnerEntry CreateEntry(string name, int probability, int maxCount, string properties, string parameters) =>
         new TestEntry(this, name, probability, maxCount, properties, parameters) { Tag = "made" };
 
-    protected override void AddEntryCore(SpawnerEntry entry) => AddToTestEntries((TestEntry)entry);
+    protected override void AddEntryCore(SpawnerEntry entry)
+    {
+        TestEntries ??= [];
+        AddToTestEntries((TestEntry)entry);
+    }
 
     protected override bool RemoveEntryCore(SpawnerEntry entry)
     {
-        if (entry is not TestEntry te || !_testEntries.Contains(te))
+        if (entry is not TestEntry te || _testEntries?.Contains(te) != true)
         {
             return false;
         }
@@ -69,11 +74,17 @@ public partial class HookRecordingSpawner : Spawner
         return true;
     }
 
-    protected override void ClearEntriesCore() => ClearTestEntries();
+    protected override void ClearEntriesCore()
+    {
+        if (_testEntries?.Count > 0)
+        {
+            ClearTestEntries();
+        }
+    }
 
     protected override void AdoptEntries(IReadOnlyList<SpawnerEntry> entries)
     {
-        ClearTestEntries();
+        ClearEntriesCore();
         for (var i = 0; i < entries.Count; i++)
         {
             var e = entries[i];
@@ -89,7 +100,7 @@ public partial class HookRecordingSpawner : Spawner
             }
 
             te.SetParent(this);
-            AddToTestEntries(te);
+            AddEntryCore(te);
         }
     }
 

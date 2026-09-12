@@ -36,9 +36,10 @@ public partial class Spawner : BaseSpawner
     }
 
     // Owned here (v2) rather than on BaseSpawner so subclasses can store their own entry type.
+    // Null until the first entry is added; deserialization assigns its own list.
     [SerializedIgnoreDupe]
     [SerializableField(2, getter: "protected", setter: "private")]
-    private List<SpawnerEntry> _entryList = [];
+    private List<SpawnerEntry> _entryList;
 
     [Constructible(AccessLevel.Developer)]
     public Spawner()
@@ -70,7 +71,7 @@ public partial class Spawner : BaseSpawner
 
     protected override ReadOnlySpan<Rectangle3D> GetAllSpawnBounds() => new(ref _spawnBounds);
 
-    public override IReadOnlyList<SpawnerEntry> Entries => _entryList;
+    public override IReadOnlyList<SpawnerEntry> Entries => _entryList ?? (IReadOnlyList<SpawnerEntry>)Array.Empty<SpawnerEntry>();
 
     protected override ReadOnlySpan<SpawnerEntry> EntrySpan => CollectionsMarshal.AsSpan(_entryList);
 
@@ -82,11 +83,15 @@ public partial class Spawner : BaseSpawner
         string parameters
     ) => new(this, name, probability, maxCount, properties, parameters);
 
-    protected override void AddEntryCore(SpawnerEntry entry) => AddToEntryList(entry);
+    protected override void AddEntryCore(SpawnerEntry entry)
+    {
+        EntryList ??= [];
+        AddToEntryList(entry);
+    }
 
     protected override bool RemoveEntryCore(SpawnerEntry entry)
     {
-        if (!_entryList.Contains(entry))
+        if (_entryList?.Contains(entry) != true)
         {
             return false;
         }
@@ -95,10 +100,22 @@ public partial class Spawner : BaseSpawner
         return true;
     }
 
-    protected override void ClearEntriesCore() => ClearEntryList();
+    protected override void ClearEntriesCore()
+    {
+        if (_entryList?.Count > 0)
+        {
+            ClearEntryList();
+        }
+    }
 
     protected override void AdoptEntries(IReadOnlyList<SpawnerEntry> entries)
     {
+        if (entries.Count == 0)
+        {
+            EntryList = null;
+            return;
+        }
+
         // Copy, never alias the caller's list.
         var list = new List<SpawnerEntry>(entries);
         for (var i = 0; i < list.Count; i++)
@@ -122,9 +139,5 @@ public partial class Spawner : BaseSpawner
     }
 
     [AfterDeserialization]
-    private void AfterDeserialization()
-    {
-        _entryList ??= [];
-        RebuildSpawned();
-    }
+    private void AfterDeserialization() => RebuildSpawned();
 }
