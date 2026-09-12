@@ -679,7 +679,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     /// </summary>
     /// <remarks>
     /// High unacked means a slow client holding the buffer; needed approaching capacity means the
-    /// buffer is too small for this shard and network.sendBufferSize should be raised.
+    /// buffer is too small for this shard and network.sendBufferMaxSize should be raised.
     /// </remarks>
     private void SendBufferExhausted(int needed)
     {
@@ -696,7 +696,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         var capacity = sendBuffer?.PhysicalSize ?? 0;
 
         logger.Warning(
-            "{NetState}: send buffer exhausted - needed {Needed} bytes, {Writable} writable, {Unacked} awaiting acknowledgement, {Capacity} capacity. Raise network.sendBufferSize (power of two) if this recurs on healthy connections.",
+            "{NetState}: send buffer exhausted - needed {Needed} bytes, {Writable} writable, {Unacked} awaiting acknowledgement, {Capacity} capacity. Raise network.sendBufferMaxSize (power of two) if this recurs on healthy connections.",
             this,
             needed,
             writable,
