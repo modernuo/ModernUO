@@ -41,7 +41,8 @@ public abstract partial class BaseAI
 
     /// <summary>What the most recent <see cref="ApproachTarget"/> (via <see cref="MoveTo"/> or
     /// <see cref="WalkMobileRange"/>) did. Read by policies that must tell "outpaced" from
-    /// "stuck" without a second scheduler.</summary>
+    /// "stuck" without a second scheduler. A <see cref="WalkMobileRange"/> retreat step does
+    /// not classify.</summary>
     public ApproachOutcome LastApproach { get; private set; }
 
     // --- Move intent (see ContinueMove) ------------------------------------------------
@@ -613,13 +614,17 @@ public abstract partial class BaseAI
     {
         if (Mobile.Deleted || Mobile.DisallowAllMoves || m?.Deleted != false)
         {
+            LastApproach = ApproachOutcome.InvalidGoal;
+            ClearMoveIntent();
             return false;
         }
 
+        // Arrival ends the pursuit for the move-wake too, as ApproachTarget's own arrival does.
         if (Mobile.InRange(m, range))
         {
             LastApproach = ApproachOutcome.Arrived;
             ResetApproach();
+            ClearMoveIntent();
             return true;
         }
 
@@ -711,6 +716,7 @@ public abstract partial class BaseAI
 
             if (iCurrDist >= iWantDistMin && iCurrDist <= iWantDistMax)
             {
+                LastApproach = ApproachOutcome.Arrived;
                 return true;
             }
 

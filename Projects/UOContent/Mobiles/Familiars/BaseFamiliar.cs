@@ -74,6 +74,11 @@ public abstract partial class BaseFamiliar : BaseCreature
         if (Hidden != master.Hidden)
         {
             Hidden = master.Hidden;
+
+            if (Hidden)
+            {
+                Warmode = false; // nulls Combatant: no swing gives the caster away
+            }
         }
     }
 

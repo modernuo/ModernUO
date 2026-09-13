@@ -116,7 +116,7 @@ public class FamiliarAITests : IDisposable
     {
         var deadline = Core._tickCount + ms;
 
-        while (Core._tickCount < deadline)
+        while (Core._tickCount - deadline < 0)
         {
             Core._tickCount += 8;
             Timer.Slice(Core._tickCount);
@@ -127,7 +127,7 @@ public class FamiliarAITests : IDisposable
     {
         var deadline = Core._tickCount + maxMs;
 
-        while (Core._tickCount < deadline)
+        while (Core._tickCount - deadline < 0)
         {
             if (condition())
             {
@@ -308,8 +308,8 @@ public class FamiliarAITests : IDisposable
         p.MoveToWorld(new Point3D(1494, 1605, 21), _map);
         f.MoveToWorld(new Point3D(1493, 1614, 20), _map);
         Server.Engines.Pathing.Cache.StepCache.Instance.Clear();
-        RunFor(400);
 
+        // Observed from the first tick: an early snap would otherwise hide behind "arrived".
         var teleported = false;
         var last = f.Location;
         var arrived = RunUntil(
@@ -447,5 +447,84 @@ public class FamiliarAITests : IDisposable
 
         p.MoveToWorld(new Point3D(1500, 1600, p.Z), Map.Felucca);
         Assert.True(RunUntil(() => wolf.Combatant == null && !wolf.Warmode, 500));
+    }
+
+    [SkippableFact]
+    public void Herding_StandsDown_SoAHiddenCasterIsNotGivenAway()
+    {
+        var p = Master(1500, 1600);
+        var f = Familiar(4, p, 1501, 1600);
+        var e = Enemy(1502, 1600);
+        RunFor(400);
+        p.Warmode = true;
+        p.Combatant = e;
+        Assert.True(RunUntil(() => f.Combatant == e, 2000));
+
+        f.TargetLocation = new Point2D(1500, 1594);
+        p.Hidden = true;
+        RunFor(300);
+
+        Assert.Null(f.Combatant);
+        Assert.False(f.Warmode);
+        Assert.True(f.Hidden);
+        Assert.NotNull(f.TargetLocation); // still fetching
+    }
+
+    [SkippableFact]
+    public void DefendsAnAttackedCaster_WhoseOwnCombatantExpired()
+    {
+        var p = Master(1500, 1600);
+        var f = Familiar(0, p, 1501, 1600);
+        var e = Enemy(1496, 1600);
+        RunFor(400);
+
+        e.Combatant = p; // the caster is attacked...
+        p.Combatant = null; // ...but their own Combatant has expired (or they pressed peace)
+        Assert.Null(p.Combatant);
+
+        Assert.True(
+            RunUntil(() => f.Combatant == e && f.InRange(e, f.RangeFight), 4000),
+            "familiar defends the caster from a live aggressor"
+        );
+    }
+
+    [SkippableFact]
+    public void DropsATarget_ThatNoLongerFightsAnyone()
+    {
+        var p = Master(1500, 1600);
+        var f = Familiar(0, p, 1501, 1600);
+        var e = Enemy(1495, 1600);
+        RunFor(400);
+        p.Warmode = true;
+        p.Combatant = e;
+        Assert.True(RunUntil(() => f.Combatant == e, 2000));
+
+        // The caster stops and the target disengages (fled, went home).
+        p.Combatant = null;
+        p.Warmode = false;
+        e.Combatant = null;
+
+        Assert.True(RunUntil(() => f.Combatant == null && f.InRange(p, 1), 4000), "familiar disengages and returns");
+    }
+
+    [SkippableFact]
+    public void AssistEnd_LeavesNoStaleMoveIntent()
+    {
+        var p = Master(1500, 1600);
+        var f = Familiar(0, p, 1501, 1600);
+        var e = Enemy(1495, 1600);
+        RunFor(400);
+        p.Warmode = true;
+        p.Combatant = e;
+        Assert.True(RunUntil(() => f.Combatant == e, 2000));
+
+        // Assist ends with the familiar already beside the caster: MoveTo's arrival return.
+        f.MoveToWorld(At(1501, 1600), _map);
+        p.Combatant = null;
+        p.Warmode = false;
+        e.Combatant = null;
+        Assert.True(RunUntil(() => f.Combatant == null, 500));
+
+        Assert.False(f.AIObject.TryGetMoveWake(out _), "no pursuit may survive the stand-down");
     }
 }

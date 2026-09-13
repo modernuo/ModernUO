@@ -13,6 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.  *
  ************************************************************************/
 
+using System.Collections.Generic;
+
 namespace Server.Mobiles;
 
 /// <summary>
@@ -50,8 +52,8 @@ public class FamiliarAI : BaseAI
         return Mobile.Controlled ? OrderType.Come : OrderType.None;
     }
 
-    // Retaliation: a combat familiar answers whoever hits it (or, via the caster's
-    // DoHarmful, the caster); the nearest-attacker swap is the base rule.
+    // Retaliation: a combat familiar answers whoever hits it; with a target already held,
+    // the base rule (swap to a closer attacker) applies.
     public override void OnAggressiveAction(Mobile aggressor)
     {
         if (!Familiar.AssistsMaster || aggressor.Hidden || Familiar.ControlMaster?.Hidden == true)
@@ -87,10 +89,16 @@ public class FamiliarAI : BaseAI
             return true;
         }
 
-        if (CheckHerding())
+        // Herding outranks combat, and a fetch must not leave a swing running.
+        if (Mobile.TargetLocation != null)
         {
-            DebugSay("Fetching for my master.");
-            return true;
+            StandDown();
+
+            if (CheckHerding())
+            {
+                DebugSay("Fetching for my master.");
+                return true;
+            }
         }
 
         if (Familiar.AssistsMaster && !master.Hidden && TryAssist(master))
@@ -102,7 +110,10 @@ public class FamiliarAI : BaseAI
         return true;
     }
 
-    // The caster's target first, then whatever is already on us (OnAggressiveAction).
+    // The caster's target first; otherwise something that has attacked the caster or us and
+    // is still fighting one of us (a caster's own Combatant expires while a monster keeps
+    // hitting). A target the caster no longer attacks and that fights nobody of ours is
+    // dropped.
     private bool TryAssist(Mobile master)
     {
         var target = master.Combatant;
@@ -111,9 +122,14 @@ public class FamiliarAI : BaseAI
         {
             target = Mobile.Combatant;
 
-            if (!IsValidAssistTarget(master, target))
+            if (!IsValidAssistTarget(master, target) || !IsFightingUs(master, target))
             {
-                return false;
+                target = FindAggressor(master);
+
+                if (target == null)
+                {
+                    return false;
+                }
             }
         }
 
@@ -137,17 +153,63 @@ public class FamiliarAI : BaseAI
         return true;
     }
 
+    private bool IsFightingUs(Mobile master, Mobile target) =>
+        target.Combatant == Mobile || target.Combatant == master;
+
+    // Closest attacker of the caster or of the familiar that is still fighting one of us.
+    private Mobile FindAggressor(Mobile master)
+    {
+        Mobile best = null;
+        var bestDist = double.MaxValue;
+
+        ScanAggressors(master, master.Aggressors, ref best, ref bestDist);
+        ScanAggressors(master, Mobile.Aggressors, ref best, ref bestDist);
+
+        return best;
+    }
+
+    private void ScanAggressors(Mobile master, List<AggressorInfo> aggressors, ref Mobile best, ref double bestDist)
+    {
+        for (var i = 0; i < aggressors.Count; i++)
+        {
+            var info = aggressors[i];
+
+            if (info.Expired)
+            {
+                continue;
+            }
+
+            var attacker = info.Attacker;
+
+            if (attacker == best || !IsValidAssistTarget(master, attacker) || !IsFightingUs(master, attacker))
+            {
+                continue;
+            }
+
+            var dist = master.GetDistanceToSqrt(attacker);
+
+            if (dist < bestDist)
+            {
+                best = attacker;
+                bestDist = dist;
+            }
+        }
+    }
+
     private bool IsValidAssistTarget(Mobile master, Mobile target) =>
         target?.Deleted == false && target != Mobile && target != master && target.Alive &&
         !target.Hidden && target.Map == Mobile.Map && !target.IsDeadBondedPet &&
         target.AccessLevel == AccessLevel.Player && master.InRange(target, LeashRange) &&
         Mobile.CanBeHarmful(target, false);
 
+    // Also drops the movement intent: a move-only wake must not resume the pursuit this
+    // decision just abandoned.
     private void StandDown()
     {
         Mobile.Warmode = false;
         Mobile.Combatant = null;
         Mobile.SetCurrentSpeedToActive();
+        ClearMoveIntent();
     }
 
     private void Follow(Mobile master)
