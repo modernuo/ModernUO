@@ -363,4 +363,46 @@ public class FamiliarAITests : IDisposable
             "after giving up on an unreachable master the familiar snaps to it"
         );
     }
+
+    [SkippableFact]
+    public void MirrorsHidden_EvenWhileWalking()
+    {
+        var p = Master(1500, 1600);
+        var f = Familiar(0, p, 1500, 1600);
+        RunFor(400);
+
+        p.Hidden = true;
+        p.MoveToWorld(At(1495, 1600), _map);
+        Assert.True(RunUntil(() => f.Hidden, 500));
+
+        var stayedHidden = true;
+        var arrived = RunUntil(
+            () =>
+            {
+                stayedHidden &= f.Hidden;
+                return f.InRange(p, 1);
+            },
+            3000
+        );
+
+        Assert.True(arrived);
+        Assert.True(stayedHidden, "steps must not strip the mirror");
+
+        p.Hidden = false;
+        Assert.True(RunUntil(() => !f.Hidden, 500));
+    }
+
+    [SkippableFact]
+    public void Herding_TargetLocation_WinsAndClears()
+    {
+        var p = Master(1500, 1600);
+        var f = Familiar(4, p, 1500, 1600);
+        RunFor(400);
+
+        var goal = new Point2D(1500, 1594);
+        f.TargetLocation = goal;
+
+        Assert.True(RunUntil(() => f.TargetLocation == null, 6000), "familiar walks to the herding target");
+        Assert.True(f.InRange(goal, 1));
+    }
 }
