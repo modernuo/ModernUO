@@ -456,9 +456,10 @@ public abstract partial class BaseAI
 
     /// <summary>
     /// Walks toward a fixed point (e.g. a target's last-known position), pathfinding around
-    /// obstacles. Returns false on arrival or when genuinely unable to make progress.
+    /// obstacles, until within <paramref name="range"/> (0 = onto the tile). Returns false on
+    /// arrival or when genuinely unable to make progress.
     /// </summary>
-    public bool MoveToPoint(IPoint3D goal)
+    public bool MoveToPoint(IPoint3D goal, int range = 1)
     {
         if (Mobile.Deleted || Mobile.DisallowAllMoves || goal == null)
         {
@@ -471,12 +472,12 @@ public abstract partial class BaseAI
             Path = new PathFollower(Mobile, goal) { Mover = DoMoveImpl };
         }
 
-        RenewMoveIntent(null, goal, 1);
+        RenewMoveIntent(null, goal, range);
 
         var couldMove = CanMoveNow(out _) && !IsInBadState();
         var locBefore = Mobile.Location;
 
-        if (Path.Follow(1))
+        if (Path.Follow(range))
         {
             Path = null;
             ClearMoveIntent();
@@ -604,7 +605,7 @@ public abstract partial class BaseAI
         }
         else
         {
-            MoveToPoint(_moveIntentPoint);
+            MoveToPoint(_moveIntentPoint, _moveIntentRange);
         }
     }
 
