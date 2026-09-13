@@ -130,12 +130,14 @@ public class PathTrackerTests
         var before = new CacheStats(
             residentChunks: 0, hits: 10, missesNotBuilt: 2, missesDirtyRebuild: 1,
             fallthroughMultiZ: 3, fallthroughOffMap: 1, fallthroughSourceZMismatch: 2,
-            fallthroughNotBuilt: 4, evictionsByLruCap: 0, buildsTotal: 0
+            fallthroughNotBuilt: 4, fallthroughMulti: 0, multiLocalHits: 0, multiMaskCacheHits: 0,
+            evictionsByLruCap: 0, buildsTotal: 0
         );
         var after = new CacheStats(
             residentChunks: 0, hits: 18, missesNotBuilt: 5, missesDirtyRebuild: 3,
             fallthroughMultiZ: 4, fallthroughOffMap: 1, fallthroughSourceZMismatch: 2,
-            fallthroughNotBuilt: 6, evictionsByLruCap: 0, buildsTotal: 0
+            fallthroughNotBuilt: 6, fallthroughMulti: 0, multiLocalHits: 0, multiMaskCacheHits: 0,
+            evictionsByLruCap: 0, buildsTotal: 0
         );
 
         var (served, built, fell) = PathTracker.ComputeDelta(before, after);
@@ -271,7 +273,7 @@ public class PathTrackerTests
             PathTracker.Toggle(observer, m);
 
             // A short, real route on Trammel (same family as the open_plain corpus scenario).
-            Server.PathAlgorithms.BitmapAStar.BitmapAStarAlgorithm.Instance.Find(
+            Server.PathAlgorithms.BitmapAStarAlgorithm.Instance.Find(
                 m, Map.Maps[1], start, new Point3D(1500, 1628, 10)
             );
 
