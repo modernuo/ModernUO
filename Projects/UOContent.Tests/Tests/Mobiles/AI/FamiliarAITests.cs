@@ -405,4 +405,47 @@ public class FamiliarAITests : IDisposable
         Assert.True(RunUntil(() => f.TargetLocation == null, 6000), "familiar walks to the herding target");
         Assert.True(f.InRange(goal, 1));
     }
+
+    [SkippableFact]
+    public void NonCombatFamiliar_RefusesAnyCombatant()
+    {
+        var p = Master(1500, 1600);
+        var wisp = Familiar(2, p, 1501, 1600);
+        var e = Enemy(1502, 1600);
+
+        wisp.Combatant = e; // the unconditional fallback in BaseCreature.AggressiveAction, or a GM
+        Assert.Null(wisp.Combatant);
+    }
+
+    [SkippableFact]
+    public void HiddenCaster_FamiliarRefusesRetaliation()
+    {
+        var p = Master(1500, 1600);
+        var wolf = Familiar(0, p, 1501, 1600);
+        var e = Enemy(1502, 1600);
+        RunFor(400);
+        p.Hidden = true;
+        Assert.True(RunUntil(() => wolf.Hidden, 500));
+
+        e.Combatant = wolf;
+        RunFor(500);
+
+        Assert.Null(wolf.Combatant);
+        Assert.True(wolf.Hidden);
+    }
+
+    [SkippableFact]
+    public void LeftBehind_StandsDown()
+    {
+        var p = Master(1500, 1600);
+        var wolf = Familiar(0, p, 1501, 1600);
+        var e = Enemy(1495, 1600);
+        RunFor(400);
+        p.Warmode = true;
+        p.Combatant = e;
+        Assert.True(RunUntil(() => wolf.Combatant == e, 2000));
+
+        p.MoveToWorld(new Point3D(1500, 1600, p.Z), Map.Felucca);
+        Assert.True(RunUntil(() => wolf.Combatant == null && !wolf.Warmode, 500));
+    }
 }

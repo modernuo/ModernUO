@@ -54,7 +54,7 @@ public class FamiliarAI : BaseAI
     // DoHarmful, the caster); the nearest-attacker swap is the base rule.
     public override void OnAggressiveAction(Mobile aggressor)
     {
-        if (!Familiar.AssistsMaster || aggressor.Hidden)
+        if (!Familiar.AssistsMaster || aggressor.Hidden || Familiar.ControlMaster?.Hidden == true)
         {
             return;
         }
@@ -73,9 +73,17 @@ public class FamiliarAI : BaseAI
     {
         var master = Familiar.ControlMaster;
 
-        // Lifecycle is BaseFamiliar.OnThink's; a master on another map is TeleportPets' problem.
-        if (Mobile.Deleted || master?.Deleted != false || master.Map != Mobile.Map)
+        // Lifecycle is BaseFamiliar.OnThink's.
+        if (Mobile.Deleted || master?.Deleted != false)
         {
+            return true;
+        }
+
+        // Left behind (the caster travelled without it): stand down and wait for TeleportPets
+        // or the unsummon rather than keep fighting alone.
+        if (master.Map != Mobile.Map)
+        {
+            StandDown();
             return true;
         }
 
@@ -135,11 +143,16 @@ public class FamiliarAI : BaseAI
         target.AccessLevel == AccessLevel.Player && master.InRange(target, LeashRange) &&
         Mobile.CanBeHarmful(target, false);
 
-    private void Follow(Mobile master)
+    private void StandDown()
     {
         Mobile.Warmode = false;
         Mobile.Combatant = null;
         Mobile.SetCurrentSpeedToActive();
+    }
+
+    private void Follow(Mobile master)
+    {
+        StandDown();
 
         MoveTo(master, 1);
         TryKeepUp(master);
@@ -171,8 +184,9 @@ public class FamiliarAI : BaseAI
         (0, 1), (1, 0), (0, -1), (-1, 0), (1, 1), (-1, 1), (1, -1), (-1, -1)
     ];
 
-    // First tile adjacent to the caster that a mobile can stand on; none means keep walking.
-    private static bool TryFindLanding(Mobile master, out Point3D loc)
+    // First tile adjacent to the caster, on the caster's floor, that this creature can stand
+    // on; none means keep walking.
+    private bool TryFindLanding(Mobile master, out Point3D loc)
     {
         var map = master.Map;
         var start = Utility.Random(_landingRing.Length); // no fixed favourite side
@@ -182,9 +196,8 @@ public class FamiliarAI : BaseAI
             var (dx, dy) = _landingRing[(start + i) % _landingRing.Length];
             var x = master.X + dx;
             var y = master.Y + dy;
-            var z = map.GetAverageZ(x, y);
 
-            if (map.CanSpawnMobile(x, y, z))
+            if (map.CanSpawnMobile(x, y, master.Z - 5, master.Z + 5, Mobile.CanSwim, Mobile.CantWalk, out var z))
             {
                 loc = new Point3D(x, y, z);
                 return true;

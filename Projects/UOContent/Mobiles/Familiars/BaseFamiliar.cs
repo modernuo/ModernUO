@@ -34,6 +34,23 @@ public abstract partial class BaseFamiliar : BaseCreature
     // A wounded familiar still keeps up.
     public override bool ReduceSpeedWithDamage => false;
 
+    // The one choke point for "never fights": no path — assist, the retaliation fallback in
+    // BaseCreature.AggressiveAction, a GM — hands a non-combat familiar a target, and none
+    // hands any familiar one while the caster is hidden.
+    public override Mobile Combatant
+    {
+        get => base.Combatant;
+        set
+        {
+            if (value != null && (!AssistsMaster || ControlMaster?.Hidden == true))
+            {
+                return;
+            }
+
+            base.Combatant = value;
+        }
+    }
+
     public override void OnThink()
     {
         base.OnThink();
