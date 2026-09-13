@@ -4,6 +4,7 @@ using Server;
 using Server.Items;
 using Server.Mobiles;
 using Server.Tests;
+using Server.Tests.Mobiles.AI;
 using Xunit;
 
 namespace UOContent.Tests.Mobiles.AI;
@@ -283,5 +284,83 @@ public class FamiliarAITests : IDisposable
         RunFor(1000);
         Assert.Null(wisp.Combatant);
         Assert.False(wisp.Warmode);
+    }
+
+    [SkippableFact]
+    public void KeepUp_SnapsWhenFarOnOpenGround()
+    {
+        var p = Master(1500, 1600);
+        var f = Familiar(0, p, 1500, 1600);
+        RunFor(400);
+
+        p.MoveToWorld(At(1500 - BaseFamiliar.KeepUpRange - 2, 1600), _map);
+        RunFor(300); // one think with a successful greedy step is enough
+
+        Assert.True(f.InRange(p, 1), "familiar must snap adjacent to a master 12 tiles away on open ground");
+    }
+
+    [SkippableFact]
+    public void KeepUp_DoesNotSnapWhileRouting()
+    {
+        // Britain inn L-desk: master north of it, familiar south. The detour is ~17 steps.
+        var p = Master(1494, 1605);
+        var f = Familiar(0, p, 1493, 1614);
+        p.MoveToWorld(new Point3D(1494, 1605, 21), _map);
+        f.MoveToWorld(new Point3D(1493, 1614, 20), _map);
+        Server.Engines.Pathing.Cache.StepCache.Instance.Clear();
+        RunFor(400);
+
+        var teleported = false;
+        var last = f.Location;
+        var arrived = RunUntil(
+            () =>
+            {
+                if (f.Location != last && !f.InRange(last, 1))
+                {
+                    teleported = true;
+                }
+
+                last = f.Location;
+                return f.InRange(p, 1);
+            },
+            8000
+        );
+
+        Assert.True(arrived, "familiar walks the detour");
+        Assert.False(teleported, "a working detour must not be short-circuited by a snap");
+    }
+
+    [SkippableFact]
+    public void KeepUp_SnapsAfterGiveUp()
+    {
+        var p = Master(1500, 1596);
+        var f = Familiar(0, p, 1500, 1602);
+
+        // 5x5 impassable ring around the master; the 3x3 interior stays open so a landing
+        // tile exists but no route reaches it.
+        var id = ApproachTargetTests.FirstImpassableItemId();
+        Assert.NotEqual<ushort>(0, id);
+
+        for (var x = 1498; x <= 1502; x++)
+        {
+            for (var y = 1594; y <= 1598; y++)
+            {
+                if (x is > 1498 and < 1502 && y is > 1594 and < 1598)
+                {
+                    continue;
+                }
+
+                _map.GetAverageZ(x, y, out _, out var rz, out _);
+                _created.Add(new Item(World.NewItem) { ItemID = id, Map = _map, Location = new Point3D(x, y, (sbyte)rz) });
+            }
+        }
+
+        Server.Engines.Pathing.Cache.StepCache.Instance.Clear();
+        RunFor(400);
+
+        Assert.True(
+            RunUntil(() => f.InRange(p, 1), 15000),
+            "after giving up on an unreachable master the familiar snaps to it"
+        );
     }
 }

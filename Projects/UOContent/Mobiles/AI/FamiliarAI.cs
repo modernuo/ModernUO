@@ -142,5 +142,56 @@ public class FamiliarAI : BaseAI
         Mobile.SetCurrentSpeedToActive();
 
         MoveTo(master, 1);
+        TryKeepUp(master);
+    }
+
+    // Snap to the caster when simply outpaced on open ground, or once the approach has
+    // given up. A live detour (Routing) is left to finish; Blocked is still counting.
+    private void TryKeepUp(Mobile master)
+    {
+        var snap = LastApproach switch
+        {
+            ApproachOutcome.GaveUp         => true,
+            ApproachOutcome.DirectProgress => !Mobile.InRange(master, BaseFamiliar.KeepUpRange),
+            _                              => false
+        };
+
+        if (!snap || !TryFindLanding(master, out var loc))
+        {
+            return;
+        }
+
+        DebugSay("Keeping up with my master.");
+        Mobile.SetLocation(loc, true);
+        ResetApproachState();
+    }
+
+    private static readonly (int dx, int dy)[] _landingRing =
+    [
+        (0, 1), (1, 0), (0, -1), (-1, 0), (1, 1), (-1, 1), (1, -1), (-1, -1)
+    ];
+
+    // First tile adjacent to the caster that a mobile can stand on; none means keep walking.
+    private static bool TryFindLanding(Mobile master, out Point3D loc)
+    {
+        var map = master.Map;
+        var start = Utility.Random(_landingRing.Length); // no fixed favourite side
+
+        for (var i = 0; i < _landingRing.Length; i++)
+        {
+            var (dx, dy) = _landingRing[(start + i) % _landingRing.Length];
+            var x = master.X + dx;
+            var y = master.Y + dy;
+            var z = map.GetAverageZ(x, y);
+
+            if (map.CanSpawnMobile(x, y, z))
+            {
+                loc = new Point3D(x, y, z);
+                return true;
+            }
+        }
+
+        loc = Point3D.Zero;
+        return false;
     }
 }
