@@ -222,6 +222,16 @@ public partial class ForestWolf : BaseCreature
 | `AI_Berserk` | Mindless aggressors |
 | `AI_Thief` | Pickpockets |
 
+**Bespoke policy: `ForcedAI`.** A creature whose behavior is not one of the stock AIs
+overrides `protected override BaseAI ForcedAI => new MyAI(this);` and `ChangeAIType` uses that
+instance regardless of `AIType` (`CloneAI` for mirror images, `FamiliarAI` for necromancy
+familiars, `FactionGuardAI`, `SpellbinderAI`). The property is read exactly once per
+`ChangeAIType`; do not put side effects in it. Movement or order decisions belong in the AI
+class — `OnThink` is for content extras (see the excess-call contract below). A controlled
+creature is dispatched through `Obey()`, an uncontrolled one through `Think()`; an AI that owns
+both routes them into one decision (`FamiliarAI.Act`). Overriding `IssueOrder` to return a
+fixed order is how "command immunity" is expressed without bypassing the order machinery.
+
 ### Fight Modes
 | FightMode | Behavior |
 |---|---|

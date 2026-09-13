@@ -55,6 +55,21 @@ Per think-tick decision:
 Open terrain stays on the greedy fast path and never builds a `PathFollower` — pathfinding only
 engages when greedy movement stalls.
 
+### Approach outcome
+
+`ApproachTarget` returns a `bool` for its callers, but records which exit it took in
+`BaseAI.LastApproach` (`ApproachOutcome`): `Arrived`, `Waiting` (frozen/casting/throttled),
+`DirectProgress` (greedy step closed the distance), `Routing` (a `PathFollower` is working a
+detour), `Blocked` (move-eligible tick, no step, stall counter still running), `GaveUp`, or
+`InvalidGoal`. A policy that needs to distinguish "outpaced on open ground" from "stuck"
+reads this after its `MoveTo`/`WalkMobileRange` call instead of running a second scheduler —
+`FamiliarAI.TryKeepUp` is the reference use: snap to the caster on `DirectProgress` beyond
+`KeepUpRange`, or on `GaveUp`; never on `Routing`. After a policy-driven relocation call
+`ResetApproachState()` so the next approach starts fresh (`OnTeleported` only repaths).
+
+`MoveToPoint(goal, range)` takes the arrival range explicitly; herding passes 0 because
+`CheckHerding` ends on the tile (its exit is `distance < 1`), and the default 1 stops beside it.
+
 ## The algorithm: windowed A* with hard limits
 
 `BitmapAStarAlgorithm` (`Find`) is a **bounded local** pathfinder, not a global one. Key
