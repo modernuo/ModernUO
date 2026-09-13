@@ -8,12 +8,15 @@ namespace Server.Mobiles;
 [SerializationGenerator(0, false)]
 public abstract partial class BaseFamiliar : BaseCreature
 {
-    private bool m_LastHidden;
+    // Beyond this many tiles on open ground the familiar snaps to the caster instead of walking.
+    public const int KeepUpRange = 10;
 
     public BaseFamiliar() : base(AIType.AI_Melee)
     {
-        SetSpeed(0.1, 0.11);
+        SetSpeed(0.1, 0.1);
     }
+
+    protected override BaseAI ForcedAI => new FamiliarAI(this);
 
     public override bool BardImmune => true;
     public override Poison PoisonImmune => Poison.Lethal;
@@ -22,89 +25,47 @@ public abstract partial class BaseFamiliar : BaseCreature
 
     public override bool PlayerRangeSensitive => false;
 
-    public virtual void RangeCheck()
-    {
-        if (Deleted || ControlMaster?.Deleted != false)
-        {
-            return;
-        }
+    // Assist aggro: engages the caster's target and anything hostile to the caster or itself.
+    public virtual bool AssistsMaster => true;
 
-        var range = RangeHome - 2;
+    // Never muted by the ML stand-down rule; FamiliarAI decides whether it fights.
+    public override bool StandsDownOnCommand => false;
 
-        if (InRange(ControlMaster.Location, RangeHome))
-        {
-            return;
-        }
-
-        var master = ControlMaster;
-
-        var m_Loc = Point3D.Zero;
-
-        if (Map != master.Map)
-        {
-            return;
-        }
-
-        var x = X > master.X ? master.X + range : master.X - range;
-        var y = Y > master.Y ? master.Y + range : master.Y - range;
-
-        for (var i = 0; i < 10; i++)
-        {
-            m_Loc.X = x + Utility.RandomMinMax(-1, 1);
-            m_Loc.Y = y + Utility.RandomMinMax(-1, 1);
-
-            m_Loc.Z = Map.GetAverageZ(m_Loc.X, m_Loc.Y);
-
-            if (Map.CanSpawnMobile(m_Loc))
-            {
-                break;
-            }
-
-            m_Loc = master.Location;
-        }
-
-        if (!Deleted)
-        {
-            SetLocation(m_Loc, true);
-        }
-    }
+    // A wounded familiar still keeps up.
+    public override bool ReduceSpeedWithDamage => false;
 
     public override void OnThink()
     {
-        var master = ControlMaster;
+        base.OnThink();
 
         if (Deleted)
         {
             return;
         }
 
+        var master = ControlMaster;
+
         if (master?.Deleted != false)
         {
             DropPackContents();
-            EndRelease(null);
+            Delete();
             return;
         }
 
-        RangeCheck();
-
-        if (m_LastHidden != master.Hidden)
+        // Mirror the caster's visibility from our own state, not a cache of theirs: a step can
+        // reveal us (Mobile.OnMove) and the mirror must re-assert.
+        if (Hidden != master.Hidden)
         {
-            Hidden = m_LastHidden = master.Hidden;
+            Hidden = master.Hidden;
         }
+    }
 
-        if (AIObject?.WalkMobileRange(master, 5, 1, 1) == true)
+    // Walking, attacking, etc. must not give the caster's position away.
+    public override void RevealingAction()
+    {
+        if (ControlMaster?.Hidden != true)
         {
-            Warmode = master.Warmode;
-            Combatant = master.Combatant;
-
-            CurrentSpeed = 0.1;
-        }
-        else
-        {
-            Warmode = false;
-            FocusMob = Combatant = null;
-
-            CurrentSpeed = 0.01;
+            base.RevealingAction();
         }
     }
 

@@ -1,0 +1,202 @@
+using System;
+using System.Collections.Generic;
+using Server;
+using Server.Items;
+using Server.Mobiles;
+using Server.Tests;
+using Xunit;
+
+namespace UOContent.Tests.Mobiles.AI;
+
+// Timer-wheel driven: the real AITimer thinks and moves the familiar, so order side effects,
+// pacing, and move wakes are all in play. Map statics are live (Trammel), so this shares
+// the pathfinding sequential collection.
+[Collection("Sequential Pathfinding Tests")]
+public class FamiliarAITests : IDisposable
+{
+    // NPCSpeeds is not configured in the fixture; every familiar under test pins its speeds.
+    private sealed class Wolf : DarkWolfFamiliar
+    {
+        public override void GetSpeeds(out double a, out double p) { a = 0.1; p = 0.1; }
+    }
+
+    private sealed class Bat : VampireBatFamiliar
+    {
+        public override void GetSpeeds(out double a, out double p) { a = 0.1; p = 0.1; }
+    }
+
+    private sealed class Wisp : ShadowWispFamiliar
+    {
+        public override void GetSpeeds(out double a, out double p) { a = 0.1; p = 0.1; }
+    }
+
+    private sealed class Adder : DeathAdder
+    {
+        public override void GetSpeeds(out double a, out double p) { a = 0.1; p = 0.1; }
+    }
+
+    private sealed class Minion : HordeMinionFamiliar
+    {
+        public override void GetSpeeds(out double a, out double p) { a = 0.1; p = 0.1; }
+    }
+
+    private sealed class EnemyStub : Mobile
+    {
+        public EnemyStub()
+        {
+            Body = 0x190;
+            Str = 100;
+        }
+    }
+
+    private static readonly Map _map = Map.Maps[1];
+    private readonly List<IEntity> _created = new();
+
+    public FamiliarAITests()
+    {
+        TileDataRequirement.SkipIfMissing();
+        Core._tickCount = 0;
+        Timer.Init(0);
+    }
+
+    public void Dispose()
+    {
+        for (var i = _created.Count - 1; i >= 0; i--)
+        {
+            _created[i].Delete();
+        }
+    }
+
+    private static Point3D At(int x, int y)
+    {
+        _map.GetAverageZ(x, y, out _, out var z, out _);
+        return new Point3D(x, y, (sbyte)z);
+    }
+
+    private PlayerMobile Master(int x, int y)
+    {
+        var p = new PlayerMobile(World.NewMobile);
+        p.DefaultMobileInit();
+        p.Player = true;
+        p.Body = 0x190;
+        p.Str = p.Dex = p.Int = 100;
+        p.AddItem(new Backpack());
+        p.MoveToWorld(At(x, y), _map);
+        _created.Add(p);
+        return p;
+    }
+
+    private BaseFamiliar Familiar(int kind, PlayerMobile master, int x, int y)
+    {
+        BaseFamiliar f = kind switch
+        {
+            0 => new Wolf(),
+            1 => new Bat(),
+            2 => new Wisp(),
+            3 => new Adder(),
+            _ => new Minion()
+        };
+
+        Assert.True(BaseCreature.Summon(f, master, At(x, y), -1, TimeSpan.FromHours(1)));
+        _created.Add(f);
+        return f;
+    }
+
+    private EnemyStub Enemy(int x, int y)
+    {
+        var e = new EnemyStub();
+        e.MoveToWorld(At(x, y), _map);
+        _created.Add(e);
+        return e;
+    }
+
+    // Advances time in 8ms lockstep so the wheel and Core.TickCount stay in sync.
+    private static void RunFor(long ms)
+    {
+        var deadline = Core._tickCount + ms;
+
+        while (Core._tickCount < deadline)
+        {
+            Core._tickCount += 8;
+            Timer.Slice(Core._tickCount);
+        }
+    }
+
+    private static bool RunUntil(Func<bool> condition, long maxMs)
+    {
+        var deadline = Core._tickCount + maxMs;
+
+        while (Core._tickCount < deadline)
+        {
+            if (condition())
+            {
+                return true;
+            }
+
+            Core._tickCount += 8;
+            Timer.Slice(Core._tickCount);
+        }
+
+        return condition();
+    }
+
+    [SkippableFact]
+    public void UsesFamiliarAI_AndStaysOnComeOrder()
+    {
+        var p = Master(1500, 1600);
+        var f = Familiar(0, p, 1500, 1600);
+
+        Assert.IsType<FamiliarAI>(f.AIObject);
+        Assert.Equal(OrderType.Come, f.ControlOrder);
+        Assert.Equal(0.1, f.ActiveSpeed);
+        Assert.Equal(0.1, f.PassiveSpeed);
+    }
+
+    [SkippableFact]
+    public void Follows_WithoutBacktracking()
+    {
+        var p = Master(1500, 1600);
+        var f = Familiar(0, p, 1500, 1600);
+        RunFor(400); // past the activation spread; the first think has run
+        p.MoveToWorld(At(1494, 1600), _map);
+
+        var best = f.GetDistanceToSqrt(p);
+        var regressed = false;
+        var arrived = RunUntil(
+            () =>
+            {
+                var d = f.GetDistanceToSqrt(p);
+
+                if (d > best + 0.01)
+                {
+                    regressed = true;
+                }
+
+                best = Math.Min(best, d);
+                return f.InRange(p, 1);
+            },
+            3000
+        );
+
+        Assert.True(arrived, "familiar must reach range 1 of its master");
+        Assert.False(regressed, "familiar must never step away from the master while following");
+        Assert.Equal(OrderType.Come, f.ControlOrder); // never converted to Stay
+        Assert.Equal(Point3D.Zero, f.Home);
+    }
+
+    [SkippableFact]
+    public void Orders_AreInert()
+    {
+        var p = Master(1500, 1600);
+        var f = Familiar(0, p, 1500, 1600);
+        RunFor(400);
+
+        f.IssueOrder(OrderType.Stay, p);
+
+        Assert.Equal(Point3D.Zero, f.Home);
+        Assert.Equal(0.1, f.CurrentSpeed);
+
+        p.MoveToWorld(At(1495, 1600), _map);
+        Assert.True(RunUntil(() => f.InRange(p, 1), 3000), "a familiar under a Stay order still follows");
+    }
+}
