@@ -110,10 +110,11 @@ public class FamiliarAI : BaseAI
         return true;
     }
 
-    // The caster's target first; otherwise something that has attacked the caster or us and
-    // is still fighting one of us (a caster's own Combatant expires while a monster keeps
-    // hitting). A target the caster no longer attacks and that fights nobody of ours is
-    // dropped.
+    // The caster's target first; otherwise something in a fight with the caster's side —
+    // attacked the caster or us, or was attacked by the caster (a pet's attack is credited
+    // to the caster through DoHarmful) — and still fighting one of us, the caster, or the
+    // caster's other pets. A caster's own Combatant expires while a monster keeps hitting; a
+    // target the caster no longer attacks and that fights nobody of ours is dropped.
     private bool TryAssist(Mobile master)
     {
         var target = master.Combatant;
@@ -153,44 +154,53 @@ public class FamiliarAI : BaseAI
         return true;
     }
 
-    private bool IsFightingUs(Mobile master, Mobile target) =>
-        target.Combatant == Mobile || target.Combatant == master;
+    private bool IsFightingUs(Mobile master, Mobile target)
+    {
+        var combatant = target.Combatant;
 
-    // Closest attacker of the caster or of the familiar that is still fighting one of us.
+        return combatant == Mobile || combatant == master ||
+               combatant is BaseCreature { Controlled: true } pet && pet.ControlMaster == master;
+    }
+
+    // Closest mobile in a fight with the caster's side.
     private Mobile FindAggressor(Mobile master)
     {
         Mobile best = null;
         var bestDist = double.MaxValue;
 
-        ScanAggressors(master, master.Aggressors, ref best, ref bestDist);
-        ScanAggressors(master, Mobile.Aggressors, ref best, ref bestDist);
+        ScanAggression(master, master.Aggressors, false, ref best, ref bestDist);
+        ScanAggression(master, Mobile.Aggressors, false, ref best, ref bestDist);
+        ScanAggression(master, master.Aggressed, true, ref best, ref bestDist);
 
         return best;
     }
 
-    private void ScanAggressors(Mobile master, List<AggressorInfo> aggressors, ref Mobile best, ref double bestDist)
+    // `defenders` reads the other party of an Aggressed entry instead of an Aggressors one.
+    private void ScanAggression(
+        Mobile master, List<AggressorInfo> list, bool defenders, ref Mobile best, ref double bestDist
+    )
     {
-        for (var i = 0; i < aggressors.Count; i++)
+        for (var i = 0; i < list.Count; i++)
         {
-            var info = aggressors[i];
+            var info = list[i];
 
             if (info.Expired)
             {
                 continue;
             }
 
-            var attacker = info.Attacker;
+            var other = defenders ? info.Defender : info.Attacker;
 
-            if (attacker == best || !IsValidAssistTarget(master, attacker) || !IsFightingUs(master, attacker))
+            if (other == best || !IsValidAssistTarget(master, other) || !IsFightingUs(master, other))
             {
                 continue;
             }
 
-            var dist = master.GetDistanceToSqrt(attacker);
+            var dist = master.GetDistanceToSqrt(other);
 
             if (dist < bestDist)
             {
-                best = attacker;
+                best = other;
                 bestDist = dist;
             }
         }

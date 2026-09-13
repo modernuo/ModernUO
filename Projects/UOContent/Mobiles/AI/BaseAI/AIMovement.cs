@@ -707,6 +707,7 @@ public abstract partial class BaseAI
     {
         if (Mobile.Deleted || Mobile.DisallowAllMoves || m == null)
         {
+            LastApproach = ApproachOutcome.InvalidGoal;
             return false;
         }
 

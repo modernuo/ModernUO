@@ -428,8 +428,11 @@ public class FamiliarAITests : IDisposable
         Assert.True(RunUntil(() => wolf.Hidden, 500));
 
         e.Combatant = wolf;
-        RunFor(500);
 
+        // Synchronous: the veto is at the setter, so nothing may be held even for a think.
+        Assert.Null(wolf.Combatant);
+        Assert.False(wolf.Warmode);
+        RunFor(500);
         Assert.Null(wolf.Combatant);
         Assert.True(wolf.Hidden);
     }
@@ -450,7 +453,7 @@ public class FamiliarAITests : IDisposable
     }
 
     [SkippableFact]
-    public void Herding_StandsDown_SoAHiddenCasterIsNotGivenAway()
+    public void Herding_OutranksCombat_AndStandsDown()
     {
         var p = Master(1500, 1600);
         var f = Familiar(4, p, 1501, 1600);
@@ -460,14 +463,41 @@ public class FamiliarAITests : IDisposable
         p.Combatant = e;
         Assert.True(RunUntil(() => f.Combatant == e, 2000));
 
-        f.TargetLocation = new Point2D(1500, 1594);
-        p.Hidden = true;
+        // The caster stays visible and keeps fighting: only the herding branch can clear this.
+        var goal = new Point2D(1500, 1594);
+        f.TargetLocation = goal;
+        var distBefore = f.GetDistanceToSqrt(goal);
         RunFor(300);
 
         Assert.Null(f.Combatant);
         Assert.False(f.Warmode);
-        Assert.True(f.Hidden);
-        Assert.NotNull(f.TargetLocation); // still fetching
+        Assert.NotNull(f.TargetLocation);
+        Assert.True(f.GetDistanceToSqrt(goal) < distBefore, "the fetch makes progress while combat is set aside");
+        Assert.Same(e, p.Combatant);
+    }
+
+    [SkippableFact]
+    public void AssistsAgainstWhatTheCastersPetIsFighting()
+    {
+        var p = Master(1500, 1600);
+        var f = Familiar(0, p, 1501, 1600);
+        var e = Enemy(1496, 1600);
+        var pet = new PetTestStub();
+        pet.MoveToWorld(At(1497, 1600), _map);
+        pet.SetControlMaster(p);
+        _created.Add(pet);
+        RunFor(400);
+
+        // The pet attacks; the caster is credited indirectly and gets no Combatant of their own.
+        pet.Combatant = e;
+        p.DoHarmful(e, true);
+        e.Combatant = pet;
+        Assert.Null(p.Combatant);
+
+        Assert.True(
+            RunUntil(() => f.Combatant == e && f.InRange(e, f.RangeFight), 4000),
+            "familiar joins the fight the caster's pet is in"
+        );
     }
 
     [SkippableFact]

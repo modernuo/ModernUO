@@ -36,7 +36,9 @@ public abstract partial class BaseFamiliar : BaseCreature
 
     // The one choke point for "never fights": no path — assist, the retaliation fallback in
     // BaseCreature.AggressiveAction, a GM — hands a non-combat familiar a target, and none
-    // hands any familiar one while the caster is hidden.
+    // hands any familiar one while the caster is hidden. (GetCPA reads attributes without
+    // inheritance: the override must restate it or [props loses the property.)
+    [CommandProperty(AccessLevel.GameMaster)]
     public override Mobile Combatant
     {
         get => base.Combatant;
