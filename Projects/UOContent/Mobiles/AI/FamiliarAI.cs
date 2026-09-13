@@ -29,20 +29,44 @@ public class FamiliarAI : BaseAI
 
     private BaseFamiliar Familiar => (BaseFamiliar)Mobile;
 
+    // How far from the caster an assist may reach: the target must be inside it and the
+    // familiar must not stray outside it.
+    public int LeashRange => Mobile.RangePerception;
+
     public override bool CanDetectHidden => false;
 
     public override bool Think() => Act();
 
     public override bool Obey() => Act();
 
-    // Command immunity: the order value is stored (Summon issues Come, which TeleportPets
-    // honours) but the issue phase does nothing — no posture reset, no speed flip, no Home.
+    // Command immunity: the issue phase does nothing — no posture reset, no speed flip, no
+    // Home — and the resting order is pinned at Come (which TeleportPets honours) so a
+    // system-issued Attack cannot leave the familiar on an order travel ignores.
     public override OrderType IssueOrder(
         OrderType order, OrderType previous, Mobile issuer, bool resuming, Mobile interruptedTarget
     )
     {
         AITimer.Prod();
-        return order;
+        return Mobile.Controlled ? OrderType.Come : OrderType.None;
+    }
+
+    // Retaliation: a combat familiar answers whoever hits it (or, via the caster's
+    // DoHarmful, the caster); the nearest-attacker swap is the base rule.
+    public override void OnAggressiveAction(Mobile aggressor)
+    {
+        if (!Familiar.AssistsMaster || aggressor.Hidden)
+        {
+            return;
+        }
+
+        if (Mobile.Combatant == null)
+        {
+            Mobile.Warmode = true;
+            Mobile.Combatant = aggressor;
+            return;
+        }
+
+        base.OnAggressiveAction(aggressor);
     }
 
     private bool Act()
@@ -61,9 +85,55 @@ public class FamiliarAI : BaseAI
             return true;
         }
 
+        if (Familiar.AssistsMaster && !master.Hidden && TryAssist(master))
+        {
+            return true;
+        }
+
         Follow(master);
         return true;
     }
+
+    // The caster's target first, then whatever is already on us (OnAggressiveAction).
+    private bool TryAssist(Mobile master)
+    {
+        var target = master.Combatant;
+
+        if (!IsValidAssistTarget(master, target))
+        {
+            target = Mobile.Combatant;
+
+            if (!IsValidAssistTarget(master, target))
+            {
+                return false;
+            }
+        }
+
+        if (!Mobile.InRange(master, LeashRange))
+        {
+            DebugSay("Too far from my master; returning.");
+            return false;
+        }
+
+        Mobile.Warmode = true;
+        Mobile.Combatant = target;
+
+        if (Mobile.Combatant != target)
+        {
+            return false; // the setter refused it (region / harmful check)
+        }
+
+        Mobile.SetCurrentSpeedToActive();
+        this.DebugSayFormatted($"Assisting my master against {target.Name}.");
+        MoveTo(target, Mobile.RangeFight);
+        return true;
+    }
+
+    private bool IsValidAssistTarget(Mobile master, Mobile target) =>
+        target?.Deleted == false && target != Mobile && target != master && target.Alive &&
+        !target.Hidden && target.Map == Mobile.Map && !target.IsDeadBondedPet &&
+        target.AccessLevel == AccessLevel.Player && master.InRange(target, LeashRange) &&
+        Mobile.CanBeHarmful(target, false);
 
     private void Follow(Mobile master)
     {

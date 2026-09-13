@@ -199,4 +199,89 @@ public class FamiliarAITests : IDisposable
         p.MoveToWorld(At(1495, 1600), _map);
         Assert.True(RunUntil(() => f.InRange(p, 1), 3000), "a familiar under a Stay order still follows");
     }
+
+    [SkippableTheory]
+    [InlineData(0, true)]  // dark wolf
+    [InlineData(1, true)]  // vampire bat
+    [InlineData(2, false)] // shadow wisp
+    [InlineData(3, false)] // death adder
+    [InlineData(4, true)]  // horde minion
+    public void AssistsMastersTarget_OnlyIfCombatCapable(int kind, bool assists)
+    {
+        var p = Master(1500, 1600);
+        var f = Familiar(kind, p, 1501, 1600);
+        var e = Enemy(1495, 1600);
+        RunFor(400);
+
+        p.Warmode = true;
+        p.Combatant = e;
+
+        if (assists)
+        {
+            Assert.True(
+                RunUntil(() => f.Combatant == e && f.InRange(e, f.RangeFight), 4000),
+                "a combat familiar must engage the caster's target"
+            );
+            Assert.True(f.Warmode);
+            Assert.Equal(OrderType.Come, f.ControlOrder);
+        }
+        else
+        {
+            RunFor(2000);
+            Assert.Null(f.Combatant);
+            Assert.False(f.Warmode);
+            Assert.True(f.InRange(p, 1), "a non-combat familiar stays with the caster");
+        }
+    }
+
+    [SkippableFact]
+    public void DropsTarget_WhenMasterHides()
+    {
+        var p = Master(1500, 1600);
+        var f = Familiar(0, p, 1501, 1600);
+        var e = Enemy(1495, 1600);
+        RunFor(400);
+        p.Warmode = true;
+        p.Combatant = e;
+        Assert.True(RunUntil(() => f.Combatant == e, 2000));
+
+        p.Hidden = true;
+        Assert.True(RunUntil(() => f.Combatant == null && f.Hidden, 1000));
+    }
+
+    [SkippableFact]
+    public void Leash_NeverEngagesATargetFarFromTheMaster()
+    {
+        var p = Master(1500, 1600);
+        var f = Familiar(0, p, 1501, 1600);
+        var e = Enemy(1500 - f.RangePerception - 4, 1600); // beyond the leash from the master
+        RunFor(400);
+        p.Warmode = true;
+        p.Combatant = e;
+        RunFor(4000);
+
+        Assert.Null(f.Combatant);
+        Assert.True(f.InRange(p, 1), "assist must not carry the familiar past the leash");
+    }
+
+    [SkippableFact]
+    public void Retaliates_IfCombatCapable_AndStaysOnComeOrder()
+    {
+        var p = Master(1500, 1600);
+        var wolf = Familiar(0, p, 1501, 1600);
+        var wisp = Familiar(2, p, 1499, 1600);
+        var e = Enemy(1503, 1600);
+        RunFor(400);
+
+        // The enemy attacks both: the Combatant setter runs DoHarmful → AggressiveAction with
+        // ChangingCombatant set, the path that issues a stand-down pet an Attack order.
+        e.Combatant = wolf;
+        Assert.True(RunUntil(() => wolf.Combatant == e, 1000), "a combat familiar fights back");
+        Assert.Equal(OrderType.Come, wolf.ControlOrder);
+
+        e.Combatant = wisp;
+        RunFor(1000);
+        Assert.Null(wisp.Combatant);
+        Assert.False(wisp.Warmode);
+    }
 }

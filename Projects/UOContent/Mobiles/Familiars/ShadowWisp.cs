@@ -41,6 +41,9 @@ public partial class ShadowWispFamiliar : BaseFamiliar
     public override string CorpseName => "a shadow wisp corpse";
     public override string DefaultName => "a shadow wisp";
 
+    // Non-combative: follows the caster, never fights.
+    public override bool AssistsMaster => false;
+
     public override void OnThink()
     {
         base.OnThink();
