@@ -560,6 +560,12 @@ public abstract partial class BaseAI
             return false;
         }
 
+        // Familiars choose movement and combat targets in their own OnThink.
+        if (Mobile is BaseFamiliar)
+        {
+            return true;
+        }
+
         switch (Mobile.ControlOrder)
         {
             case OrderType.None:
