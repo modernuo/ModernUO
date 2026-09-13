@@ -92,19 +92,26 @@ public abstract partial class BaseFamiliar : BaseCreature
             Hidden = m_LastHidden = master.Hidden;
         }
 
-        if (AIObject?.WalkMobileRange(master, 5, 1, 1) == true)
-        {
-            Warmode = master.Warmode;
-            Combatant = master.Combatant;
+        // Retire the previous goal before choosing this tick's target. In particular,
+        // a move-only wake must not resume combat pursuit after the owner hides.
+        AIObject?.ClearMoveIntent();
 
+        var combatant = master.Combatant;
+        if (!master.Hidden && combatant?.Deleted == false && combatant.Alive &&
+            !combatant.IsDeadBondedPet && combatant.Map == Map &&
+            master.InRange(combatant, RangeHome) && InRange(master, RangeHome))
+        {
+            Warmode = true;
+            Combatant = combatant;
             CurrentSpeed = 0.1;
+            AIObject?.WalkMobileRange(combatant, 1, 0, RangeFight);
         }
         else
         {
             Warmode = false;
             FocusMob = Combatant = null;
-
-            CurrentSpeed = 0.01;
+            CurrentSpeed = 0.1;
+            AIObject?.WalkMobileRange(master, 1, 1, 1);
         }
     }
 
