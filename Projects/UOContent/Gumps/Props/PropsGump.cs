@@ -224,11 +224,13 @@ namespace Server.Gumps
                         {
                             from.Target = new SetObjectTarget(prop, from, m_Object, type, this);
                         }
-                        else if (IsType(type, OfPoint3D))
+                        // A null interface-typed value (TargetLocation : IPoint2D) routes on the
+                        // declared type; a held entity was already caught above.
+                        else if (IsType(type, OfPoint3D) || type == OfIPoint3D)
                         {
                             from.SendGump(new SetPoint3DGump(prop, from, m_Object, this));
                         }
-                        else if (IsType(type, OfPoint2D))
+                        else if (IsType(type, OfPoint2D) || type == OfIPoint2D)
                         {
                             from.SendGump(new SetPoint2DGump(prop, from, m_Object, this));
                         }

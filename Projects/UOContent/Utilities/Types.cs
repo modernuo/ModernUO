@@ -33,6 +33,8 @@ namespace Server
         public static readonly Type OfTimeSpan = typeof(TimeSpan);
         public static readonly Type OfPoint3D = typeof(Point3D);
         public static readonly Type OfPoint2D = typeof(Point2D);
+        public static readonly Type OfIPoint3D = typeof(IPoint3D);
+        public static readonly Type OfIPoint2D = typeof(IPoint2D);
         public static readonly Type OfEnum = typeof(Enum);
         public static readonly Type OfType = typeof(Type);
 
@@ -276,6 +278,25 @@ namespace Server
                 // Decodes what InternalGetValue writes, so [get output pastes back into [set.
                 constructed = TryGetQuotedLiteral(value, out var literal) ? literal : value;
                 return null;
+            }
+
+            // Interface-typed properties (BaseCreature.TargetLocation : IPoint2D) have no static Parse,
+            // so resolve the text to the concrete struct. A 3-tuple is a valid IPoint2D as well.
+            if (type == OfIPoint3D || type == OfIPoint2D)
+            {
+                if (Point3D.TryParse(value, null, out var p3))
+                {
+                    constructed = p3;
+                    return null;
+                }
+
+                if (type == OfIPoint2D && Point2D.TryParse(value, null, out var p2))
+                {
+                    constructed = p2;
+                    return null;
+                }
+
+                return "That is not properly formatted.";
             }
 
             if (IsType(type, OfBool))
