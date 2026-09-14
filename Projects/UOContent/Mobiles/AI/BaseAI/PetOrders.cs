@@ -218,19 +218,16 @@ public abstract partial class BaseAI
         return OrderType.Attack;
     }
 
-    // Stop: Follow/Guard -> idle here; Stay -> keep the post; anything transient -> the standing order.
+    // Stop: Follow/Guard/Stay -> idle here; anything transient -> the standing order.
     private OrderType IssueStop(OrderType previous)
     {
         Mobile.ControlTarget = null;
 
         switch (previous)
         {
-            case OrderType.Stay:
-                {
-                    return OrderType.Stay; // resumed: anchor untouched
-                }
             case OrderType.Follow:
             case OrderType.Guard:
+            case OrderType.Stay:
                 {
                     SetPersistentOrder(OrderType.None); // cancel the standing order; idle anchor = here
                     return OrderType.None;
