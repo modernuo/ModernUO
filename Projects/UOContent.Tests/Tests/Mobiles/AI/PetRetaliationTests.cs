@@ -161,4 +161,26 @@ public class PetRetaliationTests : IDisposable
         Assert.Same(attacker, pet.Combatant);
         Assert.True(pet.Warmode);
     }
+
+    // The publish speaks of pets. A creature with no master was never told anything: its
+    // default order is None, the same value a stopped pet rests to, and it must still fight back.
+    [Theory]
+    [InlineData(false)] // wild
+    [InlineData(true)]  // summoned, but nobody's summon
+    public void MasterlessCreature_Retaliates_UnderStandDown(bool summoned)
+    {
+        var creature = new StandDownPet();
+        creature.Summoned = summoned;
+        creature.MoveToWorld(new Point3D(1001, 1000, 0), Map.Felucca);
+        creature.AIObject.AITimer?.Stop();
+        _created.Add(creature);
+
+        Assert.Null(creature.GetMaster());
+        Assert.Equal(OrderType.None, creature.ControlOrder);
+
+        var attacker = Attack(creature);
+
+        Assert.Same(attacker, creature.Combatant);
+        Assert.True(creature.Warmode);
+    }
 }
