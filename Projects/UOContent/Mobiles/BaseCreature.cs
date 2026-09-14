@@ -2733,25 +2733,17 @@ namespace Server.Mobiles
                 aggressor.Aggressors.Add(AggressorInfo.Create(this, aggressor, true));
             }
 
-            // Only a creature somebody can command has been told to stand down. A wild creature,
-            // an uncontrolled summon (vortex, blade spirits) or a non-commandable one (familiar,
-            // escortee) rests on None or a system-issued Follow, the same orders a pet stands down on.
             var toldToStandDown = _controlled && _controlMaster != null && Commandable &&
                                   BaseAI.IsStandDownOrder(_controlOrder);
 
-            if (AIObject != null)
+            if (StandsDownOnCommand && toldToStandDown)
             {
-                if (!StandsDownOnCommand || !toldToStandDown)
-                {
-                    AIObject.OnAggressiveAction(aggressor);
-                }
-                else
-                {
-                    AIObject.DebugSay("I'm being attacked but my master told me not to fight.");
-                    Warmode = false;
-                    return;
-                }
+                AIObject?.DebugSay("I'm being attacked but my master told me not to fight.");
+                Warmode = false;
+                return;
             }
+
+            AIObject?.OnAggressiveAction(aggressor);
 
             StopFlee();
 
