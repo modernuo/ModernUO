@@ -4293,6 +4293,17 @@ namespace Server.Mobiles
         public virtual void AddPetFriend(Mobile m)
         {
             Friends ??= [];
+
+            // The Friend order refuses duplicates before reaching here, but this is a public
+            // entry point (context menu, server scripts) and the list is capped by
+            // AllowNewPetFriend. Refuse a repeat here so every caller is covered: a duplicate
+            // would inflate the count against the five-friend cap and survive a single
+            // RemovePetFriend, leaving the person a friend after an unfriend.
+            if (Friends.Contains(m))
+            {
+                return;
+            }
+
             Friends.Add(m);
             this.MarkDirty();
         }
