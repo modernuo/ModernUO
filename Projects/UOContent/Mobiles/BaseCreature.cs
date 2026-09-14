@@ -2735,9 +2735,11 @@ namespace Server.Mobiles
 
             var ct = _controlOrder;
 
-            // Only a creature somebody commands can have been told to stand down. A wild or
-            // masterless one rests on None too, the order a stopped pet resolves to.
-            var standsDown = StandsDownOnCommand && GetMaster() != null && BaseAI.IsStandDownOrder(ct);
+            // Only a creature somebody can command has been told to stand down. A wild creature,
+            // an uncontrolled summon (vortex, blade spirits) or a non-commandable one (familiar,
+            // escortee) rests on None or a system-issued Follow, the same orders a pet stands down on.
+            var commanded = _controlled && _controlMaster != null && Commandable;
+            var standsDown = StandsDownOnCommand && commanded && BaseAI.IsStandDownOrder(ct);
 
             if (AIObject != null)
             {
@@ -2768,7 +2770,7 @@ namespace Server.Mobiles
             }
 
             // Only reachable when the pet does not stand down: the orders above returned early.
-            if (aggressor.ChangingCombatant && GetMaster() != null && BaseAI.IsStandDownOrder(ct))
+            if (aggressor.ChangingCombatant && commanded && BaseAI.IsStandDownOrder(ct))
             {
                 IssueOrder(OrderType.Attack, null, aggressor);
             }
