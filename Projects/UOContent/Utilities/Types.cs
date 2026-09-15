@@ -280,8 +280,6 @@ namespace Server
                 return null;
             }
 
-            // Interface-typed properties (BaseCreature.TargetLocation : IPoint2D) have no static Parse,
-            // so resolve the text to the concrete struct. A 3-tuple is a valid IPoint2D as well.
             if (type == OfIPoint3D || type == OfIPoint2D)
             {
                 if (Point3D.TryParse(value, null, out var p3))
