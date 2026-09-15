@@ -2102,13 +2102,9 @@ public abstract partial class BaseWeapon
             {
                 var caster = bc.ControlMaster ?? bc.SummonMaster;
 
-                if (caster != null && caster.Map == bc.Map && caster.InRange(bc, 2))
+                if (caster != null && caster.Map == bc.Map)
                 {
                     caster.Hits += damage;
-                }
-                else
-                {
-                    bc.Hits += damage;
                 }
             }
 
