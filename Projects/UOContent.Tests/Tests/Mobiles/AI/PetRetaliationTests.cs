@@ -161,4 +161,66 @@ public class PetRetaliationTests : IDisposable
         Assert.Same(attacker, pet.Combatant);
         Assert.True(pet.Warmode);
     }
+
+    private sealed class UncommandablePet : PetTestStub
+    {
+        public override bool StandsDownOnCommand => true;
+        public override bool Commandable => false;
+    }
+
+    // The publish speaks of commanded pets. A creature nobody can give an order to was never
+    // told anything, yet it rests on None (wild, uncontrolled summon) or a system-issued Follow
+    // (familiar, escortee) - the same orders a pet stands down on. It must still fight back.
+    [Fact]
+    public void WildCreature_Retaliates_UnderStandDown()
+    {
+        var creature = new StandDownPet();
+        creature.MoveToWorld(new Point3D(1001, 1000, 0), Map.Felucca);
+        creature.AIObject.AITimer?.Stop();
+        _created.Add(creature);
+
+        Assert.Equal(OrderType.None, creature.ControlOrder);
+
+        var attacker = Attack(creature);
+
+        Assert.Same(attacker, creature.Combatant);
+        Assert.True(creature.Warmode);
+    }
+
+    [Fact] // energy vortex, blade spirits: Summoned with a SummonMaster, never Controlled
+    public void UncontrolledSummon_Retaliates_UnderStandDown()
+    {
+        var caster = new PlayerMobile(World.NewMobile);
+        caster.DefaultMobileInit();
+        caster.MoveToWorld(new Point3D(1000, 1000, 0), Map.Felucca);
+        _created.Add(caster);
+
+        var summon = new StandDownPet();
+        summon.Summoned = true;
+        summon.SummonMaster = caster;
+        summon.MoveToWorld(new Point3D(1001, 1000, 0), Map.Felucca);
+        summon.AIObject.AITimer?.Stop();
+        _created.Add(summon);
+
+        Assert.False(summon.Controlled);
+        Assert.Equal(OrderType.None, summon.ControlOrder);
+
+        var attacker = Attack(summon);
+
+        Assert.Same(attacker, summon.Combatant);
+        Assert.True(summon.Warmode);
+    }
+
+    [Fact] // familiar, escortee: Controlled with a master, but not Commandable
+    public void UncommandableCreature_Retaliates_UnderStandDown()
+    {
+        var (master, familiar) = Spawn<UncommandablePet>();
+        familiar.ControlTarget = master;
+        familiar.ControlOrder = OrderType.Follow; // system-issued, not a command
+
+        var attacker = Attack(familiar);
+
+        Assert.Same(attacker, familiar.Combatant);
+        Assert.True(familiar.Warmode);
+    }
 }

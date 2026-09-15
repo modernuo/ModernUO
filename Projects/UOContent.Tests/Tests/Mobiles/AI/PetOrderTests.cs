@@ -133,8 +133,10 @@ public class PetOrderTests : IDisposable
         Assert.Equal(pet.Location, pet.Home); // idle anchor = where stopped
     }
 
+    // Publish 51: "Stop: ... may wander." A stay is a standing order like follow or guard;
+    // stop cancels it and the pet idles, anchored where it stands.
     [Fact]
-    public void Stop_WhileStaying_RemainsStayingAtOriginalPost()
+    public void Stop_WhileStaying_CancelsToIdleNone()
     {
         var post = new Point3D(1005, 1005, 0);
         var (_, pet) = Spawn(new Point3D(1000, 1000, 0), post);
@@ -143,9 +145,26 @@ public class PetOrderTests : IDisposable
 
         pet.ControlOrder = OrderType.Stop;
 
+        Assert.Equal(OrderType.None, pet.ControlOrder);
+        Assert.Equal(OrderType.None, pet.AIObject.PersistentOrder);
+        Assert.Equal(pet.Location, pet.Home); // idle anchor = where stopped
+    }
+
+    // "all come" rests into Stay on arrival; "all stop" must not leave the pet at that post.
+    [Fact]
+    public void Come_ThenArrive_ThenStop_IdlesRatherThanStaying()
+    {
+        var (_, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        Assert.Equal(OrderType.Come, pet.ControlOrder);
+
+        pet.AIObject.Obey(); // within 2 tiles -> Stay
         Assert.Equal(OrderType.Stay, pet.ControlOrder);
-        Assert.Equal(OrderType.Stay, pet.AIObject.PersistentOrder);
-        Assert.Equal(post, pet.Home); // post unchanged
+
+        pet.ControlOrder = OrderType.Stop;
+
+        Assert.Equal(OrderType.None, pet.ControlOrder);
+        Assert.Equal(OrderType.None, pet.AIObject.PersistentOrder);
+        Assert.Equal(pet.Location, pet.Home);
     }
 
     [Fact]
