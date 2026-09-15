@@ -2524,9 +2524,12 @@ namespace Server.Mobiles
         {
             AIObject?.AITimer.Stop();
 
-            if (ForcedAI != null)
+            // Read once: each read constructs an AI whose ctor may start its timer.
+            var forced = ForcedAI;
+
+            if (forced != null)
             {
-                AIObject = ForcedAI;
+                AIObject = forced;
                 return;
             }
 
@@ -3102,13 +3105,20 @@ namespace Server.Mobiles
                 pack?.DisplayTo(from);
             }
 
-            if (DeathAdderCharmable && from.CanBeHarmful(this, false))
+            if (DeathAdderCharmable && from.CanBeHarmful(this, false) &&
+                SummonFamiliarSpell.Table.TryGetValue(from, out var bc) && bc is DeathAdder { Deleted: false } deathAddr &&
+                deathAddr.Map == from.Map)
             {
-                if (SummonFamiliarSpell.Table.TryGetValue(from, out var bc) && (bc as DeathAdder)?.Deleted == false)
+                if (from.NetState.HasProtocolChanges(ProtocolChanges.Version7000))
+                {
+                    from.SendLocalizedMessage(1114362); // You charm the snake.  Select a target to attack.
+                }
+                else
                 {
                     from.SendAsciiMessage("You charm the snake.  Select a target to attack.");
-                    from.Target = new DeathAdderCharmTarget(this);
                 }
+
+                from.Target = new DeathAdderCharmTarget(this);
             }
 
             if (MLQuestSystem.Enabled && CanGiveMLQuest && from is PlayerMobile mobile)

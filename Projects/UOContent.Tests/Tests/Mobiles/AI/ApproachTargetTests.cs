@@ -49,7 +49,7 @@ public class ApproachTargetTests
         return false;
     }
 
-    private static ushort FirstImpassableItemId()
+    internal static ushort FirstImpassableItemId()
     {
         for (ushort id = 1; id < TileData.MaxItemValue; id++)
         {

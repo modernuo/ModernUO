@@ -10,7 +10,7 @@ namespace Server.Mobiles;
 [SerializationGenerator(0, false)]
 public partial class HordeMinionFamiliar : BaseFamiliar
 {
-    private DateTime m_NextPickup;
+    private long _nextPickup;
 
     public HordeMinionFamiliar()
     {
@@ -59,51 +59,60 @@ public partial class HordeMinionFamiliar : BaseFamiliar
     {
         base.OnThink();
 
-        if (Core.Now < m_NextPickup)
+        if (Core.TickCount - _nextPickup <= 0)
         {
             return;
-        }
-
-        m_NextPickup = Core.Now + TimeSpan.FromSeconds(Utility.RandomMinMax(5, 10));
-
-        var pack = Backpack;
-
-        if (pack == null)
-        {
-            return;
-        }
-
-        using var queue = PooledRefQueue<Item>.Create();
-        foreach (var item in GetItemsInRange(2))
-        {
-            if (item.Movable && item.Stackable)
-            {
-                queue.Enqueue(item);
-            }
         }
 
         var pickedUp = 3;
 
-        while (pickedUp > 0 && queue.Count > 0)
+        try
         {
-            var item = queue.Dequeue();
+            var pack = Backpack;
 
-            if (!pack.CheckHold(this, item, false, true))
+            if (pack == null)
             {
                 return;
             }
 
-            NextActionTime = Core.TickCount;
-
-            Lift(item, item.Amount, out var rejected, out var _);
-
-            if (rejected)
+            using var queue = PooledRefQueue<Item>.Create();
+            foreach (var item in GetItemsInRange(2))
             {
-                continue;
+                if (item.Movable && item.Stackable)
+                {
+                    queue.Enqueue(item);
+                }
             }
 
-            Drop(this, Point3D.Zero);
-            pickedUp--;
+            while (pickedUp > 0 && queue.Count > 0)
+            {
+                var item = queue.Dequeue();
+
+                if (!pack.CheckHold(this, item, false, true))
+                {
+                    return;
+                }
+
+                NextActionTime = Core.TickCount;
+
+                Lift(item, item.Amount, out var rejected, out var _);
+
+                if (rejected)
+                {
+                    continue;
+                }
+
+                Drop(this, Point3D.Zero);
+                pickedUp--;
+            }
+        }
+        finally
+        {
+            if (pickedUp < 3)
+            {
+                // 5-10s
+                _nextPickup = Core.TickCount + Utility.Random(5000, 5000);
+            }
         }
     }
 
