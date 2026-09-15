@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Security bug or exploit
+    url: https://github.com/modernuo/ModernUO/blob/main/CONTRIBUTING.md#reporting-security-issues-and-bugs
+    about: Duplication, player-triggerable crashes, auth bypass — report privately by email, never as a public issue.
+  - name: ModernUO Discord
+    url: https://muo.gg/discord
+    about: Questions, help running a shard, and discussion before filing an issue.
