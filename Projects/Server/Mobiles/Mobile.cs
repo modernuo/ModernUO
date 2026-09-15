@@ -2464,6 +2464,24 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
     public bool Deleted { get; private set; }
 
+    // Delta-save state (see ISerializable). Neither is serialized.
+    private bool _saveDirty;
+    private long _savePlacement;
+
+    [IgnoreDupe]
+    public bool SaveDirty
+    {
+        get => _saveDirty;
+        set => _saveDirty = value;
+    }
+
+    [IgnoreDupe]
+    public long SavePlacement
+    {
+        get => _savePlacement;
+        set => _savePlacement = value;
+    }
+
     public virtual void Delete()
     {
         if (Deleted)
