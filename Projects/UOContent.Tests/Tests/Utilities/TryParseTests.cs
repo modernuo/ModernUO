@@ -45,3 +45,38 @@ public class TryParseTests
         }
     }
 }
+
+// Interface-typed properties (BaseCreature.TargetLocation : IPoint2D) have no static Parse, so
+// without these branches the parser fell through to Convert.ChangeType and reported the value as
+// "not properly formatted".
+public class InterfacePointParseTests
+{
+    [Theory]
+    [InlineData(typeof(IPoint3D), "(1, 2, 3)", 1, 2, 3)]
+    [InlineData(typeof(IPoint2D), "(1, 2, 3)", 1, 2, 3)]  // a 3-tuple is a valid IPoint2D
+    public void TuplesParseIntoPoint3D(Type type, string value, int x, int y, int z)
+    {
+        Assert.Null(Server.Types.TryParse(type, value, out var constructed));
+        Assert.Equal(new Point3D(x, y, z), constructed);
+    }
+
+    [Fact]
+    public void PairParsesIntoPoint2D()
+    {
+        Assert.Null(Server.Types.TryParse(typeof(IPoint2D), "(4, 5)", out var constructed));
+        Assert.Equal(new Point2D(4, 5), constructed);
+    }
+
+    [Fact]
+    public void PairIsNotAPoint3D()
+    {
+        Assert.NotNull(Server.Types.TryParse(typeof(IPoint3D), "(4, 5)", out _));
+    }
+
+    [Fact]
+    public void NullSentinelClearsAnInterfaceProperty()
+    {
+        Assert.Null(Server.Types.TryParse(typeof(IPoint2D), "(-null-)", out var constructed));
+        Assert.Null(constructed);
+    }
+}

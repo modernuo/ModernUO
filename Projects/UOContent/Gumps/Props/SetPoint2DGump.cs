@@ -26,7 +26,7 @@ namespace Server.Gumps
             m_Mobile = mobile;
             m_Object = o;
 
-            var p = (Point2D)(prop?.GetValue(o, null) ?? new Point2D());
+            var p = prop?.GetValue(o, null) is IPoint2D current ? new Point2D(current) : new Point2D();
 
             AddPage(0);
 

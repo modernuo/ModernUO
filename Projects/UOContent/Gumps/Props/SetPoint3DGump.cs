@@ -27,7 +27,7 @@ namespace Server.Gumps
             m_Mobile = mobile;
             m_Object = o;
 
-            var p = (Point3D)(prop?.GetValue(o, null) ?? new Point3D());
+            var p = prop?.GetValue(o, null) is IPoint3D current ? new Point3D(current) : new Point3D();
 
             AddPage(0);
 

@@ -39,6 +39,11 @@ public abstract partial class BaseAI
     private bool _approachGaveUp;
     private Point3D _approachGaveUpGoalLoc;
 
+    /// <summary>Which exit the last <see cref="ApproachTarget"/> (via <see cref="MoveTo"/> or
+    /// <see cref="WalkMobileRange"/>) took. A <see cref="WalkMobileRange"/> retreat step does not
+    /// classify.</summary>
+    public ApproachOutcome LastApproach { get; private set; }
+
     // --- Move intent (see ContinueMove) ------------------------------------------------
     // Durable movement goal renewed by en-route ApproachTarget/MoveToPoint calls; while
     // live, the AITimer wakes at NextMove between think ticks to advance the step.
@@ -359,12 +364,14 @@ public abstract partial class BaseAI
     {
         if (Mobile.Deleted || Mobile.DisallowAllMoves || target?.Deleted != false)
         {
+            LastApproach = ApproachOutcome.InvalidGoal;
             ClearMoveIntent();
             return false;
         }
 
         if (Mobile.InRange(target, range))
         {
+            LastApproach = ApproachOutcome.Arrived;
             ResetApproach();
             ClearMoveIntent();
             return true;
@@ -375,6 +382,7 @@ public abstract partial class BaseAI
         {
             if (target.Location == _approachGaveUpGoalLoc)
             {
+                LastApproach = ApproachOutcome.GaveUp;
                 ClearMoveIntent();
                 return false;
             }
@@ -398,12 +406,13 @@ public abstract partial class BaseAI
 
             if (res == MoveResult.BadState)
             {
+                LastApproach = ApproachOutcome.Waiting;
                 return true; // not allowed to move this tick (frozen/casting/throttled); not a failure
             }
 
             if (res == MoveResult.Success && Mobile.GetDistanceToSqrt(target) < distBefore)
             {
-
+                LastApproach = ApproachOutcome.DirectProgress;
                 ResetApproach();
                 return true; // healthy en-route progress
             }
@@ -414,7 +423,6 @@ public abstract partial class BaseAI
         // PLANNING PATH: a persistent PathFollower, never discarded by a greedy step.
         if (Path == null || Path.Goal != target)
         {
-
             Path = new PathFollower(Mobile, target) { Mover = DoMoveImpl };
         }
 
@@ -425,24 +433,33 @@ public abstract partial class BaseAI
 
         if (Path.Follow(range))
         {
+            LastApproach = ApproachOutcome.Arrived;
             ResetApproach();
             return true;
         }
 
         TrackApproachProgress(target, couldMove);
 
+        if (_approachGaveUp)
+        {
+            LastApproach = ApproachOutcome.GaveUp;
+            return false;
+        }
+
         // En-route progress is success; failure only when a move-eligible tick took no step
-        // (no working path), or the approach has given up.
-        var progressed = !_approachGaveUp && (Mobile.Location != locBefore || !couldMove);
+        // (no working path).
+        var progressed = Mobile.Location != locBefore || !couldMove;
+        LastApproach = progressed ? ApproachOutcome.Routing : ApproachOutcome.Blocked;
 
         return progressed;
     }
 
     /// <summary>
     /// Walks toward a fixed point (e.g. a target's last-known position), pathfinding around
-    /// obstacles. Returns false on arrival or when genuinely unable to make progress.
+    /// obstacles, until within <paramref name="range"/> (0 = onto the tile). Returns false on
+    /// arrival or when genuinely unable to make progress.
     /// </summary>
-    public bool MoveToPoint(IPoint3D goal)
+    public bool MoveToPoint(IPoint3D goal, int range = 1)
     {
         if (Mobile.Deleted || Mobile.DisallowAllMoves || goal == null)
         {
@@ -455,12 +472,12 @@ public abstract partial class BaseAI
             Path = new PathFollower(Mobile, goal) { Mover = DoMoveImpl };
         }
 
-        RenewMoveIntent(null, goal, 1);
+        RenewMoveIntent(null, goal, range);
 
         var couldMove = CanMoveNow(out _) && !IsInBadState();
         var locBefore = Mobile.Location;
 
-        if (Path.Follow(1))
+        if (Path.Follow(range))
         {
             Path = null;
             ClearMoveIntent();
@@ -536,6 +553,13 @@ public abstract partial class BaseAI
         _approachGaveUp = false;
     }
 
+    /// <summary>Drops the path, stall state, and move intent (after a relocation).</summary>
+    public void ResetApproachState()
+    {
+        ResetApproach();
+        ClearMoveIntent();
+    }
+
     private void RenewMoveIntent(Mobile target, IPoint3D point, int range)
     {
         _moveIntentTarget = target;
@@ -580,7 +604,7 @@ public abstract partial class BaseAI
         }
         else
         {
-            MoveToPoint(_moveIntentPoint);
+            MoveToPoint(_moveIntentPoint, _moveIntentRange);
         }
     }
 
@@ -588,12 +612,16 @@ public abstract partial class BaseAI
     {
         if (Mobile.Deleted || Mobile.DisallowAllMoves || m?.Deleted != false)
         {
+            LastApproach = ApproachOutcome.InvalidGoal;
+            ClearMoveIntent();
             return false;
         }
 
         if (Mobile.InRange(m, range))
         {
+            LastApproach = ApproachOutcome.Arrived;
             ResetApproach();
+            ClearMoveIntent();
             return true;
         }
 
@@ -676,6 +704,7 @@ public abstract partial class BaseAI
     {
         if (Mobile.Deleted || Mobile.DisallowAllMoves || m == null)
         {
+            LastApproach = ApproachOutcome.InvalidGoal;
             return false;
         }
 
@@ -685,6 +714,7 @@ public abstract partial class BaseAI
 
             if (iCurrDist >= iWantDistMin && iCurrDist <= iWantDistMax)
             {
+                LastApproach = ApproachOutcome.Arrived;
                 return true;
             }
 
