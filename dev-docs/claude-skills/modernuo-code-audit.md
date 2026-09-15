@@ -219,9 +219,26 @@ monotonic tick domain.
 
 **See**: `dev-docs/tick-counts.md` for the full rules and review checklist.
 
+### 21. Comments Explain Why, Never What Changed
+**Check**: Every comment the change adds or edits. Before a PR leaves draft, sweep the whole diff:
+`git diff main...HEAD | grep -nE '^\+.*(//|/\*)'`.
+**Bad**: change narrative ("changed from", "previously", "used to", "no longer", "moved from",
+"was:"); review dialogue ("per review", "reviewer asked", "as discussed", "see PR discussion");
+diff explanation ("added this to fix"); hedges ("I think this is right", "not sure if", "for now");
+commented-out code kept "in case"; restated code (`// increment i`).
+**Good**: an invariant, a protocol/client/era quirk, a coupling between two values, the reason a
+workaround exists — one line where one line will do. `///` docs and terse `//TODO Implement X` stay.
+**Fix**: keep (technical, true without the PR), rewrite (drop the story, keep the invariant), or
+delete; what a future reader still needs goes in the commit message or PR description. Scope is the
+PR's own diff — do not rewrite comments in untouched code.
+**Why**: a comment in `main` is read by someone who never saw the PR, the review thread, or the
+previous version of the line. Narrative references context that does not exist there.
+
+**See**: `dev-docs/code-standards.md` § Comments.
+
 ## Severity Levels
 - **ERROR**: Rules 3, 9, 10, 13, 19, 20 (will cause bugs, build failures, or client-side leaks)
-- **WARNING**: Rules 1 (Tier 3 LINQ), 2, 4, 5, 6, 7, 8, 12, 14, 15, 17 (performance/convention issues)
+- **WARNING**: Rules 1 (Tier 3 LINQ), 2, 4, 5, 6, 7, 8, 12, 14, 15, 17, 21 (performance/convention issues; 21 is a PR-finalization sweep)
 - **INFO**: Rules 1 (Tier 2 LINQ on warm paths — note it but don't flag as violation), 16 (switch patterns — suggest but don't flag)
 - **ASK**: Rule 11 (need user input)
 
@@ -241,3 +258,4 @@ Do NOT silently fix issues. Always flag and ask.
 - `dev-docs/claude-skills/modernuo-timers.md` - Timer cleanup rules
 - `dev-docs/claude-skills/modernuo-threading.md` - Threading model details
 - `dev-docs/claude-skills/modernuo-property-lists.md` - PropertyList interpolation rules
+- `dev-docs/claude-skills/modernuo-bug-reporting.md` - What to do with a bug you were not asked to fix

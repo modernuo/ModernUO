@@ -4,14 +4,15 @@ This document defines the coding conventions and standards for ModernUO content 
 
 ## Table of Contents
 1. [Naming Conventions](#naming-conventions)
-2. [Performance Rules](#performance-rules)
-3. [Serialization Requirements](#serialization-requirements)
-4. [Logging](#logging)
-5. [Threading Model](#threading-model)
-6. [Memory Management](#memory-management)
-7. [Entity Lifecycle](#entity-lifecycle)
-8. [Era-Conditional Code](#era-conditional-code)
-9. [File Organization](#file-organization)
+2. [Comments](#comments)
+3. [Performance Rules](#performance-rules)
+4. [Serialization Requirements](#serialization-requirements)
+5. [Logging](#logging)
+6. [Threading Model](#threading-model)
+7. [Memory Management](#memory-management)
+8. [Entity Lifecycle](#entity-lifecycle)
+9. [Era-Conditional Code](#era-conditional-code)
+10. [File Organization](#file-organization)
 
 ---
 
@@ -98,6 +99,63 @@ public enum AccessLevel
 }
 ```
 Reference: `Projects/Server/Mobiles/Mobile.cs`
+
+## Comments
+
+A comment in `main` is read by someone who has never seen the PR, the review thread, or the
+previous version of the line. Write for that reader.
+
+### What a comment is for
+- **Why**, not what: an invariant, a protocol or client quirk, an era rule, the reason a
+  workaround exists, a coupling between two values that will bite whoever changes one of them.
+- One line where one line will do. If the code is self-describing, no comment.
+- `///` XML docs on public API stay. `//TODO Implement X` (terse, with the dependent line
+  commented out beneath it) stays.
+
+```csharp
+// GOOD — protects an ordering invariant a future tidy-up would break
+// Must precede CheckHerding: it returns early every tick while the pet is herded,
+// so a deleted target would otherwise never be noticed on that path.
+if (m_Mobile.ControlTarget?.Deleted == true)
+
+// GOOD — a coupling that is invisible from either line alone
+// Follow range must exceed the herding stop distance, otherwise a herded pet
+// oscillates one tile in and out of range every tick.
+if (m_Mobile.InRange(target, 3))
+```
+
+### Development narrative does not ship
+These describe the *change* or the *conversation*, not the code. They reference context that does
+not exist in `main`. Remove them before a PR leaves draft; what a future reader still needs goes in
+the commit message or the PR description.
+
+| Remove | Looks like |
+|---|---|
+| Change narrative | "changed from", "previously", "used to", "no longer", "moved from", "was:", "renamed" |
+| Review dialogue | "per review", "reviewer asked", "as discussed", "see PR discussion" |
+| Diff explanation | "added this to fix", "this line handles the bug reported on Discord" |
+| Reasoning in progress | "I think this is right", "not sure if", "might need", "for now" |
+| Commented-out code | the old line kept "in case" — Git is the revert mechanism |
+| Restated code | `// increment i` |
+
+```csharp
+// BAD — every line is narrative; the invariant it hides is the GOOD example above
+// Changed from the old CheckHerding-first ordering: previously we checked herding
+// before validating the target, which meant a deleted ControlTarget was never
+// noticed on the herding path. Moved the deleted check up per review feedback.
+// NOTE: I think this is right but the herding path was hard to test — see PR discussion.
+```
+
+### Finalization sweep
+Before marking a PR ready, sweep every comment the PR added or changed:
+
+```sh
+git diff main...HEAD | grep -nE '^\+.*(//|/\*)'
+```
+
+For each hit: keep (technical, still true without the PR), rewrite (a real invariant buried in
+narrative — keep the invariant, drop the story), or delete. Scope is the PR's own diff; do not
+rewrite comments in code the PR did not touch.
 
 ---
 

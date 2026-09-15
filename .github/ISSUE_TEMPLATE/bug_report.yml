@@ -1,0 +1,117 @@
+name: Bug report
+description: Something in ModernUO behaves incorrectly. Report against upstream main, not a fork.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. Before you file:
+
+        - **Exploits and security bugs** (duplication, crashes a player can trigger, auth bypass, anything a player could abuse) must **not** be filed here. Report them privately — see [CONTRIBUTING.md](https://github.com/modernuo/ModernUO/blob/main/CONTRIBUTING.md#reporting-security-issues-and-bugs).
+        - Search [existing issues and pull requests](https://github.com/modernuo/ModernUO/issues?q=is%3Aissue) for the file name, class name, or symptom first.
+        - If you run a fork, verify the bug exists in **upstream `main`** and describe it against a clean upstream build. Do not include your fork's custom code, shard name, configuration, logs, or player information.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What happens, and what should happen instead.
+      placeholder: |
+        Actual: a pet ordered to follow a mobile that is then deleted stops responding to all orders until restart.
+        Expected: the pet drops the follow order and returns to its master's side.
+    validations:
+      required: true
+  - type: input
+    id: location
+    attributes:
+      label: Location
+      description: File path(s) and symbol(s) in upstream `main` where the bug lives.
+      placeholder: Projects/UOContent/Mobiles/AI/BaseAI/PetOrders.cs — BaseAI.DoOrderFollow()
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Upstream commit or release
+      description: The `main` commit hash or release tag you verified the bug against.
+      placeholder: 459674ce3 or v0.1.32
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Numbered steps against a clean upstream build. Mention any non-default configuration required.
+      placeholder: |
+        1. Tame a horse and `[add Rat`.
+        2. Order the horse to follow the rat.
+        3. `[delete` the rat.
+        4. Order the horse to come — it does not move.
+    validations:
+      required: true
+  - type: textarea
+    id: analysis
+    attributes:
+      label: Root cause and proposed fix
+      description: Optional. What you found, and the change you propose if you have one. Quote only code that exists in upstream `main`.
+    validations:
+      required: false
+  - type: dropdown
+    id: expansion
+    attributes:
+      label: Expansion
+      description: The expansion the server was running when you reproduced it, if it matters.
+      options:
+        - Any / not expansion-specific
+        - None
+        - T2A
+        - UOR
+        - UOTD
+        - LBR
+        - AOS
+        - SE
+        - ML
+        - SA
+        - HS
+        - TOL
+        - EJ
+      default: 0
+    validations:
+      required: false
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - Any / not platform-specific
+        - Windows
+        - Linux
+        - macOS
+        - Docker
+      default: 0
+    validations:
+      required: false
+  - type: dropdown
+    id: found-via
+    attributes:
+      label: Found via
+      options:
+        - Playing / running a shard
+        - Reading the code
+        - AI-assisted code review
+        - Other
+      default: 0
+    validations:
+      required: false
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues and pull requests (open and closed) for this file, class, or symptom.
+          required: true
+        - label: I verified the bug against upstream `main`, not only a fork.
+          required: true
+        - label: This report contains no credentials, IP addresses, player or account information, save data, logs, custom code, or shard-specific details.
+          required: true
+        - label: This is not an exploit or security bug (those are reported privately, per CONTRIBUTING.md).
+          required: true
