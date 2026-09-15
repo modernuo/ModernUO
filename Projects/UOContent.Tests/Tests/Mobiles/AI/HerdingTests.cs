@@ -6,8 +6,7 @@ using Xunit;
 
 namespace UOContent.Tests.Mobiles.AI;
 
-// CheckHerding drives a creature onto its TargetLocation tile and clears it there. Driven
-// manually against live map statics (pathfinder buffers are not reentrant).
+// Driven manually against live map statics; the pathfinder's buffers are not reentrant.
 [Collection("Sequential Pathfinding Tests")]
 public class HerdingTests
 {

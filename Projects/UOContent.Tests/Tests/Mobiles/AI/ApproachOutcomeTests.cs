@@ -8,8 +8,7 @@ using Xunit;
 
 namespace UOContent.Tests.Mobiles.AI;
 
-// ApproachTarget's outcome classification, driven manually against live map statics
-// (same collection as ApproachTargetTests: the pathfinder's buffers are not reentrant).
+// Driven manually against live map statics; the pathfinder's buffers are not reentrant.
 [Collection("Sequential Pathfinding Tests")]
 public class ApproachOutcomeTests
 {
@@ -57,11 +56,11 @@ public class ApproachOutcomeTests
             ai.MoveTo(target, 1);
             Assert.Equal(ApproachOutcome.DirectProgress, ai.LastApproach);
 
-            ai.MoveTo(target, 1); // budget consumed by the step above: no step this call
+            ai.MoveTo(target, 1); // budget consumed: no step
             Assert.Equal(ApproachOutcome.Waiting, ai.LastApproach);
 
             ai.NextMove = 0;
-            ai.MoveTo(target, 1); // second step lands adjacent — still a progress step
+            ai.MoveTo(target, 1); // lands adjacent: still a progress step
             Assert.Equal(ApproachOutcome.DirectProgress, ai.LastApproach);
 
             ai.NextMove = 0;
@@ -86,7 +85,7 @@ public class ApproachOutcomeTests
         var id = ApproachTargetTests.FirstImpassableItemId();
         Assert.NotEqual<ushort>(0, id);
 
-        // Full impassable ring around the target cell: no path to within range 1.
+        // Impassable ring around the target: unreachable.
         for (var x = 1499; x <= 1501; x++)
         {
             for (var y = 1595; y <= 1597; y++)

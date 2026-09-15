@@ -28,7 +28,7 @@ public class ForcedAITests
             passiveSpeed = 0.4;
         }
 
-        // Not sector-gated: every BaseAI ctor activates its timer immediately.
+        // Not sector-gated: a BaseAI ctor starts its timer immediately.
         public override bool PlayerRangeSensitive => false;
 
         protected override BaseAI ForcedAI

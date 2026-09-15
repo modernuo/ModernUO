@@ -8,7 +8,7 @@ namespace Server.Mobiles;
 [SerializationGenerator(0, false)]
 public abstract partial class BaseFamiliar : BaseCreature
 {
-    // Beyond this many tiles on open ground the familiar snaps to the caster instead of walking.
+    // Open-ground distance beyond which the familiar snaps to the caster.
     public const int KeepUpRange = 10;
 
     public BaseFamiliar() : base(AIType.AI_Melee)
@@ -25,19 +25,17 @@ public abstract partial class BaseFamiliar : BaseCreature
 
     public override bool PlayerRangeSensitive => false;
 
-    // Assist aggro: engages the caster's target and anything hostile to the caster or itself.
+    // Joins the caster's fights; false never fights.
     public virtual bool AssistsMaster => true;
 
-    // Never muted by the ML stand-down rule; FamiliarAI decides whether it fights.
+    // FamiliarAI decides whether it fights, not the ML stand-down rule.
     public override bool StandsDownOnCommand => false;
 
     // A wounded familiar still keeps up.
     public override bool ReduceSpeedWithDamage => false;
 
-    // The one choke point for "never fights": no path — assist, the retaliation fallback in
-    // BaseCreature.AggressiveAction, a GM — hands a non-combat familiar a target, and none
-    // hands any familiar one while the caster is hidden. (GetCPA reads attributes without
-    // inheritance: the override must restate it or [props loses the property.)
+    // The one choke point for "never fights" / "not while the caster is hidden":
+    // BaseCreature.AggressiveAction assigns Combatant unconditionally. GetCPA does not inherit.
     [CommandProperty(AccessLevel.GameMaster)]
     public override Mobile Combatant
     {
@@ -71,20 +69,19 @@ public abstract partial class BaseFamiliar : BaseCreature
             return;
         }
 
-        // Mirror the caster's visibility from our own state, not a cache of theirs: a step can
-        // reveal us (Mobile.OnMove) and the mirror must re-assert.
+        // Compare our own state: Mobile.OnMove reveals a stepping NPC.
         if (Hidden != master.Hidden)
         {
             Hidden = master.Hidden;
 
             if (Hidden)
             {
-                Warmode = false; // nulls Combatant: no swing gives the caster away
+                Warmode = false; // nulls Combatant
             }
         }
     }
 
-    // Walking, attacking, etc. must not give the caster's position away.
+    // Nothing reveals a hidden caster's familiar.
     public override void RevealingAction()
     {
         if (ControlMaster?.Hidden != true)

@@ -15,10 +15,8 @@
 
 namespace Server.Mobiles;
 
-/// <summary>
-/// What the last <see cref="BaseAI.ApproachTarget"/> call did, for policies that need more
-/// than its boolean (a familiar's keep-up must tell "outpaced" from "stuck").
-/// </summary>
+/// <summary>Which exit <see cref="BaseAI.ApproachTarget"/> took, for policies that need more
+/// than its bool.</summary>
 public enum ApproachOutcome
 {
     None,
@@ -26,7 +24,7 @@ public enum ApproachOutcome
     Waiting,        // frozen, casting, or the move budget has not elapsed
     DirectProgress, // greedy step succeeded and closed the distance (open ground)
     Routing,        // a PathFollower is active and working the detour
-    Blocked,        // move-eligible tick took no step; the stall counter is still running
+    Blocked,        // move-eligible tick took no step; stall counter still running
     GaveUp,         // stall counter exhausted on a stationary goal
     InvalidGoal     // deleted target, deleted self, or DisallowAllMoves
 }

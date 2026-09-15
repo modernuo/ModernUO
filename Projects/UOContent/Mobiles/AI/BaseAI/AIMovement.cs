@@ -39,10 +39,9 @@ public abstract partial class BaseAI
     private bool _approachGaveUp;
     private Point3D _approachGaveUpGoalLoc;
 
-    /// <summary>What the most recent <see cref="ApproachTarget"/> (via <see cref="MoveTo"/> or
-    /// <see cref="WalkMobileRange"/>) did. Read by policies that must tell "outpaced" from
-    /// "stuck" without a second scheduler. A <see cref="WalkMobileRange"/> retreat step does
-    /// not classify.</summary>
+    /// <summary>Which exit the last <see cref="ApproachTarget"/> (via <see cref="MoveTo"/> or
+    /// <see cref="WalkMobileRange"/>) took. A <see cref="WalkMobileRange"/> retreat step does not
+    /// classify.</summary>
     public ApproachOutcome LastApproach { get; private set; }
 
     // --- Move intent (see ContinueMove) ------------------------------------------------
@@ -554,8 +553,7 @@ public abstract partial class BaseAI
         _approachGaveUp = false;
     }
 
-    /// <summary>Drops the path, stall state, and move intent so the next approach starts
-    /// fresh (after a policy-driven relocation).</summary>
+    /// <summary>Drops the path, stall state, and move intent (after a relocation).</summary>
     public void ResetApproachState()
     {
         ResetApproach();
@@ -619,7 +617,6 @@ public abstract partial class BaseAI
             return false;
         }
 
-        // Arrival ends the pursuit for the move-wake too, as ApproachTarget's own arrival does.
         if (Mobile.InRange(m, range))
         {
             LastApproach = ApproachOutcome.Arrived;

@@ -9,13 +9,11 @@ using Xunit;
 
 namespace UOContent.Tests.Mobiles.AI;
 
-// Timer-wheel driven: the real AITimer thinks and moves the familiar, so order side effects,
-// pacing, and move wakes are all in play. Map statics are live (Trammel), so this shares
-// the pathfinding sequential collection.
+// Timer-wheel driven (the real AITimer thinks and moves) against live Trammel statics.
 [Collection("Sequential Pathfinding Tests")]
 public class FamiliarAITests : IDisposable
 {
-    // NPCSpeeds is not configured in the fixture; every familiar under test pins its speeds.
+    // NPCSpeeds is not configured in the fixture; pin the speeds.
     private sealed class Wolf : DarkWolfFamiliar
     {
         public override void GetSpeeds(out double a, out double p) { a = 0.1; p = 0.1; }
@@ -111,7 +109,7 @@ public class FamiliarAITests : IDisposable
         return e;
     }
 
-    // Advances time in 8ms lockstep so the wheel and Core.TickCount stay in sync.
+    // 8ms lockstep keeps the wheel and Core.TickCount in sync.
     private static void RunFor(long ms)
     {
         var deadline = Core._tickCount + ms;
@@ -158,7 +156,7 @@ public class FamiliarAITests : IDisposable
     {
         var p = Master(1500, 1600);
         var f = Familiar(0, p, 1500, 1600);
-        RunFor(400); // past the activation spread; the first think has run
+        RunFor(400); // past the activation spread
         p.MoveToWorld(At(1494, 1600), _map);
 
         var best = f.GetDistanceToSqrt(p);
@@ -181,7 +179,7 @@ public class FamiliarAITests : IDisposable
 
         Assert.True(arrived, "familiar must reach range 1 of its master");
         Assert.False(regressed, "familiar must never step away from the master while following");
-        Assert.Equal(OrderType.Come, f.ControlOrder); // never converted to Stay
+        Assert.Equal(OrderType.Come, f.ControlOrder);
         Assert.Equal(Point3D.Zero, f.Home);
     }
 
@@ -255,7 +253,7 @@ public class FamiliarAITests : IDisposable
     {
         var p = Master(1500, 1600);
         var f = Familiar(0, p, 1501, 1600);
-        var e = Enemy(1500 - f.RangePerception - 4, 1600); // beyond the leash from the master
+        var e = Enemy(1500 - f.RangePerception - 4, 1600); // beyond the leash
         RunFor(400);
         p.Warmode = true;
         p.Combatant = e;
@@ -274,8 +272,8 @@ public class FamiliarAITests : IDisposable
         var e = Enemy(1503, 1600);
         RunFor(400);
 
-        // The enemy attacks both: the Combatant setter runs DoHarmful → AggressiveAction with
-        // ChangingCombatant set, the path that issues a stand-down pet an Attack order.
+        // Combatant setter → DoHarmful → AggressiveAction with ChangingCombatant: the path that
+        // issues a stand-down pet an Attack order.
         e.Combatant = wolf;
         Assert.True(RunUntil(() => wolf.Combatant == e, 1000), "a combat familiar fights back");
         Assert.Equal(OrderType.Come, wolf.ControlOrder);
@@ -294,7 +292,7 @@ public class FamiliarAITests : IDisposable
         RunFor(400);
 
         p.MoveToWorld(At(1500 - BaseFamiliar.KeepUpRange - 2, 1600), _map);
-        RunFor(300); // one think with a successful greedy step is enough
+        RunFor(300); // one think with a greedy step
 
         Assert.True(f.InRange(p, 1), "familiar must snap adjacent to a master 12 tiles away on open ground");
     }
@@ -302,14 +300,14 @@ public class FamiliarAITests : IDisposable
     [SkippableFact]
     public void KeepUp_DoesNotSnapWhileRouting()
     {
-        // Britain inn L-desk: master north of it, familiar south. The detour is ~17 steps.
+        // Britain inn L-desk: master north, familiar south; ~17-step detour.
         var p = Master(1494, 1605);
         var f = Familiar(0, p, 1493, 1614);
         p.MoveToWorld(new Point3D(1494, 1605, 21), _map);
         f.MoveToWorld(new Point3D(1493, 1614, 20), _map);
         Server.Engines.Pathing.Cache.StepCache.Instance.Clear();
 
-        // Observed from the first tick: an early snap would otherwise hide behind "arrived".
+        // Observed from the first tick so an early snap cannot hide behind "arrived".
         var teleported = false;
         var last = f.Location;
         var arrived = RunUntil(
@@ -336,8 +334,7 @@ public class FamiliarAITests : IDisposable
         var p = Master(1500, 1596);
         var f = Familiar(0, p, 1500, 1602);
 
-        // 5x5 impassable ring around the master; the 3x3 interior stays open so a landing
-        // tile exists but no route reaches it.
+        // 5x5 ring, open 3x3 interior: a landing tile exists, no route reaches it.
         var id = ApproachTargetTests.FirstImpassableItemId();
         Assert.NotEqual<ushort>(0, id);
 
@@ -413,7 +410,7 @@ public class FamiliarAITests : IDisposable
         var wisp = Familiar(2, p, 1501, 1600);
         var e = Enemy(1502, 1600);
 
-        wisp.Combatant = e; // the unconditional fallback in BaseCreature.AggressiveAction, or a GM
+        wisp.Combatant = e;
         Assert.Null(wisp.Combatant);
     }
 
@@ -429,7 +426,7 @@ public class FamiliarAITests : IDisposable
 
         e.Combatant = wolf;
 
-        // Synchronous: the veto is at the setter, so nothing may be held even for a think.
+        // Synchronous: the veto is at the setter.
         Assert.Null(wolf.Combatant);
         Assert.False(wolf.Warmode);
         RunFor(500);
@@ -463,7 +460,7 @@ public class FamiliarAITests : IDisposable
         p.Combatant = e;
         Assert.True(RunUntil(() => f.Combatant == e, 2000));
 
-        // The caster stays visible and keeps fighting: only the herding branch can clear this.
+        // Caster visible and fighting: only herding clears this.
         var goal = new Point2D(1500, 1594);
         f.TargetLocation = goal;
         var distBefore = f.GetDistanceToSqrt(goal);
@@ -488,7 +485,7 @@ public class FamiliarAITests : IDisposable
         _created.Add(pet);
         RunFor(400);
 
-        // The pet attacks; the caster is credited indirectly and gets no Combatant of their own.
+        // The pet attacks; the caster is credited indirectly without a Combatant.
         pet.Combatant = e;
         p.DoHarmful(e, true);
         e.Combatant = pet;
@@ -508,8 +505,8 @@ public class FamiliarAITests : IDisposable
         var e = Enemy(1496, 1600);
         RunFor(400);
 
-        e.Combatant = p; // the caster is attacked...
-        p.Combatant = null; // ...but their own Combatant has expired (or they pressed peace)
+        e.Combatant = p;
+        p.Combatant = null; // expired
         Assert.Null(p.Combatant);
 
         Assert.True(
@@ -529,7 +526,7 @@ public class FamiliarAITests : IDisposable
         p.Combatant = e;
         Assert.True(RunUntil(() => f.Combatant == e, 2000));
 
-        // The caster stops and the target disengages (fled, went home).
+        // Caster stops, target disengages.
         p.Combatant = null;
         p.Warmode = false;
         e.Combatant = null;
@@ -548,7 +545,7 @@ public class FamiliarAITests : IDisposable
         p.Combatant = e;
         Assert.True(RunUntil(() => f.Combatant == e, 2000));
 
-        // Assist ends with the familiar already beside the caster: MoveTo's arrival return.
+        // Assist ends with the familiar already beside the caster (MoveTo's arrival return).
         f.MoveToWorld(At(1501, 1600), _map);
         p.Combatant = null;
         p.Warmode = false;

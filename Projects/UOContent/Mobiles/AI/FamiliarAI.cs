@@ -18,10 +18,8 @@ using System.Collections.Generic;
 namespace Server.Mobiles;
 
 /// <summary>
-/// Necromancy familiars: command-immune companions that stay glued to their caster, assist
-/// whatever the caster fights (if combat-capable), and snap to the caster when outpaced or
-/// stuck. One decision routine owns movement for both the controlled (<see cref="Obey"/>)
-/// and uncontrolled (<see cref="Think"/>) dispatch, so nothing else competes for the step.
+/// Necromancy familiars: command-immune, glued to the caster, assist its fights if combat-capable,
+/// snap to it when outpaced or stuck. <see cref="Obey"/> and <see cref="Think"/> share one decision.
 /// </summary>
 public class FamiliarAI : BaseAI
 {
@@ -31,8 +29,7 @@ public class FamiliarAI : BaseAI
 
     private BaseFamiliar Familiar => (BaseFamiliar)Mobile;
 
-    // How far from the caster an assist may reach: the target must be inside it and the
-    // familiar must not stray outside it.
+    // Assist targets, and the familiar itself, stay within this of the caster.
     public int LeashRange => Mobile.RangePerception;
 
     public override bool CanDetectHidden => false;
@@ -41,9 +38,7 @@ public class FamiliarAI : BaseAI
 
     public override bool Obey() => Act();
 
-    // Command immunity: the issue phase does nothing — no posture reset, no speed flip, no
-    // Home — and the resting order is pinned at Come (which TeleportPets honours) so a
-    // system-issued Attack cannot leave the familiar on an order travel ignores.
+    // Command immunity: no issue-phase side effects; rests on Come so TeleportPets still applies.
     public override OrderType IssueOrder(
         OrderType order, OrderType previous, Mobile issuer, bool resuming, Mobile interruptedTarget
     )
@@ -52,8 +47,6 @@ public class FamiliarAI : BaseAI
         return Mobile.Controlled ? OrderType.Come : OrderType.None;
     }
 
-    // Retaliation: a combat familiar answers whoever hits it; with a target already held,
-    // the base rule (swap to a closer attacker) applies.
     public override void OnAggressiveAction(Mobile aggressor)
     {
         if (!Familiar.AssistsMaster || aggressor.Hidden || Familiar.ControlMaster?.Hidden == true)
@@ -75,21 +68,20 @@ public class FamiliarAI : BaseAI
     {
         var master = Familiar.ControlMaster;
 
-        // Lifecycle is BaseFamiliar.OnThink's.
+        // Deletion is BaseFamiliar.OnThink's.
         if (Mobile.Deleted || master?.Deleted != false)
         {
             return true;
         }
 
-        // Left behind (the caster travelled without it): stand down and wait for TeleportPets
-        // or the unsummon rather than keep fighting alone.
+        // Left behind: stand down until TeleportPets or the unsummon.
         if (master.Map != Mobile.Map)
         {
             StandDown();
             return true;
         }
 
-        // Herding outranks combat, and a fetch must not leave a swing running.
+        // Herding outranks combat.
         if (Mobile.TargetLocation != null)
         {
             StandDown();
@@ -110,11 +102,8 @@ public class FamiliarAI : BaseAI
         return true;
     }
 
-    // The caster's target first; otherwise something in a fight with the caster's side —
-    // attacked the caster or us, or was attacked by the caster (a pet's attack is credited
-    // to the caster through DoHarmful) — and still fighting one of us, the caster, or the
-    // caster's other pets. A caster's own Combatant expires while a monster keeps hitting; a
-    // target the caster no longer attacks and that fights nobody of ours is dropped.
+    // The caster's target; else the closest mobile in a fight with the caster's side that is
+    // still fighting one of us (the caster's own Combatant expires while a monster keeps hitting).
     private bool TryAssist(Mobile master)
     {
         var target = master.Combatant;
@@ -145,7 +134,7 @@ public class FamiliarAI : BaseAI
 
         if (Mobile.Combatant != target)
         {
-            return false; // the setter refused it (region / harmful check)
+            return false; // setter refused it
         }
 
         Mobile.SetCurrentSpeedToActive();
@@ -175,7 +164,7 @@ public class FamiliarAI : BaseAI
         return best;
     }
 
-    // `defenders` reads the other party of an Aggressed entry instead of an Aggressors one.
+    // defenders: an Aggressed list, read the Defender.
     private void ScanAggression(
         Mobile master, List<AggressorInfo> list, bool defenders, ref Mobile best, ref double bestDist
     )
@@ -212,8 +201,7 @@ public class FamiliarAI : BaseAI
         target.AccessLevel == AccessLevel.Player && master.InRange(target, LeashRange) &&
         Mobile.CanBeHarmful(target, false);
 
-    // Also drops the movement intent: a move-only wake must not resume the pursuit this
-    // decision just abandoned.
+    // Clears the move intent too, or a move-wake resumes the abandoned pursuit.
     private void StandDown()
     {
         Mobile.Warmode = false;
@@ -230,8 +218,7 @@ public class FamiliarAI : BaseAI
         TryKeepUp(master);
     }
 
-    // Snap to the caster when simply outpaced on open ground, or once the approach has
-    // given up. A live detour (Routing) is left to finish; Blocked is still counting.
+    // Outpaced on open ground, or given up: snap. A live detour finishes; Blocked is still counting.
     private void TryKeepUp(Mobile master)
     {
         var snap = LastApproach switch
@@ -256,12 +243,11 @@ public class FamiliarAI : BaseAI
         (0, 1), (1, 0), (0, -1), (-1, 0), (1, 1), (-1, 1), (1, -1), (-1, -1)
     ];
 
-    // First tile adjacent to the caster, on the caster's floor, that this creature can stand
-    // on; none means keep walking.
+    // An adjacent tile on the caster's floor this creature can stand on.
     private bool TryFindLanding(Mobile master, out Point3D loc)
     {
         var map = master.Map;
-        var start = Utility.Random(_landingRing.Length); // no fixed favourite side
+        var start = Utility.Random(_landingRing.Length); // no favoured side
 
         for (var i = 0; i < _landingRing.Length; i++)
         {

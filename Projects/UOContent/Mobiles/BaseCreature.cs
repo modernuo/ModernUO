@@ -2524,8 +2524,7 @@ namespace Server.Mobiles
         {
             AIObject?.AITimer.Stop();
 
-            // Read once: a BaseAI ctor activates its timer for a non-sector-gated creature, so a
-            // second read would leave an orphan AI ticking the mobile.
+            // Read once: each read constructs an AI whose ctor may start its timer.
             var forced = ForcedAI;
 
             if (forced != null)
