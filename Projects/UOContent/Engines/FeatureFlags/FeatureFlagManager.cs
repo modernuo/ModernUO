@@ -44,6 +44,17 @@ public static class FeatureFlagManager
         LoadDefaultFlags();
         Load();
 
+        // Fresh clone / missing JSON: backfill stock defaults and persist so
+        // all five JSON files exist from the start. Existing entries are
+        // never overwritten, so admin-disabled states survive upgrades.
+        var seeded = EnsureStockFlags();
+        if (seeded > 0)
+        {
+            SyncAllStaticFlags();
+            Save();
+            logger.Information("Feature Flag system seeded {SeededCount} stock default flag(s) ({FlagCount} total)", seeded, _flags.Count);
+        }
+
         _initialized = true;
         logger.Information(
             "Feature Flag system initialized with {FlagCount} flags, {GumpBlockCount} gump blocks, {ItemBlockCount} item blocks, {SkillBlockCount} skill blocks, {SpellBlockCount} spell blocks",
@@ -760,6 +771,60 @@ public static class FeatureFlagManager
                 _flags.TryAdd(flag.Key, flag);
             }
         }
+    }
+
+    // Mirrors the keys synced in SyncStaticFlag. All default to enabled,
+    // matching the static boolean initializers in Server/ContentFeatureFlags.
+    private static readonly (string Key, string Description, string Category)[] StockFlagDefinitions =
+    {
+        ("player_trading", "Allow secure trades between players", "Economy"),
+        ("pvp_combat", "Allow player vs player combat", "Combat"),
+        ("bank_access", "Allow players to access their bank boxes", "Economy"),
+        ("speedhack_detection", "Enable speedhack detection", "System"),
+        ("insurance", "Enable item insurance", "Economy"),
+        ("vendor_purchase", "Allow purchasing from NPC vendors", "Economy"),
+        ("vendor_sell", "Allow selling to NPC vendors", "Economy"),
+        ("player_vendors", "Allow player vendor interactions", "Economy"),
+        ("house_placement", "Allow new house placements", "Housing"),
+        ("boat_placement", "Allow new boat placements", "Housing"),
+        ("bulk_orders", "Allow bulk order deeds", "Crafting"),
+        ("passive_detect_hidden", "Enable passive detect hidden", "System"),
+        ("young_player_system", "Enable the young player system", "System"),
+        ("bitmap_pathfinding_cache", "Enable bitmap pathfinding cache", "Performance"),
+    };
+
+    // Adds any missing stock flags without touching existing entries.
+    // Returns the number of flags added. Cold path only (server init).
+    private static int EnsureStockFlags()
+    {
+        var added = 0;
+        var now = Core.Now;
+
+        for (var i = 0; i < StockFlagDefinitions.Length; i++)
+        {
+            var (key, description, category) = StockFlagDefinitions[i];
+            if (_flags.ContainsKey(key))
+            {
+                continue;
+            }
+
+            _flags.Add(
+                key,
+                new FeatureFlag
+                {
+                    Key = key,
+                    Description = description,
+                    Enabled = true,
+                    DefaultEnabled = true,
+                    Category = category,
+                    LastModified = now,
+                    LastModifiedBy = "System"
+                }
+            );
+            added++;
+        }
+
+        return added;
     }
 
     public static void Save()
