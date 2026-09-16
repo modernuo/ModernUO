@@ -841,17 +841,6 @@ public static class Core
 
         try
         {
-            if (World.DirtyTrackingEnabled)
-            {
-                var manualDirtyCheckingAttribute = type.GetCustomAttribute<ManualDirtyCheckingAttribute>(false);
-                var codeGennedAttribute = type.GetCustomAttribute<ModernUO.Serialization.SerializationGeneratorAttribute>(false);
-
-                if (manualDirtyCheckingAttribute == null && codeGennedAttribute == null)
-                {
-                    errors.AppendLine("       - No property tracking (dirty checking)");
-                }
-            }
-
             if (type.GetConstructor(_serialTypeArray) == null)
             {
                 errors.AppendLine("       - No serialization constructor");

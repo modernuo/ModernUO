@@ -30,10 +30,11 @@ namespace Server;
 public interface ISlotRangeSource
 {
     /// <summary>
-    /// Serializes every occupied slot in [offset, offset + count) into the writer, appending
-    /// each record's byte length to <paramref name="lengths"/>. Returns the number serialized.
+    /// Decides and serializes every occupied slot in [offset, offset + count) for
+    /// <paramref name="worker"/>, appending one <see cref="SlotStatus"/> per occupied slot to
+    /// its status log. Returns the number of occupied slots.
     /// </summary>
-    int SerializeRange(BufferWriter writer, List<int> lengths, int offset, int count);
+    int SerializeRange(SerializationThreadWorker worker, BufferWriter writer, int offset, int count);
 }
 
 /// <summary>

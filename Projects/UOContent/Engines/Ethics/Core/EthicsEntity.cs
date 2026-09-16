@@ -18,6 +18,10 @@ public partial class EthicsEntity : ISerializable
 
     public bool Deleted { get; private set; }
 
+    public bool SaveDirty { get; set; }
+
+    public long SavePlacement { get; set; }
+
     public void Delete()
     {
         Deleted = true;
