@@ -40,8 +40,6 @@ public static class FeatureFlagManager
             Directory.CreateDirectory(savePath);
         }
 
-        // Saved state first; stock flags a save is missing are then seeded from the
-        // static defaults, so a fresh shard and an upgraded save both end up complete.
         Load();
         LoadDefaultFlags();
 
@@ -750,9 +748,6 @@ public static class FeatureFlagManager
         return false;
     }
 
-    // Each stock flag defaults to the static it syncs, read after Load() so an untouched
-    // static still holds its initializer or Configure-phase value (e.g. insurance.enable).
-    // Keys already present are never overwritten, so admin state survives upgrades.
     private static void LoadDefaultFlags()
     {
         (string Key, string Category, string Description, bool Enabled)[] defaults =
