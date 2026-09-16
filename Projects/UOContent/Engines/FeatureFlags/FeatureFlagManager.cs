@@ -40,20 +40,10 @@ public static class FeatureFlagManager
             Directory.CreateDirectory(savePath);
         }
 
-        // Load predefined flags from JSON, then overlay runtime state
-        LoadDefaultFlags();
+        // Saved state first; stock flags a save is missing are then seeded from the
+        // static defaults, so a fresh shard and an upgraded save both end up complete.
         Load();
-
-        // Fresh clone / missing JSON: backfill stock defaults and persist so
-        // all five JSON files exist from the start. Existing entries are
-        // never overwritten, so admin-disabled states survive upgrades.
-        var seeded = EnsureStockFlags();
-        if (seeded > 0)
-        {
-            SyncAllStaticFlags();
-            Save();
-            logger.Information("Feature Flag system seeded {SeededCount} stock default flag(s) ({FlagCount} total)", seeded, _flags.Count);
-        }
+        LoadDefaultFlags();
 
         _initialized = true;
         logger.Information(
@@ -760,49 +750,35 @@ public static class FeatureFlagManager
         return false;
     }
 
+    // Each stock flag defaults to the static it syncs, read after Load() so an untouched
+    // static still holds its initializer or Configure-phase value (e.g. insurance.enable).
+    // Keys already present are never overwritten, so admin state survives upgrades.
     private static void LoadDefaultFlags()
     {
-        var defaultFlagsPath = Path.Combine(Core.BaseDirectory, "Configuration", "FeatureFlags", "default-flags.json");
-        var defaultFlags = JsonConfig.Deserialize<List<FeatureFlag>>(defaultFlagsPath);
-        if (defaultFlags != null)
-        {
-            foreach (var flag in defaultFlags)
-            {
-                _flags.TryAdd(flag.Key, flag);
-            }
-        }
-    }
+        (string Key, string Category, string Description, bool Enabled)[] defaults =
+        [
+            ("player_trading", "Economy", "Allow secure trades between players", ServerFeatureFlags.PlayerTrading),
+            ("pvp_combat", "Combat", "Allow player vs player combat", ServerFeatureFlags.PvPCombat),
+            ("bank_access", "Economy", "Allow players to access their bank boxes", ServerFeatureFlags.BankAccess),
+            ("speedhack_detection", "System", "Enable speedhack detection", ServerFeatureFlags.SpeedhackDetection),
+            ("insurance", "Economy", "Enable item insurance", ServerFeatureFlags.InsuranceEnabled),
+            ("vendor_purchase", "Economy", "Allow purchasing from NPC vendors", ContentFeatureFlags.VendorPurchase),
+            ("vendor_sell", "Economy", "Allow selling to NPC vendors", ContentFeatureFlags.VendorSell),
+            ("player_vendors", "Economy", "Allow player vendor interactions", ContentFeatureFlags.PlayerVendors),
+            ("house_placement", "Housing", "Allow new house placements", ContentFeatureFlags.HousePlacement),
+            ("boat_placement", "Housing", "Allow new boat placements", ContentFeatureFlags.BoatPlacement),
+            ("bulk_orders", "Crafting", "Allow bulk order deeds", ContentFeatureFlags.BulkOrders),
+            ("passive_detect_hidden", "System", "Enable passive detect hidden", ContentFeatureFlags.PassiveDetectHidden),
+            ("young_player_system", "System", "Enable the young player system", ContentFeatureFlags.YoungPlayerSystem),
+            ("bitmap_pathfinding_cache", "Performance", "Enable the bitmap pathfinding cache", ContentFeatureFlags.BitmapPathfindingCache),
+        ];
 
-    // Mirrors the keys synced in SyncStaticFlag. All default to enabled,
-    // matching the static boolean initializers in Server/ContentFeatureFlags.
-    private static readonly (string Key, string Description, string Category)[] StockFlagDefinitions =
-    {
-        ("player_trading", "Allow secure trades between players", "Economy"),
-        ("pvp_combat", "Allow player vs player combat", "Combat"),
-        ("bank_access", "Allow players to access their bank boxes", "Economy"),
-        ("speedhack_detection", "Enable speedhack detection", "System"),
-        ("insurance", "Enable item insurance", "Economy"),
-        ("vendor_purchase", "Allow purchasing from NPC vendors", "Economy"),
-        ("vendor_sell", "Allow selling to NPC vendors", "Economy"),
-        ("player_vendors", "Allow player vendor interactions", "Economy"),
-        ("house_placement", "Allow new house placements", "Housing"),
-        ("boat_placement", "Allow new boat placements", "Housing"),
-        ("bulk_orders", "Allow bulk order deeds", "Crafting"),
-        ("passive_detect_hidden", "Enable passive detect hidden", "System"),
-        ("young_player_system", "Enable the young player system", "System"),
-        ("bitmap_pathfinding_cache", "Enable bitmap pathfinding cache", "Performance"),
-    };
-
-    // Adds any missing stock flags without touching existing entries.
-    // Returns the number of flags added. Cold path only (server init).
-    private static int EnsureStockFlags()
-    {
-        var added = 0;
         var now = Core.Now;
+        var added = 0;
 
-        for (var i = 0; i < StockFlagDefinitions.Length; i++)
+        for (var i = 0; i < defaults.Length; i++)
         {
-            var (key, description, category) = StockFlagDefinitions[i];
+            var (key, category, description, enabled) = defaults[i];
             if (_flags.ContainsKey(key))
             {
                 continue;
@@ -814,9 +790,9 @@ public static class FeatureFlagManager
                 {
                     Key = key,
                     Description = description,
-                    Enabled = true,
-                    DefaultEnabled = true,
                     Category = category,
+                    DefaultEnabled = enabled,
+                    Enabled = enabled,
                     LastModified = now,
                     LastModifiedBy = "System"
                 }
@@ -824,7 +800,11 @@ public static class FeatureFlagManager
             added++;
         }
 
-        return added;
+        if (added > 0)
+        {
+            Save();
+            logger.Information("Seeded {Count} default feature flag(s)", added);
+        }
     }
 
     public static void Save()
