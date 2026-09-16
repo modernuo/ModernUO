@@ -16,10 +16,8 @@
 using System;
 using Server.Engines.Quests.Necro;
 using Server.Engines.Spawners;
-using Server.Engines.Virtues;
 using Server.Factions;
 using Server.Spells;
-using Server.Spells.Spellweaving;
 using Server.Targets;
 
 namespace Server.Mobiles;
@@ -998,21 +996,9 @@ public abstract partial class BaseAI
                Mobile.IsAnimatedDead && (pm != null || bc?.IsAnimatedDead == true || bc?.Controlled == true);
     }
 
-    private bool IsInvalidFactionTarget(Mobile m, bool bFacFriend, bool bFacFoe)
-    {
-        if (bFacFriend && !Mobile.IsFriend(m))
-        {
-            return true;
-        }
-
-        if (TransformationSpellHelper.UnderTransformation(m, typeof(EtherealVoyageSpell)) ||
-            Mobile.Combatant != m && VirtueSystem.GetVirtues(m as PlayerMobile)?.HonorActive == true)
-        {
-            return true;
-        }
-
-        return bFacFoe && (!Mobile.IsEnemy(m) || !bFacFriend && !Mobile.CanBeHarmful(m, false));
-    }
+    private bool IsInvalidFactionTarget(Mobile m, bool bFacFriend, bool bFacFoe) =>
+        bFacFriend && !Mobile.IsFriend(m) ||
+        bFacFoe && (!Mobile.IsEnemy(m) || !bFacFriend && !Mobile.CanBeHarmful(m, false));
 
     private bool IsInvalidFightModeTarget(Mobile m, FightMode acqType, BaseCreature bc)
     {
