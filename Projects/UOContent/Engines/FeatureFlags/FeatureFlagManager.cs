@@ -40,9 +40,8 @@ public static class FeatureFlagManager
             Directory.CreateDirectory(savePath);
         }
 
-        // Load predefined flags from JSON, then overlay runtime state
-        LoadDefaultFlags();
         Load();
+        LoadDefaultFlags();
 
         _initialized = true;
         logger.Information(
@@ -751,14 +750,55 @@ public static class FeatureFlagManager
 
     private static void LoadDefaultFlags()
     {
-        var defaultFlagsPath = Path.Combine(Core.BaseDirectory, "Configuration", "FeatureFlags", "default-flags.json");
-        var defaultFlags = JsonConfig.Deserialize<List<FeatureFlag>>(defaultFlagsPath);
-        if (defaultFlags != null)
+        (string Key, string Category, string Description, bool Enabled)[] defaults =
+        [
+            ("player_trading", "Economy", "Allow secure trades between players", ServerFeatureFlags.PlayerTrading),
+            ("pvp_combat", "Combat", "Allow player vs player combat", ServerFeatureFlags.PvPCombat),
+            ("bank_access", "Economy", "Allow players to access their bank boxes", ServerFeatureFlags.BankAccess),
+            ("speedhack_detection", "System", "Enable speedhack detection", ServerFeatureFlags.SpeedhackDetection),
+            ("insurance", "Economy", "Enable item insurance", ServerFeatureFlags.InsuranceEnabled),
+            ("vendor_purchase", "Economy", "Allow purchasing from NPC vendors", ContentFeatureFlags.VendorPurchase),
+            ("vendor_sell", "Economy", "Allow selling to NPC vendors", ContentFeatureFlags.VendorSell),
+            ("player_vendors", "Economy", "Allow player vendor interactions", ContentFeatureFlags.PlayerVendors),
+            ("house_placement", "Housing", "Allow new house placements", ContentFeatureFlags.HousePlacement),
+            ("boat_placement", "Housing", "Allow new boat placements", ContentFeatureFlags.BoatPlacement),
+            ("bulk_orders", "Crafting", "Allow bulk order deeds", ContentFeatureFlags.BulkOrders),
+            ("passive_detect_hidden", "System", "Enable passive detect hidden", ContentFeatureFlags.PassiveDetectHidden),
+            ("young_player_system", "System", "Enable the young player system", ContentFeatureFlags.YoungPlayerSystem),
+            ("bitmap_pathfinding_cache", "Performance", "Enable the bitmap pathfinding cache", ContentFeatureFlags.BitmapPathfindingCache),
+        ];
+
+        var now = Core.Now;
+        var added = 0;
+
+        for (var i = 0; i < defaults.Length; i++)
         {
-            foreach (var flag in defaultFlags)
+            var (key, category, description, enabled) = defaults[i];
+            if (_flags.ContainsKey(key))
             {
-                _flags.TryAdd(flag.Key, flag);
+                continue;
             }
+
+            _flags.Add(
+                key,
+                new FeatureFlag
+                {
+                    Key = key,
+                    Description = description,
+                    Category = category,
+                    DefaultEnabled = enabled,
+                    Enabled = enabled,
+                    LastModified = now,
+                    LastModifiedBy = "System"
+                }
+            );
+            added++;
+        }
+
+        if (added > 0)
+        {
+            Save();
+            logger.Information("Seeded {Count} default feature flag(s)", added);
         }
     }
 
