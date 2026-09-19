@@ -1170,6 +1170,14 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
             }
         }
 
+        // Can never complete: the buffer holds PhysicalSize - 1 bytes (one slot tells full from
+        // empty) and a recv arms only into free space
+        if (packetLength >= _socket.RecvBuffer.PhysicalSize)
+        {
+            LogInfo($"Received packet 0x{packetId:X2} declaring {packetLength} bytes, more than the receive buffer holds.");
+            return ParserState.Error;
+        }
+
         // Not enough data, let's wait for more to come in
         if (length < packetLength)
         {
