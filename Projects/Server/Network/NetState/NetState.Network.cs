@@ -44,6 +44,11 @@ public partial class NetState
 
     internal static int SendBufferSize { get; private set; }
     internal static int MaxSendBufferSize { get; private set; }
+
+    // Pre-auth buffers are the smallest the platform can map; a platform whose floor is not below
+    // the base size (the Windows legacy mapping path) starts sockets on base, as before
+    internal static int InitialRecvBufferSize { get; private set; }
+    internal static int InitialSendBufferSize { get; private set; }
     private static long _sendBufferGrowthBudget;
     private static int _memoryCeilingPercent;
 
@@ -169,10 +174,14 @@ public partial class NetState
         );
 
         // Until the game server verifies credentials a connection holds the smallest buffers the
-        // platform can map; a flood can fill these pools but never reaches the base pools
+        // platform can map; a flood can fill these pools but never reaches the base pools. This is a
+        // request: the manager raises it to the platform floor and turns the pool off if that leaves
+        // no room below the base size (the Windows legacy mapping path floors at 64 KiB, which can
+        // equal RecvBufferSize). The effective sizes are read back below once the manager knows them.
         var initialBufferSize = IORingBuffer.MinimumSize;
 
-        // Both calls take the same slab count; the manager throws if the table is smaller
+        // Both calls take the same slab count; the manager throws if the table is smaller. Sized by
+        // the request, not the effective size the manager may coerce down to - conservative, never small.
         var ring = IORingGroup.Create(
             queueSize: MaxConnections * 2,
             maxConnections: MaxConnections,
@@ -196,6 +205,19 @@ public partial class NetState
             initialRecvBufferSize: initialBufferSize,
             initialSendBufferSize: initialBufferSize
         );
+
+        InitialRecvBufferSize = _socketManager.InitialRecvBufferSize;
+        InitialSendBufferSize = _socketManager.InitialSendBufferSize;
+
+        if (InitialRecvBufferSize == 0 || InitialSendBufferSize == 0)
+        {
+            logger.Information(
+                "Pre-auth buffers off where the platform floor ({Minimum} bytes) leaves no room below the base size (recv {Recv}, send {Send})",
+                IORingBuffer.MinimumSize,
+                RecvBufferSize,
+                SendBufferSize
+            );
+        }
 
         _maintenanceTimer = Timer.DelayCall(TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1), MaintainSendBuffers);
     }
