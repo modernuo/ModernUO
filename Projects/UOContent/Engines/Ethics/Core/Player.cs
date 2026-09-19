@@ -93,19 +93,9 @@ public partial class Player : EthicsEntity
 
     public static Player Find(Mobile mob, bool inherit)
     {
-        var pm = mob as PlayerMobile;
-
-        if (pm == null)
+        if ((inherit ? (mob as BaseCreature)?.GetMaster() ?? mob : mob) is not PlayerMobile pm)
         {
-            if (inherit && mob is BaseCreature bc)
-            {
-                pm = bc.GetMaster() as PlayerMobile;
-            }
-
-            if (pm == null)
-            {
-                return null;
-            }
+            return null;
         }
 
         var pl = pm.EthicPlayer;

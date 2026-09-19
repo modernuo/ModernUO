@@ -1340,12 +1340,7 @@ namespace Server.Spells
             context.Spell.RemoveEffect(m);
         }
 
-        public static TransformContext GetContext(Mobile m)
-        {
-            _table.TryGetValue(m, out var context);
-
-            return context;
-        }
+        public static TransformContext GetContext(Mobile m) => _table.GetValueOrDefault(m);
 
         public static bool UnderTransformation(Mobile m) => GetContext(m) != null;
 

@@ -1704,27 +1704,27 @@ namespace Server.Mobiles
                 return false;
             }
 
+            var c = m as BaseCreature;
+            var cMaster = c?.GetMaster();
+
             var ourEthic = EthicAllegiance;
-            var pl = Ethics.Player.Find(m, true);
+            var pl = Ethics.Player.Find(cMaster ?? m, false);
 
             if (pl?.IsShielded == true && (ourEthic == null || ourEthic == pl.Ethic))
             {
                 return false;
             }
 
-            if (VirtueSystem.GetVirtues(m as PlayerMobile)?.HonorActive == true)
+            // Player-only protections; they must veto before the non-creature early return below.
+            if (VirtueSystem.GetVirtues(m as PlayerMobile)?.HonorActive == true ||
+                TransformationSpellHelper.UnderTransformation(m, typeof(EtherealVoyageSpell)))
             {
                 return false;
             }
 
-            if (m is not BaseCreature c || m is MilitiaFighter)
+            if (c == null || m is MilitiaFighter)
             {
                 return true;
-            }
-
-            if (TransformationSpellHelper.UnderTransformation(m, typeof(EtherealVoyageSpell)))
-            {
-                return false;
             }
 
             if (_team != c.Team || FightMode == FightMode.Evil && m.Karma < 0 || c.FightMode == FightMode.Evil && Karma < 0)
@@ -1733,7 +1733,6 @@ namespace Server.Mobiles
             }
 
             var master = GetMaster();
-            var cMaster = c.GetMaster();
 
             if (master == null)
             {
