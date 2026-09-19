@@ -225,7 +225,7 @@ public sealed class AITimer : Timer
 
     private void CacheDetectHiddenDelays()
     {
-        var delay = Math.Min(30000 / _owner.Mobile.Int, 120);
+        var delay = Math.Min(30000 / Math.Max(1, _owner.Mobile.Int), 120);
         _detectHiddenMinDelay = delay * 900;  // 26s to 108s
         _detectHiddenMaxDelay = delay * 1100; // 32s to 132s
     }
