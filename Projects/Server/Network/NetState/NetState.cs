@@ -255,7 +255,11 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
             logger.Debug("{NetState}: send buffer promotion deferred to the send path", this);
         }
 
-        _socketManager.TryPromoteRecvBuffer(_socket);
+        if (!_socketManager.TryPromoteRecvBuffer(_socket) && _socket.RecvBuffer.PhysicalSize < RecvBufferSize)
+        {
+            // The oversize-packet guard in HandlePacket gets one more try where the small buffer matters
+            logger.Debug("{NetState}: recv buffer promotion deferred", this);
+        }
     }
 
     public string Assistant { get; set; }
@@ -1182,6 +1186,14 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         // empty) and a recv arms only into free space
         if (packetLength >= _socket.RecvBuffer.PhysicalSize)
         {
+            // A verified account whose promotion could not be applied earlier gets one more try here,
+            // where the small buffer actually matters; the swap lands before the next completion's event
+            if (_account != null && _socket.RecvBuffer.PhysicalSize < RecvBufferSize &&
+                _socketManager.TryPromoteRecvBuffer(_socket))
+            {
+                return ParserState.AwaitingPartialPacket;
+            }
+
             LogInfo($"Received packet 0x{packetId:X2} declaring {packetLength} bytes, more than the receive buffer holds.");
             return ParserState.Error;
         }
