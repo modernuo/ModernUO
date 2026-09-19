@@ -2746,6 +2746,15 @@ namespace Server.Mobiles
                 return;
             }
 
+            // Guard must not turn friendly area damage into a fight with the
+            // owner or another owned pet/summon. Keep the aggression bookkeeping
+            // above, and leave explicit attack orders and bard provocation alone.
+            if (_controlled && _controlOrder == OrderType.Guard && !BardProvoked &&
+                AIObject?.IsGuardAlly(aggressor) == true)
+            {
+                return;
+            }
+
             AIObject?.OnAggressiveAction(aggressor);
 
             StopFlee();
@@ -3670,6 +3679,14 @@ namespace Server.Mobiles
 
         public override bool CanBeHarmful(Mobile target, bool message, bool ignoreOurBlessedness)
         {
+            // Mobile.AggressiveAction may assign Combatant before our retaliation
+            // handler runs. Reject a guard's friendly target at that assignment too.
+            if (_controlled && _controlOrder == OrderType.Guard && !BardProvoked &&
+                AIObject?.IsGuardAlly(target) == true)
+            {
+                return false;
+            }
+
             if (target is BaseFactionGuard)
             {
                 return false;
