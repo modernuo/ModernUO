@@ -35,11 +35,14 @@ public partial class NetState
     private const int DefaultMaxSendBufferSize = 1024 * 1024 * 2;          // 2 MB
     private const long DefaultSendBufferGrowthBudget = 1024L * 1024 * 256; // 256 MB
     private const int DefaultMemoryCeilingPercent = 80;
+    private const int DefaultInitialBufferSlabs = 1;   // one slab of each base pool warm at boot
+    internal const int DefaultMaxBufferSlabs = 128;    // 32 connections per slab at MaxConnections
 
     // Transport ceiling; larger values overflow its tier enumeration
     private const int TransportMaxSendBufferSize = 1024 * 1024 * 256; // 256 MB
     private const int MaxConnections = 4096;         // Max concurrent connections
 
+    internal static int SendBufferSize { get; private set; }
     internal static int MaxSendBufferSize { get; private set; }
     private static long _sendBufferGrowthBudget;
     private static int _memoryCeilingPercent;
@@ -51,6 +54,7 @@ public partial class NetState
     private static long _lastTierCapacityBytes;
     private static int _lastTierInUse;
     private static int _lastTierRetainFloor;
+    private static long _lastBaseCapacityBytes;
 
     private static readonly Queue<NetState> _disposed = [];
     private static readonly TimeSpan ConnectingSocketIdleLimit = TimeSpan.FromMilliseconds(5000); // 5 seconds
@@ -141,23 +145,35 @@ public partial class NetState
 
         // Per-connection send buffer: the lever for "send buffer exhausted" disconnects, and the
         // per-connection memory ceiling.
-        var sendBufferSize = GetSendBufferSize();
-        MaxSendBufferSize = GetPowerOfTwoSetting("network.sendBufferMaxSize", DefaultMaxSendBufferSize, sendBufferSize);
+        SendBufferSize = GetSendBufferSize();
+        MaxSendBufferSize = GetPowerOfTwoSetting("network.sendBufferMaxSize", DefaultMaxSendBufferSize, SendBufferSize);
         _sendBufferGrowthBudget = CoerceSendBufferGrowthBudget(
             ServerConfiguration.GetOrUpdateSetting("network.sendBufferGrowthBudget", DefaultSendBufferGrowthBudget),
-            sendBufferSize,
+            SendBufferSize,
             MaxSendBufferSize
         );
         // 0 disables the ceiling
         _memoryCeilingPercent = Math.Clamp(ServerConfiguration.GetOrUpdateSetting("network.memoryCeilingPercent", DefaultMemoryCeilingPercent), 0, 100);
         _availableMemoryBytes = GC.GetGCMemoryInfo().TotalAvailableMemoryBytes;
 
-        const int maxBufferSlabs = 32;
+        // Divides MaxConnections into base-pool slabs; both pools still reach MaxConnections, so
+        // this sets slab granularity, not a connection or memory ceiling.
+        var maxBufferSlabs = CoerceMaxBufferSlabs(
+            ServerConfiguration.GetOrUpdateSetting("network.maxBufferSlabs", DefaultMaxBufferSlabs)
+        );
+
+        // Slabs of each base pool held from boot; the pools grow and trim from here
+        var initialBufferSlabs = CoerceInitialBufferSlabs(
+            ServerConfiguration.GetOrUpdateSetting("network.initialBufferSlabs", DefaultInitialBufferSlabs),
+            BasePoolSlabCount(maxBufferSlabs)
+        );
+
+        // Both calls take the same slab count; the manager throws if the table is smaller
         var ring = IORingGroup.Create(
             queueSize: MaxConnections * 2,
             maxConnections: MaxConnections,
             maxOutstandingSends: maxOutstandingSends,
-            maxRegisteredBuffers: RingSocketManager.RequiredRegisteredBuffers(MaxConnections, sendBufferSize, MaxSendBufferSize, _sendBufferGrowthBudget, maxBufferSlabs)
+            maxRegisteredBuffers: RingSocketManager.RequiredRegisteredBuffers(MaxConnections, SendBufferSize, MaxSendBufferSize, _sendBufferGrowthBudget, maxBufferSlabs)
         );
 
         // Create socket manager which handles buffer pools and socket lifecycle
@@ -165,8 +181,8 @@ public partial class NetState
             ring,
             maxSockets: MaxConnections,
             recvBufferSize: RecvBufferSize,
-            sendBufferSize: sendBufferSize,
-            initialBufferSlabs: 8,
+            sendBufferSize: SendBufferSize,
+            initialBufferSlabs: initialBufferSlabs,
             maxBufferSlabs: maxBufferSlabs,
             maxSendBufferSize: MaxSendBufferSize,
             sendBufferGrowthBudget: _sendBufferGrowthBudget
@@ -193,25 +209,77 @@ public partial class NetState
         var stats = _socketManager.Maintain();
         var changed = stats.TierCapacityBytes != _lastTierCapacityBytes ||
                       stats.TierInUse != _lastTierInUse ||
-                      stats.TierRetainFloor != _lastTierRetainFloor;
+                      stats.TierRetainFloor != _lastTierRetainFloor ||
+                      stats.BaseCapacityBytes != _lastBaseCapacityBytes;
         _lastTierCapacityBytes = stats.TierCapacityBytes;
         _lastTierInUse = stats.TierInUse;
         _lastTierRetainFloor = stats.TierRetainFloor;
+        _lastBaseCapacityBytes = stats.BaseCapacityBytes;
 
         // Quiet unless something moved
-        if (changed || stats.BuffersReleased > 0 || stats.GrowthRefusals > 0 || capRefusals > 0 || ceilingRefusals > 0)
+        if (changed || stats.BuffersReleased > 0 || stats.BaseBuffersReleased > 0 || stats.GrowthRefusals > 0 ||
+            capRefusals > 0 || ceilingRefusals > 0)
         {
             logger.Debug(
-                "Send buffer tiers: {Capacity} bytes of tier capacity, {InUse} buffers in use, floor {Floor} buffers, released {Released}, refused: budget {BudgetRefusals}, at max {CapRefusals}, ceiling {CeilingRefusals}",
+                "Send buffer tiers: {Capacity} bytes of tier capacity, {InUse} buffers in use, floor {Floor} buffers, released {Released}, refused: budget {BudgetRefusals}, at max {CapRefusals}, ceiling {CeilingRefusals}, base {BaseCapacity} bytes, released {BaseReleased}",
                 stats.TierCapacityBytes,
                 stats.TierInUse,
                 stats.TierRetainFloor,
                 stats.BuffersReleased,
                 stats.GrowthRefusals,
                 capRefusals,
-                ceilingRefusals
+                ceilingRefusals,
+                stats.BaseCapacityBytes,
+                stats.BaseBuffersReleased
             );
         }
+    }
+
+    /// <summary>
+    /// Slabs each base pool is divided into, after the transport applies its minimum slab size.
+    /// </summary>
+    internal static int BasePoolSlabCount(int maxBufferSlabs) =>
+        RingSocketManager.BasePoolSlabCount(MaxConnections, maxBufferSlabs);
+
+    /// <summary>
+    /// Clamps the base-pool slab divisor. Fewer than one slab is meaningless, and more slabs than
+    /// connections cannot make a slab any smaller.
+    /// </summary>
+    internal static int CoerceMaxBufferSlabs(int configured)
+    {
+        var slabs = Math.Clamp(configured, 1, MaxConnections);
+
+        if (slabs != configured)
+        {
+            logger.Warning(
+                "network.maxBufferSlabs {Configured} is outside 1..{Maximum}; using {Adjusted}",
+                configured,
+                MaxConnections,
+                slabs
+            );
+        }
+
+        return slabs;
+    }
+
+    /// <summary>
+    /// Clamps the slabs of each base pool held from boot; a pool never holds more slabs than it has.
+    /// </summary>
+    internal static int CoerceInitialBufferSlabs(int configured, int slabCount)
+    {
+        var slabs = Math.Clamp(configured, 1, slabCount);
+
+        if (slabs != configured)
+        {
+            logger.Warning(
+                "network.initialBufferSlabs {Configured} is outside 1..{Maximum}; using {Adjusted}",
+                configured,
+                slabCount,
+                slabs
+            );
+        }
+
+        return slabs;
     }
 
     /// <summary>
