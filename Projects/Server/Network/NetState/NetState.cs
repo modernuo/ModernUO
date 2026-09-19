@@ -227,7 +227,33 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     public IAccount Account
     {
         get => _account;
-        set => _account = value;
+        set
+        {
+            _account = value;
+
+            // 0x91 credentials just verified: the character list and the world-entry burst follow
+            if (value != null && _protocolState == ProtocolState.GameServer_AwaitingGameServerLogin)
+            {
+                PromoteBuffers();
+            }
+        }
+    }
+
+    // The login-server pass stays on the initial buffers; it never sends more than a server list
+    private void PromoteBuffers()
+    {
+        if (_socket == null)
+        {
+            return;
+        }
+
+        if (!_socketManager.TryPromoteSendBuffer(_socket) && _socket.SendBuffer.PhysicalSize < SendBufferSize)
+        {
+            // The send path promotes on demand and disconnects if that fails too
+            logger.Debug("{NetState}: send buffer promotion deferred to the send path", this);
+        }
+
+        _socketManager.TryPromoteRecvBuffer(_socket);
     }
 
     public string Assistant { get; set; }
@@ -523,6 +549,13 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         if (_socket == null)
         {
             return false;
+        }
+
+        // Still on the pre-auth buffer: promotion is unbudgeted and is not growth, so neither the
+        // ceiling nor the shrink bookkeeping applies
+        if (_socket.SendBuffer.PhysicalSize < SendBufferSize)
+        {
+            return _socketManager.TryPromoteSendBuffer(_socket);
         }
 
         if (!UnderMemoryCeiling())

@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Sockets;
@@ -12,9 +13,11 @@ namespace Server.Tests.Network;
 [Collection("Sequential Server Tests")]
 public class NetStateSendBufferTests
 {
+    // Authentication is the 0x91 credentials check on the game server; that is where buffers promote
     private static NetState CreateAuthenticatedNetState(out Socket client)
     {
         var ns = PacketTestUtilities.CreateTestNetState(out client);
+        ns._protocolState = NetState.ProtocolState.GameServer_AwaitingGameServerLogin;
         ns.Account = new MockAccount();
         return ns;
     }
@@ -24,6 +27,102 @@ public class NetStateSendBufferTests
         var data = new byte[length];
         new System.Random(seed).NextBytes(data);
         return data;
+    }
+
+    private static unsafe void RegisterNoOpPing()
+    {
+        if (IncomingPackets.GetHandler(0x73) == null)
+        {
+            IncomingPackets.Register(0x73, 2, false, &NoOp);
+        }
+    }
+
+    private static void NoOp(NetState state, SpanReader reader)
+    {
+    }
+
+    private static void SliceUntil(Func<bool> done)
+    {
+        var deadline = Stopwatch.StartNew();
+        while (!done() && deadline.ElapsedMilliseconds < 5000)
+        {
+            NetState.Slice();
+            Thread.Sleep(5);
+        }
+
+        Assert.True(done());
+    }
+
+    [Fact]
+    public void Account_InTheGameServerState_PromotesBothBuffers()
+    {
+        RegisterNoOpPing();
+        var ns = PacketTestUtilities.CreateTestNetState(out var client);
+        try
+        {
+            Assert.Equal(IORingBuffer.MinimumSize, ns._socket.SendBuffer.PhysicalSize);
+            Assert.Equal(IORingBuffer.MinimumSize, ns._socket.RecvBuffer.PhysicalSize);
+
+            ns._protocolState = NetState.ProtocolState.GameServer_AwaitingGameServerLogin;
+            ns.Account = new MockAccount();
+
+            // Send promotes at once; nothing was in flight so no buffer retires
+            Assert.Equal(NetState.SendBufferSize, ns._socket.SendBuffer.PhysicalSize);
+            Assert.False(ns._sendBufferGrown);
+
+            // Recv promotes at the next completion
+            ns._protocolState = NetState.ProtocolState.GameServer_LoggedIn;
+            client.Send(new byte[] { 0x73, 0x01 });
+            SliceUntil(() => ns._socket.RecvBuffer.PhysicalSize == NetState.RecvBufferSize);
+            Assert.True(ns.Running);
+        }
+        finally
+        {
+            ns.Dispose();
+            client.Close();
+        }
+    }
+
+    [Fact]
+    public void Account_OnTheLoginServer_KeepsTheInitialBuffers()
+    {
+        var ns = PacketTestUtilities.CreateTestNetState(out var client);
+        try
+        {
+            ns._protocolState = NetState.ProtocolState.LoginServer_AwaitingLogin;
+            ns.Account = new MockAccount();
+
+            Assert.Equal(IORingBuffer.MinimumSize, ns._socket.SendBuffer.PhysicalSize);
+            Assert.Equal(IORingBuffer.MinimumSize, ns._socket.RecvBuffer.PhysicalSize);
+        }
+        finally
+        {
+            ns.Dispose();
+            client.Close();
+        }
+    }
+
+    [Fact]
+    public void Send_BeyondTheInitialBuffer_PromotesOnDemand_AndDelivers()
+    {
+        // A shard's extra pre-auth packet must promote, not strand the connection
+        var ns = PacketTestUtilities.CreateTestNetState(out var client);
+        try
+        {
+            var data = Pattern(IORingBuffer.MinimumSize + 512, 7);
+            ns.Send(data);
+
+            Assert.True(ns.Running);
+            Assert.Equal(string.Empty, ns._disconnectReason);
+            Assert.Equal(NetState.SendBufferSize, ns._socket.SendBuffer.PhysicalSize);
+            Assert.False(ns._sendBufferGrown); // promotion is not growth: nothing to shrink later
+            Assert.Equal(data, ReadAll(client, data.Length));
+        }
+        finally
+        {
+            ns.Dispose();
+            client.Close();
+        }
     }
 
     // A random prefix lands under the target; zeros (2 bits each) walk it up a byte at a time
@@ -485,14 +584,17 @@ public class NetStateSendBufferTests
         var manager = NetState.SocketManager;
         var maxBufferSlabs = NetState.CoerceMaxBufferSlabs(ServerConfiguration.GetSetting("network.maxBufferSlabs", NetState.DefaultMaxBufferSlabs));
 
-        // A table smaller than this throws at manager construction
+        // A table smaller than this throws at manager construction. Connections start on the
+        // transport minimum until the game server promotes them, so the formula must count those too.
         Assert.Equal(
             RingSocketManager.RequiredRegisteredBuffers(
                 manager.MaxSockets,
                 NetState.SendBufferSize,
                 manager.MaxSendBufferSize,
                 manager.SendBufferGrowthBudget,
-                maxBufferSlabs
+                maxBufferSlabs,
+                IORingBuffer.MinimumSize,
+                IORingBuffer.MinimumSize
             ),
             NetState.Ring.MaxRegisteredBuffers
         );

@@ -29,7 +29,7 @@ namespace Server.Network;
 public partial class NetState
 {
     // Buffer sizes
-    private const int RecvBufferSize = 1024 * 64;    // 64KB recv buffers
+    internal const int RecvBufferSize = 1024 * 64;    // 64KB recv buffers
     private const int DefaultSendBufferSize = 1024 * 256;  // 256KB send buffers
     private const int MinSendBufferSize = 1024 * 64;       // Platform allocation granularity
     private const int DefaultMaxSendBufferSize = 1024 * 1024 * 2;          // 2 MB
@@ -168,12 +168,19 @@ public partial class NetState
             BasePoolSlabCount(maxBufferSlabs)
         );
 
+        // Until the game server verifies credentials a connection holds the smallest buffers the
+        // platform can map; a flood can fill these pools but never reaches the base pools
+        var initialBufferSize = IORingBuffer.MinimumSize;
+
         // Both calls take the same slab count; the manager throws if the table is smaller
         var ring = IORingGroup.Create(
             queueSize: MaxConnections * 2,
             maxConnections: MaxConnections,
             maxOutstandingSends: maxOutstandingSends,
-            maxRegisteredBuffers: RingSocketManager.RequiredRegisteredBuffers(MaxConnections, SendBufferSize, MaxSendBufferSize, _sendBufferGrowthBudget, maxBufferSlabs)
+            maxRegisteredBuffers: RingSocketManager.RequiredRegisteredBuffers(
+                MaxConnections, SendBufferSize, MaxSendBufferSize, _sendBufferGrowthBudget, maxBufferSlabs,
+                initialBufferSize, initialBufferSize
+            )
         );
 
         // Create socket manager which handles buffer pools and socket lifecycle
@@ -185,7 +192,9 @@ public partial class NetState
             initialBufferSlabs: initialBufferSlabs,
             maxBufferSlabs: maxBufferSlabs,
             maxSendBufferSize: MaxSendBufferSize,
-            sendBufferGrowthBudget: _sendBufferGrowthBudget
+            sendBufferGrowthBudget: _sendBufferGrowthBudget,
+            initialRecvBufferSize: initialBufferSize,
+            initialSendBufferSize: initialBufferSize
         );
 
         _maintenanceTimer = Timer.DelayCall(TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1), MaintainSendBuffers);
