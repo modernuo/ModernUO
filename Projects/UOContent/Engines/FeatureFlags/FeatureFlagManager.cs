@@ -138,9 +138,9 @@ public static class FeatureFlagManager
 
     public static bool RemoveFlag(string flagKey, string removedBy = "System")
     {
-        if (_flags.Remove(flagKey))
+        if (_flags.Remove(flagKey, out var flag))
         {
-            SyncStaticFlag(flagKey, true); // Reset to default enabled
+            SyncStaticFlag(flagKey, flag.DefaultEnabled);
 
             if (FeatureFlagSettings.LogChanges)
             {
@@ -1018,6 +1018,9 @@ public static class FeatureFlagManager
             "passive_detect_hidden"    => ContentFeatureFlags.PassiveDetectHidden = enabled,
             "young_player_system"      => ContentFeatureFlags.YoungPlayerSystem = enabled,
             "bitmap_pathfinding_cache" => ContentFeatureFlags.BitmapPathfindingCache = enabled,
+
+            // Custom flags have no static to mirror
+            _ => enabled,
         };
     }
 
