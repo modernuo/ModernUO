@@ -231,7 +231,8 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         {
             _account = value;
 
-            // 0x91 credentials just verified: the character list and the world-entry burst follow
+            // 0x91 credentials just verified: the character list and the world-entry burst follow.
+            // The login-server pass stays on the initial buffers; it never sends more than a server list.
             if (value != null && _protocolState == ProtocolState.GameServer_AwaitingGameServerLogin)
             {
                 PromoteBuffers();
@@ -239,7 +240,6 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         }
     }
 
-    // The login-server pass stays on the initial buffers; it never sends more than a server list
     private void PromoteBuffers()
     {
         if (_socket == null)
