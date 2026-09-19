@@ -828,7 +828,19 @@ public abstract partial class BaseAI
             return false;
         }
 
-        if (HandleBardProvoked() || HandleControlled() || HandleConstantFocus())
+        if (HandleBardProvoked())
+        {
+            return true;
+        }
+
+        // A controlled creature must not fall through to wild target selection when
+        // its order has no target. Guard in particular normally has no ControlTarget.
+        if (Mobile.Controlled)
+        {
+            return HandleControlled();
+        }
+
+        if (HandleConstantFocus())
         {
             return true;
         }
@@ -883,8 +895,17 @@ public abstract partial class BaseAI
 
     private bool HandleControlled()
     {
-        if (!Mobile.Controlled)
+        if (Mobile.ControlOrder == OrderType.Guard)
         {
+            Mobile.FocusMob = FindGuardTarget();
+            return Mobile.FocusMob != null;
+        }
+
+        // Follow and other non-combat orders may target the owner or a friend.
+        // Only an explicit attack order supplies a combat target.
+        if (Mobile.ControlOrder != OrderType.Attack)
+        {
+            Mobile.FocusMob = null;
             return false;
         }
 
