@@ -4299,8 +4299,11 @@ namespace Server.Mobiles
         public virtual void AddPetFriend(Mobile m)
         {
             Friends ??= [];
-            Friends.Add(m);
-            this.MarkDirty();
+            if (!Friends.Contains(m))
+            {
+                Friends.Add(m);
+                this.MarkDirty();
+            }
         }
 
         public virtual void RemovePetFriend(Mobile m)
