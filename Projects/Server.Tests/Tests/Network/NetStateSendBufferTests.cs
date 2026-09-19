@@ -53,15 +53,16 @@ public class NetStateSendBufferTests
         Assert.True(done());
     }
 
-    [Fact]
+    [SkippableFact]
     public void Account_InTheGameServerState_PromotesBothBuffers()
     {
+        Skip.If(NetState.InitialSendBufferSize == 0);
         RegisterNoOpPing();
         var ns = PacketTestUtilities.CreateTestNetState(out var client);
         try
         {
-            Assert.Equal(IORingBuffer.MinimumSize, ns._socket.SendBuffer.PhysicalSize);
-            Assert.Equal(IORingBuffer.MinimumSize, ns._socket.RecvBuffer.PhysicalSize);
+            Assert.Equal(NetState.InitialSendBufferSize, ns._socket.SendBuffer.PhysicalSize);
+            Assert.Equal(NetState.InitialRecvBufferSize, ns._socket.RecvBuffer.PhysicalSize);
 
             ns._protocolState = NetState.ProtocolState.GameServer_AwaitingGameServerLogin;
             ns.Account = new MockAccount();
@@ -83,17 +84,18 @@ public class NetStateSendBufferTests
         }
     }
 
-    [Fact]
+    [SkippableFact]
     public void Account_OnTheLoginServer_KeepsTheInitialBuffers()
     {
+        Skip.If(NetState.InitialSendBufferSize == 0);
         var ns = PacketTestUtilities.CreateTestNetState(out var client);
         try
         {
             ns._protocolState = NetState.ProtocolState.LoginServer_AwaitingLogin;
             ns.Account = new MockAccount();
 
-            Assert.Equal(IORingBuffer.MinimumSize, ns._socket.SendBuffer.PhysicalSize);
-            Assert.Equal(IORingBuffer.MinimumSize, ns._socket.RecvBuffer.PhysicalSize);
+            Assert.Equal(NetState.InitialSendBufferSize, ns._socket.SendBuffer.PhysicalSize);
+            Assert.Equal(NetState.InitialRecvBufferSize, ns._socket.RecvBuffer.PhysicalSize);
         }
         finally
         {
@@ -102,14 +104,45 @@ public class NetStateSendBufferTests
         }
     }
 
-    [Fact]
-    public void Send_BeyondTheInitialBuffer_PromotesOnDemand_AndDelivers()
+    [SkippableFact]
+    public void Send_BeyondTheInitialBuffer_BeforeCredentials_IsExhausted()
     {
-        // A shard's extra pre-auth packet must promote, not strand the connection
+        // Nothing promotes before credentials verify: the 4 KiB ring is the whole pre-auth budget
+        Skip.If(NetState.InitialSendBufferSize == 0);
         var ns = PacketTestUtilities.CreateTestNetState(out var client);
         try
         {
-            var data = Pattern(IORingBuffer.MinimumSize + 512, 7);
+            var data = Pattern(NetState.InitialSendBufferSize + 512, 7);
+            ns.Send(data);
+
+            Assert.Contains("exhausted", ns._disconnectReason, StringComparison.OrdinalIgnoreCase);
+            Assert.Equal(NetState.InitialSendBufferSize, ns._socket.SendBuffer.PhysicalSize);
+
+            // A graceful server-side close half-closes and waits for the peer's own FIN; closing the
+            // peer here stands in for the client eventually going away, so Running can be observed.
+            // Once it completes the NetState is disposed and _socket goes null, so nothing below
+            // this point may touch it.
+            client.Close();
+            SliceUntil(() => !ns.Running);
+        }
+        finally
+        {
+            ns.Dispose();
+            client.Close();
+        }
+    }
+
+    [SkippableFact]
+    public void Send_BeyondTheInitialBuffer_WithCredentials_PromotesOnDemand()
+    {
+        // The late-verdict path from Account_AssignedAfterTheStateFlipped_StillPromotes: an account
+        // attached while the setter's own gate does not fire must still let the send path promote
+        Skip.If(NetState.InitialSendBufferSize == 0);
+        var ns = PacketTestUtilities.CreateTestNetState(out var client);
+        try
+        {
+            ns.Account = new MockAccount(); // _protocolState is still AwaitingSeed: the setter does not promote
+            var data = Pattern(NetState.InitialSendBufferSize + 512, 7);
             ns.Send(data);
 
             Assert.True(ns.Running);
@@ -117,6 +150,54 @@ public class NetStateSendBufferTests
             Assert.Equal(NetState.SendBufferSize, ns._socket.SendBuffer.PhysicalSize);
             Assert.False(ns._sendBufferGrown); // promotion is not growth: nothing to shrink later
             Assert.Equal(data, ReadAll(client, data.Length));
+        }
+        finally
+        {
+            ns.Dispose();
+            client.Close();
+        }
+    }
+
+    [SkippableFact]
+    public void Send_BacklogBeforeCredentials_IsExhaustedInsteadOfPromoted()
+    {
+        Skip.If(NetState.InitialSendBufferSize == 0);
+        var ns = PacketTestUtilities.CreateTestNetState(out var client);
+        try
+        {
+            // No Slice() between sends: nothing drains, so a second write finds a non-empty initial buffer
+            var half = Pattern(NetState.InitialSendBufferSize / 2, 11);
+            ns.Send(half);
+            ns.Send(half);
+            ns.Send(half); // cannot fit, buffer not empty, no account: refused
+
+            Assert.Equal(NetState.InitialSendBufferSize, ns._socket.SendBuffer.PhysicalSize);
+            Assert.Contains("exhausted", ns._disconnectReason, StringComparison.OrdinalIgnoreCase);
+
+            // A graceful server-side close waits for the queued bytes to drain and then for the
+            // peer's own FIN; closing the peer here stands in for the client eventually going away.
+            // Once it completes the NetState is disposed and _socket goes null, so nothing below
+            // this point may touch it.
+            client.Close();
+            SliceUntil(() => !ns.Running);
+        }
+        finally
+        {
+            ns.Dispose();
+            client.Close();
+        }
+    }
+
+    [SkippableFact]
+    public void Account_AssignedAfterTheStateFlipped_StillPromotes()
+    {
+        Skip.If(NetState.InitialSendBufferSize == 0);
+        var ns = PacketTestUtilities.CreateTestNetState(out var client);
+        try
+        {
+            ns._protocolState = NetState.ProtocolState.GameServer_LoggedIn;
+            ns.Account = new MockAccount();
+            Assert.Equal(NetState.SendBufferSize, ns._socket.SendBuffer.PhysicalSize);
         }
         finally
         {
@@ -586,6 +667,8 @@ public class NetStateSendBufferTests
 
         // A table smaller than this throws at manager construction. Connections start on the
         // transport minimum until the game server promotes them, so the formula must count those too.
+        // Mirrors what production passes: the request, not the effective size the manager may coerce
+        // down to (RequiredRegisteredBuffers treats a non-zero request as a pool either way).
         Assert.Equal(
             RingSocketManager.RequiredRegisteredBuffers(
                 manager.MaxSockets,

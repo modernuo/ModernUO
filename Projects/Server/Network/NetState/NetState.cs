@@ -233,7 +233,9 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
             // 0x91 credentials just verified: the character list and the world-entry burst follow.
             // The login-server pass stays on the initial buffers; it never sends more than a server list.
-            if (value != null && _protocolState == ProtocolState.GameServer_AwaitingGameServerLogin)
+            // An off-loop password check can land its verdict after HandleReceive already flipped the
+            // state to LoggedIn, so both states promote; both calls below are no-ops once applied.
+            if (value != null && _protocolState is ProtocolState.GameServer_AwaitingGameServerLogin or ProtocolState.GameServer_LoggedIn)
             {
                 PromoteBuffers();
             }
@@ -551,10 +553,16 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
             return false;
         }
 
-        // Still on the pre-auth buffer: promotion is unbudgeted and is not growth, so neither the
-        // ceiling nor the shrink bookkeeping applies
         if (_socket.SendBuffer.PhysicalSize < SendBufferSize)
         {
+            // Promotion is unbudgeted and is not growth, so neither the ceiling nor the shrink
+            // bookkeeping applies. Before credentials verify nothing promotes: the 4 KiB ring is the
+            // whole pre-auth send budget, and a connection that exceeds it is dropped as exhausted.
+            if (_account == null)
+            {
+                return false;
+            }
+
             return _socketManager.TryPromoteSendBuffer(_socket);
         }
 
