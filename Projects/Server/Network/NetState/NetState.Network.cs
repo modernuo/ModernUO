@@ -46,7 +46,7 @@ public partial class NetState
     internal static int MaxSendBufferSize { get; private set; }
 
     // Pre-auth buffers are the smallest the platform can map; a platform whose floor is not below
-    // the base size (the Windows legacy mapping path) starts sockets on base, as before
+    // the base size (the Windows legacy mapping path) starts sockets on base
     internal static int InitialRecvBufferSize { get; private set; }
     internal static int InitialSendBufferSize { get; private set; }
     private static long _sendBufferGrowthBudget;
