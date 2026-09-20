@@ -227,7 +227,39 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     public IAccount Account
     {
         get => _account;
-        set => _account = value;
+        set
+        {
+            _account = value;
+
+            // 0x91 credentials just verified: the character list and the world-entry burst follow.
+            // The login-server pass stays on the initial buffers; it never sends more than a server list.
+            // An off-loop password check can land its verdict after HandleReceive already flipped the
+            // state to LoggedIn, so both states promote; both calls below are no-ops once applied.
+            if (value != null && _protocolState is ProtocolState.GameServer_AwaitingGameServerLogin or ProtocolState.GameServer_LoggedIn)
+            {
+                PromoteBuffers();
+            }
+        }
+    }
+
+    private void PromoteBuffers()
+    {
+        if (_socket == null)
+        {
+            return;
+        }
+
+        if (!_socketManager.TryPromoteSendBuffer(_socket) && _socket.SendBuffer.PhysicalSize < SendBufferSize)
+        {
+            // The send path promotes on demand and disconnects if that fails too
+            logger.Debug("{NetState}: send buffer promotion deferred to the send path", this);
+        }
+
+        if (!_socketManager.TryPromoteRecvBuffer(_socket) && _socket.RecvBuffer.PhysicalSize < RecvBufferSize)
+        {
+            // The oversize-packet guard in HandlePacket gets one more try where the small buffer matters
+            logger.Debug("{NetState}: recv buffer promotion deferred", this);
+        }
     }
 
     public string Assistant { get; set; }
@@ -523,6 +555,19 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         if (_socket == null)
         {
             return false;
+        }
+
+        if (_socket.SendBuffer.PhysicalSize < SendBufferSize)
+        {
+            // Promotion is unbudgeted and is not growth, so neither the ceiling nor the shrink
+            // bookkeeping applies. Before credentials verify nothing promotes: the 4 KiB ring is the
+            // whole pre-auth send budget, and a connection that exceeds it is dropped as exhausted.
+            if (_account == null)
+            {
+                return false;
+            }
+
+            return _socketManager.TryPromoteSendBuffer(_socket);
         }
 
         if (!UnderMemoryCeiling())
@@ -1084,6 +1129,13 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
                     break;
                 }
             }
+
+            // A completion that fills the buffer arms no receive; whatever the loop consumed is free
+            // space again. No-op while a receive is armed or the buffer is still full.
+            if (_running)
+            {
+                _socket.ResumeReceive();
+            }
         }
         catch (Exception ex)
         {
@@ -1135,6 +1187,22 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
             {
                 return ParserState.Error;
             }
+        }
+
+        // Can never complete: the buffer holds PhysicalSize - 1 bytes (one slot tells full from
+        // empty) and a recv arms only into free space
+        if (packetLength >= _socket.RecvBuffer.PhysicalSize)
+        {
+            // A verified account whose promotion could not be applied earlier gets one more try here,
+            // where the small buffer actually matters; the swap lands before the next completion's event
+            if (_account != null && _socket.RecvBuffer.PhysicalSize < RecvBufferSize &&
+                _socketManager.TryPromoteRecvBuffer(_socket))
+            {
+                return ParserState.AwaitingPartialPacket;
+            }
+
+            LogInfo($"Received packet 0x{packetId:X2} declaring {packetLength} bytes, more than the receive buffer holds.");
+            return ParserState.Error;
         }
 
         // Not enough data, let's wait for more to come in
