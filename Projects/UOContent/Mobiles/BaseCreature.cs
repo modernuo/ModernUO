@@ -2745,7 +2745,7 @@ namespace Server.Mobiles
                 return;
             }
 
-            AIObject?.OnAggressiveAction(aggressor);
+            var handled = AIObject?.OnAggressiveAction(aggressor) == true;
 
             StopFlee();
 
@@ -2759,6 +2759,11 @@ namespace Server.Mobiles
                 {
                     pl.FinishShield();
                 }
+            }
+
+            if (handled)
+            {
+                return;
             }
 
             // Only reachable when the pet does not stand down: the orders above returned early.

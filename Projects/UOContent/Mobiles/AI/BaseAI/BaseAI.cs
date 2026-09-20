@@ -131,24 +131,27 @@ public abstract partial class BaseAI
         }
     }
 
-    public virtual void OnAggressiveAction(Mobile aggressor)
+    // Returns true when the AI has decided the response and BaseCreature must not pick a combatant itself.
+    public virtual bool OnAggressiveAction(Mobile aggressor)
     {
         if (aggressor.Hidden)
         {
-            return;
+            return false;
         }
 
         var currentCombat = Mobile.Combatant;
 
         if (currentCombat == null || currentCombat == aggressor)
         {
-            return;
+            return false;
         }
 
         if (Mobile.GetDistanceToSqrt(aggressor) < Mobile.GetDistanceToSqrt(currentCombat))
         {
             Mobile.Combatant = aggressor;
         }
+
+        return false;
     }
 
     public virtual void EndPickTarget(Mobile from, Mobile target, OrderType order)
