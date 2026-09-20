@@ -234,27 +234,16 @@ namespace Server.Gumps
                         AddLabel(20, 130, LabelHue, "Event Loop:");
                         AddLabel(40, 150, LabelHue, loopStatus);
 
-                        using var sb = ValueStringBuilder.Create();
+                        var net = NetState.GetNetworkStats();
 
-                        ThreadPool.GetAvailableThreads(out var curUser, out var curIOCP);
-                        ThreadPool.GetMaxThreads(out var maxUser, out var maxIOCP);
+                        AddLabel(20, 170, LabelHue, "Connections:");
+                        AddLabel(150, 170, LabelHue, $"{net.Connected} / {net.MaxConnections} ({net.Authenticated} authenticated)");
 
-                        sb.Append("Worker Threads:<br>Capacity: ");
-                        sb.Append(maxUser);
-                        sb.Append("<br>Available: ");
-                        sb.Append(curUser);
-                        sb.Append("<br>Usage: ");
-                        sb.Append((maxUser - curUser) * 100 / maxUser);
-                        sb.Append("%<br><br>IOCP Threads:<br>Capacity: ");
-                        sb.Append(maxIOCP);
-                        sb.Append("<br>Available: ");
-                        sb.Append(curIOCP);
-                        sb.Append("<br>Usage: ");
-                        sb.Append((maxIOCP - curIOCP) * 100 / maxIOCP);
-                        sb.Append('%');
+                        AddLabel(20, 190, LabelHue, "Loop Queues:");
+                        AddLabel(150, 190, LabelHue, $"throttled {net.Throttled}, flush {net.FlushPending}, closing {net.PendingDisconnects}");
 
-                        AddLabel(20, 200, LabelHue, "Pooling:");
-                        AddHtml(20, 220, 380, 150, sb.ToString(), true, true);
+                        AddLabel(20, 210, LabelHue, "Send Buffers:");
+                        AddHtml(20, 230, 380, 180, FormatSendBuffers(net), true, true);
 
                         AddPageButton(200, 20, GetButtonID(0, 0), "General", AdminGumpPage.Information_General);
                         AddPageButton(200, 40, GetButtonID(0, 5), "Performance", AdminGumpPage.Information_Perf);
@@ -1363,6 +1352,48 @@ namespace Server.Gumps
 
         public static string FormatTimeSpan(TimeSpan ts) =>
             $"{ts.Days:D2}:{ts.Hours % 24:D2}:{ts.Minutes % 60:D2}:{ts.Seconds % 60:D2}";
+
+        private static string FormatSendBuffers(NetworkStats net)
+        {
+            using var sb = ValueStringBuilder.Create();
+
+            sb.Append($"Base: {FormatByteAmount(net.RecvBufferSize)} recv, {FormatByteAmount(net.SendBufferSize)} send");
+            if (net.InitialRecvBufferSize > 0)
+            {
+                sb.Append($"; pre-auth {FormatByteAmount(net.InitialRecvBufferSize)} / {FormatByteAmount(net.InitialSendBufferSize)}");
+            }
+
+            var sweep = net.LastSweep;
+            if (sweep.Ran)
+            {
+                sb.Append($"<br>Base pools: {FormatByteAmount(sweep.BaseCapacityBytes)}");
+            }
+
+            long tierBytes = 0;
+            sb.Append("<br><br>Growth tiers (live):");
+            for (var i = 0; i < net.Tiers.Length; i++)
+            {
+                var tier = net.Tiers[i];
+                tierBytes += (long)tier.Capacity * tier.BufferSize;
+                sb.Append($"<br>  {FormatByteAmount(tier.BufferSize)}: {tier.InUse} / {tier.Capacity} in use, floor {tier.RetainFloor}");
+            }
+
+            sb.Append($"<br>Budget: {FormatByteAmount(tierBytes)} of {FormatByteAmount(net.SendBufferGrowthBudget)}, max {FormatByteAmount(net.MaxSendBufferSize)} per socket");
+            sb.Append($"<br>Ceiling: {net.MemoryCeilingPercent}% of {FormatByteAmount(net.AvailableMemoryBytes)} available");
+
+            if (sweep.Ran)
+            {
+                var ageSeconds = (Core.TickCount - sweep.Tick) / 1000;
+                sb.Append($"<br><br>Last sweep {ageSeconds}s ago: released {sweep.TierBuffersReleased} tier, {sweep.BaseBuffersReleased} base");
+                sb.Append($"<br>Refused: budget {sweep.BudgetRefusals}, at max {sweep.CapRefusals}, ceiling {sweep.CeilingRefusals}");
+            }
+            else
+            {
+                sb.Append("<br><br>First sweep pending");
+            }
+
+            return sb.ToString();
+        }
 
         public static string FormatByteAmount(long totalBytes)
         {
