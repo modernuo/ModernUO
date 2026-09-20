@@ -41,6 +41,20 @@ public class NetStateRecvGuardTests
 
     private static void RecordPing(NetState state, SpanReader reader) => _lastPing = reader.ReadByte();
 
+    private const byte AttachAccountPacketId = 0x71;
+
+    private static unsafe void RegisterAttachAccount()
+    {
+        if (IncomingPackets.GetHandler(AttachAccountPacketId) == null)
+        {
+            IncomingPackets.Register(AttachAccountPacketId, 3, false, &AttachAccount);
+        }
+    }
+
+    // Stands in for the 0x91 handler: the account attaches mid-parse, so the promotion is pending
+    // with a receive armed when the next packet in the same completion reaches the guard
+    private static void AttachAccount(NetState state, SpanReader reader) => state.Account = new MockAccount();
+
     private static void SliceUntil(Func<bool> done)
     {
         var deadline = Stopwatch.StartNew();
@@ -181,26 +195,30 @@ public class NetStateRecvGuardTests
     }
 
     [SkippableFact]
-    public void HandleReceive_LoginAndOversizeHeaderInOneCompletion_WaitsForThePendingPromotion()
+    public void HandleReceive_AccountAttachedMidParse_ThenOversizeHeader_WaitsForThePendingPromotion()
     {
         Skip.If(NetState.InitialRecvBufferSize == 0);
+        RegisterAttachAccount();
         RegisterVariableLength();
         var ns = PacketTestUtilities.CreateTestNetState(out var client);
         try
         {
-            ns._protocolState = NetState.ProtocolState.GameServer_AwaitingGameServerLogin;
-            ns.Account = new MockAccount(); // deferred recv promotion is now pending with a receive armed
-
             ns._protocolState = NetState.ProtocolState.GameServer_LoggedIn;
+            var declared = ns._socket.RecvBuffer.PhysicalSize;
 
-            var declared = NetState.InitialRecvBufferSize; // as much as the initial buffer can ever hold
-            client.Send(new byte[] { TestPacketId, (byte)(declared >> 8), (byte)declared });
-            SliceUntil(() => ns._socket.RecvBuffer.ReadableBytes == 3);
+            // One send, one completion on loopback: the account packet promotes (deferred: a receive is
+            // armed), then the oversize header reaches the guard with that promotion pending. If the OS
+            // ever splits this into two completions instead, the first assertion block still holds — the
+            // header then hits the guard after the promotion already applied and simply waits on the
+            // 64 KiB buffer, so the test cannot flake, it just exercises the weaker path on that run.
+            client.Send(new byte[] { AttachAccountPacketId, 0x00, 0x00, TestPacketId, (byte)(declared >> 8), (byte)declared });
+            SliceUntil(() => ns.Account != null);
 
-            // The guard returned AwaitingPartialPacket instead of erroring or refusing the promotion
             Assert.True(ns.Running);
             Assert.Equal(NetState.ProtocolState.GameServer_LoggedIn, ns._protocolState);
+            Assert.Equal(3, ns._socket.RecvBuffer.ReadableBytes); // the header waits, not rejected
 
+            // The next completion applies the promotion and the whole packet is delivered
             client.Send(new byte[declared - 3]);
             SliceUntil(
                 () => ns._socket.RecvBuffer.ReadableBytes == 0 &&
