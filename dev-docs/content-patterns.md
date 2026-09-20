@@ -231,6 +231,9 @@ class — `OnThink` is for content extras (see the excess-call contract below). 
 creature is dispatched through `Obey()`, an uncontrolled one through `Think()`; an AI that owns
 both routes them into one decision (`FamiliarAI.Act`). Overriding `IssueOrder` to return a
 fixed order is how "command immunity" is expressed without bypassing the order machinery.
+`OnAggressiveAction(aggressor) -> bool` is the retaliation policy: `BaseCreature` sets no
+combatant of its own and runs `StopFlee`/`ForceReacquire` only on `true`, so an AI that
+returns `false` has refused the fight outright.
 
 ### Fight Modes
 | FightMode | Behavior |
