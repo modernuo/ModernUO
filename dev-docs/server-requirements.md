@@ -70,14 +70,15 @@ small hosts.
 
 Network buffers come from four pools that grow and shrink with the population rather than being
 sized for a full shard. A connection that has not yet presented valid credentials holds a 4 KB
-receive and a 4 KB send buffer (the platform's page size); on Windows Server 2012 R2 / 2016, where
-the transport's legacy mapping path floors at 64 KB, pre-auth buffers are off and connections start
-on the base buffers. Everything the server sends before that must fit in that 4 KB ring — a
-connection that overruns it is dropped; the stock login sequence uses under 2 KB. Otherwise, when
-the game server verifies the account the connection is
+receive and a 4 KB send buffer (the platform's page size). On Windows Server 2012 R2 / 2016 the
+transport's legacy mapping path floors at 64 KB: the pre-auth receive pool is off there (its base is
+64 KB), while the pre-auth send buffer starts at 64 KB under the 256 KB base. Everything the server
+sends before that must fit in that ring — a connection that overruns it is dropped; the stock login
+sequence uses under 2 KB. Otherwise, when the game server verifies the account the connection is
 promoted to a 64 KB receive buffer and a `network.sendBufferSize` send buffer from the base pools,
-and nothing ever moves back. A flood of unauthenticated connections therefore tops out at 32 MB
-across the full 4096-connection cap and never allocates a base slab.
+and nothing ever moves back. A flood of unauthenticated connections tops out at about 32 MB across
+the full 4096-connection cap where the platform minimum is 4 KB (the transport's retained slabs and
+the base pools used by logged-in players are separate), and never allocates a base-pool slab.
 At boot the network holds `network.initialBufferSlabs` slab(s) of each pool — at the defaults one
 2 MB receive slab, one 8 MB send slab and two 128 KB pre-auth slabs, about 10 MB — and allocates
 another slab only when the population needs one. Each slab covers 32 connections at the
