@@ -53,27 +53,25 @@ public class NetStateRecvGuardTests
         Assert.True(done());
     }
 
-    [Fact]
+    [SkippableFact]
     public void HandleReceive_PacketLongerThanTheRecvBuffer_IsAnError()
     {
         RegisterVariableLength();
         var ns = PacketTestUtilities.CreateTestNetState(out var client);
         try
         {
+            // A 16-bit length cannot exceed a 64 KiB buffer, so the guard is unreachable there and
+            // this only ever hit the `< 3` check on a buffer that size.
+            Skip.If(ns._socket.RecvBuffer.PhysicalSize > ushort.MaxValue);
+
             ns._protocolState = NetState.ProtocolState.GameServer_LoggedIn;
 
             // A variable-length header claiming more than the buffer can ever hold would otherwise
             // park the connection with nothing to arm a recv into
             var declared = ns._socket.RecvBuffer.PhysicalSize; // one more than the buffer can ever hold
-            // Writing directly into the recv buffer while a recv is armed is safe here: the peer
-            // sends nothing, so no completion races this write.
-            var header = new byte[] { TestPacketId, (byte)(declared >> 8), (byte)declared };
-            header.AsSpan().CopyTo(ns._socket.RecvBuffer.GetWriteSpan());
-            ns._socket.RecvBuffer.CommitWrite(header.Length);
+            client.Send(new byte[] { TestPacketId, (byte)(declared >> 8), (byte)declared });
+            SliceUntil(() => ns._protocolState == NetState.ProtocolState.Error);
 
-            ns.HandleReceive();
-
-            Assert.Equal(NetState.ProtocolState.Error, ns._protocolState);
             Assert.Contains("bad state", ns._disconnectReason);
         }
         finally
@@ -93,15 +91,12 @@ public class NetStateRecvGuardTests
             ns._protocolState = NetState.ProtocolState.GameServer_LoggedIn;
 
             var declared = ns._socket.RecvBuffer.PhysicalSize / 2;
-            var header = new byte[] { TestPacketId, (byte)(declared >> 8), (byte)declared };
-            header.AsSpan().CopyTo(ns._socket.RecvBuffer.GetWriteSpan());
-            ns._socket.RecvBuffer.CommitWrite(header.Length);
-
-            ns.HandleReceive();
+            client.Send(new byte[] { TestPacketId, (byte)(declared >> 8), (byte)declared });
+            SliceUntil(() => ns._socket.RecvBuffer.ReadableBytes == 3);
 
             Assert.Equal(NetState.ProtocolState.GameServer_LoggedIn, ns._protocolState);
             Assert.True(ns.Running);
-            Assert.Equal(header.Length, ns._socket.RecvBuffer.ReadableBytes);
+            Assert.Equal(3, ns._socket.RecvBuffer.ReadableBytes);
         }
         finally
         {
@@ -125,19 +120,22 @@ public class NetStateRecvGuardTests
             ns._protocolState = NetState.ProtocolState.GameServer_LoggedIn;
 
             var declared = NetState.InitialRecvBufferSize; // as much as the initial buffer can ever hold
-            // Writing directly into the recv buffer while a recv is armed is safe here: the peer
-            // sends nothing until after HandleReceive returns, so no completion races this write.
-            var header = new byte[] { TestPacketId, (byte)(declared >> 8), (byte)declared };
-            header.AsSpan().CopyTo(ns._socket.RecvBuffer.GetWriteSpan());
-            ns._socket.RecvBuffer.CommitWrite(header.Length);
-
-            ns.HandleReceive();
+            client.Send(new byte[] { TestPacketId, (byte)(declared >> 8), (byte)declared });
+            SliceUntil(() => ns._socket.RecvBuffer.ReadableBytes == 3);
 
             Assert.Equal(NetState.ProtocolState.GameServer_LoggedIn, ns._protocolState);
             Assert.True(ns.Running);
 
-            client.Send(new byte[] { 0x01 });
-            SliceUntil(() => ns._socket.RecvBuffer.PhysicalSize == NetState.RecvBufferSize);
+            // The deferred promotion applies at this next completion; the header is then delivered
+            // whole to the 0xB1 no-op handler
+            client.Send(new byte[declared - 3]);
+            SliceUntil(
+                () => ns._socket.RecvBuffer.ReadableBytes == 0 &&
+                      ns._socket.RecvBuffer.PhysicalSize == NetState.RecvBufferSize
+            );
+
+            Assert.True(ns.Running);
+            Assert.Equal(NetState.ProtocolState.GameServer_LoggedIn, ns._protocolState);
         }
         finally
         {
@@ -173,6 +171,42 @@ public class NetStateRecvGuardTests
             // Without a re-arm this ping never arrives
             client.Send(new byte[] { TestPingPacketId, 0xEE });
             SliceUntil(() => _lastPing == 0xEE);
+            Assert.True(ns.Running);
+        }
+        finally
+        {
+            ns.Dispose();
+            client.Close();
+        }
+    }
+
+    [SkippableFact]
+    public void HandleReceive_LoginAndOversizeHeaderInOneCompletion_WaitsForThePendingPromotion()
+    {
+        Skip.If(NetState.InitialRecvBufferSize == 0);
+        RegisterVariableLength();
+        var ns = PacketTestUtilities.CreateTestNetState(out var client);
+        try
+        {
+            ns._protocolState = NetState.ProtocolState.GameServer_AwaitingGameServerLogin;
+            ns.Account = new MockAccount(); // deferred recv promotion is now pending with a receive armed
+
+            ns._protocolState = NetState.ProtocolState.GameServer_LoggedIn;
+
+            var declared = NetState.InitialRecvBufferSize; // as much as the initial buffer can ever hold
+            client.Send(new byte[] { TestPacketId, (byte)(declared >> 8), (byte)declared });
+            SliceUntil(() => ns._socket.RecvBuffer.ReadableBytes == 3);
+
+            // The guard returned AwaitingPartialPacket instead of erroring or refusing the promotion
+            Assert.True(ns.Running);
+            Assert.Equal(NetState.ProtocolState.GameServer_LoggedIn, ns._protocolState);
+
+            client.Send(new byte[declared - 3]);
+            SliceUntil(
+                () => ns._socket.RecvBuffer.ReadableBytes == 0 &&
+                      ns._socket.RecvBuffer.PhysicalSize == NetState.RecvBufferSize
+            );
+
             Assert.True(ns.Running);
         }
         finally
