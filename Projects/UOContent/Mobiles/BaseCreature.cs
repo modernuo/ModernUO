@@ -2735,17 +2735,11 @@ namespace Server.Mobiles
                 aggressor.Aggressors.Add(AggressorInfo.Create(this, aggressor, true));
             }
 
-            var toldToStandDown = _controlled && _controlMaster != null && Commandable &&
-                                  BaseAI.IsStandDownOrder(_controlOrder);
-
-            if (StandsDownOnCommand && toldToStandDown)
+            // The AI owns the retaliation policy; a creature that stands down keeps its flee and acquire state.
+            if (AIObject?.OnAggressiveAction(aggressor) != true)
             {
-                AIObject?.DebugSay("I'm being attacked but my master told me not to fight.");
-                Warmode = false;
                 return;
             }
-
-            var handled = AIObject?.OnAggressiveAction(aggressor) == true;
 
             StopFlee();
 
@@ -2759,22 +2753,6 @@ namespace Server.Mobiles
                 {
                     pl.FinishShield();
                 }
-            }
-
-            if (handled)
-            {
-                return;
-            }
-
-            // Only reachable when the pet does not stand down: the orders above returned early.
-            if (aggressor.ChangingCombatant && toldToStandDown)
-            {
-                IssueOrder(OrderType.Attack, null, aggressor);
-            }
-            else if (Combatant == null && !BardPacified)
-            {
-                Warmode = true;
-                Combatant = aggressor;
             }
         }
 

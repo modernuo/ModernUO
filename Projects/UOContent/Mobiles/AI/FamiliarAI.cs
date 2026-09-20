@@ -47,22 +47,24 @@ public class FamiliarAI : BaseAI
         return Mobile.Controlled ? OrderType.Come : OrderType.None;
     }
 
-    // Retaliation is entirely this AI's call; a refusal must not fall through to BaseCreature's fallback.
+    // No orders to stand down on; never fights for a hidden caster.
     public override bool OnAggressiveAction(Mobile aggressor)
     {
         if (!Familiar.AssistsMaster || aggressor.Hidden || Familiar.ControlMaster?.Hidden == true)
         {
-            return true;
+            return false;
         }
 
         if (Mobile.Combatant == null)
         {
             Mobile.Warmode = true;
             Mobile.Combatant = aggressor;
-            return true;
+        }
+        else
+        {
+            PreferCloserAggressor(aggressor);
         }
 
-        base.OnAggressiveAction(aggressor);
         return true;
     }
 
