@@ -1129,6 +1129,13 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
                     break;
                 }
             }
+
+            // A completion that fills the buffer arms no receive; whatever the loop consumed is free
+            // space again. No-op while a receive is armed or the buffer is still full.
+            if (_running)
+            {
+                _socket.ResumeReceive();
+            }
         }
         catch (Exception ex)
         {
