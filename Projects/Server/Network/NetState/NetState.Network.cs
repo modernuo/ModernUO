@@ -56,10 +56,7 @@ public partial class NetState
     internal static long _availableMemoryBytes;
 
     private static Timer.DelayCallTimer _maintenanceTimer;
-    private static long _lastTierCapacityBytes;
-    private static int _lastTierInUse;
-    private static int _lastTierRetainFloor;
-    private static long _lastBaseCapacityBytes;
+    private static SendBufferSweep _lastSweep;
 
     private static readonly Queue<NetState> _disposed = [];
     private static readonly TimeSpan ConnectingSocketIdleLimit = TimeSpan.FromMilliseconds(5000); // 5 seconds
@@ -238,14 +235,23 @@ public partial class NetState
         _capRefusals = 0;
 
         var stats = _socketManager.Maintain();
-        var changed = stats.TierCapacityBytes != _lastTierCapacityBytes ||
-                      stats.TierInUse != _lastTierInUse ||
-                      stats.TierRetainFloor != _lastTierRetainFloor ||
-                      stats.BaseCapacityBytes != _lastBaseCapacityBytes;
-        _lastTierCapacityBytes = stats.TierCapacityBytes;
-        _lastTierInUse = stats.TierInUse;
-        _lastTierRetainFloor = stats.TierRetainFloor;
-        _lastBaseCapacityBytes = stats.BaseCapacityBytes;
+        var changed = stats.TierCapacityBytes != _lastSweep.TierCapacityBytes ||
+                      stats.TierInUse != _lastSweep.TierInUse ||
+                      stats.TierRetainFloor != _lastSweep.TierRetainFloor ||
+                      stats.BaseCapacityBytes != _lastSweep.BaseCapacityBytes;
+        _lastSweep = new SendBufferSweep(
+            true,
+            Core.TickCount,
+            stats.TierCapacityBytes,
+            stats.TierInUse,
+            stats.TierRetainFloor,
+            stats.BuffersReleased,
+            stats.BaseCapacityBytes,
+            stats.BaseBuffersReleased,
+            stats.GrowthRefusals,
+            capRefusals,
+            ceilingRefusals
+        );
 
         // Quiet unless something moved
         if (changed || stats.BuffersReleased > 0 || stats.BaseBuffersReleased > 0 || stats.GrowthRefusals > 0 ||
@@ -264,6 +270,48 @@ public partial class NetState
                 stats.BaseBuffersReleased
             );
         }
+    }
+
+    /// <summary>
+    /// Read-only diagnostics snapshot; never rotates the maintenance window. Cold path: allocates.
+    /// </summary>
+    public static NetworkStats GetNetworkStats()
+    {
+        var manager = _socketManager;
+        var tiers = manager == null ? [] : new SendBufferTierUsage[manager.SendBufferTierCount];
+        for (var i = 0; i < tiers.Length; i++)
+        {
+            var tier = manager.GetSendBufferTierStats(i);
+            tiers[i] = new SendBufferTierUsage(tier.BufferSize, tier.Capacity, tier.InUse, tier.RetainFloor);
+        }
+
+        var authenticated = 0;
+        foreach (var ns in _instances)
+        {
+            if (ns.Account != null)
+            {
+                authenticated++;
+            }
+        }
+
+        return new NetworkStats(
+            manager?.ConnectedCount ?? 0,
+            manager?.MaxSockets ?? MaxConnections,
+            authenticated,
+            RecvBufferSize,
+            SendBufferSize,
+            MaxSendBufferSize,
+            InitialRecvBufferSize,
+            InitialSendBufferSize,
+            _sendBufferGrowthBudget,
+            _memoryCeilingPercent,
+            _availableMemoryBytes,
+            tiers,
+            _lastSweep,
+            _throttled.Count + _throttledPending.Count,
+            _flushPending.Count,
+            _pendingDisconnects.Count
+        );
     }
 
     /// <summary>
