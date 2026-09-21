@@ -36,7 +36,7 @@ public class NetworkStatsTests
                 ns.Send(Pattern(baseSize / 4, i));
             }
 
-            // The sweep refreshes _availableMemoryBytes itself, so the refusal must already be counted
+            // The sweep refreshes _availableMemoryBytes, so refusals must happen before it
             NetState.MaintainSendBuffers();
             var stats = NetState.GetNetworkStats();
 

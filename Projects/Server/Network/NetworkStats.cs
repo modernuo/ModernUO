@@ -57,7 +57,7 @@ public readonly record struct SendBufferSweep(
 /// </summary>
 /// <param name="Connected">Sockets the transport currently holds, authenticated or not.</param>
 /// <param name="MaxConnections">Socket slots the transport was built with.</param>
-/// <param name="Authenticated">Connections whose credentials have verified, so on full-size buffers.</param>
+/// <param name="Authenticated">Connections past login, and so holding full-size buffers.</param>
 /// <param name="RecvBufferSize">Base receive buffer size.</param>
 /// <param name="SendBufferSize">Base send buffer size.</param>
 /// <param name="MaxSendBufferSize">Largest size a send buffer can grow to.</param>
