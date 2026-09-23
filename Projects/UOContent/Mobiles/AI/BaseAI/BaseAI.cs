@@ -1006,10 +1006,9 @@ public abstract partial class BaseAI
             }
 
             var bc = m as BaseCreature;
-            var pm = m as PlayerMobile;
 
-            if (IsInvalidSummonTarget(m, bc, pm) || IsInvalidFactionTarget(m, bFacFriend, bFacFoe)
-                                                 || IsInvalidFightModeTarget(m, acqType, bc))
+            if (IsInvalidSummonTarget(m, bc) || IsInvalidFactionTarget(m, bFacFriend, bFacFoe)
+                                             || IsInvalidFightModeTarget(m, acqType, bc))
             {
                 continue;
             }
@@ -1032,8 +1031,7 @@ public abstract partial class BaseAI
                 newFocusMob = m;
                 val = theirVal;
             }
-            else if (Core.AOS && theirVal > enemySummonVal
-                              && Mobile.InLOS(m) && bc?.Summoned == true && bc.Controlled != true)
+            else if (Core.AOS && theirVal > enemySummonVal && Mobile.InLOS(m) && bc is { Summoned: true, Controlled: false })
             {
                 enemySummonMob = m;
                 enemySummonVal = theirVal;
@@ -1048,7 +1046,7 @@ public abstract partial class BaseAI
         m.Deleted || m.Blessed || m == Mobile || m is BaseFamiliar || !m.Alive || m.IsDeadBondedPet ||
         m.AccessLevel > AccessLevel.Player || bPlayerOnly && !m.Player || !Mobile.CanSee(m);
 
-    private bool IsInvalidSummonTarget(Mobile m, BaseCreature bc, PlayerMobile pm)
+    private bool IsInvalidSummonTarget(Mobile m, BaseCreature bc)
     {
         // A summon whose caster was deleted before a reload comes back with no master.
         if (Core.AOS && bc?.Summoned == true &&
@@ -1064,7 +1062,7 @@ public abstract partial class BaseAI
             return false;
         }
 
-        if (Mobile.IsAnimatedDead && (pm != null || bc?.IsAnimatedDead == true || bc?.Controlled == true))
+        if (Mobile.IsAnimatedDead && (m.Player || bc?.IsAnimatedDead == true || bc?.Controlled == true))
         {
             return true;
         }
