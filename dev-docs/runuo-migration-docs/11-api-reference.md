@@ -134,6 +134,7 @@ Alphabetical by RunUO API name. Use Ctrl+F / Cmd+F to search.
 | `WalkMobileRange(m, steps, run, min, max)` | `WalkMobileRange(m, steps, min, max)` | Same |
 | `PathFollower.Follow(run, range)` | `Follow(range)` | Same |
 | `AcquireOnApproach` (bool) | `AcquireOnApproachDelay` (TimeSpan) | Reaction-time gradient; `Zero` = old instant behavior |
+| `BaseAI.OnAggressiveAction(m)` (`void`) | `OnAggressiveAction(m)` (`bool`) | The AI owns the retaliation policy; `false` = stood down; swap-only overrides call `PreferCloserAggressor` |
 | `m.DamageEntries` (`List<DamageEntry>`) | `m.DamageEntries` (`ref readonly ValueLinkList<DamageEntry>`) | Inline, least→most recent; `foreach` / `.ByDescending()` only, needs `using Server.Collections;`; no indexer, `Add`, `Remove`, `Clear` |
 | `m.DamageEntries.Clear()` | `m.ClearDamageEntries()` | |
 | `GetLootingRights(List<DamageEntry>, int)` | `GetLootingRights(in ValueLinkList<DamageEntry>, int)` | Callers passing `m.DamageEntries` compile unchanged |

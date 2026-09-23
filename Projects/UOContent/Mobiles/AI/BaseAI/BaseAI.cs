@@ -131,21 +131,51 @@ public abstract partial class BaseAI
         }
     }
 
-    public virtual void OnAggressiveAction(Mobile aggressor)
+    /// <summary>
+    /// The retaliation policy: how the creature answers <paramref name="aggressor"/>. Returns false when it
+    /// stands down, and <see cref="BaseCreature.AggressiveAction"/> then skips its combat bookkeeping.
+    /// </summary>
+    public virtual bool OnAggressiveAction(Mobile aggressor)
+    {
+        // Only a creature somebody can command has been told anything; wild creatures rest on None.
+        var toldToStandDown = Mobile.Controlled && Mobile.ControlMaster != null && Mobile.Commandable &&
+                              IsStandDownOrder(Mobile.ControlOrder);
+
+        if (Mobile.StandsDownOnCommand && toldToStandDown)
+        {
+            DebugSay("I'm being attacked but my master told me not to fight.");
+            Mobile.Warmode = false;
+            return false;
+        }
+
+        PreferCloserAggressor(aggressor);
+
+        if (aggressor.ChangingCombatant && toldToStandDown)
+        {
+            // With stand-down off, a resting pet answers a direct attack with a full Attack order.
+            Mobile.IssueOrder(OrderType.Attack, null, aggressor);
+        }
+        else if (Mobile.Combatant == null && !Mobile.BardPacified)
+        {
+            Mobile.Warmode = true;
+            Mobile.Combatant = aggressor;
+        }
+
+        return true;
+    }
+
+    // A visible aggressor closer than the current combatant takes over.
+    protected void PreferCloserAggressor(Mobile aggressor)
     {
         if (aggressor.Hidden)
         {
             return;
         }
 
-        var currentCombat = Mobile.Combatant;
+        var current = Mobile.Combatant;
 
-        if (currentCombat == null || currentCombat == aggressor)
-        {
-            return;
-        }
-
-        if (Mobile.GetDistanceToSqrt(aggressor) < Mobile.GetDistanceToSqrt(currentCombat))
+        if (current != null && current != aggressor &&
+            Mobile.GetDistanceToSqrt(aggressor) < Mobile.GetDistanceToSqrt(current))
         {
             Mobile.Combatant = aggressor;
         }

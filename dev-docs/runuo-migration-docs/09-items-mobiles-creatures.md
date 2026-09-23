@@ -497,6 +497,49 @@ An isolated step (after the creature stood for at least a walk interval) goes ou
 walk regardless of pace — only a continuing cadence, or a pace faster than the run
 interpolation, flags run.
 
+## Retaliation: `OnAggressiveAction` Returns `bool`
+
+RunUO's `BaseAI.OnAggressiveAction` was a `void` hook that only swapped to a closer
+aggressor; `BaseCreature.AggressiveAction` then decided the response itself and set
+`Combatant` regardless of what the AI had done. ModernUO moves the whole retaliation policy
+into the hook — the stand-down verdict for commanded pets, the closer-aggressor swap
+(`PreferCloserAggressor`), and the `IssueOrder(Attack)` vs `Combatant =` choice — and
+`BaseCreature` only runs its bookkeeping (`StopFlee`, `ForceReacquire`, ethics shield) when
+the hook returns `true`:
+
+```csharp
+// RunUO — swap only; BaseCreature picks the combatant afterwards
+public override void OnAggressiveAction(Mobile aggressor)
+{
+    if (m_Mobile.Combatant == null)
+    {
+        m_Mobile.Combatant = aggressor;
+        return;
+    }
+
+    base.OnAggressiveAction(aggressor);
+}
+
+// ModernUO — the AI owns the response; false = stood down, nothing else fires
+public override bool OnAggressiveAction(Mobile aggressor)
+{
+    if (Mobile.Combatant == null)
+    {
+        Mobile.Combatant = aggressor;
+    }
+    else
+    {
+        PreferCloserAggressor(aggressor);
+    }
+
+    return true;
+}
+```
+
+An override that used to `return;` early to refuse a fight now returns `false`; calling
+`base.OnAggressiveAction` runs the full stock policy, including setting `Combatant`, so an AI
+that only wants the closer-aggressor swap calls `PreferCloserAggressor` instead.
+
 ## Target Acquisition: `AcquireOnApproach` Is a Delay
 
 RunUO's `AcquireOnApproach` bool (paragon insta-aggro on approach) is now
