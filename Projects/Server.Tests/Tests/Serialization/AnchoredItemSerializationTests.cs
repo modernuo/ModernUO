@@ -53,24 +53,33 @@ public class AnchoredItemSerializationTests
     public void LastMovedAndDecayReset_RoundTripExactly()
     {
         var item = new Item(0x1F13);
-        item.MoveToWorld(new Point3D(121, 100, 0), Map.Felucca);
+        Item restored = null;
 
-        // Sub-minute precision that the old minutes encoding would have destroyed.
-        var moved = Core.Now - TimeSpan.FromSeconds(90.5) - TimeSpan.FromMilliseconds(123);
-        item.LastMoved = moved;
+        try
+        {
+            item.MoveToWorld(new Point3D(121, 100, 0), Map.Felucca);
 
-        item.RestartDecay();
-        var decayReset = item.DecayResetTime;
-        Assert.NotEqual(default(DateTime), decayReset);
+            // Sub-minute precision that the old minutes encoding would have destroyed.
+            var moved = Core.Now - TimeSpan.FromSeconds(90.5) - TimeSpan.FromMilliseconds(123);
+            item.LastMoved = moved;
 
-        var bytes = SerializeItem(item);
+            item.RestartDecay();
+            var decayReset = item.DecayResetTime;
+            Assert.NotEqual(default(DateTime), decayReset);
 
-        var restored = new Item((Serial)0x7ffff123u);
-        restored.Deserialize(new BufferReader(bytes));
+            var bytes = SerializeItem(item);
 
-        Assert.Equal(moved, restored.LastMoved);
-        Assert.Equal(decayReset, restored.DecayResetTime);
+            // Deserialize enters the copy into the map's sectors, so it must be deleted too.
+            restored = new Item((Serial)0x7ffff123u);
+            restored.Deserialize(new BufferReader(bytes));
 
-        item.Delete();
+            Assert.Equal(moved, restored.LastMoved);
+            Assert.Equal(decayReset, restored.DecayResetTime);
+        }
+        finally
+        {
+            item.Delete();
+            restored?.Delete();
+        }
     }
 }
