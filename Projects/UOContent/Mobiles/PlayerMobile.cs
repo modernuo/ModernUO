@@ -3517,7 +3517,7 @@ namespace Server.Mobiles
 
             foreach (var follower in allFollowers)
             {
-                if (follower is not BaseCreature pet || pet.ControlMaster == null)
+                if (follower is not BaseCreature { Controlled: true } pet || pet.ControlMaster == null)
                 {
                     continue;
                 }

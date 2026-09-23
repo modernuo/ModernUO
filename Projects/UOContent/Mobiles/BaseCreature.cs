@@ -2734,7 +2734,7 @@ namespace Server.Mobiles
         {
             base.AggressiveAction(aggressor, criminal);
 
-            if (ControlMaster != null && NotorietyHandlers.CheckAggressor(ControlMaster.Aggressors, aggressor))
+            if (Controlled && ControlMaster != null && NotorietyHandlers.CheckAggressor(ControlMaster.Aggressors, aggressor))
             {
                 aggressor.Aggressors.Add(AggressorInfo.Create(this, aggressor, true));
             }

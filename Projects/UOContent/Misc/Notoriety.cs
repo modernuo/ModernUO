@@ -233,11 +233,6 @@ namespace Server.Misc
                 return false; // Cannot harm other controlled mobiles from players
             }
 
-            if (pmFrom == null && bcFrom != null && bcFrom.Summoned && target.Player)
-            {
-                return true; // Summons from monsters can attack players
-            }
-
             if (target.Player)
             {
                 return false; // Cannot harm other players
@@ -422,7 +417,7 @@ namespace Server.Misc
                     return Notoriety.CanBeAttacked;
                 }
 
-                master = bcTarg.ControlMaster;
+                master = bcTarg.Controlled ? bcTarg.ControlMaster : null;
 
                 if (Core.ML && master != null)
                 {
