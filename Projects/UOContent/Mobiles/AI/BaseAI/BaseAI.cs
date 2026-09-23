@@ -137,6 +137,12 @@ public abstract partial class BaseAI
     /// </summary>
     public virtual bool OnAggressiveAction(Mobile aggressor)
     {
+        if (Mobile.RefusesGuardTarget(aggressor))
+        {
+            DebugSay("Friendly fire; I keep guarding.");
+            return false;
+        }
+
         // Only a creature somebody can command has been told anything; wild creatures rest on None.
         var toldToStandDown = Mobile.Controlled && Mobile.ControlMaster != null && Mobile.Commandable &&
                               IsStandDownOrder(Mobile.ControlOrder);
@@ -856,7 +862,19 @@ public abstract partial class BaseAI
             return false;
         }
 
-        if (HandleBardProvoked() || HandleControlled() || HandleConstantFocus())
+        if (HandleBardProvoked())
+        {
+            return true;
+        }
+
+        // A controlled creature must not fall through to wild target selection when
+        // its order has no target. Guard in particular normally has no ControlTarget.
+        if (Mobile.Controlled)
+        {
+            return HandleControlled();
+        }
+
+        if (HandleConstantFocus())
         {
             return true;
         }
@@ -911,8 +929,17 @@ public abstract partial class BaseAI
 
     private bool HandleControlled()
     {
-        if (!Mobile.Controlled)
+        if (Mobile.ControlOrder == OrderType.Guard)
         {
+            Mobile.FocusMob = FindGuardTarget();
+            return Mobile.FocusMob != null;
+        }
+
+        // Follow and other non-combat orders may target the owner or a friend.
+        // Only an explicit attack order supplies a combat target.
+        if (Mobile.ControlOrder != OrderType.Attack)
+        {
+            Mobile.FocusMob = null;
             return false;
         }
 

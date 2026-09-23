@@ -769,6 +769,15 @@ public abstract partial class BaseAI
         }
     }
 
+    // Uncontrolled summons (energy vortex, blade spirits) turn on their caster, so a guard still defends against them.
+    internal bool IsGuardAlly(Mobile target)
+    {
+        var master = Mobile.ControlMaster;
+
+        return target == Mobile || master != null &&
+            (target == master || target is BaseCreature { Controlled: true } creature && creature.ControlMaster == master);
+    }
+
     /// <summary>
     /// Selects the aggressor closest to the master. The current combatant is kept
     /// unless a strictly closer one exists. Never mutates order state.
@@ -779,12 +788,12 @@ public abstract partial class BaseAI
         var anchor = controlMaster ?? Mobile;
 
         var current = Mobile.Combatant;
-        var best = current != controlMaster && IsValidCombatant(current) ? current : null;
+        var best = !IsGuardAlly(current) && IsValidCombatant(current) ? current : null;
         var bestDist = best?.GetDistanceToSqrt(anchor) ?? double.MaxValue;
 
         foreach (var aggr in Mobile.GetMobilesInRange(Mobile.RangePerception))
         {
-            if (aggr == best || aggr == Mobile || aggr == controlMaster ||
+            if (aggr == best || IsGuardAlly(aggr) ||
                 aggr.IsDeadBondedPet || !aggr.Alive ||
                 aggr.Combatant != Mobile && (controlMaster == null || aggr.Combatant != controlMaster))
             {
@@ -808,7 +817,7 @@ public abstract partial class BaseAI
             {
                 var aggressor = aggressors[i].Attacker;
 
-                if (aggressor == best || aggressor?.Deleted != false || !aggressor.Alive ||
+                if (aggressor == best || aggressor?.Deleted != false || IsGuardAlly(aggressor) || !aggressor.Alive ||
                     aggressor.IsDeadBondedPet || !Mobile.InRange(aggressor, Mobile.RangePerception))
                 {
                     continue;
