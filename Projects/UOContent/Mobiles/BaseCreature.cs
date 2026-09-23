@@ -4315,7 +4315,7 @@ namespace Server.Mobiles
 
         public virtual void RemovePetFriend(Mobile m)
         {
-            if (!IsPetFriend(m))
+            if (Friends == null)
             {
                 return;
             }
