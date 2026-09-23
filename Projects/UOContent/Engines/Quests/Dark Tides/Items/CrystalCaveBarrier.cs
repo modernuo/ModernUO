@@ -20,7 +20,7 @@ public partial class CrystalCaveBarrier : Item
 
         if (m is BaseCreature creature)
         {
-            mob = creature.ControlMaster;
+            mob = creature.Controlled ? creature.ControlMaster : null;
         }
 
         if (mob is not PlayerMobile pm)
