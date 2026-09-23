@@ -4304,19 +4304,27 @@ namespace Server.Mobiles
 
         public virtual void AddPetFriend(Mobile m)
         {
-            Friends ??= [];
-            if (!Friends.Contains(m))
+            if (IsPetFriend(m))
             {
-                Friends.Add(m);
-                this.MarkDirty();
+                return;
             }
+
+            Friends ??= [];
+            AddToFriends(m);
         }
 
         public virtual void RemovePetFriend(Mobile m)
         {
-            if (Friends?.Remove(m) == true)
+            if (!IsPetFriend(m))
             {
-                this.MarkDirty();
+                return;
+            }
+
+            RemoveFromFriends(m);
+
+            if (Friends.Count == 0)
+            {
+                Friends = null;
             }
         }
 

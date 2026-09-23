@@ -41,7 +41,7 @@ public class PetFriendMembershipTests
             pet.RemovePetFriend(friend);
 
             Assert.False(pet.IsPetFriend(friend));
-            Assert.Empty(pet.Friends);
+            Assert.Null(pet.Friends);
         }
         finally
         {
