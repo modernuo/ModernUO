@@ -177,9 +177,11 @@ public abstract partial class BaseAI
         Mobile.Warmode = true; // the guard order opens in war stance
         Mobile.SetCurrentSpeedToActive();
 
-        Mobile.ControlTarget = null;
-
-        if (!resuming)
+        if (resuming)
+        {
+            Mobile.ControlTarget = null;
+        }
+        else
         {
             SetPersistentOrder(OrderType.Guard);
             Mobile.PlaySound(Mobile.GetAttackSound());
@@ -767,13 +769,18 @@ public abstract partial class BaseAI
         }
     }
 
+    // Uncontrolled summons (energy vortex, blade spirits) turn on their caster, so a guard still defends against them.
     internal bool IsGuardAlly(Mobile target)
     {
+        if (target == null)
+        {
+            return false;
+        }
+
         var master = Mobile.ControlMaster;
-        return target == Mobile || target == master ||
-               master != null && target is BaseCreature creature &&
-               (creature.Controlled && creature.ControlMaster == master ||
-                creature.Summoned && creature.SummonMaster == master);
+
+        return target == Mobile || master != null &&
+            (target == master || target is BaseCreature { Controlled: true } creature && creature.ControlMaster == master);
     }
 
     /// <summary>

@@ -2735,15 +2735,6 @@ namespace Server.Mobiles
                 aggressor.Aggressors.Add(AggressorInfo.Create(this, aggressor, true));
             }
 
-            // Guard must not turn friendly area damage into a fight with the
-            // owner or another owned pet/summon. Keep the aggression bookkeeping
-            // above, and leave explicit attack orders and bard provocation alone.
-            if (_controlled && _controlOrder == OrderType.Guard && !BardProvoked &&
-                AIObject?.IsGuardAlly(aggressor) == true)
-            {
-                return;
-            }
-
             // The AI owns the retaliation policy; a creature that stands down keeps its flee and acquire state.
             if (AIObject?.OnAggressiveAction(aggressor) != true)
             {
@@ -3659,16 +3650,28 @@ namespace Server.Mobiles
             m?.InvalidateProperties();
         }
 
+        // A guard never fights its master or the master's other pets. An explicit Attack order and bard
+        // provocation still may.
+        public bool RefusesGuardTarget(Mobile target) =>
+            _controlled && _controlOrder == OrderType.Guard && !BardProvoked && AIObject?.IsGuardAlly(target) == true;
+
+        // Mobile.AggressiveAction assigns the first aggressor as Combatant before any retaliation policy runs.
+        public override Mobile Combatant
+        {
+            get => base.Combatant;
+            set
+            {
+                if (value != null && RefusesGuardTarget(value))
+                {
+                    return;
+                }
+
+                base.Combatant = value;
+            }
+        }
+
         public override bool CanBeHarmful(Mobile target, bool message, bool ignoreOurBlessedness)
         {
-            // Mobile.AggressiveAction may assign Combatant before our retaliation
-            // handler runs. Reject a guard's friendly target at that assignment too.
-            if (_controlled && _controlOrder == OrderType.Guard && !BardProvoked &&
-                AIObject?.IsGuardAlly(target) == true)
-            {
-                return false;
-            }
-
             if (target is BaseFactionGuard)
             {
                 return false;

@@ -9,7 +9,7 @@ namespace UOContent.Tests.Mobiles.AI;
 [Collection("Sequential UOContent Tests")]
 public class GuardFriendlyFireTests : IDisposable
 {
-    private readonly List<Mobile> _created = new();
+    private readonly List<Mobile> _created = [];
 
     private (PlayerMobile owner, PetTestStub pet) Spawn()
     {
@@ -118,19 +118,32 @@ public class GuardFriendlyFireTests : IDisposable
     }
 
     [SkippableFact]
-    public void GuardIgnoresOwnSummonAttackingOwner()
+    public void GuardIgnoresOwnControlledSummonAttackingOwner()
     {
         var (owner, pet) = Spawn();
-        var summon = new PetTestStub { Summoned = true, SummonMaster = owner };
-        _created.Add(summon);
-        summon.MoveToWorld(new Point3D(1498, 1600, owner.Z), owner.Map);
-        summon.AIObject.AITimer.Stop();
+        var summon = OtherPet(owner, new Point3D(1498, 1600, owner.Z));
+        summon.Summoned = true;
+        summon.SummonMaster = owner;
         summon.Combatant = owner;
         Assert.Same(owner, summon.Combatant);
         pet.AggressiveAction(summon, false);
         Assert.Null(pet.Combatant);
         Assert.False(pet.AIObject.AcquireFocusMob(10, pet.FightMode, false, false, true));
         Assert.Null(pet.FocusMob);
+    }
+
+    [SkippableFact]
+    public void GuardDefendsAgainstOwnUncontrolledSummonAttackingOwner()
+    {
+        var (owner, pet) = Spawn();
+        var vortex = new PetTestStub { Summoned = true, SummonMaster = owner };
+        _created.Add(vortex);
+        vortex.MoveToWorld(new Point3D(1498, 1600, owner.Z), owner.Map);
+        vortex.AIObject.AITimer.Stop();
+        vortex.Combatant = owner;
+        Assert.Same(owner, vortex.Combatant);
+        Assert.True(pet.AIObject.AcquireFocusMob(10, pet.FightMode, false, false, true));
+        Assert.Same(vortex, pet.FocusMob);
     }
 
     [SkippableFact]

@@ -137,6 +137,12 @@ public abstract partial class BaseAI
     /// </summary>
     public virtual bool OnAggressiveAction(Mobile aggressor)
     {
+        if (Mobile.RefusesGuardTarget(aggressor))
+        {
+            DebugSay("Friendly fire; I keep guarding.");
+            return false;
+        }
+
         // Only a creature somebody can command has been told anything; wild creatures rest on None.
         var toldToStandDown = Mobile.Controlled && Mobile.ControlMaster != null && Mobile.Commandable &&
                               IsStandDownOrder(Mobile.ControlOrder);
