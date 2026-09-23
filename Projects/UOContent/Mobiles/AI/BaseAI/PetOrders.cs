@@ -772,11 +772,6 @@ public abstract partial class BaseAI
     // Uncontrolled summons (energy vortex, blade spirits) turn on their caster, so a guard still defends against them.
     internal bool IsGuardAlly(Mobile target)
     {
-        if (target == null)
-        {
-            return false;
-        }
-
         var master = Mobile.ControlMaster;
 
         return target == Mobile || master != null &&
