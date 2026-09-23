@@ -920,6 +920,10 @@ namespace Server.Mobiles
         [CommandProperty(AccessLevel.GameMaster)]
         public bool IsPrisoner { get; set; }
 
+        /// <summary>
+        /// When false, a summon may target its own caster and anyone the caster's harmful spells would spare.
+        /// It still prefers any other target over the caster.
+        /// </summary>
         public virtual bool FollowsAcquireRules => true;
 
         public virtual Faction FactionAllegiance => null;

@@ -996,6 +996,7 @@ public abstract partial class BaseAI
         Mobile enemySummonMob = null;
         var val = double.MinValue;
         var enemySummonVal = double.MinValue;
+        Mobile summonMaster = null;
 
         foreach (var m in map.GetMobilesInRange(Mobile.Location, iRange))
         {
@@ -1005,11 +1006,21 @@ public abstract partial class BaseAI
             }
 
             var bc = m as BaseCreature;
-            var pm = m as PlayerMobile;
 
-            if (IsInvalidSummonTarget(m, bc, pm) || IsInvalidFactionTarget(m, bFacFriend, bFacFoe)
-                                                 || IsInvalidFightModeTarget(m, acqType, bc))
+            if (IsInvalidSummonTarget(m, bc) || IsInvalidFactionTarget(m, bFacFriend, bFacFoe)
+                                             || IsInvalidFightModeTarget(m, acqType, bc))
             {
+                continue;
+            }
+
+            // Only a summon that ignores the acquire rules gets here with its caster; anyone else comes first.
+            if (m == Mobile.SummonMaster)
+            {
+                if (Mobile.InLOS(m))
+                {
+                    summonMaster = m;
+                }
+
                 continue;
             }
 
@@ -1020,15 +1031,14 @@ public abstract partial class BaseAI
                 newFocusMob = m;
                 val = theirVal;
             }
-            else if (Core.AOS && theirVal > enemySummonVal
-                              && Mobile.InLOS(m) && bc?.Summoned == true && bc.Controlled != true)
+            else if (Core.AOS && theirVal > enemySummonVal && Mobile.InLOS(m) && bc is { Summoned: true, Controlled: false })
             {
                 enemySummonMob = m;
                 enemySummonVal = theirVal;
             }
         }
 
-        Mobile.FocusMob = newFocusMob ?? enemySummonMob;
+        Mobile.FocusMob = newFocusMob ?? enemySummonMob ?? summonMaster;
         return Mobile.FocusMob != null;
     }
 
@@ -1036,21 +1046,28 @@ public abstract partial class BaseAI
         m.Deleted || m.Blessed || m == Mobile || m is BaseFamiliar || !m.Alive || m.IsDeadBondedPet ||
         m.AccessLevel > AccessLevel.Player || bPlayerOnly && !m.Player || !Mobile.CanSee(m);
 
-    private bool IsInvalidSummonTarget(Mobile m, BaseCreature bc, PlayerMobile pm)
+    private bool IsInvalidSummonTarget(Mobile m, BaseCreature bc)
     {
+        // A summon whose caster was deleted before a reload comes back with no master.
         if (Core.AOS && bc?.Summoned == true &&
-            (bc.SummonMaster == Mobile || !bc.SummonMaster.Player && IsHostile(bc.SummonMaster)))
+            (bc.SummonMaster == Mobile || bc.SummonMaster is { Player: false } summonMaster && IsHostile(summonMaster)))
         {
             return true;
         }
 
-        if (!Mobile.Summoned || Mobile.SummonMaster == null)
+        var master = Mobile.SummonMaster;
+
+        if (!Mobile.Summoned || master == null)
         {
             return false;
         }
 
-        return m == Mobile.SummonMaster || !SpellHelper.ValidIndirectTarget(Mobile.SummonMaster, m) ||
-               Mobile.IsAnimatedDead && (pm != null || bc?.IsAnimatedDead == true || bc?.Controlled == true);
+        if (Mobile.IsAnimatedDead && (m.Player || bc?.IsAnimatedDead == true || bc?.Controlled == true))
+        {
+            return true;
+        }
+
+        return Mobile.FollowsAcquireRules && (m == master || !SpellHelper.ValidIndirectTarget(master, m));
     }
 
     private bool IsInvalidFactionTarget(Mobile m, bool bFacFriend, bool bFacFoe) =>

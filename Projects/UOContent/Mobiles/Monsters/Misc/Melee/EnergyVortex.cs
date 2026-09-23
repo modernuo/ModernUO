@@ -63,7 +63,8 @@ namespace Server.Mobiles
         public override bool BleedImmune => true;
         public override Poison PoisonImmune => Poison.Lethal;
 
-        public override bool FollowsAcquireRules => Core.AOS || !Summoned || SummonMaster?.Player != true || Map != Map.Felucca;
+        public override bool FollowsAcquireRules => Core.AOS || !Summoned || SummonMaster?.Player != true ||
+                                                    (Map?.Rules & MapRules.HarmfulRestrictions) != 0;
 
         public override double GetFightModeRanking(Mobile m, FightMode acqType, bool bPlayerOnly) =>
             (m.Int + m.Skills.Magery.Value) / Math.Max(this.GetDistanceToSqrt(m), 1.0);
