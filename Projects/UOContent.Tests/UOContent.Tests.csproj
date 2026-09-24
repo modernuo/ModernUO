@@ -11,7 +11,7 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="xunit.SkippableFact" Version="1.5.85" />
-        <PackageReference Include="ModernUO.Serialization.Generator" Version="4.1.0" PrivateAssets="all" />
+        <PackageReference Include="ModernUO.Serialization.Generator" Version="4.2.0" PrivateAssets="all" />
         <ProjectReference Include="..\Server\Server.csproj" />
         <ProjectReference Include="..\UOContent\UOContent.csproj" />
         <ProjectReference Include="..\Server.Tests\Server.Tests.csproj" />
