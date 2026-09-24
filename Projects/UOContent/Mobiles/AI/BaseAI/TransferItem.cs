@@ -156,11 +156,6 @@ internal sealed partial class TransferItem : Item
 
     private void TransferPetOwnership(Mobile from, Mobile to)
     {
-        if (_creature.SummonMaster != null)
-        {
-            _creature.SummonMaster = to;
-        }
-
         _creature.ClearPetFriends();
         _creature.IssueOrder(OrderType.Follow, null, to);
         _creature.BondingBegin = DateTime.MinValue;
