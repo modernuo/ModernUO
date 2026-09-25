@@ -134,6 +134,13 @@ namespace Server.Mobiles
                 return now;
             }
 
+            // A backwards clock adjustment must not let a future-dated anchor extend the buyback
+            // past RestockDelay: clamp the anchor to now instead of trusting it.
+            if (lastRestock > now)
+            {
+                lastRestock = now;
+            }
+
             var next = lastRestock + restockDelay;
 
             if (next > now)
@@ -153,11 +160,20 @@ namespace Server.Mobiles
             if (!item.Deleted && !_buybackPurgeToken.Running)
             {
                 var delay = GetNextBuybackPurge(LastRestock, RestockDelay, Core.Now) - Core.Now;
-                Timer.StartTimer(delay, PurgeBuyback, out _buybackPurgeToken);
+                Timer.StartTimer(delay, CancelAndPurgeBuyback, out _buybackPurgeToken);
             }
         }
 
         private void PurgeBuyback() => (FindItemOnLayer(Layer.ShopBuy) as VendorBuybackPack)?.Purge();
+
+        // A fired one-shot token-bearing timer isn't returned to its pool unless its token is
+        // explicitly cancelled (TimerExecutionToken.Cancel sets _returnOnDetach), so the timer's
+        // own callback cancels itself here instead of leaving that to the next caller.
+        private void CancelAndPurgeBuyback()
+        {
+            _buybackPurgeToken.Cancel();
+            PurgeBuyback();
+        }
 
         public override void OnDelete()
         {
@@ -178,7 +194,7 @@ namespace Server.Mobiles
         public virtual void Restock()
         {
             LastRestock = Core.Now;
-            PurgeBuyback();
+            CancelAndPurgeBuyback();
 
             var buyInfo = GetBuyInfo();
 
@@ -772,6 +788,11 @@ namespace Server.Mobiles
             CheckMorph();
 
             LoadSBInfo();
+
+            // LoadSBInfo just moved the restock grid's anchor to now; a purge timer armed against
+            // the old anchor would fire off that grid, so drop it (and any stale buyback) here
+            // rather than in LoadSBInfo, which also runs during deserialization.
+            CancelAndPurgeBuyback();
         }
 
         public virtual int GetRandomNecromancerHue()
@@ -1316,7 +1337,16 @@ namespace Server.Mobiles
             if (FindItemOnLayer(Layer.ShopBuy) is not VendorBuybackPack)
             {
                 // Deleting entities while the world is still deserializing is unsafe; replace on the first tick.
-                Timer.StartTimer(() => _ = BuyPack);
+                // The vendor itself may be gone by then, and BuyPack would add a fresh pack to a deleted mobile.
+                Timer.StartTimer(
+                    () =>
+                    {
+                        if (!Deleted)
+                        {
+                            _ = BuyPack;
+                        }
+                    }
+                );
             }
 
             if (IsParagon)
