@@ -1347,7 +1347,12 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
                         m_Map.OnLeave(this);
                     }
 
-                    SendRemovePacket();
+                    if (m_Parent is not Container)
+                    {
+                        // A contained item only changes map along with its parent or root; their own
+                        // removal already clears this subtree for every client that knew about it.
+                        SendRemovePacket();
+                    }
                 }
 
                 var items = LookupItems();
@@ -4046,7 +4051,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
         var removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
 
-        if (m_Parent is Container cont && !cont.IsChildPublic(this))
+        if (m_Parent is Container cont && !cont.IsPublicContainer && !cont.IsChildPublic(this))
         {
             // Private children are only ever sent to these recipients (see ProcessDelta); nobody else knows them.
             OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
