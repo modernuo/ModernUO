@@ -399,7 +399,9 @@ public partial class Container : Item
     /// <summary>
     /// Whether <paramref name="child"/> was sent to every client in range rather than only to the root
     /// mobile, the secure-trade partner and openers. Removal of a public child is broadcast; removal of any
-    /// other child reaches only the clients that were sent it.
+    /// other child reaches only the clients that were sent it. Overrides may only widen this beyond
+    /// <see cref="IsPublicContainer"/>, never narrow it: a public container's children always broadcast
+    /// their removal regardless of what an override returns here.
     /// </summary>
     public virtual bool IsChildPublic(Item child) => IsPublicContainer;
 
