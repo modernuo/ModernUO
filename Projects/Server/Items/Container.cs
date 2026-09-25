@@ -396,6 +396,13 @@ public partial class Container : Item
     /// </summary>
     public virtual bool SkipsChildSerialization => false;
 
+    /// <summary>
+    /// Removal of a direct child is sent only to the root mobile and openers instead of every
+    /// client in range. For containers whose contents were never sent to anyone else, such as
+    /// an NPC vendor's buyback pack, where a mass purge would otherwise flood nearby clients.
+    /// </summary>
+    public virtual bool RestrictsChildRemoval => false;
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public override void OnItemAdded(Item item)
     {
