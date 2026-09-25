@@ -4046,16 +4046,28 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
         var removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
 
-        if (m_Parent is Container { RestrictsChildRemoval: true } cont)
+        if (m_Parent is Container cont && !cont.IsChildPublic(this))
         {
-            // Only the root mobile and openers can have been sent a child of this container.
+            // Private children are only ever sent to these recipients (see ProcessDelta); nobody else knows them.
             OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
 
             var root = cont.RootParent as Mobile;
+            SendRemoveTo(root, worldLoc, removeEntity);
 
-            if (root?.NetState != null && root.InRange(worldLoc, GetUpdateRange(root)))
+            var trade = GetSecureTradeCont()?.Trade;
+            // Trade.From/To are unassigned while SecureTrade's own constructor is still adding the
+            // VirtualCheck to each side's container, so both must stay null-conditional.
+            var tradeFrom = trade?.From?.Mobile;
+            var tradeTo = trade?.To?.Mobile;
+
+            if (tradeFrom != root)
             {
-                root.NetState.Send(removeEntity);
+                SendRemoveTo(tradeFrom, worldLoc, removeEntity);
+            }
+
+            if (tradeTo != root && tradeTo != tradeFrom)
+            {
+                SendRemoveTo(tradeTo, worldLoc, removeEntity);
             }
 
             var openers = cont.Openers;
@@ -4066,12 +4078,10 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
                 {
                     var mob = openers[i];
 
-                    if (mob == root || mob.NetState == null || mob.Map != m_Map || !mob.InRange(worldLoc, GetUpdateRange(mob)))
+                    if (mob != root && mob != tradeFrom && mob != tradeTo)
                     {
-                        continue;
+                        SendRemoveTo(mob, worldLoc, removeEntity);
                     }
-
-                    mob.NetState.Send(removeEntity);
                 }
             }
 
@@ -4087,6 +4097,14 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
                 OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
                 state.Send(removeEntity);
             }
+        }
+    }
+
+    private void SendRemoveTo(Mobile m, Point3D worldLoc, ReadOnlySpan<byte> removeEntity)
+    {
+        if (m?.NetState != null && m.Map == m_Map && m.InRange(worldLoc, GetUpdateRange(m)))
+        {
+            m.NetState.Send(removeEntity);
         }
     }
 
