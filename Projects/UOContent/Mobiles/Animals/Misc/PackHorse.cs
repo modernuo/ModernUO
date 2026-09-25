@@ -137,7 +137,7 @@ namespace Server.Mobiles
         public static bool CheckAccess(BaseCreature animal, Mobile from) =>
             from == animal || from.AccessLevel >= AccessLevel.GameMaster || from.Alive && animal.Controlled &&
             !animal.IsDeadPet &&
-            (from == animal.ControlMaster || from == animal.SummonMaster || animal.IsPetFriend(from));
+            (from == animal.GetMaster() || animal.IsPetFriend(from));
 
         public static void CombineBackpacks(BaseCreature animal)
         {

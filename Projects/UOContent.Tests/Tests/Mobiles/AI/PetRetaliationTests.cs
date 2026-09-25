@@ -197,7 +197,7 @@ public class PetRetaliationTests : IDisposable
 
         var summon = new StandDownPet();
         summon.Summoned = true;
-        summon.SummonMaster = caster;
+        summon.Master = caster;
         summon.MoveToWorld(new Point3D(1001, 1000, 0), Map.Felucca);
         summon.AIObject.AITimer?.Stop();
         _created.Add(summon);

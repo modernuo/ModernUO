@@ -3665,7 +3665,7 @@ namespace Server.Multis
                 return false;
             }
 
-            m = bc.ControlMaster ?? bc.SummonMaster;
+            m = bc.GetMaster();
 
             return m != null && (m.AccessLevel > AccessLevel.Player || IsFriend(m) || Access?.Contains(m) == true);
         }

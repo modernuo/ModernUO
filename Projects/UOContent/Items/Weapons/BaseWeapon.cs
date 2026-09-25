@@ -1703,7 +1703,7 @@ public abstract partial class BaseWeapon
             return 0;
         }
 
-        var master = bc.ControlMaster ?? bc.SummonMaster;
+        var master = bc.GetMaster();
 
         if (master == null)
         {
@@ -1714,7 +1714,7 @@ public abstract partial class BaseWeapon
         foreach (var m in defender.GetMobilesInRange<BaseCreature>(1))
         {
             if (m != attacker && (m.PackInstinct & bc.PackInstinct) != 0 && (m.Controlled || m.Summoned) &&
-                master == (m.ControlMaster ?? m.SummonMaster) && m.Combatant == defender)
+                master == m.GetMaster() && m.Combatant == defender)
             {
                 inPack++;
             }
@@ -1736,7 +1736,7 @@ public abstract partial class BaseWeapon
         {
             foreach (var m in defender.GetMobilesInRange<Clone>(4))
             {
-                if (m?.Summoned == true && m.SummonMaster == defender)
+                if (m?.SummonMaster == defender)
                 {
                     // Your attack has been diverted to a nearby mirror image of your target!
                     attacker.SendLocalizedMessage(1063141);
@@ -2100,7 +2100,7 @@ public abstract partial class BaseWeapon
 
             if (attacker is VampireBatFamiliar bc)
             {
-                var caster = bc.ControlMaster ?? bc.SummonMaster;
+                var caster = bc.GetMaster();
 
                 if (caster != null && caster.Map == bc.Map)
                 {

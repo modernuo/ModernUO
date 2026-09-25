@@ -94,7 +94,7 @@ public abstract partial class BaseFamiliar : BaseCreature
     {
         base.GetContextMenuEntries(from, ref list);
 
-        if (from.Alive && Controlled && from == ControlMaster && from.InRange(this, 14))
+        if (from.Alive && from == ControlMaster && from.InRange(this, 14))
         {
             list.Add(new ReleaseEntry());
         }

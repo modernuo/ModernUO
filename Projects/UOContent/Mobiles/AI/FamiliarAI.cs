@@ -152,7 +152,7 @@ public class FamiliarAI : BaseAI
         var combatant = target.Combatant;
 
         return combatant == Mobile || combatant == master ||
-               combatant is BaseCreature { Controlled: true } pet && pet.ControlMaster == master;
+               combatant is BaseCreature pet && pet.ControlMaster == master;
     }
 
     // Closest mobile in a fight with the caster's side.

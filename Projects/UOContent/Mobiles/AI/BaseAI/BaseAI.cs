@@ -144,7 +144,7 @@ public abstract partial class BaseAI
         }
 
         // Only a creature somebody can command has been told anything; wild creatures rest on None.
-        var toldToStandDown = Mobile.Controlled && Mobile.ControlMaster != null && Mobile.Commandable &&
+        var toldToStandDown = Mobile.ControlMaster != null && Mobile.Commandable &&
                               IsStandDownOrder(Mobile.ControlOrder);
 
         if (Mobile.StandsDownOnCommand && toldToStandDown)
@@ -1049,15 +1049,15 @@ public abstract partial class BaseAI
     private bool IsInvalidSummonTarget(Mobile m, BaseCreature bc)
     {
         // A summon whose caster was deleted before a reload comes back with no master.
-        if (Core.AOS && bc?.Summoned == true &&
-            (bc.SummonMaster == Mobile || bc.SummonMaster is { Player: false } summonMaster && IsHostile(summonMaster)))
+        if (Core.AOS &&
+            (bc?.SummonMaster == Mobile || bc?.SummonMaster is { Player: false } summonMaster && IsHostile(summonMaster)))
         {
             return true;
         }
 
         var master = Mobile.SummonMaster;
 
-        if (!Mobile.Summoned || master == null)
+        if (master == null)
         {
             return false;
         }

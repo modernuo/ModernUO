@@ -407,32 +407,8 @@ namespace Server.Spells
             };
         }
 
-        public static Guild GetGuildFor(Mobile m)
-        {
-            var g = m.Guild as Guild;
-
-            if (g == null && m is BaseCreature c)
-            {
-                m = c.ControlMaster;
-
-                if (m != null)
-                {
-                    g = m.Guild as Guild;
-                }
-
-                if (g == null)
-                {
-                    m = c.SummonMaster;
-
-                    if (m != null)
-                    {
-                        g = m.Guild as Guild;
-                    }
-                }
-            }
-
-            return g;
-        }
+        public static Guild GetGuildFor(Mobile m) =>
+            m.Guild as Guild ?? (m as BaseCreature)?.GetMaster()?.Guild as Guild;
 
         public static bool ValidIndirectTarget(Mobile from, Mobile to)
         {
@@ -475,12 +451,12 @@ namespace Server.Spells
 
             if (bcTarg != null && (bcTarg.Controlled || bcTarg.Summoned))
             {
-                if (bcTarg.ControlMaster == from || bcTarg.SummonMaster == from)
+                if (bcTarg.GetMaster() == from)
                 {
                     return false;
                 }
 
-                if (p != null && (p.Contains(bcTarg.ControlMaster) || p.Contains(bcTarg.SummonMaster)))
+                if (p != null && p.Contains(bcTarg.GetMaster()))
                 {
                     return false;
                 }
@@ -488,14 +464,14 @@ namespace Server.Spells
 
             if (bcFrom != null && (bcFrom.Controlled || bcFrom.Summoned))
             {
-                if (bcFrom.ControlMaster == to || bcFrom.SummonMaster == to)
+                if (bcFrom.GetMaster() == to)
                 {
                     return false;
                 }
 
                 p = Party.Get(to);
 
-                if (p != null && (p.Contains(bcFrom.ControlMaster) || p.Contains(bcFrom.SummonMaster)))
+                if (p != null && p.Contains(bcFrom.GetMaster()))
                 {
                     return false;
                 }

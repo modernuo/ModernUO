@@ -123,7 +123,7 @@ public class GuardFriendlyFireTests : IDisposable
         var (owner, pet) = Spawn();
         var summon = OtherPet(owner, new Point3D(1498, 1600, owner.Z));
         summon.Summoned = true;
-        summon.SummonMaster = owner;
+        summon.Master = owner;
         summon.Combatant = owner;
         Assert.Same(owner, summon.Combatant);
         pet.AggressiveAction(summon, false);
@@ -136,7 +136,7 @@ public class GuardFriendlyFireTests : IDisposable
     public void GuardDefendsAgainstOwnUncontrolledSummonAttackingOwner()
     {
         var (owner, pet) = Spawn();
-        var vortex = new PetTestStub { Summoned = true, SummonMaster = owner };
+        var vortex = new PetTestStub { Summoned = true, Master = owner };
         _created.Add(vortex);
         vortex.MoveToWorld(new Point3D(1498, 1600, owner.Z), owner.Map);
         vortex.AIObject.AITimer.Stop();

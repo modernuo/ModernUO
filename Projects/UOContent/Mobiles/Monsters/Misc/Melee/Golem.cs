@@ -144,7 +144,7 @@ namespace Server.Mobiles
         {
             if (Controlled || Summoned)
             {
-                var master = ControlMaster ?? SummonMaster;
+                var master = GetMaster();
 
                 if (master?.Player == true && master.Map == Map && master.InRange(Location, 20))
                 {

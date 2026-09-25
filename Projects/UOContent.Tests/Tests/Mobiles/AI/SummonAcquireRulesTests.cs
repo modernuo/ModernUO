@@ -24,7 +24,7 @@ public class SummonAcquireRulesTests : IDisposable
     {
         _created.Add(summon);
         summon.Summoned = true;
-        summon.SummonMaster = caster;
+        summon.Master = caster;
         summon.MoveToWorld(new Point3D(x, 1600, caster.Map.GetAverageZ(x, 1600)), caster.Map);
         summon.AIObject.AITimer.Stop();
         return summon;

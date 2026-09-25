@@ -237,7 +237,7 @@ public partial class StrongBackpack : Backpack // Used on Pack animals
         base.CheckHold(m, item, false, checkItems, plusItems, plusWeight);
 
     public override bool CheckContentDisplay(Mobile from) =>
-        RootParent is BaseCreature creature && creature.Controlled && creature.ControlMaster == from ||
+        RootParent is BaseCreature creature && creature.ControlMaster == from ||
         base.CheckContentDisplay(from);
 }
 

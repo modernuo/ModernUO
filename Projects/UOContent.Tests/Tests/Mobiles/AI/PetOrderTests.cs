@@ -762,7 +762,7 @@ public class PetOrderTests : IDisposable
     {
         var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
         pet.Summoned = true;
-        pet.SummonMaster = master;
+        pet.Master = master;
 
         pet.ControlOrder = OrderType.Release;
 

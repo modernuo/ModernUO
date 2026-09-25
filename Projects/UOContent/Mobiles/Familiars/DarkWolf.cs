@@ -52,7 +52,7 @@ public partial class DarkWolfFamiliar : BaseFamiliar
 
         m_NextRestore = Core.Now + TimeSpan.FromSeconds(2.0);
 
-        var caster = ControlMaster ?? SummonMaster;
+        var caster = GetMaster();
 
         if (caster != null)
         {
