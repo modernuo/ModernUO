@@ -267,6 +267,37 @@ public override int TreasureMapLevel => 3;               // Drops treasure map
 public override double WeaponAbilityChance => 0.4;        // Weapon ability chance
 ```
 
+### Masters: owner, summoner, responsible party
+
+A creature stores one master. Read it through the view that matches the question:
+
+| Read | Returns | Use it for |
+|---|---|---|
+| `ControlMaster` | the master while `Controlled`, else null | the owner: commands, bonding, friends, stabling |
+| `SummonMaster` | the master while `Summoned`, else null | the summoner: dispel, summon acquire rules |
+| `GetMaster()` | `ControlMaster ?? SummonMaster` | whoever answers for the creature: notoriety, kill credit, guild and party checks |
+| `Master` | the stored reference, flags ignored | a creature's own AI following or defending a master it has no flag for |
+
+A master with neither flag is legal. A meer mage's enraged creatures carry their meer in `Master`
+without being `Controlled` or `Summoned`, so `GetMaster()` is null and the meer never answers for them.
+
+To set a master, tame through `SetControlMaster(m)` (it raises `Controlled`, resets the order and
+checks follower slots) and summon through `BaseCreature.Summon(...)`. Assign `Master` directly only
+for a master with no flag. The `ControlMaster` and `SummonMaster` setters are aliases for `Master`:
+they don't set `Controlled` or `Summoned`, so the value reads back as null until the flag is set.
+Every assignment moves the creature's follower slots from the old master to the new one.
+
+The view already checks its flag, so don't repeat it:
+
+```csharp
+// Redundant: ControlMaster is null unless Controlled
+if (Controlled && ControlMaster == from) { ... }
+if (ControlMaster == from) { ... }
+
+// Not equivalent: without the flag this is true for every wild creature
+if (Controlled && ControlMaster != from) { ... }
+```
+
 ### Creature Speeds (think vs move clocks)
 
 All "speed" values are **delays in seconds** (smaller = faster). A creature runs two clocks:
