@@ -30,6 +30,19 @@ public class ContainerChildRemovalTests
         public override bool IsChildPublic(Item child) => child == PublicChild;
     }
 
+    // An override that narrows below IsPublicContainer instead of only widening it, exercising the guard
+    // that keeps a public container's removals broadcast regardless of what IsChildPublic returns.
+    private class PublicContainerWithNarrowingOverride : Container
+    {
+        public PublicContainerWithNarrowingOverride() : base(0xE75)
+        {
+        }
+
+        public override bool IsPublicContainer => true;
+
+        public override bool IsChildPublic(Item child) => false;
+    }
+
     private static readonly Point3D _ownerLoc = new(1500, 1500, 0);
 
     private static (NetState, Mobile) CreateClient(Point3D location)
@@ -189,6 +202,25 @@ public class ContainerChildRemovalTests
     }
 
     [Fact]
+    public void PublicContainer_NarrowingChildOverride_StillBroadcastsRemoval()
+    {
+        var (ns, client) = CreateClient(new Point3D(_ownerLoc.X + 1, _ownerLoc.Y, 0));
+        var owner = CreateOwnerWith(new PublicContainerWithNarrowingOverride());
+        var child = new Item(0x1234);
+        ((Container)owner.FindItemOnLayer(Layer.ShopBuy)).DropItem(child);
+
+        try
+        {
+            child.Delete();
+            Assert.True(ReceivedRemove(ns, child.Serial));
+        }
+        finally
+        {
+            Cleanup(ns, client, owner);
+        }
+    }
+
+    [Fact]
     public void IsChildPublic_BroadcastsOnlyThatChild()
     {
         var (ns, client) = CreateClient(new Point3D(_ownerLoc.X + 1, _ownerLoc.Y, 0));
@@ -266,6 +298,37 @@ public class ContainerChildRemovalTests
             trade.To.Container.Delete();
             DisposeClient(nsA, a);
             DisposeClient(nsB, b);
+        }
+    }
+
+    [Fact]
+    public void FacetChange_DoesNotRemoveNestedContainerChildren()
+    {
+        var (ownerNs, owner) = CreateClient(_ownerLoc);
+        var (bystanderNs, bystander) = CreateClient(new Point3D(_ownerLoc.X + 1, _ownerLoc.Y, 0));
+
+        var backpack = new Container(0xE75) { Layer = Layer.Backpack };
+        owner.AddItem(backpack);
+
+        var pouch = new Container(0xE75);
+        backpack.DropItem(pouch);
+
+        var reagent = new Item(0xF7A);
+        pouch.DropItem(reagent);
+
+        try
+        {
+            owner.MoveToWorld(_ownerLoc, Map.Trammel);
+
+            Assert.False(ReceivedRemove(ownerNs, pouch.Serial));
+            Assert.False(ReceivedRemove(ownerNs, reagent.Serial));
+            Assert.False(ReceivedRemove(bystanderNs, pouch.Serial));
+            Assert.False(ReceivedRemove(bystanderNs, reagent.Serial));
+        }
+        finally
+        {
+            DisposeClient(ownerNs, owner);
+            DisposeClient(bystanderNs, bystander);
         }
     }
 
