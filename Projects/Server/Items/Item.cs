@@ -922,7 +922,10 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         }
 
         var info = LookupCompactInfo();
-        var items = LookupItems();
+        // Skipping containers never write their child serials: those children are not saved as
+        // top-level records (see SkipSerialization), so a written serial can be handed to an
+        // unrelated new item during the next load's synchronous deserialize loop.
+        var items = this is Container { SkipsChildSerialization: true } ? EmptyItems : LookupItems();
 
         if (m_Direction != Direction.North)
         {
@@ -2926,6 +2929,13 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
                             m_Parent = null;
                         }
 
+                        // A skipping container never wrote its children's serials (see Serialize), so this
+                        // item's frozen parent reference is stale/unreachable: treat it as a missing parent.
+                        if (m_Parent is Container { SkipsChildSerialization: true })
+                        {
+                            m_Parent = null;
+                        }
+
                         if (m_Parent == null && (parent.IsMobile || parent.IsItem))
                         {
                             Timer.DelayCall(Delete);
@@ -3085,6 +3095,13 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
                             m_Parent = World.FindItem(parent);
                         }
                         else
+                        {
+                            m_Parent = null;
+                        }
+
+                        // A skipping container never wrote its children's serials (see Serialize), so this
+                        // item's frozen parent reference is stale/unreachable: treat it as a missing parent.
+                        if (m_Parent is Container { SkipsChildSerialization: true })
                         {
                             m_Parent = null;
                         }
@@ -4031,7 +4048,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
         if (m_Parent is Container { RestrictsChildRemoval: true } cont)
         {
-            // Same recipients ProcessDelta uses for contained-item updates: nobody else was told this item exists.
+            // Only the root mobile and openers can have been sent a child of this container.
             OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
 
             var root = cont.RootParent as Mobile;
