@@ -1698,7 +1698,7 @@ public abstract partial class BaseWeapon
             return 0;
         }
 
-        if (attacker is not BaseCreature bc || bc.PackInstinct == PackInstinct.None || !bc.Controlled && !bc.Summoned)
+        if (attacker is not BaseCreature bc || bc.PackInstinct == PackInstinct.None)
         {
             return 0;
         }
@@ -1713,8 +1713,7 @@ public abstract partial class BaseWeapon
         var inPack = 1;
         foreach (var m in defender.GetMobilesInRange<BaseCreature>(1))
         {
-            if (m != attacker && (m.PackInstinct & bc.PackInstinct) != 0 && (m.Controlled || m.Summoned) &&
-                master == m.GetMaster() && m.Combatant == defender)
+            if (m != attacker && (m.PackInstinct & bc.PackInstinct) != 0 && master == m.GetMaster() && m.Combatant == defender)
             {
                 inPack++;
             }

@@ -449,29 +449,17 @@ namespace Server.Spells
                 return false;
             }
 
-            if (bcTarg != null && (bcTarg.Controlled || bcTarg.Summoned))
+            if (bcTarg?.GetMaster() is { } targMaster)
             {
-                if (bcTarg.GetMaster() == from)
-                {
-                    return false;
-                }
-
-                if (p != null && p.Contains(bcTarg.GetMaster()))
+                if (targMaster == from || p?.Contains(targMaster) == true)
                 {
                     return false;
                 }
             }
 
-            if (bcFrom != null && (bcFrom.Controlled || bcFrom.Summoned))
+            if (bcFrom?.GetMaster() is { } fromMaster)
             {
-                if (bcFrom.GetMaster() == to)
-                {
-                    return false;
-                }
-
-                p = Party.Get(to);
-
-                if (p != null && p.Contains(bcFrom.GetMaster()))
+                if (fromMaster == to || Party.Get(to)?.Contains(fromMaster) == true)
                 {
                     return false;
                 }
