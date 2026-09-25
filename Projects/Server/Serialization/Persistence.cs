@@ -136,6 +136,69 @@ public abstract class Persistence
         }
     }
 
+    /// <summary>
+    /// Off-loop, before a save's workers wake: true when every persistence that can copy
+    /// records still has the file its placements refer to.
+    /// </summary>
+    internal static bool ValidateCopySources()
+    {
+        var valid = true;
+
+        foreach (var p in _registry)
+        {
+            valid &= p.ValidateCopySource();
+        }
+
+        return valid;
+    }
+
+    /// <summary>Loop, after a save was published: the files just written are the new copy sources.</summary>
+    internal static void CommitSaveAll(bool full)
+    {
+        foreach (var p in _registry)
+        {
+            p.CommitSave(full);
+        }
+    }
+
+    /// <summary>
+    /// Loop, after a save failed anywhere between the freeze and the publish: placements may
+    /// point into a file that never became the save, so nothing may be copied or compared
+    /// until a full save commits.
+    /// </summary>
+    internal static void OnSaveFailedAll()
+    {
+        foreach (var p in _registry)
+        {
+            p.OnSaveFailed();
+        }
+    }
+
+    internal static void RefreshTrustAll()
+    {
+        foreach (var p in _registry)
+        {
+            p.RefreshTrust();
+        }
+    }
+
+    /// <summary>Whether entities of this concrete type may be copied from the previous save.</summary>
+    internal virtual bool IsTrustedType(Type type) => false;
+
+    internal virtual void RefreshTrust()
+    {
+    }
+
+    internal virtual bool ValidateCopySource() => true;
+
+    internal virtual void CommitSave(bool full)
+    {
+    }
+
+    internal virtual void OnSaveFailed()
+    {
+    }
+
     internal static void PostDeserializeAll()
     {
         foreach (var p in _registry)

@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -31,6 +32,12 @@ public interface IGenericEntityPersistence
     string Name { get; }
 
     int EntityCount { get; }
+
+    /// <summary>Concrete entity types registered since boot.</summary>
+    int TypeCount { get; }
+
+    /// <summary>Registered types whose clean entities a delta save may copy (eligible and not denylisted).</summary>
+    int TrustedTypeCount { get; }
 
     void DeserializeIndexes(string savePath, Dictionary<ulong, string> typesDb);
 
@@ -72,7 +79,53 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
     private readonly Dictionary<Type, ushort> _typeIndexes = new();
     private readonly List<Type> _typeTable = [];
 
+    // Delta saves: whether entities of each registered type may be copied from the previous
+    // save, indexed like _typeTable. Rebuilt on the loop when a type registers or the denylist
+    // changes; read by the save workers during the freeze.
+    private bool[] _trustedByTypeIndex = [];
+
+    // Serials freed since the last committed full save. A clean referrer's copied record can
+    // still name one of them, so they are not reissued until every referrer has been rewritten.
+    // A full save rotates the live set aside at its freeze (serials freed after the freeze
+    // belong to the next save) and drops it when the save commits, or merges it back if not.
+    private HashSet<Serial> _unreusableSerials;
+    private HashSet<Serial> _unreusableSerialsClearedOnCommit;
+
+    // Identity of the committed .bin every placement refers to (-1 = none), and the identity
+    // of the file the writer just produced, committed once the save is published.
+    private long _committedBinLength = -1;
+    private DateTime _committedBinWriteTime;
+    private long _committedAnchorTicks;
+    private long _stagedBinLength = -1;
+    private DateTime _stagedBinWriteTime;
+    private long _stagedAnchorTicks;
+    private bool _copySourceValid;
+
     internal IReadOnlyList<Type> TypeTable => _typeTable;
+
+    public int TypeCount => _typeTable.Count;
+
+    public int TrustedTypeCount
+    {
+        get
+        {
+            var trusted = 0;
+            for (var i = 0; i < _typeTable.Count; i++)
+            {
+                trusted += _trustedByTypeIndex[i] ? 1 : 0;
+            }
+
+            return trusted;
+        }
+    }
+
+    /// <summary>The file placements refer to. Overridable so tests can point at their own directory.</summary>
+    protected virtual string CommittedBinPath => Path.Combine(World.SavePath, Name, $"{Name}.bin");
+
+    internal bool HasCommittedCopySource => _committedBinLength >= 0;
+
+    internal int UnreusableSerialCount =>
+        (_unreusableSerials?.Count ?? 0) + (_unreusableSerialsClearedOnCommit?.Count ?? 0);
 
     internal bool TryGetTypeIndex(Type type, out ushort index) => _typeIndexes.TryGetValue(type, out index);
 
@@ -90,6 +143,113 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
 
             index = (ushort)_typeTable.Count;
             _typeTable.Add(type);
+
+            if (_trustedByTypeIndex.Length < _typeTable.Count)
+            {
+                Array.Resize(ref _trustedByTypeIndex, Math.Max(_typeTable.Count, _trustedByTypeIndex.Length * 2));
+            }
+
+            _trustedByTypeIndex[index] = DeltaSaves.IsTrusted(type);
+        }
+    }
+
+    internal override bool IsTrustedType(Type type) =>
+        _typeIndexes.TryGetValue(type, out var index) && _trustedByTypeIndex[index];
+
+    internal override void RefreshTrust()
+    {
+        for (var i = 0; i < _typeTable.Count; i++)
+        {
+            _trustedByTypeIndex[i] = DeltaSaves.IsTrusted(_typeTable[i]);
+        }
+    }
+
+    internal override bool ValidateCopySource()
+    {
+        // No committed file: the first save after boot, or the save after a failure.
+        if (_committedBinLength < 0)
+        {
+            _copySourceValid = false;
+            return false;
+        }
+
+        // Length and write time catch replacements; the idx anchor (the save-start time, unique
+        // per save) catches a different save that happens to match both.
+        var file = new FileInfo(CommittedBinPath);
+        _copySourceValid = file.Exists && file.Length == _committedBinLength &&
+                           file.LastWriteTimeUtc == _committedBinWriteTime &&
+                           ReadIndexAnchor(Path.ChangeExtension(CommittedBinPath, ".idx")) == _committedAnchorTicks;
+
+        if (!_copySourceValid)
+        {
+            logger.Warning(
+                "{Name}: the previous save file changed since it was written; the next save serializes everything.",
+                Name
+            );
+        }
+
+        return _copySourceValid;
+    }
+
+    private static long ReadIndexAnchor(string idxPath)
+    {
+        try
+        {
+            using var fs = new FileStream(idxPath, FileMode.Open, FileAccess.Read, FileShare.Read, 16);
+            Span<byte> header = stackalloc byte[12];
+            if (fs.Read(header) != header.Length || BinaryPrimitives.ReadInt32LittleEndian(header) < 5)
+            {
+                return -1;
+            }
+
+            return BinaryPrimitives.ReadInt64LittleEndian(header[4..]);
+        }
+        catch (IOException)
+        {
+            return -1;
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return -1;
+        }
+    }
+
+    internal override void CommitSave(bool full)
+    {
+        _committedBinLength = _stagedBinLength;
+        _committedBinWriteTime = _stagedBinWriteTime;
+        _committedAnchorTicks = _stagedAnchorTicks;
+        _stagedBinLength = -1;
+
+        if (full)
+        {
+            // Every referrer was rewritten by this save; serials freed after its freeze are
+            // still in the live set.
+            _unreusableSerialsClearedOnCommit = null;
+        }
+    }
+
+    internal override void OnSaveFailed()
+    {
+        // Placements may already point into the file that was never published. Forget the
+        // committed file so nothing is copied or compared until a full save commits and
+        // rewrites every placement.
+        _committedBinLength = -1;
+        _stagedBinLength = -1;
+        _copySourceValid = false;
+
+        if (_unreusableSerialsClearedOnCommit != null)
+        {
+            if (_unreusableSerials == null)
+            {
+                _unreusableSerials = _unreusableSerialsClearedOnCommit;
+            }
+            else
+            {
+                _unreusableSerials.UnionWith(_unreusableSerialsClearedOnCommit);
+            }
+
+            _unreusableSerialsClearedOnCommit = null;
         }
     }
 
@@ -128,117 +288,128 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
         PathUtility.EnsureDirectory(dir);
 
         var threads = World._threadWorkers;
+        var plan = DeltaSaves.Plan;
+        var report = DeltaSaves.Report;
+        var binPath = Path.Combine(dir, $"{Name}.bin");
+
+        // The previous save file backs copied records and the verification of re-serialized
+        // ones. It is opened only when the plan can need it and it still is the file the
+        // placements refer to (an empty persistence has no file to open and nothing to copy);
+        // a copied record that finds no source aborts the save.
+        using var source = plan.SerializeAll && !plan.Verify || !_copySourceValid
+            ? null
+            : CopySource.TryOpen(CommittedBinPath, _committedBinLength, _committedBinWriteTime);
+
+        long binPosition;
 
         // 1MB buffer: segments are written as large spans, but idx entries and skip splits
         // still benefit on the snapshot thread.
-        using var binFs = new FileStream(
-            Path.Combine(dir, $"{Name}.bin"), FileMode.Create, FileAccess.Write, FileShare.None, 1024 * 1024
-        );
-        // v4 records are fixed-width 26 bytes; the v5 header carries the save-start anchor
-        // and the type table (name lengths vary — 64 bytes per entry is a staging hint, not
-        // a contract).
-        var expectedIdxSize = 20 + 26L * EntitiesBySerial.Count + 64L * _typeTable.Count;
-        using var idx = new FileBufferWriter(Path.Combine(dir, $"{Name}.idx"), expectedIdxSize);
-
-        var binPosition = 0L;
-
-        // Support for non-entity generic serialization.
-        if (_selfLength > 0)
+        using (var binFs = new FileStream(binPath, FileMode.Create, FileAccess.Write, FileShare.None, 1024 * 1024))
         {
-            try
+            // v4 records are fixed-width 26 bytes; the v5 header carries the save-start anchor
+            // and the type table (name lengths vary — 64 bytes per entry is a staging hint, not
+            // a contract).
+            var expectedIdxSize = 20 + 26L * EntitiesBySerial.Count + 64L * _typeTable.Count;
+            using var idx = new FileBufferWriter(Path.Combine(dir, $"{Name}.idx"), expectedIdxSize);
+
+            binPosition = 0L;
+
+            // Support for non-entity generic serialization.
+            if (_selfLength > 0)
             {
                 binFs.Write(threads[_selfThread].GetHeap(_selfPosition, _selfLength));
+                binPosition += _selfLength;
             }
-            catch (Exception error)
+
+            idx.Write(5); // Version
+
+            // One anchor for the whole save: the world is frozen from the moment it is stamped.
+            idx.Write(World.SaveStartTime.Ticks);
+
+            // The type table is fully known at freeze (AddEntity diverts to the pending
+            // queues while saving) and is written before the records so the loader can
+            // resolve constructors before reading them.
+            idx.Write(_typeTable.Count);
+            for (var i = 0; i < _typeTable.Count; i++)
             {
-                logger.Error(
-                    error,
-                    "Error writing self-payload: (Thread: {Thread} - {Start} {Length})",
-                    _selfThread,
-                    _selfPosition,
-                    _selfLength
-                );
-                throw;
+                idx.WriteRaw(_typeTable[i].FullName);
             }
 
-            binPosition += _selfLength;
-        }
+            var countPosition = idx.Position;
+            idx.Write(0);
 
-        idx.Write(5); // Version
+            // The bin is written in worker-heap order, not dictionary order: each worker logged
+            // (segment, slot statuses) as it drained, so records pair with their bytes by
+            // re-walking the same slots in the same order. Copied records come from the
+            // previous file instead of a heap. The idx stores absolute positions, so the loader
+            // never cares about record order.
+            var entityCount = 0;
 
-        // One anchor for the whole save: the world is frozen from the moment it is stamped.
-        idx.Write(World.SaveStartTime.Ticks);
-
-        // The type table is fully known at freeze (AddEntity diverts to the pending
-        // queues while saving) and is written before the records so the loader can
-        // resolve constructors before reading them.
-        idx.Write(_typeTable.Count);
-        for (var i = 0; i < _typeTable.Count; i++)
-        {
-            idx.WriteRaw(_typeTable[i].FullName);
-        }
-
-        var countPosition = idx.Position;
-        idx.Write(0);
-
-        // The bin is written in worker-heap order, not dictionary order: each worker logged
-        // (segment, record lengths) as it serialized, so records pair with their bytes by
-        // re-walking the same slots in the same order. The idx stores absolute positions,
-        // so the loader never cares about record order.
-        var entityCount = 0;
-
-        for (var t = 0; t < threads.Length; t++)
-        {
-            var worker = threads[t];
-            var segments = worker.Segments;
-
-            for (var s = 0; s < segments.Count; s++)
+            for (var t = 0; t < threads.Length; t++)
             {
-                var segment = segments[s];
-                if (!ReferenceEquals(segment.Owner, this))
-                {
-                    continue;
-                }
+                var worker = threads[t];
+                var segments = worker.Segments;
 
-                try
+                for (var i = 0; i < segments.Count; i++)
                 {
-                    binPosition = WriteSegmentRecords(worker, in segment, idx, binFs, binPosition, ref entityCount);
-                }
-                catch (Exception error)
-                {
-                    // Never publish a partial snapshot: entities missing from the idx are deleted on load.
-                    logger.Error(
-                        error,
-                        "Error writing segment: (Thread: {Thread} - {Start}, {Records} records)",
-                        t,
-                        segment.HeapStart,
-                        segment.RecordCount
-                    );
-                    throw;
+                    var segment = segments[i];
+                    if (!ReferenceEquals(segment.Owner, this))
+                    {
+                        continue;
+                    }
+
+                    try
+                    {
+                        binPosition = WriteSegmentRecords(
+                            worker, in segment, idx, binFs, source, report, binPosition, ref entityCount
+                        );
+                    }
+                    catch (Exception error)
+                    {
+                        // Never publish a partial snapshot: entities missing from the idx are deleted on load.
+                        logger.Error(
+                            error,
+                            "Error writing segment: (Thread: {Thread} - {Start}, {Records} records)",
+                            t,
+                            segment.HeapStart,
+                            segment.RecordCount
+                        );
+                        throw;
+                    }
                 }
             }
+
+            var currentPosition = idx.Position;
+            idx.Seek(countPosition, SeekOrigin.Begin);
+            idx.Write(entityCount);
+            idx.Seek(currentPosition, SeekOrigin.Begin);
         }
 
-        var currentPosition = idx.Position;
-        idx.Seek(countPosition, SeekOrigin.Begin);
-        idx.Write(entityCount);
-        idx.Seek(currentPosition, SeekOrigin.Begin);
+        // Stage the identity of the file just written; it becomes the copy source when the
+        // save is published (CommitSave on the loop). A rename keeps the last write time.
+        _stagedBinLength = binPosition;
+        _stagedBinWriteTime = File.GetLastWriteTimeUtc(binPath);
+        _stagedAnchorTicks = World.SaveStartTime.Ticks;
     }
 
+    /// <summary>
+    /// Streams one worker segment into the bin/idx: heap spans for serialized records, spans
+    /// of the previous file for copied ones (coalesced when adjacent), and a byte comparison
+    /// with the previous record for verify ones. Stores each written record's new placement
+    /// on its entity.
+    /// </summary>
     private long WriteSegmentRecords(
         SerializationThreadWorker worker, in SerializedSegment segment, FileBufferWriter idx, FileStream binFs,
-        long binPosition, ref int entityCount
+        CopySource source, SaveReport report, long binPosition, ref int entityCount
     )
     {
-        var lengths = worker.Lengths;
-        var lengthIndex = segment.LengthsStart;
-
-        var heapPos = (int)segment.HeapStart;
-        var spanStart = heapPos;
+        var state = new RecordWriter(worker, idx, binFs, source, report, (int)segment.HeapStart, binPosition);
+        var statuses = worker.Statuses;
+        var statusIndex = segment.StatusStart;
 
         if (segment.SlotOffset >= 0)
         {
-            // Re-walk the same slots the worker serialized; occupancy cannot have changed
+            // Re-walk the same slots the worker drained; occupancy cannot have changed
             // because dictionary mutations divert to the pending queues until PostWorldSave.
             var entries = Unsafe.As<ShadowEntry<T>[]>(_entriesSnapshot);
             ref var entry = ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(entries), segment.SlotOffset);
@@ -251,30 +422,7 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
                     continue;
                 }
 
-                var length = lengths[lengthIndex++];
-
-                if (entity is Item { SkipSerialization: true } or Mobile { SkipSerialization: true })
-                {
-                    // The bytes exist in the heap but are not part of the save: split the span.
-                    if (heapPos > spanStart)
-                    {
-                        binFs.Write(worker.GetHeap(spanStart, heapPos - spanStart));
-                    }
-
-                    heapPos += length;
-                    spanStart = heapPos;
-                    continue;
-                }
-
-                idx.Write(GetTypeIndex(entity));
-                idx.Write(entity.Serial);
-                idx.Write(entity.Created.Ticks);
-                idx.Write(binPosition);
-                idx.Write(length);
-
-                binPosition += length;
-                heapPos += length;
-                entityCount++;
+                state.Write(this, entity, statuses[statusIndex++]);
             }
         }
         else
@@ -284,38 +432,157 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
             for (var i = 0; i < segment.RecordCount; i++)
             {
                 var entity = (T)bufferEntities[segment.EntitiesStart + i];
-                var length = lengths[lengthIndex++];
-
-                if (entity is Item { SkipSerialization: true } or Mobile { SkipSerialization: true })
-                {
-                    if (heapPos > spanStart)
-                    {
-                        binFs.Write(worker.GetHeap(spanStart, heapPos - spanStart));
-                    }
-
-                    heapPos += length;
-                    spanStart = heapPos;
-                    continue;
-                }
-
-                idx.Write(GetTypeIndex(entity));
-                idx.Write(entity.Serial);
-                idx.Write(entity.Created.Ticks);
-                idx.Write(binPosition);
-                idx.Write(length);
-
-                binPosition += length;
-                heapPos += length;
-                entityCount++;
+                state.Write(this, entity, statuses[statusIndex++]);
             }
         }
 
-        if (heapPos > spanStart)
+        state.Finish();
+        entityCount += state.Records;
+        return state.BinPosition;
+    }
+
+    /// <summary>
+    /// Sequencing state for one segment: at most one pending heap span or one pending copy run
+    /// at a time, flushed before a record of the other kind, so the bin order always matches
+    /// the idx order.
+    /// </summary>
+    private ref struct RecordWriter
+    {
+        private readonly SerializationThreadWorker _worker;
+        private readonly FileBufferWriter _idx;
+        private readonly FileStream _bin;
+        private readonly CopySource _source;
+        private readonly SaveReport _report;
+
+        private int _heapPos;
+        private int _spanStart;
+        private long _copyStart;
+        private long _copyEnd;
+
+        public long BinPosition;
+        public int Records;
+
+        public RecordWriter(
+            SerializationThreadWorker worker, FileBufferWriter idx, FileStream bin, CopySource source,
+            SaveReport report, int heapStart, long binPosition
+        )
         {
-            binFs.Write(worker.GetHeap(spanStart, heapPos - spanStart));
+            _worker = worker;
+            _idx = idx;
+            _bin = bin;
+            _source = source;
+            _report = report;
+            _heapPos = heapStart;
+            _spanStart = heapStart;
+            _copyStart = -1;
+            _copyEnd = -1;
+            BinPosition = binPosition;
         }
 
-        return binPosition;
+        public void Write(GenericEntityPersistence<T> owner, T entity, int status)
+        {
+            if (status == SlotStatus.Skipped)
+            {
+                // No record: whatever bytes the previous save held for it are not ours anymore.
+                entity.SavePlacement = SavePlacement.None;
+                return;
+            }
+
+            if (status == SlotStatus.Copied)
+            {
+                var placement = entity.SavePlacement;
+
+                if (_source == null || SavePlacement.IsNone(placement))
+                {
+                    throw new InvalidOperationException(
+                        $"{entity.GetType()} ({entity.Serial}) was marked for copying but has no previous record."
+                    );
+                }
+
+                var position = SavePlacement.Position(placement);
+                var length = SavePlacement.Length(placement);
+
+                FlushHeapSpan();
+
+                if (_copyEnd == position)
+                {
+                    _copyEnd += length;
+                }
+                else
+                {
+                    FlushCopyRun();
+                    _copyStart = position;
+                    _copyEnd = position + length;
+                }
+
+                WriteIndexRecord(owner, entity, length);
+                _report.Copied++;
+                _report.CopiedBytes += length;
+                return;
+            }
+
+            var recordLength = SlotStatus.Length(status);
+
+            FlushCopyRun();
+
+            if (SlotStatus.IsVerify(status) && _source != null)
+            {
+                var previous = entity.SavePlacement;
+                var previousLength = SavePlacement.Length(previous);
+
+                if (SavePlacement.IsNone(previous) || previousLength != recordLength ||
+                    !_source.Slice(SavePlacement.Position(previous), previousLength)
+                        .SequenceEqual(_worker.GetHeap(_heapPos, recordLength)))
+                {
+                    _report.AddViolation(entity.GetType(), entity.Serial);
+                }
+            }
+
+            WriteIndexRecord(owner, entity, recordLength);
+            _heapPos += recordLength;
+        }
+
+        private void WriteIndexRecord(GenericEntityPersistence<T> owner, T entity, int length)
+        {
+            _idx.Write(owner.GetTypeIndex(entity));
+            _idx.Write(entity.Serial);
+            _idx.Write(entity.Created.Ticks);
+            _idx.Write(BinPosition);
+            _idx.Write(length);
+
+            // The writer thread owns this field during WritingSave (see ISerializable).
+            entity.SavePlacement = SavePlacement.Encode(BinPosition, length);
+
+            BinPosition += length;
+            Records++;
+        }
+
+        private void FlushHeapSpan()
+        {
+            if (_heapPos > _spanStart)
+            {
+                _bin.Write(_worker.GetHeap(_spanStart, _heapPos - _spanStart));
+            }
+
+            _spanStart = _heapPos;
+        }
+
+        private void FlushCopyRun()
+        {
+            if (_copyEnd > _copyStart)
+            {
+                _source.CopyTo(_bin, _copyStart, _copyEnd - _copyStart);
+            }
+
+            _copyStart = -1;
+            _copyEnd = -1;
+        }
+
+        public void Finish()
+        {
+            FlushHeapSpan();
+            FlushCopyRun();
+        }
     }
 
     private ushort GetTypeIndex(T entity)
@@ -334,6 +601,8 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
 
     public override void Serialize()
     {
+        RotateUnreusableSerials();
+
         // Self-payload first so a large one overlaps the entity stream instead of ending it.
         World.PushSingleToCache(this);
 
@@ -354,6 +623,30 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
         }
     }
 
+    /// <summary>
+    /// At the freeze of a full save the live guard set is put aside: this save rewrites every
+    /// referrer of the serials in it, so it can be dropped once the save commits, while serials
+    /// freed after this moment start a new set for the next save.
+    /// </summary>
+    internal void RotateUnreusableSerials()
+    {
+        if (!DeltaSaves.Plan.IsFull || _unreusableSerials == null)
+        {
+            return;
+        }
+
+        if (_unreusableSerialsClearedOnCommit == null)
+        {
+            _unreusableSerialsClearedOnCommit = _unreusableSerials;
+        }
+        else
+        {
+            _unreusableSerialsClearedOnCommit.UnionWith(_unreusableSerials);
+        }
+
+        _unreusableSerials = null;
+    }
+
     internal bool TrySnapshotEntries(out int slotCount)
     {
         if (_entriesField != null && EntitiesBySerial.Count > 0 &&
@@ -368,12 +661,14 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
         return false;
     }
 
-    int ISlotRangeSource.SerializeRange(BufferWriter writer, List<int> lengths, int offset, int count)
+    int ISlotRangeSource.SerializeRange(SerializationThreadWorker worker, BufferWriter writer, int offset, int count)
     {
         // Layout proven at startup by ShadowDictionaryEntries.Supported; ranges are produced
         // from the same array's length, so every read is in-bounds.
         var entries = Unsafe.As<ShadowEntry<T>[]>(_entriesSnapshot);
-        var serialized = 0;
+        var statuses = worker.Statuses;
+        var plan = DeltaSaves.Plan;
+        var occupied = 0;
 
         ref var entry = ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(entries), offset);
 
@@ -384,14 +679,12 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
             var entity = entry.Value;
             if (entity != null)
             {
-                var start = writer.Position;
-                entity.Serialize(writer);
-                lengths.Add((int)(writer.Position - start));
-                serialized++;
+                statuses.Add(DeltaSaves.SerializeEntity(entity, this, worker, writer, plan));
+                occupied++;
             }
         }
 
-        return serialized;
+        return occupied;
     }
 
     private static ConstructorInfo GetConstructorFor(string typeName, Type t, Type[] constructorTypes)
@@ -843,7 +1136,7 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
                     last = min;
                 }
 
-                if (FindEntity<T>((Serial)last) == null)
+                if (FindEntity<T>((Serial)last) == null && !IsUnreusable((Serial)last))
                 {
                     return _lastEntitySerial = (Serial)last;
                 }
@@ -853,6 +1146,9 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
             return Serial.MinusOne;
         }
     }
+
+    private bool IsUnreusable(Serial serial) =>
+        _unreusableSerials?.Contains(serial) == true || _unreusableSerialsClearedOnCommit?.Contains(serial) == true;
 
     public void AddEntity(T entity)
     {
@@ -886,6 +1182,9 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
             case WorldState.PendingSave:
             case WorldState.Running:
                 {
+                    // New to the world since the last save: it has no record to copy.
+                    entity.SaveDirty = true;
+
                     RegisterType(entity.GetType());
                     ref var entityEntry = ref CollectionsMarshal.GetValueRefOrAddDefault(EntitiesBySerial, entity.Serial, out var exists);
                     if (exists)
@@ -944,7 +1243,11 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
             case WorldState.PendingSave:
             case WorldState.Running:
                 {
-                    EntitiesBySerial.Remove(entity.Serial);
+                    if (EntitiesBySerial.Remove(entity.Serial))
+                    {
+                        (_unreusableSerials ??= []).Add(entity.Serial);
+                    }
+
                     break;
                 }
         }

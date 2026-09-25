@@ -52,7 +52,10 @@ public static class World
 
     private static string _tempSavePath; // Path to the temporary folder for the save
 
-    public const bool DirtyTrackingEnabled = false;
+    // Heap sizing: a full save needs room for the whole world, a delta save only for churn.
+    private static int _fullHeapHint;
+    private static int _deltaHeapHint;
+
     public const uint ItemOffset = 0x40000000;
     public const uint MaxItemSerial = 0x7EEEEEEE;
     public const uint MaxMobileSerial = ItemOffset - 1;
@@ -224,6 +227,8 @@ public static class World
         // The save we just loaded tells us how big the heaps need to be, so the first save
         // doesn't pay copy-on-grow inside the freeze window. 25% headroom for world growth.
         var heapSizeHint = (int)Math.Min(GetLoadedSaveSize() / _threadWorkers.Length * 5 / 4, 1024 * 1024 * 1024);
+        _fullHeapHint = heapSizeHint;
+        _deltaHeapHint = heapSizeHint / 32;
 
         for (var i = 0; i < _realWorkerCount; i++)
         {
@@ -277,10 +282,14 @@ public static class World
         {
             RecoverStagedSave();
 
-            // Allocate the heaps for the GC
+            // The plan is decided off-loop (copy sources validated, heaps sized); the loop
+            // reads it after the snapshot request posted below.
+            var plan = DeltaSaves.Prepare();
+            var heapHint = plan.IsFull ? _fullHeapHint : _deltaHeapHint;
+
             foreach (var worker in _threadWorkers)
             {
-                worker.AllocateHeap();
+                worker.AllocateHeap(heapHint);
             }
 
             WakeSerializationThreads();
@@ -365,6 +374,7 @@ public static class World
         }
 
         watch.Stop();
+        DeltaSaves.Report.FreezeDuration = watch.Elapsed;
 
         if (exception == null)
         {
@@ -372,7 +382,23 @@ public static class World
             ThreadPool.QueueUserWorkItem(WriteFiles, snapshotPath);
 
             var duration = watch.Elapsed.TotalSeconds;
-            logger.Information("Saving world {Status} ({Duration:F2} seconds)", "done", duration);
+            var serialized = 0L;
+            var copied = 0L;
+
+            for (var i = 0; i < _threadWorkers.Length; i++)
+            {
+                serialized += _threadWorkers[i].EntitiesSerialized;
+                copied += _threadWorkers[i].EntitiesCopied;
+            }
+
+            logger.Information(
+                "Saving world {Status} ({Duration:F2} seconds, {Plan}: {Serialized} serialized, {Copied} copied)",
+                "done",
+                duration,
+                DeltaSaves.Plan.Reason,
+                serialized,
+                copied
+            );
 
             Broadcast(0x35, true, $"World save completed in {duration:F2} seconds.");
         }
@@ -384,13 +410,15 @@ public static class World
             BroadcastStaff(0x35, true, "World save failed! Check the logs!");
 
             _diskWriteHandle.Set();
-            FinishWorldSave();
+            FinishWorldSave(false);
         }
     }
 
     private static void WriteFiles(object state)
     {
         var snapshotPath = (string)state;
+        var success = false;
+
         try
         {
             var watch = Stopwatch.StartNew();
@@ -398,6 +426,7 @@ public static class World
 
             Persistence.WriteSnapshotAll(snapshotPath);
             PublishSnapshot(snapshotPath);
+            success = true;
 
             watch.Stop();
             logger.Information("Writing world save snapshot {Status} ({Duration:F2} seconds)", "done", watch.Elapsed.TotalSeconds);
@@ -411,7 +440,7 @@ public static class World
         }
 
         _diskWriteHandle.Set();
-        Core.LoopContext.Post(FinishWorldSave);
+        Core.LoopContext.Post(success ? FinishSuccessfulWorldSave : FinishFailedWorldSave);
     }
 
     /// <summary>
@@ -498,17 +527,58 @@ public static class World
         }
     }
 
-    private static void FinishWorldSave()
+    private static void FinishSuccessfulWorldSave() => FinishWorldSave(true);
+
+    private static void FinishFailedWorldSave() => FinishWorldSave(false);
+
+    private static void FinishWorldSave(bool success)
     {
         WorldState = WorldState.Running;
+
+        // Delta-save bookkeeping first: nothing below may run before a failed save has
+        // forced the next one full, and a throwing callback must not skip it.
+        var plan = DeltaSaves.Plan;
+        DeltaSaves.OnSaveFinished(success, _threadWorkers);
+
         Persistence.PostWorldSaveAll(); // Process decay and safety queues
         MovementThrottle.ResetAllMovementTiming(); // Prevent post-save movement rejection bursts
 
-        // The snapshot is on disk; release the per-worker write logs so serialized
-        // entity references don't linger between saves.
+        if (success)
+        {
+            UpdateHeapHints(plan.IsFull);
+        }
+
+        // The snapshot is on disk (or abandoned); release the per-worker write logs so
+        // serialized entity references don't linger between saves.
         for (var i = 0; i < _threadWorkers.Length; i++)
         {
             _threadWorkers[i].ReleaseWriteLogs();
+        }
+    }
+
+    /// <summary>
+    /// Learns heap sizes from what the save actually needed: a full save raises the full hint
+    /// (the boot estimate can be stale or zero on a fresh world), a delta save sets the delta
+    /// hint to twice the largest worker's churn bytes. Both are per worker.
+    /// </summary>
+    private static void UpdateHeapHints(bool full)
+    {
+        const int maxHeap = 1024 * 1024 * 1024;
+
+        var largest = 0L;
+        for (var i = 0; i < _threadWorkers.Length; i++)
+        {
+            largest = Math.Max(largest, _threadWorkers[i].BytesSerialized);
+        }
+
+        if (full)
+        {
+            _fullHeapHint = (int)Math.Min(Math.Max(_fullHeapHint, largest * 5 / 4), maxHeap);
+            _deltaHeapHint = Math.Max(_deltaHeapHint, _fullHeapHint / 32);
+        }
+        else
+        {
+            _deltaHeapHint = (int)Math.Min(Math.Max(largest * 2, _fullHeapHint / 32), maxHeap);
         }
     }
 
@@ -525,7 +595,7 @@ public static class World
         for (var i = 0; i < _threadWorkers.Length; i++)
         {
             var worker = _threadWorkers[i];
-            totalEntities += worker.EntitiesSerialized;
+            totalEntities += worker.EntitiesSerialized + worker.EntitiesCopied;
             var bytes = worker.BytesSerialized;
             totalBytes += bytes;
             minBytes = Math.Min(minBytes, bytes);
