@@ -4051,19 +4051,14 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
         var removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
 
-        if (m_Parent is Container cont && !cont.IsPublicContainer && !cont.IsChildPublic(this))
+        if (TryGetPrivateParent(out var cont))
         {
             // Private children are only ever sent to these recipients (see ProcessDelta); nobody else knows them.
             OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
 
-            var root = cont.RootParent as Mobile;
-            SendRemoveTo(root, worldLoc, removeEntity);
+            GetPrivateChildRecipients(cont, out var root, out var tradeFrom, out var tradeTo);
 
-            var trade = GetSecureTradeCont()?.Trade;
-            // Trade.From/To are unassigned while SecureTrade's own constructor is still adding the
-            // VirtualCheck to each side's container, so both must stay null-conditional.
-            var tradeFrom = trade?.From?.Mobile;
-            var tradeTo = trade?.To?.Mobile;
+            SendRemoveTo(root, worldLoc, removeEntity);
 
             if (tradeFrom != root)
             {
@@ -4111,6 +4106,58 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         {
             m.NetState.Send(removeEntity);
         }
+    }
+
+    // Shared with IsSentTo so the private-child guard and recipient set (root/trade/openers) each live
+    // in one place.
+    private bool TryGetPrivateParent(out Container cont)
+    {
+        cont = m_Parent as Container;
+        return cont != null && !cont.IsPublicContainer && !cont.IsChildPublic(this);
+    }
+
+    private void GetPrivateChildRecipients(Container cont, out Mobile root, out Mobile tradeFrom, out Mobile tradeTo)
+    {
+        root = cont.RootParent as Mobile;
+
+        var trade = GetSecureTradeCont()?.Trade;
+        // Trade.From/To are unassigned while SecureTrade's own constructor is still adding the
+        // VirtualCheck to each side's container, so both must stay null-conditional.
+        tradeFrom = trade?.From?.Mobile;
+        tradeTo = trade?.To?.Mobile;
+    }
+
+    /// <summary>
+    /// Whether <paramref name="m"/>'s client is expected to hold this item; gates resends keyed by a
+    /// client-supplied serial.
+    /// </summary>
+    public bool IsSentTo(Mobile m)
+    {
+        if (m == null || Deleted)
+        {
+            return false;
+        }
+
+        if (TryGetPrivateParent(out var cont))
+        {
+            GetPrivateChildRecipients(cont, out var root, out var tradeFrom, out var tradeTo);
+
+            if (m == root)
+            {
+                // Mirrors ProcessDelta's own root gate: CanSee and in range.
+                return m.CanSee(this) && m.InRange(GetWorldLocation(), GetUpdateRange(m));
+            }
+
+            var isTradeOrOpener = m == tradeFrom || m == tradeTo || cont.Openers?.Contains(m) == true;
+
+            // Trade parties and openers are re-validated against ProcessDelta's own gate (CanSee,
+            // current map, update range), so an invisible item or a stale Openers entry that hasn't
+            // been pruned yet never resyncs to them.
+            return isTradeOrOpener && m.CanSee(this) && m.Map == m_Map &&
+                   m.InRange(GetWorldLocation(), GetUpdateRange(m));
+        }
+
+        return m.CanSee(this) && m.InRange(GetWorldLocation(), GetUpdateRange(m));
     }
 
     public virtual int GetDropSound() => -1;
