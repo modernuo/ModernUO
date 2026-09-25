@@ -197,6 +197,11 @@ public partial class Corpse : Container, ICarvable
     // Why was this public?
     // public override bool IsPublicContainer => true;
 
+    // Human corpses show their worn gear to everyone who sees them (SendInfoTo), not only to openers.
+    private bool ShowsWornGear => ((Body)Amount).IsHuman && ItemID == 0x2006;
+
+    public override bool IsChildPublic(Item child) => ShowsWornGear && _equipItems?.Contains(child) == true;
+
     public Corpse(Mobile owner, List<Item> equipItems) : this(owner, 0, 0, 0, 0, equipItems)
     {
     }
@@ -416,7 +421,7 @@ public partial class Corpse : Container, ICarvable
         {
             from.SendLocalizedMessage(500485); // You see nothing useful to carve from the corpse.
         }
-        else if (((Body)Amount).IsHuman && ItemID == 0x2006)
+        else if (ShowsWornGear)
         {
             new Blood(0x122D).MoveToWorld(Location, Map);
 
@@ -740,7 +745,7 @@ public partial class Corpse : Container, ICarvable
     {
         base.SendInfoTo(ns, world);
 
-        if (((Body)Amount).IsHuman && ItemID == 0x2006)
+        if (ShowsWornGear)
         {
             ns.SendCorpseContent(ns.Mobile, this);
             ns.SendCorpseEquip(ns.Mobile, this);
