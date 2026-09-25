@@ -3552,8 +3552,19 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
     {
         var items = LookupItems();
 
-        if (items.Remove(item))
+        // Bulk removal (Delete, purges) walks children back to front; finding the tail in O(1) keeps
+        // deleting a large container linear instead of quadratic.
+        var index = items.Count - 1;
+
+        if (index < 0 || !ReferenceEquals(items[index], item))
         {
+            index = items.IndexOf(item);
+        }
+
+        if (index >= 0)
+        {
+            items.RemoveAt(index);
+
             if (this is not Container)
             {
                 AcquireCompactInfo().Version++;
