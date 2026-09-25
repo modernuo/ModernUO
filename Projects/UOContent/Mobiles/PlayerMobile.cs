@@ -3850,8 +3850,9 @@ namespace Server.Mobiles
                     }
                 }
 
-                while (followers.TryDequeue(out var bc))
+                while (followers.Count > 0)
                 {
+                    var bc = followers.Dequeue();
                     if (bc.Summoned || bc.IsBonded || bc.IsDeadPet)
                     {
                         bc.Delete();
