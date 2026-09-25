@@ -1581,7 +1581,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         ClearProperties();
     }
 
-    public virtual bool SkipSerialization => false;
+    public virtual bool SkipSerialization => m_Parent is Container { SkipsChildSerialization: true };
 
     [IgnoreDupe]
     public ISpawner Spawner
