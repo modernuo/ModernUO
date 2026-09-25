@@ -65,7 +65,7 @@ public class ContainerChildSkipTests
         }
     }
 
-    // The container still writes the skipped child's serial; load must drop the dangling reference.
+    // A skipped child is not saved, so the container must load without it.
     [Fact]
     public void SkippingContainer_LoadsWithoutItsSkippedChildren()
     {
@@ -87,9 +87,7 @@ public class ContainerChildSkipTests
         Assert.Empty(copy.Items);
     }
 
-    // The child's serial must never be written at all: if it were, and the child were still
-    // alive (not merely deleted, as above) when load runs, the serial would resolve to that
-    // live-but-unrelated item and land it in this container's list with a mismatched Parent.
+    // A written child serial could resolve at load to an unrelated item that was handed the same serial.
     [Fact]
     public void SkippingContainer_DoesNotWriteAliveChildSerial()
     {
@@ -117,11 +115,8 @@ public class ContainerChildSkipTests
         }
     }
 
-    // An item saved in the post-freeze window can carry frozen bytes naming a skipping container as
-    // parent even though it is no longer in that pack's list. On load the parent still resolves (the
-    // pack is alive), so this must be treated like a missing parent instead of becoming an unreachable
-    // orphan. DelayCall's actual firing isn't observed here (see report); Parent == null is what the
-    // fix guarantees synchronously, and it's also the precondition the missing-parent delete checks.
+    // An item can be saved naming a skipping container as parent while absent from its list; it must load
+    // as parentless so the missing-parent path deletes it rather than leaving an unreachable orphan.
     [Fact]
     public void ItemLoadingWithSkippingContainerAsParent_ClearsParent()
     {
