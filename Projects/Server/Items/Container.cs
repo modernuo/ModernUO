@@ -392,7 +392,7 @@ public partial class Container : Item
 
     /// <summary>
     /// Direct children are left out of world saves; the container itself is still saved and
-    /// loads with the dangling child serials dropped.
+    /// loads empty.
     /// </summary>
     public virtual bool SkipsChildSerialization => false;
 
