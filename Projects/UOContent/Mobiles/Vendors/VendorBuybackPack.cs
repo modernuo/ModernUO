@@ -4,8 +4,7 @@ namespace Server.Items;
 
 /// <summary>
 /// Holds items players sold to an NPC vendor until the next restock. The contents are never saved
-/// and their removal is never broadcast, because no client outside the vendor's buy gump was ever
-/// told about them.
+/// and their removal reaches only the vendor and openers, like any private container.
 /// </summary>
 [SerializationGenerator(0)]
 public partial class VendorBuybackPack : Backpack
@@ -19,8 +18,6 @@ public partial class VendorBuybackPack : Backpack
     }
 
     public override bool SkipsChildSerialization => true;
-
-    public override bool RestrictsChildRemoval => true;
 
     // DropItem appends, so Items[0] is always the oldest entry.
     public void AddBuyback(Item item, int capacity)
