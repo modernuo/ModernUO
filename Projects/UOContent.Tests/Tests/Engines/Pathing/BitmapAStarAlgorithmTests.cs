@@ -371,6 +371,9 @@ public class BitmapAStarAlgorithmTests
     {
         StepCache.Instance.Clear();
         StepCache.Instance.MissPromotionThreshold = 2;
+        // Pinned: promotion needs both Finds inside the window, and Linux's coarse TickCount can
+        // step several ms between two back-to-back Finds.
+        StepCache.Instance.MissPromotionWindowMs = 30_000;
 
         var map = Map.Maps[1];
         var stub = new DefaultWalkerStub();
