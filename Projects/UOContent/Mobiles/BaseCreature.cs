@@ -2717,16 +2717,6 @@ namespace Server.Mobiles
 
             FocusMob = null;
 
-            if (IsAnimatedDead)
-            {
-                AnimateDeadSpell.Unregister(SummonMaster, this);
-            }
-
-            if (SummonMaster != null)
-            {
-                SummonFamiliarSpell.Unregister(SummonMaster, this);
-            }
-
             if (MLQuestSystem.Enabled)
             {
                 MLQuestSystem.HandleDeletion(this);
@@ -3682,6 +3672,17 @@ namespace Server.Mobiles
         public override void OnDelete()
         {
             CreatureEvents.CreatureDeletedEvent(this);
+
+            // Both registries are keyed by the master, which is cleared below.
+            if (IsAnimatedDead)
+            {
+                AnimateDeadSpell.Unregister(SummonMaster, this);
+            }
+
+            if (SummonMaster != null)
+            {
+                SummonFamiliarSpell.Unregister(SummonMaster, this);
+            }
 
             var m = ControlMaster;
             SetControlMaster(null);
