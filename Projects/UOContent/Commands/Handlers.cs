@@ -213,7 +213,7 @@ namespace Server.Commands
                 {
                     if (m is BaseCreature bc)
                     {
-                        if (bc.Controlled && bc.ControlMaster == master || bc.Summoned && bc.SummonMaster == master)
+                        if (bc.GetMaster() == master)
                         {
                             pets.Add(bc);
                         }

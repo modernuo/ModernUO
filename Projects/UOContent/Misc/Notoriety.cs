@@ -228,7 +228,7 @@ namespace Server.Misc
             }
 
             if (bcTarg?.Controlled == true
-                || bcTarg?.Summoned == true && bcTarg.SummonMaster != from && bcTarg.SummonMaster?.Player == true)
+                || bcTarg?.SummonMaster is { Player: true } summoner && summoner != from)
             {
                 return false; // Cannot harm other controlled mobiles from players
             }

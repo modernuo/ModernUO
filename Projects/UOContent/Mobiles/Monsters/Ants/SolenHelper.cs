@@ -21,14 +21,9 @@ namespace Server.Mobiles
         {
             if (m is BaseCreature bc)
             {
-                if (bc.Controlled && bc.ControlMaster is PlayerMobile)
+                if (bc.GetMaster() is PlayerMobile master)
                 {
-                    return CheckRedFriendship(bc.ControlMaster);
-                }
-
-                if (bc.Summoned && bc.SummonMaster is PlayerMobile)
-                {
-                    return CheckRedFriendship(bc.SummonMaster);
+                    return CheckRedFriendship(master);
                 }
             }
 
@@ -39,14 +34,9 @@ namespace Server.Mobiles
         {
             if (m is BaseCreature bc)
             {
-                if (bc.Controlled && bc.ControlMaster is PlayerMobile)
+                if (bc.GetMaster() is PlayerMobile master)
                 {
-                    return CheckBlackFriendship(bc.ControlMaster);
-                }
-
-                if (bc.Summoned && bc.SummonMaster is PlayerMobile)
-                {
-                    return CheckBlackFriendship(bc.SummonMaster);
+                    return CheckBlackFriendship(master);
                 }
             }
 
@@ -57,13 +47,9 @@ namespace Server.Mobiles
         {
             if (from is BaseCreature bc)
             {
-                if (bc.Controlled && bc.ControlMaster is PlayerMobile)
+                if (bc.GetMaster() is PlayerMobile master)
                 {
-                    OnRedDamage(bc.ControlMaster);
-                }
-                else if (bc.Summoned && bc.SummonMaster is PlayerMobile)
-                {
-                    OnRedDamage(bc.SummonMaster);
+                    OnRedDamage(master);
                 }
             }
 
@@ -83,13 +69,9 @@ namespace Server.Mobiles
         {
             if (from is BaseCreature bc)
             {
-                if (bc.Controlled && bc.ControlMaster is PlayerMobile)
+                if (bc.GetMaster() is PlayerMobile master)
                 {
-                    OnBlackDamage(bc.ControlMaster);
-                }
-                else if (bc.Summoned && bc.SummonMaster is PlayerMobile)
-                {
-                    OnBlackDamage(bc.SummonMaster);
+                    OnBlackDamage(master);
                 }
             }
 

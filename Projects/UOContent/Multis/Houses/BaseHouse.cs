@@ -3660,12 +3660,7 @@ namespace Server.Multis
                 return true;
             }
 
-            if (!(bc.Controlled || bc.Summoned))
-            {
-                return false;
-            }
-
-            m = bc.ControlMaster ?? bc.SummonMaster;
+            m = bc.GetMaster();
 
             return m != null && (m.AccessLevel > AccessLevel.Player || IsFriend(m) || Access?.Contains(m) == true);
         }

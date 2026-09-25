@@ -407,32 +407,8 @@ namespace Server.Spells
             };
         }
 
-        public static Guild GetGuildFor(Mobile m)
-        {
-            var g = m.Guild as Guild;
-
-            if (g == null && m is BaseCreature c)
-            {
-                m = c.ControlMaster;
-
-                if (m != null)
-                {
-                    g = m.Guild as Guild;
-                }
-
-                if (g == null)
-                {
-                    m = c.SummonMaster;
-
-                    if (m != null)
-                    {
-                        g = m.Guild as Guild;
-                    }
-                }
-            }
-
-            return g;
-        }
+        public static Guild GetGuildFor(Mobile m) =>
+            m.Guild as Guild ?? (m as BaseCreature)?.GetMaster()?.Guild as Guild;
 
         public static bool ValidIndirectTarget(Mobile from, Mobile to)
         {
@@ -473,29 +449,17 @@ namespace Server.Spells
                 return false;
             }
 
-            if (bcTarg != null && (bcTarg.Controlled || bcTarg.Summoned))
+            if (bcTarg?.GetMaster() is { } targMaster)
             {
-                if (bcTarg.ControlMaster == from || bcTarg.SummonMaster == from)
-                {
-                    return false;
-                }
-
-                if (p != null && (p.Contains(bcTarg.ControlMaster) || p.Contains(bcTarg.SummonMaster)))
+                if (targMaster == from || p?.Contains(targMaster) == true)
                 {
                     return false;
                 }
             }
 
-            if (bcFrom != null && (bcFrom.Controlled || bcFrom.Summoned))
+            if (bcFrom?.GetMaster() is { } fromMaster)
             {
-                if (bcFrom.ControlMaster == to || bcFrom.SummonMaster == to)
-                {
-                    return false;
-                }
-
-                p = Party.Get(to);
-
-                if (p != null && (p.Contains(bcFrom.ControlMaster) || p.Contains(bcFrom.SummonMaster)))
+                if (fromMaster == to || Party.Get(to)?.Contains(fromMaster) == true)
                 {
                     return false;
                 }

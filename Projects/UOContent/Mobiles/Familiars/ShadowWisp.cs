@@ -62,7 +62,7 @@ public partial class ShadowWispFamiliar : BaseFamiliar
 
     private void Flare()
     {
-        var caster = ControlMaster ?? SummonMaster;
+        var caster = GetMaster();
 
         if (caster == null)
         {

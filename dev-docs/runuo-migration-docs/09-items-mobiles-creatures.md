@@ -540,6 +540,40 @@ An override that used to `return;` early to refuse a fight now returns `false`; 
 `base.OnAggressiveAction` runs the full stock policy, including setting `Combatant`, so an AI
 that only wants the closer-aggressor swap calls `PreferCloserAggressor` instead.
 
+## Masters: One Reference, Not Two
+
+RunUO kept `ControlMaster` and `SummonMaster` as two independent fields. ModernUO stores one `Master`.
+`ControlMaster` and `SummonMaster` are views of it gated by `Controlled` and `Summoned`, and
+`GetMaster()` is `ControlMaster ?? SummonMaster` (see `dev-docs/content-patterns.md` § Masters).
+
+`ControlMaster != null` implies `Controlled`, so a bare `ControlMaster` check needs no `Controlled` in front of it.
+
+Assignments compile unchanged, because both setters assign `Master`. Reads need a look:
+
+| RunUO | ModernUO |
+|---|---|
+| `bc.ControlMaster ?? bc.SummonMaster` | `bc.GetMaster()` |
+| `bc.Controlled && bc.ControlMaster == m \|\| bc.Summoned && bc.SummonMaster == m` | `bc.GetMaster() == m` |
+| `Controlled && ControlMaster == m` (`m` non-null) | `ControlMaster == m` |
+| `SummonMaster` on a creature that sets it without `Summoned = true` (RunUO's `BaseEnraged`) | `Master` |
+
+Gotchas:
+
+- **A summon master without `Summoned` reads back null.** A RunUO creature that assigned
+  `SummonMaster = caster;` without `Summoned = true` and later read `SummonMaster` now reads null.
+  The write still compiles; only the read changes. Use `Master` for both, and override `IsEnemy` if the
+  creature must never target its master (see `BaseEnraged`).
+- **One master per creature.** `SummonMaster = x` on a tamed pet replaces its owner, and
+  `ControlMaster = null` on an uncontrolled summon clears its caster. Code that tracked a different
+  owner and summoner keeps only the last assignment.
+- **`ControlMaster = x;` is not a tame.** The setter only moves follower slots. It skips everything
+  `SetControlMaster(x)` does: raising `Controlled`, checking the follower cap, resetting the order
+  and `ControlTarget`, unlinking from the spawner, clearing the waypoint, home and guild. On its own it
+  leaves a creature that uses up `x`'s follower slots, can't be commanded and still reads as wild.
+  Use `SetControlMaster(x)`.
+- **`SetControlMaster(null)` keeps an uncontrolled summon's caster.** It clears the master only
+  while the creature is `Controlled`.
+
 ## Target Acquisition: `AcquireOnApproach` Is a Delay
 
 RunUO's `AcquireOnApproach` bool (paragon insta-aggro on approach) is now

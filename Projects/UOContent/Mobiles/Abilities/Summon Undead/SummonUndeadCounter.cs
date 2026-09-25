@@ -48,7 +48,7 @@ public abstract class SummonUndeadCounter : MonsterAbility
                 summon = CreateSummon(source);
                 summon.Team = source.Team;
                 summon.Summoned = true;
-                summon.SummonMaster = source;
+                summon.Master = source;
                 summon.FightMode = FightMode.Closest;
                 summon.Combatant = target;
                 summon.Home = source.Home;

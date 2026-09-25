@@ -775,7 +775,7 @@ public abstract partial class BaseAI
         var master = Mobile.ControlMaster;
 
         return target == Mobile || master != null &&
-            (target == master || target is BaseCreature { Controlled: true } creature && creature.ControlMaster == master);
+            (target == master || target is BaseCreature creature && creature.ControlMaster == master);
     }
 
     /// <summary>

@@ -40,6 +40,12 @@ description: >
    trigger cooldown is the rate limit, `ChanceToTrigger` is per-sample jitter, and a
    zero-cooldown `Think`/`CombatAction` ability triggers every sampled think -- see
    `dev-docs/content-patterns.md` § OnThink: the excess-call contract
+9. **One master, read through views** -- `ControlMaster` (owner, only while `Controlled`),
+   `SummonMaster` (summoner, only while `Summoned`), `GetMaster()` (either: who answers for the
+   creature), `Master` (the stored reference, flags ignored; both setters assign it). Tame with
+   `SetControlMaster`, summon with `BaseCreature.Summon`. Don't repeat the view's flag:
+   `Controlled && ControlMaster == x` -> `ControlMaster == x`, but `!=` does not reduce -- see
+   `dev-docs/content-patterns.md` § Masters
 
 ## New Item Template
 

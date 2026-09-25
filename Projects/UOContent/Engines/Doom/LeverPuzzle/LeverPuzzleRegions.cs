@@ -47,7 +47,7 @@ namespace Server.Engines.Doom
                         return;
                     }
                 }
-                else if (m is BaseCreature bc && (bc.Controlled && bc.ControlMaster == m_Controller.Successful ||
+                else if (m is BaseCreature bc && (bc.ControlMaster == m_Controller.Successful ||
                                                   bc.Summoned))
                 {
                     return;

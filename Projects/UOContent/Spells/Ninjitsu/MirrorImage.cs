@@ -158,7 +158,7 @@ namespace Server.Mobiles
             Warmode = true;
 
             Summoned = true;
-            SummonMaster = caster;
+            Master = caster;
 
             ControlOrder = OrderType.Follow;
             ControlTarget = caster;

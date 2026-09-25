@@ -141,7 +141,7 @@ namespace Server.SkillHandlers
                 {
                     if (targ == from || targ is BaseCreature bc &&
                         (bc.BardImmune || !from.CanBeHarmful(bc, false)) &&
-                        !(bc.Controlled && bc.ControlMaster == from))
+                        bc.ControlMaster != from)
                     {
                         from.SendLocalizedMessage(1049535); // A song of discord would have no effect on that.
                     }

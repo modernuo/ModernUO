@@ -102,7 +102,7 @@ public class Dismount : WeaponAbility
         {
             playerMobile.SetMountBlock(BlockMountType.DismountRecovery, RemountDelay, true);
         }
-        else if (Core.ML && attacker is BaseCreature { Controlled: true, ControlMaster: PlayerMobile pm })
+        else if (Core.ML && attacker is BaseCreature { ControlMaster: PlayerMobile pm })
         {
             pm.SetMountBlock(BlockMountType.DismountRecovery, RemountDelay, false);
         }

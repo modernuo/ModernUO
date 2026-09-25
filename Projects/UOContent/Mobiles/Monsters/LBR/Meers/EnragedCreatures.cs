@@ -92,15 +92,15 @@ namespace Server.Mobiles
             Karma = -1000;
             Tamable = false;
 
-            SummonMaster = summoner;
+            Master = summoner;
         }
 
         // The meer's FightMode.Evil against our negative karma would otherwise make us enemies.
-        public override bool IsEnemy(Mobile m) => m != SummonMaster && base.IsEnemy(m);
+        public override bool IsEnemy(Mobile m) => m != Master && base.IsEnemy(m);
 
         public override void OnThink()
         {
-            if (SummonMaster?.Deleted != false)
+            if (Master?.Deleted != false)
             {
                 Delete();
             }
@@ -111,7 +111,7 @@ namespace Server.Mobiles
             */
             else if (!Combat(this))
             {
-                AIObject?.MoveTo(SummonMaster, 5);
+                AIObject?.MoveTo(Master, 5);
             }
             /*
               On OSI, if the summon attacks a mobile, the summoner meer also
@@ -119,11 +119,11 @@ namespace Server.Mobiles
               is a player or controlled/summoned, and the summoner is not already
               engaged in combat.
             */
-            else if (!Combat(SummonMaster))
+            else if (!Combat(Master))
             {
                 if (Combatant.Player || Combatant is BaseCreature bc && bc.GetMaster() != null)
                 {
-                    SummonMaster.Combatant = Combatant;
+                    Master.Combatant = Combatant;
                 }
             }
             else

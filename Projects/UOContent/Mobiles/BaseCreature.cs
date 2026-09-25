@@ -445,9 +445,7 @@ namespace Server.Mobiles
             InvalidateProperties();
         }
 
-        // ControlMaster and SummonMaster are views of this one reference, gated by Controlled and Summoned.
-        [SerializableField(15, getter: "private", setter: "private")]
-        [SaveFlag(nameof(ShouldSerializeMaster))]
+        // Follower bookkeeping brackets the assignment, so Master is hand-written.
         private Mobile _master;
 
         private bool ShouldSerializeMaster() => _master != null;
@@ -1152,51 +1150,49 @@ namespace Server.Mobiles
             }
         }
 
-        // Assigned before Controlled is raised (SetControlMaster), so the setter cannot be gated.
+        // Whoever this creature answers to. ControlMaster, SummonMaster and GetMaster() gate it by
+        // Controlled and Summoned; an enraged creature has a master with neither flag.
+        [SerializableProperty(15, useField: nameof(_master))]
+        [SaveFlag(nameof(ShouldSerializeMaster))]
         [CommandProperty(AccessLevel.GameMaster)]
-        public Mobile ControlMaster
+        public Mobile Master
         {
-            get => _controlled ? _master : null;
+            get => _master;
             set
             {
-                if (ControlMaster == value || this == value)
+                if (_master == value || this == value)
                 {
                     return;
                 }
 
-                SetMaster(value);
+                RemoveFollowers();
+                _master = value;
+                AddFollowers();
 
                 if (value != null)
                 {
                     StopDeleteTimer();
                 }
+
+                Delta(MobileDelta.Noto);
+                this.MarkDirty();
             }
         }
 
-        // The summoner, controlled or not. Enraged creatures have one without being Summoned.
-        // A plain pet has no summoner, so assigning one would overwrite its owner.
+        /// <summary>The owner. Setting it sets <see cref="Master"/>.</summary>
+        [CommandProperty(AccessLevel.GameMaster)]
+        public Mobile ControlMaster
+        {
+            get => _controlled ? _master : null;
+            set => Master = value;
+        }
+
+        /// <summary>The summoner, controlled or not. Setting it sets <see cref="Master"/>.</summary>
         [CommandProperty(AccessLevel.GameMaster)]
         public Mobile SummonMaster
         {
-            get => _controlled && !_summoned ? null : _master;
-            set
-            {
-                if (SummonMaster == value || this == value || _controlled && !_summoned)
-                {
-                    return;
-                }
-
-                SetMaster(value);
-            }
-        }
-
-        private void SetMaster(Mobile value)
-        {
-            RemoveFollowers();
-            Master = value;
-            AddFollowers();
-
-            Delta(MobileDelta.Noto);
+            get => _summoned ? _master : null;
+            set => Master = value;
         }
 
         // Fires on every assignment, not only changes: a reissued order is a command (retarget, re-anchor).
@@ -2726,7 +2722,7 @@ namespace Server.Mobiles
                 AnimateDeadSpell.Unregister(SummonMaster, this);
             }
 
-            if (Summoned && SummonMaster != null)
+            if (SummonMaster != null)
             {
                 SummonFamiliarSpell.Unregister(SummonMaster, this);
             }
@@ -2796,7 +2792,7 @@ namespace Server.Mobiles
         {
             base.AggressiveAction(aggressor, criminal);
 
-            if (Controlled && ControlMaster != null && NotorietyHandlers.CheckAggressor(ControlMaster.Aggressors, aggressor))
+            if (ControlMaster != null && NotorietyHandlers.CheckAggressor(ControlMaster.Aggressors, aggressor))
             {
                 aggressor.Aggressors.Add(AggressorInfo.Create(this, aggressor, true));
             }
@@ -2904,7 +2900,7 @@ namespace Server.Mobiles
         }
 
         public override bool IsHarmfulCriminal(Mobile target) =>
-            target != ControlMaster && (!Summoned || target != SummonMaster) &&
+            target != GetMaster() &&
             (target is not BaseCreature { InitialInnocent: true } creature || creature.Controlled) &&
             (target is not PlayerMobile mobile || mobile.PermaFlags.Count <= 0) && base.IsHarmfulCriminal(target);
 
@@ -2912,9 +2908,9 @@ namespace Server.Mobiles
         {
             base.CriminalAction(message);
 
-            if ((Controlled || Summoned) && _master?.Player == true)
+            if (GetMaster() is { Player: true } master)
             {
-                _master.CriminalAction(false);
+                master.CriminalAction(false);
             }
         }
 
@@ -2922,7 +2918,7 @@ namespace Server.Mobiles
         {
             base.DoHarmful(target, indirect);
 
-            if (target == this || target == _master || !Controlled && !Summoned)
+            if (target == this || GetMaster() is not { } owner || target == owner)
             {
                 return;
             }
@@ -3343,20 +3339,8 @@ namespace Server.Mobiles
             return bonus;
         }
 
-        public Mobile GetMaster()
-        {
-            if (Controlled && ControlMaster != null)
-            {
-                return ControlMaster;
-            }
-
-            if (Summoned && SummonMaster != null)
-            {
-                return SummonMaster;
-            }
-
-            return null;
-        }
+        // Who answers for this creature: its owner or its summoner. Never an enraged creature's meer.
+        public Mobile GetMaster() => ControlMaster ?? SummonMaster;
 
         public virtual bool IsMonster => !Controlled || (GetMaster() as BaseCreature)?.IsMonster == true;
 
@@ -3702,7 +3686,7 @@ namespace Server.Mobiles
             var m = ControlMaster;
             SetControlMaster(null);
 
-            SummonMaster = null;
+            Master = null;
             ReceivedHonorContext?.Cancel();
 
             base.OnDelete();
@@ -3757,14 +3741,19 @@ namespace Server.Mobiles
         }
 
         public override bool CanBeRenamedBy(Mobile from) =>
-            Controlled && from == ControlMaster && !from.Region.IsPartOf<JailRegion>() ||
+            from == ControlMaster && !from.Region.IsPartOf<JailRegion>() ||
             base.CanBeRenamedBy(from);
 
         public bool SetControlMaster(Mobile m)
         {
             if (m == null)
             {
-                ControlMaster = null;
+                // An uncontrolled summon keeps its caster.
+                if (_controlled)
+                {
+                    Master = null;
+                }
+
                 Controlled = false;
                 ControlTarget = null;
                 ControlOrder = OrderType.None;
@@ -3787,7 +3776,7 @@ namespace Server.Mobiles
 
                 Home = Point3D.Zero;
 
-                ControlMaster = m;
+                Master = m;
                 Controlled = true;
                 ControlTarget = null;
                 ControlOrder = OrderType.Come;
@@ -3849,7 +3838,7 @@ namespace Server.Mobiles
 
             creature.RangeHome = 10;
             creature.Summoned = true;
-            creature.SummonMaster = caster;
+            creature.Master = caster;
 
             var pack = creature.Backpack;
 
@@ -4006,9 +3995,11 @@ namespace Server.Mobiles
                 return BardMaster;
             }
 
-            if ((_controlled || _summoned) && _master != null)
+            var master = GetMaster();
+
+            if (master != null)
             {
-                return _master;
+                return master;
             }
 
             return base.GetDamageMaster(damagee);

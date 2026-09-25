@@ -59,7 +59,7 @@ namespace Server.Mobiles
 
         public override void OnHarmfulSpell(Mobile from)
         {
-            if (!Controlled && ControlMaster == null)
+            if (!Controlled)
             {
                 CurrentSpeed = BoostedSpeed;
             }
@@ -67,7 +67,7 @@ namespace Server.Mobiles
 
         public override void OnCombatantChange()
         {
-            if (Combatant == null && !Controlled && ControlMaster == null)
+            if (Combatant == null && !Controlled)
             {
                 CurrentSpeed = PassiveSpeed;
             }

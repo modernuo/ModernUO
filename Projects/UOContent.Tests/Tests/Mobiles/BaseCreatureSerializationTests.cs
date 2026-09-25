@@ -201,31 +201,16 @@ public class BaseCreatureSerializationTests : IDisposable
         }
         else
         {
-            bc.SummonMaster = master;
+            bc.Master = master;
         }
 
         var copy = Load(Snapshot(bc));
 
         Assert.Equal(controlled, copy.Controlled);
         Assert.Equal(summoned, copy.Summoned);
+        Assert.Equal(master, copy.Master);
         Assert.Equal(controlled ? master : null, copy.ControlMaster);
-        Assert.Equal(controlled && !summoned ? null : master, copy.SummonMaster);
-    }
-
-    [Fact]
-    public void SummonMaster_OnPlainPet_KeepsTheOwner()
-    {
-        var bc = NewCreature();
-        var owner = NewMaster();
-        var other = NewMaster();
-
-        bc.SetControlMaster(owner);
-        bc.SummonMaster = other;
-
-        Assert.Equal(owner, bc.ControlMaster);
-        Assert.Null(bc.SummonMaster);
-        Assert.Equal(bc.ControlSlots, owner.Followers);
-        Assert.Equal(0, other.Followers);
+        Assert.Equal(summoned ? master : null, copy.SummonMaster);
     }
 
     [Fact]
@@ -446,8 +431,8 @@ public class BaseCreatureSerializationTests : IDisposable
         Assert.Equal(0.6, copy.CurrentMoveSpeed); // passive mode, inheriting
     }
 
-    // A summon master can exist without Summoned (EnragedCreature), and a controlled summon
-    // reports the same mobile as both.
+    // A master survives without Summoned (EnragedCreature), and a controlled summon reports the
+    // same mobile as both.
     [Theory]
     [InlineData(true, true, false, false)]  // controlled pet
     [InlineData(true, true, true, true)]    // controlled summon, SummonEnd on the wire
@@ -473,7 +458,8 @@ public class BaseCreatureSerializationTests : IDisposable
         Assert.Equal(controlled, copy.Controlled);
         Assert.Equal(summoned, copy.Summoned);
         Assert.Equal(hasControlMaster ? master : null, copy.ControlMaster);
-        Assert.Equal(hasSummonMaster ? master : null, copy.SummonMaster);
+        Assert.Equal(master, copy.Master);
+        Assert.Equal(summoned ? master : null, copy.SummonMaster);
 
         if (summoned)
         {

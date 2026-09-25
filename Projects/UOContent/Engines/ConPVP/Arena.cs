@@ -637,7 +637,7 @@ namespace Server.Engines.ConPVP
 
                 foreach (var mob in facet.GetMobilesInBounds(m_Bounds))
                 {
-                    if (mob is BaseCreature pet && pet.Controlled && pet.ControlMaster != null &&
+                    if (mob is BaseCreature pet && pet.ControlMaster != null &&
                         Players.Contains(pet.ControlMaster))
                     {
                         pets.Add(pet);
