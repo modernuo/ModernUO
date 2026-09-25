@@ -4018,6 +4018,38 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
         var removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
 
+        if (m_Parent is Container { RestrictsChildRemoval: true } cont)
+        {
+            // Same recipients ProcessDelta uses for contained-item updates: nobody else was told this item exists.
+            OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
+
+            var root = cont.RootParent as Mobile;
+
+            if (root?.NetState != null && root.InRange(worldLoc, GetUpdateRange(root)))
+            {
+                root.NetState.Send(removeEntity);
+            }
+
+            var openers = cont.Openers;
+
+            if (openers != null)
+            {
+                for (var i = 0; i < openers.Count; ++i)
+                {
+                    var mob = openers[i];
+
+                    if (mob == root || mob.NetState == null || mob.Map != m_Map || !mob.InRange(worldLoc, GetUpdateRange(mob)))
+                    {
+                        continue;
+                    }
+
+                    mob.NetState.Send(removeEntity);
+                }
+            }
+
+            return;
+        }
+
         foreach (var state in m_Map.GetClientsInRange(worldLoc, GetMaxUpdateRange()))
         {
             var m = state.Mobile;
