@@ -546,6 +546,8 @@ RunUO kept `ControlMaster` and `SummonMaster` as two independent fields. ModernU
 `ControlMaster` and `SummonMaster` are views of it gated by `Controlled` and `Summoned`, and
 `GetMaster()` is `ControlMaster ?? SummonMaster` (see `dev-docs/content-patterns.md` § Masters).
 
+`ControlMaster != null` implies `Controlled`, so a bare `ControlMaster` check needs no `Controlled` in front of it.
+
 Assignments compile unchanged, because both setters assign `Master`. Reads need a look:
 
 | RunUO | ModernUO |
@@ -564,6 +566,11 @@ Gotchas:
 - **One master per creature.** `SummonMaster = x` on a tamed pet replaces its owner, and
   `ControlMaster = null` on an uncontrolled summon clears its caster. Code that tracked a different
   owner and summoner keeps only the last assignment.
+- **`ControlMaster = x;` is not a tame.** The setter only moves follower slots. It skips everything
+  `SetControlMaster(x)` does: raising `Controlled`, checking the follower cap, resetting the order
+  and `ControlTarget`, unlinking from the spawner, clearing the waypoint, home and guild. On its own it
+  leaves a creature that uses up `x`'s follower slots, can't be commanded and still reads as wild.
+  Use `SetControlMaster(x)`.
 - **`SetControlMaster(null)` keeps an uncontrolled summon's caster.** It clears the master only
   while the creature is `Controlled`.
 
