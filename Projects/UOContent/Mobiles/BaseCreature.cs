@@ -1179,13 +1179,21 @@ namespace Server.Mobiles
             }
         }
 
-        // The owner.
+        /// <summary>The owner. Setting it sets <see cref="Master"/>.</summary>
         [CommandProperty(AccessLevel.GameMaster)]
-        public Mobile ControlMaster => _controlled ? _master : null;
+        public Mobile ControlMaster
+        {
+            get => _controlled ? _master : null;
+            set => Master = value;
+        }
 
-        // The summoner, controlled or not.
+        /// <summary>The summoner, controlled or not. Setting it sets <see cref="Master"/>.</summary>
         [CommandProperty(AccessLevel.GameMaster)]
-        public Mobile SummonMaster => _summoned ? _master : null;
+        public Mobile SummonMaster
+        {
+            get => _summoned ? _master : null;
+            set => Master = value;
+        }
 
         // Fires on every assignment, not only changes: a reissued order is a command (retarget, re-anchor).
         // A raw assignment is system-issued; player commands go through IssueOrder.
