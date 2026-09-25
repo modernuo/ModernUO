@@ -33,7 +33,15 @@ public partial class VendorBuybackPack : Backpack
 
         while (Items.Count >= capacity)
         {
-            Items[0].Delete();
+            var oldest = Items[0];
+            oldest.Delete();
+
+            // Delete() on an already-deleted item is a no-op that leaves it in place; drop it
+            // directly so a stale entry can never spin this loop forever.
+            if (Items.Count > 0 && Items[0] == oldest)
+            {
+                Items.RemoveAt(0);
+            }
         }
 
         DropItem(item);

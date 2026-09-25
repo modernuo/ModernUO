@@ -52,6 +52,38 @@ public class VendorBuybackPackTests
         }
     }
 
+    // Delete() on an already-deleted item is a no-op that leaves it in the list; without the
+    // RemoveAt fallback, AddBuyback's eviction loop would spin on it forever. The stale entry is
+    // forced in directly (Items is the container's real backing list) since it can't be produced
+    // through DropItem, which never accepts an already-deleted item.
+    [Fact]
+    public void AddBuyback_SkipsAlreadyDeletedEntry_WithoutSpinning()
+    {
+        var pack = new VendorBuybackPack();
+        var real1 = new Item(0x1234);
+        var stale = new Item(0x1234);
+        var real2 = new Item(0x1234);
+
+        try
+        {
+            pack.AddBuyback(real1, 100);
+
+            stale.Delete();
+            pack.Items.Insert(0, stale);
+
+            pack.AddBuyback(real2, 1);
+
+            Assert.True(real1.Deleted);
+            Assert.True(stale.Deleted);
+            Assert.Single(pack.Items);
+            Assert.Same(real2, pack.Items[0]);
+        }
+        finally
+        {
+            pack.Delete();
+        }
+    }
+
     [Fact]
     public void Purge_DeletesEveryChild()
     {
