@@ -3839,21 +3839,19 @@ namespace Server.Mobiles
             if (_allFollowers?.Count > 0)
             {
                 // Releasing or deleting a follower removes it from _allFollowers.
-                using var followers = PooledRefList<BaseCreature>.Create(_allFollowers.Count);
+                using var followers = PooledRefQueue<BaseCreature>.Create(_allFollowers.Count);
 
                 foreach (var follower in _allFollowers)
                 {
                     // Escorts and hirelings notice a deleted master and walk off on their own.
                     if (follower is BaseCreature bc and not (BaseEscortable or BaseHire))
                     {
-                        followers.Add(bc);
+                        followers.Enqueue(bc);
                     }
                 }
 
-                for (var i = 0; i < followers.Count; i++)
+                while (followers.TryDequeue(out var bc))
                 {
-                    var bc = followers[i];
-
                     if (bc.Summoned || bc.IsBonded || bc.IsDeadPet)
                     {
                         bc.Delete();
