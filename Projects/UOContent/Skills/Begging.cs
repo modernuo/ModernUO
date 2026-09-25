@@ -158,7 +158,7 @@ namespace Server.SkillHandlers
                     }
                     else
                     {
-                        _target.SendLocalizedMessage(500404); // They seem unwilling to give you any money.
+                        _from.SendLocalizedMessage(500404); // They seem unwilling to give you any money.
                     }
 
                     const int TargeterCooldown = 30000; // 30s
