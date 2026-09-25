@@ -59,6 +59,9 @@ namespace Server.Mobiles
 
         public override bool InitialInnocent => true;
 
+        // FightMode.Evil would otherwise target our own enraged creatures for their negative karma.
+        public override bool IsEnemy(Mobile m) => (m as BaseEnraged)?.SummonMaster != this && base.IsEnemy(m);
+
         public override void GenerateLoot()
         {
             AddLoot(LootPack.FilthyRich);

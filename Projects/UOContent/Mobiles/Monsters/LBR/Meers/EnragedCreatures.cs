@@ -95,6 +95,9 @@ namespace Server.Mobiles
             SummonMaster = summoner;
         }
 
+        // The meer's FightMode.Evil against our negative karma would otherwise make us enemies.
+        public override bool IsEnemy(Mobile m) => m != SummonMaster && base.IsEnemy(m);
+
         public override void OnThink()
         {
             if (SummonMaster?.Deleted != false)
@@ -118,7 +121,7 @@ namespace Server.Mobiles
             */
             else if (!Combat(SummonMaster))
             {
-                if (Combatant.Player || Combatant is BaseCreature bc && (bc.Controlled || bc.SummonMaster != null))
+                if (Combatant.Player || Combatant is BaseCreature bc && bc.GetMaster() != null)
                 {
                     SummonMaster.Combatant = Combatant;
                 }
