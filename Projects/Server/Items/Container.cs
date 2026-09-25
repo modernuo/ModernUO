@@ -397,11 +397,11 @@ public partial class Container : Item
     public virtual bool SkipsChildSerialization => false;
 
     /// <summary>
-    /// Removal of a direct child is sent only to the root mobile and openers instead of every
-    /// client in range. For containers whose contents were never sent to anyone else, such as
-    /// an NPC vendor's buyback pack, where a mass purge would otherwise flood nearby clients.
+    /// Whether <paramref name="child"/> was sent to every client in range rather than only to the root
+    /// mobile, the secure-trade partner and openers. Removal of a public child is broadcast; removal of any
+    /// other child reaches only the clients that were sent it.
     /// </summary>
-    public virtual bool RestrictsChildRemoval => false;
+    public virtual bool IsChildPublic(Item child) => IsPublicContainer;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public override void OnItemAdded(Item item)
