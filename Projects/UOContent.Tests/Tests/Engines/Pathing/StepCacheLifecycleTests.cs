@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
@@ -14,8 +15,14 @@ namespace Server.Tests.Pathfinding;
 /// layers, and LRU eviction.
 /// </summary>
 [Collection("Sequential Pathfinding Tests")]
-public class StepCacheLifecycleTests
+public class StepCacheLifecycleTests : IDisposable
 {
+    // The window is a knob on the singleton and Clear() leaves it alone, so a test that narrows
+    // it would otherwise leak the narrow window into every later test in the collection.
+    private readonly uint _savedWindowMs = StepCache.Instance.MissPromotionWindowMs;
+
+    public void Dispose() => StepCache.Instance.MissPromotionWindowMs = _savedWindowMs;
+
     /// <summary>Resets to a known state and returns the singleton.</summary>
     private static StepCache FreshCache(int promotionThreshold)
     {
