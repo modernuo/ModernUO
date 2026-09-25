@@ -390,6 +390,12 @@ public partial class Container : Item
         }
     }
 
+    /// <summary>
+    /// Direct children are left out of world saves; the container itself is still saved and
+    /// loads with the dangling child serials dropped.
+    /// </summary>
+    public virtual bool SkipsChildSerialization => false;
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public override void OnItemAdded(Item item)
     {
