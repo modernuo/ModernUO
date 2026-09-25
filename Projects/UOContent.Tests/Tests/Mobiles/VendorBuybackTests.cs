@@ -144,6 +144,20 @@ public class VendorBuybackTests : IDisposable
         Assert.Equal(lastRestock + TimeSpan.FromHours(expectedHours), next);
     }
 
+    // A backwards clock adjustment can put LastRestock ahead of now; the anchor must clamp to now
+    // rather than extend the buyback past RestockDelay. Kept separate from the theory above, which
+    // is parameterized by hours since restock (a lastRestock in the past).
+    [Fact]
+    public void NextBuybackPurge_FutureAnchor_IsClampedToNow()
+    {
+        var now = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        var lastRestock = now + TimeSpan.FromHours(4);
+
+        var next = BaseVendor.GetNextBuybackPurge(lastRestock, TimeSpan.FromHours(1), now);
+
+        Assert.Equal(now + TimeSpan.FromHours(1), next);
+    }
+
     [Fact]
     public void PartialStackSale_SplitGoesToBuyback_SellerKeepsRemainder()
     {
@@ -179,6 +193,28 @@ public class VendorBuybackTests : IDisposable
 
         Assert.Empty(vendor.BuyPack.Items);
         Assert.True(bandages.Deleted);
+    }
+
+    [Fact]
+    public void Restock_ClearsPurgeSchedule_AndASubsequentSaleRearmsIt()
+    {
+        var vendor = NewVendor();
+        var seller = NewSeller();
+        var bandages = new Bandage(10);
+        seller.Backpack.DropItem(bandages);
+        vendor.OnSellItems(seller, [new SellItemResponse(bandages, 10)]);
+        Assert.True(vendor.BuybackPurgeScheduled);
+
+        vendor.Restock();
+
+        Assert.False(vendor.BuybackPurgeScheduled);
+
+        var seller2 = NewSeller();
+        var moreBandages = new Bandage(10);
+        seller2.Backpack.DropItem(moreBandages);
+        vendor.OnSellItems(seller2, [new SellItemResponse(moreBandages, 10)]);
+
+        Assert.True(vendor.BuybackPurgeScheduled);
     }
 
     [Fact]
