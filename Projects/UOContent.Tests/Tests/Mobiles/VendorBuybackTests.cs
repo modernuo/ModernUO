@@ -60,9 +60,63 @@ public class VendorBuybackTests : IDisposable
         }
     }
 
+    // Same sell price as BandageSB, but a buy list at the 250-entry limit so buyback capacity is 0.
+    private sealed class FullStockSB : SBInfo
+    {
+        private readonly GenericSellInfo _sellInfo = new();
+        private readonly List<GenericBuyInfo> _buyInfo = [];
+
+        public FullStockSB()
+        {
+            _sellInfo.Add(typeof(Bandage), 2);
+
+            for (var i = 0; i < 250; i++)
+            {
+                _buyInfo.Add(new GenericBuyInfo(typeof(Bandage), 5, 20, 0xE21, 0));
+            }
+        }
+
+        public override IShopSellInfo SellInfo => _sellInfo;
+
+        public override List<GenericBuyInfo> BuyInfo => _buyInfo;
+    }
+
+    private sealed class FullStockVendorStub : BaseVendor
+    {
+        private readonly List<SBInfo> _sbInfos = [];
+
+        public FullStockVendorStub() : base("the stub")
+        {
+        }
+
+        protected override List<SBInfo> SBInfos => _sbInfos;
+
+        public override void InitSBInfo()
+        {
+            _sbInfos.Add(new FullStockSB());
+        }
+
+        public override void InitOutfit()
+        {
+        }
+
+        public override void GetSpeeds(out double activeSpeed, out double passiveSpeed)
+        {
+            activeSpeed = 0.3;
+            passiveSpeed = 0.6;
+        }
+    }
+
     private VendorStub NewVendor()
     {
         var vendor = new VendorStub();
+        _created.Add(vendor);
+        return vendor;
+    }
+
+    private FullStockVendorStub NewFullStockVendor()
+    {
+        var vendor = new FullStockVendorStub();
         _created.Add(vendor);
         return vendor;
     }
@@ -167,5 +221,24 @@ public class VendorBuybackTests : IDisposable
         {
             Assert.True(children[i].Deleted);
         }
+    }
+
+    [Fact]
+    public void SaleWithNoBuybackCapacity_ConsumesItem_AndStillPays()
+    {
+        var vendor = NewFullStockVendor();
+        var seller = NewSeller();
+        var bandages = new Bandage(10);
+        seller.Backpack.DropItem(bandages);
+
+        Assert.True(vendor.OnSellItems(seller, [new SellItemResponse(bandages, 10)]));
+
+        Assert.True(bandages.Deleted);
+        Assert.Empty(vendor.BuyPack.Items);
+        Assert.False(vendor.BuybackPurgeScheduled);
+
+        var gold = seller.Backpack.FindItemByType<Gold>();
+        Assert.NotNull(gold);
+        Assert.Equal(20, gold.Amount);
     }
 }
