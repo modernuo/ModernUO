@@ -1,3 +1,4 @@
+using System.Buffers.Binary;
 using Server.Items;
 using Server.Network;
 using Xunit;
@@ -195,5 +196,136 @@ public class ContainerPacketTests
 
         var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
+    }
+
+    [Fact]
+    public void TestContainerContent_CapsAtProtocolLimit()
+    {
+        var cont = new Container(World.NewItem);
+
+        // Past the 3448-entry cap (19-byte entries) so truncation engages.
+        const int itemCount = 5000;
+        for (var i = 0; i < itemCount; i++)
+        {
+            cont.AddItem(new Item(World.NewItem));
+        }
+
+        cont.Map = Map.Felucca;
+
+        var m = new Mobile((Serial)0x1);
+        m.DefaultMobileInit();
+        m.AccessLevel = AccessLevel.Administrator;
+        m.Map = Map.Felucca;
+
+        try
+        {
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            // A ~64KB packet exceeds the 4KB pre-auth send buffer; an account lets Send() promote it
+            // on demand instead of exhausting the buffer and disconnecting.
+            ns.Account = new MockAccount();
+
+            var ex = Record.Exception(() => ns.SendContainerContent(m, cont));
+            Assert.Null(ex);
+
+            var span = ns.SendBuffer.GetReadSpan();
+            Assert.Equal((byte)0x3C, span[0]);
+
+            var length = BinaryPrimitives.ReadUInt16BigEndian(span[1..3]);
+            var count = BinaryPrimitives.ReadUInt16BigEndian(span[3..5]);
+
+            const int entrySize = 19; // no grid lines negotiated on this NetState
+            var expectedMaxEntries = (ushort.MaxValue - 5) / entrySize;
+
+            Assert.Equal(65517, length);
+            Assert.Equal(length, span.Length);
+            Assert.Equal(expectedMaxEntries, count);
+        }
+        finally
+        {
+            cont.Delete();
+            m.Delete();
+        }
+    }
+
+    [Fact]
+    public void TestContainerContent_CapsAtProtocolLimit_WithGridLines()
+    {
+        var cont = new Container(World.NewItem);
+
+        // Past the 3276-entry cap (20-byte entries with grid lines) so truncation engages.
+        const int itemCount = 5000;
+        for (var i = 0; i < itemCount; i++)
+        {
+            cont.AddItem(new Item(World.NewItem));
+        }
+
+        cont.Map = Map.Felucca;
+
+        var m = new Mobile((Serial)0x1);
+        m.DefaultMobileInit();
+        m.AccessLevel = AccessLevel.Administrator;
+        m.Map = Map.Felucca;
+
+        try
+        {
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.ProtocolChanges |= ProtocolChanges.ContainerGridLines;
+            ns.Account = new MockAccount();
+
+            var ex = Record.Exception(() => ns.SendContainerContent(m, cont));
+            Assert.Null(ex);
+
+            var span = ns.SendBuffer.GetReadSpan();
+            Assert.Equal((byte)0x3C, span[0]);
+
+            var length = BinaryPrimitives.ReadUInt16BigEndian(span[1..3]);
+            var count = BinaryPrimitives.ReadUInt16BigEndian(span[3..5]);
+
+            Assert.Equal(65525, length);
+            Assert.Equal(length, span.Length);
+            Assert.Equal(3276, count);
+        }
+        finally
+        {
+            cont.Delete();
+            m.Delete();
+        }
+    }
+
+    [Fact]
+    public void TestContainerContent_RentedBuffer_MatchesReferencePacket()
+    {
+        var cont = new Container(World.NewItem);
+
+        // Below the entry cap but past the 1024-byte stackalloc threshold, so SendContainerContent
+        // rents its buffer instead of using the stack.
+        const int itemCount = 100;
+        for (var i = 0; i < itemCount; i++)
+        {
+            cont.AddItem(new Item(World.NewItem));
+        }
+
+        cont.Map = Map.Felucca;
+
+        var m = new Mobile((Serial)0x1);
+        m.DefaultMobileInit();
+        m.AccessLevel = AccessLevel.Administrator;
+        m.Map = Map.Felucca;
+
+        try
+        {
+            var expected = new ContainerContent(m, cont).Compile();
+
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendContainerContent(m, cont);
+
+            var result = ns.SendBuffer.GetReadSpan();
+            AssertThat.Equal(result, expected);
+        }
+        finally
+        {
+            cont.Delete();
+            m.Delete();
+        }
     }
 }
