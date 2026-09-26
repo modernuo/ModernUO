@@ -1492,6 +1492,43 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
             return;
         }
 
+        // A properties-only invalidation (no Update) on a private child must stay as scoped as every
+        // other private-child send, otherwise a bystander who was never sent the item learns its OPL hash.
+        if (!update && ObjectPropertyList.Enabled && (flags & ItemDelta.Properties) != 0 &&
+            TryGetPrivateParent(out var cont))
+        {
+            GetPrivateChildRecipients(cont, out var root, out var tradeFrom, out var tradeTo);
+
+            SendPrivateOplTo(root, worldLoc);
+
+            if (tradeFrom != root)
+            {
+                SendPrivateOplTo(tradeFrom, worldLoc);
+            }
+
+            if (tradeTo != root && tradeTo != tradeFrom)
+            {
+                SendPrivateOplTo(tradeTo, worldLoc);
+            }
+
+            var privateOpeners = cont.Openers;
+
+            if (privateOpeners != null)
+            {
+                for (var i = 0; i < privateOpeners.Count; ++i)
+                {
+                    var mob = privateOpeners[i];
+
+                    if (mob != root && mob != tradeFrom && mob != tradeTo)
+                    {
+                        SendPrivateOplTo(mob, worldLoc);
+                    }
+                }
+            }
+
+            return;
+        }
+
         // A second item sharing an equipment layer is omitted by SendMobileIncoming (0x78);
         // sending it on its own via EquipUpdate/OPL would leave the client with two items on
         // one slot. Skip the per-client sends entirely for the dupe.
@@ -4110,6 +4147,18 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         if (m?.NetState != null && m.Map == m_Map && m.InRange(worldLoc, GetUpdateRange(m)))
         {
             m.NetState.Send(removeEntity);
+        }
+    }
+
+    // Same recipient gate as SendRemoveTo, plus CanSee: this is an informational OPL push, not
+    // cleanup of a reference the client may already hold regardless of visibility.
+    private void SendPrivateOplTo(Mobile m, Point3D worldLoc)
+    {
+        var ns = m?.NetState;
+
+        if (ns != null && m.CanSee(this) && m.Map == m_Map && m.InRange(worldLoc, GetUpdateRange(m)))
+        {
+            SendOPLPacketTo(ns);
         }
     }
 
