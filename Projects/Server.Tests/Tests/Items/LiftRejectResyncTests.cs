@@ -1,6 +1,5 @@
 using System;
 using System.Buffers;
-using Server.Accounting;
 using Server.Items;
 using Server.Network;
 using Server.Tests.Network;
@@ -47,6 +46,15 @@ public class LiftRejectResyncTests
         Span<byte> expected = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength];
         var length = OutgoingItemPackets.CreateWorldItem(expected, item);
         return ns.SendBuffer.GetReadSpan().IndexOf(expected[..length]) >= 0;
+    }
+
+    private static bool ReceivedEquipUpdate(NetState ns, Serial serial)
+    {
+        Span<byte> expected = stackalloc byte[5];
+        var writer = new SpanWriter(expected);
+        writer.Write((byte)0x2E); // EquipUpdate packet ID
+        writer.Write(serial);
+        return ns.SendBuffer.GetReadSpan().IndexOf(expected) >= 0;
     }
 
     [Fact]
@@ -245,6 +253,59 @@ public class LiftRejectResyncTests
         {
             owner.Holding?.Delete();
             DisposeClient(ownerNs, owner);
+        }
+    }
+
+    [Fact]
+    public void EquippedItemOnHiddenMobile_RejectedLift_NoEquipResync()
+    {
+        var (ownerNs, owner) = CreateClient(_baseLoc);
+        var (requesterNs, requester) = CreateClient(new Point3D(_baseLoc.X + 1, _baseLoc.Y, 0));
+
+        owner.Hidden = true;
+        var weapon = new Item(0x1234) { Layer = Layer.OneHanded };
+        owner.AddItem(weapon);
+
+        try
+        {
+            requester.Lift(weapon, weapon.Amount, out var rejected, out var reject);
+
+            // The requester can't see a hidden, non-staff owner: the lift is rejected OutOfSight and
+            // IsSentTo's CanSee gate must suppress the equip resync.
+            Assert.True(rejected);
+            Assert.Equal(LRReason.OutOfSight, reject);
+            Assert.False(ReceivedEquipUpdate(requesterNs, weapon.Serial));
+        }
+        finally
+        {
+            weapon.Delete();
+            DisposeClient(ownerNs, owner);
+            DisposeClient(requesterNs, requester);
+        }
+    }
+
+    [Fact]
+    public void InvisibleGroundItemInRange_RejectedLift_NoWorldResync()
+    {
+        var (requesterNs, requester) = CreateClient(_baseLoc);
+
+        var item = new Item(0x1234) { Visible = false };
+        item.MoveToWorld(new Point3D(_baseLoc.X + 1, _baseLoc.Y, 0), Map.Felucca);
+
+        try
+        {
+            requester.Lift(item, item.Amount, out var rejected, out var reject);
+
+            // In range this time (unlike GroundItemOutOfRange above): only Visible gates it, so the
+            // rejection resync must not hand the requester a world packet for an item they can't see.
+            Assert.True(rejected);
+            Assert.Equal(LRReason.OutOfSight, reject);
+            Assert.False(ReceivedWorldItem(requesterNs, item));
+        }
+        finally
+        {
+            DisposeClient(requesterNs, requester);
+            item.Delete();
         }
     }
 }
