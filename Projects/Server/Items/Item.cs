@@ -1188,6 +1188,11 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         // are final yet.
         LastMoved = Core.Now;
 
+        // A parented item's removal already reached every client that was sent it (root, trade
+        // parties, openers) via RemoveItem below; sending another remove at oldLocation would
+        // broadcast it to bystanders who never knew about it.
+        var wasContained = Parent != null;
+
         if (Parent is Mobile mobile)
         {
             mobile.RemoveItem(this);
@@ -1205,7 +1210,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
             {
                 m_Map.OnLeave(this);
 
-                if (oldLocation.m_X != 0)
+                if (!wasContained && oldLocation.m_X != 0)
                 {
                     SendRemovePacket(oldLocation);
                 }
@@ -1281,7 +1286,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         }
         else if (m_Map != null)
         {
-            if (oldLocation.m_X != 0)
+            if (!wasContained && oldLocation.m_X != 0)
             {
                 var removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
 
