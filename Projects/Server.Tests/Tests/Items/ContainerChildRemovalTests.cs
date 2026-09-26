@@ -1,5 +1,4 @@
 using System;
-using Server.Accounting;
 using Server.Items;
 using Server.Network;
 using Server.Tests.Network;
@@ -356,6 +355,108 @@ public class ContainerChildRemovalTests
         finally
         {
             DisposeClient(ownerNs, owner);
+        }
+    }
+
+    [Fact]
+    public void LiftingFromOwnBackpack_DoesNotBroadcastRemove()
+    {
+        var (ownerNs, owner) = CreateClient(_ownerLoc);
+        var (bystanderNs, bystander) = CreateClient(new Point3D(_ownerLoc.X + 1, _ownerLoc.Y, 0));
+
+        var pack = new Container(0xE75) { Layer = Layer.Backpack };
+        owner.AddItem(pack);
+
+        var item = new Item(0x1234);
+        pack.DropItem(item);
+
+        try
+        {
+            item.Internalize();
+
+            Assert.True(ReceivedRemove(ownerNs, item.Serial));
+            Assert.False(ReceivedRemove(bystanderNs, item.Serial));
+        }
+        finally
+        {
+            item.Delete();
+            DisposeClient(ownerNs, owner);
+            DisposeClient(bystanderNs, bystander);
+        }
+    }
+
+    [Fact]
+    public void MovingPrivateChildToGroundSameMap_DoesNotSendOldLocationRemoveToBystanders()
+    {
+        var (ownerNs, owner) = CreateClient(_ownerLoc);
+        var (bystanderNs, bystander) = CreateClient(new Point3D(_ownerLoc.X + 1, _ownerLoc.Y, 0));
+
+        var pack = new Container(0xE75) { Layer = Layer.Backpack };
+        owner.AddItem(pack);
+
+        var item = new Item(0x1234);
+        pack.DropItem(item);
+
+        var farLocation = new Point3D(_ownerLoc.X + 100, _ownerLoc.Y, 0);
+
+        try
+        {
+            item.MoveToWorld(farLocation, Map.Felucca);
+
+            Assert.False(ReceivedRemove(bystanderNs, item.Serial));
+        }
+        finally
+        {
+            item.Delete();
+            DisposeClient(ownerNs, owner);
+            DisposeClient(bystanderNs, bystander);
+        }
+    }
+
+    [Fact]
+    public void LiftingEquippedItem_StillBroadcastsRemove()
+    {
+        var (ownerNs, owner) = CreateClient(_ownerLoc);
+        var (bystanderNs, bystander) = CreateClient(new Point3D(_ownerLoc.X + 1, _ownerLoc.Y, 0));
+
+        var weapon = new Item(0x1234) { Layer = Layer.OneHanded };
+        owner.AddItem(weapon);
+
+        try
+        {
+            weapon.Internalize();
+
+            Assert.True(ReceivedRemove(bystanderNs, weapon.Serial));
+        }
+        finally
+        {
+            weapon.Delete();
+            DisposeClient(ownerNs, owner);
+            DisposeClient(bystanderNs, bystander);
+        }
+    }
+
+    [Fact]
+    public void GroundItemMove_StillSendsOldLocationRemove()
+    {
+        var (bystanderNs, bystander) = CreateClient(_ownerLoc);
+
+        var groundLocation = new Point3D(_ownerLoc.X + 1, _ownerLoc.Y, 0);
+        var item = new Item(0x1234);
+        item.MoveToWorld(groundLocation, Map.Felucca);
+
+        var farLocation = new Point3D(_ownerLoc.X + 100, _ownerLoc.Y, 0);
+
+        try
+        {
+            item.MoveToWorld(farLocation, Map.Felucca);
+
+            Assert.True(ReceivedRemove(bystanderNs, item.Serial));
+        }
+        finally
+        {
+            item.Delete();
+            DisposeClient(bystanderNs, bystander);
         }
     }
 }
