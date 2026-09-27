@@ -45,6 +45,9 @@ public static class Stealing
     public static bool IsEmptyHanded(Mobile from) =>
         from.FindItemOnLayer(Layer.OneHanded) == null && from.FindItemOnLayer(Layer.TwoHanded) == null;
 
+    private static bool IsInLockedContainer(Item item) =>
+        item.Parent is Item parent && (parent is LockableContainer { Locked: true } || IsInLockedContainer(parent));
+
     public static TimeSpan OnUse(Mobile m)
     {
         if (!IsEmptyHanded(m))
@@ -248,6 +251,10 @@ public static class Stealing
             else if (root is Corpse)
             {
                 _thief.SendLocalizedMessage(502710); // You can't steal that!
+            }
+            else if (_thief.AccessLevel < AccessLevel.GameMaster && IsInLockedContainer(toSteal))
+            {
+                _thief.SendLocalizedMessage(501747); // It appears to be locked.
             }
             else
             {
