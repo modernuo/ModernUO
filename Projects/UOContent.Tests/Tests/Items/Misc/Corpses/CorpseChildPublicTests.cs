@@ -12,6 +12,15 @@ namespace UOContent.Tests;
 [Collection("Sequential UOContent Tests")]
 public class CorpseChildPublicTests
 {
+    // Weapons take their layer from tiledata, which CI doesn't load; without an explicit layer the
+    // equip is silently refused and the corpse's worn-gear list stays empty.
+    private static VikingSword EquipSword(Mobile owner)
+    {
+        var sword = new VikingSword { Layer = Layer.OneHanded };
+        Assert.True(owner.EquipItem(sword));
+        return sword;
+    }
+
     [Fact]
     public void IsChildPublic_HumanCorpseWithWornGear_ReturnsTrue()
     {
@@ -19,8 +28,7 @@ public class CorpseChildPublicTests
         owner.DefaultMobileInit();
         owner.Body = 0x190;
 
-        var wornItem = new VikingSword();
-        owner.EquipItem(wornItem);
+        var wornItem = EquipSword(owner);
 
         var corpse = new Corpse(owner, owner.Items);
 
@@ -44,8 +52,7 @@ public class CorpseChildPublicTests
         owner.DefaultMobileInit();
         owner.Body = 0x190;
 
-        var wornItem = new VikingSword();
-        owner.EquipItem(wornItem);
+        var wornItem = EquipSword(owner);
 
         var corpse = new Corpse(owner, owner.Items);
 
@@ -72,8 +79,7 @@ public class CorpseChildPublicTests
         owner.DefaultMobileInit();
         owner.Body = 0x190;
 
-        var wornItem = new VikingSword();
-        owner.EquipItem(wornItem);
+        var wornItem = EquipSword(owner);
 
         var corpse = new Corpse(owner, owner.Items);
 
@@ -99,8 +105,7 @@ public class CorpseChildPublicTests
         owner.DefaultMobileInit();
         owner.Body = 0xC9;
 
-        var wornItem = new VikingSword();
-        owner.EquipItem(wornItem);
+        var wornItem = EquipSword(owner);
 
         var corpse = new Corpse(owner, owner.Items);
 
