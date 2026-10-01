@@ -113,6 +113,9 @@ public partial class Map
         private Rectangle2D _bounds;
 
         private int _sectorStartX;
+        private int _sectorStartY;
+        private int _sectorEndX;
+        private int _sectorEndY;
         private int _maxRing;
 
         private int _ring;   // -1 = uninitialized, then 0.._maxRing
@@ -143,11 +146,11 @@ public partial class Map
                 var centerSectorX = center.m_X / SectorSize;
                 var centerSectorY = center.m_Y / SectorSize;
 
-                map.CalculateSectors(_bounds, out _sectorStartX, out var sectorStartY, out var sectorEndX, out var sectorEndY);
+                map.CalculateSectors(_bounds, out _sectorStartX, out _sectorStartY, out _sectorEndX, out _sectorEndY);
 
                 // Calculate max ring based on bounds
-                var dx = Math.Max(centerSectorX - _sectorStartX, sectorEndX - centerSectorX);
-                var dy = Math.Max(centerSectorY - sectorStartY, sectorEndY - centerSectorY);
+                var dx = Math.Max(centerSectorX - _sectorStartX, _sectorEndX - centerSectorX);
+                var dy = Math.Max(centerSectorY - _sectorStartY, _sectorEndY - centerSectorY);
                 _maxRing = Math.Max(dx, dy);
             }
 
@@ -228,7 +231,7 @@ public partial class Map
                     _ringIndex = 0;
                     sx = _center.m_X / SectorSize;
                     sy = _center.m_Y / SectorSize;
-                    return sx >= _sectorStartX;
+                    return IsSectorInBounds(sx, sy);
                 }
 
                 sx = sy = 0;
@@ -251,13 +254,18 @@ public partial class Map
                 _ringIndex = nextIndex;
                 CalculatePositionFromIndex(nextIndex, out sx, out sy);
 
-                if (sx >= _sectorStartX)
+                if (IsSectorInBounds(sx, sy))
                 {
                     return true;
                 }
             }
         }
 
+
+        // Ring cells outside the clamped sector range would resolve to the shared invalid sector, once per cell
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private bool IsSectorInBounds(int sx, int sy) =>
+            sx >= _sectorStartX && sx <= _sectorEndX && sy >= _sectorStartY && sy <= _sectorEndY;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void CalculatePositionFromIndex(int index, out int x, out int y)

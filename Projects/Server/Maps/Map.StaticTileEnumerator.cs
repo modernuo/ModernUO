@@ -99,7 +99,12 @@ public partial class Map
                 {
                     _tiles = multi.Components.Tiles[offsetX][offsetY];
                     _index = -1;
-                    return SetTile();
+
+                    // A multi can have no tile at this cell; later multis in the sector still may
+                    if (SetTile())
+                    {
+                        return true;
+                    }
                 }
             }
 

@@ -386,6 +386,35 @@ public class MultiEnumeratorTests
         }
     }
 
+    [Fact]
+    public void MultiEnumerator_NestedQueryDoesNotDisturbOuterDeduplication()
+    {
+        var map = Map.Felucca;
+
+        // Components reach two tiles either side, so at x = 1024 the multi spans sectors 63 and 64
+        var spanning = new SpanningMulti();
+        try
+        {
+            spanning.MoveToWorld(new Point3D(1024, 1000, 0), map);
+
+            var found = new List<BaseMulti>();
+            foreach (var multi in map.GetMultisInBounds<BaseMulti>(new Rectangle2D(1000, 990, 48, 20)))
+            {
+                found.Add(multi);
+
+                foreach (var _ in map.GetMultisInBounds<BaseMulti>(new Rectangle2D(3000, 3000, 4, 4)))
+                {
+                }
+            }
+
+            Assert.Equal([spanning], found);
+        }
+        finally
+        {
+            spanning.Delete();
+        }
+    }
+
     private static TestMulti CreateMulti(Map map, Point3D location)
     {
         var multi = new TestMulti();
@@ -407,6 +436,23 @@ public class MultiEnumeratorTests
         public TestMulti() : base(0x1)
         {
         }
+    }
+
+    private class SpanningMulti : BaseMulti
+    {
+        // Entries after the first need non-zero flags or MultiComponentList drops them
+        private static readonly MultiComponentList _components = new(
+            [
+                new MultiTileEntry(0x1, -2, 0, 0, TileFlag.Background),
+                new MultiTileEntry(0x1, 2, 0, 0, TileFlag.Background)
+            ]
+        );
+
+        public SpanningMulti() : base(0x1)
+        {
+        }
+
+        public override MultiComponentList Components => _components;
     }
 }
 

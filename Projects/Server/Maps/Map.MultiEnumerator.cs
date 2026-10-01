@@ -85,8 +85,6 @@ public partial class Map
     public MultiBoundsEnumerable<T> GetMultisInBounds<T>(Rectangle2D bounds, bool makeBoundsInclusive = false) where T : BaseMulti =>
         new(this, bounds, makeBoundsInclusive);
 
-    private static readonly HashSet<Serial> _sharedDupes = [];
-
     public ref struct MultiSectorEnumerable<T>(Map map, Point2D loc) where T : BaseMulti
     {
         public static MultiSectorEnumerable<T> Empty
@@ -193,13 +191,11 @@ public partial class Map
         private int _currentVersion;
         private Sector _currentSector;
         private T _current;
-
+        private HashSet<Serial> _unanchoredSeen;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public MultiBoundsEnumerator(Map map, Rectangle2D bounds, bool makeBoundsInclusive)
         {
-            _sharedDupes.Clear();
-
             _map = map;
             _bounds = bounds;
 
@@ -255,14 +251,10 @@ public partial class Map
                     while (++_currentIndex < _currentList.Length)
                     {
                         var item = _currentList[_currentIndex];
-                        if (item is T { Deleted: false } o && bounds.Contains(o.Location))
+                        if (item is T { Deleted: false } o && bounds.Contains(o.Location) && ShouldYieldFromCurrentSector(map, o))
                         {
-                            // Multis can span multiple sectors, so we need to deduplicate
-                            if (_sharedDupes.Add(o.Serial))
-                            {
-                                _current = o;
-                                return true;
-                            }
+                            _current = o;
+                            return true;
                         }
                     }
                 }
@@ -288,6 +280,27 @@ public partial class Map
                 _currentVersion = _currentSector.MultisVersion;
                 _currentIndex = -1;
             }
+        }
+
+        // A multi is listed in every sector it spans, but its location is in exactly one sector, which the bounds
+        // filter guarantees is visited. Yield it from that sector only. A multi missing from its location's sector
+        // (components changed after it was placed) falls back to a per-enumerator set, so nested queries stay independent.
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private bool ShouldYieldFromCurrentSector(Map map, T multi)
+        {
+            var home = map.GetSector(map.Bound(multi.Location));
+
+            if (home == _currentSector)
+            {
+                return true;
+            }
+
+            if (home.Multis.Contains(multi))
+            {
+                return false;
+            }
+
+            return (_unanchoredSeen ??= []).Add(multi.Serial);
         }
 
         public T Current
