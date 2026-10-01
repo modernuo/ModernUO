@@ -287,6 +287,10 @@ public partial class Account : IAccount, IComparable<Account>
 
     public Serial Serial { get; set; }
 
+    public bool SaveDirty { get; set; }
+
+    public long SavePlacement { get; set; }
+
     [AfterDeserialization(false)]
     private void AfterDeserialization()
     {

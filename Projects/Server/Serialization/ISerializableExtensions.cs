@@ -21,10 +21,20 @@ namespace Server;
 
 public static class ISerializableExtensions
 {
+    /// <summary>
+    /// Declares that serialized state of <paramref name="entity" /> changed, so the next save
+    /// must serialize it instead of reusing its previous bytes. Generated setters and collection
+    /// mutators call this; hand-written code must call it after every mutation of a serialized
+    /// field. Null-safe because generated sub-objects call it on their owner reference, which
+    /// can be unset while the object is being constructed or deserialized.
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void MarkDirty(this ISerializable entity)
     {
-        // TODO: Add dirty tracking back
+        if (entity != null)
+        {
+            entity.SaveDirty = true;
+        }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

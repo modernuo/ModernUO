@@ -224,6 +224,10 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
     private ObjectPropertyList m_PropertyList;
 
+    // Delta-save state (see ISerializable). Neither is serialized.
+    private bool _saveDirty;
+    private long _savePlacement;
+
     [Constructible]
     public Item(int itemID = 0)
     {
@@ -1326,6 +1330,20 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
     ///     Has the item been deleted?
     /// </summary>
     public bool Deleted => GetFlag(ImplFlag.Deleted);
+
+    [IgnoreDupe]
+    public bool SaveDirty
+    {
+        get => _saveDirty;
+        set => _saveDirty = value;
+    }
+
+    [IgnoreDupe]
+    public long SavePlacement
+    {
+        get => _savePlacement;
+        set => _savePlacement = value;
+    }
 
     [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
     public Map Map
