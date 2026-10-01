@@ -436,6 +436,39 @@ public class ItemByDistanceEnumeratorTests
         }
     }
 
+    [Fact]
+    public void ItemByDistanceEnumerator_MatchesBoundsEnumeratorAtMapEdge()
+    {
+        var map = Map.Felucca;
+        var center = new Point3D(5, 5, 0);
+        const int range = 18;
+
+        // Off-map items live in the shared invalid sector, which ring cells past the map edge resolve to
+        var items = new TestItem[1];
+        try
+        {
+            items[0] = CreateItem(map, new Point3D(3, -2, 0));
+
+            var byDistance = new List<Item>();
+            foreach (var (item, _) in map.GetItemsInRangeByDistance(center, range))
+            {
+                byDistance.Add(item);
+            }
+
+            var inRange = new List<Item>();
+            foreach (var item in map.GetItemsInRange(center, range))
+            {
+                inRange.Add(item);
+            }
+
+            Assert.Equal(inRange, byDistance);
+        }
+        finally
+        {
+            DeleteAll(items);
+        }
+    }
+
     private static TestItem CreateItem(Map map, Point3D location)
     {
         var Item = new TestItem(World.NewItem);

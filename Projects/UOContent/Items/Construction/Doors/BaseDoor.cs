@@ -484,8 +484,9 @@ public abstract partial class BaseDoor : Item, ILockable, ITelekinesisable
             }
             else
             {
-                _current = _current.Link;
-                valid = _current?.Deleted == false && _current != _door;
+                var next = _current.Link;
+                valid = next?.Deleted == false && !IsVisited(next);
+                _current = next;
             }
 
             if (!valid)
@@ -495,6 +496,27 @@ public abstract partial class BaseDoor : Item, ILockable, ITelekinesisable
             }
 
             return valid;
+        }
+
+        // Links are set pairwise by GMs, so a chain can loop back to a door other than the start
+        private readonly bool IsVisited(BaseDoor door)
+        {
+            var visited = _door;
+
+            while (true)
+            {
+                if (visited == door)
+                {
+                    return true;
+                }
+
+                if (visited == _current || visited == null)
+                {
+                    return false;
+                }
+
+                visited = visited.Link;
+            }
         }
 
         public BaseDoor Current

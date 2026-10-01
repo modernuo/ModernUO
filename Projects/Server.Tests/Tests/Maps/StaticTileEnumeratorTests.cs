@@ -293,6 +293,55 @@ public class StaticTileEnumeratorTests
         }
     }
 
+    [Fact]
+    public void StaticTileEnumerator_MultiWithEmptyCellDoesNotHideLaterMultis()
+    {
+        var map = Map.Felucca;
+        var location = new Point2D(1101, 1100);
+
+        TestMulti outer = null;
+        TestMulti inner = null;
+        try
+        {
+            // Outer's bounds cover the probe cell but it has no tile there; placing it first puts it
+            // ahead of inner in the sector's multi list
+            outer = new TestMulti(World.NewItem, GappedComponents);
+            outer.MoveToWorld(new Point3D(1100, 1100, 0), map);
+
+            inner = new TestMulti(World.NewItem, SingleTileComponents);
+            inner.MoveToWorld(new Point3D(location.X, location.Y, 20), map);
+
+            var tiles = new List<StaticTile>();
+            foreach (var tile in new Map.StaticTileEnumerable(map, location, includeStatics: false, includeMultis: true))
+            {
+                tiles.Add(tile);
+            }
+
+            var single = Assert.Single(tiles);
+            Assert.Equal(0x3, single.ID);
+            Assert.Equal(20, single.Z);
+        }
+        finally
+        {
+            outer?.Delete();
+            inner?.Delete();
+        }
+    }
+
+    // Entries after the first need non-zero flags or MultiComponentList drops them
+    private static readonly MultiComponentList GappedComponents = new(
+        [
+            new MultiTileEntry(0x1, 0, 0, 0, TileFlag.Background),
+            new MultiTileEntry(0x2, 2, 0, 0, TileFlag.Background)
+        ]
+    );
+
+    private static readonly MultiComponentList SingleTileComponents = new(
+        [
+            new MultiTileEntry(0x3, 0, 0, 0, TileFlag.Background)
+        ]
+    );
+
     private static TestMulti CreateMultiWithComponents(Map map, Point3D location)
     {
         var multi = new TestMulti(World.NewItem);
@@ -302,11 +351,12 @@ public class StaticTileEnumeratorTests
 
     private class TestMulti : BaseMulti
     {
-        public TestMulti(Serial serial) : base(serial)
-        {
-        }
+        private readonly MultiComponentList _components;
 
-        public override MultiComponentList Components => DefaultComponents;
+        public TestMulti(Serial serial, MultiComponentList components = null) : base(serial) =>
+            _components = components ?? DefaultComponents;
+
+        public override MultiComponentList Components => _components;
 
         private static readonly MultiComponentList DefaultComponents = new(
             [
