@@ -30,6 +30,175 @@ public static class CAGLoader
 
     public static CAGCategory Load()
     {
+        var indexPath = Path.Combine(Core.BaseDirectory, "Data/objects/index.json");
+
+        if (!File.Exists(indexPath))
+        {
+            logger.Warning("objects/index.json missing — run [GenObjects. Falling back to live categorization load.");
+            return LoadLegacy();
+        }
+
+        var index = JsonConfig.Deserialize<ObjectIndexFile>(indexPath);
+        if (index?.Objects == null)
+        {
+            throw new JsonException($"Failed to deserialize {indexPath}.");
+        }
+
+        var root = BuildTree(index);
+        AddFallbackForStaleCache(root, index);
+        return root;
+    }
+
+    public static CAGCategory BuildTree(ObjectIndexFile index)
+    {
+        var root = new CAGCategory("Add Menu");
+        var pending = new Dictionary<CAGCategory, List<CAGObject>>();
+
+        foreach (var entry in index.Objects)
+        {
+            var type = AssemblyHandler.FindTypeByName(entry.Type);
+            if (type == null)
+            {
+                logger.Warning("Cached type {Type} no longer resolves; skipping.", entry.Type);
+                continue;
+            }
+
+            var category = NavigateToCategory(root, entry.Category);
+            if (!pending.TryGetValue(category, out var objects))
+            {
+                objects = new List<CAGObject>();
+                pending[category] = objects;
+            }
+
+            objects.Add(
+                new CAGObject
+                {
+                    Type = type,
+                    ItemID = entry.ItemID,
+                    Hue = entry.Hue == 0 ? null : entry.Hue,
+                    Parent = category
+                }
+            );
+        }
+
+        foreach (var (category, objects) in pending)
+        {
+            AppendNodes(category, objects);
+        }
+
+        return root;
+    }
+
+    private static CAGCategory NavigateToCategory(CAGCategory root, string dotted)
+    {
+        var parent = root;
+        foreach (var name in dotted.Split('.'))
+        {
+            var child = FindCategory(parent, name);
+            if (child == null)
+            {
+                child = new CAGCategory(name, parent);
+                AppendNode(parent, child);
+            }
+
+            parent = child;
+        }
+
+        return parent;
+    }
+
+    private static CAGCategory FindCategory(CAGCategory parent, string title)
+    {
+        if (parent.Nodes == null)
+        {
+            return null;
+        }
+
+        foreach (var node in parent.Nodes)
+        {
+            if (node is CAGCategory cat && cat.Title == title)
+            {
+                return cat;
+            }
+        }
+
+        return null;
+    }
+
+    private static void AppendNode(CAGCategory parent, CAGNode node)
+    {
+        var nodes = parent.Nodes ?? [];
+        var grown = new CAGNode[nodes.Length + 1];
+        Array.Copy(nodes, grown, nodes.Length);
+        grown[^1] = node;
+        parent.Nodes = grown;
+    }
+
+    private static void AppendObject(CAGCategory category, CAGObject obj) => AppendNode(category, obj);
+
+    private static void AppendNodes(CAGCategory parent, IReadOnlyList<CAGNode> nodes)
+    {
+        var existing = parent.Nodes ?? [];
+        var grown = new CAGNode[existing.Length + nodes.Count];
+        Array.Copy(existing, grown, existing.Length);
+        for (var i = 0; i < nodes.Count; i++)
+        {
+            grown[existing.Length + i] = nodes[i];
+        }
+
+        parent.Nodes = grown;
+    }
+
+    private static void AddFallbackForStaleCache(CAGCategory root, ObjectIndexFile index)
+    {
+        var cached = new HashSet<string>();
+        foreach (var entry in index.Objects)
+        {
+            cached.Add(entry.Type);
+        }
+
+        var categorizationPath = Path.Combine(Core.BaseDirectory, "Data/categorization.json");
+        var categorization = JsonConfig.Deserialize<List<CAGJson>>(categorizationPath);
+        if (categorization == null)
+        {
+            return;
+        }
+
+        foreach (var cag in categorization)
+        {
+            foreach (var obj in cag.Objects ?? [])
+            {
+                if (obj.Type == null || cached.Contains(obj.Type.Name))
+                {
+                    continue;
+                }
+
+                logger.Warning("objects cache stale for {Type} — run [GenObjects.", obj.Type.Name);
+                try
+                {
+                    var lean = ObjectIntrospection.ExtractLean(obj.Type);
+                    var category = NavigateToCategory(root, cag.Category);
+                    AppendObject(
+                        category,
+                        new CAGObject
+                        {
+                            Type = obj.Type,
+                            ItemID = lean.ItemID,
+                            Hue = lean.Hue == 0 ? null : lean.Hue,
+                            Parent = category
+                        }
+                    );
+                }
+                catch (Exception ex)
+                {
+                    logger.Warning(ex, "Failed live fallback for {Type}.", obj.Type.Name);
+                }
+            }
+        }
+    }
+
+    private static CAGCategory LoadLegacy()
+    {
         var root = new CAGCategory("Add Menu");
         var path = Path.Combine(Core.BaseDirectory, "Data/categorization.json");
 
