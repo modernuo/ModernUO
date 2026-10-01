@@ -390,6 +390,21 @@ public partial class Container : Item
         }
     }
 
+    /// <summary>
+    /// Direct children are left out of world saves; the container itself is still saved and
+    /// loads empty.
+    /// </summary>
+    public virtual bool SkipsChildSerialization => false;
+
+    /// <summary>
+    /// Whether <paramref name="child"/> was sent to every client in range rather than only to the root
+    /// mobile, the secure-trade partner and openers. Removal of a public child is broadcast; removal of any
+    /// other child reaches only the clients that were sent it. Overrides may only widen this beyond
+    /// <see cref="IsPublicContainer"/>, never narrow it: a public container's children always broadcast
+    /// their removal regardless of what an override returns here.
+    /// </summary>
+    public virtual bool IsChildPublic(Item child) => IsPublicContainer;
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public override void OnItemAdded(Item item)
     {
