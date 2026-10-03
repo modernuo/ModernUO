@@ -206,7 +206,7 @@ namespace Server.Engines.Harvest
             {
                 foreach (var sos in pack.FindItemsByType<SOS>())
                 {
-                    if ((from.Map == Map.Felucca || from.Map == Map.Trammel) && from.InRange(sos.TargetLocation, 60))
+                    if (from.Map == sos.TargetMap && from.InRange(sos.TargetLocation, 60))
                     {
                         return true;
                     }
@@ -246,7 +246,7 @@ namespace Server.Engines.Harvest
                 // We don't have to queue since we are returning on the first SOS.
                 foreach (var sos in pack.FindItemsByType<SOS>())
                 {
-                    if ((from.Map == Map.Felucca || from.Map == Map.Trammel) && from.InRange(sos.TargetLocation, 60))
+                    if (from.Map == sos.TargetMap && from.InRange(sos.TargetLocation, 60))
                     {
                         Item preLoot = null;
 
