@@ -535,11 +535,13 @@ namespace Server.Engines.ConPVP
 
         public override string ToString() => "...";
 
-        public Point3D GetBaseStartPoint(int index) => Points.Points[Math.Max(index, 0) % Points.Points.Length];
+        private int StartPointIndex(int index) => Math.Max(index, 0) % Points.Points.Length;
+
+        public Point3D GetBaseStartPoint(int index) => Points.Points[StartPointIndex(index)];
 
         public void MoveInside(DuelPlayer[] players, int index)
         {
-            index = Math.Max(index, 0) % Points.Points.Length;
+            index = StartPointIndex(index);
 
             var start = Points.Points[index];
             var offsets = index < 4 ? m_EdgeOffsets : m_CornerOffsets;
