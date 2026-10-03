@@ -12,22 +12,23 @@ namespace Server.Engines.Harvest
 
         private static readonly MutateEntry[] _mutateTable =
         {
-            new(80.0, 80.0, 4080.0, true, typeof(SpecialFishingNet)),
-            new(80.0, 80.0, 4080.0, true, typeof(BigFish)),
-            new(90.0, 80.0, 4080.0, true, typeof(TreasureMap)),
-            new(100.0, 80.0, 4080.0, true, typeof(MessageInABottle)),
+            new(80.0, 80.0, 4080.0, true, Expansion.UOR, typeof(SpecialFishingNet)),
+            new(80.0, 80.0, 4080.0, true, Expansion.UOR, typeof(BigFish)),
+            new(90.0, 80.0, 4080.0, true, Expansion.T2A, typeof(TreasureMap)),
+            new(100.0, 80.0, 4080.0, true, Expansion.T2A, typeof(MessageInABottle)),
             new(
                 0.0,
                 125.0,
                 -2375.0,
                 false,
+                Expansion.T2A,
                 typeof(PrizedFish),
                 typeof(WondrousFish),
                 typeof(TrulyRareFish),
                 typeof(PeculiarFish)
             ),
-            new(0.0, 105.0, -420.0, false, typeof(Boots), typeof(Shoes), typeof(Sandals), typeof(ThighBoots)),
-            new(0.0, 200.0, -200.0, false, new Type[] { null })
+            new(0.0, 105.0, -420.0, false, Expansion.T2A, typeof(Boots), typeof(Shoes), typeof(Sandals), typeof(ThighBoots)),
+            new(0.0, 200.0, -200.0, false, Expansion.None, new Type[] { null })
         };
 
         private static readonly int[] _waterLandTiles =
@@ -173,6 +174,11 @@ namespace Server.Engines.Harvest
             {
                 var entry = _mutateTable[i];
 
+                if (Core.Expansion < entry.m_Expansion)
+                {
+                    continue;
+                }
+
                 if (!deepWater && entry.m_DeepWater)
                 {
                     continue;
@@ -296,14 +302,17 @@ namespace Server.Engines.Harvest
 
                         LockableContainer chest = Utility.RandomBool() ? new MetalGoldenChest() : new WoodenChest();
 
-                        if (sos.IsAncient)
+                        if (sos.IsAncient && Core.SE)
                         {
                             chest.Hue = 0x481;
                         }
 
                         TreasureMapChest.Fill(chest, Math.Max(1, Math.Min(4, sos.Level)));
 
-                        chest.DropItem(sos.IsAncient ? new FabledFishingNet() : new SpecialFishingNet());
+                        if (Core.UOR)
+                        {
+                            chest.DropItem(sos.IsAncient ? new FabledFishingNet() : new SpecialFishingNet());
+                        }
 
                         chest.Movable = true;
                         chest.Locked = false;
@@ -531,17 +540,21 @@ namespace Server.Engines.Harvest
         private class MutateEntry
         {
             public readonly bool m_DeepWater;
+            public readonly Expansion m_Expansion;
             public readonly double m_MaxSkill;
             public readonly double m_MinSkill;
             public readonly double m_ReqSkill;
             public readonly Type[] m_Types;
 
-            public MutateEntry(double reqSkill, double minSkill, double maxSkill, bool deepWater, params Type[] types)
+            public MutateEntry(
+                double reqSkill, double minSkill, double maxSkill, bool deepWater, Expansion expansion, params Type[] types
+            )
             {
                 m_ReqSkill = reqSkill;
                 m_MinSkill = minSkill;
                 m_MaxSkill = maxSkill;
                 m_DeepWater = deepWater;
+                m_Expansion = expansion;
                 m_Types = types;
             }
         }

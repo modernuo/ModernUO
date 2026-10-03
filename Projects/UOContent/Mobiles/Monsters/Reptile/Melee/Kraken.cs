@@ -46,12 +46,15 @@ namespace Server.Mobiles
             rope.ItemID = 0x14F8;
             PackItem(rope);
 
-            if (Utility.RandomDouble() < .05)
+            if (Core.T2A && Utility.RandomDouble() < .05)
             {
                 PackItem(new MessageInABottle());
             }
 
-            PackItem(new SpecialFishingNet()); // Confirm?
+            if (Core.UOR)
+            {
+                PackItem(new SpecialFishingNet()); // Confirm?
+            }
         }
 
         public override string CorpseName => "a krakens corpse";

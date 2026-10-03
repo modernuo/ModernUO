@@ -37,7 +37,7 @@ public partial class MessageInABottle : Item
 
     public static int GetRandomLevel()
     {
-        if (Core.AOS && Utility.Random(25) < 1)
+        if (Core.AOS && Utility.Random(Core.SE ? 25 : 40) < 1)
         {
             return 4; // ancient
         }
