@@ -30,7 +30,7 @@ public partial class BigFish : Item, ICarvable
     {
         base.GetProperties(list);
 
-        if (Weight >= 20)
+        if (Core.SE && Weight >= 20)
         {
             if (_fisher != null)
             {

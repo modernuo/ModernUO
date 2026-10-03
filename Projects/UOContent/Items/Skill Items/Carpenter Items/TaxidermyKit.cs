@@ -218,7 +218,7 @@ public partial class TrophyAddon : Item, IAddon
     {
         base.GetProperties(list);
 
-        if (_animalWeight >= 20)
+        if (Core.SE && _animalWeight >= 20)
         {
             if (!string.IsNullOrWhiteSpace(_hunter))
             {
@@ -346,7 +346,7 @@ public partial class TrophyDeed : Item
     {
         base.GetProperties(list);
 
-        if (_animalWeight >= 20)
+        if (Core.SE && _animalWeight >= 20)
         {
             if (!string.IsNullOrWhiteSpace(_hunter))
             {
