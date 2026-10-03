@@ -544,19 +544,34 @@ namespace Server.Engines.ConPVP
             index = StartPointIndex(index);
 
             var start = Points.Points[index];
+
+            var offset = 0;
+
             var offsets = index < 4 ? m_EdgeOffsets : m_CornerOffsets;
             var matrix = m_Rotate[index];
-            var slot = 0;
 
-            foreach (var pl in players)
+            for (var i = 0; i < players.Length; ++i)
             {
+                var pl = players[i];
+
                 if (pl == null)
                 {
                     continue;
                 }
 
                 var mob = pl.Mobile;
-                var p = offsets[Math.Min(slot++, offsets.Length - 1)];
+
+                Point2D p;
+
+                if (offset < offsets.Length)
+                {
+                    p = offsets[offset++];
+                }
+                else
+                {
+                    p = offsets[^1];
+                }
+
                 var x = p.X * matrix[0, 0] + p.Y * matrix[0, 1];
                 var y = p.X * matrix[1, 0] + p.Y * matrix[1, 1];
 
