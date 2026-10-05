@@ -50,7 +50,6 @@ namespace Server.Mobiles
             CanSwim = true;
             CantWalk = true;
 
-            PackItem(new MessageInABottle());
             PackItem(new Rope { ItemID = 0x14F8 });
             PackItem(new Rope { ItemID = 0x14FA });
         }
@@ -62,6 +61,13 @@ namespace Server.Mobiles
         public override string DefaultName => "a leviathan";
 
         public override int TreasureMapLevel => 5;
+
+        public override bool OnBeforeDeath()
+        {
+            PackItem(new MessageInABottle(Map == Map.Felucca ? Map.Felucca : Map.Trammel));
+
+            return base.OnBeforeDeath();
+        }
 
         public static Type[] Artifacts { get; } =
         {

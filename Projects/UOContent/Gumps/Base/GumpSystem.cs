@@ -31,7 +31,7 @@ public static partial class GumpSystem
     {
         IncomingPackets.Register(0xB1, 0, true, &DisplayGumpResponse);
 
-        EventSink.Disconnected += EventSink_Disconnected;
+        EventSink.BeforeDisconnected += EventSink_Disconnected;
     }
 
     private static void EventSink_Disconnected(Mobile m)

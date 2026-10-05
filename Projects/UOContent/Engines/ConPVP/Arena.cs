@@ -226,8 +226,8 @@ namespace Server.Engines.ConPVP
             new[,] { { 0, -1 }, { -1, 0 } }, // south
             new[,] { { +1, 0 }, { 0, +1 } }, // nw
             new[,] { { -1, 0 }, { 0, -1 } }, // se
-            new[,] { { 0, +1 }, { +1, 0 } }, // sw
-            new[,] { { 0, -1 }, { -1, 0 } }  // ne
+            new[,] { { +1, 0 }, { 0, -1 } }, // sw
+            new[,] { { -1, 0 }, { 0, +1 } }  // ne
         };
 
         private bool m_Active;
@@ -535,11 +535,13 @@ namespace Server.Engines.ConPVP
 
         public override string ToString() => "...";
 
-        public Point3D GetBaseStartPoint(int index) => Points.Points[Math.Max(index, 0) % Points.Points.Length];
+        private int StartPointIndex(int index) => Math.Max(index, 0) % Points.Points.Length;
+
+        public Point3D GetBaseStartPoint(int index) => Points.Points[StartPointIndex(index)];
 
         public void MoveInside(DuelPlayer[] players, int index)
         {
-            index = Math.Min(index, 0) % Points.Points.Length;
+            index = StartPointIndex(index);
 
             var start = Points.Points[index];
 
@@ -570,10 +572,10 @@ namespace Server.Engines.ConPVP
                     p = offsets[^1];
                 }
 
-                p.X = p.X * matrix[0, 0] + p.Y * matrix[0, 1];
-                p.Y = p.X * matrix[1, 0] + p.Y * matrix[1, 1];
+                var x = p.X * matrix[0, 0] + p.Y * matrix[0, 1];
+                var y = p.X * matrix[1, 0] + p.Y * matrix[1, 1];
 
-                mob.MoveToWorld(new Point3D(start.X + p.X, start.Y + p.Y, start.Z), m_Facet);
+                mob.MoveToWorld(new Point3D(start.X + x, start.Y + y, start.Z), m_Facet);
                 mob.Direction = mob.GetDirectionTo(Wall);
 
                 Players.Add(mob);

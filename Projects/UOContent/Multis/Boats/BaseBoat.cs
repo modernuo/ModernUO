@@ -1924,8 +1924,18 @@ namespace Server.Multis
                 _includeBoat = includeBoat;
                 _boat = boat;
 
-                _mobiles = boat.Map.GetMobilesInBounds(bounds).GetEnumerator();
-                _items = boat.Map.GetItemsInBounds(bounds).GetEnumerator();
+                var map = boat.Map;
+
+                if (map == null)
+                {
+                    _mobiles = Map.MobileBoundsEnumerable<Mobile>.Empty.GetEnumerator();
+                    _items = Map.ItemBoundsEnumerable<Item>.Empty.GetEnumerator();
+                }
+                else
+                {
+                    _mobiles = map.GetMobilesInBounds(bounds).GetEnumerator();
+                    _items = map.GetItemsInBounds(bounds).GetEnumerator();
+                }
                 _iterateMobiles = true;
                 _iterateItems = true;
             }

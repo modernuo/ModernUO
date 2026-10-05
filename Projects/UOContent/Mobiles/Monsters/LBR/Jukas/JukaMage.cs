@@ -126,6 +126,10 @@ namespace Server.Mobiles
 
                         SpellHelper.Turn(this, toBuff);
 
+                        var maxHits = toBuff.HitsMaxSeed;
+                        var rawStr = toBuff.RawStr;
+                        var rawDex = toBuff.RawDex;
+
                         var toScale = toBuff.HitsMaxSeed;
 
                         if (toScale > 0)
@@ -154,9 +158,6 @@ namespace Server.Mobiles
 
                         toBuff.FixedParticles(0x375A, 10, 15, 5017, EffectLayer.Waist);
                         toBuff.PlaySound(0x1EE);
-                        var maxHits = toBuff.HitsMaxSeed;
-                        var rawStr = toBuff.RawStr;
-                        var rawDex = toBuff.RawDex;
 
                         Timer.StartTimer(
                             TimeSpan.FromSeconds(20.0),

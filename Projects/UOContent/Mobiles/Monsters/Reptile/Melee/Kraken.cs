@@ -46,18 +46,26 @@ namespace Server.Mobiles
             rope.ItemID = 0x14F8;
             PackItem(rope);
 
-            if (Utility.RandomDouble() < .05)
+            if (Core.UOR)
             {
-                PackItem(new MessageInABottle());
+                PackItem(new SpecialFishingNet()); // Confirm?
             }
-
-            PackItem(new SpecialFishingNet()); // Confirm?
         }
 
         public override string CorpseName => "a krakens corpse";
         public override string DefaultName => "a kraken";
 
         public override int TreasureMapLevel => 4;
+
+        public override bool OnBeforeDeath()
+        {
+            if (Core.T2A && Utility.RandomDouble() < .05)
+            {
+                PackItem(new MessageInABottle(Map == Map.Felucca ? Map.Felucca : Map.Trammel));
+            }
+
+            return base.OnBeforeDeath();
+        }
 
         public override void GenerateLoot()
         {
