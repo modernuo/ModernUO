@@ -417,7 +417,6 @@ public class JailSystem : GenericPersistence
                 PlayerJailRecords[player] = record;
                 if (record.IsCurrentlyJailed)
                 {
-                    CurrentlyBeingJailed.Add(player);
                     var jailTime = record.JailEndTime - Core.Now;
                     JailTimers[player] = Timer.DelayCall(jailTime, ReleasePlayer, record.JailedBy, player);
                 }
