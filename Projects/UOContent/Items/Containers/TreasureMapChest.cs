@@ -308,6 +308,12 @@ public partial class TreasureMapChest : LockableContainer
         }
     }
 
+    public void AddGuardian(Mobile guardian)
+    {
+        _guardians ??= [];
+        _guardians.Add(guardian);
+    }
+
     public override bool CheckLocked(Mobile from)
     {
         if (!Locked)
