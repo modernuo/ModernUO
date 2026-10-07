@@ -99,8 +99,7 @@ public static class T2ACooking
         }
     };
 
-    // Static water troughs have no tile ID list in this repo.
-    //TODO Support static water troughs
+    //TODO Support static water troughs and barrels (no static water ID list exists yet)
     private static readonly Ingredient _water = new()
     {
         Matches = o => GetWaterSource(o) != null,
