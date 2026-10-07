@@ -806,7 +806,7 @@ public partial class TreasureMap : MapItem
 
                     if (bc != null)
                     {
-                        m_Chest.AddGuardian(bc);
+                        m_Chest.AddToGuardians(bc);
                     }
                 }
             }

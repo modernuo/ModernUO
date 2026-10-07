@@ -19,7 +19,7 @@ public class TreasureMapChestGuardianTests
     // The guardian list starts null and is created by the first guardian added. A level 0 chest
     // stays shut to players until its guardians are dead.
     [Fact]
-    public void AddGuardian_ToNewChest_KeepsLevelZeroChestShut()
+    public void AddToGuardians_OnNewChest_KeepsLevelZeroChestShut()
     {
         var map = Map.Felucca;
         var location = new Point3D(5000, 610, 0);
@@ -32,7 +32,7 @@ public class TreasureMapChestGuardianTests
         {
             Assert.Null(chest.Guardians);
 
-            chest.AddGuardian(guardian);
+            chest.AddToGuardians(guardian);
 
             Assert.Same(guardian, Assert.Single(chest.Guardians));
             Assert.True(chest.CheckLocked(player));
