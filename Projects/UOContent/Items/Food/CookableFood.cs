@@ -1,4 +1,5 @@
 using ModernUO.Serialization;
+using Server.Engines.Craft.T2A;
 using Server.Targeting;
 
 namespace Server.Items;
@@ -13,6 +14,14 @@ public abstract partial class CookableFood : Item
     public CookableFood(int itemID, int cookingLevel) : base(itemID) => _cookingLevel = cookingLevel;
 
     public abstract Food Cook();
+
+    public override void OnDoubleClick(Mobile from)
+    {
+        if (!T2ACraftSystem.Enabled || !T2ACooking.TryBeginUse(from, this))
+        {
+            base.OnDoubleClick(from);
+        }
+    }
 
     public static bool IsHeatSource(object targeted)
     {
