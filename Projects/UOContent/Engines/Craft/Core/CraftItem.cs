@@ -1242,7 +1242,7 @@ namespace Server.Engines.Craft
             return true;
         }
 
-        private static int GetHuedAmount(Container pack, Type type, int hue)
+        internal static int GetHuedAmount(Container pack, Type type, int hue)
         {
             var total = 0;
 
