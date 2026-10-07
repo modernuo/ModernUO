@@ -1,5 +1,4 @@
 using Server;
-using Server.Engines.Craft.T2A;
 using Server.Items;
 using Server.Mobiles;
 using Xunit;
@@ -31,7 +30,7 @@ public class T2ACookingTests
         var sackBefore = sack.Quantity;
         var pitcherBefore = pitcher.Quantity;
 
-        Assert.True(T2ACooking.TryCombine(player, sack, pitcher));
+        Assert.True(sack.TryCombine(player, pitcher));
         Assert.Equal(sackBefore - 1, sack.Quantity);
         Assert.Equal(pitcherBefore - 1, pitcher.Quantity);
         Assert.Equal(1, pack.GetAmount(typeof(Dough)));
@@ -46,7 +45,7 @@ public class T2ACookingTests
         player.Backpack.AddItem(sack);
         player.Backpack.AddItem(pitcher);
 
-        Assert.False(T2ACooking.TryCombine(player, sack, pitcher));
+        Assert.False(sack.TryCombine(player, pitcher));
         Assert.Equal(20, sack.Quantity);
         Assert.Equal(pitcher.MaxQuantity, pitcher.Quantity);
         Assert.Equal(0, player.Backpack.GetAmount(typeof(Dough)));
@@ -61,7 +60,7 @@ public class T2ACookingTests
         player.Backpack.AddItem(dough);
         player.Backpack.AddItem(apple);
 
-        Assert.True(T2ACooking.TryCombine(player, dough, apple));
+        Assert.True(dough.TryCombine(player, apple));
         Assert.Equal(1, player.Backpack.GetAmount(typeof(UnbakedApplePie)));
         Assert.Equal(0, player.Backpack.GetAmount(typeof(Apple)));
         Assert.Equal(0, player.Backpack.GetAmount(typeof(Dough)));
@@ -76,20 +75,20 @@ public class T2ACookingTests
         var honey = new JarHoney();
         pack.AddItem(dough);
         pack.AddItem(honey);
-        Assert.True(T2ACooking.TryCombine(player, dough, honey));
+        Assert.True(dough.TryCombine(player, honey));
         Assert.Equal(1, pack.GetAmount(typeof(SweetDough)));
 
         var dough2 = new Dough();
         var honey2 = new JarHoney();
         pack.AddItem(dough2);
         pack.AddItem(honey2);
-        Assert.True(T2ACooking.TryCombine(player, honey2, dough2));
+        Assert.True(honey2.TryCombine(player, dough2));
         Assert.Equal(2, pack.GetAmount(typeof(SweetDough)));
 
         var sweet = pack.FindItemByType<SweetDough>();
         var honey3 = new JarHoney();
         pack.AddItem(honey3);
-        Assert.True(T2ACooking.TryCombine(player, sweet, honey3));
+        Assert.True(sweet.TryCombine(player, honey3));
         Assert.Equal(1, pack.GetAmount(typeof(CookieMix)));
     }
 
@@ -104,21 +103,14 @@ public class T2ACookingTests
         var apple = new Apple();
         player.Backpack.AddItem(apple);
 
-        Assert.False(T2ACooking.TryCombine(player, honey, apple));
-        Assert.False(T2ACooking.TryCombine(player, dough, new Pitcher(BeverageType.Water)));
+        var pitcher = new Pitcher(BeverageType.Water);
+        player.Backpack.AddItem(pitcher);
+
+        Assert.False(honey.TryCombine(player, apple));
+        Assert.False(dough.TryCombine(player, pitcher));
         Assert.Equal(1, player.Backpack.GetAmount(typeof(Dough)));
         Assert.Equal(1, player.Backpack.GetAmount(typeof(JarHoney)));
         Assert.Equal(1, player.Backpack.GetAmount(typeof(Apple)));
-    }
-
-    [Fact]
-    public void TryBeginUse_ReturnsFalseForUnrelatedItem()
-    {
-        var player = CreatePlayer();
-        var apple = new Apple();
-        player.Backpack.AddItem(apple);
-
-        Assert.False(T2ACooking.TryBeginUse(player, apple));
     }
 
     [Fact]
@@ -130,7 +122,7 @@ public class T2ACookingTests
         player.Backpack.AddItem(bowl);
         player.Backpack.AddItem(sweetDough);
 
-        Assert.True(T2ACooking.TryCombine(player, sweetDough, bowl));
+        Assert.True(sweetDough.TryCombine(player, bowl));
         Assert.True(bowl.Deleted);
         Assert.True(sweetDough.Deleted);
         Assert.Equal(1, player.Backpack.GetAmount(typeof(CakeMix)));
@@ -146,7 +138,7 @@ public class T2ACookingTests
         player.Backpack.AddItem(sack);
         other.Backpack.AddItem(pitcher);
 
-        Assert.False(T2ACooking.TryCombine(player, sack, pitcher));
+        Assert.False(sack.TryCombine(player, pitcher));
         Assert.Equal(20, sack.Quantity);
         Assert.Equal(pitcher.MaxQuantity, pitcher.Quantity);
     }

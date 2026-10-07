@@ -5,7 +5,7 @@ using Server.Targeting;
 namespace Server.Items;
 
 [SerializationGenerator(0, false)]
-public abstract partial class CookableFood : Item
+public abstract partial class CookableFood : Item, IT2ACombinable
 {
     [SerializableField(0)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
@@ -17,11 +17,18 @@ public abstract partial class CookableFood : Item
 
     public override void OnDoubleClick(Mobile from)
     {
-        if (!T2ACraftSystem.Enabled || !T2ACooking.TryBeginUse(from, this))
+        if (T2ACraftSystem.Enabled)
+        {
+            T2ACooking.Prompt(from, this);
+        }
+        else
         {
             base.OnDoubleClick(from);
         }
     }
+
+    public bool TryCombine(Mobile from, object target) =>
+        IsHeatSource(target) ? T2ACooking.BeginHeat(from, this, target) : T2ACooking.CannotCombine(from);
 
     public static bool IsHeatSource(object targeted)
     {
