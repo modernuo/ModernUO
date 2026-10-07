@@ -635,15 +635,7 @@ namespace Server.Engines.Craft
                 }
                 // ******************
 
-                for (var j = 0; types[i] == null && j < m_TypesTable.Length; ++j)
-                {
-                    if (m_TypesTable[j][0] == baseType)
-                    {
-                        types[i] = m_TypesTable[j];
-                    }
-                }
-
-                types[i] ??= [baseType];
+                types[i] = GetEquivalentTypes(baseType) ?? [baseType];
                 amounts[i] = craftRes.Amount;
 
                 // For stackable items that can be crafted more than one at a time
@@ -1242,13 +1234,54 @@ namespace Server.Engines.Craft
             return true;
         }
 
+        /// <summary>
+        /// Returns the interchangeable resource types for <paramref name="baseType"/> (e.g. logs and boards),
+        /// or null when it has no equivalents.
+        /// </summary>
+        internal static Type[] GetEquivalentTypes(Type baseType)
+        {
+            for (var i = 0; i < m_TypesTable.Length; i++)
+            {
+                if (m_TypesTable[i][0] == baseType)
+                {
+                    return m_TypesTable[i];
+                }
+            }
+
+            return null;
+        }
+
+        private static bool IsHuedMatch(Item item, Type type, Type[] equivalents, int hue)
+        {
+            if (item.Hue != hue)
+            {
+                return false;
+            }
+
+            if (equivalents == null)
+            {
+                return type.IsInstanceOfType(item);
+            }
+
+            for (var i = 0; i < equivalents.Length; i++)
+            {
+                if (equivalents[i].IsInstanceOfType(item))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         internal static int GetHuedAmount(Container pack, Type type, int hue)
         {
             var total = 0;
+            var equivalents = GetEquivalentTypes(type);
 
             foreach (var item in pack.FindItems(true))
             {
-                if (item.Hue == hue && type.IsInstanceOfType(item))
+                if (IsHuedMatch(item, type, equivalents, hue))
                 {
                     total += item.Amount;
                 }
@@ -1260,6 +1293,7 @@ namespace Server.Engines.Craft
         private static bool ConsumeHuedAmount(Container pack, Type type, int hue, int amount)
         {
             var remaining = amount;
+            var equivalents = GetEquivalentTypes(type);
             using var toDelete = PooledRefList<Item>.Create();
 
             foreach (var item in pack.FindItems(true))
@@ -1269,7 +1303,7 @@ namespace Server.Engines.Craft
                     break;
                 }
 
-                if (item.Hue != hue || !type.IsInstanceOfType(item))
+                if (!IsHuedMatch(item, type, equivalents, hue))
                 {
                     continue;
                 }

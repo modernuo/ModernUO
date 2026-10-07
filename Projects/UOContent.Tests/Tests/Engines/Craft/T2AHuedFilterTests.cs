@@ -65,4 +65,28 @@ public class T2AHuedFilterTests
             player.Delete();
         }
     }
+
+    [Fact]
+    public void CanCraftItem_WithHue_CountsSameHueUncutCloth()
+    {
+        var player = CreatePlayer(new Point3D(4140, 500, 0));
+
+        try
+        {
+            var pack = player.Backpack;
+            pack.AddItem(new Cloth(5) { Hue = 0x21 });
+            pack.AddItem(new UncutCloth(3) { Hue = 0x21 });
+            pack.AddItem(new UncutCloth(5) { Hue = 0x30 });
+
+            var system = GetTailoringSystem();
+            var recipe = MakeRecipe();
+
+            Assert.True(T2ACraftSystem.CanCraftItem(player, recipe, system, null, 0x21));
+            Assert.False(T2ACraftSystem.CanCraftItem(player, recipe, system, null, 0x30));
+        }
+        finally
+        {
+            player.Delete();
+        }
+    }
 }

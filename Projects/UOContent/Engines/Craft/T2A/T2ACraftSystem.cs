@@ -334,28 +334,11 @@ public static class T2ACraftSystem
         return false;
     }
 
-    /// <summary>
-    /// Equivalent type pairs mirroring CraftItem.m_TypesTable — used so that menu filtering
-    /// counts boards when checking for logs, hides when checking for leather, etc.
-    /// </summary>
-    private static readonly Type[][] _equivalentTypes =
-    [
-        [typeof(Log), typeof(Board)],
-        [typeof(Cloth), typeof(UncutCloth)],
-        [typeof(Items.Leather), typeof(Hides)]
-    ];
-
+    // Shares CraftItem's equivalence table so the menu counts exactly what the craft will consume
     private static int GetResourceAmount(Container pack, Type type)
     {
-        for (var i = 0; i < _equivalentTypes.Length; i++)
-        {
-            if (_equivalentTypes[i][0] == type)
-            {
-                return pack.GetAmount(_equivalentTypes[i]);
-            }
-        }
-
-        return pack.GetAmount(type);
+        var equivalents = CraftItem.GetEquivalentTypes(type);
+        return equivalents != null ? pack.GetAmount(equivalents) : pack.GetAmount(type);
     }
 
     private static bool HasAnySufficientSubResource(
