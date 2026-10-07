@@ -117,7 +117,7 @@ public class TinkeringMenu : ItemListMenu
     };
 
     private TinkeringMenu(Mobile from, BaseTool tool, Category category, Type selectedResourceType)
-        : base(GetQuestion(category), BuildFilteredEntries(from, category))
+        : base(GetQuestion(category), BuildFilteredEntries(from, category, selectedResourceType))
     {
         _tool = tool;
         _category = category;
@@ -224,16 +224,16 @@ public class TinkeringMenu : ItemListMenu
     public static ItemListEntry[] Rings() => _ringEntries ??= BuildStaticEntries(RingTypes, "ingots");
     public static ItemListEntry[] KegItems() => _kegEntries ??= BuildStaticEntries(KegItemTypes, "kegs");
 
-    private static ItemListEntry[] BuildFilteredEntries(Mobile from, Category category)
+    private static ItemListEntry[] BuildFilteredEntries(Mobile from, Category category, Type selectedResourceType)
     {
         if (category == Category.Main)
         {
-            return BuildFilteredMainEntries(from);
+            return BuildFilteredMainEntries(from, selectedResourceType);
         }
 
         if (category == Category.Jewelry)
         {
-            return BuildFilteredJewelryEntries(from);
+            return BuildFilteredJewelryEntries(from, selectedResourceType);
         }
 
         var types = GetTypes(category);
@@ -243,7 +243,7 @@ public class TinkeringMenu : ItemListMenu
             return [];
         }
 
-        return T2ACraftSystem.FilterEntries(from, staticEntries, types, DefTinkering.CraftSystem);
+        return T2ACraftSystem.FilterEntries(from, staticEntries, types, DefTinkering.CraftSystem, selectedResourceType);
     }
 
     private static readonly ItemListEntry[] JewelrySubcategoryEntries =
@@ -253,7 +253,7 @@ public class TinkeringMenu : ItemListMenu
         new("Rings", 0x108a, 0, (int)Category.Rings)
     ];
 
-    private static ItemListEntry[] BuildFilteredJewelryEntries(Mobile from)
+    private static ItemListEntry[] BuildFilteredJewelryEntries(Mobile from, Type selectedResourceType)
     {
         var system = DefTinkering.CraftSystem;
         var filtered = new ItemListEntry[JewelrySubcategoryEntries.Length];
@@ -263,7 +263,7 @@ public class TinkeringMenu : ItemListMenu
         {
             var entry = JewelrySubcategoryEntries[i];
             var types = GetTypes((Category)entry.CraftIndex);
-            if (types != null && T2ACraftSystem.AnyCraftableInCategory(from, types, system))
+            if (types != null && T2ACraftSystem.AnyCraftableInCategory(from, types, system, selectedResourceType))
             {
                 filtered[count++] = entry;
             }
@@ -282,7 +282,7 @@ public class TinkeringMenu : ItemListMenu
         return filtered;
     }
 
-    private static ItemListEntry[] BuildFilteredMainEntries(Mobile from)
+    private static ItemListEntry[] BuildFilteredMainEntries(Mobile from, Type selectedResourceType)
     {
         var system = DefTinkering.CraftSystem;
         var mainStatic = Main();
@@ -293,7 +293,7 @@ public class TinkeringMenu : ItemListMenu
         {
             var entry = mainStatic[i];
             var types = GetTypes((Category)entry.CraftIndex);
-            if (types != null && T2ACraftSystem.AnyCraftableInCategory(from, types, system))
+            if (types != null && T2ACraftSystem.AnyCraftableInCategory(from, types, system, selectedResourceType))
             {
                 filtered[count++] = entry;
             }
@@ -407,9 +407,17 @@ public class TinkeringMenu : ItemListMenu
             return true;
         }
 
-        if (targeted is BaseIngot)
+        if (targeted is BaseIngot and not IronIngot)
         {
-            var menu = new TinkeringMenu(from, tool, Category.Main, targeted.GetType());
+            // T2A tinkering predates colored ingots; metal items are always made from iron.
+            from.SendAsciiMessage("Tinkering can only use iron ingots. Please select iron ingots or wood.");
+            from.Target = new ResourceSelectTarget(from, tool);
+            return true;
+        }
+
+        if (targeted is IronIngot)
+        {
+            var menu = new TinkeringMenu(from, tool, Category.Main, typeof(IronIngot));
             if (menu.Entries.Length == 0)
             {
                 from.SendAsciiMessage("You lack the skill and materials to craft anything.");
