@@ -15,6 +15,12 @@ public static class T2ACraftSystem
     /// </summary>
     public static bool Enabled { get; set; }
 
+    public static bool HasMenu(CraftSystem system) =>
+        system == DefBlacksmithy.CraftSystem || system == DefAlchemy.CraftSystem ||
+        system == DefBowFletching.CraftSystem || system == DefCarpentry.CraftSystem ||
+        system == DefCartography.CraftSystem || system == DefInscription.CraftSystem ||
+        system == DefTailoring.CraftSystem || system == DefTinkering.CraftSystem;
+
     public static void ShowMenu(Mobile from, CraftSystem craftSystem, BaseTool tool, Item preTarget = null)
     {
         if (!Enabled)
@@ -104,6 +110,10 @@ public static class T2ACraftSystem
         else if (craftSystem == DefTinkering.CraftSystem)
         {
             TinkeringMenu.ResourceSelection(from, tool, preTarget);
+        }
+        else
+        {
+            from.SendAsciiMessage("That is not used directly for crafting.");
         }
     }
 
