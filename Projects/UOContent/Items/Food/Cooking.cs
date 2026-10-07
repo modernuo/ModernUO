@@ -57,6 +57,14 @@ public partial class JarHoney : Item
     }
 
     public override double DefaultWeight => 1.0;
+
+    public override void OnDoubleClick(Mobile from)
+    {
+        if (!T2ACraftSystem.Enabled || !T2ACooking.TryBeginUse(from, this))
+        {
+            base.OnDoubleClick(from);
+        }
+    }
 }
 
 [SerializationGenerator(0, false)]
@@ -68,6 +76,14 @@ public partial class BowlFlour : Item
     }
 
     public override double DefaultWeight => 1.0;
+
+    public override void OnDoubleClick(Mobile from)
+    {
+        if (!T2ACraftSystem.Enabled || !T2ACooking.TryBeginUse(from, this))
+        {
+            base.OnDoubleClick(from);
+        }
+    }
 }
 
 [SerializationGenerator(0, false)]

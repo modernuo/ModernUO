@@ -120,4 +120,34 @@ public class T2ACookingTests
 
         Assert.False(T2ACooking.TryBeginUse(player, apple));
     }
+
+    [Fact]
+    public void BowlFlourAndSweetDough_MakeCakeMix()
+    {
+        var player = CreatePlayer();
+        var bowl = new BowlFlour();
+        var sweetDough = new SweetDough();
+        player.Backpack.AddItem(bowl);
+        player.Backpack.AddItem(sweetDough);
+
+        Assert.True(T2ACooking.TryCombine(player, sweetDough, bowl));
+        Assert.True(bowl.Deleted);
+        Assert.True(sweetDough.Deleted);
+        Assert.Equal(1, player.Backpack.GetAmount(typeof(CakeMix)));
+    }
+
+    [Fact]
+    public void WaterInAnotherPlayersPack_IsRefused()
+    {
+        var player = CreatePlayer();
+        var other = CreatePlayer();
+        var sack = new SackFlour { ItemID = 0x103A };
+        var pitcher = new Pitcher(BeverageType.Water);
+        player.Backpack.AddItem(sack);
+        other.Backpack.AddItem(pitcher);
+
+        Assert.False(T2ACooking.TryCombine(player, sack, pitcher));
+        Assert.Equal(20, sack.Quantity);
+        Assert.Equal(pitcher.MaxQuantity, pitcher.Quantity);
+    }
 }

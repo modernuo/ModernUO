@@ -106,9 +106,11 @@ public static class T2ACooking
         Matches = o => GetWaterSource(o) != null,
         Validate = (from, o) =>
         {
+            // Ground water only, so a nearby open container (someone else's pack) cannot be drawn from
             var item = (Item)o;
-            if (item.IsChildOf(from.Backpack) ||
-                item.Map == from.Map && from.InRange(item.GetWorldLocation(), _waterRange) && from.InLOS(item))
+            if (item.IsChildOf(from.Backpack) || item.Parent == from ||
+                item.RootParent == null && item.Map == from.Map &&
+                from.InRange(item.GetWorldLocation(), _waterRange) && from.InLOS(item))
             {
                 return true;
             }
