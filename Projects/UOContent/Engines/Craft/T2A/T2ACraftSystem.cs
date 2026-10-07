@@ -111,10 +111,6 @@ public static class T2ACraftSystem
         {
             TinkeringMenu.ResourceSelection(from, tool, preTarget);
         }
-        else
-        {
-            from.SendAsciiMessage("That is not used directly for crafting.");
-        }
     }
 
     private static void ShowMenuDirect<T>(Mobile from, BaseTool tool) where T : ItemListMenu
