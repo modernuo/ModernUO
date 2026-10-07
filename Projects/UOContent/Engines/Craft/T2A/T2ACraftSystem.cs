@@ -191,7 +191,7 @@ public static class T2ACraftSystem
     /// When <paramref name="selectedResourceType"/> is non-null, checks against that specific sub-resource.
     /// When null, checks against ANY available sub-resource the player has sufficient skill and materials for.
     /// A non-negative <paramref name="hue"/> counts only same-hue stock for the primary resource, exactly as
-    /// the hue-aware craft path consumes it (no equivalent-type substitution).
+    /// the hue-aware craft path consumes it.
     /// </summary>
     public static bool CanCraftItem(
         Mobile from, CraftItem itemDef, CraftSystem system, Type selectedResourceType = null, int hue = -1
