@@ -1,5 +1,6 @@
 using System;
 using ModernUO.Serialization;
+using Server.Engines.Craft.T2A;
 using Server.Targeting;
 
 namespace Server.Items;
@@ -14,6 +15,14 @@ public partial class Dough : Item
     }
 
     public override double DefaultWeight => 1.0;
+
+    public override void OnDoubleClick(Mobile from)
+    {
+        if (!T2ACraftSystem.Enabled || !T2ACooking.TryBeginUse(from, this))
+        {
+            base.OnDoubleClick(from);
+        }
+    }
 }
 
 [SerializationGenerator(0, false)]
@@ -28,6 +37,14 @@ public partial class SweetDough : Item
 
     public override double DefaultWeight => 1.0;
     public override int LabelNumber => 1041340; // sweet dough
+
+    public override void OnDoubleClick(Mobile from)
+    {
+        if (!T2ACraftSystem.Enabled || !T2ACooking.TryBeginUse(from, this))
+        {
+            base.OnDoubleClick(from);
+        }
+    }
 }
 
 [SerializationGenerator(0, false)]
@@ -104,7 +121,14 @@ public partial class SackFlour : Item, IHasQuantity
         {
             ++ItemID;
         }
+
+        if (T2ACraftSystem.Enabled)
+        {
+            T2ACooking.TryBeginUse(from, this);
+        }
     }
+
+    public bool IsOpen => ItemID is not (0x1039 or 0x1045);
 }
 
 [SerializationGenerator(0, false)]
