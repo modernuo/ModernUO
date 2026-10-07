@@ -278,6 +278,8 @@ public class TailoringMenu : ItemListMenu
         }
         else
         {
+            // Make Last picks the hue-aware overload from LastHue, so a leather craft must clear the cloth hue
+            context.LastHue = -1;
             DefTailoring.CraftSystem.CreateItem(from, itemDef.ItemType, resourceType, _tool, itemDef);
         }
     }
