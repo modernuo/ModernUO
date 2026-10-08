@@ -49,19 +49,6 @@ public static class Stealing
     private static bool IsInLockedContainer(Item item) =>
         item.Parent is Item parent && (parent is LockableContainer { Locked: true } || IsInLockedContainer(parent));
 
-    private static TreasureMapChest FindTreasureChest(Item item)
-    {
-        for (var parent = item.Parent as Item; parent != null; parent = parent.Parent as Item)
-        {
-            if (parent is TreasureMapChest chest)
-            {
-                return chest;
-            }
-        }
-
-        return null;
-    }
-
     public static TimeSpan OnUse(Mobile m)
     {
         if (!IsEmptyHanded(m))
@@ -271,7 +258,7 @@ public static class Stealing
             {
                 _thief.SendLocalizedMessage(501747); // It appears to be locked.
             }
-            else if (FindTreasureChest(toSteal) is { } treasureChest && !treasureChest.CheckLift(_thief, toSteal, ref reject))
+            else if (root is TreasureMapChest chest && !chest.CheckLift(_thief, toSteal, ref reject))
             {
                 _thief.SendLocalizedMessage(502710); // You can't steal that!
             }
@@ -367,12 +354,10 @@ public static class Stealing
             Item stolen = null;
             IEntity root = null;
             var caught = false;
-            TreasureMapChest chest = null;
 
             if (target is Item item)
             {
                 root = item.RootParent;
-                chest = FindTreasureChest(item);
                 stolen = TryStealItem(item, ref caught);
             }
             else if (target is Mobile mobile)
@@ -396,7 +381,7 @@ public static class Stealing
 
             if (stolen != null)
             {
-                chest?.OnItemLifted(from, stolen);
+                (root as TreasureMapChest)?.OnItemLifted(from, stolen);
                 from.AddToBackpack(stolen);
 
                 if (!(stolen is Container || stolen.Stackable))
