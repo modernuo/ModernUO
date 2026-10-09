@@ -88,7 +88,6 @@ public static class Stealing
         private Item TryStealItem(Item toSteal, ref bool caught)
         {
             Item stolen = null;
-            var reject = LRReason.Inspecific;
 
             var root = toSteal.RootParent;
             var mobRoot = root as Mobile;
@@ -258,18 +257,19 @@ public static class Stealing
             {
                 _thief.SendLocalizedMessage(501747); // It appears to be locked.
             }
-            else if (root is TreasureMapChest chest && !chest.CheckLift(_thief, toSteal, ref reject))
-            {
-                _thief.SendLocalizedMessage(502710); // You can't steal that!
-            }
             else
             {
                 var w = toSteal.Weight + toSteal.TotalWeight;
+                var reject = LRReason.Inspecific;
 
                 if (w > MaxWeightToSteal)
                 {
                     // This item is too heavy to steal from someone's backpack.
                     _thief.SendLocalizedMessage(502722);
+                }
+                else if (root is Container { IsDecoContainer: false } && !toSteal.CheckLift(_thief, toSteal, ref reject))
+                {
+                    _thief.SendLocalizedMessage(502710); // You can't steal that!
                 }
                 else
                 {
@@ -381,7 +381,11 @@ public static class Stealing
 
             if (stolen != null)
             {
-                (root as TreasureMapChest)?.OnItemLifted(from, stolen);
+                if (root is Container)
+                {
+                    stolen.OnItemLifted(from, stolen);
+                }
+
                 from.AddToBackpack(stolen);
 
                 if (!(stolen is Container || stolen.Stackable))
