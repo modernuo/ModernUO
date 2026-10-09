@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using Server.Engines.Avatar;
 using Server.Factions;
 using Server.Mobiles;
 
@@ -131,6 +132,7 @@ public static class SkillCheck
                 gc /= 2;
 
                 gc *= skill.Info.GainFactor;
+                gc *= AvatarEngine.GetSkillGainMultiplier(from);
 
                 if (gc < 0.01)
                 {
@@ -245,6 +247,11 @@ public static class SkillCheck
             return;
         }
 
+        if (!AvatarEngine.CanGainSkill(from, skill))
+        {
+            return;
+        }
+
         if (skill.Base < skill.Cap && skill.Lock == SkillLock.Up)
         {
             var toGain = 1;
@@ -278,6 +285,7 @@ public static class SkillCheck
             if (!from.Player || skills.Total < skills.Cap)
             {
                 skill.BaseFixedPoint = Math.Min(skill.BaseFixedPoint + toGain, skill.CapFixedPoint);
+                AvatarEngine.OnSkillGain(from, skill);
             }
         }
 

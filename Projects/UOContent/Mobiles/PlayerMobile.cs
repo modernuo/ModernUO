@@ -5,6 +5,7 @@ using ModernUO.CodeGeneratedEvents;
 using Server.Accounting;
 using Server.Collections;
 using Server.ContextMenus;
+using Server.Engines.Avatar;
 using Server.Engines.BuffIcons;
 using Server.Engines.BulkOrders;
 using Server.Engines.CannedEvil;
@@ -2378,8 +2379,33 @@ namespace Server.Mobiles
             base.OnDamage(amount, from, willKill);
         }
 
+        [CommandProperty(AccessLevel.GameMaster)]
+        public PlayerContext Avatar
+        {
+            get => AvatarEngine.GetContextOrDefault(this);
+            set { }
+        }
+
         public override void Resurrect()
         {
+            // Avatars are reborn through a full reset rather than a normal resurrection
+            if (Avatar.Active && !Alive && !AvatarEngine.IsResetting(this))
+            {
+                AvatarConfirm.Send(
+                    this,
+                    "Permanent Death",
+                    "Your character has died and cannot resurrect. Would you like to return to the Sanctuary to start over?",
+                    () =>
+                    {
+                        if (!Deleted && !Alive)
+                        {
+                            AvatarEngine.ResetInPlace(this);
+                        }
+                    }
+                );
+                return;
+            }
+
             var wasAlive = Alive;
 
             base.Resurrect();

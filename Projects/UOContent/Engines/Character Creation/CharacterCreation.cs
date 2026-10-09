@@ -933,6 +933,8 @@ public static partial class CharacterCreation
             _                       => new Bow()
         };
 
+    public static void AddStarterSkillItems(Mobile m, SkillName skill) => m.AddSkillItems(skill);
+
     private static void AddSkillItems(this Mobile m, SkillName skill)
     {
         var raceFlag = m.Race.RaceFlag;
