@@ -815,10 +815,7 @@ public partial class Corpse : Container, ICarvable
 
         // Lifted gear is loot from then on. Clients only learn worn gear from 0x89 on first sight, so a
         // piece put back would show worn after a relog but loose to everyone already watching.
-        if (_equipItems?.Contains(item) == true)
-        {
-            RemoveFromEquipItems(item);
-        }
+        RemoveFromEquipItems(item);
     }
 
     public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
