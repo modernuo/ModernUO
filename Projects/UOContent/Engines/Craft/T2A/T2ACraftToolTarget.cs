@@ -36,6 +36,13 @@ public class T2ACraftToolTarget : Target
                 var resIndex = lastMade.UseSubRes2 ? context.LastResourceIndex2 : context.LastResourceIndex;
                 var type = resIndex > -1 ? res[resIndex].ItemType : null;
 
+                // T2A tinkering has no colored ingots; a stale index from the gump flow must not leak in
+                if (_system == DefTinkering.CraftSystem)
+                {
+                    type = typeof(IronIngot);
+                    T2ACraftSystem.SetLastResourceIndex(from, _system, type);
+                }
+
                 // Jewelry requires gem targeting — re-prompt instead of crafting directly
                 if (typeof(BaseJewel).IsAssignableFrom(lastMade.ItemType))
                 {

@@ -92,7 +92,7 @@ public class TailoringMenu : ItemListMenu
     };
 
     private TailoringMenu(Mobile from, BaseTool tool, Category category, int hue = -1)
-        : base(GetQuestion(category), BuildFilteredEntries(from, category))
+        : base(GetQuestion(category), BuildFilteredEntries(from, category, hue))
     {
         _tool = tool;
         _category = category;
@@ -198,11 +198,11 @@ public class TailoringMenu : ItemListMenu
     public static ItemListEntry[] Studded() => _studdedEntries ??= BuildStaticEntries(StuddedArmorTypes, "leather");
     public static ItemListEntry[] Female() => _femaleEntries ??= BuildStaticEntries(FemaleArmorTypes, "leather");
 
-    private static ItemListEntry[] BuildFilteredEntries(Mobile from, Category category)
+    private static ItemListEntry[] BuildFilteredEntries(Mobile from, Category category, int hue)
     {
         if (category is Category.Main or Category.LeatherMain)
         {
-            return BuildFilteredMainEntries(from, category);
+            return BuildFilteredMainEntries(from, category, hue);
         }
 
         var types = GetTypes(category);
@@ -212,10 +212,10 @@ public class TailoringMenu : ItemListMenu
             return [];
         }
 
-        return T2ACraftSystem.FilterEntries(from, staticEntries, types, DefTailoring.CraftSystem);
+        return T2ACraftSystem.FilterEntries(from, staticEntries, types, DefTailoring.CraftSystem, null, hue);
     }
 
-    private static ItemListEntry[] BuildFilteredMainEntries(Mobile from, Category mainCategory)
+    private static ItemListEntry[] BuildFilteredMainEntries(Mobile from, Category mainCategory, int hue)
     {
         var system = DefTailoring.CraftSystem;
         var mainStatic = GetStaticEntries(mainCategory);
@@ -231,7 +231,7 @@ public class TailoringMenu : ItemListMenu
         {
             var entry = mainStatic[i];
             var types = GetTypes((Category)entry.CraftIndex);
-            if (types != null && T2ACraftSystem.AnyCraftableInCategory(from, types, system))
+            if (types != null && T2ACraftSystem.AnyCraftableInCategory(from, types, system, null, hue))
             {
                 filtered[count++] = entry;
             }
