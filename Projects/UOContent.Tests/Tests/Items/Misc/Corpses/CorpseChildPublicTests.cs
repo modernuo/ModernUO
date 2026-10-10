@@ -178,4 +178,49 @@ public class CorpseChildPublicTests
             bystander.Delete();
         }
     }
+
+    [Fact]
+    public void HumanCorpse_LiftingWornGear_BroadcastsRemoval()
+    {
+        var corpseLoc = new Point3D(1500, 1500, 0);
+
+        var bystanderNs = PacketTestUtilities.CreateTestNetState();
+        bystanderNs.Account = new MockAccount();
+        var bystander = new Mobile(World.NewMobile);
+        bystander.DefaultMobileInit();
+        bystanderNs.Mobile = bystander;
+        bystander.NetState = bystanderNs;
+        bystander.MoveToWorld(new Point3D(corpseLoc.X + 1, corpseLoc.Y, corpseLoc.Z), Map.Felucca);
+
+        var owner = new Mobile(World.NewMobile);
+        owner.DefaultMobileInit();
+        owner.Body = 0x190;
+        owner.MoveToWorld(new Point3D(corpseLoc.X - 1, corpseLoc.Y, corpseLoc.Z), Map.Felucca);
+
+        var sword = new VikingSword { Layer = Layer.OneHanded };
+        var corpse = new Corpse(owner, [sword]);
+        corpse.AddItem(sword);
+        corpse.MoveToWorld(corpseLoc, Map.Felucca);
+
+        try
+        {
+            // Lifting takes the piece off the worn list before the remove is sent; the remove must
+            // still reach everyone who was shown it worn.
+            owner.Lift(sword, sword.Amount, out var rejected, out _);
+
+            Assert.False(rejected);
+            Assert.DoesNotContain(sword, corpse.EquipItems);
+            Assert.True(ReceivedRemove(bystanderNs, sword.Serial));
+        }
+        finally
+        {
+            owner.Holding = null;
+            sword.Delete();
+            corpse.Delete();
+            owner.Delete();
+            bystanderNs.Mobile = null;
+            bystanderNs.Dispose();
+            bystander.Delete();
+        }
+    }
 }
