@@ -28,4 +28,39 @@ public interface ISerializable : IGenericSerializable
 
     bool Deleted { get; }
     void Delete();
+
+    /// <summary>
+    /// True for entities that exist only at runtime and must not be written to a save.
+    /// Decided by the save worker during the freeze.
+    /// </summary>
+    bool SkipSerialization => false;
+
+    /// <summary>
+    /// True when the entity may have changed since the bytes at <see cref="SavePlacement" />
+    /// were written. Set through <see cref="ISerializableExtensions.MarkDirty" /> by every
+    /// mutation of serialized state; cleared by a save worker when the entity is serialized.
+    /// The default keeps an entity that stores no state always dirty, so it always serializes.
+    /// </summary>
+    bool SaveDirty
+    {
+        get => true;
+        set
+        {
+        }
+    }
+
+    /// <summary>
+    /// Where this entity's record sits in the last committed save file, packed by
+    /// <see cref="Server.SavePlacement" />; <see cref="Server.SavePlacement.None" /> when it has
+    /// none (new since the last save, loaded from disk, or too large to place). Written only by
+    /// the snapshot writer during <see cref="WorldState.WritingSave" /> and read only during the
+    /// freeze, which never overlaps a write.
+    /// </summary>
+    long SavePlacement
+    {
+        get => Server.SavePlacement.None;
+        set
+        {
+        }
+    }
 }
