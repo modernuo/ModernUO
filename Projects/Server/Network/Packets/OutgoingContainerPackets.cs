@@ -16,6 +16,7 @@
 using System;
 using System.Buffers;
 using System.IO;
+using Server.Buffers;
 using Server.Logging;
 
 namespace Server.Network;
@@ -166,6 +167,10 @@ public static class OutgoingContainerPackets
         ns.Send(writer.Span);
     }
 
+    // 0x3C's length and item-count fields are both 16-bit, so a container's contents can never
+    // legally fill more than this many bytes regardless of how many items it actually holds.
+    private const int MaxContainerContentBytes = ushort.MaxValue;
+
     public static void SendContainerContent(this NetState ns, Mobile beholder, Item beheld)
     {
         if (ns.CannotSendPackets())
@@ -175,43 +180,63 @@ public static class OutgoingContainerPackets
 
         var items = beheld.Items;
         var count = items.Count;
+        var entrySize = ns.ContainerGridLines ? 20 : 19;
 
-        var writer = new SpanWriter(stackalloc byte[5 + items.Count * (ns.ContainerGridLines ? 20 : 19)]);
-        writer.Write((byte)0x3C);           // Packet ID
-        writer.Seek(4, SeekOrigin.Current); // Length & written count
+        var maxEntries = (MaxContainerContentBytes - 5) / entrySize;
+        var entriesToSend = Math.Min(count, maxEntries);
+        var length = 5 + entriesToSend * entrySize;
 
-        var written = 0;
+        // A container holding thousands of items would blow the stack; rent from the pool past a
+        // small, safe threshold instead.
+        byte[] rented = null;
+        var buffer = length <= 1024 ? stackalloc byte[length] : rented = STArrayPool<byte>.Shared.Rent(length);
 
-        for (var i = 0; i < count; ++i)
+        try
         {
-            var child = items[i];
+            var writer = new SpanWriter(buffer[..length]);
+            writer.Write((byte)0x3C);           // Packet ID
+            writer.Seek(4, SeekOrigin.Current); // Length & written count
 
-            if (!child.Deleted && beholder.CanSee(child))
+            var written = 0;
+
+            for (var i = 0; i < count && written < entriesToSend; ++i)
             {
-                var loc = child.Location;
+                var child = items[i];
 
-                writer.Write(child.Serial);
-                writer.Write((ushort)child.ItemID);
-                writer.Write((byte)0); // signed, itemID offset
-                writer.Write((ushort)Math.Min(child.Amount, ushort.MaxValue));
-                writer.Write((short)loc.X);
-                writer.Write((short)loc.Y);
-                if (ns.ContainerGridLines)
+                if (!child.Deleted && beholder.CanSee(child))
                 {
-                    writer.Write((byte)0); // Grid Location?
-                }
-                writer.Write(beheld.Serial);
-                writer.Write((ushort)(child.QuestItem ? Item.QuestItemHue : child.Hue));
+                    var loc = child.Location;
 
-                ++written;
+                    writer.Write(child.Serial);
+                    writer.Write((ushort)child.ItemID);
+                    writer.Write((byte)0); // signed, itemID offset
+                    writer.Write((ushort)Math.Min(child.Amount, ushort.MaxValue));
+                    writer.Write((short)loc.X);
+                    writer.Write((short)loc.Y);
+                    if (ns.ContainerGridLines)
+                    {
+                        writer.Write((byte)0); // Grid Location?
+                    }
+                    writer.Write(beheld.Serial);
+                    writer.Write((ushort)(child.QuestItem ? Item.QuestItemHue : child.Hue));
+
+                    ++written;
+                }
+            }
+
+            writer.Seek(1, SeekOrigin.Begin);
+            writer.Write((ushort)writer.BytesWritten);
+            writer.Write((ushort)written);
+            writer.Seek(0, SeekOrigin.End);
+
+            ns.Send(writer.Span);
+        }
+        finally
+        {
+            if (rented != null)
+            {
+                STArrayPool<byte>.Shared.Return(rented);
             }
         }
-
-        writer.Seek(1, SeekOrigin.Begin);
-        writer.Write((ushort)writer.BytesWritten);
-        writer.Write((ushort)written);
-        writer.Seek(0, SeekOrigin.End);
-
-        ns.Send(writer.Span);
     }
 }

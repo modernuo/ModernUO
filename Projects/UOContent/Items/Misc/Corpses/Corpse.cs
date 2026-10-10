@@ -100,6 +100,10 @@ public partial class Corpse : Container, ICarvable
 
     private Dictionary<Item, InstancedItemInfo> _instancedItems;
 
+    // Worn gear being lifted is off _equipItems before its remove goes out; until then it stays public so
+    // the remove reaches everyone who was shown it worn.
+    private Item _liftingWornItem;
+
     [SerializableField(0)]
     private List<Item> _restoreEquip;
 
@@ -196,6 +200,12 @@ public partial class Corpse : Container, ICarvable
 
     // Why was this public?
     // public override bool IsPublicContainer => true;
+
+    // Human corpses show their worn gear to everyone who sees them (SendInfoTo), not only to openers.
+    private bool ShowsWornGear => ((Body)Amount).IsHuman && ItemID == 0x2006;
+
+    public override bool IsChildPublic(Item child) =>
+        ShowsWornGear && (child == _liftingWornItem || _equipItems?.Contains(child) == true);
 
     public Corpse(Mobile owner, List<Item> equipItems) : this(owner, 0, 0, 0, 0, equipItems)
     {
@@ -416,7 +426,7 @@ public partial class Corpse : Container, ICarvable
         {
             from.SendLocalizedMessage(500485); // You see nothing useful to carve from the corpse.
         }
-        else if (((Body)Amount).IsHuman && ItemID == 0x2006)
+        else if (ShowsWornGear)
         {
             new Blood(0x122D).MoveToWorld(Location, Map);
 
@@ -587,6 +597,7 @@ public partial class Corpse : Container, ICarvable
     {
         _decayTimer?.Stop();
         _decayTimer = null;
+        _liftingWornItem = null;
     }
 
     public static string GetCorpseName(Mobile m) => m is BaseCreature bc ? bc.CorpseNameOverride ?? bc.CorpseName : null;
@@ -740,7 +751,7 @@ public partial class Corpse : Container, ICarvable
     {
         base.SendInfoTo(ns, world);
 
-        if (((Body)Amount).IsHuman && ItemID == 0x2006)
+        if (ShowsWornGear)
         {
             ns.SendCorpseContent(ns.Mobile, this);
             ns.SendCorpseEquip(ns.Mobile, this);
@@ -815,7 +826,20 @@ public partial class Corpse : Container, ICarvable
 
         // Lifted gear is loot from then on. Clients only learn worn gear from 0x89 on first sight, so a
         // piece put back would show worn after a relog but loose to everyone already watching.
-        RemoveFromEquipItems(item);
+        if (_equipItems != null && this.Remove(_equipItems, item))
+        {
+            _liftingWornItem = item;
+        }
+    }
+
+    public override void OnItemRemoved(Item item)
+    {
+        base.OnItemRemoved(item);
+
+        if (item == _liftingWornItem)
+        {
+            _liftingWornItem = null;
+        }
     }
 
     public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)

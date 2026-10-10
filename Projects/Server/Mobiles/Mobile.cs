@@ -5203,7 +5203,8 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         {
             state.SendLiftReject(reject);
 
-            if (item.Deleted)
+            // A rejection must not resynchronize state this client was never sent (client-supplied serial).
+            if (item.Deleted || !item.IsSentTo(this))
             {
                 return;
             }
