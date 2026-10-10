@@ -33,8 +33,7 @@ public partial class VendorBuybackPack : Backpack
             var oldest = Items[0];
             oldest.Delete();
 
-            // Delete() on an already-deleted item is a no-op that leaves it in place; drop it
-            // directly so a stale entry can never spin this loop forever.
+            // Delete() is a no-op on an already-deleted item, which would spin this loop.
             if (Items.Count > 0 && Items[0] == oldest)
             {
                 Items.RemoveAt(0);

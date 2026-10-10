@@ -144,9 +144,7 @@ public class VendorBuybackTests : IDisposable
         Assert.Equal(lastRestock + TimeSpan.FromHours(expectedHours), next);
     }
 
-    // A backwards clock adjustment can put LastRestock ahead of now; the anchor must clamp to now
-    // rather than extend the buyback past RestockDelay. Kept separate from the theory above, which
-    // is parameterized by hours since restock (a lastRestock in the past).
+    // Backwards clock adjustment: LastRestock ahead of now clamps to now.
     [Fact]
     public void NextBuybackPurge_FutureAnchor_IsClampedToNow()
     {

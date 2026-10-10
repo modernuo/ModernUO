@@ -116,7 +116,7 @@ namespace Server.Mobiles
                     return pack;
                 }
 
-                // Linear even at 250k+ children, since container deletion removes from the tail.
+                // Legacy pack; deleting it stays linear even with a huge backlog.
                 existing?.Delete();
 
                 pack = new VendorBuybackPack();
@@ -134,8 +134,7 @@ namespace Server.Mobiles
                 return now;
             }
 
-            // A backwards clock adjustment must not let a future-dated anchor extend the buyback
-            // past RestockDelay: clamp the anchor to now instead of trusting it.
+            // A backwards clock adjustment can future-date the anchor past RestockDelay.
             if (lastRestock > now)
             {
                 lastRestock = now;
@@ -148,7 +147,7 @@ namespace Server.Mobiles
                 return next;
             }
 
-            // Lazy restock may not have run for hours; stay on the restock grid rather than purging now.
+            // Restock is lazy and may be hours overdue; stay on its grid.
             var periods = (now - lastRestock).Ticks / restockDelay.Ticks + 1;
             return lastRestock + TimeSpan.FromTicks(restockDelay.Ticks * periods);
         }
@@ -166,9 +165,7 @@ namespace Server.Mobiles
 
         private void PurgeBuyback() => (FindItemOnLayer(Layer.ShopBuy) as VendorBuybackPack)?.Purge();
 
-        // A fired one-shot token-bearing timer isn't returned to its pool unless its token is
-        // explicitly cancelled (TimerExecutionToken.Cancel sets _returnOnDetach), so the timer's
-        // own callback cancels itself here instead of leaving that to the next caller.
+        // A fired token-bearing timer isn't returned to its pool until its token is cancelled.
         private void CancelAndPurgeBuyback()
         {
             _buybackPurgeToken.Cancel();
@@ -789,9 +786,7 @@ namespace Server.Mobiles
 
             LoadSBInfo();
 
-            // LoadSBInfo just moved the restock grid's anchor to now; a purge timer armed against
-            // the old anchor would fire off that grid, so drop it (and any stale buyback) here
-            // rather than in LoadSBInfo, which also runs during deserialization.
+            // LoadSBInfo re-anchored the restock grid. Not done there since it also runs on deserialize.
             CancelAndPurgeBuyback();
         }
 
@@ -1336,8 +1331,7 @@ namespace Server.Mobiles
 
             if (FindItemOnLayer(Layer.ShopBuy) is not VendorBuybackPack)
             {
-                // Deleting entities while the world is still deserializing is unsafe; replace on the first tick.
-                // The vendor itself may be gone by then, and BuyPack would add a fresh pack to a deleted mobile.
+                // Deleting during deserialization is unsafe; replace on the first tick.
                 Timer.StartTimer(
                     () =>
                     {
