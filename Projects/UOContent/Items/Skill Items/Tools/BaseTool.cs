@@ -159,7 +159,7 @@ public abstract partial class BaseTool : Item, IUsesRemaining, ICraftable
             {
                 from.SendLocalizedMessage(num);
             }
-            else if (T2ACraftSystem.Enabled)
+            else if (T2ACraftSystem.Enabled && T2ACraftSystem.HasMenu(system))
             {
                 from.Target = new T2ACraftToolTarget(this, system);
                 from.SendAsciiMessage("Target this tool to make last item, or any other target to begin crafting.");
