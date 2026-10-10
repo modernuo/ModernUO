@@ -1,6 +1,7 @@
 using System;
 using Server.Items;
 using Server.Targeting;
+using Server.Engines.AntiBot;
 
 namespace Server.Engines.Harvest
 {
@@ -184,6 +185,17 @@ namespace Server.Engines.Harvest
             if (Core.ML)
             {
                 from.RevealingAction();
+            }
+
+            if (Utility.Random(100) < 1)
+            {
+                if (!AntiBotSystem.CheckPlayer(from, () =>
+                {
+                    from.Target = new HarvestTarget(tool, this);
+                }))
+                {
+                    // antibot challenge sent
+                }
             }
         }
 
