@@ -108,6 +108,7 @@ public partial class Spellbook : Item, ICraftable, ISlayer, IAosItem
     [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
     private AosSkillBonuses _skillBonuses;
 
+    [InvalidateProperties]
     [SerializableField(8)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _spellCount;
@@ -135,7 +136,6 @@ public partial class Spellbook : Item, ICraftable, ISlayer, IAosItem
 
     [SerializableField(7, fieldChanged: nameof(OnContentChanged))]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
-    [InvalidateProperties]
     private ulong _content;
 
     private void OnContentChanged(ulong oldValue, ulong newValue)
