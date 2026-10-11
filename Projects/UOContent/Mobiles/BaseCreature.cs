@@ -3065,6 +3065,11 @@ namespace Server.Mobiles
 
         public override void OnMovement(Mobile m, Point3D oldLocation)
         {
+            if (m == ControlMaster)
+            {
+                AIObject?.OnMasterMoved();
+            }
+
             if (ShouldAcquireOnApproach(m))
             {
                 ScheduleAcquireOnApproach();
