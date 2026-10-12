@@ -434,12 +434,14 @@ public sealed class BotSlay : BotDeed
     private int _dues;
 
     /// <summary>
-    /// Whether the walk last ordered was a retreat — a kite or a back-off — and may still be running. A retreat is the one walk
-    /// this hunt orders that a later beat must be able to end: BotWill leaves a walk running under every Work answer that
-    /// follows it (work that walks and works by turns keeps its walk), so a back-off ordered on one beat was walked through
-    /// the next forty. See <see cref="Stand"/>.
+    /// Where the last retreat — a kite or a back-off — was ordered to; nought when none is. A retreat is the one walk this
+    /// hunt orders that a later beat must be able to end: BotWill leaves a walk running under every Work answer that follows
+    /// it (work that walks and works by turns keeps its walk), so a back-off ordered on one beat was walked through the next
+    /// forty. Held as the point rather than a flag, because a flag lied (review A/B, 12.10.2026): a retreat that arrived on
+    /// its own left it set, and the next stand on an "after X" walk or a reflex's interruption counted a retreat ended that
+    /// was no retreat. The point is matched against the journey's own bottom errand in <see cref="Stand"/>.
     /// </summary>
-    private bool _retreating;
+    private Point3D _retreatTo;
 
     /// <summary>When the fight leg last began, for <see cref="RetreatMs"/>: a resumed hunt's walk back is not a retreat.</summary>
     private long _fightTick;
@@ -466,6 +468,7 @@ public sealed class BotSlay : BotDeed
         // leash is measured again from there (01.10.2026, build next). See JumpTiles.
         _begun = false;
         _crowdedTick = 0;
+        _retreatTo = Point3D.Zero;
 
         if (_quarry is { Deleted: false } quarry)
         {
@@ -761,6 +764,12 @@ public sealed class BotSlay : BotDeed
             return Looting(bot, body);
         }
 
+        // A retreat that arrived, or was dropped by somebody else, is over: nothing is left for a stand to end.
+        if (_retreatTo != Point3D.Zero && body is BotMobile { Journey.Active: false })
+        {
+            _retreatTo = Point3D.Zero;
+        }
+
         // <b>The exit a solo fight never had.</b> Measured in damage rather than in time, and against the
         // lowest health seen rather than the current health — a creature that regenerates between blows would
         // otherwise read as progress for as long as it lived. See NoProgressMs for what this cost.
@@ -1031,7 +1040,7 @@ public sealed class BotSlay : BotDeed
 
                 BotQuarry.Claim(body, _quarry);
 
-                _retreating = true;
+                _retreatTo = opening;
 
                 return BotDoing.Walk(_map, opening, BotArrival.Within(1), $"keeping {_quarry.Name} at arm's length");
             }
@@ -1175,7 +1184,7 @@ public sealed class BotSlay : BotDeed
 
                     BotQuarry.Claim(body, _quarry);
 
-                    _retreating = true;
+                    _retreatTo = back;
                     _backed++;
                     Backed++;
 
@@ -1768,7 +1777,7 @@ public sealed class BotSlay : BotDeed
         Asked == 0
             ? "nobody has been offered a kite"
             : $"{Asked} asked: {Handless} were melee and have no kite to give, {Kited} gave ground, {Distant} were far enough off to simply shoot, {Rushed} had the shot too near, {Closed} drew steel instead — longest clock seen {Longest}ms against {StillMs + KiteSlackMs}ms needed; "
-              + $"{Steady} of them had been standing still long enough for the engine to loose an arrow, longest stillness seen {Stillest}ms against the {StillMs}ms it wants; "
+              + $"{Steady} of them had been standing still long enough for the engine to loose an arrow ({SteadyBows} of the bows' own asks), longest stillness seen {Stillest}ms against the {StillMs}ms it wants; "
               + $"{Outpaced} beats an archer stood and shot rather than give ground to a quarry that steps as fast as it runs, {Planted} fights an archer stopped backing off in after {PlantMs / 1000}s with the quarry still inside {TooClose} tiles; "
               + $"{Backed} back-off walks ordered, {Due} beats a crowded archer stood for an arrow that was due instead, {Halted} retreats ended for one, {Unpaid} fights an archer planted in after {RetreatMs / 1000}s without the quarry's health falling";
 
@@ -1784,6 +1793,7 @@ public sealed class BotSlay : BotDeed
         Closed = 0;
         Stillest = 0;
         Steady = 0;
+        SteadyBows = 0;
         Outpaced = 0;
         Planted = 0;
         Backed = 0;
@@ -1815,8 +1825,10 @@ public sealed class BotSlay : BotDeed
     /// </summary>
     public static long Stillest { get; private set; }
 
-    /// <summary>Asks at which the bot had been still long enough for the engine to loose an arrow.</summary>
+    /// <summary>Asks at which the bot had been still long enough for the engine to loose an arrow; the same, of bows only.</summary>
     public static long Steady { get; private set; }
+
+    public static long SteadyBows { get; private set; }
 
     private bool Kiting(Mobile body, int reach)
     {
@@ -1839,6 +1851,13 @@ public sealed class BotSlay : BotDeed
             Handless++;
 
             return false;
+        }
+
+        // Counted again past the melee gate, because Steady above counts every bot in every fight and a swordsman is still
+        // nearly always; Steady read 123 % of the archers' asks on 12.10.2026. This is the share the archer question turns on.
+        if (still >= StillMs)
+        {
+            SteadyBows++;
         }
 
         // <b>Close enough to be worth backing away from, not merely close enough to shoot.</b> This read
@@ -1954,6 +1973,14 @@ public sealed class BotSlay : BotDeed
             return false;
         }
 
+        var step = _quarry?.ActiveSpeed ?? 0.0;
+
+        // Already standing: a quarry as fast as the bot is not retreated from, so there is no retreat to pay for (review B).
+        if (step > 0.0 && step * 1000.0 < (body.Mounted ? MountStepMs : FootStepMs) * OutpaceShare)
+        {
+            return false;
+        }
+
         // A retreat must be paid for: RetreatMs without a new low in the quarry's health, measured from the fight's own start
         // (a resumed hunt's walk back is not a retreat), and the archer plants for the rest of the fight. See RetreatMs.
         if (RetreatMs > 0)
@@ -1969,20 +1996,15 @@ public sealed class BotSlay : BotDeed
             }
         }
 
-        var step = _quarry?.ActiveSpeed ?? 0.0;
-
-        if (step <= 0.0)
-        {
-            return true;
-        }
-
-        return step * 1000.0 >= (body.Mounted ? MountStepMs : FootStepMs) * OutpaceShare;
+        return true;
     }
 
     /// <summary>
     /// The archer stops where it is: a back-off or a kite still being walked is finished, or the walk would carry on after the
     /// fight has answered Work, and a bow fires only for a body a second still. Answers whether a retreat this hunt ordered was
-    /// still being walked and is ended here — the honest count for <see cref="Halted"/>; a retreat already arrived is not one.
+    /// still being walked and is ended here — the honest count for <see cref="Halted"/>: the journey's bottom errand is the
+    /// retreat's own point (an interruption stacked on top of it is still a retreat ended; an "after X" follow, a walk of
+    /// somebody else's, or a retreat that already arrived is not).
     /// </summary>
     private bool Stand(Mobile body)
     {
@@ -1992,11 +2014,14 @@ public sealed class BotSlay : BotDeed
 
         if (body is BotMobile { Journey: { Active: true } journey })
         {
-            ended = _retreating;
+            ended = _retreatTo != Point3D.Zero
+                    && journey.Bottom is { Interruption: false, Follow: null } bottom
+                    && bottom.Where == _retreatTo;
+
             journey.Finish();
         }
 
-        _retreating = false;
+        _retreatTo = Point3D.Zero;
 
         return ended;
     }
@@ -2014,7 +2039,9 @@ public sealed class BotSlay : BotDeed
     /// bear, a bull or a horse at 0.25 s ("Medium" in npc-speeds) follows at 4.0: against those a retreat gains under half a
     /// tile a second and the stand that must follow it gives all of that back. The threshold reads 200 × 1.25 = 250 ≥ 250, so
     /// the archer was told it could leave them behind, and it ran 3–6 tiles ahead of them for 45 s. At 225 the threshold is
-    /// 281: a 0.25 s quarry is stood against from the first beat, a 0.3 s one (Slow) is still kited.
+    /// 281: a 0.25 s quarry is stood against from the first beat, a 0.3 s one (Slow) is still kited. The archer's test only:
+    /// the run for a town reads its own <c>BotHaven.FootStepMs</c> (it read this one until review B of 12.10.2026 found the
+    /// move would refuse the town to every runner from a 0.2 s creature beyond <c>BotHaven.NearTiles</c>).
     /// </para>
     /// </summary>
     public static int FootStepMs { get; set; } = 225;
@@ -2046,8 +2073,11 @@ public sealed class BotSlay : BotDeed
     /// three and six tiles, so three seconds never gathered, and the kite never fed it at all: 1 253 plants against 41 failures
     /// an hour on 12.10.2026. Measured instead from the last fall in the quarry's health — <c>_progressTick</c>, the verdict's
     /// own clock — because that is what a retreat is for: a retreat that has bought no arrow in ten seconds is a bot running.
-    /// Ten, so that two or three missed arrows at a 3.75–6.3 s reload do not plant a kite that is working, and well under the
-    /// 45 s the verdict allows. Nought turns it off. Counted in <see cref="Unpaid"/>.
+    /// Ten is well under the 45 s the verdict allows and covers two misses at the 3.75 s reload of a rested archer (7.5 s);
+    /// at the slowest reload, 6.3 s at stamina 25, one miss and the wait to the next shot (12.6 s) plants the archer — meant:
+    /// an archer that short of breath cannot outrun anything, and the fight it then stands is the kind the measurement found
+    /// won (planted fights kept a median 92 % of health). Asked only of a quarry the archer could retreat from; one it already
+    /// stands against (<see cref="Outpaced"/>) is not counted. Nought turns it off. Counted in <see cref="Unpaid"/>.
     /// </para>
     /// </summary>
     public static int RetreatMs { get; set; } = 10000;

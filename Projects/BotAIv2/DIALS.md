@@ -1260,7 +1260,9 @@ changed without a rebuild.
 | `BotFugitive` | `MostRepeats` | `2` | *code only* |
 | `BotFugitive` | `PoisonedHealth` | `0.9` | *code only* |
 | `BotFugitive` | `RepeatMs` | `120000` | *code only* |
+| `BotHaven` | `FootStepMs` | `200` | `FleeFootStepMs` |
 | `BotHaven` | `MostSeconds` | `90` | *code only* |
+| `BotHaven` | `MountStepMs` | `100` | `FleeMountStepMs` |
 | `BotHaven` | `NearTiles` | `40` | *code only* |
 | `BotHaven` | `Reach` | `300` | *code only* |
 | `BotHaven` | `Running` | `true` | *code only* |

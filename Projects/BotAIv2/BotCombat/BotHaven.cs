@@ -333,11 +333,23 @@ public static class BotHaven
         return true;
     }
 
+    /// <summary>
+    /// A running bot's step afoot and mounted, in milliseconds, for pricing the run to a town: the engine's own movement
+    /// delays. Its own dials since 12.10.2026 (w4, review B): they read <c>BotSlay.FootStepMs</c>, and the archer's move of that
+    /// one from 200 to the measured 225 would have made every "Fast" 0.2 s creature — air elementals, liches, wisps, the
+    /// things that actually kill archers — read as quicker than the runner, refusing the town beyond <see cref="NearTiles"/>
+    /// (<see cref="TooFast"/>) and shortening the farthest run (<see cref="TooFar"/>) from 225 to 200 tiles of a walk. The
+    /// flight's arithmetic stays as it was measured: 218 asked, 11 chosen, 0 too fast on the live log of 12.10.2026.
+    /// </summary>
+    public static int FootStepMs { get; set; } = 200;
+
+    public static int MountStepMs { get; set; } = 100;
+
     /// <summary>A runner's step now, in milliseconds: the engine's own delays, at a walk when it has no breath to run.</summary>
     public static int StepMs(Mobile body)
     {
         var running = body is BotMobile { Running: true };
-        var step = body.Mounted ? BotSlay.MountStepMs : BotSlay.FootStepMs;
+        var step = body.Mounted ? MountStepMs : FootStepMs;
 
         return running ? step : step * 2;
     }
