@@ -202,6 +202,13 @@ public sealed class BotEnlist : BotDeed
     public override bool Resumes => true;
 
     /// <summary>
+    /// Work put down for this is kept for as long as the company lasts (12.10.2026, w2). A company runs as long as its fight
+    /// and its march — 2 000 of 10 181 enlistments on 11.10 outlasted the ten minutes of <c>BotWill.AsideCapMs</c>, 416 ran past
+    /// thirty — and the bot called into it had no say in that. See <see cref="BotDeed.Keeps"/>.
+    /// </summary>
+    public override bool Keeps => true;
+
+    /// <summary>
     /// <b>An enlistment is not bid away (29.09.2026).</b> On build 308 two parties of five stood at a forward muster and
     /// marched, and within two minutes "Lorandil dropped enlist: outbid by acquire at 152/min", "Kael dropped enlist:
     /// outbid by peddle", "Dunstan dropped enlist: outbid by hunt" — the enlistment is worth twenty-four a minute and

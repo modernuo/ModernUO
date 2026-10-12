@@ -471,8 +471,13 @@ public static class BotSquads
     /// </summary>
     public static bool SpareCarriers { get; set; } = true;
 
-    /// <summary>Whether the work in hand carries goods another bot is paying for to it: a delivery or a trader's haul. False with <see cref="SpareCarriers"/> off.</summary>
-    public static bool Carrying(IBotWilful bot) => SpareCarriers && bot?.Resolve?.Deed is BotDeliver or BotHaul;
+    /// <summary>
+    /// Whether the work in hand carries goods somebody else has paid for: a delivery, a trader's haul, or a guild's supply run with
+    /// its batch bought (12.10.2026, w2, review A — the run resumes now, so an ordinary call would walk the guild's goods into a
+    /// thirty-minute company and could leave them on a corpse; before the purchase there is nothing to lose and the call wins).
+    /// False with <see cref="SpareCarriers"/> off.
+    /// </summary>
+    public static bool Carrying(IBotWilful bot) => SpareCarriers && bot?.Resolve?.Deed is BotDeliver or BotHaul or BotSupply { Bought: > 0 };
 
     /// <summary>Company calls that passed a carrier holding another bot's goods by. Of <see cref="LeftAtWork"/>.</summary>
     public static long CarriersSpared { get; private set; }

@@ -343,4 +343,19 @@ public sealed class BotPause
 
     /// <summary>Whether it was put down under a hold that shelters it from the aside clock (07.10.2026, arena27). See <c>BotDeed.Shelters</c>.</summary>
     public bool Sheltered { get; init; }
+
+    /// <summary>
+    /// Whether it was put down for something that keeps it for as long as it lasts — a company's call — so that the aside clock
+    /// runs from <see cref="FreedAt"/> rather than from <see cref="At"/> (12.10.2026, w2). See <c>BotDeed.Keeps</c>.
+    /// </summary>
+    public bool Kept { get; init; }
+
+    /// <summary>Whether what kept this has ended and the bot has been asked to take it up at least once. See <see cref="FreedAt"/>.</summary>
+    public bool Freed { get; set; }
+
+    /// <summary>
+    /// When what kept this ended: the first beat the bot was asked to take it up again. Meaningful only with <see cref="Freed"/>,
+    /// never compared otherwise (tick counts carry no zero sentinel).
+    /// </summary>
+    public long FreedAt { get; set; }
 }

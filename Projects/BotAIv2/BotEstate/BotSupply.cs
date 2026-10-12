@@ -110,6 +110,24 @@ public sealed class BotSupply : BotDeed
     public override bool Unpaid => true;
 
     /// <summary>
+    /// Put down for what will not wait and taken up again, rather than dropped (12.10.2026, w2). In 10.2 h on 11.10, 191 of the
+    /// 232 supply runs dropped were "pressed to enlist", 98 of them with the guild's batch already bought and in the pack — the
+    /// guild's money left in a pocket and the shelf still bare. The batch and the shopkeeper are on the deed, so the run goes on
+    /// from where it was. Not steadfast: a better offer still outbids the walk to the counter.
+    /// </summary>
+    public override bool Resumes => true;
+
+    /// <summary>
+    /// The walk's best distance is forgotten when the run is taken up again (12.10.2026, w2, review B): the bot comes back from
+    /// wherever the company broke up, and a <c>_nearest</c> measured from the first leg would read the new walk as "not closing"
+    /// for its first two hundred beats. See <see cref="Closing"/>.
+    /// </summary>
+    public override void Resumed(IBotWilful bot) => Fresh();
+
+    /// <summary>How many of the batch are bought and in the pack: the guild's money, until they are on the counter. See <c>BotSquads.Carrying</c>.</summary>
+    public int Bought => _bought;
+
+    /// <summary>
     /// What the bot's own purse put into this, handed straight back as takings.
     ///
     /// <para>

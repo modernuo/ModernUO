@@ -56,6 +56,12 @@ public sealed class BotWillSettings
     /// <summary>How long work may sit set aside before its reason is presumed stale.</summary>
     public int? AsideCapMs { get; set; }
 
+    /// <summary>Whether work put down for a company's call is timed from the company letting the bot go, not from the put-down.</summary>
+    public bool? Keep { get; set; }
+
+    /// <summary>The longest work is kept for a company all told, whatever the company's length.</summary>
+    public int? KeptCapMs { get; set; }
+
     /// <summary>How much better a new want must be to win.</summary>
     public double? SwitchMargin { get; set; }
 
@@ -200,6 +206,8 @@ public static class BotWillConfig
         BotWill.DwellMs = settings.DwellMs ?? BotWill.DwellMs;
         BotWill.DwellCapMs = settings.DwellCapMs ?? BotWill.DwellCapMs;
         BotWill.AsideCapMs = settings.AsideCapMs ?? BotWill.AsideCapMs;
+        BotWill.Keep = settings.Keep ?? BotWill.Keep;
+        BotWill.KeptCapMs = settings.KeptCapMs ?? BotWill.KeptCapMs;
         BotWill.SwitchMargin = settings.SwitchMargin ?? BotWill.SwitchMargin;
         BotWill.CommitStretch = settings.CommitStretch ?? BotWill.CommitStretch;
         BotWill.CommitCapMs = settings.CommitCapMs ?? BotWill.CommitCapMs;
