@@ -99,6 +99,9 @@ public static class BotOutlaw
     /// <summary>Weapons a catch left on the thief. See <see cref="Arms"/>.</summary>
     public static long WeaponsKept { get; private set; }
 
+    /// <summary>Rounds of bound ammunition a catch left on the thief. See <see cref="Arms"/>.</summary>
+    public static long AmmunitionKept { get; private set; }
+
     /// <summary>Catches that took something, and what they came to.</summary>
     public static long Seized { get; private set; }
 
@@ -713,7 +716,6 @@ public static class BotOutlaw
         }
 
         var kit = TakesBond ? BotBinding.Forfeit(bot, bot.Bond, KeepsWeapons ? arms : null) : 0;
-        WeaponsKept += arms.Count;
 
         if (kit > 0)
         {
@@ -740,7 +742,7 @@ public static class BotOutlaw
         Seized++;
 
         logger.Information(
-            "{Name} was stripped at the cell door: {Gold}gp off the body, {Fine}gp out of its bank, {Things} things and {Kit} of its own kit forfeit; {Arms} weapons left to it",
+            "{Name} was stripped at the cell door: {Gold}gp off the body, {Fine}gp out of its bank, {Things} things and {Kit} of its own kit forfeit; {Arms} weapons and quivers left to it",
             bot.Name,
             coins,
             fine,
@@ -813,6 +815,25 @@ public static class BotOutlaw
             if (weapon.Parent != bot && weapon.Parent != pack)
             {
                 pack.DropItem(weapon);
+            }
+        }
+
+        WeaponsKept += arms.Count;
+
+        // And the quiver, by count: the thief keeps min(carried, granted) of each bound kind, as any death lets it (Patrick,
+        // 12.10.2026: "keep the bound count"). TrimAmmunition lifts exactly that much into the top of the pack and leaves the
+        // rest in the corpse for Empty to take; the death hook's own call of it afterwards finds nothing to trim.
+        if (bot.Bond is { } bond && bond.Ammunition.Count > 0)
+        {
+            BotBinding.TrimAmmunition(bot, bond, corpse);
+
+            for (var i = 0; i < pack.Items.Count; i++)
+            {
+                if (pack.Items[i] is { Deleted: false } stack && bond.Ammunition.ContainsKey(stack.GetType()))
+                {
+                    arms.Add(stack);
+                    AmmunitionKept += stack.Amount;
+                }
             }
         }
 
@@ -1371,7 +1392,7 @@ public static class BotOutlaw
     public static string Describe() =>
         !Running
             ? "nobody robs, nobody is red and nobody is jailed"
-            : $"{Murders} murders, {Robbed}gp robbed, {Caught} murderers caught by a patrol and {Released} let out, {Redeemed} went unpunished until the hour ran out, {Unavenged} were killed by something that was no patrol, {BaronsOwn} were the Baron's own kill and paid nobody, {Seized} catches stripped {SeizedGold}gp off the body, {SeizedBank}gp out of the bank and {SeizedThings} things into the treasury, {SeizedCorpse} corpses emptied where they lay and {Stripped} kits forfeit, {WeaponsKept} weapons left to the caught, {Shared} prices of blood split between a company; "
+            : $"{Murders} murders, {Robbed}gp robbed, {Caught} murderers caught by a patrol and {Released} let out, {Redeemed} went unpunished until the hour ran out, {Unavenged} were killed by something that was no patrol, {BaronsOwn} were the Baron's own kill and paid nobody, {Seized} catches stripped {SeizedGold}gp off the body, {SeizedBank}gp out of the bank and {SeizedThings} things into the treasury, {SeizedCorpse} corpses emptied where they lay and {Stripped} kits forfeit, {WeaponsKept} weapons and {AmmunitionKept} rounds left to the caught, {Shared} prices of blood split between a company; "
               + $"{RedCount()} red now and {JailedCount()} in cells of {Cells.Length}; {Told} made known to the Baron, {WantedPosted} made wanted; {Kept} errands kept a red out of a guarded town and {Routed} off a road through one, {Detoured} red roads drawn round the towns and {Stopped} red steps refused at a ward's edge; {Overfull} catches found every cell taken; {Rebound} records moved onto a bot's new body after a boot";
 
     public static void Forget()
@@ -1391,6 +1412,7 @@ public static class BotOutlaw
         SeizedCorpse = 0;
         Stripped = 0;
         WeaponsKept = 0;
+        AmmunitionKept = 0;
         Shared = 0;
         Kept = 0;
         Routed = 0;
