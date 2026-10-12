@@ -128,6 +128,12 @@ public sealed class BotSkulk : BotDeed
 
     private long _began;
 
+    /// <summary>When the stint was put down, so that <see cref="Resumed"/> can move its clock by the pause. See <see cref="Paused"/>.</summary>
+    private long _pausedAt;
+
+    /// <summary>Stints not taken up again because the bot came back somewhere it could not practise. See <see cref="Stale"/>.</summary>
+    public static long StaleResumes { get; private set; }
+
     private double _hiding;
 
     private double _stealth;
@@ -264,11 +270,16 @@ public sealed class BotSkulk : BotDeed
         }
     }
 
+    public override void Paused(IBotWilful bot) => _pausedAt = Core.TickCount;
+
     /// <summary>
-    /// A stint taken up again practises where the bot now stands, for a whole stint. The clock would otherwise have run out
-    /// in the company and the first beat back would have "practised" five minutes of fighting; and <see cref="Aim"/> picks its
-    /// quiet steps round where the stint began, which may be a company's field away. A stint not yet begun — The Shadow's
-    /// member on its way to the hideout — keeps its destination.
+    /// A stint taken up again practises where the bot now stands, with its clock moved by the pause (the Steadfast contract: a
+    /// clock inside the work is put right, not restarted — restarted, a stint jumped by a flight every couple of minutes would
+    /// never end, and <see cref="Committed"/> keeps the review from bidding it away). Not moved, the clock would have run out
+    /// in the company and the first beat back would have "practised" five minutes of fighting. <see cref="Aim"/> picks its quiet
+    /// steps round where the stint began, which may be a company's field away, so that place moves too. A stint not yet begun —
+    /// The Shadow's member on its way to the hideout — keeps its destination. Whether here is a place to practise at all is
+    /// <see cref="Stale"/>'s question, asked before this.
     /// </summary>
     public override void Resumed(IBotWilful bot)
     {
@@ -288,8 +299,56 @@ public sealed class BotSkulk : BotDeed
 
         if (_started)
         {
-            _began = Core.TickCount;
+            _began += Core.TickCount - _pausedAt;
         }
+    }
+
+    /// <summary>
+    /// Why a stint put down for a company is not taken up where the company left the bot (12.10.2026, w2, review B). Companies
+    /// end where they stand — a withdrawal with the creature that beat them still there, a delve party buried in the Orc Caves —
+    /// and a stint taken up there is five minutes of standing still, revealed as often as not, in the one place a bot should not.
+    /// A bot sees with its own eyes: a cell, a dungeon, the zones' ground that is not clear, or anything hostile within
+    /// <see cref="BotBolt.Watch"/> tiles refuses the stint with its own words; the itch presses another one in half an hour,
+    /// somewhere else. Counted in <see cref="StaleResumes"/> and in <c>BotWill.KeptStale</c>.
+    /// </summary>
+    public override string Stale(IBotWilful bot)
+    {
+        if (bot?.Self is not { } body || body.Map is not { } map || map == Map.Internal)
+        {
+            return null;
+        }
+
+        string why;
+
+        if (BotOutlaw.Jailed(body))
+        {
+            why = "the bot is in a cell";
+        }
+        else if (BotDungeon.Under(body.Location))
+        {
+            why = "the company left it underground";
+        }
+        else if (BotZones.LevelAt(map, body.X, body.Y) is var level && level != BotZoneLevel.Clear)
+        {
+            why = level switch
+            {
+                BotZoneLevel.Edge => "it stands on the fringe of hostile ground",
+                BotZoneLevel.Hostile => "it stands on hostile ground",
+                _ => "it stands on deadly ground"
+            };
+        }
+        else if (BotThreat.ThreatPower(body, BotBolt.Watch) > 0.0)
+        {
+            why = $"something hostile stands within {BotBolt.Watch} tiles";
+        }
+        else
+        {
+            return null;
+        }
+
+        StaleResumes++;
+
+        return $"no place to practise hiding: {why}";
     }
 
     private BotDoing Finish(Mobile body)
@@ -528,7 +587,7 @@ public sealed class BotSkulk : BotDeed
     }
 
     public static string Describe() =>
-        $"{Stints} stints of practising hiding ({Urged} of them from the itch: {Waited} of those begun between two pieces of work after waiting for the one in hand, {Eager} an apprentice's; {_waiting.Count} itches waiting now, {_apprentices.Count} apprentices named), {Ended} run to the end, gaining {HidingGained:F1} Hiding and {StealthGained:F1} Stealth between them";
+        $"{Stints} stints of practising hiding ({Urged} of them from the itch: {Waited} of those begun between two pieces of work after waiting for the one in hand, {Eager} an apprentice's; {_waiting.Count} itches waiting now, {_apprentices.Count} apprentices named), {Ended} run to the end, gaining {HidingGained:F1} Hiding and {StealthGained:F1} Stealth between them; {StaleResumes} put down for a company and not taken up where it left the bot";
 
     public static void Forget()
     {
@@ -540,6 +599,7 @@ public sealed class BotSkulk : BotDeed
         Eager = 0;
         HidingGained = 0;
         StealthGained = 0;
+        StaleResumes = 0;
         _urgedTick.Clear();
         _apprentices.Clear();
     }
