@@ -80,6 +80,25 @@ public sealed class BotPopulationSettings
 
     /// <summary>The newcomers: the two-hourly growth, its ceiling, and the burst that fills the island at once. See <see cref="BotGrowth"/>.</summary>
     public BotGrowthSettings Growth { get; set; }
+
+    /// <summary>The porter's way down from over the ceiling and its breaker (12.10.2026). See <see cref="BotUnload"/>.</summary>
+    public BotUnloadSettings Unload { get; set; }
+}
+
+/// <summary>What <c>bot-population.json</c> may say under <c>Unload</c>. See <see cref="BotUnload.StuckFails"/>.</summary>
+public sealed class BotUnloadSettings
+{
+    /// <summary>Stand-still passes that left a bot no lighter, inside <c>StuckWindowMs</c>, before the pass is withheld until its weight changes.</summary>
+    public int? StuckFails { get; set; }
+
+    /// <summary>The window those passes are counted over, in milliseconds.</summary>
+    public int? StuckWindowMs { get; set; }
+
+    /// <summary>How often a heavy bot that can still walk has its pack's piles lying apart joined, in milliseconds.</summary>
+    public int? JoinMs { get; set; }
+
+    /// <summary>Whether a bot over its ceiling on its kept things alone lets them go, to its box or the ground.</summary>
+    public bool? Releases { get; set; }
 }
 
 /// <summary>What <c>bot-population.json</c> may say under <c>Growth</c>. See <see cref="BotGrowth"/>.</summary>
@@ -221,6 +240,27 @@ public static class BotPopulationConfig
                 BotGrowth.BurstBy = c.BurstBy ?? BotGrowth.BurstBy;
                 BotGrowth.LeastToWant = c.LeastToWant ?? BotGrowth.LeastToWant;
             }
+        }
+
+        // The porter's way down and its breaker (12.10.2026). Said at the load, because a default is not what the shard runs.
+        {
+            var c = settings.Unload;
+
+            if (c != null)
+            {
+                BotUnload.StuckFails = c.StuckFails ?? BotUnload.StuckFails;
+                BotUnload.StuckWindowMs = c.StuckWindowMs ?? BotUnload.StuckWindowMs;
+                BotUnload.JoinMs = c.JoinMs ?? BotUnload.JoinMs;
+                BotUnload.Releases = c.Releases ?? BotUnload.Releases;
+            }
+
+            logger.Information(
+                "The porter: {Fails} stand-still passes no lighter in {Window} minutes set a bot aside until its weight changes; piles lying apart joined every {Join}s for a heavy bot; kept things let go when they alone are over the ceiling: {Releases}",
+                BotUnload.StuckFails,
+                BotUnload.StuckWindowMs / 60000.0,
+                BotUnload.JoinMs / 1000,
+                BotUnload.Releases
+            );
         }
 
         Mix = Offices(settings.Classes is { Count: > 0 } ? settings.Classes : StarterMix());

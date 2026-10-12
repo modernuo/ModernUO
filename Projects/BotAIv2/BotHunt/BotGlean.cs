@@ -133,7 +133,11 @@ public sealed class BotGlean : BotDeed
 
         _gathered += Math.Max(1, lying.Amount);
 
-        pack.DropItem(lying);
+        // <b>Onto the quiver's own pile, never beside it (12.10.2026).</b> A missed arrow lies as a pile of one, and
+        // <c>DropItem</c> does not stack, so every arrow picked up became a pile of its own that the engine weighs at
+        // ceil(0.1 x 1) = a whole stone: Baern the Tamer gleaned 162 arrows at 09:28 on 10.10.2026 and was 162 stones
+        // heavier, over his ceiling for 35 hours with arrows the porter keeps without limit. See BotUnload.IntoPack.
+        BotUnload.IntoPack(body, pack, lying);
 
         return BotDoing.Work("gathering");
     }
