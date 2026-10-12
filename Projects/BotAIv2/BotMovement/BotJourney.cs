@@ -965,12 +965,22 @@ public sealed class BotJourney
     /// the plan and the route stay as they are, and the next turn that is not a hold walks on from where the plan left off.
     /// Renewed by every held turn; it lapses by itself. Any new order lifts it (<see cref="Discard"/>).
     /// </summary>
-    public void Hold(int ms) => _heldUntil = Core.TickCount + System.Math.Max(0, ms);
+    public void Hold(int ms)
+    {
+        _heldUntil = Core.TickCount + System.Math.Max(0, ms);
+        _holding = true;
+    }
 
-    /// <summary>Whether the walk is being held where it stands. See <see cref="Hold"/>.</summary>
-    public bool Held => Active && Core.TickCount < _heldUntil;
+    /// <summary>
+    /// Whether the walk is being held where it stands. See <see cref="Hold"/>. By subtraction from a deadline seeded by a real
+    /// tick, with a flag for "no hold" rather than a nought deadline (12.10.2026, w7: rule 20 of the fork, now asked by every
+    /// delivery's buyer and every caravan trader, not a delve leader now and then).
+    /// </summary>
+    public bool Held => Active && _holding && Core.TickCount - _heldUntil < 0;
 
     private long _heldUntil;
+
+    private bool _holding;
 
     /// <summary>Whether standing at <paramref name="at"/> is arriving at what the bot is doing now.</summary>
     /// <summary>
@@ -1406,7 +1416,7 @@ public sealed class BotJourney
         _plan.Clear();
         _step = 0;
         _beside = false;
-        _heldUntil = 0;
+        _holding = false;
         _planErrand = null;
         _planGoal = Point3D.Zero;
         _planBuiltTick = 0;

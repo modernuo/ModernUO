@@ -1116,7 +1116,7 @@ changed without a rebuild.
 | `BotRendezvous` | `Running` | `true` | `Meetings` |
 | `BotRendezvous` | `SafeReach` | `160` | `MeetingSafeReach` |
 | `BotRendezvous` | `StaleMs` | `45000` | *code only* |
-| `BotRendezvous` | `StandMostMs` | `30000` | `MeetingStandMostMs` |
+| `BotRendezvous` | `StandMostMs` | `10000` | `MeetingStandMostMs` |
 | `BotRendezvous` | `StandMs` | `1500` | `MeetingStandMs` |
 | `BotRendezvous` | `StandTiles` | `10` | `MeetingStandTiles` |
 | `BotRendezvous` | `WaitMs` | `20000` | `MeetingWaitMs` |
@@ -2848,9 +2848,9 @@ changed without a rebuild.
 | `BotCaravans` | `GuardPrior` | `30.0` | *code only* |
 | `BotCaravans` | `GuardRate` | `60.0` | *code only* |
 | `BotCaravans` | `GuardReach` | `60` | *code only* |
-| `BotCaravans` | `GuardSpread` | `8` | *code only* |
+| `BotCaravans` | `GuardSpread` | `8` | `CaravanGuardSpread` |
 | `BotCaravans` | `GuardWaitBeatMs` | `1500` | *code only* |
-| `BotCaravans` | `GuardWaitMs` | `90000` | *code only* |
+| `BotCaravans` | `GuardWaitMs` | `90000` | `CaravanGuardWaitMs` |
 | `BotCaravans` | `LateMs` | `300000` | *code only* |
 | `BotCaravans` | `LeastGuards` | `2` | *code only* |
 | `BotCaravans` | `LeastPremium` | `100` | *code only* |

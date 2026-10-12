@@ -36,13 +36,14 @@ public sealed class BotMarketModule : BotModule
         BotWill.Offer(new BotMeeter());
 
         logger.Information(
-            "Meetings {State}: a carrier within {Call} tiles of its buyer calls the meeting; the buyer walks to meet it, or both to the nearest guarded ground within {Safe} tiles when either stands in a hostile or deadly patrol or on a square asking more than it brings; the buyer gives the meeting {Meet} minutes and stands {Wait}s beside the carrier for the hand-over; a buyer that walks on about its work stands where it is for a carrier within {Stand} tiles of it, at most {StandMost}s a walk, and a carrier that comes no nearer to its buyer in {Losing}s of walking after it lets it go",
+            "Meetings {State}: a carrier within {Call} tiles of its buyer calls the meeting; the buyer walks to meet it, or both to the nearest guarded ground within {Safe} tiles when either stands in a hostile or deadly patrol or on a square asking more than it brings; the buyer gives the meeting {Meet} minutes and stands {Wait}s beside the carrier for the hand-over; a buyer that walks on about its work stands where it is for a carrier within {Stand} tiles of it, {StandMs}ms a beat and at most {StandMost}s a walk, and a carrier that comes no nearer to its buyer in {Losing}s of walking after it lets it go",
             BotRendezvous.Running ? "on" : "off",
             BotRendezvous.CallTiles,
             BotRendezvous.SafeReach,
             BotRendezvous.MeetMs / 60000,
             BotRendezvous.WaitMs / 1000,
             BotRendezvous.StandTiles,
+            BotRendezvous.StandMs,
             BotRendezvous.StandMostMs / 1000,
             BotDeliver.LosingMs / 1000
         );

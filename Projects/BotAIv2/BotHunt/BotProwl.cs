@@ -970,7 +970,9 @@ public sealed class BotProwl : BotDeed
             _nearest = System.Math.Min(_nearest, gap);
             _stalled = 0;
         }
-        else if (++_stalled >= TrekLimit)
+        // A held walk is not a walk that stopped closing (12.10.2026, w7): a buyer stood for its carrier (BotRendezvous.Stand)
+        // or a trader for its guards stands by somebody else's word, and BotWill's own watch skips those beats too.
+        else if (body is not BotMobile { Journey.Held: true } && ++_stalled >= TrekLimit)
         {
             // A creature seen from a waypoint that could not be walked after: the square it was seen from was walked, so the
             // sweep goes on to the next one rather than failing for a walk that was never one of its squares.

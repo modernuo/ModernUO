@@ -34,7 +34,7 @@ public sealed class BotEventsModule : BotModule
 
         logger.Information(
             "The events of the world are {State}: an invasion every {Invasion:F1} hours (±{Jitter:P0}, the first after {First} minutes) of at most {Odds:P0} of the militia that answers, {Pool}gp a raid from the city's purse; "
-            + "a fair every {Fair:F0} hours for {Lasts:F1}, counters at {Discount:P0}, tickets {Ticket}gp; a caravan every {Caravan} minutes, {Guards} guards at {Wage}gp, its trader standing for a guard more than {Spread} tiles back for {GuardWait}s a run at most; night {From:00}–{To:00} at roads ×{Danger:F2} and carriage ×{Pay:F2}; a rumour every {Rumour} minutes of {Chest}gp from the crown",
+            + "a fair every {Fair:F0} hours for {Lasts:F1}, counters at {Discount:P0}, tickets {Ticket}gp; a caravan every {Caravan} minutes, {Guards} guards at {Wage}gp, its trader standing for a guard more than {Spread} tiles back, {GuardBeat}ms a beat and {GuardWait}s a run at most; night {From:00}–{To:00} at roads ×{Danger:F2} and carriage ×{Pay:F2}; a rumour every {Rumour} minutes of {Chest}gp from the crown",
             BotSeasons.Running ? "on" : "off",
             BotInvasion.EveryMs / 3600000.0,
             BotInvasion.Jitter,
@@ -49,6 +49,7 @@ public sealed class BotEventsModule : BotModule
             BotCaravans.MostGuards,
             BotCaravans.Wage,
             BotCaravans.GuardSpread,
+            BotCaravans.GuardWaitBeatMs,
             BotCaravans.GuardWaitMs / 1000,
             BotNight.From,
             BotNight.To,

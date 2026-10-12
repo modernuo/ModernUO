@@ -130,10 +130,13 @@ public static class BotRendezvous
     public static int StandMs { get; set; } = 1500;
 
     /// <summary>
-    /// The most a buyer stands for one carrier's walk, in all. Thirty seconds: ten tiles is four seconds on foot, and a carrier
-    /// that has not closed in thirty is not closing; the buyer walks on and the carrier follows it as before.
+    /// The most a buyer stands for one carrier's walk, in all. Ten seconds: ten tiles is four seconds on foot, and a carrier
+    /// that has not closed in ten is not closing; the buyer walks on and the carrier follows it as before. Not thirty (the first
+    /// draft, review A of w7): the buyer's own work counts the beats it gets no nearer — a miner's walk to its seam, a supply
+    /// run, a hire, a prowl give up at <c>TrekLimit</c> 200 beats, forty seconds — and although those counts now skip a held
+    /// beat, a stand is somebody else's time spent and is kept short.
     /// </summary>
-    public static int StandMostMs { get; set; } = 30000;
+    public static int StandMostMs { get; set; } = 10000;
 
     /// <summary>Carriers' walks whose buyer stood for them, once a walk; of them handed over; and those whose buyer stood <see cref="StandMostMs"/> and walked on.</summary>
     public static long Stood { get; private set; }

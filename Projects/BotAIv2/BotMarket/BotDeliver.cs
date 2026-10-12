@@ -139,8 +139,15 @@ public sealed class BotDeliver : BotDeed, IBotWantCarrier
     /// <summary>Milliseconds this delivery has been put down in all, before the pause in hand.</summary>
     private long _downMs;
 
-    /// <summary>The nearest this walk has come to its buyer while walking after it, and the walking since then. See <see cref="LosingMs"/>.</summary>
+    /// <summary>
+    /// The nearest this walk has come to its buyer while walking after it in a straight line, the least road left on the route in
+    /// hand and which route that was, and the walking since either last improved. See <see cref="LosingMs"/>.
+    /// </summary>
     private int _nearest = int.MaxValue;
+
+    private int _nearestRoad = int.MaxValue;
+
+    private int _roadStamp = -1;
 
     private long _losingMs;
 
@@ -722,9 +729,20 @@ public sealed class BotDeliver : BotDeed, IBotWantCarrier
     }
 
     /// <summary>
-    /// Whether this walk has come no nearer to its buyer in <see cref="LosingMs"/> of walking after it. Near is the planner's road
-    /// where the carrier holds one to about where the buyer is, the straight line otherwise; time counts only while the carrier's
-    /// own walk is the one in hand and not held, and no more than a few seconds for a gap between two beats.
+    /// Whether this walk has come no nearer to its buyer in <see cref="LosingMs"/> of walking after it. Nearer is either of two
+    /// things, and the minute starts again at both: a new least straight-line distance to the buyer, or — while the carrier
+    /// holds a route to about where the buyer is — less road left on that route than at any beat since the route was drawn.
+    /// Time counts only while the carrier's own walk is the one in hand and not held, and no more than a few seconds for a
+    /// gap between two beats.
+    ///
+    /// <para>
+    /// <b>Two measures, because one of them lies each way (reviews A and B of w7).</b> By the road alone, the first beat
+    /// measured the straight line (no route drawn yet) and every later one the longer road, so a carrier on foot on a road
+    /// much longer than the line read as losing for the whole of its first minute while it gained; and a road measured across
+    /// routes restarts at every redraw, so a buyer riding away — every few seconds a new route — might never run the
+    /// minute out (plausible, not traced; OutRun against Late after the deploy says). The straight line never restarts and so catches the rider; the road, compared only within one route
+    /// (its <see cref="BotJourney.RouteStamp"/>, as BotWill's own watch and BotDig do), keeps the long way round honest.
+    /// </para>
     /// </summary>
     private bool Losing(Mobile body, Mobile buyer, int apart)
     {
@@ -735,11 +753,33 @@ public sealed class BotDeliver : BotDeed, IBotWantCarrier
 
         var now = Core.TickCount;
         var journey = (body as BotMobile)?.Journey;
-        var near = journey?.RoadLeft(body.Location, buyer.Location) ?? apart;
+        var gained = false;
 
-        if (near < _nearest)
+        if (apart < _nearest)
         {
-            _nearest = near;
+            _nearest = apart;
+            gained = true;
+        }
+
+        if (journey != null && journey.HoldsRoadTo(buyer.Location))
+        {
+            var road = journey.RoadLeft(body.Location, buyer.Location);
+
+            if (_roadStamp != journey.RouteStamp)
+            {
+                // A new route: its first reading is where its own count starts, not a gain.
+                _roadStamp = journey.RouteStamp;
+                _nearestRoad = road;
+            }
+            else if (road < _nearestRoad)
+            {
+                _nearestRoad = road;
+                gained = true;
+            }
+        }
+
+        if (gained || !_losing)
+        {
             _losingMs = 0;
             _losing = true;
             _losingTick = now;
@@ -747,12 +787,11 @@ public sealed class BotDeliver : BotDeed, IBotWantCarrier
             return false;
         }
 
-        if (_losing && journey is { Held: false } && journey.Current is { Interruption: false })
+        if (journey is { Held: false } && journey.Current is { Interruption: false })
         {
             _losingMs += Math.Min(Math.Max(0L, now - _losingTick), 5000L);
         }
 
-        _losing = true;
         _losingTick = now;
 
         return _losingMs >= LosingMs;
@@ -762,6 +801,8 @@ public sealed class BotDeliver : BotDeed, IBotWantCarrier
     private void LoseTrack()
     {
         _nearest = int.MaxValue;
+        _nearestRoad = int.MaxValue;
+        _roadStamp = -1;
         _losingMs = 0;
         _losing = false;
     }
