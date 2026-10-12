@@ -1106,7 +1106,8 @@ public sealed class BotHaul : BotDeed, IBotWantCarrier
                         : BotDoing.Walk(_map, place, BotArrival.Within(2), $"to the meeting place for {order.BuyerName} with {order.Units} {_label}");
                 }
 
-                return BotDoing.Walk(_map, buyer, BotArrival.Within(BotHandover.MeetTiles), $"after {order.BuyerName} with {order.Units} {_label}");
+                // Kept up with (12.10.2026, w7): a plan that reaches the buyer is a way however far it walks on; ChaseMs ends the chase.
+                return BotDoing.WalkAfter(_map, buyer, BotArrival.Within(BotHandover.MeetTiles), $"after {order.BuyerName} with {order.Units} {_label}");
             }
 
             Hand(bot, body, order);

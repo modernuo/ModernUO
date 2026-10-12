@@ -40,6 +40,27 @@ public sealed class BotDeliver : BotDeed, IBotWantCarrier
     /// </summary>
     public static int ReleaseDownMs { get; set; } = 180000;
 
+    /// <summary>
+    /// <b>How long a carrier walks after its buyer without once coming nearer to it than it has been before it lets the buyer
+    /// go: "could not catch up" (12.10.2026, w7).</b> A minute, measured only while the carrier's own walk is the one in hand
+    /// (a fight on top of it, or a hold, is not the buyer drawing away), and by the planner's road where it holds one.
+    ///
+    /// <para>
+    /// The walker's own count used to end these walks inside twelve seconds — over 80 % of the 1 436 "could not get nearer"
+    /// of 11–12.10 — whether the buyer was drawing away or the carrier was one step from the hand-over; that count no longer
+    /// judges a walk after a buyer (<see cref="BotDoing.WalkAfter"/>), and <see cref="GiveUpMs"/> alone would walk after a
+    /// buyer on a horse for eight minutes (Falk Ashdown rode away from Mirthal at eight tiles a second, 189 to 263 tiles off
+    /// in half a minute, live 12.10 22:45). A minute of walking that never gains a tile is a buyer this carrier will not
+    /// catch; a buyer that stops for its work is caught, and every tile gained starts the minute again. Ended from the work,
+    /// not the walker, so nothing is written against the place the buyer stood (<see cref="BotWayless"/>) or against the
+    /// buyer (<c>BotMend.Beyond</c>). Nought turns it off.
+    /// </para>
+    /// </summary>
+    public static int LosingMs { get; set; } = 60000;
+
+    /// <summary>Walks after a buyer ended for coming no nearer to it in <see cref="LosingMs"/> of walking. See <see cref="LosingMs"/>.</summary>
+    public static long OutRun { get; private set; }
+
     // ---- Counted where they happen -------------------------------------------------------------------------------------------
 
     public static long Takes { get; private set; }
@@ -117,6 +138,18 @@ public sealed class BotDeliver : BotDeed, IBotWantCarrier
 
     /// <summary>Milliseconds this delivery has been put down in all, before the pause in hand.</summary>
     private long _downMs;
+
+    /// <summary>The nearest this walk has come to its buyer while walking after it, and the walking since then. See <see cref="LosingMs"/>.</summary>
+    private int _nearest = int.MaxValue;
+
+    private long _losingMs;
+
+    private long _losingTick;
+
+    private bool _losing;
+
+    /// <summary>How long the buyer has stood for this walk. See <see cref="BotRendezvous.Stand"/>.</summary>
+    private readonly BotRendezvous.StandClock _stand = new();
 
     /// <summary>Taken up again after the sweep let its units go: what is still open is held again at the next beat, or it ends.</summary>
     private bool _reopened;
@@ -262,6 +295,9 @@ public sealed class BotDeliver : BotDeed, IBotWantCarrier
 
         _resumedTick = now;
         _paused = false;
+
+        // The buyer has walked on meanwhile: the nearest so far is about a buyer that is no longer there.
+        LoseTrack();
 
         // <b>Held again only if it was still held (03.10.2026, build next).</b> A delivery put down past its clock (Stale) had
         // its units opened to other carriers by the market's sweep; taking it up again re-reserved all of them on top of whatever
@@ -594,6 +630,7 @@ public sealed class BotDeliver : BotDeed, IBotWantCarrier
                 {
                     AtPlace++;
                     _place = meeting.Place;
+                    LoseTrack();
 
                     return body.InRange(meeting.Place, 2)
                         ? BotDoing.Work($"waiting at the meeting place for {_buyerName} with {_units} {_want.Label}")
@@ -603,9 +640,23 @@ public sealed class BotDeliver : BotDeed, IBotWantCarrier
 
             _place = Point3D.Zero;
 
+            // <b>The buyer stands for the last few tiles (12.10.2026, w7).</b> See BotRendezvous.Stand.
+            BotRendezvous.Stand(body, buyer, apart, _stand);
+
+            // <b>And a buyer that draws away is let go by this walk's own clock (12.10.2026, w7).</b> See LosingMs.
+            if (Losing(body, buyer, apart))
+            {
+                OutRun++;
+
+                return BotDoing.Failed(
+                    $"could not catch up with {_buyerName}: no nearer than {_nearest} tiles in {LosingMs / 1000}s of walking after it, {apart} off now"
+                );
+            }
+
             // Followed rather than aimed at: the buyer is at work and moves, and a walk order matched by a point would be replaced
-            // every beat it did. See BotPeddle for the whole reason.
-            return BotDoing.Walk(buyer.Map, buyer, BotArrival.Within(BotHandover.MeetTiles), $"to {_buyerName} with {_units} {_want.Label}");
+            // every beat it did. See BotPeddle for the whole reason. Kept up with (12.10.2026, w7): a plan that reaches the buyer is
+            // a way however far it has walked on, and the clocks above end the walk (BotDoing.WalkAfter).
+            return BotDoing.WalkAfter(buyer.Map, buyer, BotArrival.Within(BotHandover.MeetTiles), $"to {_buyerName} with {_units} {_want.Label}");
         }
 
         var given = BotHandover.Exchange(bot, buyer, _kind, _units, _price, true, "against its want", out var paid, out var refused);
@@ -640,6 +691,11 @@ public sealed class BotDeliver : BotDeed, IBotWantCarrier
         // The meeting, if one was called, is met. See BotRendezvous.Handed.
         BotRendezvous.Handed(_want.Buyer);
 
+        if (_stand.Began)
+        {
+            BotRendezvous.HandedAfterStand();
+        }
+
         Delivered++;
         DeliveredUnits += given;
         DeliveredGold += paid;
@@ -665,11 +721,56 @@ public sealed class BotDeliver : BotDeed, IBotWantCarrier
         return BotDoing.Done($"handed {given} {_want.Label} to {_buyerName} for {paid}gp");
     }
 
+    /// <summary>
+    /// Whether this walk has come no nearer to its buyer in <see cref="LosingMs"/> of walking after it. Near is the planner's road
+    /// where the carrier holds one to about where the buyer is, the straight line otherwise; time counts only while the carrier's
+    /// own walk is the one in hand and not held, and no more than a few seconds for a gap between two beats.
+    /// </summary>
+    private bool Losing(Mobile body, Mobile buyer, int apart)
+    {
+        if (LosingMs <= 0)
+        {
+            return false;
+        }
+
+        var now = Core.TickCount;
+        var journey = (body as BotMobile)?.Journey;
+        var near = journey?.RoadLeft(body.Location, buyer.Location) ?? apart;
+
+        if (near < _nearest)
+        {
+            _nearest = near;
+            _losingMs = 0;
+            _losing = true;
+            _losingTick = now;
+
+            return false;
+        }
+
+        if (_losing && journey is { Held: false } && journey.Current is { Interruption: false })
+        {
+            _losingMs += Math.Min(Math.Max(0L, now - _losingTick), 5000L);
+        }
+
+        _losing = true;
+        _losingTick = now;
+
+        return _losingMs >= LosingMs;
+    }
+
+    /// <summary>The nearest so far forgotten: the walk was put down, or went to a meeting place instead of after the buyer.</summary>
+    private void LoseTrack()
+    {
+        _nearest = int.MaxValue;
+        _losingMs = 0;
+        _losing = false;
+    }
+
     public static string Describe() =>
         Takes == 0
             ? "no delivery has been taken"
             : $"{Takes} taken, {Delivered} handed over ({DeliveredUnits} things for {DeliveredGold}gp, {(Delivered > 0 ? Tiles / Delivered : 0)} tiles on average from where the carrier set out; {Boxed} things taken out of a carrier's bank box for them); "
-              + $"failed: {Answered} found the want met or withdrawn, {BuyerGone} the buyer gone, {BuyerDead} the buyer dead, {OtherLand} the buyer on another land, {Unloaded} the carrier no longer holding it, {Late} could not catch up in {GiveUpMs / 60000} minutes, {Refused} refused at the meeting, {Blocked} no way to the buyer, {Overtaken} another carrier had taken the units on while it was put down, {Unafforded} the buyer's money no longer carried them when it was taken up again; "
+              + $"failed: {Answered} found the want met or withdrawn, {BuyerGone} the buyer gone, {BuyerDead} the buyer dead, {OtherLand} the buyer on another land, {Unloaded} the carrier no longer holding it, {Late} could not catch up in {GiveUpMs / 60000} minutes, {OutRun} came no nearer to a buyer walking on in {LosingMs / 1000}s, {Refused} refused at the meeting, {Blocked} no way to the buyer, {Overtaken} another carrier had taken the units on while it was put down, {Unafforded} the buyer's money no longer carried them when it was taken up again; "
               + $"{Meetings} deliveries called a meeting once within {BotRendezvous.CallTiles} tiles of the buyer, {AtPlace} beats spent going to or waiting at a guarded meeting place; "
               + $"{Reopened} walks taken up again after being put down {ReleaseDownMs / 60000} minutes in all or {GiveUpMs / 60000} at once, their units opened to other carriers meanwhile (the {Overtaken} and {Unafforded} above among them; the rest held again what was still open); "
               + $"far walks past {BotCourier.Reach} tiles: {FarTakes} taken, {FarDelivered} handed over, {FarFailed} ended with nothing handed; tails under {BotCourier.LeastGold}gp: {TailTakes} taken, {TailDelivered} handed over; {RoadLonger} walks held by the planner's road, a fifth or more longer than the straight line (x{HoldStretch:F1}, within the give-up clock); {BotSquads.CarriersSpared} company calls passed a carrier holding another bot's goods by, {BotCry.CarriersSpared} bots carrying for a buyer left out of a dire cry's calling past {BotCry.CarrierReach} tiles";
@@ -688,6 +789,7 @@ public sealed class BotDeliver : BotDeed, IBotWantCarrier
         Answered = 0;
         Unloaded = 0;
         Late = 0;
+        OutRun = 0;
         Refused = 0;
         Blocked = 0;
         Meetings = 0;

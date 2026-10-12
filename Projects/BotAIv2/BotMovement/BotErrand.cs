@@ -39,6 +39,13 @@ public sealed class BotErrand
     /// </summary>
     public bool Interruption { get; init; }
 
+    /// <summary>
+    /// A walk after a bot that is about its own business — a buyer at its work, a trader on its road — which the work walking
+    /// it ends by its own clock: a plan that reaches the target is not counted against getting closer (12.10.2026, w7). See
+    /// <see cref="BotJourney.KeepUp"/>; written only through <c>BotDoing.WalkAfter</c>.
+    /// </summary>
+    public bool KeepsUp { get; init; }
+
     /// <summary>Where to walk, this instant.</summary>
     public Point3D Target => Follow != null ? Follow.Location : Where;
 

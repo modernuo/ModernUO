@@ -103,6 +103,23 @@ public static class BotCaravans
     public static int BehindMs { get; set; } = 180000;
 
     /// <summary>
+    /// <b>How far a guard may drop back on the road before its trader stands for it (12.10.2026, w7).</b> Eight tiles, the delve's
+    /// march spread (<c>BotDelve.MarchSpread</c>). On 11–12.10 the traders rode ahead of their guards — Daeron nine, seventeen,
+    /// nineteen, twenty-one tiles behind Naevys Silverleaf in eleven seconds on the road north through Britain — and every guard but a
+    /// handful ended "could not get nearer" behind it (16 of 167 finished in L1, 13 of 113 in the two runs since). A caravan goes
+    /// at its guards' pace: the trader's walk is held where it stands (<see cref="BotJourney.Hold"/>, the plan kept) while a
+    /// guard is further back than this and not past <see cref="Behind"/>, for <see cref="GuardWaitMs"/> a run at most. Nought
+    /// turns it off.
+    /// </summary>
+    public static int GuardSpread { get; set; } = 8;
+
+    /// <summary>The most a trader stands for its guards over one run: a minute and a half, the delve leader's own hold (<c>BotDelve.HoldMs</c>).</summary>
+    public static int GuardWaitMs { get; set; } = 90000;
+
+    /// <summary>How long one beat of the trader's holds its walk; renewed by the next, lapsing by itself.</summary>
+    public static int GuardWaitBeatMs { get; set; } = 1500;
+
+    /// <summary>
     /// life18a: how long the town keeps a guard's wage for a guard still on its way when the trader arrives (a gate puts the trader
     /// a thousand tiles on in a step; its guards come through after it). Paid when the guard reaches the square; handed back after.
     /// </summary>
@@ -173,6 +190,13 @@ public static class BotCaravans
 
     /// <summary>life18a: guards that put the post down before the road's end; wages kept for guards on their way, paid late, lapsed.</summary>
     public static long GuardsDropped { get; private set; }
+
+    /// <summary>Runs whose trader stood on the road for a guard more than <see cref="GuardSpread"/> tiles back; of them, those that stood <see cref="GuardWaitMs"/> and went on; and the seconds stood in all.</summary>
+    public static long GuardWaits { get; private set; }
+
+    public static long GuardWaitSpent { get; private set; }
+
+    public static long GuardWaitedMs { get; private set; }
 
     public static long GuardsOwed { get; private set; }
 
@@ -257,6 +281,17 @@ public static class BotCaravans
         public long RoadTick;
 
         public string Ending;
+
+        /// <summary>The trader's stand for its guards on the road (12.10.2026, w7): stood in all, the beat it last stood, and whether it is standing, has stood, or has stood its fill.</summary>
+        public long WaitedMs;
+
+        public long WaitTick;
+
+        public bool Waiting;
+
+        public bool Waited;
+
+        public bool WaitSpent;
 
         public bool Over => Phase == Phase.Over;
 
@@ -745,6 +780,75 @@ public static class BotCaravans
         BotSeasons.Say(guard, "local", $"I'll guard your caravan to {run.To.Name}, {run.Leader?.Name}.");
     }
 
+    /// <summary>
+    /// The trader on the road stands for a guard that has dropped back more than <see cref="GuardSpread"/> tiles and not past
+    /// <see cref="Behind"/>, for <see cref="GuardWaitMs"/> a run at most. Returns whether it stood. See <see cref="GuardSpread"/>.
+    /// </summary>
+    internal static bool WaitForGuards(Run run, Mobile leader)
+    {
+        if (GuardSpread <= 0 || run == null || run.WaitSpent || leader is not BotMobile bot || bot.Journey is not { Active: true } journey)
+        {
+            return false;
+        }
+
+        var straggler = false;
+
+        for (var i = 0; i < run.Guards.Count; i++)
+        {
+            if (run.Guards[i] is not { Deleted: false, Alive: true } guard || guard.Map != leader.Map)
+            {
+                continue;
+            }
+
+            var back = Math.Max(Math.Abs(guard.X - leader.X), Math.Abs(guard.Y - leader.Y));
+
+            if (back > GuardSpread && back <= Behind)
+            {
+                straggler = true;
+
+                break;
+            }
+        }
+
+        if (!straggler)
+        {
+            run.Waiting = false;
+
+            return false;
+        }
+
+        var now = Core.TickCount;
+
+        if (run.Waiting)
+        {
+            var stood = Math.Min(Math.Max(0L, now - run.WaitTick), 5000L);
+
+            run.WaitedMs += stood;
+            GuardWaitedMs += stood;
+        }
+        else if (!run.Waited)
+        {
+            run.Waited = true;
+            GuardWaits++;
+        }
+
+        run.Waiting = true;
+        run.WaitTick = now;
+
+        if (run.WaitedMs >= GuardWaitMs)
+        {
+            run.WaitSpent = true;
+            run.Waiting = false;
+            GuardWaitSpent++;
+
+            return false;
+        }
+
+        journey.Hold(GuardWaitBeatMs);
+
+        return true;
+    }
+
     internal static void Left(Run run, Mobile guard, bool behind)
     {
         if (!run.Guards.Remove(guard))
@@ -934,7 +1038,7 @@ public static class BotCaravans
         !Running
             ? "off"
             : $"{Posted} posted ({NothingShort} looks found nothing short at one town and sold at another, {NoPurse} the purse could not hold the pay), {Untaken} untaken; {LeadOffered} leads offered, {Led} led, {Unbought} could not buy the goods; "
-              + $"{SetOut} set out ({Unguarded} with fewer than {LeastGuards} guards), {Arrived} arrived, {Lost} lost; {GuardOffered} guard posts offered, {GuardsHired} hired at {WageNow}gp now ({GuardRate:F0}gp a minute of a {Trip:F1}-minute trip), {GuardsPaid} paid ({GuardsPaidLate} on reaching the square behind the trader, {GuardsOwed} owed on arrival, {LateLapsed} lapsed), {GuardsBehind} fell behind, {GuardsDropped} put the post down, {Defended} times a guard set on what attacked its trader; "
+              + $"{SetOut} set out ({Unguarded} with fewer than {LeastGuards} guards), {Arrived} arrived, {Lost} lost; {GuardOffered} guard posts offered, {GuardsHired} hired at {WageNow}gp now ({GuardRate:F0}gp a minute of a {Trip:F1}-minute trip), {GuardsPaid} paid ({GuardsPaidLate} on reaching the square behind the trader, {GuardsOwed} owed on arrival, {LateLapsed} lapsed), {GuardsBehind} fell behind, {GuardsDropped} put the post down, {Defended} times a guard set on what attacked its trader; {GuardWaits} traders stood on the road for a guard more than {GuardSpread} tiles back ({GuardWaitedMs / 1000}s in all, {GuardWaitSpent} stood {GuardWaitMs / 1000}s and went on); "
               + $"{Carried} things carried, {GoodsCost}gp of goods bought by the traders, {Premiums}gp premiums and {Wages}gp wages paid ({NightRuns} at night's pay); {NotchPriced} counter prices at ×{Notch:F2} after a caravan, {_notches.Count} notches standing"
               + (_run is { Over: false } r ? $"; now: {r.Tell}, {r.Phase}, led by {r.Leader?.Name ?? "nobody yet"}, {r.Guards.Count} guards" : "");
 
@@ -947,6 +1051,7 @@ public static class BotCaravans
         GuardsHired = GuardsPaid = GuardsBehind = Defended = Wages = Premiums = GoodsCost = Carried = NightRuns = NotchPriced = 0;
         LeadOffered = GuardOffered = 0;
         GuardsDropped = GuardsOwed = GuardsPaidLate = LateLapsed = 0;
+        GuardWaits = GuardWaitSpent = GuardWaitedMs = 0;
         _tripSum = 0;
         _trips = 0;
         _owed.Clear();
