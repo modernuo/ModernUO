@@ -81,6 +81,17 @@ public sealed class BotHuntSettings
 
     /// <summary>Whether the free bots within reach are weighed against the fight before a band is offered.</summary>
     public bool? MusterJudged { get; set; }
+
+    /// <summary>Whether an archer whose arrow is due stands and shoots rather than back off (12.10.2026, w4).</summary>
+    public bool? SlayStandsWhenDue { get; set; }
+
+    /// <summary>How long a retreat may go without the quarry's health falling before the archer plants; 0 turns it off.</summary>
+    public int? SlayRetreatMs { get; set; }
+
+    /// <summary>A running bot's step afoot and mounted, in milliseconds, against which a quarry's pace is weighed.</summary>
+    public int? SlayFootStepMs { get; set; }
+
+    public int? SlayMountStepMs { get; set; }
 }
 
 /// <summary>Reads the hunt file and moves the numbers it names.</summary>
@@ -134,5 +145,10 @@ public static class BotHuntConfig
 
         BotSlay.NoProgressMs = settings.SlayNoProgressMs ?? BotSlay.NoProgressMs;
         BotSlay.CapMs = settings.SlayCapMs ?? BotSlay.CapMs;
+
+        BotSlay.StandsWhenDue = settings.SlayStandsWhenDue ?? BotSlay.StandsWhenDue;
+        BotSlay.RetreatMs = settings.SlayRetreatMs ?? BotSlay.RetreatMs;
+        BotSlay.FootStepMs = settings.SlayFootStepMs ?? BotSlay.FootStepMs;
+        BotSlay.MountStepMs = settings.SlayMountStepMs ?? BotSlay.MountStepMs;
     }
 }

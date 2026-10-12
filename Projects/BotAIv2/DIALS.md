@@ -902,17 +902,19 @@ changed without a rebuild.
 | `BotSlay` | `FarLeash` | `3` | *code only* |
 | `BotSlay` | `FillFraction` | `0.8` | `FillFraction` |
 | `BotSlay` | `FleeAt` | `0.4` | `FleeAt` |
-| `BotSlay` | `FootStepMs` | `200` | *code only* |
+| `BotSlay` | `FootStepMs` | `225` | `SlayFootStepMs` |
 | `BotSlay` | `JumpTiles` | `40` | *code only* |
 | `BotSlay` | `KiteSlackMs` | `700` | *code only* |
 | `BotSlay` | `KiteWithin` | `5` | *code only* |
 | `BotSlay` | `Leash` | `50` | *code only* |
-| `BotSlay` | `MountStepMs` | `100` | *code only* |
+| `BotSlay` | `MountStepMs` | `100` | `SlayMountStepMs` |
 | `BotSlay` | `NoProgressMs` | `45000` | `SlayNoProgressMs` |
 | `BotSlay` | `OddsMs` | `1000` | *code only* |
 | `BotSlay` | `OutpaceShare` | `1.25` | *code only* |
 | `BotSlay` | `PlantMs` | `3000` | *code only* |
 | `BotSlay` | `Prior` | `60.0` | `Expects` |
+| `BotSlay` | `RetreatMs` | `10000` | `SlayRetreatMs` |
+| `BotSlay` | `StandsWhenDue` | `true` | `SlayStandsWhenDue` |
 | `BotSlay` | `StillMs` | `1000` | *code only* |
 | `BotSlay` | `TooClose` | `3` | *code only* |
 | `BotSlay` | `WorkMinutes` | `3.0` | `WorkMinutes` |
