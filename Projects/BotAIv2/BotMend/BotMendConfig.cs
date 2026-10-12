@@ -72,6 +72,11 @@ public sealed class BotMendSettings
     /// <summary>A town this near is run for whatever the pursuer's pace.</summary>
     public int? FleeTownNear { get; set; }
 
+    /// <summary>A running bot's step afoot and mounted, in milliseconds, for pricing the run to a town (12.10.2026, w4).</summary>
+    public int? FleeFootStepMs { get; set; }
+
+    public int? FleeMountStepMs { get; set; }
+
     /// <summary>How long a run for a town may go on with the thing still on the bot, in milliseconds.</summary>
     public int? FleeTownMs { get; set; }
 
@@ -131,6 +136,8 @@ public static class BotMendConfig
         BotHaven.Reach = settings.FleeTownReach ?? BotHaven.Reach;
         BotHaven.MostSeconds = settings.FleeTownSeconds ?? BotHaven.MostSeconds;
         BotHaven.NearTiles = settings.FleeTownNear ?? BotHaven.NearTiles;
+        BotHaven.FootStepMs = settings.FleeFootStepMs ?? BotHaven.FootStepMs;
+        BotHaven.MountStepMs = settings.FleeMountStepMs ?? BotHaven.MountStepMs;
         BotBolt.HavenMs = settings.FleeTownMs ?? BotBolt.HavenMs;
         BotBolt.HoldsSwing = settings.FleeHoldsSwing ?? BotBolt.HoldsSwing;
     }

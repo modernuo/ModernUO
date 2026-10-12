@@ -631,6 +631,27 @@ first sign is a behaviour, not an error. **Remedy.** Read the fork's source firs
 
 ### 4.1 Full entries, newest first
 
+**12.10.2026 · build 435 (written by a Fable agent: w4) · An archer whose arrow is due stands and shoots; a retreat is paid for**
+- *Patrick:* "why the hell do archers always run away from mobs? They should kite, yes — but if they can shoot they MUST shoot"
+  (09.09.2026); the week's plan: archers shoot and do not hit.
+- *What there was:* 71–73 % of hunt failures `would not go down … not a scratch in 45s`, ~42–50/h, 96 % bows; 85–90 % one cause:
+  the engine wants a shooter still 1 000 ms (`BaseRanged.OnSwing`, UOR), the kite reads the bow's clock, the back-off inside 3
+  tiles never did and answered Walk on the beat the arrow came due; BotWill left the walk running; a 0.25 s quarry (92 % of the
+  failing ones) passed `GainsGround` at the engine's 200 ms against a measured 227; the 3 s plant clock was zeroed every beat the
+  gap swung past 3. 13 of 15 watched failures were runners against 2 of 36 planted fights.
+- *Decision:* `BotSlay.StandsWhenDue` (on): a ranged, non-casting bot with ≤ `StillMs + KiteSlackMs` of reload left ends any retreat
+  being walked and is not crowded that beat; a captain keeps its blade. `RetreatMs` 10 000: ten seconds without a new low, from the
+  fight's start, plants an archer that could retreat (one already standing is not asked). `FootStepMs` 200 → 225 for the archer
+  only — the run to town got its own `BotHaven.FootStepMs` 200 / `MountStepMs` 100 (`FleeFootStepMs`, `FleeMountStepMs`,
+  bot-mend) so flight from 0.2 s creatures is unchanged. Verdict prints ammunition by `AmmoType`, back-offs, hits seen, due stands;
+  `Bows:` gains `SteadyBows`, `Backed` (near zero for archers by design: the back-off branch is unreachable under R1), `Due`,
+  `Halted` (by the retreat's own errand), `Unpaid`. Keys `SlayStandsWhenDue`, `SlayRetreatMs`, `SlayFootStepMs`, `SlayMountStepMs`.
+- *Checked:* build `Ошибок: 0`; two Fable reviews ("ship after fixing", fixed in `9b980e9f2`). After deploy: `would not go down`
+  50/h → ≤ 8/h; `Due` rising; `SteadyBows` share ≥ 45 %; hunt finish ≥ 90 %; guards against the 18:35 log (archer deaths 0.31/bot-
+  hour ± the 26–52/h swing, hunt-only `was winning` 9/h), lone-archer deaths to 0.25 s animals ≤ ~5 in four hours, `BotHaven`
+  "against a pursuer quicker" at 0. Rollback: `StandsWhenDue false`, `FootStepMs 200`, `RetreatMs 0`, held in bot-hunt.json.
+- *Status:* committed on `agent/w4` (`28016e8ef`, `9b980e9f2`), not deployed.
+
 **12.10.2026 · build 434 (written by an Opus agent: w1) · A bot over its ceiling gets a way down: piles joined, then bank, box, ground and the kit**
 - *Patrick:* (week plan W1/D1) fix the overweight bot that never sheds weight, and give every bot above its ceiling a way down within one pass, with a breaker counted in `Packs:`.
 - *What there was:* Baern the Tamer stood at 225–276 of 222–229 stones with 0 stamina from 10.10 09:28 until he died on 12.10 at 11:11. That was 1 035 of 5 920 failures on 11.10, and 102 failures an hour on 12.10, 48 of them the porter's own pass. The cause was gleaned arrows: each went into the pack as a pile of one (`DropItem` never stacks), and the engine weighs each pile at a whole stone. 162 arrows gleaned at 09:28 took him over in the same second. At his death, kept arrows in the census fell by 187 stones when `TrimAmmunition` made his 177 arrows into one pile. Ammunition is kept without limit, so neither `Store` nor `Dump` would part with it. Coin lay the same way (lessons of 468gp and 586gp took 16 and 17 stones off him), and because the pass never banked coin that `Sellable` counted as worth a trip, the porter kept offering a pass that could only fail.
