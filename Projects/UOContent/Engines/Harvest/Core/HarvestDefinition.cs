@@ -88,9 +88,44 @@ namespace Server.Engines.Harvest
 
         public Dictionary<Map, Dictionary<Point2D, HarvestBank>> Banks { get; } = new();
 
+        /// <summary>
+        /// Raised whenever the harvest system tells a harvester something, before the message is sent.
+        ///
+        /// <para>
+        /// <b>Why this exists.</b> The harvest system already knows exactly why a swing produced nothing —
+        /// "There is no metal here to mine", "Someone has gotten to the metal before you", "You loosen some
+        /// rocks but fail to find any useable ore", "Your backpack is full", "You have worn out your tool" —
+        /// and says so, in as many words, through <see cref="SendMessageTo"/>. A player reads it. A bot has no
+        /// <c>NetState</c>, and <c>Mobile.SendLocalizedMessage</c> is not virtual and writes straight to it,
+        /// so every one of those sentences was dropped on the floor before anything could hear it. Bots were
+        /// left inferring an empty vein from a run of quiet swings, which is a guess, and a wrong one about
+        /// two thirds of the time.
+        /// </para>
+        ///
+        /// <para>
+        /// One event, raised before the send and changing nothing about it. Nothing in the engine subscribes;
+        /// the bot assembly does. Kept deliberately narrow — this reports what was said and to whom, and does
+        /// not let a listener alter it.
+        /// </para>
+        /// </summary>
+        public static event Action<Mobile, HarvestDefinition, TextDefinition> Said;
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SendMessageTo(Mobile from, TextDefinition message)
         {
+            // Before the send, and contained: a listener that throws must not take the harvest with it.
+            if (Said != null && from != null)
+            {
+                try
+                {
+                    Said(from, this, message);
+                }
+                catch
+                {
+                    // A listener's mistake is a listener's mistake.
+                }
+            }
+
             if (message?.Number > 0)
             {
                 from.SendLocalizedMessage(message.Number);

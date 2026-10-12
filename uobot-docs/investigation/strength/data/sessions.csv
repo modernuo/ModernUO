@@ -1,0 +1,33 @@
+session,build,basis,first_line,last_line,world_wake_at_boot,fights,companies,not_held,traces
+2026-09-26_01-08,233,before the proving ground; no proving lines,01:08:49,01:35:31,,0,0,0,0
+2026-09-26_01-35,234,only session with R 20.00 readings (R capped at 20),01:35:50,01:42:17,,8,0,0,0
+2026-09-26_01-42,235,DECISIONS 236: 'build 235's first second (01:42:39)',01:42:34,01:45:32,,2,0,0,0
+2026-09-26_01-45,236,DECISIONS 237: 'build 236's first second' offers 81-82k,01:45:49,01:47:54,,1,0,0,0
+2026-09-26_01-48,237,deploy order between 236 and 238,01:48:11,01:55:29,,8,0,0,0
+2026-09-26_01-55,238,first session whose fight lines say 'the double held',01:55:50,02:05:35,,21,0,0,0
+2026-09-26_02-05,239,first session with toll lines (build 239),02:05:53,02:10:31,,9,0,0,0
+2026-09-26_02-10,240,deploy order (inferred),02:10:50,02:17:28,,12,0,0,0
+2026-09-26_02-17,241,first hall-size and Shadow-dissolve lines (build 241),02:17:45,02:20:33,,6,0,0,0
+2026-09-26_02-20,242,deploy order (inferred),02:20:52,02:25:35,,7,0,0,0
+2026-09-26_02-25,243,deploy order (inferred),02:25:53,02:28:43,,5,0,0,0
+2026-09-26_02-29,244,deploy order (inferred),02:29:00,02:33:11,,12,0,0,0
+2026-09-26_02-33,245,first outpost lines (build 245),02:33:28,02:41:44,,20,0,0,0
+2026-09-26_02-42,246,first company (room) fights (build 246),02:42:02,03:26:34,,83,10,0,0
+2026-09-26_03-26,247,DECISIONS 247: deployed ~03:27,03:26:53,03:41:23,,20,4,0,0
+2026-09-26_03-41,248+249,boot stopped at the store's y/n prompt; no fights,03:41:40,03:41:43,,0,0,0,0
+2026-09-26_03-43,248+249,boot warns 'measured before build 249 against creatures asleep',03:43:03,03:45:33,,10,4,0,0
+2026-09-26_03-45,250,DECISIONS 250: deployed 03:45,03:45:52,04:07:02,,57,0,0,0
+2026-09-26_04-07,251,"first boot line 'The wake is ...' (BotWake, build 251)",04:07:20,04:15:35,off,33,3,0,0
+2026-09-26_04-15,252,first fight lines with 'the double took N steps',04:15:53,04:26:06,off,12,1,0,0
+2026-09-26_04-26,253,deploy order; DECISIONS 253: ~04:27,04:26:23,04:31:34,off,19,0,0,0
+2026-09-26_04-31,254,first 'Proving trace:' lines (build 254),04:31:51,04:57:17,off,20,4,0,82
+2026-09-26_04-57,255,DECISIONS 255: deployed ~04:58,04:57:40,10:40:48,off,300,43,0,63
+2026-09-26_10-41,256,DECISIONS 256: deployed ~10:42,10:41:05,11:45:34,off,185,12,0,68
+2026-09-26_11-45,257,DECISIONS 257: deployed ~11:50,11:45:52,13:10:27,off,100,13,0,111
+2026-09-26_13-10,258,deploy order between 257 and 259,13:10:50,13:16:25,off,11,1,0,95
+2026-09-26_13-16,259,first boot with 'The wake is on everywhere a bot goes',13:16:43,14:05:33,on,122,7,0,107
+2026-09-26_14-05,260,first 'hostile strength' refusals (build 260),14:05:51,14:11:41,on,13,0,0,81
+2026-09-26_14-11,261,deploy order between 260 and 262,14:11:59,14:25:35,on,13,3,0,83
+2026-09-26_14-25,262,first 'Chart:' line (build 262),14:25:53,14:32:12,on,9,1,0,0
+2026-09-26_14-32,263,deploy order between 262 and 264,14:32:33,15:18:12,on,111,5,0,86
+2026-09-26_15-18,264,first 'Navigation:' line (build 264),15:18:31,15:30:00,on,19,4,0,76

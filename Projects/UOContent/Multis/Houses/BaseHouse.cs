@@ -5,6 +5,7 @@ using ModernUO.Serialization;
 using Server.Accounting;
 using Server.Collections;
 using Server.ContextMenus;
+using Server.Engines.Pathing.Tiered;
 using Server.Engines.Spawners;
 using Server.Ethics;
 using Server.Guilds;
@@ -1576,6 +1577,9 @@ namespace Server.Multis
                     mcl.Height
                 );
                 SectorSpawnCacheManager.InvalidateSectors(Map, bounds);
+
+                // The ground under it is not the ground the navigation graph was drawn from.
+                NavigationService.GroundChanged(Map, bounds);
             }
 
             if (Sign?.Deleted == false)
@@ -1639,6 +1643,14 @@ namespace Server.Multis
             var x = Location.X - oldLocation.X;
             var y = Location.Y - oldLocation.Y;
             var z = Location.Z - oldLocation.Z;
+
+            if (Map != null && Map != Map.Internal)
+            {
+                var mcl = Components;
+
+                NavigationService.GroundChanged(Map, new Rectangle2D(oldLocation.X + mcl.Min.X, oldLocation.Y + mcl.Min.Y, mcl.Width, mcl.Height));
+                NavigationService.GroundChanged(Map, new Rectangle2D(X + mcl.Min.X, Y + mcl.Min.Y, mcl.Width, mcl.Height));
+            }
 
             if (Sign?.Deleted == false)
             {
@@ -3353,6 +3365,7 @@ namespace Server.Multis
                     mcl.Height
                 );
                 SectorSpawnCacheManager.InvalidateSectors(Map, bounds);
+                NavigationService.GroundChanged(Map, bounds);
             }
 
             new FixColumnTimer(this).Start();

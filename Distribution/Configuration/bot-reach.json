@@ -1,0 +1,16 @@
+{
+  "Enabled": true,
+  "SliceMs": 6.0,
+  "EveryMs": 50,
+  "Persist": true,
+  "OffLoopCores": 3,
+  "SampleReach": 2,
+  "RedrawAfter": 3,
+  "SayContradictions": 25,
+  "CheckOnBoot": true,
+  "CheckSamples": 240,
+  "CheckBudgetMs": 10.0,
+  "CheckCeilingMs": 30.0,
+  "CheckFloodCells": 3000,
+  "CheckCarry": true
+}

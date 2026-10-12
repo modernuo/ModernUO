@@ -11,6 +11,14 @@ namespace Server.Mobiles;
 public abstract partial class BaseGuard : Mobile
 {
     public static bool GuardsInstantKill { get; private set; }
+
+    /// <summary>
+    /// Raised when a guard is about to kill its focus outright, with the target still whole (shard hook, 08.10.2026): who
+    /// struck it and who it was fighting can still be read. See <see cref="GuardAttackTimer"/>.
+    /// </summary>
+    public static event Action<BaseGuard, Mobile> Killing;
+
+    internal static void OnKilling(BaseGuard guard, Mobile target) => Killing?.Invoke(guard, target);
     public static void Configure()
     {
         GuardsInstantKill = ServerConfiguration.GetSetting("guards.instantKill", true);
@@ -312,12 +320,18 @@ public class GuardAttackTimer : Timer
             BaseGuard.TeleportTo(_owner, target.Location);
             target.BoltEffect(0);
 
+            BaseGuard.OnKilling(_owner, target);
+
             if (target is BaseCreature creature)
             {
                 creature.NoKillAwards = true;
             }
 
             target.Damage(target.HitsMax, _owner);
+
+            // Damage names the killer only when the blow goes below zero, and HitsMax on a creature at full health leaves it at
+            // exactly zero: Kill() below then kills it with no killer named (08.10.2026).
+            target.LastKiller = _owner;
             target.Kill(); // just in case, maybe Damage is overridden on some shard
 
             if (target.Corpse != null && !target.Player)

@@ -36,6 +36,13 @@ public class DefInscription : CraftSystem
 
     public override SkillName MainSkill => SkillName.Inscribe;
 
+    /// <summary>
+    /// BotAIv2 seam (see Projects/BotAIv2/engine-patches/DefInscription-knows.patch): whether this mobile may write a
+    /// spell it does not hold in a book, by a rule of the caller's. Null, as the engine leaves it, keeps the rule that
+    /// the spell must be in the scribe's own book; the circle's skill gate below is asked either way.
+    /// </summary>
+    public static Func<Mobile, int, bool> Knows { get; set; }
+
     public override TextDefinition GumpTitle { get; } = 1044009;
 
     public static CraftSystem CraftSystem { get; private set; }
@@ -63,7 +70,8 @@ public class DefInscription : CraftSystem
 
         if (scroll != null)
         {
-            var hasSpell = Spellbook.Find(from, scroll.SpellID)?.HasSpell(scroll.SpellID) == true;
+            var hasSpell = Spellbook.Find(from, scroll.SpellID)?.HasSpell(scroll.SpellID) == true
+                           || Knows?.Invoke(from, scroll.SpellID) == true;
 
             scroll.Delete();
 

@@ -1,0 +1,20 @@
+{
+  "Running": true,
+  "MostListeners": 2,
+  "ReplySeconds": 3,
+  "AnswerEveryMinutes": 2,
+  "PairEveryMinutes": 20,
+  "InviteSeconds": 90,
+  "InviteReach": 24,
+  "ThanksChance": 0.5,
+  "OffersMending": true,
+  "OffersFires": true,
+  "OffersHunts": true,
+  "OffersCompany": true,
+  "FellowWorth": 12,
+  "PoorNeed": 0.5,
+  "LonelyFrom": 0.3,
+  "GrieveMinutes": 20,
+  "ProudMinutes": 10,
+  "ProudPerMinute": 40
+}

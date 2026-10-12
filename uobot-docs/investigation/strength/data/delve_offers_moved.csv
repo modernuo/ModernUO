@@ -1,0 +1,125 @@
+date,time,session,build,leader,band,proven_strength,formula_strength,judged_against,can_reach,formula_said
+2026-09-26,01:36:51,2026-09-26_01-35,234,Hollis,4,89881,7992,Shame,Shame,nowhere
+2026-09-26,01:36:53,2026-09-26_01-35,234,Ysolt,8,90505,8616,Shame,Shame,the Orc Caves
+2026-09-26,01:36:55,2026-09-26_01-35,234,Oswin,2,100435,2167,Shame,Shame,nowhere
+2026-09-26,01:36:55,2026-09-26_01-35,234,Vesna,2,204022,4402,Terathan Keep,Terathan Keep,nowhere
+2026-09-26,01:36:55,2026-09-26_01-35,234,Kerrin,11,380784,8650,Terathan Keep,Terathan Keep,the Orc Caves
+2026-09-26,01:36:56,2026-09-26_01-35,234,Calla,7,429827,9274,Terathan Keep,Terathan Keep,the Orc Caves
+2026-09-26,01:36:56,2026-09-26_01-35,234,Neriah,9,379210,8616,Terathan Keep,Terathan Keep,the Orc Caves
+2026-09-26,01:36:56,2026-09-26_01-35,234,Cassia,5,427143,9216,Terathan Keep,Terathan Keep,the Orc Caves
+2026-09-26,01:42:39,2026-09-26_01-42,235,Alden,11,88584,12481,Wrong,Wrong,the Orc Caves
+2026-09-26,01:42:39,2026-09-26_01-42,235,Bryn,9,87311,10962,Wrong,Wrong,the Orc Caves
+2026-09-26,01:42:39,2026-09-26_01-42,235,Calla,12,88584,12481,Wrong,Wrong,the Orc Caves
+2026-09-26,01:42:39,2026-09-26_01-42,235,Ilsa,11,88215,11785,Wrong,Wrong,the Orc Caves
+2026-09-26,01:42:39,2026-09-26_01-42,235,Joss,9,87311,10962,Wrong,Wrong,the Orc Caves
+2026-09-26,01:42:39,2026-09-26_01-42,235,Lysa,7,85104,8755,Wrong,Wrong,nowhere
+2026-09-26,01:42:39,2026-09-26_01-42,235,Merrick,8,86351,10002,Wrong,Wrong,the Orc Caves
+2026-09-26,01:42:39,2026-09-26_01-42,235,Nessa,8,86351,10002,Wrong,Wrong,the Orc Caves
+2026-09-26,01:45:54,2026-09-26_01-45,236,Bryn,7,82342,9471,Wrong,Wrong,the Orc Caves
+2026-09-26,01:45:54,2026-09-26_01-45,236,Merrick,6,81046,9423,Wrong,Wrong,the Orc Caves
+2026-09-26,01:45:54,2026-09-26_01-45,236,Nessa,7,81046,9471,Wrong,Wrong,the Orc Caves
+2026-09-26,01:45:54,2026-09-26_01-45,236,Orin,7,81926,9471,Wrong,Wrong,the Orc Caves
+2026-09-26,01:45:54,2026-09-26_01-45,236,Emrys,9,82456,12390,Wrong,Wrong,the Orc Caves
+2026-09-26,01:45:54,2026-09-26_01-45,236,Garrow,2,23977,4042,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,01:45:54,2026-09-26_01-45,236,Jarek,2,23019,3085,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,01:45:56,2026-09-26_01-45,236,Jarek,2,23019,3085,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,01:48:39,2026-09-26_01-48,237,Lorcan,8,12289,8589,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,01:48:54,2026-09-26_01-48,237,Lorcan,4,13156,8317,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,01:49:38,2026-09-26_01-48,237,Maeve,3,13056,8217,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,01:50:00,2026-09-26_01-48,237,Nessa,6,85240,10621,Wrong,Wrong,the Orc Caves
+2026-09-26,01:50:00,2026-09-26_01-48,237,Jarek,6,82421,9749,Wrong,Wrong,the Orc Caves
+2026-09-26,01:50:03,2026-09-26_01-48,237,Orin,5,83294,8470,Wrong,Wrong,nowhere
+2026-09-26,01:50:13,2026-09-26_01-48,237,Jarek,5,83693,8745,Wrong,Wrong,nowhere
+2026-09-26,01:50:14,2026-09-26_01-48,237,Jarek,5,83693,8745,Wrong,Wrong,nowhere
+2026-09-26,01:55:55,2026-09-26_01-55,238,Bryn,2,19208,4042,Wrong,Wrong,nowhere
+2026-09-26,01:55:55,2026-09-26_01-55,238,Nessa,10,43997,11505,the Orc Caves,Wrong,the Orc Caves
+2026-09-26,01:55:55,2026-09-26_01-55,238,Orin,4,34703,8729,the Orc Caves,Wrong,nowhere
+2026-09-26,01:55:55,2026-09-26_01-55,238,Quill,3,12348,5249,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,01:55:55,2026-09-26_01-55,238,Yarrow,12,21246,12156,Wrong,Wrong,the Orc Caves
+2026-09-26,01:55:56,2026-09-26_01-55,238,Brannoc,12,20107,12156,Wrong,Wrong,the Orc Caves
+2026-09-26,01:55:56,2026-09-26_01-55,238,Corwin,12,20143,12156,Wrong,Wrong,the Orc Caves
+2026-09-26,01:55:56,2026-09-26_01-55,238,Delwyn,8,21087,10724,Wrong,Wrong,the Orc Caves
+2026-09-26,02:05:58,2026-09-26_02-05,239,Alden,10,36391,11932,Wrong,Wrong,the Orc Caves
+2026-09-26,02:05:58,2026-09-26_02-05,239,Bryn,4,47457,7242,Wrong,Wrong,nowhere
+2026-09-26,02:05:59,2026-09-26_02-05,239,Calla,17,37696,11932,Wrong,Wrong,the Orc Caves
+2026-09-26,02:05:59,2026-09-26_02-05,239,Nessa,10,41723,12565,Fire,Wrong,the Orc Caves
+2026-09-26,02:05:59,2026-09-26_02-05,239,Orin,1,10726,2682,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:05:59,2026-09-26_02-05,239,Perri,5,18444,5955,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:05:59,2026-09-26_02-05,239,Yarrow,5,56849,7523,Wrong,Wrong,nowhere
+2026-09-26,02:05:59,2026-09-26_02-05,239,Garrow,4,18444,4611,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:10:55,2026-09-26_02-10,240,Alden,5,23441,6403,Wrong,Wrong,nowhere
+2026-09-26,02:10:55,2026-09-26_02-10,240,Bryn,6,56700,7952,Wrong,Wrong,nowhere
+2026-09-26,02:10:55,2026-09-26_02-10,240,Calla,5,24846,10236,Wrong,Wrong,the Orc Caves
+2026-09-26,02:10:56,2026-09-26_02-10,240,Joss,2,19395,1888,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:10:56,2026-09-26_02-10,240,Kerrin,5,23441,6403,Wrong,Wrong,nowhere
+2026-09-26,02:10:56,2026-09-26_02-10,240,Nessa,4,20619,8304,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:10:56,2026-09-26_02-10,240,Orin,5,20619,8304,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:10:56,2026-09-26_02-10,240,Perri,9,48557,10132,Wrong,Wrong,the Orc Caves
+2026-09-26,02:17:51,2026-09-26_02-17,241,Lysa,22,81461,12661,Wrong,Wrong,the Orc Caves
+2026-09-26,02:17:51,2026-09-26_02-17,241,Nessa,5,22086,9939,Wrong,Wrong,the Orc Caves
+2026-09-26,02:17:51,2026-09-26_02-17,241,Perri,21,79844,12661,Wrong,Wrong,the Orc Caves
+2026-09-26,02:17:51,2026-09-26_02-17,241,Torvin,16,160973,12661,Fire,Wrong,the Orc Caves
+2026-09-26,02:17:51,2026-09-26_02-17,241,Yarrow,3,106289,5653,Despise,Wrong,nowhere
+2026-09-26,02:17:51,2026-09-26_02-17,241,Delwyn,1,149631,1712,Deceit,Wrong,nowhere
+2026-09-26,02:17:51,2026-09-26_02-17,241,Oswin,2,9947,4476,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:17:51,2026-09-26_02-17,241,Pell,4,50703,7790,Wrong,Wrong,nowhere
+2026-09-26,02:20:57,2026-09-26_02-20,242,Calla,3,44581,7165,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:20:57,2026-09-26_02-20,242,Delwyn,2,44336,4427,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:20:57,2026-09-26_02-20,242,Emrys,4,40032,6959,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:20:57,2026-09-26_02-20,242,Neriah,4,40032,5953,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:20:57,2026-09-26_02-20,242,Pell,1,10557,3534,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:20:57,2026-09-26_02-20,242,Vesna,17,102514,12439,Wrong,Wrong,the Orc Caves
+2026-09-26,02:20:59,2026-09-26_02-20,242,Emrys,4,40032,6959,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:21:06,2026-09-26_02-20,242,Emrys,4,40032,6959,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:25:58,2026-09-26_02-25,243,Alden,5,37642,7280,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:25:58,2026-09-26_02-25,243,Bryn,5,37473,7280,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:25:58,2026-09-26_02-25,243,Joss,5,37333,7280,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:25:58,2026-09-26_02-25,243,Rowan,5,37344,8430,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:25:58,2026-09-26_02-25,243,Lorcan,3,267228,7005,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:25:58,2026-09-26_02-25,243,Vesna,5,45512,8329,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:26:10,2026-09-26_02-25,243,Merrick,3,264384,6146,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:26:21,2026-09-26_02-25,243,Kerrin,3,264064,6146,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:29:05,2026-09-26_02-29,244,Lysa,3,8230,7109,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:29:05,2026-09-26_02-29,244,Pell,1,26712,2259,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:29:20,2026-09-26_02-29,244,Pell,1,26712,2259,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:29:20,2026-09-26_02-29,244,Vesna,3,11633,6565,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:29:35,2026-09-26_02-29,244,Orin,3,11151,6558,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:29:35,2026-09-26_02-29,244,Pell,1,26712,2259,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:29:35,2026-09-26_02-29,244,Vesna,2,9015,3569,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:29:36,2026-09-26_02-29,244,Perri,1,26516,2259,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:33:33,2026-09-26_02-33,245,Alden,6,8316,6371,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:33:34,2026-09-26_02-33,245,Joss,5,7951,5780,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:33:34,2026-09-26_02-33,245,Kerrin,4,8097,5306,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:33:34,2026-09-26_02-33,245,Merrick,7,11528,6371,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:33:34,2026-09-26_02-33,245,Orin,5,8389,5943,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:33:34,2026-09-26_02-33,245,Ulla,4,8183,5461,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:33:34,2026-09-26_02-33,245,Wynn,4,11346,5962,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:33:34,2026-09-26_02-33,245,Yarrow,4,11346,6052,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:42:07,2026-09-26_02-42,246,Nessa,4,12065,6146,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:42:07,2026-09-26_02-42,246,Orin,4,13098,6146,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:42:07,2026-09-26_02-42,246,Talia,5,85323,7061,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:42:21,2026-09-26_02-42,246,Talia,4,84027,6558,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:42:22,2026-09-26_02-42,246,Ilsa,3,9334,3428,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:42:37,2026-09-26_02-42,246,Kerrin,3,8816,5765,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:42:37,2026-09-26_02-42,246,Ilsa,2,8877,1893,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,02:42:37,2026-09-26_02-42,246,Joss,3,8670,5765,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,03:26:58,2026-09-26_03-26,247,Lysa,3,10100,6100,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,03:26:58,2026-09-26_03-26,247,Torvin,1,8569,603,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,03:26:58,2026-09-26_03-26,247,Brannoc,0,24552,0,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,03:26:58,2026-09-26_03-26,247,Hollis,1,8569,1544,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,03:27:13,2026-09-26_03-26,247,Kerrin,3,22817,4541,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,03:27:13,2026-09-26_03-26,247,Calla,3,22769,4541,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,03:27:13,2026-09-26_03-26,247,Joss,3,22624,4541,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,03:27:13,2026-09-26_03-26,247,Merrick,3,23133,4541,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,03:43:08,2026-09-26_03-43,248+249,Calla,4,9036,7693,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,03:43:09,2026-09-26_03-43,248+249,Quill,3,8706,7270,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,03:43:09,2026-09-26_03-43,248+249,Sable,5,8911,7854,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,03:43:09,2026-09-26_03-43,248+249,Wynn,4,9050,7678,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,03:43:09,2026-09-26_03-43,248+249,Hollis,4,9050,7375,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,03:43:09,2026-09-26_03-43,248+249,Kelda,3,9097,6409,the Orc Caves,the Orc Caves,nowhere
+2026-09-26,13:39:19,2026-09-26_13-16,259,Quill,5,21101,7587,Wrong,Wrong,nowhere
+2026-09-26,13:39:34,2026-09-26_13-16,259,Rowan,8,21101,7545,Wrong,Wrong,nowhere
+2026-09-26,13:39:34,2026-09-26_13-16,259,Perri,7,21101,7587,Wrong,Wrong,nowhere
+2026-09-26,13:39:34,2026-09-26_13-16,259,Quill,8,21101,7771,Wrong,Wrong,nowhere
+2026-09-26,13:39:36,2026-09-26_13-16,259,Rowan,9,21101,7552,Wrong,Wrong,nowhere
+2026-09-26,14:49:28,2026-09-26_14-32,263,Orin,2,42325,3096,Wrong,Wrong,nowhere

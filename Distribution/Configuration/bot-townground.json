@@ -1,0 +1,21 @@
+{
+  "Running": true,
+  "SweepEveryMs": 3600000,
+  "Paid": [
+    { "Guild": "The Blade", "X": 630, "Y": 810, "Gold": 5000 },
+    { "Guild": "The Blade", "X": 660, "Y": 780, "Gold": 5000 },
+    { "Guild": "The Blade", "X": 690, "Y": 870, "Gold": 6000 },
+    { "Guild": "The Anchor", "X": 1770, "Y": 2670, "Gold": 5000 },
+    { "Guild": "The Anchor", "X": 1770, "Y": 2700, "Gold": 5000 },
+    { "Guild": "The Anchor", "X": 1770, "Y": 2730, "Gold": 9000 },
+    { "Guild": "The Anchor", "X": 1800, "Y": 2640, "Gold": 5000 },
+    { "Guild": "The Anchor", "X": 1800, "Y": 2730, "Gold": 10000 },
+    { "Guild": "The Anchor", "X": 1830, "Y": 2610, "Gold": 7000 },
+    { "Guild": "The Anchor", "X": 1830, "Y": 2670, "Gold": 12000 },
+    { "Guild": "The Anchor", "X": 1830, "Y": 2730, "Gold": 13000 },
+    { "Guild": "The Anchor", "X": 1860, "Y": 2610, "Gold": 16000 },
+    { "Guild": "The Anchor", "X": 1860, "Y": 2640, "Gold": 14000 },
+    { "Guild": "The Anchor", "X": 1860, "Y": 2670, "Gold": 15000 },
+    { "Guild": "The Star", "X": 1260, "Y": 1530, "Gold": 5000 }
+  ]
+}

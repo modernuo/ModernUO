@@ -100,12 +100,31 @@ namespace Server.Mobiles
 
         public bool IsSellable(Item item) => !item.Nontransferable && IsInList(item.GetType());
 
-        public bool IsResellable(Item item) => !item.Nontransferable && IsInList(item.GetType());
+        public bool IsResellable(Item item) =>
+            !item.Nontransferable && IsInList(item.GetType()) && m_NotResold?.Contains(item.GetType()) != true;
 
         public void Add(Type type, int price)
         {
             m_Table[type] = price;
             m_Types = null;
+        }
+
+        // Kinds this shopkeeper buys but does not put up for sale again: what it takes is consumed rather than dropped into
+        // its buy pack, where nothing but a player opening the buy list would ever clear it.
+        private HashSet<Type> m_NotResold;
+
+        public void Add(Type type, int price, bool resellable)
+        {
+            Add(type, price);
+
+            if (resellable)
+            {
+                m_NotResold?.Remove(type);
+            }
+            else
+            {
+                (m_NotResold ??= new HashSet<Type>()).Add(type);
+            }
         }
 
         public bool IsInList(Type type) => m_Table.ContainsKey(type);

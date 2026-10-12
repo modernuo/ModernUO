@@ -24,6 +24,7 @@ namespace Server.Mobiles
             {
                 Add(typeof(Tongs), 7);
                 Add(typeof(IronIngot), 4);
+                ColouredIngots.AddTo(this);
             }
         }
     }

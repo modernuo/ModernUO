@@ -1,0 +1,8 @@
+creature,fights,won,lost,called,win_rate,bots,median_r,median_seconds,median_proven_over_formula,median_formula_power,median_hits_max,median_fighting_skills,median_armour,mean_spells,mean_bandages,mean_bottles
+OrcishMage,868,157,710,1,0.181,48,0.36,28.0,1.043,1827.0,71.0,229.5,5.0,0.77,0.79,0.63
+JukaMage,149,5,144,0,0.034,29,0.24,20,2.091,1631,80,290,7,0.04,0.85,0.77
+OgreLord,8,2,6,0,0.25,2,0.105,19.0,1.324,1547.0,82.5,318.0,0.0,0.0,2.12,0.12
+LichLord,3,1,2,0,0.333,1,0.78,73,7.365,2646,98,496,50,0.0,3.67,0.0
+PoisonElemental,3,0,3,0,0.0,1,0.06,19,0.731,2646,98,496,50,0.0,1.67,0.0
+Dragon,2,1,1,0,0.5,1,2.53,97.5,29.365,2659.5,98.5,495.5,50.0,0.0,6.0,0.0
+WhiteWyrm,1,0,1,0,0.0,1,0.25,19,4.841,2673,99,499,50,0.0,1.0,0.0

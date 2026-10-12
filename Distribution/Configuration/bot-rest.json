@@ -1,0 +1,31 @@
+{
+  "PrimeTime": {
+    "Running": true,
+    "RampMinutes": 30,
+    "TirePerLook": 5,
+    "ReturnPerLook": 5,
+    "Bands": [
+      { "From": 0, "To": 8, "Share": 1.0 },
+      { "From": 8, "To": 16, "Share": 0.75 },
+      { "From": 16, "To": 24, "Share": 0.5 }
+    ]
+  },
+  "Critical": {
+    "Running": true,
+    "EarlyMinutes": 480,
+    "Floors": {
+      "Healer": 3,
+      "Crafter": 4,
+      "Gatherer": 4,
+      "Mage": 3,
+      "Trader": 3,
+      "Captain": 1,
+      "Baron": 1,
+      "Smith": 1,
+      "Tailor": 1,
+      "Fletcher": 1,
+      "Miner": 1,
+      "Woodsman": 1
+    }
+  }
+}

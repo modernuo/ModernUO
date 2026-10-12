@@ -5,6 +5,8 @@
     <BuildType Name="Release" />
   </Configurations>
   <Project Path="Projects/Application/Application.csproj" />
+  <Project Path="Projects/BotAIv2/BotAIv2.csproj" />
+  <Project Path="Projects/BotAIv2/mindedBots/BotMindAI.csproj" />
   <Project Path="Projects/BuildTool/BuildTool.csproj">
     <BuildType Solution="Analyze|*" Project="Release" />
     <Build Solution="Analyze|*" Project="false" />

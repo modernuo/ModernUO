@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
+    <PropertyGroup>
+        <RootNamespace>Server.BotAI.V2</RootNamespace>
+        <AssemblyName>BotAIv2</AssemblyName>
+        <Product>BotShard Autonomous Bots, second version</Product>
+        <OutDir>..\..\Distribution\Assemblies</OutDir>
+        <PublishDir>..\..\Distribution\Assemblies</PublishDir>
+        <Configurations>Debug;Release;Analyze</Configurations>
+    </PropertyGroup>
+    <Target Name="CleanPub" AfterTargets="Clean">
+        <Message Text="BotAIv2: Removing distribution assemblies..." />
+        <Delete Files="..\..\Distribution\Assemblies\$(AssemblyName).dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Assemblies\$(AssemblyName).pdb" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Assemblies\$(AssemblyName).deps.json" ContinueOnError="true" />
+    </Target>
+    <ItemGroup>
+        <!-- <b>The thinking bots live inside this folder and are not part of this assembly.</b> An SDK
+             project compiles every .cs beneath it, so nesting BotMindAI here would pull its files into
+             BotAIv2 - and BotMindAI references BotAIv2, which makes that a reference cycle the build
+             would refuse. The separation is deliberate and one-way: this assembly knows nothing about
+             minds, and the minds know all about it. Excluded rather than trusted to discipline. -->
+        <Compile Remove="mindedBots\**" />
+        <None Remove="mindedBots\**" />
+        <EmbeddedResource Remove="mindedBots\**" />
+    </ItemGroup>
+    <ItemGroup>
+        <!-- Assumes this folder sits alongside UOContent, i.e. Projects\BotAIv2. Move it deeper and
+             every path here gains a ..\ — there is nothing else to change. -->
+        <ProjectReference Include="..\UOContent\UOContent.csproj" Private="false" />
+        <ProjectReference Include="..\Server\Server.csproj" Private="false" PrivateAssets="All" IncludeAssets="None">
+            <IncludeInPackage>false</IncludeInPackage>
+        </ProjectReference>
+        <ProjectReference Include="..\Logger\Logger.csproj" Private="false" />
+        <PackageReference Include="ModernUO.Serialization.Annotations" Version="2.14.2" />
+        <PackageReference Include="ModernUO.Serialization.Generator" Version="2.14.3" />
+        <!-- Match UOContent's bump; Directory.Build.props pins 4.3.1 for everyone and the transitive
+             reference through UOContent would otherwise read as a downgrade. -->
+        <PackageReference Update="Serilog" Version="4.4.0" />
+    </ItemGroup>
+</Project>

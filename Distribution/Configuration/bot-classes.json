@@ -1,0 +1,17 @@
+{
+  "Classes": {
+    "Warrior": {},
+    "Captain": {},
+    "Baron": {},
+    "WarriorMage": {},
+    "WarriorArcher": {},
+    "Archer": {},
+    "Brawler": {},
+    "Mage": {},
+    "Healer": {},
+    "Crafter": {},
+    "Gatherer": {},
+    "Architect": {},
+    "Sage": {}
+  }
+}

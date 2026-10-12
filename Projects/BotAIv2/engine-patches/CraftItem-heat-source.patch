@@ -1,0 +1,28 @@
+diff --git a/Projects/UOContent/Engines/Craft/Core/CraftItem.cs b/Projects/UOContent/Engines/Craft/Core/CraftItem.cs
+index e99760bbc..aa1301ee2 100644
+--- a/Projects/UOContent/Engines/Craft/Core/CraftItem.cs
++++ b/Projects/UOContent/Engines/Craft/Core/CraftItem.cs
+@@ -444,6 +444,23 @@ public static bool Find(int itemID, int[] itemIDs)
+             return contains;
+         }
+ 
++        /// <summary>
++        /// Whether this tile or item id is one the recipes will accept as a fire.
++        ///
++        /// <para>
++        /// The heat table is private and stays private; this is the one question anything outside needs to
++        /// ask of it. Bots survey the ground for places their crafts can be worked, and a survey that carried
++        /// its own copy of these ids would be a second table to keep in step with this one.
++        /// </para>
++        /// </summary>
++        public static bool IsHeatSource(int itemID) => Find(itemID, m_HeatSources);
++
++        /// <summary>
++        /// Whether there is a fire within reach of this mobile, by exactly the test <see cref="NeedHeat"/>
++        /// makes.
++        /// </summary>
++        public static bool NearHeatSource(Mobile from) => from != null && Find(from, m_HeatSources);
++
+         public static bool IsQuantityType(Type[][] types)
+         {
+             for (var i = 0; i < types.Length; ++i)

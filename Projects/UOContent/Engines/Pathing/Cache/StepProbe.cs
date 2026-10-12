@@ -36,7 +36,18 @@ public static class StepProbe
     /// The baker anchors each cell here so static-over-land geometry — walkways, bridges, raised
     /// foundations, upper floors — bakes at the Z a creature stands on rather than the land average.
     /// </summary>
-    public static int ComputeStandableSurfaceZs(Map map, int x, int y, Span<sbyte> zs)
+    public static int ComputeStandableSurfaceZs(Map map, int x, int y, Span<sbyte> zs) =>
+        ComputeStandableSurfaceZsCore(map, x, y, zs, includeMultis: false);
+
+    /// <summary>
+    /// Multi-aware counterpart to <see cref="ComputeStandableSurfaceZs"/>: house and boat component tops are candidate
+    /// surfaces too. For the tiered navigation graph, which bakes cells a multi covers with
+    /// <see cref="ComputeMultiMaskAt"/>. The clearance test already sees multis.
+    /// </summary>
+    public static int ComputeStandableSurfaceZsWithMultis(Map map, int x, int y, Span<sbyte> zs) =>
+        ComputeStandableSurfaceZsCore(map, x, y, zs, includeMultis: true);
+
+    private static int ComputeStandableSurfaceZsCore(Map map, int x, int y, Span<sbyte> zs, bool includeMultis)
     {
         if (map == null || map == Map.Internal)
         {
@@ -58,7 +69,7 @@ public static class StepProbe
             cand[count++] = landCenter;
         }
 
-        foreach (var tile in map.Tiles.GetStaticTiles(x, y))
+        foreach (var tile in includeMultis ? map.Tiles.GetStaticAndMultiTiles(x, y) : map.Tiles.GetStaticTiles(x, y))
         {
             if (count >= cand.Length)
             {

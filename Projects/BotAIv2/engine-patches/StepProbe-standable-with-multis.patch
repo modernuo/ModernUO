@@ -1,0 +1,43 @@
+Projects/UOContent/Engines/Pathing/Cache/StepProbe.cs
+
+Adds StepProbe.ComputeStandableSurfaceZsWithMultis: the standable surfaces of a cell with house and boat components
+counted as candidate surfaces, beside the existing static-only ComputeStandableSurfaceZs (which now shares its body).
+The tiered navigation in Projects/UOContent/Engines/Pathing/Tiered draws the clusters a multi touches with it.
+Without this patch the tiered navigation does not compile.
+
+WHY. Patrick's order of 26.09.2026: implement the tiers of path search (short, medium, long). A floor of a house is a
+standable surface a walker steps onto, and the static probe does not see it.
+
+diff --git a/Projects/UOContent/Engines/Pathing/Cache/StepProbe.cs b/Projects/UOContent/Engines/Pathing/Cache/StepProbe.cs
+index 54a880b51..ce6cde68d 100644
+--- a/Projects/UOContent/Engines/Pathing/Cache/StepProbe.cs
++++ b/Projects/UOContent/Engines/Pathing/Cache/StepProbe.cs
+@@ -36,7 +36,18 @@ public static class StepProbe
+     /// The baker anchors each cell here so static-over-land geometry — walkways, bridges, raised
+     /// foundations, upper floors — bakes at the Z a creature stands on rather than the land average.
+     /// </summary>
+-    public static int ComputeStandableSurfaceZs(Map map, int x, int y, Span<sbyte> zs)
++    public static int ComputeStandableSurfaceZs(Map map, int x, int y, Span<sbyte> zs) =>
++        ComputeStandableSurfaceZsCore(map, x, y, zs, includeMultis: false);
++
++    /// <summary>
++    /// Multi-aware counterpart to <see cref="ComputeStandableSurfaceZs"/>: house and boat component tops are candidate
++    /// surfaces too. For the tiered navigation graph, which bakes cells a multi covers with
++    /// <see cref="ComputeMultiMaskAt"/>. The clearance test already sees multis.
++    /// </summary>
++    public static int ComputeStandableSurfaceZsWithMultis(Map map, int x, int y, Span<sbyte> zs) =>
++        ComputeStandableSurfaceZsCore(map, x, y, zs, includeMultis: true);
++
++    private static int ComputeStandableSurfaceZsCore(Map map, int x, int y, Span<sbyte> zs, bool includeMultis)
+     {
+         if (map == null || map == Map.Internal)
+         {
+@@ -58,7 +69,7 @@ public static int ComputeStandableSurfaceZs(Map map, int x, int y, Span<sbyte> z
+             cand[count++] = landCenter;
+         }
+ 
+-        foreach (var tile in map.Tiles.GetStaticTiles(x, y))
++        foreach (var tile in includeMultis ? map.Tiles.GetStaticAndMultiTiles(x, y) : map.Tiles.GetStaticTiles(x, y))
+         {
+             if (count >= cand.Length)
+             {

@@ -1,0 +1,54 @@
+Projects/UOContent/Multis/Houses/BaseHouse.cs
+
+Tells the tiered navigation when a house is raised, moved or taken down (NavigationService.GroundChanged), beside the
+spawn-cache call already there, so the clusters under it are drawn again from the ground. Without this patch the
+navigation graph keeps the ground as it was when it was drawn.
+
+WHY. Patrick's order of 26.09.2026 and the design he sent with it: houses are an overlay on the static graph, rebuilt
+when they change.
+
+diff --git a/Projects/UOContent/Multis/Houses/BaseHouse.cs b/Projects/UOContent/Multis/Houses/BaseHouse.cs
+index 19e9c020c..1df0d6e35 100644
+--- a/Projects/UOContent/Multis/Houses/BaseHouse.cs
++++ b/Projects/UOContent/Multis/Houses/BaseHouse.cs
+@@ -5,6 +5,7 @@
+ using Server.Accounting;
+ using Server.Collections;
+ using Server.ContextMenus;
++using Server.Engines.Pathing.Tiered;
+ using Server.Engines.Spawners;
+ using Server.Ethics;
+ using Server.Guilds;
+@@ -1576,6 +1577,9 @@ public override void OnMapChange()
+                     mcl.Height
+                 );
+                 SectorSpawnCacheManager.InvalidateSectors(Map, bounds);
++
++                // The ground under it is not the ground the navigation graph was drawn from.
++                NavigationService.GroundChanged(Map, bounds);
+             }
+ 
+             if (Sign?.Deleted == false)
+@@ -1640,6 +1644,14 @@ public override void OnLocationChange(Point3D oldLocation)
+             var y = Location.Y - oldLocation.Y;
+             var z = Location.Z - oldLocation.Z;
+ 
++            if (Map != null && Map != Map.Internal)
++            {
++                var mcl = Components;
++
++                NavigationService.GroundChanged(Map, new Rectangle2D(oldLocation.X + mcl.Min.X, oldLocation.Y + mcl.Min.Y, mcl.Width, mcl.Height));
++                NavigationService.GroundChanged(Map, new Rectangle2D(X + mcl.Min.X, Y + mcl.Min.Y, mcl.Width, mcl.Height));
++            }
++
+             if (Sign?.Deleted == false)
+             {
+                 Sign.Location = new Point3D(Sign.X + x, Sign.Y + y, Sign.Z + z);
+@@ -3353,6 +3365,7 @@ public override void OnDelete()
+                     mcl.Height
+                 );
+                 SectorSpawnCacheManager.InvalidateSectors(Map, bounds);
++                NavigationService.GroundChanged(Map, bounds);
+             }
+ 
+             new FixColumnTimer(this).Start();

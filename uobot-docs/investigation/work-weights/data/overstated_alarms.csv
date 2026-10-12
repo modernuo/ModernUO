@@ -1,0 +1,743 @@
+at,state,trade,reads,pays,outcomes,compared,held_minutes,say
+2026-09-16 10:48:06,raised,unload,120,21,171,typed claim,0,unload claims 120/min and pays 21/min over 171 outcomes: a number in the source that has stopped being true
+2026-09-16 11:03:06,still,flee,2000,9,30,typed claim,15,flee claims 2000/min and pays 9/min over 30 outcomes: a number in the source that has stopped being true
+2026-09-16 11:18:06,still,flee,2000,2,49,typed claim,30,flee claims 2000/min and pays 2/min over 49 outcomes: a number in the source that has stopped being true
+2026-09-16 11:26:30,raised,flee,2000,1,53,typed claim,0,flee claims 2000/min and pays 1/min over 53 outcomes: a number in the source that has stopped being true
+2026-09-16 11:41:30,still,flee,2000,14,56,typed claim,15,flee claims 2000/min and pays 14/min over 56 outcomes: a number in the source that has stopped being true
+2026-09-16 11:56:30,still,flee,2000,7,59,typed claim,30,flee claims 2000/min and pays 7/min over 59 outcomes: a number in the source that has stopped being true
+2026-09-16 12:12:30,still,flee,2000,1,67,typed claim,46,flee claims 2000/min and pays 1/min over 67 outcomes: a number in the source that has stopped being true
+2026-09-16 12:13:42,raised,flee,2000,1,67,typed claim,0,flee claims 2000/min and pays 1/min over 67 outcomes: a number in the source that has stopped being true
+2026-09-16 12:28:42,still,flee,2000,1,67,typed claim,15,flee claims 2000/min and pays 1/min over 67 outcomes: a number in the source that has stopped being true
+2026-09-16 12:43:42,still,flee,2000,1,69,typed claim,30,flee claims 2000/min and pays 1/min over 69 outcomes: a number in the source that has stopped being true
+2026-09-16 12:59:42,still,flee,2000,28,85,typed claim,46,flee claims 2000/min and pays 28/min over 85 outcomes: a number in the source that has stopped being true
+2026-09-16 13:02:45,raised,drill-in,264,-37,28,typed claim,0,drill-in claims 264/min and pays -37/min over 28 outcomes: a number in the source that has stopped being true
+2026-09-16 13:17:45,still,drill-in,264,-37,28,typed claim,15,drill-in claims 264/min and pays -37/min over 28 outcomes: a number in the source that has stopped being true
+2026-09-16 13:33:45,still,drill-in,264,-37,28,typed claim,31,drill-in claims 264/min and pays -37/min over 28 outcomes: a number in the source that has stopped being true
+2026-09-16 13:49:06,raised,band,90,2,246,typed claim,0,band claims 90/min and pays 2/min over 246 outcomes: a number in the source that has stopped being true
+2026-09-16 14:04:06,still,band,90,6,264,typed claim,15,band claims 90/min and pays 6/min over 264 outcomes: a number in the source that has stopped being true
+2026-09-16 14:20:06,still,rescue,173,75,470,typed claim,31,rescue claims 173/min and pays 75/min over 470 outcomes: a number in the source that has stopped being true
+2026-09-16 14:35:06,still,rescue,168,48,502,typed claim,46,rescue claims 168/min and pays 48/min over 502 outcomes: a number in the source that has stopped being true
+2026-09-16 14:50:06,still,band,90,6,314,typed claim,61,band claims 90/min and pays 6/min over 314 outcomes: a number in the source that has stopped being true
+2026-09-16 15:05:06,still,band,90,11,345,typed claim,76,band claims 90/min and pays 11/min over 345 outcomes: a number in the source that has stopped being true
+2026-09-16 15:20:06,still,band,90,8,362,typed claim,91,band claims 90/min and pays 8/min over 362 outcomes: a number in the source that has stopped being true
+2026-09-16 15:35:06,still,band,90,1,378,typed claim,106,band claims 90/min and pays 1/min over 378 outcomes: a number in the source that has stopped being true
+2026-09-16 15:51:06,still,band,90,0,396,typed claim,122,band claims 90/min and pays 0/min over 396 outcomes: a number in the source that has stopped being true
+2026-09-16 16:06:06,still,band,90,3,414,typed claim,137,band claims 90/min and pays 3/min over 414 outcomes: a number in the source that has stopped being true
+2026-09-16 16:21:06,still,peddle,628,251,4402,typed claim,152,peddle claims 628/min and pays 251/min over 4402 outcomes: a number in the source that has stopped being true
+2026-09-16 16:37:06,still,rescue,162,10,729,typed claim,168,rescue claims 162/min and pays 10/min over 729 outcomes: a number in the source that has stopped being true
+2026-09-16 16:52:06,still,rescue,228,50,762,typed claim,183,rescue claims 228/min and pays 50/min over 762 outcomes: a number in the source that has stopped being true
+2026-09-16 17:03:35,raised,band,90,-7,471,typed claim,0,band claims 90/min and pays -7/min over 471 outcomes: a number in the source that has stopped being true
+2026-09-16 17:18:35,still,band,90,7,483,typed claim,15,band claims 90/min and pays 7/min over 483 outcomes: a number in the source that has stopped being true
+2026-09-16 17:34:35,still,band,90,-3,494,typed claim,31,band claims 90/min and pays -3/min over 494 outcomes: a number in the source that has stopped being true
+2026-09-16 17:40:49,raised,band,90,2,503,typed claim,0,band claims 90/min and pays 2/min over 503 outcomes: a number in the source that has stopped being true
+2026-09-16 17:55:49,still,band,90,0,511,typed claim,15,band claims 90/min and pays 0/min over 511 outcomes: a number in the source that has stopped being true
+2026-09-16 18:10:49,still,rescue,200,59,878,typed claim,30,rescue claims 200/min and pays 59/min over 878 outcomes: a number in the source that has stopped being true
+2026-09-16 18:18:16,raised,rescue,213,56,885,typed claim,0,rescue claims 213/min and pays 56/min over 885 outcomes: a number in the source that has stopped being true
+2026-09-16 18:33:16,still,rescue,194,81,906,typed claim,15,rescue claims 194/min and pays 81/min over 906 outcomes: a number in the source that has stopped being true
+2026-09-16 18:48:16,still,rescue,172,75,922,typed claim,30,rescue claims 172/min and pays 75/min over 922 outcomes: a number in the source that has stopped being true
+2026-09-16 19:04:16,still,rescue,186,37,938,typed claim,46,rescue claims 186/min and pays 37/min over 938 outcomes: a number in the source that has stopped being true
+2026-09-16 19:06:31,raised,rescue,186,37,938,typed claim,0,rescue claims 186/min and pays 37/min over 938 outcomes: a number in the source that has stopped being true
+2026-09-16 19:22:31,still,reclaim,80,13,71,typed claim,16,reclaim claims 80/min and pays 13/min over 71 outcomes: a number in the source that has stopped being true
+2026-09-16 19:38:31,still,rescue,126,70,982,typed claim,32,rescue claims 126/min and pays 70/min over 982 outcomes: a number in the source that has stopped being true
+2026-09-16 19:54:01,raised,rescue,144,30,1008,typed claim,0,rescue claims 144/min and pays 30/min over 1008 outcomes: a number in the source that has stopped being true
+2026-09-16 20:10:01,still,rescue,119,33,1020,typed claim,15,rescue claims 119/min and pays 33/min over 1020 outcomes: a number in the source that has stopped being true
+2026-09-16 20:25:01,still,rescue,103,12,1046,typed claim,31,rescue claims 103/min and pays 12/min over 1046 outcomes: a number in the source that has stopped being true
+2026-09-16 20:41:58,raised,mend,74,20,583,typed claim,0,mend claims 74/min and pays 20/min over 583 outcomes: a number in the source that has stopped being true
+2026-09-16 20:56:58,still,mind-sew,110,60,231,typed claim,15,mind-sew claims 110/min and pays 60/min over 231 outcomes: a number in the source that has stopped being true
+2026-09-16 21:11:58,still,duel,200,43,30,typed claim,30,duel claims 200/min and pays 43/min over 30 outcomes: a number in the source that has stopped being true
+2026-09-16 21:28:21,raised,duel,50,-4,58,read by the auction,0,duel is read by the auction at 50/min and pays -4/min over 58 outcomes: a number in the source the correction cannot bring down
+2026-09-16 21:43:21,still,duel,50,-4,58,read by the auction,15,duel is read by the auction at 50/min and pays -4/min over 58 outcomes: a number in the source the correction cannot bring down
+2026-09-16 21:58:21,still,duel,50,-4,58,read by the auction,30,duel is read by the auction at 50/min and pays -4/min over 58 outcomes: a number in the source the correction cannot bring down
+2026-09-16 22:04:12,raised,mine,11,3,5176,read by the auction,0,mine is read by the auction at 11/min and pays 3/min over 5176 outcomes: a number in the source the correction cannot bring down
+2026-09-16 22:19:12,still,band,8,-9,645,read by the auction,14,band is read by the auction at 8/min and pays -9/min over 645 outcomes: a number in the source the correction cannot bring down
+2026-09-16 22:34:12,still,band,8,-6,647,read by the auction,30,band is read by the auction at 8/min and pays -6/min over 647 outcomes: a number in the source the correction cannot bring down
+2026-09-16 22:40:46,raised,acquire,3,0,6590,read by the auction,0,acquire is read by the auction at 3/min and pays 0/min over 6590 outcomes: a number in the source the correction cannot bring down
+2026-09-16 22:46:46,clear,forage,,,,cleared,6,forage's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-16 22:48:46,raised,band,8,4,660,read by the auction,0,band is read by the auction at 8/min and pays 4/min over 660 outcomes: a number in the source the correction cannot bring down
+2026-09-16 23:03:46,still,drill,9,-6,197,read by the auction,15,drill is read by the auction at 9/min and pays -6/min over 197 outcomes: a number in the source the correction cannot bring down
+2026-09-16 23:19:46,still,mend,20,2,761,read by the auction,31,mend is read by the auction at 20/min and pays 2/min over 761 outcomes: a number in the source the correction cannot bring down
+2026-09-16 23:33:09,raised,band,8,2,688,read by the auction,0,band is read by the auction at 8/min and pays 2/min over 688 outcomes: a number in the source the correction cannot bring down
+2026-09-16 23:48:09,still,band,8,-7,701,read by the auction,15,band is read by the auction at 8/min and pays -7/min over 701 outcomes: a number in the source the correction cannot bring down
+2026-09-16 23:54:09,clear,band,,,,cleared,21,band's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-16 23:57:09,raised,enlist,18,5,25,read by the auction,0,enlist is read by the auction at 18/min and pays 5/min over 25 outcomes: a number in the source the correction cannot bring down
+2026-09-17 00:12:36,raised,band,8,2,718,read by the auction,0,band is read by the auction at 8/min and pays 2/min over 718 outcomes: a number in the source the correction cannot bring down
+2026-09-17 00:27:36,still,band,8,-8,728,read by the auction,15,band is read by the auction at 8/min and pays -8/min over 728 outcomes: a number in the source the correction cannot bring down
+2026-09-17 00:31:36,clear,band,,,,cleared,19,band's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-17 00:50:36,raised,herbs,10,-15,1254,read by the auction,0,herbs is read by the auction at 10/min and pays -15/min over 1254 outcomes: a number in the source the correction cannot bring down
+2026-09-17 01:00:36,clear,mine,,,,cleared,10,mine's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-17 01:06:36,raised,mine,11,4,6339,read by the auction,0,mine is read by the auction at 11/min and pays 4/min over 6339 outcomes: a number in the source the correction cannot bring down
+2026-09-17 01:21:36,still,mine,11,3,6512,read by the auction,15,mine is read by the auction at 11/min and pays 3/min over 6512 outcomes: a number in the source the correction cannot bring down
+2026-09-17 01:31:49,raised,mine,11,2,6653,read by the auction,0,mine is read by the auction at 11/min and pays 2/min over 6653 outcomes: a number in the source the correction cannot bring down
+2026-09-17 01:46:49,still,harrow,38,-1,25,read by the auction,15,harrow is read by the auction at 38/min and pays -1/min over 25 outcomes: a number in the source the correction cannot bring down
+2026-09-17 02:01:49,still,harrow,38,-1,25,read by the auction,30,harrow is read by the auction at 38/min and pays -1/min over 25 outcomes: a number in the source the correction cannot bring down
+2026-09-17 02:16:49,still,harrow,38,1,26,read by the auction,45,harrow is read by the auction at 38/min and pays 1/min over 26 outcomes: a number in the source the correction cannot bring down
+2026-09-17 02:31:49,still,harrow,38,1,26,read by the auction,60,harrow is read by the auction at 38/min and pays 1/min over 26 outcomes: a number in the source the correction cannot bring down
+2026-09-17 02:46:49,still,harrow,38,4,28,read by the auction,75,harrow is read by the auction at 38/min and pays 4/min over 28 outcomes: a number in the source the correction cannot bring down
+2026-09-17 03:01:49,still,harrow,38,10,30,read by the auction,90,harrow is read by the auction at 38/min and pays 10/min over 30 outcomes: a number in the source the correction cannot bring down
+2026-09-17 03:17:49,still,harrow,38,12,31,read by the auction,106,harrow is read by the auction at 38/min and pays 12/min over 31 outcomes: a number in the source the correction cannot bring down
+2026-09-17 03:20:24,raised,harrow,38,12,31,read by the auction,0,harrow is read by the auction at 38/min and pays 12/min over 31 outcomes: a number in the source the correction cannot bring down
+2026-09-17 03:36:24,still,harrow,38,21,33,read by the auction,16,harrow is read by the auction at 38/min and pays 21/min over 33 outcomes: a number in the source the correction cannot bring down
+2026-09-17 03:51:24,still,harrow,38,18,34,read by the auction,31,harrow is read by the auction at 38/min and pays 18/min over 34 outcomes: a number in the source the correction cannot bring down
+2026-09-17 04:07:25,still,harrow,38,18,34,read by the auction,47,harrow is read by the auction at 38/min and pays 18/min over 34 outcomes: a number in the source the correction cannot bring down
+2026-09-17 04:23:24,still,harrow,38,18,34,read by the auction,63,harrow is read by the auction at 38/min and pays 18/min over 34 outcomes: a number in the source the correction cannot bring down
+2026-09-17 04:39:24,still,mend,11,0,1097,read by the auction,79,mend is read by the auction at 11/min and pays 0/min over 1097 outcomes: a number in the source the correction cannot bring down
+2026-09-17 04:54:24,still,forge,33,11,1278,read by the auction,94,forge is read by the auction at 33/min and pays 11/min over 1278 outcomes: a number in the source the correction cannot bring down
+2026-09-17 05:09:25,still,band,8,-58,880,read by the auction,109,band is read by the auction at 8/min and pays -58/min over 880 outcomes: a number in the source the correction cannot bring down
+2026-09-17 05:23:34,raised,mine,11,5,8882,read by the auction,0,mine is read by the auction at 11/min and pays 5/min over 8882 outcomes: a number in the source the correction cannot bring down
+2026-09-17 05:24:34,clear,mine,,,,cleared,1,mine's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-17 05:28:34,raised,prowl,2,-7,21341,read by the auction,0,prowl is read by the auction at 2/min and pays -7/min over 21341 outcomes: a number in the source the correction cannot bring down
+2026-09-17 05:29:34,clear,prowl,,,,cleared,0,prowl's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-17 05:34:34,raised,sweep,11,3,29,read by the auction,0,sweep is read by the auction at 11/min and pays 3/min over 29 outcomes: a number in the source the correction cannot bring down
+2026-09-17 05:49:34,still,sweep,11,3,29,read by the auction,15,sweep is read by the auction at 11/min and pays 3/min over 29 outcomes: a number in the source the correction cannot bring down
+2026-09-17 06:05:34,still,sweep,11,2,30,read by the auction,31,sweep is read by the auction at 11/min and pays 2/min over 30 outcomes: a number in the source the correction cannot bring down
+2026-09-17 06:21:34,still,sweep,11,2,30,read by the auction,47,sweep is read by the auction at 11/min and pays 2/min over 30 outcomes: a number in the source the correction cannot bring down
+2026-09-17 06:34:45,raised,band,8,0,910,read by the auction,0,band is read by the auction at 8/min and pays 0/min over 910 outcomes: a number in the source the correction cannot bring down
+2026-09-17 06:49:45,still,band,8,-18,915,read by the auction,15,band is read by the auction at 8/min and pays -18/min over 915 outcomes: a number in the source the correction cannot bring down
+2026-09-17 07:04:45,still,sweep,11,1,31,read by the auction,30,sweep is read by the auction at 11/min and pays 1/min over 31 outcomes: a number in the source the correction cannot bring down
+2026-09-17 07:20:45,still,mend,19,-19,1213,read by the auction,46,mend is read by the auction at 19/min and pays -19/min over 1213 outcomes: a number in the source the correction cannot bring down
+2026-09-17 07:35:45,still,pickings,22,12,428,read by the auction,61,pickings is read by the auction at 22/min and pays 12/min over 428 outcomes: a number in the source the correction cannot bring down
+2026-09-17 07:51:45,still,pickings,22,8,430,read by the auction,77,pickings is read by the auction at 22/min and pays 8/min over 430 outcomes: a number in the source the correction cannot bring down
+2026-09-17 08:06:45,still,sweep,11,1,32,read by the auction,92,sweep is read by the auction at 11/min and pays 1/min over 32 outcomes: a number in the source the correction cannot bring down
+2026-09-17 08:21:45,still,sweep,11,0,33,read by the auction,107,sweep is read by the auction at 11/min and pays 0/min over 33 outcomes: a number in the source the correction cannot bring down
+2026-09-17 08:29:47,raised,harrow,38,25,41,read by the auction,0,harrow is read by the auction at 38/min and pays 25/min over 41 outcomes: a number in the source the correction cannot bring down
+2026-09-17 08:45:47,still,harrow,38,25,41,read by the auction,16,harrow is read by the auction at 38/min and pays 25/min over 41 outcomes: a number in the source the correction cannot bring down
+2026-09-17 09:01:47,still,harrow,38,21,42,read by the auction,32,harrow is read by the auction at 38/min and pays 21/min over 42 outcomes: a number in the source the correction cannot bring down
+2026-09-17 09:16:47,still,harrow,38,21,42,read by the auction,47,harrow is read by the auction at 38/min and pays 21/min over 42 outcomes: a number in the source the correction cannot bring down
+2026-09-17 09:20:09,raised,harrow,38,21,42,read by the auction,0,harrow is read by the auction at 38/min and pays 21/min over 42 outcomes: a number in the source the correction cannot bring down
+2026-09-17 09:35:09,still,harrow,38,21,42,read by the auction,15,harrow is read by the auction at 38/min and pays 21/min over 42 outcomes: a number in the source the correction cannot bring down
+2026-09-17 09:50:09,still,harrow,38,21,42,read by the auction,30,harrow is read by the auction at 38/min and pays 21/min over 42 outcomes: a number in the source the correction cannot bring down
+2026-09-17 10:05:09,still,harrow,38,17,43,read by the auction,45,harrow is read by the auction at 38/min and pays 17/min over 43 outcomes: a number in the source the correction cannot bring down
+2026-09-17 10:20:09,still,harrow,38,17,43,read by the auction,60,harrow is read by the auction at 38/min and pays 17/min over 43 outcomes: a number in the source the correction cannot bring down
+2026-09-17 10:36:00,raised,harrow,38,17,43,read by the auction,0,harrow is read by the auction at 38/min and pays 17/min over 43 outcomes: a number in the source the correction cannot bring down
+2026-09-17 10:51:00,still,harrow,38,17,43,read by the auction,15,harrow is read by the auction at 38/min and pays 17/min over 43 outcomes: a number in the source the correction cannot bring down
+2026-09-17 11:07:00,still,harrow,38,15,44,read by the auction,31,harrow is read by the auction at 38/min and pays 15/min over 44 outcomes: a number in the source the correction cannot bring down
+2026-09-17 11:22:00,still,harrow,38,10,46,read by the auction,46,harrow is read by the auction at 38/min and pays 10/min over 46 outcomes: a number in the source the correction cannot bring down
+2026-09-17 11:29:56,raised,harrow,38,10,46,read by the auction,0,harrow is read by the auction at 38/min and pays 10/min over 46 outcomes: a number in the source the correction cannot bring down
+2026-09-17 11:44:56,still,harrow,38,10,46,read by the auction,14,harrow is read by the auction at 38/min and pays 10/min over 46 outcomes: a number in the source the correction cannot bring down
+2026-09-17 11:59:56,still,harrow,38,10,46,read by the auction,30,harrow is read by the auction at 38/min and pays 10/min over 46 outcomes: a number in the source the correction cannot bring down
+2026-09-17 12:06:44,raised,band,8,-5,1059,read by the auction,0,band is read by the auction at 8/min and pays -5/min over 1059 outcomes: a number in the source the correction cannot bring down
+2026-09-17 12:21:44,still,sweep,11,1,39,read by the auction,15,sweep is read by the auction at 11/min and pays 1/min over 39 outcomes: a number in the source the correction cannot bring down
+2026-09-17 12:37:44,still,sweep,11,1,39,read by the auction,31,sweep is read by the auction at 11/min and pays 1/min over 39 outcomes: a number in the source the correction cannot bring down
+2026-09-17 12:52:44,still,sweep,11,1,40,read by the auction,46,sweep is read by the auction at 11/min and pays 1/min over 40 outcomes: a number in the source the correction cannot bring down
+2026-09-17 13:02:39,raised,prowl,2,-9,27846,read by the auction,0,prowl is read by the auction at 2/min and pays -9/min over 27846 outcomes: a number in the source the correction cannot bring down
+2026-09-17 13:03:39,clear,prowl,,,,cleared,0,prowl's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-17 13:15:39,raised,sweep,11,1,41,read by the auction,0,sweep is read by the auction at 11/min and pays 1/min over 41 outcomes: a number in the source the correction cannot bring down
+2026-09-17 13:30:39,still,inscribe,15,-10,4762,read by the auction,15,inscribe is read by the auction at 15/min and pays -10/min over 4762 outcomes: a number in the source the correction cannot bring down
+2026-09-17 13:46:39,still,pickings,22,3,599,read by the auction,31,pickings is read by the auction at 22/min and pays 3/min over 599 outcomes: a number in the source the correction cannot bring down
+2026-09-17 14:01:39,still,sweep,11,1,43,read by the auction,46,sweep is read by the auction at 11/min and pays 1/min over 43 outcomes: a number in the source the correction cannot bring down
+2026-09-17 14:11:24,raised,band,8,2,1132,read by the auction,0,band is read by the auction at 8/min and pays 2/min over 1132 outcomes: a number in the source the correction cannot bring down
+2026-09-17 14:16:24,clear,band,,,,cleared,5,band's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-17 14:17:24,raised,sweep,11,1,43,read by the auction,0,sweep is read by the auction at 11/min and pays 1/min over 43 outcomes: a number in the source the correction cannot bring down
+2026-09-17 14:32:24,still,sweep,11,1,43,read by the auction,15,sweep is read by the auction at 11/min and pays 1/min over 43 outcomes: a number in the source the correction cannot bring down
+2026-09-17 14:41:47,raised,band,8,0,1149,read by the auction,0,band is read by the auction at 8/min and pays -0/min over 1149 outcomes: a number in the source the correction cannot bring down
+2026-09-17 14:56:47,still,band,8,0,1152,read by the auction,15,band is read by the auction at 8/min and pays -0/min over 1152 outcomes: a number in the source the correction cannot bring down
+2026-09-17 15:12:47,still,sweep,11,0,45,read by the auction,31,sweep is read by the auction at 11/min and pays -0/min over 45 outcomes: a number in the source the correction cannot bring down
+2026-09-17 15:24:28,raised,band,8,0,1161,read by the auction,0,band is read by the auction at 8/min and pays -0/min over 1161 outcomes: a number in the source the correction cannot bring down
+2026-09-17 15:28:28,clear,band,,,,cleared,4,band's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-17 15:32:28,raised,prowl,2,-18,30045,read by the auction,0,prowl is read by the auction at 2/min and pays -18/min over 30045 outcomes: a number in the source the correction cannot bring down
+2026-09-17 15:33:28,clear,prowl,,,,cleared,0,prowl's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-17 15:39:28,raised,sweep,11,0,45,read by the auction,0,sweep is read by the auction at 11/min and pays -0/min over 45 outcomes: a number in the source the correction cannot bring down
+2026-09-17 15:54:28,still,sweep,11,-1,46,read by the auction,15,sweep is read by the auction at 11/min and pays -1/min over 46 outcomes: a number in the source the correction cannot bring down
+2026-09-17 16:09:57,raised,sew,14,-10,4380,read by the auction,0,sew is read by the auction at 14/min and pays -10/min over 4380 outcomes: a number in the source the correction cannot bring down
+2026-09-17 16:25:57,still,sweep,11,-1,46,read by the auction,16,sweep is read by the auction at 11/min and pays -1/min over 46 outcomes: a number in the source the correction cannot bring down
+2026-09-17 16:41:57,still,sweep,11,-1,46,read by the auction,32,sweep is read by the auction at 11/min and pays -1/min over 46 outcomes: a number in the source the correction cannot bring down
+2026-09-17 16:56:57,still,sweep,11,0,47,read by the auction,47,sweep is read by the auction at 11/min and pays 0/min over 47 outcomes: a number in the source the correction cannot bring down
+2026-09-17 17:12:57,still,sweep,11,0,47,read by the auction,63,sweep is read by the auction at 11/min and pays 0/min over 47 outcomes: a number in the source the correction cannot bring down
+2026-09-17 17:28:57,still,mend,21,12,1562,read by the auction,79,mend is read by the auction at 21/min and pays 12/min over 1562 outcomes: a number in the source the correction cannot bring down
+2026-09-17 17:43:57,still,sweep,11,3,48,read by the auction,94,sweep is read by the auction at 11/min and pays 3/min over 48 outcomes: a number in the source the correction cannot bring down
+2026-09-17 17:58:57,still,sweep,11,0,49,read by the auction,109,sweep is read by the auction at 11/min and pays 0/min over 49 outcomes: a number in the source the correction cannot bring down
+2026-09-17 18:14:57,still,sweep,11,0,49,read by the auction,125,sweep is read by the auction at 11/min and pays 0/min over 49 outcomes: a number in the source the correction cannot bring down
+2026-09-17 18:34:22,raised,prowl,2,-13,33646,read by the auction,0,prowl is read by the auction at 2/min and pays -13/min over 33646 outcomes: a number in the source the correction cannot bring down
+2026-09-17 18:49:22,still,inscribe,15,-20,5775,read by the auction,14,inscribe is read by the auction at 15/min and pays -20/min over 5775 outcomes: a number in the source the correction cannot bring down
+2026-09-17 19:05:22,still,sweep,11,0,50,read by the auction,30,sweep is read by the auction at 11/min and pays 0/min over 50 outcomes: a number in the source the correction cannot bring down
+2026-09-17 19:20:22,still,mind-mine,22,8,40,read by the auction,45,mind-mine is read by the auction at 22/min and pays 8/min over 40 outcomes: a number in the source the correction cannot bring down
+2026-09-17 19:36:22,still,mind-mine,22,8,40,read by the auction,62,mind-mine is read by the auction at 22/min and pays 8/min over 40 outcomes: a number in the source the correction cannot bring down
+2026-09-17 19:46:49,raised,mend,13,-5,1626,read by the auction,0,mend is read by the auction at 13/min and pays -5/min over 1626 outcomes: a number in the source the correction cannot bring down
+2026-09-17 20:01:49,still,mend,13,-5,1626,read by the auction,15,mend is read by the auction at 13/min and pays -5/min over 1626 outcomes: a number in the source the correction cannot bring down
+2026-09-17 20:16:49,still,sweep,11,-2,51,read by the auction,30,sweep is read by the auction at 11/min and pays -2/min over 51 outcomes: a number in the source the correction cannot bring down
+2026-09-17 20:24:26,raised,band,8,0,1338,read by the auction,0,band is read by the auction at 8/min and pays -0/min over 1338 outcomes: a number in the source the correction cannot bring down
+2026-09-17 20:27:58,raised,band,8,0,1341,read by the auction,0,band is read by the auction at 8/min and pays -0/min over 1341 outcomes: a number in the source the correction cannot bring down
+2026-09-17 20:33:58,clear,band,,,,cleared,5,band's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-17 20:46:46,raised,sweep,11,-1,52,read by the auction,0,sweep is read by the auction at 11/min and pays -1/min over 52 outcomes: a number in the source the correction cannot bring down
+2026-09-17 21:02:46,still,sweep,11,0,53,read by the auction,16,sweep is read by the auction at 11/min and pays 0/min over 53 outcomes: a number in the source the correction cannot bring down
+2026-09-17 21:18:46,still,forage,5,-86,1016,read by the auction,32,forage is read by the auction at 5/min and pays -86/min over 1016 outcomes: a number in the source the correction cannot bring down
+2026-09-17 21:25:51,raised,band,8,-1,1381,read by the auction,0,band is read by the auction at 8/min and pays -1/min over 1381 outcomes: a number in the source the correction cannot bring down
+2026-09-17 21:31:51,clear,forage,,,,cleared,6,forage's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-17 21:35:51,raised,prowl,2,-7,36201,read by the auction,0,prowl is read by the auction at 2/min and pays -7/min over 36201 outcomes: a number in the source the correction cannot bring down
+2026-09-17 21:36:51,clear,prowl,,,,cleared,1,prowl's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-17 21:41:51,raised,inscribe,15,-19,6353,read by the auction,0,inscribe is read by the auction at 15/min and pays -19/min over 6353 outcomes: a number in the source the correction cannot bring down
+2026-09-17 21:44:51,clear,prowl,,,,cleared,3,prowl's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-17 21:46:51,raised,sweep,11,0,53,read by the auction,0,sweep is read by the auction at 11/min and pays 0/min over 53 outcomes: a number in the source the correction cannot bring down
+2026-09-17 21:59:32,raised,band,8,1,1408,read by the auction,0,band is read by the auction at 8/min and pays 1/min over 1408 outcomes: a number in the source the correction cannot bring down
+2026-09-17 22:14:32,still,band,8,-1,1418,read by the auction,15,band is read by the auction at 8/min and pays -1/min over 1418 outcomes: a number in the source the correction cannot bring down
+2026-09-17 22:29:32,still,herbs,10,1,3087,read by the auction,30,herbs is read by the auction at 10/min and pays 1/min over 3087 outcomes: a number in the source the correction cannot bring down
+2026-09-17 22:30:32,clear,herbs,,,,cleared,31,herbs's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-17 22:31:32,raised,sweep,11,0,53,read by the auction,0,sweep is read by the auction at 11/min and pays 0/min over 53 outcomes: a number in the source the correction cannot bring down
+2026-09-17 22:42:43,raised,band,8,0,1442,read by the auction,0,band is read by the auction at 8/min and pays 0/min over 1442 outcomes: a number in the source the correction cannot bring down
+2026-09-17 22:44:43,clear,band,,,,cleared,1,band's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-17 22:48:43,raised,prowl,2,-5,37110,read by the auction,0,prowl is read by the auction at 2/min and pays -5/min over 37110 outcomes: a number in the source the correction cannot bring down
+2026-09-17 22:49:43,clear,prowl,,,,cleared,0,prowl's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-17 22:50:43,raised,band,8,2,1448,read by the auction,0,band is read by the auction at 8/min and pays 2/min over 1448 outcomes: a number in the source the correction cannot bring down
+2026-09-17 23:05:43,still,sweep,11,0,53,read by the auction,15,sweep is read by the auction at 11/min and pays 0/min over 53 outcomes: a number in the source the correction cannot bring down
+2026-09-17 23:18:47,raised,sew,14,6,5547,read by the auction,0,sew is read by the auction at 14/min and pays 6/min over 5547 outcomes: a number in the source the correction cannot bring down
+2026-09-17 23:34:00,raised,band,8,0,1468,read by the auction,0,band is read by the auction at 8/min and pays -0/min over 1468 outcomes: a number in the source the correction cannot bring down
+2026-09-17 23:36:00,clear,band,,,,cleared,1,band's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-17 23:40:18,raised,band,8,-21,1478,read by the auction,0,band is read by the auction at 8/min and pays -21/min over 1478 outcomes: a number in the source the correction cannot bring down
+2026-09-17 23:47:00,raised,band,8,-8,1479,read by the auction,0,band is read by the auction at 8/min and pays -8/min over 1479 outcomes: a number in the source the correction cannot bring down
+2026-09-17 23:54:12,raised,prowl,2,-4,37920,read by the auction,0,prowl is read by the auction at 2/min and pays -4/min over 37920 outcomes: a number in the source the correction cannot bring down
+2026-09-17 23:55:12,clear,prowl,,,,cleared,1,prowl's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-18 00:00:00,raised,band,8,2,1490,read by the auction,0,band is read by the auction at 8/min and pays 2/min over 1490 outcomes: a number in the source the correction cannot bring down
+2026-09-18 00:09:19,raised,band,8,1,1494,read by the auction,0,band is read by the auction at 8/min and pays 1/min over 1494 outcomes: a number in the source the correction cannot bring down
+2026-09-18 00:13:28,raised,band,8,1,1495,read by the auction,0,band is read by the auction at 8/min and pays 1/min over 1495 outcomes: a number in the source the correction cannot bring down
+2026-09-18 00:30:38,raised,mend,19,-22,1753,read by the auction,0,mend is read by the auction at 19/min and pays -22/min over 1753 outcomes: a number in the source the correction cannot bring down
+2026-09-18 00:45:38,still,mend,13,7,1756,read by the auction,15,mend is read by the auction at 13/min and pays 7/min over 1756 outcomes: a number in the source the correction cannot bring down
+2026-09-18 01:00:38,still,sweep,11,0,54,read by the auction,30,sweep is read by the auction at 11/min and pays 0/min over 54 outcomes: a number in the source the correction cannot bring down
+2026-09-18 01:16:38,still,sweep,11,0,55,read by the auction,46,sweep is read by the auction at 11/min and pays -0/min over 55 outcomes: a number in the source the correction cannot bring down
+2026-09-18 01:31:38,still,sweep,11,0,55,read by the auction,61,sweep is read by the auction at 11/min and pays -0/min over 55 outcomes: a number in the source the correction cannot bring down
+2026-09-18 01:46:11,raised,band,8,1,1555,read by the auction,0,band is read by the auction at 8/min and pays 1/min over 1555 outcomes: a number in the source the correction cannot bring down
+2026-09-18 01:50:29,raised,sew,14,7,5899,read by the auction,0,sew is read by the auction at 14/min and pays 7/min over 5899 outcomes: a number in the source the correction cannot bring down
+2026-09-18 01:54:28,raised,mend,17,-38,1793,read by the auction,0,mend is read by the auction at 17/min and pays -38/min over 1793 outcomes: a number in the source the correction cannot bring down
+2026-09-18 02:09:28,still,mend,14,-23,1795,read by the auction,15,mend is read by the auction at 14/min and pays -23/min over 1795 outcomes: a number in the source the correction cannot bring down
+2026-09-18 02:24:28,still,sweep,11,-1,56,read by the auction,30,sweep is read by the auction at 11/min and pays -1/min over 56 outcomes: a number in the source the correction cannot bring down
+2026-09-18 02:40:28,still,inscribe,15,-25,7393,read by the auction,46,inscribe is read by the auction at 15/min and pays -25/min over 7393 outcomes: a number in the source the correction cannot bring down
+2026-09-18 02:55:28,still,enlist,18,9,62,read by the auction,61,enlist is read by the auction at 18/min and pays 9/min over 62 outcomes: a number in the source the correction cannot bring down
+2026-09-18 03:06:43,raised,mend,12,-10,1849,read by the auction,0,mend is read by the auction at 12/min and pays -10/min over 1849 outcomes: a number in the source the correction cannot bring down
+2026-09-18 03:22:43,still,sweep,11,-2,58,read by the auction,16,sweep is read by the auction at 11/min and pays -2/min over 58 outcomes: a number in the source the correction cannot bring down
+2026-09-18 03:37:43,still,mend,14,3,1875,read by the auction,31,mend is read by the auction at 14/min and pays 3/min over 1875 outcomes: a number in the source the correction cannot bring down
+2026-09-18 03:52:43,still,sweep,11,-1,59,read by the auction,46,sweep is read by the auction at 11/min and pays -1/min over 59 outcomes: a number in the source the correction cannot bring down
+2026-09-18 04:07:43,still,hunt,22,-16,22499,read by the auction,61,hunt is read by the auction at 22/min and pays -16/min over 22499 outcomes: a number in the source the correction cannot bring down
+2026-09-18 04:23:43,still,sweep,11,0,60,read by the auction,77,sweep is read by the auction at 11/min and pays -0/min over 60 outcomes: a number in the source the correction cannot bring down
+2026-09-18 04:39:43,still,sweep,11,0,60,read by the auction,93,sweep is read by the auction at 11/min and pays -0/min over 60 outcomes: a number in the source the correction cannot bring down
+2026-09-18 04:54:43,still,sweep,11,0,61,read by the auction,108,sweep is read by the auction at 11/min and pays 0/min over 61 outcomes: a number in the source the correction cannot bring down
+2026-09-18 05:10:43,still,sweep,11,0,61,read by the auction,124,sweep is read by the auction at 11/min and pays 0/min over 61 outcomes: a number in the source the correction cannot bring down
+2026-09-18 05:26:43,still,mind-mine,22,5,41,read by the auction,140,mind-mine is read by the auction at 22/min and pays 5/min over 41 outcomes: a number in the source the correction cannot bring down
+2026-09-18 05:29:36,raised,band,8,2,1745,read by the auction,0,band is read by the auction at 8/min and pays 2/min over 1745 outcomes: a number in the source the correction cannot bring down
+2026-09-18 05:38:36,clear,band,,,,cleared,9,band's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-18 05:39:36,raised,mend,10,4,1959,read by the auction,0,mend is read by the auction at 10/min and pays 4/min over 1959 outcomes: a number in the source the correction cannot bring down
+2026-09-18 05:54:36,still,sweep,11,-1,62,read by the auction,15,sweep is read by the auction at 11/min and pays -1/min over 62 outcomes: a number in the source the correction cannot bring down
+2026-09-18 06:10:36,still,sweep,11,1,63,read by the auction,31,sweep is read by the auction at 11/min and pays 1/min over 63 outcomes: a number in the source the correction cannot bring down
+2026-09-18 06:26:36,still,prowl,2,-92,43186,read by the auction,47,prowl is read by the auction at 2/min and pays -92/min over 43186 outcomes: a number in the source the correction cannot bring down
+2026-09-18 06:31:46,raised,herbs,10,-43,3858,read by the auction,0,herbs is read by the auction at 10/min and pays -43/min over 3858 outcomes: a number in the source the correction cannot bring down
+2026-09-18 06:32:46,clear,herbs,,,,cleared,0,herbs's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-18 06:33:46,raised,sweep,11,1,63,read by the auction,0,sweep is read by the auction at 11/min and pays 1/min over 63 outcomes: a number in the source the correction cannot bring down
+2026-09-18 06:48:47,still,sweep,11,1,63,read by the auction,15,sweep is read by the auction at 11/min and pays 1/min over 63 outcomes: a number in the source the correction cannot bring down
+2026-09-18 07:03:47,still,sweep,11,1,64,read by the auction,30,sweep is read by the auction at 11/min and pays 1/min over 64 outcomes: a number in the source the correction cannot bring down
+2026-09-18 07:18:47,still,sweep,11,1,64,read by the auction,45,sweep is read by the auction at 11/min and pays 1/min over 64 outcomes: a number in the source the correction cannot bring down
+2026-09-18 07:33:47,still,sweep,11,1,64,read by the auction,60,sweep is read by the auction at 11/min and pays 1/min over 64 outcomes: a number in the source the correction cannot bring down
+2026-09-18 07:49:47,still,sweep,11,1,65,read by the auction,76,sweep is read by the auction at 11/min and pays 1/min over 65 outcomes: a number in the source the correction cannot bring down
+2026-09-18 08:05:47,still,sweep,11,1,65,read by the auction,92,sweep is read by the auction at 11/min and pays 1/min over 65 outcomes: a number in the source the correction cannot bring down
+2026-09-18 08:20:47,still,sweep,11,1,66,read by the auction,107,sweep is read by the auction at 11/min and pays 1/min over 66 outcomes: a number in the source the correction cannot bring down
+2026-09-18 08:35:47,still,sweep,11,1,66,read by the auction,122,sweep is read by the auction at 11/min and pays 1/min over 66 outcomes: a number in the source the correction cannot bring down
+2026-09-18 08:50:47,still,mind-mine,22,14,51,read by the auction,137,mind-mine is read by the auction at 22/min and pays 14/min over 51 outcomes: a number in the source the correction cannot bring down
+2026-09-18 09:06:47,still,mind-mine,22,14,51,read by the auction,153,mind-mine is read by the auction at 22/min and pays 14/min over 51 outcomes: a number in the source the correction cannot bring down
+2026-09-18 09:21:47,still,mind-mine,22,8,52,read by the auction,168,mind-mine is read by the auction at 22/min and pays 8/min over 52 outcomes: a number in the source the correction cannot bring down
+2026-09-18 09:36:47,still,sweep,11,1,68,read by the auction,183,sweep is read by the auction at 11/min and pays 1/min over 68 outcomes: a number in the source the correction cannot bring down
+2026-09-18 09:51:47,still,sweep,11,1,68,read by the auction,198,sweep is read by the auction at 11/min and pays 1/min over 68 outcomes: a number in the source the correction cannot bring down
+2026-09-18 10:07:47,still,fletch,35,-56,1581,read by the auction,214,fletch is read by the auction at 35/min and pays -56/min over 1581 outcomes: a number in the source the correction cannot bring down
+2026-09-18 10:22:47,still,sweep,11,1,69,read by the auction,229,sweep is read by the auction at 11/min and pays 1/min over 69 outcomes: a number in the source the correction cannot bring down
+2026-09-18 10:26:46,raised,inscribe,15,-9,8861,read by the auction,0,inscribe is read by the auction at 15/min and pays -9/min over 8861 outcomes: a number in the source the correction cannot bring down
+2026-09-18 10:27:46,clear,inscribe,,,,cleared,0,inscribe's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-18 10:36:18,raised,sew,15,-3,6805,read by the auction,0,sew is read by the auction at 15/min and pays -3/min over 6805 outcomes: a number in the source the correction cannot bring down
+2026-09-18 10:42:22,raised,drill,9,2,231,read by the auction,0,drill is read by the auction at 9/min and pays 2/min over 231 outcomes: a number in the source the correction cannot bring down
+2026-09-18 10:51:11,raised,drill,9,1,233,read by the auction,0,drill is read by the auction at 9/min and pays 1/min over 233 outcomes: a number in the source the correction cannot bring down
+2026-09-18 10:56:43,raised,drill,9,1,234,read by the auction,0,drill is read by the auction at 9/min and pays 1/min over 234 outcomes: a number in the source the correction cannot bring down
+2026-09-18 11:01:43,raised,drill,9,-1,236,read by the auction,0,drill is read by the auction at 9/min and pays -1/min over 236 outcomes: a number in the source the correction cannot bring down
+2026-09-18 11:07:40,raised,drill,9,-1,237,read by the auction,0,drill is read by the auction at 9/min and pays -1/min over 237 outcomes: a number in the source the correction cannot bring down
+2026-09-18 11:23:40,still,drill,9,-1,242,read by the auction,15,drill is read by the auction at 9/min and pays -1/min over 242 outcomes: a number in the source the correction cannot bring down
+2026-09-18 11:33:49,raised,drill,9,-1,242,read by the auction,0,drill is read by the auction at 9/min and pays -1/min over 242 outcomes: a number in the source the correction cannot bring down
+2026-09-18 11:40:55,raised,band,8,-1,2017,read by the auction,0,band is read by the auction at 8/min and pays -1/min over 2017 outcomes: a number in the source the correction cannot bring down
+2026-09-18 11:56:55,still,sweep,11,-1,70,read by the auction,16,sweep is read by the auction at 11/min and pays -1/min over 70 outcomes: a number in the source the correction cannot bring down
+2026-09-18 12:03:31,raised,prowl,2,-5,48931,read by the auction,0,prowl is read by the auction at 2/min and pays -5/min over 48931 outcomes: a number in the source the correction cannot bring down
+2026-09-18 12:10:09,raised,band,8,2,2048,read by the auction,0,band is read by the auction at 8/min and pays 2/min over 2048 outcomes: a number in the source the correction cannot bring down
+2026-09-18 12:26:09,still,drill,9,0,246,read by the auction,16,drill is read by the auction at 9/min and pays -0/min over 246 outcomes: a number in the source the correction cannot bring down
+2026-09-18 12:31:09,clear,band,,,,cleared,21,band's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-18 12:32:09,raised,sweep,11,-1,70,read by the auction,0,sweep is read by the auction at 11/min and pays -1/min over 70 outcomes: a number in the source the correction cannot bring down
+2026-09-18 12:47:09,still,sweep,11,-1,70,read by the auction,15,sweep is read by the auction at 11/min and pays -1/min over 70 outcomes: a number in the source the correction cannot bring down
+2026-09-18 13:02:29,raised,sweep,11,-1,70,read by the auction,0,sweep is read by the auction at 11/min and pays -1/min over 70 outcomes: a number in the source the correction cannot bring down
+2026-09-18 13:17:29,still,sweep,11,-1,70,read by the auction,14,sweep is read by the auction at 11/min and pays -1/min over 70 outcomes: a number in the source the correction cannot bring down
+2026-09-18 13:27:43,raised,band,8,-9,2111,read by the auction,0,band is read by the auction at 8/min and pays -9/min over 2111 outcomes: a number in the source the correction cannot bring down
+2026-09-18 13:35:40,raised,band,8,-7,2112,read by the auction,0,band is read by the auction at 8/min and pays -7/min over 2112 outcomes: a number in the source the correction cannot bring down
+2026-09-18 13:40:40,clear,band,,,,cleared,5,band's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-18 13:41:40,raised,sweep,11,-1,70,read by the auction,0,sweep is read by the auction at 11/min and pays -1/min over 70 outcomes: a number in the source the correction cannot bring down
+2026-09-18 13:56:40,still,sweep,11,-1,70,read by the auction,15,sweep is read by the auction at 11/min and pays -1/min over 70 outcomes: a number in the source the correction cannot bring down
+2026-09-18 14:11:05,raised,band,8,1,2127,read by the auction,0,band is read by the auction at 8/min and pays 1/min over 2127 outcomes: a number in the source the correction cannot bring down
+2026-09-18 14:27:05,still,band,8,-30,2135,read by the auction,16,band is read by the auction at 8/min and pays -30/min over 2135 outcomes: a number in the source the correction cannot bring down
+2026-09-18 14:37:44,raised,band,8,-15,2138,read by the auction,0,band is read by the auction at 8/min and pays -15/min over 2138 outcomes: a number in the source the correction cannot bring down
+2026-09-18 14:53:44,still,mend,15,-7,2299,read by the auction,16,mend is read by the auction at 15/min and pays -7/min over 2299 outcomes: a number in the source the correction cannot bring down
+2026-09-18 15:08:44,still,sweep,11,-2,71,read by the auction,31,sweep is read by the auction at 11/min and pays -2/min over 71 outcomes: a number in the source the correction cannot bring down
+2026-09-18 15:18:07,raised,band,8,-2,2151,read by the auction,0,band is read by the auction at 8/min and pays -2/min over 2151 outcomes: a number in the source the correction cannot bring down
+2026-09-18 15:36:09,raised,band,8,-2,2155,read by the auction,0,band is read by the auction at 8/min and pays -2/min over 2155 outcomes: a number in the source the correction cannot bring down
+2026-09-18 15:39:09,clear,band,,,,cleared,3,band's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-18 15:45:09,raised,sweep,11,-2,72,read by the auction,0,sweep is read by the auction at 11/min and pays -2/min over 72 outcomes: a number in the source the correction cannot bring down
+2026-09-18 16:01:09,still,sweep,11,-2,72,read by the auction,16,sweep is read by the auction at 11/min and pays -2/min over 72 outcomes: a number in the source the correction cannot bring down
+2026-09-18 16:17:09,still,sweep,11,-1,73,read by the auction,32,sweep is read by the auction at 11/min and pays -1/min over 73 outcomes: a number in the source the correction cannot bring down
+2026-09-18 16:32:09,still,sweep,11,-1,73,read by the auction,47,sweep is read by the auction at 11/min and pays -1/min over 73 outcomes: a number in the source the correction cannot bring down
+2026-09-18 16:48:09,still,sweep,11,-2,74,read by the auction,63,sweep is read by the auction at 11/min and pays -2/min over 74 outcomes: a number in the source the correction cannot bring down
+2026-09-18 17:03:09,still,sweep,11,-2,74,read by the auction,78,sweep is read by the auction at 11/min and pays -2/min over 74 outcomes: a number in the source the correction cannot bring down
+2026-09-18 17:06:42,raised,band,8,1,2207,read by the auction,0,band is read by the auction at 8/min and pays 1/min over 2207 outcomes: a number in the source the correction cannot bring down
+2026-09-18 17:16:05,raised,mend,10,-1,2363,read by the auction,0,mend is read by the auction at 10/min and pays -1/min over 2363 outcomes: a number in the source the correction cannot bring down
+2026-09-18 17:28:56,raised,mend,12,1,2376,read by the auction,0,mend is read by the auction at 12/min and pays 1/min over 2376 outcomes: a number in the source the correction cannot bring down
+2026-09-18 17:43:56,still,band,8,-3,2227,read by the auction,15,band is read by the auction at 8/min and pays -3/min over 2227 outcomes: a number in the source the correction cannot bring down
+2026-09-18 17:58:56,still,sweep,11,-2,74,read by the auction,30,sweep is read by the auction at 11/min and pays -2/min over 74 outcomes: a number in the source the correction cannot bring down
+2026-09-18 18:00:38,raised,band,8,-2,2234,read by the auction,0,band is read by the auction at 8/min and pays -2/min over 2234 outcomes: a number in the source the correction cannot bring down
+2026-09-18 18:13:32,raised,band,8,-1,2236,read by the auction,0,band is read by the auction at 8/min and pays -1/min over 2236 outcomes: a number in the source the correction cannot bring down
+2026-09-18 18:29:32,still,drill,9,1,322,read by the auction,16,drill is read by the auction at 9/min and pays 1/min over 322 outcomes: a number in the source the correction cannot bring down
+2026-09-18 18:42:59,raised,drill,9,-1,326,read by the auction,0,drill is read by the auction at 9/min and pays -1/min over 326 outcomes: a number in the source the correction cannot bring down
+2026-09-18 18:57:59,still,sweep,11,-2,74,read by the auction,15,sweep is read by the auction at 11/min and pays -2/min over 74 outcomes: a number in the source the correction cannot bring down
+2026-09-18 19:04:15,raised,drill,9,0,330,read by the auction,0,drill is read by the auction at 9/min and pays 0/min over 330 outcomes: a number in the source the correction cannot bring down
+2026-09-18 19:12:23,raised,sew,14,7,7987,read by the auction,0,sew is read by the auction at 14/min and pays 7/min over 7987 outcomes: a number in the source the correction cannot bring down
+2026-09-18 19:13:23,clear,sew,,,,cleared,0,sew's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-18 19:14:23,raised,drill,9,-1,332,read by the auction,0,drill is read by the auction at 9/min and pays -1/min over 332 outcomes: a number in the source the correction cannot bring down
+2026-09-18 19:20:27,raised,drill,9,0,333,read by the auction,0,drill is read by the auction at 9/min and pays -0/min over 333 outcomes: a number in the source the correction cannot bring down
+2026-09-18 19:26:09,raised,drill,9,1,335,read by the auction,0,drill is read by the auction at 9/min and pays 1/min over 335 outcomes: a number in the source the correction cannot bring down
+2026-09-18 19:35:53,raised,drill,9,0,337,read by the auction,0,drill is read by the auction at 9/min and pays 0/min over 337 outcomes: a number in the source the correction cannot bring down
+2026-09-18 20:06:00,raised,sweep,11,-1,75,read by the auction,0,sweep is read by the auction at 11/min and pays -1/min over 75 outcomes: a number in the source the correction cannot bring down
+2026-09-18 20:21:00,still,sweep,11,-1,76,read by the auction,15,sweep is read by the auction at 11/min and pays -1/min over 76 outcomes: a number in the source the correction cannot bring down
+2026-09-18 20:39:15,raised,prowl,2,-6,56000,read by the auction,0,prowl is read by the auction at 2/min and pays -6/min over 56000 outcomes: a number in the source the correction cannot bring down
+2026-09-20 08:31:02,raised,prowl,2,-18,129,read by the auction,0,prowl is read by the auction at 2/min and pays -18/min over 129 outcomes: a number in the source the correction cannot bring down
+2026-09-20 08:32:02,clear,prowl,,,,cleared,1,prowl's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-20 08:34:02,raised,prowl,2,-9,208,read by the auction,0,prowl is read by the auction at 2/min and pays -9/min over 208 outcomes: a number in the source the correction cannot bring down
+2026-09-20 08:35:02,clear,prowl,,,,cleared,1,prowl's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-20 08:43:02,raised,band,8,2,32,read by the auction,0,band is read by the auction at 8/min and pays 2/min over 32 outcomes: a number in the source the correction cannot bring down
+2026-09-20 08:58:02,still,band,8,-2,50,read by the auction,15,band is read by the auction at 8/min and pays -2/min over 50 outcomes: a number in the source the correction cannot bring down
+2026-09-20 09:10:02,clear,band,,,,cleared,27,band's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-20 09:14:02,raised,band,8,2,75,read by the auction,0,band is read by the auction at 8/min and pays 2/min over 75 outcomes: a number in the source the correction cannot bring down
+2026-09-20 09:15:02,clear,band,,,,cleared,1,band's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-20 09:16:02,raised,band,8,2,78,read by the auction,0,band is read by the auction at 8/min and pays 2/min over 78 outcomes: a number in the source the correction cannot bring down
+2026-09-20 09:24:03,clear,band,,,,cleared,8,band's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-20 09:25:03,raised,band,8,2,87,read by the auction,0,band is read by the auction at 8/min and pays 2/min over 87 outcomes: a number in the source the correction cannot bring down
+2026-09-20 09:28:03,clear,band,,,,cleared,3,band's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-20 09:35:03,raised,prowl,2,-6,1244,read by the auction,0,prowl is read by the auction at 2/min and pays -6/min over 1244 outcomes: a number in the source the correction cannot bring down
+2026-09-20 09:36:03,clear,prowl,,,,cleared,1,prowl's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-20 09:38:03,raised,band,8,2,100,read by the auction,0,band is read by the auction at 8/min and pays 2/min over 100 outcomes: a number in the source the correction cannot bring down
+2026-09-20 09:43:03,clear,band,,,,cleared,5,band's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-20 09:45:03,raised,band,8,2,107,read by the auction,0,band is read by the auction at 8/min and pays 2/min over 107 outcomes: a number in the source the correction cannot bring down
+2026-09-20 09:48:03,clear,band,,,,cleared,3,band's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-20 09:51:03,raised,band,8,2,116,read by the auction,0,band is read by the auction at 8/min and pays 2/min over 116 outcomes: a number in the source the correction cannot bring down
+2026-09-20 10:04:03,clear,band,,,,cleared,13,band's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-20 10:06:03,raised,band,8,2,127,read by the auction,0,band is read by the auction at 8/min and pays 2/min over 127 outcomes: a number in the source the correction cannot bring down
+2026-09-20 10:21:03,still,forge,34,13,120,read by the auction,15,forge is read by the auction at 34/min and pays 13/min over 120 outcomes: a number in the source the correction cannot bring down
+2026-09-20 10:36:03,still,drill,9,0,29,read by the auction,30,drill is read by the auction at 9/min and pays 0/min over 29 outcomes: a number in the source the correction cannot bring down
+2026-09-20 10:51:03,still,drill,9,0,33,read by the auction,45,drill is read by the auction at 9/min and pays 0/min over 33 outcomes: a number in the source the correction cannot bring down
+2026-09-20 11:06:03,still,drill,9,2,39,read by the auction,60,drill is read by the auction at 9/min and pays 2/min over 39 outcomes: a number in the source the correction cannot bring down
+2026-09-20 11:21:03,still,band,8,0,242,read by the auction,75,band is read by the auction at 8/min and pays 0/min over 242 outcomes: a number in the source the correction cannot bring down
+2026-09-20 11:34:03,clear,prowl,,,,cleared,88,prowl's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-20 11:39:03,raised,band,8,2,266,read by the auction,0,band is read by the auction at 8/min and pays 2/min over 266 outcomes: a number in the source the correction cannot bring down
+2026-09-20 11:54:03,still,band,8,0,289,read by the auction,15,band is read by the auction at 8/min and pays -0/min over 289 outcomes: a number in the source the correction cannot bring down
+2026-09-20 12:10:03,still,band,8,-1,304,read by the auction,31,band is read by the auction at 8/min and pays -1/min over 304 outcomes: a number in the source the correction cannot bring down
+2026-09-20 12:13:03,clear,band,,,,cleared,34,band's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-20 12:15:03,raised,mend,11,2,501,read by the auction,0,mend is read by the auction at 11/min and pays 2/min over 501 outcomes: a number in the source the correction cannot bring down
+2026-09-20 12:17:03,clear,mend,,,,cleared,1,mend's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-20 12:24:03,raised,band,8,2,327,read by the auction,0,band is read by the auction at 8/min and pays 2/min over 327 outcomes: a number in the source the correction cannot bring down
+2026-09-20 12:25:03,clear,band,,,,cleared,0,band's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-20 12:26:03,raised,band,8,2,332,read by the auction,0,band is read by the auction at 8/min and pays 2/min over 332 outcomes: a number in the source the correction cannot bring down
+2026-09-20 12:41:03,still,drill,9,3,65,read by the auction,15,drill is read by the auction at 9/min and pays 3/min over 65 outcomes: a number in the source the correction cannot bring down
+2026-09-20 12:57:03,still,drill,9,0,71,read by the auction,31,drill is read by the auction at 9/min and pays -0/min over 71 outcomes: a number in the source the correction cannot bring down
+2026-09-20 13:12:03,still,enlist,18,4,26,read by the auction,45,enlist is read by the auction at 18/min and pays 4/min over 26 outcomes: a number in the source the correction cannot bring down
+2026-09-20 13:28:03,still,enlist,18,4,26,read by the auction,62,enlist is read by the auction at 18/min and pays 4/min over 26 outcomes: a number in the source the correction cannot bring down
+2026-09-21 18:07:45,raised,band,8,1,424,read by the auction,0,band is read by the auction at 8/min and pays 1/min over 424 outcomes: a number in the source the correction cannot bring down
+2026-09-21 18:13:35,raised,drill,9,-1,76,read by the auction,0,drill is read by the auction at 9/min and pays -1/min over 76 outcomes: a number in the source the correction cannot bring down
+2026-09-21 18:15:35,clear,drill,,,,cleared,1,drill's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-21 18:16:35,raised,band,8,2,438,read by the auction,0,band is read by the auction at 8/min and pays 2/min over 438 outcomes: a number in the source the correction cannot bring down
+2026-09-21 18:21:26,raised,band,8,1,444,read by the auction,0,band is read by the auction at 8/min and pays 1/min over 444 outcomes: a number in the source the correction cannot bring down
+2026-09-21 18:26:09,raised,band,8,0,448,read by the auction,0,band is read by the auction at 8/min and pays 0/min over 448 outcomes: a number in the source the correction cannot bring down
+2026-09-21 18:33:09,clear,band,,,,cleared,7,band's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-21 18:43:16,raised,prowl,2,-3,7911,read by the auction,0,prowl is read by the auction at 2/min and pays -3/min over 7911 outcomes: a number in the source the correction cannot bring down
+2026-09-21 18:44:16,clear,prowl,,,,cleared,0,prowl's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-21 18:45:16,raised,mine,11,3,2144,read by the auction,0,mine is read by the auction at 11/min and pays 3/min over 2144 outcomes: a number in the source the correction cannot bring down
+2026-09-21 18:47:41,raised,drill,9,4,87,read by the auction,0,drill is read by the auction at 9/min and pays 4/min over 87 outcomes: a number in the source the correction cannot bring down
+2026-09-21 18:50:15,raised,drill,9,4,87,read by the auction,0,drill is read by the auction at 9/min and pays 4/min over 87 outcomes: a number in the source the correction cannot bring down
+2026-09-21 21:59:51,raised,mend,18,-4,669,read by the auction,0,mend is read by the auction at 18/min and pays -4/min over 669 outcomes: a number in the source the correction cannot bring down
+2026-09-21 22:15:51,still,enlist,18,1,40,read by the auction,15,enlist is read by the auction at 18/min and pays 1/min over 40 outcomes: a number in the source the correction cannot bring down
+2026-09-21 22:30:51,still,enlist,18,1,40,read by the auction,30,enlist is read by the auction at 18/min and pays 1/min over 40 outcomes: a number in the source the correction cannot bring down
+2026-09-21 22:45:51,still,enlist,18,1,41,read by the auction,45,enlist is read by the auction at 18/min and pays 1/min over 41 outcomes: a number in the source the correction cannot bring down
+2026-09-21 23:00:51,still,enlist,18,1,41,read by the auction,60,enlist is read by the auction at 18/min and pays 1/min over 41 outcomes: a number in the source the correction cannot bring down
+2026-09-21 23:15:51,still,enlist,18,1,41,read by the auction,76,enlist is read by the auction at 18/min and pays 1/min over 41 outcomes: a number in the source the correction cannot bring down
+2026-09-21 23:31:51,still,enlist,18,10,43,read by the auction,91,enlist is read by the auction at 18/min and pays 10/min over 43 outcomes: a number in the source the correction cannot bring down
+2026-09-21 23:47:51,still,enlist,18,8,44,read by the auction,107,enlist is read by the auction at 18/min and pays 8/min over 44 outcomes: a number in the source the correction cannot bring down
+2026-09-22 00:02:51,still,enlist,18,4,47,read by the auction,122,enlist is read by the auction at 18/min and pays 4/min over 47 outcomes: a number in the source the correction cannot bring down
+2026-09-22 00:18:51,still,enlist,18,4,47,read by the auction,138,enlist is read by the auction at 18/min and pays 4/min over 47 outcomes: a number in the source the correction cannot bring down
+2026-09-22 00:33:51,still,enlist,18,4,47,read by the auction,153,enlist is read by the auction at 18/min and pays 4/min over 47 outcomes: a number in the source the correction cannot bring down
+2026-09-22 00:49:51,still,enlist,18,3,48,read by the auction,169,enlist is read by the auction at 18/min and pays 3/min over 48 outcomes: a number in the source the correction cannot bring down
+2026-09-22 01:05:51,still,enlist,18,3,48,read by the auction,186,enlist is read by the auction at 18/min and pays 3/min over 48 outcomes: a number in the source the correction cannot bring down
+2026-09-22 02:49:41,raised,band,8,-2,635,read by the auction,0,band is read by the auction at 8/min and pays -2/min over 635 outcomes: a number in the source the correction cannot bring down
+2026-09-22 03:04:41,still,band,8,-2,635,read by the auction,14,band is read by the auction at 8/min and pays -2/min over 635 outcomes: a number in the source the correction cannot bring down
+2026-09-22 03:19:41,still,band,8,-2,635,read by the auction,29,band is read by the auction at 8/min and pays -2/min over 635 outcomes: a number in the source the correction cannot bring down
+2026-09-22 03:34:41,still,enlist,18,2,50,read by the auction,45,enlist is read by the auction at 18/min and pays 2/min over 50 outcomes: a number in the source the correction cannot bring down
+2026-09-22 03:50:41,still,enlist,18,-2,51,read by the auction,60,enlist is read by the auction at 18/min and pays -2/min over 51 outcomes: a number in the source the correction cannot bring down
+2026-09-22 03:58:25,raised,drill,9,2,172,read by the auction,0,drill is read by the auction at 9/min and pays 2/min over 172 outcomes: a number in the source the correction cannot bring down
+2026-09-22 04:08:50,raised,prowl,2,-4,11652,read by the auction,0,prowl is read by the auction at 2/min and pays -4/min over 11652 outcomes: a number in the source the correction cannot bring down
+2026-09-22 04:09:50,clear,prowl,,,,cleared,0,prowl's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-22 04:10:50,raised,pickings,22,12,199,read by the auction,0,pickings is read by the auction at 22/min and pays 12/min over 199 outcomes: a number in the source the correction cannot bring down
+2026-09-22 04:25:50,still,drill,9,-1,178,read by the auction,15,drill is read by the auction at 9/min and pays -1/min over 178 outcomes: a number in the source the correction cannot bring down
+2026-09-22 04:40:50,still,enlist,13,-30,53,read by the auction,30,enlist is read by the auction at 13/min and pays -30/min over 53 outcomes: a number in the source the correction cannot bring down
+2026-09-22 04:56:50,still,enlist,13,-30,53,read by the auction,45,enlist is read by the auction at 13/min and pays -30/min over 53 outcomes: a number in the source the correction cannot bring down
+2026-09-22 05:12:34,raised,band,3,-2,734,read by the auction,0,band is read by the auction at 3/min and pays -2/min over 734 outcomes: a number in the source the correction cannot bring down
+2026-09-22 05:27:34,still,drill,9,1,188,read by the auction,14,drill is read by the auction at 9/min and pays 1/min over 188 outcomes: a number in the source the correction cannot bring down
+2026-09-22 05:42:34,still,enlist,12,-24,54,read by the auction,29,enlist is read by the auction at 12/min and pays -24/min over 54 outcomes: a number in the source the correction cannot bring down
+2026-09-22 05:57:34,still,mend,18,-28,1091,read by the auction,44,mend is read by the auction at 18/min and pays -28/min over 1091 outcomes: a number in the source the correction cannot bring down
+2026-09-22 06:12:34,still,mend,14,-18,1093,read by the auction,59,mend is read by the auction at 14/min and pays -18/min over 1093 outcomes: a number in the source the correction cannot bring down
+2026-09-22 06:28:34,still,enlist,10,-1,56,read by the auction,76,enlist is read by the auction at 10/min and pays -1/min over 56 outcomes: a number in the source the correction cannot bring down
+2026-09-22 06:44:34,still,enlist,10,-1,56,read by the auction,91,enlist is read by the auction at 10/min and pays -1/min over 56 outcomes: a number in the source the correction cannot bring down
+2026-09-22 06:59:34,still,fletch,23,0,274,read by the auction,106,fletch is read by the auction at 23/min and pays 0/min over 274 outcomes: a number in the source the correction cannot bring down
+2026-09-22 07:14:34,still,enlist,10,-1,56,read by the auction,121,enlist is read by the auction at 10/min and pays -1/min over 56 outcomes: a number in the source the correction cannot bring down
+2026-09-22 07:29:34,still,mend,12,5,1147,read by the auction,136,mend is read by the auction at 12/min and pays 5/min over 1147 outcomes: a number in the source the correction cannot bring down
+2026-09-22 07:44:34,still,mend,19,0,1176,read by the auction,151,mend is read by the auction at 19/min and pays 0/min over 1176 outcomes: a number in the source the correction cannot bring down
+2026-09-22 07:57:34,clear,mend,,,,cleared,164,mend's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-22 08:00:34,raised,mend,13,7,1187,read by the auction,0,mend is read by the auction at 13/min and pays 7/min over 1187 outcomes: a number in the source the correction cannot bring down
+2026-09-22 08:16:34,still,drill,9,2,212,read by the auction,15,drill is read by the auction at 9/min and pays 2/min over 212 outcomes: a number in the source the correction cannot bring down
+2026-09-22 08:31:34,still,sew,14,-33,1629,read by the auction,30,sew is read by the auction at 14/min and pays -33/min over 1629 outcomes: a number in the source the correction cannot bring down
+2026-09-22 08:47:34,still,fletch,23,-7,320,read by the auction,47,fletch is read by the auction at 23/min and pays -7/min over 320 outcomes: a number in the source the correction cannot bring down
+2026-09-22 09:03:34,still,drill,9,-9,214,read by the auction,62,drill is read by the auction at 9/min and pays -9/min over 214 outcomes: a number in the source the correction cannot bring down
+2026-09-22 09:18:34,still,mend,16,5,1229,read by the auction,78,mend is read by the auction at 16/min and pays 5/min over 1229 outcomes: a number in the source the correction cannot bring down
+2026-09-22 09:22:35,raised,mend,19,4,1230,read by the auction,0,mend is read by the auction at 19/min and pays 4/min over 1230 outcomes: a number in the source the correction cannot bring down
+2026-09-22 09:37:35,still,mend,19,-28,1235,read by the auction,14,mend is read by the auction at 19/min and pays -28/min over 1235 outcomes: a number in the source the correction cannot bring down
+2026-09-22 09:52:35,still,mend,15,-2,1239,read by the auction,29,mend is read by the auction at 15/min and pays -2/min over 1239 outcomes: a number in the source the correction cannot bring down
+2026-09-22 09:53:35,clear,mend,,,,cleared,30,mend's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-22 09:57:35,raised,inscribe,15,3,1187,read by the auction,0,inscribe is read by the auction at 15/min and pays 3/min over 1187 outcomes: a number in the source the correction cannot bring down
+2026-09-22 09:58:35,clear,inscribe,,,,cleared,1,inscribe's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-22 10:03:35,raised,mine,11,2,15357,read by the auction,0,mine is read by the auction at 11/min and pays 2/min over 15357 outcomes: a number in the source the correction cannot bring down
+2026-09-22 10:04:35,clear,mine,,,,cleared,0,mine's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-22 10:05:35,raised,mine,11,4,15402,read by the auction,0,mine is read by the auction at 11/min and pays 4/min over 15402 outcomes: a number in the source the correction cannot bring down
+2026-09-22 10:07:35,clear,prowl,,,,cleared,2,prowl's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-22 10:10:35,raised,prowl,2,-4,20478,read by the auction,0,prowl is read by the auction at 2/min and pays -4/min over 20478 outcomes: a number in the source the correction cannot bring down
+2026-09-22 10:11:35,clear,prowl,,,,cleared,1,prowl's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-22 10:12:35,raised,mine,11,4,15572,read by the auction,0,mine is read by the auction at 11/min and pays 4/min over 15572 outcomes: a number in the source the correction cannot bring down
+2026-09-22 10:13:35,clear,mine,,,,cleared,0,mine's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-22 10:18:35,raised,mine,11,0,15673,read by the auction,0,mine is read by the auction at 11/min and pays 0/min over 15673 outcomes: a number in the source the correction cannot bring down
+2026-09-22 10:19:35,clear,mine,,,,cleared,1,mine's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-22 10:24:35,raised,inscribe,15,-9,1294,read by the auction,0,inscribe is read by the auction at 15/min and pays -9/min over 1294 outcomes: a number in the source the correction cannot bring down
+2026-09-22 10:28:35,clear,inscribe,,,,cleared,3,inscribe's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-22 10:31:35,raised,mine,11,3,15872,read by the auction,0,mine is read by the auction at 11/min and pays 3/min over 15872 outcomes: a number in the source the correction cannot bring down
+2026-09-22 10:32:35,clear,mine,,,,cleared,1,mine's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-22 10:36:35,raised,mine,11,3,15956,read by the auction,0,mine is read by the auction at 11/min and pays 3/min over 15956 outcomes: a number in the source the correction cannot bring down
+2026-09-22 10:37:35,clear,mine,,,,cleared,0,mine's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-22 10:38:35,raised,mine,11,4,15988,read by the auction,0,mine is read by the auction at 11/min and pays 4/min over 15988 outcomes: a number in the source the correction cannot bring down
+2026-09-22 10:40:35,clear,mine,,,,cleared,2,mine's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-22 10:41:35,raised,mine,11,2,16041,read by the auction,0,mine is read by the auction at 11/min and pays 2/min over 16041 outcomes: a number in the source the correction cannot bring down
+2026-09-22 10:52:35,clear,mine,,,,cleared,10,mine's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-22 11:01:35,raised,mine,11,6,16404,read by the auction,0,mine is read by the auction at 11/min and pays 6/min over 16404 outcomes: a number in the source the correction cannot bring down
+2026-09-22 11:05:45,raised,band,6,0,1016,read by the auction,0,band is read by the auction at 6/min and pays 0/min over 1016 outcomes: a number in the source the correction cannot bring down
+2026-09-22 11:09:45,clear,band,,,,cleared,4,band's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-22 11:12:45,raised,prowl,2,-31,22312,read by the auction,0,prowl is read by the auction at 2/min and pays -31/min over 22312 outcomes: a number in the source the correction cannot bring down
+2026-09-22 11:13:45,clear,prowl,,,,cleared,1,prowl's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-22 11:16:45,raised,band,7,-8,1027,read by the auction,0,band is read by the auction at 7/min and pays -8/min over 1027 outcomes: a number in the source the correction cannot bring down
+2026-09-22 11:32:45,still,drill,9,-6,216,read by the auction,15,drill is read by the auction at 9/min and pays -6/min over 216 outcomes: a number in the source the correction cannot bring down
+2026-09-22 11:41:06,raised,band,7,1,1043,read by the auction,0,band is read by the auction at 7/min and pays 1/min over 1043 outcomes: a number in the source the correction cannot bring down
+2026-09-22 11:42:06,clear,band,,,,cleared,0,band's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-22 11:46:06,raised,acquire,3,-10,2388,read by the auction,0,acquire is read by the auction at 3/min and pays -10/min over 2388 outcomes: a number in the source the correction cannot bring down
+2026-09-22 12:01:06,still,drill,9,-5,217,read by the auction,14,drill is read by the auction at 9/min and pays -5/min over 217 outcomes: a number in the source the correction cannot bring down
+2026-09-22 12:16:24,raised,band,7,-7,1083,read by the auction,0,band is read by the auction at 7/min and pays -7/min over 1083 outcomes: a number in the source the correction cannot bring down
+2026-09-22 12:19:24,clear,band,,,,cleared,2,band's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-22 12:20:24,raised,drill,9,-2,221,read by the auction,0,drill is read by the auction at 9/min and pays -2/min over 221 outcomes: a number in the source the correction cannot bring down
+2026-09-22 12:22:24,clear,drill,,,,cleared,1,drill's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-22 12:25:24,raised,mend,24,14,1303,read by the auction,0,mend is read by the auction at 24/min and pays 14/min over 1303 outcomes: a number in the source the correction cannot bring down
+2026-09-22 12:41:24,still,mend,20,10,1312,read by the auction,16,mend is read by the auction at 20/min and pays 10/min over 1312 outcomes: a number in the source the correction cannot bring down
+2026-09-22 12:56:24,still,mend,16,4,1316,read by the auction,31,mend is read by the auction at 16/min and pays 4/min over 1316 outcomes: a number in the source the correction cannot bring down
+2026-09-22 13:12:25,still,reclaim,5,-24,74,read by the auction,47,reclaim is read by the auction at 5/min and pays -24/min over 74 outcomes: a number in the source the correction cannot bring down
+2026-09-22 13:26:32,raised,band,7,-1,1149,read by the auction,0,band is read by the auction at 7/min and pays -1/min over 1149 outcomes: a number in the source the correction cannot bring down
+2026-09-22 13:42:32,still,reclaim,5,-18,75,read by the auction,15,reclaim is read by the auction at 5/min and pays -18/min over 75 outcomes: a number in the source the correction cannot bring down
+2026-09-22 13:57:32,still,mine,11,5,18267,read by the auction,30,mine is read by the auction at 11/min and pays 5/min over 18267 outcomes: a number in the source the correction cannot bring down
+2026-09-22 14:03:53,raised,band,7,1,1186,read by the auction,0,band is read by the auction at 7/min and pays 1/min over 1186 outcomes: a number in the source the correction cannot bring down
+2026-09-22 14:18:53,still,liberate,55,6,26,read by the auction,14,liberate is read by the auction at 55/min and pays 6/min over 26 outcomes: a number in the source the correction cannot bring down
+2026-09-22 14:34:53,still,liberate,55,5,27,read by the auction,31,liberate is read by the auction at 55/min and pays 5/min over 27 outcomes: a number in the source the correction cannot bring down
+2026-09-22 14:50:53,still,liberate,55,5,27,read by the auction,46,liberate is read by the auction at 55/min and pays 5/min over 27 outcomes: a number in the source the correction cannot bring down
+2026-09-22 15:06:53,still,liberate,55,7,28,read by the auction,63,liberate is read by the auction at 55/min and pays 7/min over 28 outcomes: a number in the source the correction cannot bring down
+2026-09-22 15:12:00,raised,mine,11,0,19479,read by the auction,0,mine is read by the auction at 11/min and pays 0/min over 19479 outcomes: a number in the source the correction cannot bring down
+2026-09-22 15:27:00,still,mend,22,-3,1388,read by the auction,14,mend is read by the auction at 22/min and pays -3/min over 1388 outcomes: a number in the source the correction cannot bring down
+2026-09-22 15:30:00,clear,prowl,,,,cleared,17,prowl's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-22 15:34:00,raised,band,7,2,1287,read by the auction,0,band is read by the auction at 7/min and pays 2/min over 1287 outcomes: a number in the source the correction cannot bring down
+2026-09-22 15:49:21,raised,band,7,0,1296,read by the auction,0,band is read by the auction at 7/min and pays 0/min over 1296 outcomes: a number in the source the correction cannot bring down
+2026-09-22 16:04:21,still,liberate,55,6,29,read by the auction,14,liberate is read by the auction at 55/min and pays 6/min over 29 outcomes: a number in the source the correction cannot bring down
+2026-09-22 16:19:21,still,liberate,55,6,29,read by the auction,29,liberate is read by the auction at 55/min and pays 6/min over 29 outcomes: a number in the source the correction cannot bring down
+2026-09-22 16:34:21,still,liberate,55,6,29,read by the auction,44,liberate is read by the auction at 55/min and pays 6/min over 29 outcomes: a number in the source the correction cannot bring down
+2026-09-22 16:49:21,still,liberate,55,6,29,read by the auction,60,liberate is read by the auction at 55/min and pays 6/min over 29 outcomes: a number in the source the correction cannot bring down
+2026-09-22 16:59:17,raised,mend,20,-3,1432,read by the auction,0,mend is read by the auction at 20/min and pays -3/min over 1432 outcomes: a number in the source the correction cannot bring down
+2026-09-22 17:14:17,still,mend,15,-2,1434,read by the auction,15,mend is read by the auction at 15/min and pays -2/min over 1434 outcomes: a number in the source the correction cannot bring down
+2026-09-22 17:17:17,clear,acquire,,,,cleared,18,acquire's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-22 17:18:17,raised,fletch,23,-4,457,read by the auction,0,fletch is read by the auction at 23/min and pays -4/min over 457 outcomes: a number in the source the correction cannot bring down
+2026-09-22 17:20:17,clear,fletch,,,,cleared,2,fletch's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-22 17:25:17,raised,prowl,2,-4,32645,read by the auction,0,prowl is read by the auction at 2/min and pays -4/min over 32645 outcomes: a number in the source the correction cannot bring down
+2026-09-22 17:26:17,clear,prowl,,,,cleared,0,prowl's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-22 17:27:17,raised,band,7,-2,1375,read by the auction,0,band is read by the auction at 7/min and pays -2/min over 1375 outcomes: a number in the source the correction cannot bring down
+2026-09-22 17:43:17,still,band,7,0,1385,read by the auction,15,band is read by the auction at 7/min and pays -0/min over 1385 outcomes: a number in the source the correction cannot bring down
+2026-09-22 17:46:17,clear,band,,,,cleared,18,band's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-22 17:50:17,raised,band,7,2,1391,read by the auction,0,band is read by the auction at 7/min and pays 2/min over 1391 outcomes: a number in the source the correction cannot bring down
+2026-09-22 18:05:17,still,liberate,55,5,30,read by the auction,15,liberate is read by the auction at 55/min and pays 5/min over 30 outcomes: a number in the source the correction cannot bring down
+2026-09-22 18:07:32,raised,prowl,2,-6,33519,read by the auction,0,prowl is read by the auction at 2/min and pays -6/min over 33519 outcomes: a number in the source the correction cannot bring down
+2026-09-22 18:08:32,clear,prowl,,,,cleared,0,prowl's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-22 18:13:32,raised,band,7,2,1409,read by the auction,0,band is read by the auction at 7/min and pays 2/min over 1409 outcomes: a number in the source the correction cannot bring down
+2026-09-22 18:18:32,clear,band,,,,cleared,5,band's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-22 18:26:32,raised,band,7,2,1425,read by the auction,0,band is read by the auction at 7/min and pays 2/min over 1425 outcomes: a number in the source the correction cannot bring down
+2026-09-22 18:32:32,clear,band,,,,cleared,6,band's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-22 18:33:32,raised,band,7,2,1432,read by the auction,0,band is read by the auction at 7/min and pays 2/min over 1432 outcomes: a number in the source the correction cannot bring down
+2026-09-22 18:48:32,still,band,7,0,1439,read by the auction,15,band is read by the auction at 7/min and pays -0/min over 1439 outcomes: a number in the source the correction cannot bring down
+2026-09-22 18:50:32,clear,prowl,,,,cleared,17,prowl's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-22 18:52:32,raised,band,7,2,1446,read by the auction,0,band is read by the auction at 7/min and pays 2/min over 1446 outcomes: a number in the source the correction cannot bring down
+2026-09-22 19:07:32,still,liberate,55,4,31,read by the auction,15,liberate is read by the auction at 55/min and pays 4/min over 31 outcomes: a number in the source the correction cannot bring down
+2026-09-24 01:57:50,raised,band,7,-1,1476,read by the auction,0,band is read by the auction at 7/min and pays -1/min over 1476 outcomes: a number in the source the correction cannot bring down
+2026-09-24 01:58:50,clear,band,,,,cleared,0,band's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-24 01:59:50,raised,band,7,2,1481,read by the auction,0,band is read by the auction at 7/min and pays 2/min over 1481 outcomes: a number in the source the correction cannot bring down
+2026-09-24 02:10:24,raised,band,7,2,1488,read by the auction,0,band is read by the auction at 7/min and pays 2/min over 1488 outcomes: a number in the source the correction cannot bring down
+2026-09-24 02:13:23,raised,band,7,1,1492,read by the auction,0,band is read by the auction at 7/min and pays 1/min over 1492 outcomes: a number in the source the correction cannot bring down
+2026-09-24 02:28:23,still,band,7,-1,1507,read by the auction,15,band is read by the auction at 7/min and pays -1/min over 1507 outcomes: a number in the source the correction cannot bring down
+2026-09-24 02:41:23,clear,fletch,,,,cleared,27,fletch's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-24 02:52:02,raised,band,7,2,1523,read by the auction,0,band is read by the auction at 7/min and pays 2/min over 1523 outcomes: a number in the source the correction cannot bring down
+2026-09-24 02:55:02,raised,liberate,55,2,32,read by the auction,0,liberate is read by the auction at 55/min and pays 2/min over 32 outcomes: a number in the source the correction cannot bring down
+2026-09-24 03:10:02,still,liberate,55,5,33,read by the auction,14,liberate is read by the auction at 55/min and pays 5/min over 33 outcomes: a number in the source the correction cannot bring down
+2026-09-24 03:25:02,still,liberate,55,5,33,read by the auction,29,liberate is read by the auction at 55/min and pays 5/min over 33 outcomes: a number in the source the correction cannot bring down
+2026-09-24 03:35:31,raised,mine,11,2,25296,read by the auction,0,mine is read by the auction at 11/min and pays 2/min over 25296 outcomes: a number in the source the correction cannot bring down
+2026-09-24 03:36:31,clear,mine,,,,cleared,0,mine's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-24 03:44:31,raised,band,7,2,1570,read by the auction,0,band is read by the auction at 7/min and pays 2/min over 1570 outcomes: a number in the source the correction cannot bring down
+2026-09-24 03:45:31,clear,band,,,,cleared,0,band's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-24 03:47:31,raised,mend,18,1,1530,read by the auction,0,mend is read by the auction at 18/min and pays 1/min over 1530 outcomes: a number in the source the correction cannot bring down
+2026-09-24 04:03:31,still,liberate,55,-2,35,read by the auction,16,liberate is read by the auction at 55/min and pays -2/min over 35 outcomes: a number in the source the correction cannot bring down
+2026-09-24 04:17:56,raised,mend,18,7,1547,read by the auction,0,mend is read by the auction at 18/min and pays 7/min over 1547 outcomes: a number in the source the correction cannot bring down
+2026-09-24 04:32:56,clear,mend,,,,cleared,14,mend's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-24 04:33:56,raised,mine,11,-2,26238,read by the auction,0,mine is read by the auction at 11/min and pays -2/min over 26238 outcomes: a number in the source the correction cannot bring down
+2026-09-24 04:36:56,clear,hunt,,,,cleared,2,hunt's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-24 04:39:56,raised,band,7,2,1628,read by the auction,0,band is read by the auction at 7/min and pays 2/min over 1628 outcomes: a number in the source the correction cannot bring down
+2026-09-24 04:54:56,still,liberate,55,0,36,read by the auction,15,liberate is read by the auction at 55/min and pays -0/min over 36 outcomes: a number in the source the correction cannot bring down
+2026-09-24 05:01:29,raised,band,7,0,1650,read by the auction,0,band is read by the auction at 7/min and pays -0/min over 1650 outcomes: a number in the source the correction cannot bring down
+2026-09-24 05:17:29,still,liberate,55,0,37,read by the auction,15,liberate is read by the auction at 55/min and pays -0/min over 37 outcomes: a number in the source the correction cannot bring down
+2026-09-24 05:32:29,still,liberate,55,0,37,read by the auction,30,liberate is read by the auction at 55/min and pays -0/min over 37 outcomes: a number in the source the correction cannot bring down
+2026-09-24 05:50:20,raised,mine,11,2,26962,read by the auction,0,mine is read by the auction at 11/min and pays 2/min over 26962 outcomes: a number in the source the correction cannot bring down
+2026-09-24 05:51:20,clear,mine,,,,cleared,0,mine's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-24 05:53:20,raised,band,7,2,1685,read by the auction,0,band is read by the auction at 7/min and pays 2/min over 1685 outcomes: a number in the source the correction cannot bring down
+2026-09-24 06:08:20,still,band,7,0,1696,read by the auction,15,band is read by the auction at 7/min and pays 0/min over 1696 outcomes: a number in the source the correction cannot bring down
+2026-09-24 06:16:20,clear,band,,,,cleared,23,band's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-24 06:26:20,raised,band,7,2,1709,read by the auction,0,band is read by the auction at 7/min and pays 2/min over 1709 outcomes: a number in the source the correction cannot bring down
+2026-09-24 06:34:37,raised,band,7,1,1712,read by the auction,0,band is read by the auction at 7/min and pays 1/min over 1712 outcomes: a number in the source the correction cannot bring down
+2026-09-24 06:50:37,still,liberate,55,0,38,read by the auction,16,liberate is read by the auction at 55/min and pays -0/min over 38 outcomes: a number in the source the correction cannot bring down
+2026-09-24 07:15:54,raised,band,7,2,1737,read by the auction,0,band is read by the auction at 7/min and pays 2/min over 1737 outcomes: a number in the source the correction cannot bring down
+2026-09-24 07:21:49,raised,band,7,1,1740,read by the auction,0,band is read by the auction at 7/min and pays 1/min over 1740 outcomes: a number in the source the correction cannot bring down
+2026-09-24 07:36:49,still,liberate,55,0,39,read by the auction,14,liberate is read by the auction at 55/min and pays -0/min over 39 outcomes: a number in the source the correction cannot bring down
+2026-09-24 07:51:49,still,liberate,55,0,39,read by the auction,29,liberate is read by the auction at 55/min and pays -0/min over 39 outcomes: a number in the source the correction cannot bring down
+2026-09-24 08:13:39,raised,band,7,2,1763,read by the auction,0,band is read by the auction at 7/min and pays 2/min over 1763 outcomes: a number in the source the correction cannot bring down
+2026-09-24 08:29:39,still,mend,14,6,1605,read by the auction,16,mend is read by the auction at 14/min and pays 6/min over 1605 outcomes: a number in the source the correction cannot bring down
+2026-09-24 08:44:39,still,mend,12,4,1607,read by the auction,31,mend is read by the auction at 12/min and pays 4/min over 1607 outcomes: a number in the source the correction cannot bring down
+2026-09-24 08:49:22,raised,mend,12,4,1607,read by the auction,0,mend is read by the auction at 12/min and pays 4/min over 1607 outcomes: a number in the source the correction cannot bring down
+2026-09-24 08:50:22,clear,mend,,,,cleared,1,mend's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-24 09:12:22,raised,drill,9,4,55,read by the auction,0,drill is read by the auction at 9/min and pays 4/min over 55 outcomes: a number in the source the correction cannot bring down
+2026-09-24 09:14:22,clear,drill,,,,cleared,1,drill's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-24 09:17:22,raised,drill,9,4,58,read by the auction,0,drill is read by the auction at 9/min and pays 4/min over 58 outcomes: a number in the source the correction cannot bring down
+2026-09-24 09:32:36,raised,drill,9,2,62,read by the auction,0,drill is read by the auction at 9/min and pays 2/min over 62 outcomes: a number in the source the correction cannot bring down
+2026-09-24 09:33:36,clear,drill,,,,cleared,1,drill's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-24 09:34:36,raised,band,7,2,1803,read by the auction,0,band is read by the auction at 7/min and pays 2/min over 1803 outcomes: a number in the source the correction cannot bring down
+2026-09-24 09:49:36,still,band,7,1,1805,read by the auction,14,band is read by the auction at 7/min and pays 1/min over 1805 outcomes: a number in the source the correction cannot bring down
+2026-09-24 09:53:09,raised,band,7,1,1807,read by the auction,0,band is read by the auction at 7/min and pays 1/min over 1807 outcomes: a number in the source the correction cannot bring down
+2026-09-24 09:55:33,raised,liberate,55,0,39,read by the auction,0,liberate is read by the auction at 55/min and pays -0/min over 39 outcomes: a number in the source the correction cannot bring down
+2026-09-24 10:10:33,still,liberate,55,0,40,read by the auction,14,liberate is read by the auction at 55/min and pays -0/min over 40 outcomes: a number in the source the correction cannot bring down
+2026-09-24 10:14:40,raised,band,7,1,1809,read by the auction,0,band is read by the auction at 7/min and pays 1/min over 1809 outcomes: a number in the source the correction cannot bring down
+2026-09-24 10:21:55,raised,band,7,0,1810,read by the auction,0,band is read by the auction at 7/min and pays 0/min over 1810 outcomes: a number in the source the correction cannot bring down
+2026-09-24 10:36:55,still,liberate,55,0,41,read by the auction,14,liberate is read by the auction at 55/min and pays -0/min over 41 outcomes: a number in the source the correction cannot bring down
+2026-09-24 10:51:55,still,liberate,55,0,41,read by the auction,29,liberate is read by the auction at 55/min and pays -0/min over 41 outcomes: a number in the source the correction cannot bring down
+2026-09-24 11:16:21,raised,band,7,2,1838,read by the auction,0,band is read by the auction at 7/min and pays 2/min over 1838 outcomes: a number in the source the correction cannot bring down
+2026-09-24 11:25:21,clear,band,,,,cleared,9,band's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-24 11:36:21,raised,mend,21,9,1645,read by the auction,0,mend is read by the auction at 21/min and pays 9/min over 1645 outcomes: a number in the source the correction cannot bring down
+2026-09-24 11:38:21,clear,mend,,,,cleared,2,mend's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-24 11:41:21,raised,band,7,2,1859,read by the auction,0,band is read by the auction at 7/min and pays 2/min over 1859 outcomes: a number in the source the correction cannot bring down
+2026-09-24 11:48:56,raised,band,7,-21,1867,read by the auction,0,band is read by the auction at 7/min and pays -21/min over 1867 outcomes: a number in the source the correction cannot bring down
+2026-09-24 12:03:56,still,band,7,-1,1880,read by the auction,14,band is read by the auction at 7/min and pays -1/min over 1880 outcomes: a number in the source the correction cannot bring down
+2026-09-24 12:18:56,still,band,7,-34,1894,read by the auction,29,band is read by the auction at 7/min and pays -34/min over 1894 outcomes: a number in the source the correction cannot bring down
+2026-09-24 12:32:20,raised,inscribe,15,5,2506,read by the auction,0,inscribe is read by the auction at 15/min and pays 5/min over 2506 outcomes: a number in the source the correction cannot bring down
+2026-09-24 12:36:20,clear,inscribe,,,,cleared,4,inscribe's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-24 12:37:20,raised,mine,11,5,29905,read by the auction,0,mine is read by the auction at 11/min and pays 5/min over 29905 outcomes: a number in the source the correction cannot bring down
+2026-09-24 12:38:20,clear,mine,,,,cleared,0,mine's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-24 13:05:20,raised,mine,11,2,30139,read by the auction,0,mine is read by the auction at 11/min and pays 2/min over 30139 outcomes: a number in the source the correction cannot bring down
+2026-09-24 13:06:20,clear,mine,,,,cleared,1,mine's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-24 13:11:20,raised,inscribe,15,1,2543,read by the auction,0,inscribe is read by the auction at 15/min and pays 1/min over 2543 outcomes: a number in the source the correction cannot bring down
+2026-09-24 13:12:20,clear,inscribe,,,,cleared,0,inscribe's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-24 13:13:20,raised,inscribe,15,-1,2546,read by the auction,0,inscribe is read by the auction at 15/min and pays -1/min over 2546 outcomes: a number in the source the correction cannot bring down
+2026-09-24 13:14:20,clear,inscribe,,,,cleared,1,inscribe's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-24 13:18:20,raised,mend,24,-15,1708,read by the auction,0,mend is read by the auction at 24/min and pays -15/min over 1708 outcomes: a number in the source the correction cannot bring down
+2026-09-24 13:25:58,raised,mend,18,-16,1712,read by the auction,0,mend is read by the auction at 18/min and pays -16/min over 1712 outcomes: a number in the source the correction cannot bring down
+2026-09-24 13:40:58,still,mend,21,1,1725,read by the auction,15,mend is read by the auction at 21/min and pays 1/min over 1725 outcomes: a number in the source the correction cannot bring down
+2026-09-24 13:56:58,still,mend,18,-35,1728,read by the auction,31,mend is read by the auction at 18/min and pays -35/min over 1728 outcomes: a number in the source the correction cannot bring down
+2026-09-24 14:06:46,raised,liberate,55,0,41,read by the auction,0,liberate is read by the auction at 55/min and pays -0/min over 41 outcomes: a number in the source the correction cannot bring down
+2026-09-24 14:18:54,raised,mend,17,-12,1733,read by the auction,0,mend is read by the auction at 17/min and pays -12/min over 1733 outcomes: a number in the source the correction cannot bring down
+2026-09-24 14:33:54,clear,band,,,,cleared,14,band's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-24 14:41:54,raised,fletch,23,3,801,read by the auction,0,fletch is read by the auction at 23/min and pays 3/min over 801 outcomes: a number in the source the correction cannot bring down
+2026-09-24 14:48:07,raised,band,7,1,1995,read by the auction,0,band is read by the auction at 7/min and pays 1/min over 1995 outcomes: a number in the source the correction cannot bring down
+2026-09-24 14:50:07,clear,band,,,,cleared,2,band's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-24 14:55:07,raised,liberate,55,0,41,read by the auction,0,liberate is read by the auction at 55/min and pays -0/min over 41 outcomes: a number in the source the correction cannot bring down
+2026-09-24 15:10:07,still,liberate,55,2,43,read by the auction,15,liberate is read by the auction at 55/min and pays 2/min over 43 outcomes: a number in the source the correction cannot bring down
+2026-09-24 15:25:07,still,liberate,55,2,43,read by the auction,29,liberate is read by the auction at 55/min and pays 2/min over 43 outcomes: a number in the source the correction cannot bring down
+2026-09-24 15:33:54,raised,band,7,1,2022,read by the auction,0,band is read by the auction at 7/min and pays 1/min over 2022 outcomes: a number in the source the correction cannot bring down
+2026-09-24 15:47:54,clear,band,,,,cleared,14,band's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-24 15:49:54,raised,mine,11,-2,31808,read by the auction,0,mine is read by the auction at 11/min and pays -2/min over 31808 outcomes: a number in the source the correction cannot bring down
+2026-09-24 15:50:54,clear,mine,,,,cleared,0,mine's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-24 15:52:54,raised,band,7,2,2031,read by the auction,0,band is read by the auction at 7/min and pays 2/min over 2031 outcomes: a number in the source the correction cannot bring down
+2026-09-24 15:58:54,clear,band,,,,cleared,5,band's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-24 16:17:28,raised,mend,17,10,1754,read by the auction,0,mend is read by the auction at 17/min and pays 10/min over 1754 outcomes: a number in the source the correction cannot bring down
+2026-09-24 16:32:28,still,mend,13,6,1756,read by the auction,15,mend is read by the auction at 13/min and pays 6/min over 1756 outcomes: a number in the source the correction cannot bring down
+2026-09-24 16:42:28,clear,band,,,,cleared,25,band's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-24 16:57:28,raised,reclaim,5,-1,118,read by the auction,0,reclaim is read by the auction at 5/min and pays -1/min over 118 outcomes: a number in the source the correction cannot bring down
+2026-09-24 17:13:11,raised,cook,18,-8,2392,read by the auction,0,cook is read by the auction at 18/min and pays -8/min over 2392 outcomes: a number in the source the correction cannot bring down
+2026-09-24 17:14:11,clear,cook,,,,cleared,0,cook's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-24 17:20:11,raised,inscribe,15,-20,2718,read by the auction,0,inscribe is read by the auction at 15/min and pays -20/min over 2718 outcomes: a number in the source the correction cannot bring down
+2026-09-24 17:24:11,clear,band,,,,cleared,3,band's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-24 17:27:11,raised,fletch,23,-2,862,read by the auction,0,fletch is read by the auction at 23/min and pays -2/min over 862 outcomes: a number in the source the correction cannot bring down
+2026-09-24 17:29:11,clear,sew,,,,cleared,1,sew's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-24 17:30:11,raised,mine,11,4,32917,read by the auction,0,mine is read by the auction at 11/min and pays 4/min over 32917 outcomes: a number in the source the correction cannot bring down
+2026-09-24 17:31:11,clear,mine,,,,cleared,1,mine's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-24 17:34:11,raised,fletch,23,14,867,read by the auction,0,fletch is read by the auction at 23/min and pays 14/min over 867 outcomes: a number in the source the correction cannot bring down
+2026-09-24 17:35:11,clear,fletch,,,,cleared,1,fletch's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-24 18:02:11,raised,prowl,2,-14,50890,read by the auction,0,prowl is read by the auction at 2/min and pays -14/min over 50890 outcomes: a number in the source the correction cannot bring down
+2026-09-24 18:03:11,clear,prowl,,,,cleared,1,prowl's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-24 18:04:11,raised,mend,13,5,1810,read by the auction,0,mend is read by the auction at 13/min and pays 5/min over 1810 outcomes: a number in the source the correction cannot bring down
+2026-09-24 18:14:39,raised,mine,11,5,33165,read by the auction,0,mine is read by the auction at 11/min and pays 5/min over 33165 outcomes: a number in the source the correction cannot bring down
+2026-09-24 18:15:39,clear,mine,,,,cleared,0,mine's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-24 18:16:39,raised,mine,11,3,33275,read by the auction,0,mine is read by the auction at 11/min and pays 3/min over 33275 outcomes: a number in the source the correction cannot bring down
+2026-09-24 18:17:39,clear,mine,,,,cleared,0,mine's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-24 18:19:39,raised,herbs,10,5,2899,read by the auction,0,herbs is read by the auction at 10/min and pays 5/min over 2899 outcomes: a number in the source the correction cannot bring down
+2026-09-24 18:27:39,clear,herbs,,,,cleared,8,herbs's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-24 18:39:26,raised,cook,18,1,2569,read by the auction,0,cook is read by the auction at 18/min and pays 1/min over 2569 outcomes: a number in the source the correction cannot bring down
+2026-09-24 18:41:26,clear,prowl,,,,cleared,1,prowl's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-24 18:42:26,raised,prowl,2,-4,51194,read by the auction,0,prowl is read by the auction at 2/min and pays -4/min over 51194 outcomes: a number in the source the correction cannot bring down
+2026-09-24 18:43:26,clear,prowl,,,,cleared,0,prowl's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-24 18:45:26,raised,mine,11,0,33613,read by the auction,0,mine is read by the auction at 11/min and pays 0/min over 33613 outcomes: a number in the source the correction cannot bring down
+2026-09-24 18:46:26,clear,mine,,,,cleared,0,mine's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-24 18:48:26,raised,band,7,2,2122,read by the auction,0,band is read by the auction at 7/min and pays 2/min over 2122 outcomes: a number in the source the correction cannot bring down
+2026-09-24 19:03:26,still,band,7,-23,2134,read by the auction,15,band is read by the auction at 7/min and pays -23/min over 2134 outcomes: a number in the source the correction cannot bring down
+2026-09-24 19:18:26,still,liberate,55,2,44,read by the auction,30,liberate is read by the auction at 55/min and pays 2/min over 44 outcomes: a number in the source the correction cannot bring down
+2026-09-24 19:33:26,still,liberate,55,2,44,read by the auction,45,liberate is read by the auction at 55/min and pays 2/min over 44 outcomes: a number in the source the correction cannot bring down
+2026-09-24 19:48:26,still,liberate,55,2,44,read by the auction,60,liberate is read by the auction at 55/min and pays 2/min over 44 outcomes: a number in the source the correction cannot bring down
+2026-09-24 20:02:29,raised,band,7,0,2176,read by the auction,0,band is read by the auction at 7/min and pays 0/min over 2176 outcomes: a number in the source the correction cannot bring down
+2026-09-24 20:10:01,raised,liberate,55,2,44,read by the auction,0,liberate is read by the auction at 55/min and pays 2/min over 44 outcomes: a number in the source the correction cannot bring down
+2026-09-24 20:25:01,still,liberate,55,6,45,read by the auction,14,liberate is read by the auction at 55/min and pays 6/min over 45 outcomes: a number in the source the correction cannot bring down
+2026-09-24 20:41:01,still,liberate,55,6,45,read by the auction,30,liberate is read by the auction at 55/min and pays 6/min over 45 outcomes: a number in the source the correction cannot bring down
+2026-09-24 20:56:01,still,liberate,55,6,45,read by the auction,45,liberate is read by the auction at 55/min and pays 6/min over 45 outcomes: a number in the source the correction cannot bring down
+2026-09-24 21:11:01,still,liberate,55,6,45,read by the auction,61,liberate is read by the auction at 55/min and pays 6/min over 45 outcomes: a number in the source the correction cannot bring down
+2026-09-25 06:18:45,raised,band,7,0,2230,read by the auction,0,band is read by the auction at 7/min and pays 0/min over 2230 outcomes: a number in the source the correction cannot bring down
+2026-09-25 06:34:35,raised,mend,25,15,1855,read by the auction,0,mend is read by the auction at 25/min and pays 15/min over 1855 outcomes: a number in the source the correction cannot bring down
+2026-09-25 06:37:35,clear,mend,,,,cleared,2,mend's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-25 06:50:35,raised,hunt,22,14,20824,read by the auction,0,hunt is read by the auction at 22/min and pays 14/min over 20824 outcomes: a number in the source the correction cannot bring down
+2026-09-25 06:51:35,clear,hunt,,,,cleared,0,hunt's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-25 06:59:35,raised,glean,4,-32,2322,read by the auction,0,glean is read by the auction at 4/min and pays -32/min over 2322 outcomes: a number in the source the correction cannot bring down
+2026-09-25 07:05:02,raised,glean,4,-13,2325,read by the auction,0,glean is read by the auction at 4/min and pays -13/min over 2325 outcomes: a number in the source the correction cannot bring down
+2026-09-25 07:08:02,clear,glean,,,,cleared,2,glean's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-25 07:10:02,raised,mend,17,1,1873,read by the auction,0,mend is read by the auction at 17/min and pays 1/min over 1873 outcomes: a number in the source the correction cannot bring down
+2026-09-25 07:19:02,clear,mend,,,,cleared,8,mend's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-25 07:20:02,raised,prowl,2,-18,56349,read by the auction,0,prowl is read by the auction at 2/min and pays -18/min over 56349 outcomes: a number in the source the correction cannot bring down
+2026-09-25 07:21:02,clear,prowl,,,,cleared,0,prowl's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-25 07:31:02,raised,hunt,22,9,21140,read by the auction,0,hunt is read by the auction at 22/min and pays 9/min over 21140 outcomes: a number in the source the correction cannot bring down
+2026-09-25 07:33:02,clear,hunt,,,,cleared,2,hunt's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-25 07:46:02,raised,mine,11,2,36443,read by the auction,0,mine is read by the auction at 11/min and pays 2/min over 36443 outcomes: a number in the source the correction cannot bring down
+2026-09-25 07:47:02,clear,mine,,,,cleared,1,mine's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-25 07:54:02,raised,mend,20,9,1884,read by the auction,0,mend is read by the auction at 20/min and pays 9/min over 1884 outcomes: a number in the source the correction cannot bring down
+2026-09-25 07:58:14,raised,mend,24,-1,1888,read by the auction,0,mend is read by the auction at 24/min and pays -1/min over 1888 outcomes: a number in the source the correction cannot bring down
+2026-09-25 08:00:14,clear,mend,,,,cleared,1,mend's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-25 08:04:14,raised,prowl,2,-4,57920,read by the auction,0,prowl is read by the auction at 2/min and pays -4/min over 57920 outcomes: a number in the source the correction cannot bring down
+2026-09-25 08:05:14,clear,prowl,,,,cleared,0,prowl's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-25 08:06:14,raised,mend,11,-14,1897,read by the auction,0,mend is read by the auction at 11/min and pays -14/min over 1897 outcomes: a number in the source the correction cannot bring down
+2026-09-25 08:22:14,still,mend,11,-12,1898,read by the auction,15,mend is read by the auction at 11/min and pays -12/min over 1898 outcomes: a number in the source the correction cannot bring down
+2026-09-25 08:37:14,still,mend,11,-12,1898,read by the auction,30,mend is read by the auction at 11/min and pays -12/min over 1898 outcomes: a number in the source the correction cannot bring down
+2026-09-25 08:57:21,raised,mend,12,-5,1902,read by the auction,0,mend is read by the auction at 12/min and pays -5/min over 1902 outcomes: a number in the source the correction cannot bring down
+2026-09-25 09:12:21,still,mend,9,-11,1906,read by the auction,14,mend is read by the auction at 9/min and pays -11/min over 1906 outcomes: a number in the source the correction cannot bring down
+2026-09-25 09:25:21,clear,mend,,,,cleared,27,mend's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-25 10:03:21,raised,prowl,2,-25,61555,read by the auction,0,prowl is read by the auction at 2/min and pays -25/min over 61555 outcomes: a number in the source the correction cannot bring down
+2026-09-25 10:04:21,clear,prowl,,,,cleared,1,prowl's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-25 10:28:21,raised,prowl,2,-5,62155,read by the auction,0,prowl is read by the auction at 2/min and pays -5/min over 62155 outcomes: a number in the source the correction cannot bring down
+2026-09-25 10:29:21,clear,prowl,,,,cleared,0,prowl's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-25 10:54:21,raised,prowl,2,-4,62771,read by the auction,0,prowl is read by the auction at 2/min and pays -4/min over 62771 outcomes: a number in the source the correction cannot bring down
+2026-09-25 10:55:21,clear,prowl,,,,cleared,0,prowl's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-25 10:57:21,raised,inscribe,15,-11,3141,read by the auction,0,inscribe is read by the auction at 15/min and pays -11/min over 3141 outcomes: a number in the source the correction cannot bring down
+2026-09-25 10:58:21,clear,inscribe,,,,cleared,0,inscribe's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-25 12:08:23,raised,cook,18,-3,4097,read by the auction,0,cook is read by the auction at 18/min and pays -3/min over 4097 outcomes: a number in the source the correction cannot bring down
+2026-09-25 12:09:23,clear,cook,,,,cleared,1,cook's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-25 12:11:23,raised,prowl,2,-15,64527,read by the auction,0,prowl is read by the auction at 2/min and pays -15/min over 64527 outcomes: a number in the source the correction cannot bring down
+2026-09-25 12:12:23,clear,prowl,,,,cleared,1,prowl's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-25 12:37:23,raised,prowl,2,-87,65142,read by the auction,0,prowl is read by the auction at 2/min and pays -87/min over 65142 outcomes: a number in the source the correction cannot bring down
+2026-09-25 12:38:23,clear,prowl,,,,cleared,0,prowl's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-25 13:29:23,raised,mine,11,-31,38959,read by the auction,0,mine is read by the auction at 11/min and pays -31/min over 38959 outcomes: a number in the source the correction cannot bring down
+2026-09-25 13:31:23,clear,prowl,,,,cleared,1,prowl's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-25 13:45:23,raised,prowl,2,-160,66396,read by the auction,0,prowl is read by the auction at 2/min and pays -160/min over 66396 outcomes: a number in the source the correction cannot bring down
+2026-09-25 14:00:23,still,drill,9,-6,136,read by the auction,15,drill is read by the auction at 9/min and pays -6/min over 136 outcomes: a number in the source the correction cannot bring down
+2026-09-25 14:15:23,still,drill,9,-6,136,read by the auction,30,drill is read by the auction at 9/min and pays -6/min over 136 outcomes: a number in the source the correction cannot bring down
+2026-09-25 14:31:23,still,mend,12,4,1978,read by the auction,46,mend is read by the auction at 12/min and pays 4/min over 1978 outcomes: a number in the source the correction cannot bring down
+2026-09-25 14:47:23,still,drill,9,-6,136,read by the auction,62,drill is read by the auction at 9/min and pays -6/min over 136 outcomes: a number in the source the correction cannot bring down
+2026-09-25 15:03:23,still,drill,9,-6,136,read by the auction,78,drill is read by the auction at 9/min and pays -6/min over 136 outcomes: a number in the source the correction cannot bring down
+2026-09-25 15:18:23,still,drill,9,-6,136,read by the auction,93,drill is read by the auction at 9/min and pays -6/min over 136 outcomes: a number in the source the correction cannot bring down
+2026-09-25 15:22:49,raised,mend,8,1,1987,read by the auction,0,mend is read by the auction at 8/min and pays 1/min over 1987 outcomes: a number in the source the correction cannot bring down
+2026-09-25 15:23:49,clear,mend,,,,cleared,1,mend's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-25 16:19:50,raised,mend,9,2,2001,read by the auction,0,mend is read by the auction at 9/min and pays 2/min over 2001 outcomes: a number in the source the correction cannot bring down
+2026-09-25 16:22:50,clear,mend,,,,cleared,3,mend's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-25 16:23:50,raised,drill,9,-6,136,read by the auction,0,drill is read by the auction at 9/min and pays -6/min over 136 outcomes: a number in the source the correction cannot bring down
+2026-09-25 16:34:50,clear,drill,,,,cleared,10,drill's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-25 16:40:50,raised,prowl,2,-7,68742,read by the auction,0,prowl is read by the auction at 2/min and pays -7/min over 68742 outcomes: a number in the source the correction cannot bring down
+2026-09-25 16:41:50,clear,prowl,,,,cleared,0,prowl's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-25 16:45:50,raised,fletch,23,4,1126,read by the auction,0,fletch is read by the auction at 23/min and pays 4/min over 1126 outcomes: a number in the source the correction cannot bring down
+2026-09-25 16:48:50,clear,fletch,,,,cleared,2,fletch's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-25 16:57:29,raised,prowl,2,-7,68797,read by the auction,0,prowl is read by the auction at 2/min and pays -7/min over 68797 outcomes: a number in the source the correction cannot bring down
+2026-09-25 16:58:29,clear,prowl,,,,cleared,1,prowl's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-25 17:01:54,raised,mend,19,9,2021,read by the auction,0,mend is read by the auction at 19/min and pays 9/min over 2021 outcomes: a number in the source the correction cannot bring down
+2026-09-25 17:04:54,clear,mend,,,,cleared,3,mend's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-25 17:08:54,raised,mend,15,1,2027,read by the auction,0,mend is read by the auction at 15/min and pays 1/min over 2027 outcomes: a number in the source the correction cannot bring down
+2026-09-25 17:24:54,still,herbs,10,4,3688,read by the auction,15,herbs is read by the auction at 10/min and pays 4/min over 3688 outcomes: a number in the source the correction cannot bring down
+2026-09-25 17:28:28,raised,prowl,2,-4,69079,read by the auction,0,prowl is read by the auction at 2/min and pays -4/min over 69079 outcomes: a number in the source the correction cannot bring down
+2026-09-26 02:08:54,raised,mend,19,3,129,read by the auction,0,mend is read by the auction at 19/min and pays 3/min over 129 outcomes: a number in the source the correction cannot bring down
+2026-09-26 02:09:54,clear,mend,,,,cleared,0,mend's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-26 02:11:51,raised,mend,23,-18,138,read by the auction,0,mend is read by the auction at 23/min and pays -18/min over 138 outcomes: a number in the source the correction cannot bring down
+2026-09-26 02:14:51,clear,mend,,,,cleared,2,mend's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-26 02:55:02,raised,delve,65,41,25,read by the auction,0,delve is read by the auction at 65/min and pays 41/min over 25 outcomes: a number in the source the correction cannot bring down
+2026-09-26 03:09:02,clear,delve,,,,cleared,13,delve's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-26 03:14:02,raised,delve,65,42,33,read by the auction,0,delve is read by the auction at 65/min and pays 42/min over 33 outcomes: a number in the source the correction cannot bring down
+2026-09-26 03:27:54,raised,delve,65,22,38,read by the auction,0,delve is read by the auction at 65/min and pays 22/min over 38 outcomes: a number in the source the correction cannot bring down
+2026-09-26 03:32:54,clear,delve,,,,cleared,5,delve's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-26 03:49:52,raised,delve,65,32,44,read by the auction,0,delve is read by the auction at 65/min and pays 32/min over 44 outcomes: a number in the source the correction cannot bring down
+2026-09-26 03:55:52,clear,delve,,,,cleared,6,delve's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-26 04:01:52,raised,delve,65,40,48,read by the auction,0,delve is read by the auction at 65/min and pays 40/min over 48 outcomes: a number in the source the correction cannot bring down
+2026-09-26 04:08:21,raised,delve,65,28,50,read by the auction,0,delve is read by the auction at 65/min and pays 28/min over 50 outcomes: a number in the source the correction cannot bring down
+2026-09-26 04:16:54,raised,delve,65,17,53,read by the auction,0,delve is read by the auction at 65/min and pays 17/min over 53 outcomes: a number in the source the correction cannot bring down
+2026-09-26 04:22:54,clear,delve,,,,cleared,5,delve's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-26 04:30:24,raised,delve,65,34,59,read by the auction,0,delve is read by the auction at 65/min and pays 34/min over 59 outcomes: a number in the source the correction cannot bring down
+2026-09-26 04:32:52,raised,delve,65,34,59,read by the auction,0,delve is read by the auction at 65/min and pays 34/min over 59 outcomes: a number in the source the correction cannot bring down
+2026-09-26 04:48:52,still,delve,65,19,62,read by the auction,15,delve is read by the auction at 65/min and pays 19/min over 62 outcomes: a number in the source the correction cannot bring down
+2026-09-26 04:58:41,raised,delve,65,10,65,read by the auction,0,delve is read by the auction at 65/min and pays 10/min over 65 outcomes: a number in the source the correction cannot bring down
+2026-09-26 05:13:41,still,delve,65,32,68,read by the auction,14,delve is read by the auction at 65/min and pays 32/min over 68 outcomes: a number in the source the correction cannot bring down
+2026-09-26 05:29:41,still,delve,65,32,68,read by the auction,30,delve is read by the auction at 65/min and pays 32/min over 68 outcomes: a number in the source the correction cannot bring down
+2026-09-26 05:45:41,still,delve,65,32,68,read by the auction,46,delve is read by the auction at 65/min and pays 32/min over 68 outcomes: a number in the source the correction cannot bring down
+2026-09-26 06:00:41,still,delve,65,32,69,read by the auction,61,delve is read by the auction at 65/min and pays 32/min over 69 outcomes: a number in the source the correction cannot bring down
+2026-09-26 06:16:41,still,delve,65,21,71,read by the auction,77,delve is read by the auction at 65/min and pays 21/min over 71 outcomes: a number in the source the correction cannot bring down
+2026-09-26 06:26:41,clear,delve,,,,cleared,87,delve's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-26 08:01:41,raised,fletch,34,18,54,read by the auction,0,fletch is read by the auction at 34/min and pays 18/min over 54 outcomes: a number in the source the correction cannot bring down
+2026-09-26 08:17:41,still,fletch,34,18,54,read by the auction,16,fletch is read by the auction at 34/min and pays 18/min over 54 outcomes: a number in the source the correction cannot bring down
+2026-09-26 08:32:41,still,fletch,35,-16,56,read by the auction,31,fletch is read by the auction at 35/min and pays -16/min over 56 outcomes: a number in the source the correction cannot bring down
+2026-09-26 08:47:41,still,fletch,35,-16,56,read by the auction,46,fletch is read by the auction at 35/min and pays -16/min over 56 outcomes: a number in the source the correction cannot bring down
+2026-09-26 09:03:41,still,fletch,35,-16,56,read by the auction,61,fletch is read by the auction at 35/min and pays -16/min over 56 outcomes: a number in the source the correction cannot bring down
+2026-09-26 09:18:41,still,delve,65,35,94,read by the auction,76,delve is read by the auction at 65/min and pays 35/min over 94 outcomes: a number in the source the correction cannot bring down
+2026-09-26 09:34:41,still,delve,65,-47,99,read by the auction,92,delve is read by the auction at 65/min and pays -47/min over 99 outcomes: a number in the source the correction cannot bring down
+2026-09-26 09:50:41,still,delve,65,19,102,read by the auction,109,delve is read by the auction at 65/min and pays 19/min over 102 outcomes: a number in the source the correction cannot bring down
+2026-09-26 10:06:41,still,delve,65,20,104,read by the auction,125,delve is read by the auction at 65/min and pays 20/min over 104 outcomes: a number in the source the correction cannot bring down
+2026-09-26 10:21:41,still,delve,65,41,107,read by the auction,139,delve is read by the auction at 65/min and pays 41/min over 107 outcomes: a number in the source the correction cannot bring down
+2026-09-26 10:36:41,still,delve,65,33,109,read by the auction,155,delve is read by the auction at 65/min and pays 33/min over 109 outcomes: a number in the source the correction cannot bring down
+2026-09-26 10:42:06,raised,delve,65,33,109,read by the auction,0,delve is read by the auction at 65/min and pays 33/min over 109 outcomes: a number in the source the correction cannot bring down
+2026-09-26 10:53:06,clear,mend,,,,cleared,11,mend's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-26 11:12:06,raised,mend,9,-69,374,read by the auction,0,mend is read by the auction at 9/min and pays -69/min over 374 outcomes: a number in the source the correction cannot bring down
+2026-09-26 11:22:06,clear,mend,,,,cleared,10,mend's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-26 11:24:06,raised,mend,13,8,391,read by the auction,0,mend is read by the auction at 13/min and pays 8/min over 391 outcomes: a number in the source the correction cannot bring down
+2026-09-26 11:39:06,still,mend,13,8,391,read by the auction,15,mend is read by the auction at 13/min and pays 8/min over 391 outcomes: a number in the source the correction cannot bring down
+2026-09-26 11:51:53,raised,prowl,2,-18,1223,read by the auction,0,prowl is read by the auction at 2/min and pays -18/min over 1223 outcomes: a number in the source the correction cannot bring down
+2026-09-26 11:58:53,clear,prowl,,,,cleared,7,prowl's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-26 12:59:53,raised,mend,10,-29,436,read by the auction,0,mend is read by the auction at 10/min and pays -29/min over 436 outcomes: a number in the source the correction cannot bring down
+2026-09-26 13:09:53,clear,mend,,,,cleared,10,mend's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-26 13:19:44,raised,hunt,22,-7,1753,read by the auction,0,hunt is read by the auction at 22/min and pays -7/min over 1753 outcomes: a number in the source the correction cannot bring down
+2026-09-26 13:21:44,clear,hunt,,,,cleared,2,hunt's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-26 13:48:44,raised,prowl,2,-30,1454,read by the auction,0,prowl is read by the auction at 2/min and pays -30/min over 1454 outcomes: a number in the source the correction cannot bring down
+2026-09-26 13:50:44,clear,prowl,,,,cleared,1,prowl's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-26 13:53:44,raised,prowl,2,-4,1476,read by the auction,0,prowl is read by the auction at 2/min and pays -4/min over 1476 outcomes: a number in the source the correction cannot bring down
+2026-09-26 13:54:44,clear,prowl,,,,cleared,0,prowl's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-26 14:09:51,raised,mend,20,13,490,read by the auction,0,mend is read by the auction at 20/min and pays 13/min over 490 outcomes: a number in the source the correction cannot bring down
+2026-09-26 14:13:00,raised,mend,19,8,492,read by the auction,0,mend is read by the auction at 19/min and pays 8/min over 492 outcomes: a number in the source the correction cannot bring down
+2026-09-26 14:26:54,raised,mend,15,8,496,read by the auction,0,mend is read by the auction at 15/min and pays 8/min over 496 outcomes: a number in the source the correction cannot bring down
+2026-09-26 14:29:54,clear,mend,,,,cleared,2,mend's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-26 14:56:34,raised,prowl,2,-11,1776,read by the auction,0,prowl is read by the auction at 2/min and pays -11/min over 1776 outcomes: a number in the source the correction cannot bring down
+2026-09-26 14:57:34,clear,prowl,,,,cleared,1,prowl's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-26 14:59:34,raised,prowl,2,-7,1804,read by the auction,0,prowl is read by the auction at 2/min and pays -7/min over 1804 outcomes: a number in the source the correction cannot bring down
+2026-09-26 15:00:34,clear,prowl,,,,cleared,0,prowl's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-26 15:06:34,raised,prowl,2,-20,1855,read by the auction,0,prowl is read by the auction at 2/min and pays -20/min over 1855 outcomes: a number in the source the correction cannot bring down
+2026-09-26 15:09:34,clear,prowl,,,,cleared,3,prowl's claim is back within 1.5x of what it pays; no trade overstates now
+2026-09-26 15:12:34,raised,forage,5,-52,208,read by the auction,0,forage is read by the auction at 5/min and pays -52/min over 208 outcomes: a number in the source the correction cannot bring down
+2026-09-26 15:24:32,raised,forage,5,-19,211,read by the auction,0,forage is read by the auction at 5/min and pays -19/min over 211 outcomes: a number in the source the correction cannot bring down
+2026-09-26 15:26:32,clear,forage,,,,cleared,2,forage's claim is back within 1.5x of what it pays; no trade overstates now

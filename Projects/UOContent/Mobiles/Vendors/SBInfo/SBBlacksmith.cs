@@ -117,6 +117,7 @@ namespace Server.Mobiles
             {
                 Add(typeof(Tongs), 7);
                 Add(typeof(IronIngot), 4);
+                ColouredIngots.AddTo(this);
 
                 Add(typeof(Buckler), 25);
                 Add(typeof(BronzeShield), 33);

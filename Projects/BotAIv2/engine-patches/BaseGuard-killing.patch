@@ -1,0 +1,49 @@
+Projects/UOContent/Mobiles/Guards/BaseGuard.cs
+
+Adds the static event BaseGuard.Killing, raised by the guard's attack timer just before it kills its focus outright,
+while the target is still whole: who it was fighting and who struck it can still be read. Also names the guard as
+LastKiller before Kill(). Without this patch BotAIv2 does not compile (BotHaven subscribes to the event).
+
+WHY. Build 429, 07-08.10.2026: the guards killed none of 78 creatures that chased a bot into town, and the bots
+could not tell a guard's kill from any other. Damage names the killer only when the blow goes below zero, and
+HitsMax on a creature at full health leaves it at exactly zero, so the Kill() that follows killed it with no killer
+named. BotHaven counts a guard's kill as a rescue of the bot the creature was fighting, which needs both.
+
+diff --git a/Projects/UOContent/Mobiles/Guards/BaseGuard.cs b/Projects/UOContent/Mobiles/Guards/BaseGuard.cs
+index 1fe8c89ac..86ffaf651 100644
+--- a/Projects/UOContent/Mobiles/Guards/BaseGuard.cs
++++ b/Projects/UOContent/Mobiles/Guards/BaseGuard.cs
+@@ -11,6 +11,14 @@ namespace Server.Mobiles;
+ public abstract partial class BaseGuard : Mobile
+ {
+     public static bool GuardsInstantKill { get; private set; }
++
++    /// <summary>
++    /// Raised when a guard is about to kill its focus outright, with the target still whole (shard hook, 08.10.2026): who
++    /// struck it and who it was fighting can still be read. See <see cref="GuardAttackTimer"/>.
++    /// </summary>
++    public static event Action<BaseGuard, Mobile> Killing;
++
++    internal static void OnKilling(BaseGuard guard, Mobile target) => Killing?.Invoke(guard, target);
+     public static void Configure()
+     {
+         GuardsInstantKill = ServerConfiguration.GetSetting("guards.instantKill", true);
+@@ -312,12 +320,18 @@ protected override void OnTick()
+             BaseGuard.TeleportTo(_owner, target.Location);
+             target.BoltEffect(0);
+ 
++            BaseGuard.OnKilling(_owner, target);
++
+             if (target is BaseCreature creature)
+             {
+                 creature.NoKillAwards = true;
+             }
+ 
+             target.Damage(target.HitsMax, _owner);
++
++            // Damage names the killer only when the blow goes below zero, and HitsMax on a creature at full health leaves it at
++            // exactly zero: Kill() below then kills it with no killer named (08.10.2026).
++            target.LastKiller = _owner;
+             target.Kill(); // just in case, maybe Damage is overridden on some shard
+ 
+             if (target.Corpse != null && !target.Player)

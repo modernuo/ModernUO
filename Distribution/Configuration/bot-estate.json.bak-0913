@@ -1,0 +1,20 @@
+{
+  "PlotFar": 180,
+  "PlotClearance": 20,
+
+  "ShelfDepth": 60,
+  "ShelfBatch": 20,
+  "ShelfSpend": 240,
+  "ShelfMarkup": 1.0,
+  "ShelfFloat": 240,
+
+  "Lands": true,
+  "LandReach": 40,
+  "LandHome": 1.25,
+  "LandAbroad": 0.7,
+
+  "Standing": true,
+  "War": true,
+  "WarBelow": -100.0,
+  "PeaceAbove": -20.0
+}

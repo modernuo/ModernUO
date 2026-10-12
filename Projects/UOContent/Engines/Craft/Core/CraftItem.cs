@@ -444,6 +444,23 @@ namespace Server.Engines.Craft
             return contains;
         }
 
+        /// <summary>
+        /// Whether this tile or item id is one the recipes will accept as a fire.
+        ///
+        /// <para>
+        /// The heat table is private and stays private; this is the one question anything outside needs to
+        /// ask of it. Bots survey the ground for places their crafts can be worked, and a survey that carried
+        /// its own copy of these ids would be a second table to keep in step with this one.
+        /// </para>
+        /// </summary>
+        public static bool IsHeatSource(int itemID) => Find(itemID, m_HeatSources);
+
+        /// <summary>
+        /// Whether there is a fire within reach of this mobile, by exactly the test <see cref="NeedHeat"/>
+        /// makes.
+        /// </summary>
+        public static bool NearHeatSource(Mobile from) => from != null && Find(from, m_HeatSources);
+
         public static bool IsQuantityType(Type[][] types)
         {
             for (var i = 0; i < types.Length; ++i)
@@ -915,6 +932,7 @@ namespace Server.Engines.Craft
         {
             if (!from.BeginAction<CraftSystem>())
             {
+                Tell(from, 500119);
                 from.SendLocalizedMessage(500119); // You must wait to perform another action
                 return;
             }
@@ -939,6 +957,7 @@ namespace Server.Engines.Craft
             if (!allRequiredSkills || chance <= 0.0)
             {
                 from.EndAction<CraftSystem>();
+                Tell(from, 1044153);
                 if (T2ACraftSystem.Enabled)
                 {
                     from.SendAsciiMessage("You lack the required skill to craft this item.");
@@ -1967,8 +1986,31 @@ namespace Server.Engines.Craft
             }
         }
 
+        // BotAIv2 seam (see Projects/BotAIv2/engine-patches/CraftItem-said.patch): what the craft system tells
+        // whoever is crafting, raised before it is sent. A bot has no NetState, and neither SendLocalizedMessage
+        // nor SendGump reaches anything without one. Nothing in the engine subscribes and a listener cannot
+        // alter or stop the message.
+        public static event Action<Mobile, TextDefinition> Said;
+
+        private static void Tell(Mobile from, TextDefinition message)
+        {
+            if (Said != null && from != null && message != null)
+            {
+                try
+                {
+                    Said(from, message);
+                }
+                catch
+                {
+                    // A listener that throws must not take the craft with it.
+                }
+            }
+        }
+
         public static void ShowCraftMenu(Mobile from, CraftSystem system, BaseTool tool, TextDefinition message = null)
         {
+            Tell(from, message);
+
             if (T2ACraftSystem.Enabled)
             {
                 // T2A: Don't reopen menu. Player double-clicks tool to restart.

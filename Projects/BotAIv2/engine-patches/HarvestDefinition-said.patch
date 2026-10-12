@@ -1,0 +1,71 @@
+Projects/UOContent/Engines/Harvest/Core/HarvestDefinition.cs
+
+Adds one event to HarvestDefinition and raises it at the top of SendMessageTo. Nothing else changes: the
+message is still sent exactly as before, and nothing in the engine subscribes.
+
+WHY. The harvest system already knows exactly why a swing produced nothing and says so: "There is no metal
+here to mine", "Someone has gotten to the metal before you", "You loosen some rocks but fail to find any
+useable ore", "You have moved too far away to continue", "Your backpack is full", "You have worn out your
+tool". A player reads those. A bot has no NetState, and Mobile.SendLocalizedMessage is not virtual and writes
+straight to one, so every sentence was dropped before anything could hear it.
+
+Without the seam, a bot has to infer an empty vein from a run of quiet swings. Measured 09.09.2026, the first
+time the two cases were counted apart: 16 rocks given up with the engine's bank empty against 35 that still
+held ore. Two write-offs in three were wrong, and each rested the seam behind it, so the ore map shrank all
+afternoon while the log reported an island running out of ore.
+
+Patrick's order the same day: a vein counts as worked out when the bot SEES the message that there is nothing
+in it. This is the seam that lets it. See Projects/BotAIv2/BotHarvest/BotHeard.cs for the listener.
+
+DELIBERATELY NARROW. The event reports what was said and to whom; it cannot alter the message, cannot stop
+the send, and a listener that throws is contained so it cannot take the harvest with it.
+
+diff --git a/Projects/UOContent/Engines/Harvest/Core/HarvestDefinition.cs b/Projects/UOContent/Engines/Harvest/Core/HarvestDefinition.cs
+index 02a5b6248..a7316eac5 100644
+--- a/Projects/UOContent/Engines/Harvest/Core/HarvestDefinition.cs
++++ b/Projects/UOContent/Engines/Harvest/Core/HarvestDefinition.cs
+@@ -88,9 +88,44 @@ public HarvestVein[] Veins
+ 
+         public Dictionary<Map, Dictionary<Point2D, HarvestBank>> Banks { get; } = new();
+ 
++        /// <summary>
++        /// Raised whenever the harvest system tells a harvester something, before the message is sent.
++        ///
++        /// <para>
++        /// <b>Why this exists.</b> The harvest system already knows exactly why a swing produced nothing —
++        /// "There is no metal here to mine", "Someone has gotten to the metal before you", "You loosen some
++        /// rocks but fail to find any useable ore", "Your backpack is full", "You have worn out your tool" —
++        /// and says so, in as many words, through <see cref="SendMessageTo"/>. A player reads it. A bot has no
++        /// <c>NetState</c>, and <c>Mobile.SendLocalizedMessage</c> is not virtual and writes straight to it,
++        /// so every one of those sentences was dropped on the floor before anything could hear it. Bots were
++        /// left inferring an empty vein from a run of quiet swings, which is a guess, and a wrong one about
++        /// two thirds of the time.
++        /// </para>
++        ///
++        /// <para>
++        /// One event, raised before the send and changing nothing about it. Nothing in the engine subscribes;
++        /// the bot assembly does. Kept deliberately narrow — this reports what was said and to whom, and does
++        /// not let a listener alter it.
++        /// </para>
++        /// </summary>
++        public static event Action<Mobile, HarvestDefinition, TextDefinition> Said;
++
+         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+         public void SendMessageTo(Mobile from, TextDefinition message)
+         {
++            // Before the send, and contained: a listener that throws must not take the harvest with it.
++            if (Said != null && from != null)
++            {
++                try
++                {
++                    Said(from, this, message);
++                }
++                catch
++                {
++                    // A listener's mistake is a listener's mistake.
++                }
++            }
++
+             if (message?.Number > 0)
+             {
+                 from.SendLocalizedMessage(message.Number);

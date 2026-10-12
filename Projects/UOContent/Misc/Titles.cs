@@ -372,10 +372,17 @@ namespace Server.Misc
             return title.ToString();
         }
 
-        public static string GetSkillTitle(Mobile mob)
-        {
-            var highest = GetHighestSkill(mob); // beheld.Skills.Highest;
+        public static string GetSkillTitle(Mobile mob) => GetSkillTitle(mob, GetHighestSkill(mob));
 
+        /// <summary>
+        /// The same, about a skill the caller has chosen rather than the mobile's own highest.
+        ///
+        /// Added for callers that hand a skill to every one of their mobiles as a matter of course - a
+        /// granted skill is not an achievement, and a population all reading "Grandmaster Merchant" because
+        /// each of them was given Item Identification says nothing about any of them.
+        /// </summary>
+        public static string GetSkillTitle(Mobile mob, Skill highest)
+        {
             if (highest?.BaseFixedPoint >= 300)
             {
                 var skillLevel = GetSkillLevel(highest);

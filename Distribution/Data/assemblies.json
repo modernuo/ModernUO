@@ -1,3 +1,5 @@
 [
-  "UOContent.dll"
+  "UOContent.dll",
+  "BotAIv2.dll",
+  "BotMindAI.dll"
 ]

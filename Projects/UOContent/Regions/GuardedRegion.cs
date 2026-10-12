@@ -49,8 +49,23 @@ public class GuardedRegion : BaseRegion
 
     public virtual bool IsDisabled() => GuardsDisabled;
 
+    /// <summary>
+    /// Shard rule (08.10.2026): the guards answer a hostile creature that fights a player inside the town, whoever struck
+    /// first. See <see cref="IsMenace"/>. Setting <c>guards.hostileCreatures</c>, on by default.
+    /// </summary>
+    public static bool GuardsHostileCreatures { get; set; } = true;
+
+    /// <summary>
+    /// Whether the rule also covers a player with a client (or that player's pet). Off by default: a player who lures or
+    /// fights a monster in town keeps the stock rule and the kill. Setting <c>guards.hostileCreaturesForClients</c>.
+    /// </summary>
+    public static bool GuardsHostileCreaturesForClients { get; set; }
+
     public static void Configure()
     {
+        GuardsHostileCreatures = ServerConfiguration.GetSetting("guards.hostileCreatures", true);
+        GuardsHostileCreaturesForClients = ServerConfiguration.GetSetting("guards.hostileCreaturesForClients", false);
+
         CommandSystem.Register("CheckGuarded", AccessLevel.GameMaster, CheckGuarded_OnCommand);
         CommandSystem.Register("SetGuarded", AccessLevel.Administrator, SetGuarded_OnCommand);
         CommandSystem.Register("ToggleGuarded", AccessLevel.Administrator, ToggleGuarded_OnCommand);
@@ -171,7 +186,7 @@ public class GuardedRegion : BaseRegion
             return;
         }
 
-        if (!AllowReds && m.Murderer)
+        if (!AllowReds && m.Murderer || IsMenace(m))
         {
             CheckGuardCandidate(m);
         }
@@ -200,7 +215,7 @@ public class GuardedRegion : BaseRegion
     {
         base.OnAggressed(aggressor, aggressed, criminal);
 
-        if (!IsDisabled() && aggressor != aggressed && criminal)
+        if (!IsDisabled() && aggressor != aggressed && (criminal || IsMenace(aggressor) && IsShielded(aggressed)))
         {
             CheckGuardCandidate(aggressor);
         }
@@ -308,8 +323,8 @@ public class GuardedRegion : BaseRegion
             }
 
             // Dictionary members can be targeted regardless of region (guards reach outside).
-            // Non-dictionary permanent candidates (reds) must be in the region.
-            if (m_GuardCandidates.ContainsKey(m) || m.Region.IsPartOf(this) && IsAlwaysGuardCandidate(m))
+            // Non-dictionary permanent candidates (reds, and hostile creatures fighting a player) must be in the region.
+            if (m_GuardCandidates.ContainsKey(m) || m.Region.IsPartOf(this) && (IsAlwaysGuardCandidate(m) || IsMenace(m)))
             {
                 if (m_GuardCandidates.Remove(m, out var timer))
                 {
@@ -341,8 +356,59 @@ public class GuardedRegion : BaseRegion
             return false;
         }
 
-        return (m as BaseCreature)?.IsInvulnerable != true && (IsAlwaysGuardCandidate(m) || m.Criminal);
+        return (m as BaseCreature)?.IsInvulnerable != true && (IsAlwaysGuardCandidate(m) || m.Criminal || IsMenace(m));
     }
+
+    /// <summary>Whether the guards could be called on <paramref name="m"/> here now: on the region's list, or a standing candidate inside it.</summary>
+    public bool IsCallable(Mobile m) =>
+        IsGuardCandidate(m) &&
+        (m_GuardCandidates.ContainsKey(m) || m.Region.IsPartOf(this) && (IsAlwaysGuardCandidate(m) || IsMenace(m)));
+
+    /// <summary>
+    /// <b>A hostile creature fighting a player is a guard candidate (shard rule, 08.10.2026).</b> In this era the guards come
+    /// only for a criminal or a murderer, and a creature is criminal only for harming someone innocent to it. A player stops
+    /// being innocent to a creature the moment it strikes it, and while the creature keeps biting, every bite refreshes the
+    /// player's own entry in the creature's aggressors (<c>Mobile.AggressiveAction</c>), so the player never becomes innocent
+    /// to it again. A traveller who swung once on the road and ran to town was therefore never protected there. The rule:
+    /// a creature that attacks on sight (fight mode Closest, Strongest or Weakest), wild (not tamed, not summoned by a
+    /// player), not invulnerable, with a player or a player's pet for its combatant, may be called on like a criminal.
+    /// Creatures that only fight back (Aggressor, Evil, None), such as bears and deer, are left to the old rule. Unless
+    /// <see cref="GuardsHostileCreaturesForClients"/> is set, only for a player with no client (the shard's bots), so that
+    /// a player at the keyboard keeps the stock rule. See <see cref="IsShielded"/>.
+    /// </summary>
+    public static bool IsMenace(Mobile m) =>
+        GuardsHostileCreatures && IsHostileCreature(m) && m.Combatant is { Deleted: false, Alive: true } foe && IsShielded(foe);
+
+    /// <summary>
+    /// Whether the rule of <see cref="IsMenace"/> protects <paramref name="m"/>: a player or a player's pet, and, unless
+    /// <see cref="GuardsHostileCreaturesForClients"/>, one whose player has no client.
+    /// </summary>
+    public static bool IsShielded(Mobile m)
+    {
+        if (!IsPlayerSide(m))
+        {
+            return false;
+        }
+
+        if (GuardsHostileCreaturesForClients)
+        {
+            return true;
+        }
+
+        var owner = m.Player ? m : m is BaseCreature bc ? bc.Controlled ? bc.ControlMaster : bc.SummonMaster : null;
+
+        return owner?.NetState == null;
+    }
+
+    /// <summary>A wild creature that attacks on sight. See <see cref="IsMenace"/>.</summary>
+    public static bool IsHostileCreature(Mobile m) =>
+        m is BaseCreature { Deleted: false, Controlled: false, IsInvulnerable: false, InitialInnocent: false } bc &&
+        bc.FightMode is FightMode.Closest or FightMode.Strongest or FightMode.Weakest &&
+        (!bc.Summoned || bc.SummonMaster?.Player != true);
+
+    /// <summary>A player, or a creature tamed by or summoned for one.</summary>
+    public static bool IsPlayerSide(Mobile m) =>
+        m.Player || m is BaseCreature bc && (bc.Controlled && bc.ControlMaster?.Player == true || bc.Summoned && bc.SummonMaster?.Player == true);
 
     private class GuardTimer : Timer
     {

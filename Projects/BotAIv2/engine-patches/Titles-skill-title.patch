@@ -1,0 +1,41 @@
+Projects/UOContent/Misc/Titles.cs
+
+Adds an overload of Titles.GetSkillTitle that takes the skill to title by, instead of always reading the
+mobile's own highest. The old signature stays and now calls the new one with GetHighestSkill(mob), so every
+caller in the engine gets exactly what it got before. Without this patch BotAIv2 does not compile.
+
+WHY. Every bot is handed some skills at birth as a matter of course, and a granted skill is not an
+achievement: within the hour of Item Identification being handed out on 08.09.2026 the whole population read
+"Grandmaster Merchant". A bot's rank is the title of the best skill it worked up to itself — see Rank and
+Earned in Projects/BotAIv2/BotPopulation/BotMobile.cs — and the dashboard shows it as "Name, Rank".
+
+Mobile.Title is left alone on purpose. To this engine it is the custom title: AddNameProperties glues it to
+the name with a bare space, and Titles.ComputeTitle takes a non-empty Title as a signal to skip the skill-title
+branch, which is the one that writes the comma. Writing the rank there spoiled the name and switched off the
+code that would have got it right.
+
+diff --git a/Projects/UOContent/Misc/Titles.cs b/Projects/UOContent/Misc/Titles.cs
+index c5f9f2a18..4fb84438d 100644
+--- a/Projects/UOContent/Misc/Titles.cs
++++ b/Projects/UOContent/Misc/Titles.cs
+@@ -372,10 +372,17 @@ public static string ComputeTitle(Mobile beholder, Mobile beheld)
+             return title.ToString();
+         }
+ 
+-        public static string GetSkillTitle(Mobile mob)
++        public static string GetSkillTitle(Mobile mob) => GetSkillTitle(mob, GetHighestSkill(mob));
++
++        /// <summary>
++        /// The same, about a skill the caller has chosen rather than the mobile's own highest.
++        ///
++        /// Added for callers that hand a skill to every one of their mobiles as a matter of course - a
++        /// granted skill is not an achievement, and a population all reading "Grandmaster Merchant" because
++        /// each of them was given Item Identification says nothing about any of them.
++        /// </summary>
++        public static string GetSkillTitle(Mobile mob, Skill highest)
+         {
+-            var highest = GetHighestSkill(mob); // beheld.Skills.Highest;
+-
+             if (highest?.BaseFixedPoint >= 300)
+             {
+                 var skillLevel = GetSkillLevel(highest);

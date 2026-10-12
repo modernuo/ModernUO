@@ -1,0 +1,8 @@
+build,session,label,what
+262,2026-09-26_14-25,262: chart in shadow,coarse chart (BotChart) drawn at boot and asked through the door; walking unchanged
+263,2026-09-26_14-32,263: walks on the chart,far walks go over the chart a leg at a time; progress measured along the route; work priced by road
+264,2026-09-26_15-18,264: tiered navigation,"engine graph over all of Felucca (clusters of 16, strata, components); bots route over it"
+265,2026-09-26_15-30,265: long tier,"regions of 128 tiles and a corridor over the graph; the graph's 'no way' logged, not acted on"
+266,2026-09-26_15-37,266: route to within reach,a route ends anywhere within the errand's arrival distance of its goal
+267,2026-09-26_15-42,267: graph on disk,the graph written to disk and read back at boot; the console's navbench
+268,2026-09-26_15-55,268: read from disk,the first boot that read the graph back from disk; the medium tier's ties lean towards the goal

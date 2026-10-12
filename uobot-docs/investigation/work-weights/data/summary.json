@@ -1,0 +1,140 @@
+{
+  "made_by": "extract.py",
+  "until": "2026-09-26 15:30:00",
+  "window": {
+    "first_take": "2026-09-18 00:08:23",
+    "last_take": "2026-09-26 15:30:00"
+  },
+  "session_files_read": 152,
+  "sessions_with_takes": 145,
+  "take_lines_seen": 462156,
+  "take_lines_parsed": 462156,
+  "take_lines_unparsed": 0,
+  "unparsed_examples": [],
+  "self_check": {
+    "rate_not_equal_estimate_x_factor_x_multipliers": 0,
+    "factor_not_root_of_product": 0,
+    "roots_seen": {
+      "5": 462156
+    }
+  },
+  "bots": 116,
+  "kinds": 59,
+  "share_all_factors_neutral": 0.0339,
+  "share_extra_factors_printed": 0.1685,
+  "share_with_refusal": 0.3775,
+  "first_refusals": 174464,
+  "share_with_runner_up": 0.6274,
+  "share_only_offer": 0.3726,
+  "offers_made": {
+    "1": 99198,
+    "2": 97482,
+    "3": 101428,
+    "4": 67700,
+    "5": 47946,
+    "6": 34387,
+    "7": 10305,
+    "8": 2844,
+    "9": 699,
+    "10": 138,
+    "11": 22,
+    "12": 6,
+    "13": 1
+  },
+  "offers_worth_anything": {
+    "1": 172203,
+    "2": 96187,
+    "3": 74071,
+    "4": 49675,
+    "5": 35105,
+    "6": 25385,
+    "7": 7006,
+    "8": 1898,
+    "9": 507,
+    "10": 99,
+    "11": 13,
+    "12": 6,
+    "13": 1
+  },
+  "margin_over_runner_up": {
+    "p10": 1.22,
+    "p25": 1.71,
+    "median": 3.04,
+    "p75": 7.79,
+    "p90": 19.95,
+    "share_below_1_25": 0.109
+  },
+  "runner_up_scored_higher": 204,
+  "combined_factor_median": 0.86,
+  "smallest_factor_median": 0.59,
+  "estimate_printed_0": {
+    "total": 4279,
+    "prowl": 4177,
+    "unload": 34,
+    "band": 29,
+    "acquire": 19,
+    "mend": 10,
+    "mine": 6,
+    "enlist": 2,
+    "drill": 1,
+    "rescue": 1
+  },
+  "expected_nothing_readings": {
+    "distinct_in_a_session": 32567,
+    "standing_an_hour_or_more": 996,
+    "longest_hours": 6.55,
+    "standing_for_several_bots": 979
+  },
+  "census_totals": {
+    "taken_on": 436976,
+    "finished": 407175,
+    "failed": 11825,
+    "dropped": 9681,
+    "died": 1127,
+    "nothing_worth_doing": 48287,
+    "withheld_sworn_elsewhere": 514010,
+    "marked_down_overloaded": 7598,
+    "refused_no_room_for_coin": 44,
+    "refused_dungeon_edge": 70954,
+    "refused_becalmed": 31741,
+    "refused_breaker_resting": 1828,
+    "refused_deaths_keep_out": 154514,
+    "refused_deaths_close": 86300,
+    "refused_hostile_strength": 647,
+    "prowls_let_in_restless": 44,
+    "unpaid_let_past": 0,
+    "kept_committed": 126711,
+    "paperwork_filed": 19951,
+    "second_guesses": 703,
+    "grounded_rank": 198,
+    "dislodged_rank": 518
+  },
+  "census_sessions": 116,
+  "calling": {
+    "anybody's work": 284923,
+    "its own trade": 173145,
+    "another's trade": 4088
+  },
+  "toll": {
+    "1.00": 462139,
+    "0.90": 13,
+    "0.80": 4
+  },
+  "displaced": {
+    "dropped": 5891,
+    "finished": 3327,
+    "put down": 4181
+  },
+  "put_down_how": {
+    "interrupted": 1278,
+    "summoned": 1448,
+    "jumped": 1002,
+    "dislodged": 453
+  },
+  "hostile_strength_ratio": {
+    "n": 182,
+    "median": 5.4
+  },
+  "overstated_alarm_lines": 591,
+  "overstated_cleared_lines": 151
+}

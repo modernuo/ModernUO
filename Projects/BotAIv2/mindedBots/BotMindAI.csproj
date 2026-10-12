@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
+    <PropertyGroup>
+        <RootNamespace>Server.BotAI.Mind</RootNamespace>
+        <AssemblyName>BotMindAI</AssemblyName>
+        <Product>BotShard thinking bots, a separate assembly on purpose</Product>
+        <OutDir>..\..\..\Distribution\Assemblies</OutDir>
+        <PublishDir>..\..\..\Distribution\Assemblies</PublishDir>
+        <Configurations>Debug;Release;Analyze</Configurations>
+    </PropertyGroup>
+    <Target Name="CleanPub" AfterTargets="Clean">
+        <Message Text="BotMindAI: Removing distribution assemblies..." />
+        <Delete Files="..\..\..\Distribution\Assemblies\$(AssemblyName).dll" ContinueOnError="true" />
+        <Delete Files="..\..\..\Distribution\Assemblies\$(AssemblyName).pdb" ContinueOnError="true" />
+        <Delete Files="..\..\..\Distribution\Assemblies\$(AssemblyName).deps.json" ContinueOnError="true" />
+    </Target>
+    <ItemGroup>
+        <!-- One-way: this project knows BotAIv2, and BotAIv2 knows nothing about this one. That is the whole
+             separation, and it is enforced by the build rather than by discipline — a reference the other way
+             would not compile. -->
+        <ProjectReference Include="..\BotAIv2.csproj" Private="false" />
+        <ProjectReference Include="..\..\UOContent\UOContent.csproj" Private="false" />
+        <ProjectReference Include="..\..\Server\Server.csproj" Private="false" PrivateAssets="All" IncludeAssets="None">
+            <IncludeInPackage>false</IncludeInPackage>
+        </ProjectReference>
+        <ProjectReference Include="..\..\Logger\Logger.csproj" Private="false" />
+        <PackageReference Update="Serilog" Version="4.4.0" />
+    </ItemGroup>
+</Project>

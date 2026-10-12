@@ -1,0 +1,41 @@
+Projects/UOContent/Engines/Craft/DefInscription.cs
+
+Adds DefInscription.Knows, a static hook a caller may set to let a mobile write a spell it does not hold in a book.
+Null — as the engine leaves it — keeps the rule that the spell must be in the scribe's own book. The circle's skill
+gate (minimum Inscribe of -25, -10.8, 3.5, 17.8, 32.1, 46.4, 60.7 and 75 for the eight circles, no chance at the bottom
+of each band) is asked either way. Without this patch BotAIv2 does not compile.
+
+WHY. Patrick's order of 25.09.2026: "make a gradation of writing scrolls — the higher the Inscribe, the stronger the
+scrolls they can write". Above the third circle no shop sells a scroll, and the engine refuses to write one whose spell
+is not in the scribe's book, so a fourth-circle spell reached the population only off a corpse: 358 wants for Lightning
+in two days, one of them filled, the rest holding the mages' money down for an hour each. BotAIv2 sets the hook to
+"any bot" (BotSpellsModule.Start) and clears it on a reload; players are untouched.
+
+diff --git a/Projects/UOContent/Engines/Craft/DefInscription.cs b/Projects/UOContent/Engines/Craft/DefInscription.cs
+index 34f421a8f..bb3217b12 100644
+--- a/Projects/UOContent/Engines/Craft/DefInscription.cs
++++ b/Projects/UOContent/Engines/Craft/DefInscription.cs
+@@ -36,6 +36,13 @@ private DefInscription() : base(1, 1, 1.25)
+ 
+     public override SkillName MainSkill => SkillName.Inscribe;
+ 
++    /// <summary>
++    /// BotAIv2 seam (see Projects/BotAIv2/engine-patches/DefInscription-knows.patch): whether this mobile may write a
++    /// spell it does not hold in a book, by a rule of the caller's. Null, as the engine leaves it, keeps the rule that
++    /// the spell must be in the scribe's own book; the circle's skill gate below is asked either way.
++    /// </summary>
++    public static Func<Mobile, int, bool> Knows { get; set; }
++
+     public override TextDefinition GumpTitle { get; } = 1044009;
+ 
+     public static CraftSystem CraftSystem { get; private set; }
+@@ -63,7 +70,8 @@ public override int CanCraft(Mobile from, BaseTool tool, Type typeItem)
+ 
+         if (scroll != null)
+         {
+-            var hasSpell = Spellbook.Find(from, scroll.SpellID)?.HasSpell(scroll.SpellID) == true;
++            var hasSpell = Spellbook.Find(from, scroll.SpellID)?.HasSpell(scroll.SpellID) == true
++                           || Knows?.Invoke(from, scroll.SpellID) == true;
+ 
+             scroll.Delete();
+ 

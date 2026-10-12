@@ -1,0 +1,125 @@
+Projects/UOContent/Mobiles/Vendors/GenericSell.cs
+Projects/UOContent/Mobiles/Vendors/SBInfo/SBBlacksmith.cs
+Projects/UOContent/Mobiles/Vendors/SBInfo/SBSmithTools.cs
+Projects/UOContent/Mobiles/Vendors/SBInfo/ColouredIngots.cs (new)
+
+The blacksmith and the smith-tools shopkeeper buy coloured ingots, below iron's four: dull copper, shadow iron, copper
+and bronze for 3gp, gold, agapite, verite and valorite for 2gp, in every era. GenericSellInfo gets an overload
+Add(type, price, resellable): a kind added with resellable false is bought and consumed, never put up for sale again.
+Without this patch BotAIv2 compiles, but no shopkeeper buys a coloured bar and the bots never offer one.
+
+WHY. Patrick, 06.10.2026, asked whether NPC blacksmiths may buy coloured ingots cheaply as a new gold faucet: yes.
+Before it the boxes held 101,197 coloured bars nobody could sell. The prices sit below iron on purpose, lower the rarer
+the metal, so that digging iron for the counter and working coloured metal into pieces stay the better trades. Not
+resold because a resold kind with no restock entry is dropped into the vendor's buy pack, and only a player opening the
+buy list ever clears it. The bots meter their sales themselves (BotOre.ColouredPerHour, 10,000gp an hour).
+
+diff --git a/Projects/UOContent/Mobiles/Vendors/GenericSell.cs b/Projects/UOContent/Mobiles/Vendors/GenericSell.cs
+index b872683f3..26e1ac6f3 100644
+--- a/Projects/UOContent/Mobiles/Vendors/GenericSell.cs
++++ b/Projects/UOContent/Mobiles/Vendors/GenericSell.cs
+@@ -100,7 +100,8 @@ public Type[] Types
+ 
+         public bool IsSellable(Item item) => !item.Nontransferable && IsInList(item.GetType());
+ 
+-        public bool IsResellable(Item item) => !item.Nontransferable && IsInList(item.GetType());
++        public bool IsResellable(Item item) =>
++            !item.Nontransferable && IsInList(item.GetType()) && m_NotResold?.Contains(item.GetType()) != true;
+ 
+         public void Add(Type type, int price)
+         {
+@@ -108,6 +109,24 @@ public void Add(Type type, int price)
+             m_Types = null;
+         }
+ 
++        // Kinds this shopkeeper buys but does not put up for sale again: what it takes is consumed rather than dropped into
++        // its buy pack, where nothing but a player opening the buy list would ever clear it.
++        private HashSet<Type> m_NotResold;
++
++        public void Add(Type type, int price, bool resellable)
++        {
++            Add(type, price);
++
++            if (resellable)
++            {
++                m_NotResold?.Remove(type);
++            }
++            else
++            {
++                (m_NotResold ??= new HashSet<Type>()).Add(type);
++            }
++        }
++
+         public bool IsInList(Type type) => m_Table.ContainsKey(type);
+     }
+ }
+diff --git a/Projects/UOContent/Mobiles/Vendors/SBInfo/ColouredIngots.cs b/Projects/UOContent/Mobiles/Vendors/SBInfo/ColouredIngots.cs
+new file mode 100644
+index 000000000..445bb0fe5
+--- /dev/null
++++ b/Projects/UOContent/Mobiles/Vendors/SBInfo/ColouredIngots.cs
+@@ -0,0 +1,40 @@
++using System;
++using Server.Items;
++
++namespace Server.Mobiles
++{
++    /// <summary>
++    /// What a smith's counter pays for a coloured bar: below iron's four on purpose, lower the rarer the metal, so that digging
++    /// iron for the counter and working coloured metal into pieces stay the better trades and the counter is only the floor
++    /// under a coloured bar nobody wants. Bought and consumed, never put up for sale again (see
++    /// <see cref="GenericSellInfo.Add(Type, int, bool)"/>). Shared by every shopkeeper that buys iron bars for metalwork
++    /// (<see cref="SBBlacksmith"/>, <see cref="SBSmithTools"/>), in every era.
++    /// </summary>
++    public static class ColouredIngots
++    {
++        public static readonly (Type Kind, int Price)[] Prices =
++        {
++            (typeof(DullCopperIngot), 3),
++            (typeof(ShadowIronIngot), 3),
++            (typeof(CopperIngot), 3),
++            (typeof(BronzeIngot), 3),
++            (typeof(GoldIngot), 2),
++            (typeof(AgapiteIngot), 2),
++            (typeof(VeriteIngot), 2),
++            (typeof(ValoriteIngot), 2)
++        };
++
++        public static void AddTo(GenericSellInfo info)
++        {
++            if (info == null)
++            {
++                return;
++            }
++
++            for (var i = 0; i < Prices.Length; i++)
++            {
++                info.Add(Prices[i].Kind, Prices[i].Price, false);
++            }
++        }
++    }
++}
+diff --git a/Projects/UOContent/Mobiles/Vendors/SBInfo/SBBlacksmith.cs b/Projects/UOContent/Mobiles/Vendors/SBInfo/SBBlacksmith.cs
+index f65323c08..a9c5d4e84 100644
+--- a/Projects/UOContent/Mobiles/Vendors/SBInfo/SBBlacksmith.cs
++++ b/Projects/UOContent/Mobiles/Vendors/SBInfo/SBBlacksmith.cs
+@@ -117,6 +117,7 @@ public InternalSellInfo()
+             {
+                 Add(typeof(Tongs), 7);
+                 Add(typeof(IronIngot), 4);
++                ColouredIngots.AddTo(this);
+ 
+                 Add(typeof(Buckler), 25);
+                 Add(typeof(BronzeShield), 33);
+diff --git a/Projects/UOContent/Mobiles/Vendors/SBInfo/SBSmithTools.cs b/Projects/UOContent/Mobiles/Vendors/SBInfo/SBSmithTools.cs
+index a33806500..5b549b0cf 100644
+--- a/Projects/UOContent/Mobiles/Vendors/SBInfo/SBSmithTools.cs
++++ b/Projects/UOContent/Mobiles/Vendors/SBInfo/SBSmithTools.cs
+@@ -24,6 +24,7 @@ public InternalSellInfo()
+             {
+                 Add(typeof(Tongs), 7);
+                 Add(typeof(IronIngot), 4);
++                ColouredIngots.AddTo(this);
+             }
+         }
+     }

@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Work weights</title>
+<meta name="description" content="How the bots of a ModernUO shard weigh a piece of work: claim, island correction, own ledger, factors under a fifth root, vetoes and the auction, measured over 462,156 decisions.">
+<style>
+:root {
+  color-scheme: light;
+  --page: #f9f9f7;
+  --surface: #fcfcfb;
+  --ink: #0b0b0b;
+  --ink-2: #52514e;
+  --muted: #898781;
+  --grid: #e1e0d9;
+  --axis: #c3c2b7;
+  --border: rgba(11, 11, 11, 0.10);
+  --wash: rgba(11, 11, 11, 0.045);
+  --s1: #2a78d6;
+  --s2: #eb6834;
+  --mid: #f0efec;
+  --b1: #86b6ef;
+  --b2: #5598e7;
+  --b3: #2a78d6;
+  --b4: #1c5cab;
+  --b5: #104281;
+  --est: #86b6ef;
+  --rate: #1c5cab;
+  --gate: #eb6834;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --page: #0d0d0d;
+    --surface: #1a1a19;
+    --ink: #ffffff;
+    --ink-2: #c3c2b7;
+    --muted: #898781;
+    --grid: #2c2c2a;
+    --axis: #383835;
+    --border: rgba(255, 255, 255, 0.10);
+    --wash: rgba(255, 255, 255, 0.06);
+    --s1: #3987e5;
+    --s2: #d95926;
+    --mid: #383835;
+    --b1: #184f95;
+    --b2: #256abf;
+    --b3: #3987e5;
+    --b4: #6da7ec;
+    --b5: #9ec5f4;
+    --est: #256abf;
+    --rate: #9ec5f4;
+    --gate: #d95926;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d;
+  --surface: #1a1a19;
+  --ink: #ffffff;
+  --ink-2: #c3c2b7;
+  --muted: #898781;
+  --grid: #2c2c2a;
+  --axis: #383835;
+  --border: rgba(255, 255, 255, 0.10);
+  --wash: rgba(255, 255, 255, 0.06);
+  --s1: #3987e5;
+  --s2: #d95926;
+  --mid: #383835;
+  --b1: #184f95;
+  --b2: #256abf;
+  --b3: #3987e5;
+  --b4: #6da7ec;
+  --b5: #9ec5f4;
+  --est: #256abf;
+  --rate: #9ec5f4;
+  --gate: #d95926;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--ink);
+  font: 15px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+main { max-width: 1080px; margin: 0 auto; padding: 32px 16px 64px; }
+h1 { font-size: 28px; line-height: 1.2; margin: 0 0 6px; font-weight: 650; letter-spacing: -0.01em; }
+h2 { font-size: 19px; line-height: 1.3; margin: 0 0 4px; font-weight: 620; }
+h3 { font-size: 15px; margin: 18px 0 6px; font-weight: 620; }
+p { margin: 0 0 10px; }
+.lede { color: var(--ink-2); max-width: 760px; }
+.small { font-size: 13px; color: var(--ink-2); }
+.muted { color: var(--muted); }
+code { font: 13px/1.4 ui-monospace, SFMono-Regular, Consolas, monospace; }
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 20px 16px;
+  margin: 18px 0;
+}
+.card > .caption { color: var(--ink-2); font-size: 14px; max-width: 800px; margin-bottom: 14px; }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin: 22px 0 8px; }
+.kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
+.kpi .label { font-size: 13px; color: var(--ink-2); }
+.kpi .value { font-size: 26px; font-weight: 620; line-height: 1.25; margin-top: 2px; }
+.kpi .note { font-size: 12px; color: var(--muted); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--ink-2); margin: 0 0 12px; align-items: center; }
+.legend .key { display: inline-flex; align-items: center; gap: 6px; }
+.sw { display: inline-block; width: 12px; height: 12px; border-radius: 3px; }
+.dotkey { display: inline-block; width: 10px; height: 10px; border-radius: 50%; }
+.rows { display: grid; gap: 6px; }
+.row { display: grid; grid-template-columns: minmax(84px, 140px) 1fr; align-items: center; gap: 10px; }
+.row .name { font-size: 13px; color: var(--ink); text-align: right; overflow-wrap: anywhere; }
+.rows.wide .row { grid-template-columns: minmax(96px, 190px) 1fr; }
+.name .sub { display: block; font-size: 11px; color: var(--muted); }
+.track { position: relative; height: 22px; }
+.focusable:focus-visible { outline: 2px solid var(--s1); outline-offset: 2px; border-radius: 4px; }
+.row.hover, .row:focus-visible { background: var(--wash); border-radius: 6px; }
+.axis { position: relative; height: 22px; margin-left: calc(min(140px, 30%) + 10px); }
+.tick { position: absolute; top: 4px; font-size: 11px; color: var(--muted); transform: translateX(-50%); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.gridline { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--grid); }
+.stack { display: flex; height: 22px; gap: 2px; }
+.seg { height: 100%; min-width: 0; position: relative; display: flex; align-items: center; justify-content: center; font-size: 11px; font-variant-numeric: tabular-nums; overflow: visible; }
+.seg:first-child { border-radius: 4px 0 0 4px; }
+.seg:last-child { border-radius: 0 4px 4px 0; }
+.seg:only-child { border-radius: 4px; }
+.seg.hover { filter: brightness(1.08) saturate(1.1); }
+.barwrap { display: flex; align-items: center; gap: 8px; }
+.bar { height: 18px; border-radius: 0 4px 4px 0; background: var(--s1); min-width: 2px; }
+.bar.context { background: var(--axis); }
+.bar.hover { filter: brightness(1.1); }
+.barlabel { font-size: 12px; color: var(--ink-2); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.seg-toggle { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 12px; }
+.seg-toggle button { font: inherit; font-size: 13px; padding: 5px 12px; border: 0; background: transparent; color: var(--ink-2); cursor: pointer; }
+.seg-toggle button[aria-pressed="true"] { background: var(--wash); color: var(--ink); font-weight: 600; }
+details { margin-top: 12px; }
+summary { cursor: pointer; font-size: 13px; color: var(--ink-2); }
+.tablewrap { overflow-x: auto; margin-top: 8px; }
+table { border-collapse: collapse; font-size: 12.5px; width: 100%; }
+th, td { text-align: right; padding: 4px 8px; border-bottom: 1px solid var(--grid); white-space: nowrap; font-variant-numeric: tabular-nums; }
+th:first-child, td:first-child { text-align: left; }
+th { color: var(--ink-2); font-weight: 600; }
+td.wrap { white-space: normal; text-align: left; min-width: 240px; }
+#tip {
+  position: fixed; z-index: 10; pointer-events: none; max-width: 320px;
+  background: var(--surface); color: var(--ink); border: 1px solid var(--border); border-radius: 8px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.14); padding: 8px 10px; font-size: 12.5px; line-height: 1.45; display: none;
+}
+#tip .v { font-weight: 650; font-size: 14px; }
+#tip .k { color: var(--ink-2); }
+#tip .line { display: inline-block; width: 12px; height: 2px; vertical-align: middle; margin-right: 6px; border-radius: 1px; }
+.pipe-h { display: block; }
+.pipe-v { display: none; }
+@media (max-width: 760px) {
+  .pipe-h { display: none; }
+  .pipe-v { display: block; }
+  .row { grid-template-columns: minmax(70px, 96px) 1fr; }
+  .axis { margin-left: calc(min(96px, 30%) + 10px); }
+  h1 { font-size: 24px; }
+}
+svg text { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+.tl-row { display: grid; grid-template-columns: minmax(84px, 140px) 1fr; gap: 10px; align-items: center; }
+.tl-track { position: relative; height: 20px; border-bottom: 1px solid var(--grid); }
+.tl-dot { position: absolute; top: 5px; width: 9px; height: 9px; margin-left: -4.5px; border-radius: 50%; background: var(--s1); box-shadow: 0 0 0 2px var(--surface); }
+.tl-clear { position: absolute; top: 4px; width: 2px; height: 12px; margin-left: -1px; background: var(--muted); border-radius: 1px; }
+.tl-mark { position: absolute; top: -4px; bottom: -4px; width: 1px; background: var(--axis); }
+.foot { font-size: 13px; color: var(--ink-2); margin-top: 28px; }
+.foot li { margin-bottom: 4px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Work weights</h1>
+  <p class="lede">How a bot on this shard decides what a piece of work is worth, and so what it does next — read from the code
+  and measured on every decision the bots logged. Each chart below is drawn from the numbers <code>extract.py</code> writes to
+  <code>data/</code>; the method is explained in <code>README.md</code>.</p>
+  <p class="small" id="window"></p>
+
+  <div class="kpis" id="kpis"></div>
+
+  <section class="card" aria-labelledby="pipe-title">
+    <h2 id="pipe-title">The weighing, step by step</h2>
+    <p class="caption">A proposer offers a deed with a claim in gold-equivalent per minute. The claim is corrected by what
+    that kind of work has paid across the island, then by what this bot has earned at this place, bent by the fifth root of
+    the factors, multiplied by who the bot is and whose land it is, and compared. Gates can end the weighing at nought at
+    three points; the counts on them are the first refusals printed on take lines.</p>
+    <div class="pipe-h" id="pipe-h"></div>
+    <div class="pipe-v" id="pipe-v"></div>
+  </section>
+
+  <section class="card" aria-labelledby="dumb-title">
+    <h2 id="dumb-title">What the claim became by the time it won</h2>
+    <p class="caption">For the twenty kinds taken most often: the median estimate on the take line (the claim after the island's
+    correction and the bot's own ledger) against the median rate it won at (after the factors and the multipliers). Rates
+    above the estimate come from the bot's own trade (× 1.30) or a boost (a revel, its guild's land or charter); below it,
+    from the factors. Log scale; hover a row for the quartiles.</p>
+    <div class="legend">
+      <span class="key"><span class="dotkey" style="background:var(--est)"></span>estimate (claim after both corrections)</span>
+      <span class="key"><span class="dotkey" style="background:var(--rate)"></span>rate it was taken at</span>
+    </div>
+    <div class="axis" id="dumb-axis" aria-hidden="true"></div>
+    <div class="rows" id="dumb"></div>
+    <details><summary>Table: estimate and rate by kind</summary><div class="tablewrap" id="dumb-table"></div></details>
+  </section>
+
+  <section class="card" aria-labelledby="bins-title">
+    <h2 id="bins-title">How far each factor bent the winners</h2>
+    <p class="caption" id="bins-caption">Share of all take lines by the printed value of each factor. Blue is a discount
+    (darker is deeper), grey is exactly 1.00, orange is a boost.</p>
+    <div class="legend" id="bins-legend"></div>
+    <div class="rows" id="bins"></div>
+    <details><summary>Table: factor values by bin</summary><div class="tablewrap" id="bins-table"></div></details>
+  </section>
+
+  <section class="card" aria-labelledby="decide-title">
+    <h2 id="decide-title">Which factor bent the winner most</h2>
+    <p class="caption" id="decide-caption"></p>
+    <div class="seg-toggle" role="group" aria-label="Measure">
+      <button type="button" id="decide-a" aria-pressed="true">Smallest printed factor</button>
+      <button type="button" id="decide-b" aria-pressed="false">Largest effect on the score</button>
+    </div>
+    <div class="rows" id="decide"></div>
+    <details><summary>Table: smallest factor and largest effect</summary><div class="tablewrap" id="decide-table"></div></details>
+  </section>
+
+  <section class="card" aria-labelledby="veto-title">
+    <h2 id="veto-title">Why offers were refused</h2>
+    <p class="caption" id="veto-caption"></p>
+    <div class="rows wide" id="veto"></div>
+    <details><summary>Table: first refusals by reason, with the kinds refused most</summary><div class="tablewrap" id="veto-table"></div></details>
+    <h3>Every refused offer, where the shard keeps a counter</h3>
+    <p class="small">The take line names only the first refused offer of a review. The five-minute census counts every refusal
+    for the gates that keep a counter; these are the last census of each session, summed.</p>
+    <div class="tablewrap" id="census-table"></div>
+  </section>
+
+  <section class="card" aria-labelledby="floor-title">
+    <h2 id="floor-title">Claims that live on the floor</h2>
+    <p class="caption">Inside the "expected to pay nothing" refusals the line prints both numbers: the claim as corrected by the
+    island, and what this bot expects here once its own ledger (or the island's record of the patch) is folded in. In this
+    window the median claims of prowl, unload, band and drill sat at a quarter of their typed claims (8, 30, 30 and 35) —
+    the floor under the island's correction — while the ledger had them below zero.</p>
+    <div class="tablewrap" id="floor-table"></div>
+    <h3>Readings that did not move</h3>
+    <p class="small" id="standing-caption"></p>
+    <div class="tablewrap" id="standing-table"></div>
+  </section>
+
+  <section class="card" aria-labelledby="alarm-title">
+    <h2 id="alarm-title">The overstated alarm</h2>
+    <p class="caption" id="alarm-caption"></p>
+    <div class="legend">
+      <span class="key"><span class="dotkey" style="background:var(--s1)"></span>alarm raised or repeated</span>
+      <span class="key"><span class="sw" style="width:2px;height:12px;background:var(--muted)"></span>cleared</span>
+      <span class="key"><span class="sw" style="width:1px;height:12px;background:var(--axis)"></span>build 95: compared as the auction reads it</span>
+    </div>
+    <div id="alarm"></div>
+    <details><summary>Table: alarm by trade</summary><div class="tablewrap" id="alarm-table"></div></details>
+  </section>
+
+  <div class="foot">
+    <p><strong>Sources.</strong> Code: <code>Projects/BotAIv2/BotWill/</code> (<code>BotAppraisal.cs</code>, <code>BotWill.cs</code>,
+    <code>BotDeed.cs</code>, <code>BotLedger.cs</code>, <code>BotCommons.cs</code>), <code>BotAlarm/BotSigns.cs</code>,
+    <code>BotClasses/BotCalling.cs</code>, <code>BotCombat/BotPeril.cs</code>; the decision log <code>Projects/BotAIv2/DECISIONS.md</code>;
+    the shard's session logs and <code>alerts*.ndjson</code>. Regenerate with <code>python extract.py &lt;logs folder&gt; --until "…"</code>.</p>
+    <ul>
+      <li>Every number on this page is in <code>data/summary.json</code> or one of the CSV tables beside it.</li>
+      <li>Medians of rates are of the rounded whole numbers the log prints; factors are printed to two places.</li>
+    </ul>
+  </div>
+</main>
+<div id="tip" role="tooltip"></div>
+
+<script id="work-weights-data" type="application/json">{"summary":{"made_by":"extract.py","until":"2026-09-26 15:30:00","window":{"first_take":"2026-09-18 00:08:23","last_take":"2026-09-26 15:30:00"},"session_files_read":152,"sessions_with_takes":145,"take_lines_seen":462156,"take_lines_parsed":462156,"take_lines_unparsed":0,"unparsed_examples":[],"self_check":{"rate_not_equal_estimate_x_factor_x_multipliers":0,"factor_not_root_of_product":0,"roots_seen":{"5":462156}},"bots":116,"kinds":59,"share_all_factors_neutral":0.0339,"share_extra_factors_printed":0.1685,"share_with_refusal":0.3775,"first_refusals":174464,"share_with_runner_up":0.6274,"share_only_offer":0.3726,"offers_made":{"1":99198,"2":97482,"3":101428,"4":67700,"5":47946,"6":34387,"7":10305,"8":2844,"9":699,"10":138,"11":22,"12":6,"13":1},"offers_worth_anything":{"1":172203,"2":96187,"3":74071,"4":49675,"5":35105,"6":25385,"7":7006,"8":1898,"9":507,"10":99,"11":13,"12":6,"13":1},"margin_over_runner_up":{"p10":1.22,"p25":1.71,"median":3.04,"p75":7.79,"p90":19.95,"share_below_1_25":0.109},"runner_up_scored_higher":204,"combined_factor_median":0.86,"smallest_factor_median":0.59,"estimate_printed_0":{"total":4279,"prowl":4177,"unload":34,"band":29,"acquire":19,"mend":10,"mine":6,"enlist":2,"drill":1,"rescue":1},"expected_nothing_readings":{"distinct_in_a_session":32567,"standing_an_hour_or_more":996,"longest_hours":6.55,"standing_for_several_bots":979},"census_totals":{"taken_on":436976,"finished":407175,"failed":11825,"dropped":9681,"died":1127,"nothing_worth_doing":48287,"withheld_sworn_elsewhere":514010,"marked_down_overloaded":7598,"refused_no_room_for_coin":44,"refused_dungeon_edge":70954,"refused_becalmed":31741,"refused_breaker_resting":1828,"refused_deaths_keep_out":154514,"refused_deaths_close":86300,"refused_hostile_strength":647,"prowls_let_in_restless":44,"unpaid_let_past":0,"kept_committed":126711,"paperwork_filed":19951,"second_guesses":703,"grounded_rank":198,"dislodged_rank":518},"census_sessions":116,"calling":{"anybody's work":284923,"its own trade":173145,"another's trade":4088},"toll":{"1.00":462139,"0.90":13,"0.80":4},"displaced":{"dropped":5891,"finished":3327,"put down":4181},"put_down_how":{"interrupted":1278,"summoned":1448,"jumped":1002,"dislodged":453},"hostile_strength_ratio":{"n":182,"median":5.4},"overstated_alarm_lines":591,"overstated_cleared_lines":151},"kinds":[{"kind":"prowl","takes":93608,"share_of_takes":0.2025,"estimate_p25":1.0,"estimate_median":2.0,"estimate_p75":6.0,"rate_p25":1.0,"rate_median":2.0,"rate_p75":5.0,"factor_median":0.79,"share_own_trade":0.0,"share_another_trade":0.0,"share_with_refusal":0.2366,"share_only_offer":0.9178,"margin_over_runner_up_median":1.75},{"kind":"mine","takes":53019,"share_of_takes":0.1147,"estimate_p25":11.0,"estimate_median":45.0,"estimate_p75":89.0,"rate_p25":12.0,"rate_median":50.0,"rate_p75":101.0,"factor_median":0.86,"share_own_trade":0.9803,"share_another_trade":0.0197,"share_with_refusal":0.4662,"share_only_offer":0.1231,"margin_over_runner_up_median":3.27},{"kind":"restock","takes":41826,"share_of_takes":0.0905,"estimate_p25":12.0,"estimate_median":12.0,"estimate_p75":12.0,"rate_p25":10.0,"rate_median":11.0,"rate_p75":12.0,"factor_median":0.9,"share_own_trade":0.0,"share_another_trade":0.0,"share_with_refusal":0.4409,"share_only_offer":0.3876,"margin_over_runner_up_median":2.25},{"kind":"peddle","takes":38449,"share_of_takes":0.0832,"estimate_p25":106.0,"estimate_median":174.0,"estimate_p75":267.0,"rate_p25":94.0,"rate_median":152.0,"rate_p75":228.0,"factor_median":0.88,"share_own_trade":0.0,"share_another_trade":0.0,"share_with_refusal":0.4668,"share_only_offer":0.1053,"margin_over_runner_up_median":5.18},{"kind":"hunt","takes":36089,"share_of_takes":0.0781,"estimate_p25":86.0,"estimate_median":119.0,"estimate_p75":162.0,"rate_p25":108.0,"rate_median":151.0,"rate_p75":207.0,"factor_median":0.97,"share_own_trade":0.986,"share_another_trade":0.014,"share_with_refusal":0.2286,"share_only_offer":0.4521,"margin_over_runner_up_median":7.12},{"kind":"forge","takes":31471,"share_of_takes":0.0681,"estimate_p25":315.0,"estimate_median":469.0,"estimate_p75":615.0,"rate_p25":143.0,"rate_median":182.0,"rate_p75":261.0,"factor_median":0.3,"share_own_trade":1.0,"share_another_trade":0.0,"share_with_refusal":0.2776,"share_only_offer":0.0006,"margin_over_runner_up_median":2.71},{"kind":"unload","takes":29593,"share_of_takes":0.064,"estimate_p25":7.0,"estimate_median":12.0,"estimate_p75":23.0,"rate_p25":5.0,"rate_median":10.0,"rate_p75":19.0,"factor_median":0.81,"share_own_trade":0.0,"share_another_trade":0.0,"share_with_refusal":0.4977,"share_only_offer":0.3414,"margin_over_runner_up_median":2.0},{"kind":"acquire","takes":18961,"share_of_takes":0.041,"estimate_p25":16.0,"estimate_median":36.0,"estimate_p75":73.0,"rate_p25":14.0,"rate_median":33.0,"rate_p75":67.0,"factor_median":0.9,"share_own_trade":0.0,"share_another_trade":0.0,"share_with_refusal":0.4663,"share_only_offer":0.22,"margin_over_runner_up_median":2.69},{"kind":"chop","takes":16355,"share_of_takes":0.0354,"estimate_p25":269.0,"estimate_median":334.0,"estimate_p75":427.0,"rate_p25":253.0,"rate_median":324.0,"rate_p75":417.0,"factor_median":0.75,"share_own_trade":0.9575,"share_another_trade":0.0425,"share_with_refusal":0.2677,"share_only_offer":0.0018,"margin_over_runner_up_median":2.8},{"kind":"order","takes":9946,"share_of_takes":0.0215,"estimate_p25":200.0,"estimate_median":273.0,"estimate_p75":339.0,"rate_p25":194.0,"rate_median":269.0,"rate_p75":335.0,"factor_median":1.0,"share_own_trade":0.0,"share_another_trade":0.0,"share_with_refusal":0.41,"share_only_offer":0.0861,"margin_over_runner_up_median":5.03},{"kind":"sew","takes":9158,"share_of_takes":0.0198,"estimate_p25":137.0,"estimate_median":221.0,"estimate_p75":345.0,"rate_p25":145.0,"rate_median":235.0,"rate_p75":372.0,"factor_median":0.87,"share_own_trade":0.9579,"share_another_trade":0.0421,"share_with_refusal":0.4387,"share_only_offer":0.0076,"margin_over_runner_up_median":2.76},{"kind":"inscribe","takes":7655,"share_of_takes":0.0166,"estimate_p25":118.0,"estimate_median":164.0,"estimate_p75":241.0,"rate_p25":130.5,"rate_median":185.0,"rate_p75":271.0,"factor_median":0.89,"share_own_trade":0.9988,"share_another_trade":0.0012,"share_with_refusal":0.5641,"share_only_offer":0.0256,"margin_over_runner_up_median":8.5},{"kind":"rescue","takes":7570,"share_of_takes":0.0164,"estimate_p25":33.0,"estimate_median":60.0,"estimate_p75":105.0,"rate_p25":41.0,"rate_median":74.0,"rate_p75":129.0,"factor_median":0.99,"share_own_trade":0.962,"share_another_trade":0.038,"share_with_refusal":0.2398,"share_only_offer":0.6526,"margin_over_runner_up_median":5.8},{"kind":"herbs","takes":6502,"share_of_takes":0.0141,"estimate_p25":24.0,"estimate_median":34.0,"estimate_p75":45.0,"rate_p25":21.0,"rate_median":30.0,"rate_p75":41.0,"factor_median":0.89,"share_own_trade":0.0,"share_another_trade":0.0,"share_with_refusal":0.5011,"share_only_offer":0.0989,"margin_over_runner_up_median":2.25},{"kind":"brew","takes":6394,"share_of_takes":0.0138,"estimate_p25":103.0,"estimate_median":155.0,"estimate_p75":235.0,"rate_p25":118.0,"rate_median":181.0,"rate_p75":273.0,"factor_median":0.97,"share_own_trade":0.9362,"share_another_trade":0.0638,"share_with_refusal":0.3991,"share_only_offer":0.097,"margin_over_runner_up_median":4.55},{"kind":"supply","takes":6338,"share_of_takes":0.0137,"estimate_p25":260.0,"estimate_median":260.0,"estimate_p75":260.0,"rate_p25":233.0,"rate_median":240.0,"rate_p75":244.0,"factor_median":0.92,"share_own_trade":0.0,"share_another_trade":0.0,"share_with_refusal":0.4309,"share_only_offer":0.0825,"margin_over_runner_up_median":4.26},{"kind":"cook","takes":5637,"share_of_takes":0.0122,"estimate_p25":48.0,"estimate_median":63.0,"estimate_p75":84.0,"rate_p25":43.0,"rate_median":56.0,"rate_p75":77.0,"factor_median":0.91,"share_own_trade":0.0,"share_another_trade":0.0,"share_with_refusal":0.3282,"share_only_offer":0.0211,"margin_over_runner_up_median":3.71},{"kind":"homeward","takes":5169,"share_of_takes":0.0112,"estimate_p25":5.0,"estimate_median":5.0,"estimate_p75":5.0,"rate_p25":4.0,"rate_median":5.0,"rate_p75":5.0,"factor_median":0.93,"share_own_trade":0.0,"share_another_trade":0.0,"share_with_refusal":0.8125,"share_only_offer":0.9704,"margin_over_runner_up_median":2.5},{"kind":"stake","takes":4713,"share_of_takes":0.0102,"estimate_p25":200.0,"estimate_median":200.0,"estimate_p75":200.0,"rate_p25":163.0,"rate_median":173.0,"rate_p75":183.0,"factor_median":0.87,"share_own_trade":0.0,"share_another_trade":0.0,"share_with_refusal":0.422,"share_only_offer":0.1441,"margin_over_runner_up_median":4.0},{"kind":"mend","takes":3987,"share_of_takes":0.0086,"estimate_p25":12.0,"estimate_median":28.0,"estimate_p75":66.0,"rate_p25":13.0,"rate_median":30.0,"rate_p75":74.0,"factor_median":0.98,"share_own_trade":0.8771,"share_another_trade":0.1229,"share_with_refusal":0.3516,"share_only_offer":0.5927,"margin_over_runner_up_median":3.12},{"kind":"band","takes":3587,"share_of_takes":0.0078,"estimate_p25":3.0,"estimate_median":4.0,"estimate_p75":8.0,"rate_p25":2.0,"rate_median":4.0,"rate_p75":7.0,"factor_median":0.97,"share_own_trade":0.0,"share_another_trade":0.0,"share_with_refusal":0.5565,"share_only_offer":0.5238,"margin_over_runner_up_median":2.0},{"kind":"glean","takes":3486,"share_of_takes":0.0075,"estimate_p25":6.0,"estimate_median":10.0,"estimate_p75":18.0,"rate_p25":6.0,"rate_median":9.0,"rate_p75":17.0,"factor_median":0.99,"share_own_trade":0.0,"share_another_trade":0.0,"share_with_refusal":0.4114,"share_only_offer":0.3439,"margin_over_runner_up_median":3.0},{"kind":"escort","takes":3249,"share_of_takes":0.007,"estimate_p25":45.0,"estimate_median":45.0,"estimate_p75":50.0,"rate_p25":45.0,"rate_median":57.0,"rate_p75":63.0,"factor_median":0.93,"share_own_trade":1.0,"share_another_trade":0.0,"share_with_refusal":0.7236,"share_only_offer":0.6713,"margin_over_runner_up_median":4.75},{"kind":"flee","takes":2853,"share_of_takes":0.0062,"estimate_p25":167.0,"estimate_median":250.0,"estimate_p75":333.0,"rate_p25":166.0,"rate_median":223.0,"rate_p75":314.0,"factor_median":0.97,"share_own_trade":0.0,"share_another_trade":0.0,"share_with_refusal":0.0137,"share_only_offer":0.8503,"margin_over_runner_up_median":11.09}],"factors":[{"factor":"near","takes":462156,"below_1":359991,"share_below_1":0.7789,"above_1":0,"share_above_1":0.0,"median_when_below_1":0.81,"p10_when_below_1":0.43,"min":0.05,"values_above_1":""},{"factor":"new","takes":462156,"below_1":246377,"share_below_1":0.5331,"above_1":0,"share_above_1":0.0,"median_when_below_1":0.59,"p10_when_below_1":0.02,"min":0.0,"values_above_1":""},{"factor":"room","takes":462156,"below_1":364130,"share_below_1":0.7879,"above_1":0,"share_above_1":0.0,"median_when_below_1":0.92,"p10_when_below_1":0.73,"min":0.2,"values_above_1":""},{"factor":"safe","takes":462156,"below_1":1977,"share_below_1":0.0043,"above_1":0,"share_above_1":0.0,"median_when_below_1":0.15,"p10_when_below_1":0.15,"min":0.15,"values_above_1":""},{"factor":"purse","takes":462156,"below_1":46644,"share_below_1":0.1009,"above_1":0,"share_above_1":0.0,"median_when_below_1":0.38,"p10_when_below_1":0.1,"min":0.1,"values_above_1":""},{"factor":"load","takes":462156,"below_1":6,"share_below_1":0.0,"above_1":0,"share_above_1":0.0,"median_when_below_1":0.02,"p10_when_below_1":0.02,"min":0.02,"values_above_1":""},{"factor":"revel","takes":462156,"below_1":0,"share_below_1":0.0,"above_1":11768,"share_above_1":0.0255,"median_when_below_1":null,"p10_when_below_1":null,"min":1.0,"values_above_1":"3.00:11768"},{"factor":"ground","takes":462156,"below_1":29760,"share_below_1":0.0644,"above_1":31796,"share_above_1":0.0688,"median_when_below_1":0.7,"p10_when_below_1":0.7,"min":0.7,"values_above_1":"1.25:31796"},{"factor":"charter","takes":462156,"below_1":0,"share_below_1":0.0,"above_1":7562,"share_above_1":0.0164,"median_when_below_1":null,"p10_when_below_1":null,"min":1.0,"values_above_1":"1.50:7562"}],"bins":[{"factor":"near","bin":"<0.10","takes":90,"share":0.0002},{"factor":"near","bin":"0.10-0.29","takes":902,"share":0.002},{"factor":"near","bin":"0.30-0.59","takes":104915,"share":0.227},{"factor":"near","bin":"0.60-0.89","takes":124073,"share":0.2685},{"factor":"near","bin":"0.90-0.99","takes":130011,"share":0.2813},{"factor":"near","bin":"1.00","takes":102165,"share":0.2211},{"factor":"near","bin":">1.00","takes":0,"share":0.0},{"factor":"new","bin":"<0.10","takes":30986,"share":0.067},{"factor":"new","bin":"0.10-0.29","takes":24426,"share":0.0529},{"factor":"new","bin":"0.30-0.59","takes":68624,"share":0.1485},{"factor":"new","bin":"0.60-0.89","takes":107389,"share":0.2324},{"factor":"new","bin":"0.90-0.99","takes":14952,"share":0.0324},{"factor":"new","bin":"1.00","takes":215779,"share":0.4669},{"factor":"new","bin":">1.00","takes":0,"share":0.0},{"factor":"room","bin":"<0.10","takes":0,"share":0.0},{"factor":"room","bin":"0.10-0.29","takes":277,"share":0.0006},{"factor":"room","bin":"0.30-0.59","takes":2025,"share":0.0044},{"factor":"room","bin":"0.60-0.89","takes":151665,"share":0.3282},{"factor":"room","bin":"0.90-0.99","takes":210163,"share":0.4547},{"factor":"room","bin":"1.00","takes":98026,"share":0.2121},{"factor":"room","bin":">1.00","takes":0,"share":0.0},{"factor":"safe","bin":"<0.10","takes":0,"share":0.0},{"factor":"safe","bin":"0.10-0.29","takes":1977,"share":0.0043},{"factor":"safe","bin":"0.30-0.59","takes":0,"share":0.0},{"factor":"safe","bin":"0.60-0.89","takes":0,"share":0.0},{"factor":"safe","bin":"0.90-0.99","takes":0,"share":0.0},{"factor":"safe","bin":"1.00","takes":460179,"share":0.9957},{"factor":"safe","bin":">1.00","takes":0,"share":0.0},{"factor":"purse","bin":"<0.10","takes":0,"share":0.0},{"factor":"purse","bin":"0.10-0.29","takes":18917,"share":0.0409},{"factor":"purse","bin":"0.30-0.59","takes":14006,"share":0.0303},{"factor":"purse","bin":"0.60-0.89","takes":10889,"share":0.0236},{"factor":"purse","bin":"0.90-0.99","takes":2832,"share":0.0061},{"factor":"purse","bin":"1.00","takes":415512,"share":0.8991},{"factor":"purse","bin":">1.00","takes":0,"share":0.0},{"factor":"load","bin":"<0.10","takes":6,"share":0.0},{"factor":"load","bin":"0.10-0.29","takes":0,"share":0.0},{"factor":"load","bin":"0.30-0.59","takes":0,"share":0.0},{"factor":"load","bin":"0.60-0.89","takes":0,"share":0.0},{"factor":"load","bin":"0.90-0.99","takes":0,"share":0.0},{"factor":"load","bin":"1.00","takes":462150,"share":1.0},{"factor":"load","bin":">1.00","takes":0,"share":0.0},{"factor":"revel","bin":"<0.10","takes":0,"share":0.0},{"factor":"revel","bin":"0.10-0.29","takes":0,"share":0.0},{"factor":"revel","bin":"0.30-0.59","takes":0,"share":0.0},{"factor":"revel","bin":"0.60-0.89","takes":0,"share":0.0},{"factor":"revel","bin":"0.90-0.99","takes":0,"share":0.0},{"factor":"revel","bin":"1.00","takes":450388,"share":0.9745},{"factor":"revel","bin":">1.00","takes":11768,"share":0.0255},{"factor":"ground","bin":"<0.10","takes":0,"share":0.0},{"factor":"ground","bin":"0.10-0.29","takes":0,"share":0.0},{"factor":"ground","bin":"0.30-0.59","takes":0,"share":0.0},{"factor":"ground","bin":"0.60-0.89","takes":29760,"share":0.0644},{"factor":"ground","bin":"0.90-0.99","takes":0,"share":0.0},{"factor":"ground","bin":"1.00","takes":400600,"share":0.8668},{"factor":"ground","bin":">1.00","takes":31796,"share":0.0688},{"factor":"charter","bin":"<0.10","takes":0,"share":0.0},{"factor":"charter","bin":"0.10-0.29","takes":0,"share":0.0},{"factor":"charter","bin":"0.30-0.59","takes":0,"share":0.0},{"factor":"charter","bin":"0.60-0.89","takes":0,"share":0.0},{"factor":"charter","bin":"0.90-0.99","takes":0,"share":0.0},{"factor":"charter","bin":"1.00","takes":454594,"share":0.9836},{"factor":"charter","bin":">1.00","takes":7562,"share":0.0164},{"factor":"combined","bin":"<0.10","takes":0,"share":0.0},{"factor":"combined","bin":"0.10-0.29","takes":15556,"share":0.0337},{"factor":"combined","bin":"0.30-0.59","takes":26724,"share":0.0578},{"factor":"combined","bin":"0.60-0.89","takes":232493,"share":0.5031},{"factor":"combined","bin":"0.90-0.99","takes":146930,"share":0.3179},{"factor":"combined","bin":"1.00","takes":25302,"share":0.0547},{"factor":"combined","bin":">1.00","takes":15151,"share":0.0328}],"decide":[{"factor":"near","smallest_under_root":187017,"share_smallest_under_root":0.4047,"largest_effect_on_score":187882,"share_largest_effect_on_score":0.4065},{"factor":"new","smallest_under_root":173208,"share_smallest_under_root":0.3748,"largest_effect_on_score":151083,"share_largest_effect_on_score":0.3269},{"factor":"room","smallest_under_root":33932,"share_smallest_under_root":0.0734,"largest_effect_on_score":38526,"share_largest_effect_on_score":0.0834},{"factor":"safe","smallest_under_root":1906,"share_smallest_under_root":0.0041,"largest_effect_on_score":1888,"share_largest_effect_on_score":0.0041},{"factor":"purse","smallest_under_root":32975,"share_smallest_under_root":0.0714,"largest_effect_on_score":32548,"share_largest_effect_on_score":0.0704},{"factor":"load","smallest_under_root":6,"share_smallest_under_root":0.0,"largest_effect_on_score":6,"share_largest_effect_on_score":0.0},{"factor":"revel","smallest_under_root":0,"share_smallest_under_root":0.0,"largest_effect_on_score":0,"share_largest_effect_on_score":0.0},{"factor":"ground","smallest_under_root":11888,"share_smallest_under_root":0.0257,"largest_effect_on_score":11683,"share_largest_effect_on_score":0.0253},{"factor":"charter","smallest_under_root":0,"share_smallest_under_root":0.0,"largest_effect_on_score":0,"share_largest_effect_on_score":0.0},{"factor":"calling","smallest_under_root":"","share_smallest_under_root":"","largest_effect_on_score":4088,"share_largest_effect_on_score":0.0088},{"factor":"toll","smallest_under_root":"","share_smallest_under_root":"","largest_effect_on_score":12,"share_largest_effect_on_score":0.0},{"factor":"tie","smallest_under_root":5575,"share_smallest_under_root":0.0121,"largest_effect_on_score":5515,"share_largest_effect_on_score":0.0119},{"factor":"none","smallest_under_root":15649,"share_smallest_under_root":0.0339,"largest_effect_on_score":28925,"share_largest_effect_on_score":0.0626}],"refusals":[{"class":"expected-nothing","meaning":"expected to pay nothing or less here","first_refusals":94696,"share_of_refusals":0.5428,"first_seen":"2026-09-18 00:08:23","last_seen":"2026-09-26 15:29:58","top_refused_kinds":"prowl 74041; unload 9395; band 4036; acquire 2045; mine 697","example":"prowl is expected to pay -12.0/min here, against a claim of 9.7"},{"class":"outlay","meaning":"cannot pay to start","first_refusals":67810,"share_of_refusals":0.3887,"first_seen":"2026-09-18 00:08:49","last_seen":"2026-09-26 15:30:00","top_refused_kinds":"restock 46690; acquire 7227; sew 6867; inscribe 3604; brew 3119","example":"restock costs 75gp and it has 66gp"},{"class":"deaths-close","meaning":"bots died there lately: closed to all but running (until 26.09)","first_refusals":8920,"share_of_refusals":0.0511,"first_seen":"2026-09-20 10:32:19","last_seen":"2026-09-26 14:05:29","top_refused_kinds":"prowl 5408; reclaim 1078; harrow 818; mine 528; stake 173","example":"band lies in or beside ground where 3.7 bots have died lately, against 3.0 that close it to everything but running"},{"class":"dungeon-edge","meaning":"the other side of a dungeon's edge","first_refusals":1149,"share_of_refusals":0.0066,"first_seen":"2026-09-22 05:11:39","last_seen":"2026-09-26 13:49:22","top_refused_kinds":"peddle 471; homeward 273; herbs 104; restock 72; delve 62","example":"restock is on the island and this bot is underground"},{"class":"deaths-keep-out","meaning":"bots died there lately: ordinary work kept out (until 26.09)","first_refusals":775,"share_of_refusals":0.0044,"first_seen":"2026-09-20 11:51:51","last_seen":"2026-09-26 14:05:31","top_refused_kinds":"reclaim 376; mine 245; restock 55; herbs 36; glean 25","example":"reclaim lies in or beside ground where 3.0 bots have died lately, against 2.0 that keep ordinary work out"},{"class":"becalmed","meaning":"a long walk from here lately closed nothing","first_refusals":657,"share_of_refusals":0.0038,"first_seen":"2026-09-22 04:04:00","last_seen":"2026-09-26 15:27:08","top_refused_kinds":"unload 243; herbs 108; restock 89; prowl 88; peddle 35","example":"prowl is 472 tiles off, and a walk of 189 from about here closed nothing 0s ago"},{"class":"breaker","meaning":"rested after failing the same way again and again","first_refusals":203,"share_of_refusals":0.0012,"first_seen":"2026-09-21 18:53:09","last_seen":"2026-09-26 14:22:36","top_refused_kinds":"rally 135; peddle 31; forge 15; restock 11; homeward 5","example":"homeward failed 6 times running for the same reason and rests 262s more, after \"no way through to (1190, 1476, 0)\""},{"class":"hostile-strength","meaning":"hostile strength 3x what goes there (from 26.09)","first_refusals":182,"share_of_refusals":0.001,"first_seen":"2026-09-26 14:05:56","last_seen":"2026-09-26 15:29:29","top_refused_kinds":"reclaim 137; restock 33; peddle 3; band 2; enlist 2","example":"band lies where the hostile strength is 5069, 5.9 times the 864 going there, against 3.0 that close it to everything but running"},{"class":"red-in-town","meaning":"a red bot and a guarded town","first_refusals":66,"share_of_refusals":0.0004,"first_seen":"2026-09-18 00:08:53","last_seen":"2026-09-22 14:45:17","top_refused_kinds":"unload 42; reclaim 8; sew 6; acquire 5; restock 5","example":"sew lies in a guarded town and Hale is red"},{"class":"no-room-for-coin","meaning":"a counter, and no room in the pack for a coin","first_refusals":6,"share_of_refusals":0.0,"first_seen":"2026-09-21 23:54:56","last_seen":"2026-09-26 10:21:06","top_refused_kinds":"peddle 5; restock 1","example":"restock goes through a counter and the pack has no room for a coin, at 132 of 125 things"}],"expected":[{"refused_kind":"prowl","refusals":74041,"expected_median":-10.4,"expected_p10":-41.8,"expected_min":-419.2,"claim_median":2.0,"claim_p10":2.0,"claim_p90":10.7,"share_expected_below_0":0.9919},{"refused_kind":"unload","refusals":9395,"expected_median":-12.6,"expected_p10":-123.0,"expected_min":-571.4,"claim_median":7.5,"claim_p10":7.5,"claim_p90":21.1,"share_expected_below_0":0.9947},{"refused_kind":"band","refusals":4036,"expected_median":-5.8,"expected_p10":-17.9,"expected_min":-109.0,"claim_median":7.5,"claim_p10":7.5,"claim_p90":10.5,"share_expected_below_0":1.0},{"refused_kind":"acquire","refusals":2045,"expected_median":-52.4,"expected_p10":-75.7,"expected_min":-77.3,"claim_median":40.0,"claim_p10":3.5,"claim_p90":102.4,"share_expected_below_0":1.0},{"refused_kind":"mine","refusals":697,"expected_median":-15.4,"expected_p10":-65.6,"expected_min":-265.7,"claim_median":40.3,"claim_p10":11.2,"claim_p90":101.3,"share_expected_below_0":0.9971},{"refused_kind":"drill","refusals":650,"expected_median":-3.3,"expected_p10":-12.5,"expected_min":-32.0,"claim_median":8.8,"claim_p10":8.8,"claim_p90":8.8,"share_expected_below_0":1.0},{"refused_kind":"fletch","refusals":571,"expected_median":-8.9,"expected_p10":-22.6,"expected_min":-47.1,"claim_median":29.0,"claim_p10":22.5,"claim_p90":64.7,"share_expected_below_0":1.0},{"refused_kind":"sew","refusals":568,"expected_median":-21.1,"expected_p10":-71.5,"expected_min":-144.6,"claim_median":79.4,"claim_p10":22.8,"claim_p90":190.3,"share_expected_below_0":1.0},{"refused_kind":"drill-in","refusals":536,"expected_median":-2.3,"expected_p10":-4.7,"expected_min":-21.8,"claim_median":66.0,"claim_p10":66.0,"claim_p90":72.0,"share_expected_below_0":1.0},{"refused_kind":"inscribe","refusals":421,"expected_median":-13.6,"expected_p10":-34.1,"expected_min":-179.7,"claim_median":67.2,"claim_p10":15.0,"claim_p90":189.7,"share_expected_below_0":1.0},{"refused_kind":"forage","refusals":414,"expected_median":-173.6,"expected_p10":-176.6,"expected_min":-178.0,"claim_median":11.5,"claim_p10":7.0,"claim_p90":17.3,"share_expected_below_0":1.0},{"refused_kind":"reclaim","refusals":215,"expected_median":-11.0,"expected_p10":-21.0,"expected_min":-48.0,"claim_median":5.4,"claim_p10":5.0,"claim_p90":28.8,"share_expected_below_0":1.0}],"alarms":[{"trade":"band","alarm_lines":128,"times_raised":94,"first_seen":"2026-09-16 13:49:06","last_seen":"2026-09-25 06:18:45","days_seen":8,"reads_min":3,"reads_median":8.0,"reads_max":90,"pays_min":-58,"pays_median":1.0,"pays_max":11,"outcomes_max":2236,"compared":"read by the auction+typed claim"},{"trade":"sweep","alarm_lines":73,"times_raised":13,"first_seen":"2026-09-17 05:34:34","last_seen":"2026-09-18 20:21:00","days_seen":2,"reads_min":11,"reads_median":11.0,"reads_max":11,"pays_min":-2,"pays_median":0.0,"pays_max":3,"outcomes_max":76,"compared":"read by the auction"},{"trade":"mend","alarm_lines":71,"times_raised":41,"first_seen":"2026-09-16 20:41:58","last_seen":"2026-09-26 14:26:54","days_seen":9,"reads_min":8,"reads_median":15.0,"reads_max":74,"pays_min":-69,"pays_median":1.0,"pays_max":20,"outcomes_max":2376,"compared":"read by the auction+typed claim"},{"trade":"drill","alarm_lines":41,"times_raised":21,"first_seen":"2026-09-16 23:03:46","last_seen":"2026-09-25 16:23:50","days_seen":7,"reads_min":9,"reads_median":9.0,"reads_max":9,"pays_min":-9,"pays_median":0.0,"pays_max":4,"outcomes_max":337,"compared":"read by the auction"},{"trade":"prowl","alarm_lines":38,"times_raised":37,"first_seen":"2026-09-17 05:28:34","last_seen":"2026-09-26 15:06:34","days_seen":8,"reads_min":2,"reads_median":2.0,"reads_max":2,"pays_min":-160,"pays_median":-7.0,"pays_max":-3,"outcomes_max":69079,"compared":"read by the auction"},{"trade":"liberate","alarm_lines":36,"times_raised":5,"first_seen":"2026-09-22 14:18:53","last_seen":"2026-09-24 21:11:01","days_seen":2,"reads_min":55,"reads_median":55.0,"reads_max":55,"pays_min":-2,"pays_median":2.0,"pays_max":7,"outcomes_max":45,"compared":"read by the auction"},{"trade":"mine","alarm_lines":29,"times_raised":27,"first_seen":"2026-09-16 22:04:12","last_seen":"2026-09-25 13:29:23","days_seen":6,"reads_min":11,"reads_median":11.0,"reads_max":11,"pays_min":-31,"pays_median":3.0,"pays_max":6,"outcomes_max":38959,"compared":"read by the auction"},{"trade":"harrow","alarm_lines":28,"times_raised":5,"first_seen":"2026-09-17 01:46:49","last_seen":"2026-09-17 11:59:56","days_seen":1,"reads_min":38,"reads_median":38.0,"reads_max":38,"pays_min":-1,"pays_median":17.0,"pays_max":25,"outcomes_max":46,"compared":"read by the auction"},{"trade":"enlist","alarm_lines":24,"times_raised":1,"first_seen":"2026-09-16 23:57:09","last_seen":"2026-09-22 07:14:34","days_seen":5,"reads_min":10,"reads_median":18.0,"reads_max":18,"pays_min":-30,"pays_median":1.5,"pays_max":10,"outcomes_max":62,"compared":"read by the auction"},{"trade":"delve","alarm_lines":23,"times_raised":11,"first_seen":"2026-09-26 02:55:02","last_seen":"2026-09-26 10:42:06","days_seen":1,"reads_min":65,"reads_median":65.0,"reads_max":65,"pays_min":-47,"pays_median":32.0,"pays_max":42,"outcomes_max":109,"compared":"read by the auction"},{"trade":"rescue","alarm_lines":14,"times_raised":3,"first_seen":"2026-09-16 14:20:06","last_seen":"2026-09-16 20:25:01","days_seen":1,"reads_min":103,"reads_median":172.5,"reads_max":228,"pays_min":10,"pays_median":49.0,"pays_max":81,"outcomes_max":1046,"compared":"typed claim"},{"trade":"fletch","alarm_lines":13,"times_raised":6,"first_seen":"2026-09-18 10:07:47","last_seen":"2026-09-26 09:03:41","days_seen":5,"reads_min":23,"reads_median":23.0,"reads_max":35,"pays_min":-56,"pays_median":-2.0,"pays_max":18,"outcomes_max":1581,"compared":"read by the auction"},{"trade":"inscribe","alarm_lines":12,"times_raised":9,"first_seen":"2026-09-17 13:30:39","last_seen":"2026-09-25 10:57:21","days_seen":5,"reads_min":15,"reads_median":15.0,"reads_max":15,"pays_min":-25,"pays_median":-9.5,"pays_max":5,"outcomes_max":8861,"compared":"read by the auction"},{"trade":"flee","alarm_lines":10,"times_raised":2,"first_seen":"2026-09-16 11:03:06","last_seen":"2026-09-16 12:59:42","days_seen":1,"reads_min":2000,"reads_median":2000.0,"reads_max":2000,"pays_min":1,"pays_median":1.5,"pays_max":28,"outcomes_max":85,"compared":"typed claim"},{"trade":"sew","alarm_lines":6,"times_raised":5,"first_seen":"2026-09-17 16:09:57","last_seen":"2026-09-22 08:31:34","days_seen":3,"reads_min":14,"reads_median":14.0,"reads_max":15,"pays_min":-33,"pays_median":1.5,"pays_max":7,"outcomes_max":7987,"compared":"read by the auction"},{"trade":"mind-mine","alarm_lines":6,"times_raised":0,"first_seen":"2026-09-17 19:20:22","last_seen":"2026-09-18 09:21:47","days_seen":2,"reads_min":22,"reads_median":22.0,"reads_max":22,"pays_min":5,"pays_median":8.0,"pays_max":14,"outcomes_max":52,"compared":"read by the auction"},{"trade":"herbs","alarm_lines":5,"times_raised":3,"first_seen":"2026-09-17 00:50:36","last_seen":"2026-09-25 17:24:54","days_seen":4,"reads_min":10,"reads_median":10.0,"reads_max":10,"pays_min":-43,"pays_median":1.0,"pays_max":5,"outcomes_max":3858,"compared":"read by the auction"},{"trade":"reclaim","alarm_lines":4,"times_raised":1,"first_seen":"2026-09-16 19:22:31","last_seen":"2026-09-24 16:57:28","days_seen":3,"reads_min":5,"reads_median":5.0,"reads_max":80,"pays_min":-24,"pays_median":-9.5,"pays_max":13,"outcomes_max":118,"compared":"read by the auction+typed claim"},{"trade":"duel","alarm_lines":4,"times_raised":1,"first_seen":"2026-09-16 21:11:58","last_seen":"2026-09-16 21:58:21","days_seen":1,"reads_min":50,"reads_median":50.0,"reads_max":200,"pays_min":-4,"pays_median":-4.0,"pays_max":43,"outcomes_max":58,"compared":"read by the auction+typed claim"},{"trade":"pickings","alarm_lines":4,"times_raised":1,"first_seen":"2026-09-17 07:35:45","last_seen":"2026-09-22 04:10:50","days_seen":2,"reads_min":22,"reads_median":22.0,"reads_max":22,"pays_min":3,"pays_median":10.0,"pays_max":12,"outcomes_max":599,"compared":"read by the auction"},{"trade":"hunt","alarm_lines":4,"times_raised":3,"first_seen":"2026-09-18 04:07:43","last_seen":"2026-09-26 13:19:44","days_seen":3,"reads_min":22,"reads_median":22.0,"reads_max":22,"pays_min":-16,"pays_median":1.0,"pays_max":14,"outcomes_max":22499,"compared":"read by the auction"},{"trade":"drill-in","alarm_lines":3,"times_raised":1,"first_seen":"2026-09-16 13:02:45","last_seen":"2026-09-16 13:33:45","days_seen":1,"reads_min":264,"reads_median":264.0,"reads_max":264,"pays_min":-37,"pays_median":-37.0,"pays_max":-37,"outcomes_max":28,"compared":"typed claim"},{"trade":"forage","alarm_lines":3,"times_raised":2,"first_seen":"2026-09-17 21:18:46","last_seen":"2026-09-26 15:24:32","days_seen":2,"reads_min":5,"reads_median":5.0,"reads_max":5,"pays_min":-86,"pays_median":-52.0,"pays_max":-19,"outcomes_max":1016,"compared":"read by the auction"},{"trade":"cook","alarm_lines":3,"times_raised":3,"first_seen":"2026-09-24 17:13:11","last_seen":"2026-09-25 12:08:23","days_seen":2,"reads_min":18,"reads_median":18.0,"reads_max":18,"pays_min":-8,"pays_median":-3.0,"pays_max":1,"outcomes_max":4097,"compared":"read by the auction"},{"trade":"acquire","alarm_lines":2,"times_raised":2,"first_seen":"2026-09-16 22:40:46","last_seen":"2026-09-22 11:46:06","days_seen":2,"reads_min":3,"reads_median":3.0,"reads_max":3,"pays_min":-10,"pays_median":-5.0,"pays_max":0,"outcomes_max":6590,"compared":"read by the auction"},{"trade":"forge","alarm_lines":2,"times_raised":0,"first_seen":"2026-09-17 04:54:24","last_seen":"2026-09-20 10:21:03","days_seen":2,"reads_min":33,"reads_median":33.5,"reads_max":34,"pays_min":11,"pays_median":12.0,"pays_max":13,"outcomes_max":1278,"compared":"read by the auction"},{"trade":"glean","alarm_lines":2,"times_raised":2,"first_seen":"2026-09-25 06:59:35","last_seen":"2026-09-25 07:05:02","days_seen":1,"reads_min":4,"reads_median":4.0,"reads_max":4,"pays_min":-32,"pays_median":-22.5,"pays_max":-13,"outcomes_max":2325,"compared":"read by the auction"},{"trade":"unload","alarm_lines":1,"times_raised":1,"first_seen":"2026-09-16 10:48:06","last_seen":"2026-09-16 10:48:06","days_seen":1,"reads_min":120,"reads_median":120,"reads_max":120,"pays_min":21,"pays_median":21,"pays_max":21,"outcomes_max":171,"compared":"typed claim"},{"trade":"peddle","alarm_lines":1,"times_raised":0,"first_seen":"2026-09-16 16:21:06","last_seen":"2026-09-16 16:21:06","days_seen":1,"reads_min":628,"reads_median":628,"reads_max":628,"pays_min":251,"pays_median":251,"pays_max":251,"outcomes_max":4402,"compared":"typed claim"},{"trade":"mind-sew","alarm_lines":1,"times_raised":0,"first_seen":"2026-09-16 20:56:58","last_seen":"2026-09-16 20:56:58","days_seen":1,"reads_min":110,"reads_median":110,"reads_max":110,"pays_min":60,"pays_median":60,"pays_max":60,"outcomes_max":231,"compared":"typed claim"}],"alarm_lines":[["2026-09-16 10:48:06","raised","unload",120,21,171,"typed claim"],["2026-09-16 11:03:06","still","flee",2000,9,30,"typed claim"],["2026-09-16 11:18:06","still","flee",2000,2,49,"typed claim"],["2026-09-16 11:26:30","raised","flee",2000,1,53,"typed claim"],["2026-09-16 11:41:30","still","flee",2000,14,56,"typed claim"],["2026-09-16 11:56:30","still","flee",2000,7,59,"typed claim"],["2026-09-16 12:12:30","still","flee",2000,1,67,"typed claim"],["2026-09-16 12:13:42","raised","flee",2000,1,67,"typed claim"],["2026-09-16 12:28:42","still","flee",2000,1,67,"typed claim"],["2026-09-16 12:43:42","still","flee",2000,1,69,"typed claim"],["2026-09-16 12:59:42","still","flee",2000,28,85,"typed claim"],["2026-09-16 13:02:45","raised","drill-in",264,-37,28,"typed claim"],["2026-09-16 13:17:45","still","drill-in",264,-37,28,"typed claim"],["2026-09-16 13:33:45","still","drill-in",264,-37,28,"typed claim"],["2026-09-16 13:49:06","raised","band",90,2,246,"typed claim"],["2026-09-16 14:04:06","still","band",90,6,264,"typed claim"],["2026-09-16 14:20:06","still","rescue",173,75,470,"typed claim"],["2026-09-16 14:35:06","still","rescue",168,48,502,"typed claim"],["2026-09-16 14:50:06","still","band",90,6,314,"typed claim"],["2026-09-16 15:05:06","still","band",90,11,345,"typed claim"],["2026-09-16 15:20:06","still","band",90,8,362,"typed claim"],["2026-09-16 15:35:06","still","band",90,1,378,"typed claim"],["2026-09-16 15:51:06","still","band",90,0,396,"typed claim"],["2026-09-16 16:06:06","still","band",90,3,414,"typed claim"],["2026-09-16 16:21:06","still","peddle",628,251,4402,"typed claim"],["2026-09-16 16:37:06","still","rescue",162,10,729,"typed claim"],["2026-09-16 16:52:06","still","rescue",228,50,762,"typed claim"],["2026-09-16 17:03:35","raised","band",90,-7,471,"typed claim"],["2026-09-16 17:18:35","still","band",90,7,483,"typed claim"],["2026-09-16 17:34:35","still","band",90,-3,494,"typed claim"],["2026-09-16 17:40:49","raised","band",90,2,503,"typed claim"],["2026-09-16 17:55:49","still","band",90,0,511,"typed claim"],["2026-09-16 18:10:49","still","rescue",200,59,878,"typed claim"],["2026-09-16 18:18:16","raised","rescue",213,56,885,"typed claim"],["2026-09-16 18:33:16","still","rescue",194,81,906,"typed claim"],["2026-09-16 18:48:16","still","rescue",172,75,922,"typed claim"],["2026-09-16 19:04:16","still","rescue",186,37,938,"typed claim"],["2026-09-16 19:06:31","raised","rescue",186,37,938,"typed claim"],["2026-09-16 19:22:31","still","reclaim",80,13,71,"typed claim"],["2026-09-16 19:38:31","still","rescue",126,70,982,"typed claim"],["2026-09-16 19:54:01","raised","rescue",144,30,1008,"typed claim"],["2026-09-16 20:10:01","still","rescue",119,33,1020,"typed claim"],["2026-09-16 20:25:01","still","rescue",103,12,1046,"typed claim"],["2026-09-16 20:41:58","raised","mend",74,20,583,"typed claim"],["2026-09-16 20:56:58","still","mind-sew",110,60,231,"typed claim"],["2026-09-16 21:11:58","still","duel",200,43,30,"typed claim"],["2026-09-16 21:28:21","raised","duel",50,-4,58,"read by the auction"],["2026-09-16 21:43:21","still","duel",50,-4,58,"read by the auction"],["2026-09-16 21:58:21","still","duel",50,-4,58,"read by the auction"],["2026-09-16 22:04:12","raised","mine",11,3,5176,"read by the auction"],["2026-09-16 22:19:12","still","band",8,-9,645,"read by the auction"],["2026-09-16 22:34:12","still","band",8,-6,647,"read by the auction"],["2026-09-16 22:40:46","raised","acquire",3,0,6590,"read by the auction"],["2026-09-16 22:46:46","clear","forage","","","","cleared"],["2026-09-16 22:48:46","raised","band",8,4,660,"read by the auction"],["2026-09-16 23:03:46","still","drill",9,-6,197,"read by the auction"],["2026-09-16 23:19:46","still","mend",20,2,761,"read by the auction"],["2026-09-16 23:33:09","raised","band",8,2,688,"read by the auction"],["2026-09-16 23:48:09","still","band",8,-7,701,"read by the auction"],["2026-09-16 23:54:09","clear","band","","","","cleared"],["2026-09-16 23:57:09","raised","enlist",18,5,25,"read by the auction"],["2026-09-17 00:12:36","raised","band",8,2,718,"read by the auction"],["2026-09-17 00:27:36","still","band",8,-8,728,"read by the auction"],["2026-09-17 00:31:36","clear","band","","","","cleared"],["2026-09-17 00:50:36","raised","herbs",10,-15,1254,"read by the auction"],["2026-09-17 01:00:36","clear","mine","","","","cleared"],["2026-09-17 01:06:36","raised","mine",11,4,6339,"read by the auction"],["2026-09-17 01:21:36","still","mine",11,3,6512,"read by the auction"],["2026-09-17 01:31:49","raised","mine",11,2,6653,"read by the auction"],["2026-09-17 01:46:49","still","harrow",38,-1,25,"read by the auction"],["2026-09-17 02:01:49","still","harrow",38,-1,25,"read by the auction"],["2026-09-17 02:16:49","still","harrow",38,1,26,"read by the auction"],["2026-09-17 02:31:49","still","harrow",38,1,26,"read by the auction"],["2026-09-17 02:46:49","still","harrow",38,4,28,"read by the auction"],["2026-09-17 03:01:49","still","harrow",38,10,30,"read by the auction"],["2026-09-17 03:17:49","still","harrow",38,12,31,"read by the auction"],["2026-09-17 03:20:24","raised","harrow",38,12,31,"read by the auction"],["2026-09-17 03:36:24","still","harrow",38,21,33,"read by the auction"],["2026-09-17 03:51:24","still","harrow",38,18,34,"read by the auction"],["2026-09-17 04:07:25","still","harrow",38,18,34,"read by the auction"],["2026-09-17 04:23:24","still","harrow",38,18,34,"read by the auction"],["2026-09-17 04:39:24","still","mend",11,0,1097,"read by the auction"],["2026-09-17 04:54:24","still","forge",33,11,1278,"read by the auction"],["2026-09-17 05:09:25","still","band",8,-58,880,"read by the auction"],["2026-09-17 05:23:34","raised","mine",11,5,8882,"read by the auction"],["2026-09-17 05:24:34","clear","mine","","","","cleared"],["2026-09-17 05:28:34","raised","prowl",2,-7,21341,"read by the auction"],["2026-09-17 05:29:34","clear","prowl","","","","cleared"],["2026-09-17 05:34:34","raised","sweep",11,3,29,"read by the auction"],["2026-09-17 05:49:34","still","sweep",11,3,29,"read by the auction"],["2026-09-17 06:05:34","still","sweep",11,2,30,"read by the auction"],["2026-09-17 06:21:34","still","sweep",11,2,30,"read by the auction"],["2026-09-17 06:34:45","raised","band",8,0,910,"read by the auction"],["2026-09-17 06:49:45","still","band",8,-18,915,"read by the auction"],["2026-09-17 07:04:45","still","sweep",11,1,31,"read by the auction"],["2026-09-17 07:20:45","still","mend",19,-19,1213,"read by the auction"],["2026-09-17 07:35:45","still","pickings",22,12,428,"read by the auction"],["2026-09-17 07:51:45","still","pickings",22,8,430,"read by the auction"],["2026-09-17 08:06:45","still","sweep",11,1,32,"read by the auction"],["2026-09-17 08:21:45","still","sweep",11,0,33,"read by the auction"],["2026-09-17 08:29:47","raised","harrow",38,25,41,"read by the auction"],["2026-09-17 08:45:47","still","harrow",38,25,41,"read by the auction"],["2026-09-17 09:01:47","still","harrow",38,21,42,"read by the auction"],["2026-09-17 09:16:47","still","harrow",38,21,42,"read by the auction"],["2026-09-17 09:20:09","raised","harrow",38,21,42,"read by the auction"],["2026-09-17 09:35:09","still","harrow",38,21,42,"read by the auction"],["2026-09-17 09:50:09","still","harrow",38,21,42,"read by the auction"],["2026-09-17 10:05:09","still","harrow",38,17,43,"read by the auction"],["2026-09-17 10:20:09","still","harrow",38,17,43,"read by the auction"],["2026-09-17 10:36:00","raised","harrow",38,17,43,"read by the auction"],["2026-09-17 10:51:00","still","harrow",38,17,43,"read by the auction"],["2026-09-17 11:07:00","still","harrow",38,15,44,"read by the auction"],["2026-09-17 11:22:00","still","harrow",38,10,46,"read by the auction"],["2026-09-17 11:29:56","raised","harrow",38,10,46,"read by the auction"],["2026-09-17 11:44:56","still","harrow",38,10,46,"read by the auction"],["2026-09-17 11:59:56","still","harrow",38,10,46,"read by the auction"],["2026-09-17 12:06:44","raised","band",8,-5,1059,"read by the auction"],["2026-09-17 12:21:44","still","sweep",11,1,39,"read by the auction"],["2026-09-17 12:37:44","still","sweep",11,1,39,"read by the auction"],["2026-09-17 12:52:44","still","sweep",11,1,40,"read by the auction"],["2026-09-17 13:02:39","raised","prowl",2,-9,27846,"read by the auction"],["2026-09-17 13:03:39","clear","prowl","","","","cleared"],["2026-09-17 13:15:39","raised","sweep",11,1,41,"read by the auction"],["2026-09-17 13:30:39","still","inscribe",15,-10,4762,"read by the auction"],["2026-09-17 13:46:39","still","pickings",22,3,599,"read by the auction"],["2026-09-17 14:01:39","still","sweep",11,1,43,"read by the auction"],["2026-09-17 14:11:24","raised","band",8,2,1132,"read by the auction"],["2026-09-17 14:16:24","clear","band","","","","cleared"],["2026-09-17 14:17:24","raised","sweep",11,1,43,"read by the auction"],["2026-09-17 14:32:24","still","sweep",11,1,43,"read by the auction"],["2026-09-17 14:41:47","raised","band",8,0,1149,"read by the auction"],["2026-09-17 14:56:47","still","band",8,0,1152,"read by the auction"],["2026-09-17 15:12:47","still","sweep",11,0,45,"read by the auction"],["2026-09-17 15:24:28","raised","band",8,0,1161,"read by the auction"],["2026-09-17 15:28:28","clear","band","","","","cleared"],["2026-09-17 15:32:28","raised","prowl",2,-18,30045,"read by the auction"],["2026-09-17 15:33:28","clear","prowl","","","","cleared"],["2026-09-17 15:39:28","raised","sweep",11,0,45,"read by the auction"],["2026-09-17 15:54:28","still","sweep",11,-1,46,"read by the auction"],["2026-09-17 16:09:57","raised","sew",14,-10,4380,"read by the auction"],["2026-09-17 16:25:57","still","sweep",11,-1,46,"read by the auction"],["2026-09-17 16:41:57","still","sweep",11,-1,46,"read by the auction"],["2026-09-17 16:56:57","still","sweep",11,0,47,"read by the auction"],["2026-09-17 17:12:57","still","sweep",11,0,47,"read by the auction"],["2026-09-17 17:28:57","still","mend",21,12,1562,"read by the auction"],["2026-09-17 17:43:57","still","sweep",11,3,48,"read by the auction"],["2026-09-17 17:58:57","still","sweep",11,0,49,"read by the auction"],["2026-09-17 18:14:57","still","sweep",11,0,49,"read by the auction"],["2026-09-17 18:34:22","raised","prowl",2,-13,33646,"read by the auction"],["2026-09-17 18:49:22","still","inscribe",15,-20,5775,"read by the auction"],["2026-09-17 19:05:22","still","sweep",11,0,50,"read by the auction"],["2026-09-17 19:20:22","still","mind-mine",22,8,40,"read by the auction"],["2026-09-17 19:36:22","still","mind-mine",22,8,40,"read by the auction"],["2026-09-17 19:46:49","raised","mend",13,-5,1626,"read by the auction"],["2026-09-17 20:01:49","still","mend",13,-5,1626,"read by the auction"],["2026-09-17 20:16:49","still","sweep",11,-2,51,"read by the auction"],["2026-09-17 20:24:26","raised","band",8,0,1338,"read by the auction"],["2026-09-17 20:27:58","raised","band",8,0,1341,"read by the auction"],["2026-09-17 20:33:58","clear","band","","","","cleared"],["2026-09-17 20:46:46","raised","sweep",11,-1,52,"read by the auction"],["2026-09-17 21:02:46","still","sweep",11,0,53,"read by the auction"],["2026-09-17 21:18:46","still","forage",5,-86,1016,"read by the auction"],["2026-09-17 21:25:51","raised","band",8,-1,1381,"read by the auction"],["2026-09-17 21:31:51","clear","forage","","","","cleared"],["2026-09-17 21:35:51","raised","prowl",2,-7,36201,"read by the auction"],["2026-09-17 21:36:51","clear","prowl","","","","cleared"],["2026-09-17 21:41:51","raised","inscribe",15,-19,6353,"read by the auction"],["2026-09-17 21:44:51","clear","prowl","","","","cleared"],["2026-09-17 21:46:51","raised","sweep",11,0,53,"read by the auction"],["2026-09-17 21:59:32","raised","band",8,1,1408,"read by the auction"],["2026-09-17 22:14:32","still","band",8,-1,1418,"read by the auction"],["2026-09-17 22:29:32","still","herbs",10,1,3087,"read by the auction"],["2026-09-17 22:30:32","clear","herbs","","","","cleared"],["2026-09-17 22:31:32","raised","sweep",11,0,53,"read by the auction"],["2026-09-17 22:42:43","raised","band",8,0,1442,"read by the auction"],["2026-09-17 22:44:43","clear","band","","","","cleared"],["2026-09-17 22:48:43","raised","prowl",2,-5,37110,"read by the auction"],["2026-09-17 22:49:43","clear","prowl","","","","cleared"],["2026-09-17 22:50:43","raised","band",8,2,1448,"read by the auction"],["2026-09-17 23:05:43","still","sweep",11,0,53,"read by the auction"],["2026-09-17 23:18:47","raised","sew",14,6,5547,"read by the auction"],["2026-09-17 23:34:00","raised","band",8,0,1468,"read by the auction"],["2026-09-17 23:36:00","clear","band","","","","cleared"],["2026-09-17 23:40:18","raised","band",8,-21,1478,"read by the auction"],["2026-09-17 23:47:00","raised","band",8,-8,1479,"read by the auction"],["2026-09-17 23:54:12","raised","prowl",2,-4,37920,"read by the auction"],["2026-09-17 23:55:12","clear","prowl","","","","cleared"],["2026-09-18 00:00:00","raised","band",8,2,1490,"read by the auction"],["2026-09-18 00:09:19","raised","band",8,1,1494,"read by the auction"],["2026-09-18 00:13:28","raised","band",8,1,1495,"read by the auction"],["2026-09-18 00:30:38","raised","mend",19,-22,1753,"read by the auction"],["2026-09-18 00:45:38","still","mend",13,7,1756,"read by the auction"],["2026-09-18 01:00:38","still","sweep",11,0,54,"read by the auction"],["2026-09-18 01:16:38","still","sweep",11,0,55,"read by the auction"],["2026-09-18 01:31:38","still","sweep",11,0,55,"read by the auction"],["2026-09-18 01:46:11","raised","band",8,1,1555,"read by the auction"],["2026-09-18 01:50:29","raised","sew",14,7,5899,"read by the auction"],["2026-09-18 01:54:28","raised","mend",17,-38,1793,"read by the auction"],["2026-09-18 02:09:28","still","mend",14,-23,1795,"read by the auction"],["2026-09-18 02:24:28","still","sweep",11,-1,56,"read by the auction"],["2026-09-18 02:40:28","still","inscribe",15,-25,7393,"read by the auction"],["2026-09-18 02:55:28","still","enlist",18,9,62,"read by the auction"],["2026-09-18 03:06:43","raised","mend",12,-10,1849,"read by the auction"],["2026-09-18 03:22:43","still","sweep",11,-2,58,"read by the auction"],["2026-09-18 03:37:43","still","mend",14,3,1875,"read by the auction"],["2026-09-18 03:52:43","still","sweep",11,-1,59,"read by the auction"],["2026-09-18 04:07:43","still","hunt",22,-16,22499,"read by the auction"],["2026-09-18 04:23:43","still","sweep",11,0,60,"read by the auction"],["2026-09-18 04:39:43","still","sweep",11,0,60,"read by the auction"],["2026-09-18 04:54:43","still","sweep",11,0,61,"read by the auction"],["2026-09-18 05:10:43","still","sweep",11,0,61,"read by the auction"],["2026-09-18 05:26:43","still","mind-mine",22,5,41,"read by the auction"],["2026-09-18 05:29:36","raised","band",8,2,1745,"read by the auction"],["2026-09-18 05:38:36","clear","band","","","","cleared"],["2026-09-18 05:39:36","raised","mend",10,4,1959,"read by the auction"],["2026-09-18 05:54:36","still","sweep",11,-1,62,"read by the auction"],["2026-09-18 06:10:36","still","sweep",11,1,63,"read by the auction"],["2026-09-18 06:26:36","still","prowl",2,-92,43186,"read by the auction"],["2026-09-18 06:31:46","raised","herbs",10,-43,3858,"read by the auction"],["2026-09-18 06:32:46","clear","herbs","","","","cleared"],["2026-09-18 06:33:46","raised","sweep",11,1,63,"read by the auction"],["2026-09-18 06:48:47","still","sweep",11,1,63,"read by the auction"],["2026-09-18 07:03:47","still","sweep",11,1,64,"read by the auction"],["2026-09-18 07:18:47","still","sweep",11,1,64,"read by the auction"],["2026-09-18 07:33:47","still","sweep",11,1,64,"read by the auction"],["2026-09-18 07:49:47","still","sweep",11,1,65,"read by the auction"],["2026-09-18 08:05:47","still","sweep",11,1,65,"read by the auction"],["2026-09-18 08:20:47","still","sweep",11,1,66,"read by the auction"],["2026-09-18 08:35:47","still","sweep",11,1,66,"read by the auction"],["2026-09-18 08:50:47","still","mind-mine",22,14,51,"read by the auction"],["2026-09-18 09:06:47","still","mind-mine",22,14,51,"read by the auction"],["2026-09-18 09:21:47","still","mind-mine",22,8,52,"read by the auction"],["2026-09-18 09:36:47","still","sweep",11,1,68,"read by the auction"],["2026-09-18 09:51:47","still","sweep",11,1,68,"read by the auction"],["2026-09-18 10:07:47","still","fletch",35,-56,1581,"read by the auction"],["2026-09-18 10:22:47","still","sweep",11,1,69,"read by the auction"],["2026-09-18 10:26:46","raised","inscribe",15,-9,8861,"read by the auction"],["2026-09-18 10:27:46","clear","inscribe","","","","cleared"],["2026-09-18 10:36:18","raised","sew",15,-3,6805,"read by the auction"],["2026-09-18 10:42:22","raised","drill",9,2,231,"read by the auction"],["2026-09-18 10:51:11","raised","drill",9,1,233,"read by the auction"],["2026-09-18 10:56:43","raised","drill",9,1,234,"read by the auction"],["2026-09-18 11:01:43","raised","drill",9,-1,236,"read by the auction"],["2026-09-18 11:07:40","raised","drill",9,-1,237,"read by the auction"],["2026-09-18 11:23:40","still","drill",9,-1,242,"read by the auction"],["2026-09-18 11:33:49","raised","drill",9,-1,242,"read by the auction"],["2026-09-18 11:40:55","raised","band",8,-1,2017,"read by the auction"],["2026-09-18 11:56:55","still","sweep",11,-1,70,"read by the auction"],["2026-09-18 12:03:31","raised","prowl",2,-5,48931,"read by the auction"],["2026-09-18 12:10:09","raised","band",8,2,2048,"read by the auction"],["2026-09-18 12:26:09","still","drill",9,0,246,"read by the auction"],["2026-09-18 12:31:09","clear","band","","","","cleared"],["2026-09-18 12:32:09","raised","sweep",11,-1,70,"read by the auction"],["2026-09-18 12:47:09","still","sweep",11,-1,70,"read by the auction"],["2026-09-18 13:02:29","raised","sweep",11,-1,70,"read by the auction"],["2026-09-18 13:17:29","still","sweep",11,-1,70,"read by the auction"],["2026-09-18 13:27:43","raised","band",8,-9,2111,"read by the auction"],["2026-09-18 13:35:40","raised","band",8,-7,2112,"read by the auction"],["2026-09-18 13:40:40","clear","band","","","","cleared"],["2026-09-18 13:41:40","raised","sweep",11,-1,70,"read by the auction"],["2026-09-18 13:56:40","still","sweep",11,-1,70,"read by the auction"],["2026-09-18 14:11:05","raised","band",8,1,2127,"read by the auction"],["2026-09-18 14:27:05","still","band",8,-30,2135,"read by the auction"],["2026-09-18 14:37:44","raised","band",8,-15,2138,"read by the auction"],["2026-09-18 14:53:44","still","mend",15,-7,2299,"read by the auction"],["2026-09-18 15:08:44","still","sweep",11,-2,71,"read by the auction"],["2026-09-18 15:18:07","raised","band",8,-2,2151,"read by the auction"],["2026-09-18 15:36:09","raised","band",8,-2,2155,"read by the auction"],["2026-09-18 15:39:09","clear","band","","","","cleared"],["2026-09-18 15:45:09","raised","sweep",11,-2,72,"read by the auction"],["2026-09-18 16:01:09","still","sweep",11,-2,72,"read by the auction"],["2026-09-18 16:17:09","still","sweep",11,-1,73,"read by the auction"],["2026-09-18 16:32:09","still","sweep",11,-1,73,"read by the auction"],["2026-09-18 16:48:09","still","sweep",11,-2,74,"read by the auction"],["2026-09-18 17:03:09","still","sweep",11,-2,74,"read by the auction"],["2026-09-18 17:06:42","raised","band",8,1,2207,"read by the auction"],["2026-09-18 17:16:05","raised","mend",10,-1,2363,"read by the auction"],["2026-09-18 17:28:56","raised","mend",12,1,2376,"read by the auction"],["2026-09-18 17:43:56","still","band",8,-3,2227,"read by the auction"],["2026-09-18 17:58:56","still","sweep",11,-2,74,"read by the auction"],["2026-09-18 18:00:38","raised","band",8,-2,2234,"read by the auction"],["2026-09-18 18:13:32","raised","band",8,-1,2236,"read by the auction"],["2026-09-18 18:29:32","still","drill",9,1,322,"read by the auction"],["2026-09-18 18:42:59","raised","drill",9,-1,326,"read by the auction"],["2026-09-18 18:57:59","still","sweep",11,-2,74,"read by the auction"],["2026-09-18 19:04:15","raised","drill",9,0,330,"read by the auction"],["2026-09-18 19:12:23","raised","sew",14,7,7987,"read by the auction"],["2026-09-18 19:13:23","clear","sew","","","","cleared"],["2026-09-18 19:14:23","raised","drill",9,-1,332,"read by the auction"],["2026-09-18 19:20:27","raised","drill",9,0,333,"read by the auction"],["2026-09-18 19:26:09","raised","drill",9,1,335,"read by the auction"],["2026-09-18 19:35:53","raised","drill",9,0,337,"read by the auction"],["2026-09-18 20:06:00","raised","sweep",11,-1,75,"read by the auction"],["2026-09-18 20:21:00","still","sweep",11,-1,76,"read by the auction"],["2026-09-18 20:39:15","raised","prowl",2,-6,56000,"read by the auction"],["2026-09-20 08:31:02","raised","prowl",2,-18,129,"read by the auction"],["2026-09-20 08:32:02","clear","prowl","","","","cleared"],["2026-09-20 08:34:02","raised","prowl",2,-9,208,"read by the auction"],["2026-09-20 08:35:02","clear","prowl","","","","cleared"],["2026-09-20 08:43:02","raised","band",8,2,32,"read by the auction"],["2026-09-20 08:58:02","still","band",8,-2,50,"read by the auction"],["2026-09-20 09:10:02","clear","band","","","","cleared"],["2026-09-20 09:14:02","raised","band",8,2,75,"read by the auction"],["2026-09-20 09:15:02","clear","band","","","","cleared"],["2026-09-20 09:16:02","raised","band",8,2,78,"read by the auction"],["2026-09-20 09:24:03","clear","band","","","","cleared"],["2026-09-20 09:25:03","raised","band",8,2,87,"read by the auction"],["2026-09-20 09:28:03","clear","band","","","","cleared"],["2026-09-20 09:35:03","raised","prowl",2,-6,1244,"read by the auction"],["2026-09-20 09:36:03","clear","prowl","","","","cleared"],["2026-09-20 09:38:03","raised","band",8,2,100,"read by the auction"],["2026-09-20 09:43:03","clear","band","","","","cleared"],["2026-09-20 09:45:03","raised","band",8,2,107,"read by the auction"],["2026-09-20 09:48:03","clear","band","","","","cleared"],["2026-09-20 09:51:03","raised","band",8,2,116,"read by the auction"],["2026-09-20 10:04:03","clear","band","","","","cleared"],["2026-09-20 10:06:03","raised","band",8,2,127,"read by the auction"],["2026-09-20 10:21:03","still","forge",34,13,120,"read by the auction"],["2026-09-20 10:36:03","still","drill",9,0,29,"read by the auction"],["2026-09-20 10:51:03","still","drill",9,0,33,"read by the auction"],["2026-09-20 11:06:03","still","drill",9,2,39,"read by the auction"],["2026-09-20 11:21:03","still","band",8,0,242,"read by the auction"],["2026-09-20 11:34:03","clear","prowl","","","","cleared"],["2026-09-20 11:39:03","raised","band",8,2,266,"read by the auction"],["2026-09-20 11:54:03","still","band",8,0,289,"read by the auction"],["2026-09-20 12:10:03","still","band",8,-1,304,"read by the auction"],["2026-09-20 12:13:03","clear","band","","","","cleared"],["2026-09-20 12:15:03","raised","mend",11,2,501,"read by the auction"],["2026-09-20 12:17:03","clear","mend","","","","cleared"],["2026-09-20 12:24:03","raised","band",8,2,327,"read by the auction"],["2026-09-20 12:25:03","clear","band","","","","cleared"],["2026-09-20 12:26:03","raised","band",8,2,332,"read by the auction"],["2026-09-20 12:41:03","still","drill",9,3,65,"read by the auction"],["2026-09-20 12:57:03","still","drill",9,0,71,"read by the auction"],["2026-09-20 13:12:03","still","enlist",18,4,26,"read by the auction"],["2026-09-20 13:28:03","still","enlist",18,4,26,"read by the auction"],["2026-09-21 18:07:45","raised","band",8,1,424,"read by the auction"],["2026-09-21 18:13:35","raised","drill",9,-1,76,"read by the auction"],["2026-09-21 18:15:35","clear","drill","","","","cleared"],["2026-09-21 18:16:35","raised","band",8,2,438,"read by the auction"],["2026-09-21 18:21:26","raised","band",8,1,444,"read by the auction"],["2026-09-21 18:26:09","raised","band",8,0,448,"read by the auction"],["2026-09-21 18:33:09","clear","band","","","","cleared"],["2026-09-21 18:43:16","raised","prowl",2,-3,7911,"read by the auction"],["2026-09-21 18:44:16","clear","prowl","","","","cleared"],["2026-09-21 18:45:16","raised","mine",11,3,2144,"read by the auction"],["2026-09-21 18:47:41","raised","drill",9,4,87,"read by the auction"],["2026-09-21 18:50:15","raised","drill",9,4,87,"read by the auction"],["2026-09-21 21:59:51","raised","mend",18,-4,669,"read by the auction"],["2026-09-21 22:15:51","still","enlist",18,1,40,"read by the auction"],["2026-09-21 22:30:51","still","enlist",18,1,40,"read by the auction"],["2026-09-21 22:45:51","still","enlist",18,1,41,"read by the auction"],["2026-09-21 23:00:51","still","enlist",18,1,41,"read by the auction"],["2026-09-21 23:15:51","still","enlist",18,1,41,"read by the auction"],["2026-09-21 23:31:51","still","enlist",18,10,43,"read by the auction"],["2026-09-21 23:47:51","still","enlist",18,8,44,"read by the auction"],["2026-09-22 00:02:51","still","enlist",18,4,47,"read by the auction"],["2026-09-22 00:18:51","still","enlist",18,4,47,"read by the auction"],["2026-09-22 00:33:51","still","enlist",18,4,47,"read by the auction"],["2026-09-22 00:49:51","still","enlist",18,3,48,"read by the auction"],["2026-09-22 01:05:51","still","enlist",18,3,48,"read by the auction"],["2026-09-22 02:49:41","raised","band",8,-2,635,"read by the auction"],["2026-09-22 03:04:41","still","band",8,-2,635,"read by the auction"],["2026-09-22 03:19:41","still","band",8,-2,635,"read by the auction"],["2026-09-22 03:34:41","still","enlist",18,2,50,"read by the auction"],["2026-09-22 03:50:41","still","enlist",18,-2,51,"read by the auction"],["2026-09-22 03:58:25","raised","drill",9,2,172,"read by the auction"],["2026-09-22 04:08:50","raised","prowl",2,-4,11652,"read by the auction"],["2026-09-22 04:09:50","clear","prowl","","","","cleared"],["2026-09-22 04:10:50","raised","pickings",22,12,199,"read by the auction"],["2026-09-22 04:25:50","still","drill",9,-1,178,"read by the auction"],["2026-09-22 04:40:50","still","enlist",13,-30,53,"read by the auction"],["2026-09-22 04:56:50","still","enlist",13,-30,53,"read by the auction"],["2026-09-22 05:12:34","raised","band",3,-2,734,"read by the auction"],["2026-09-22 05:27:34","still","drill",9,1,188,"read by the auction"],["2026-09-22 05:42:34","still","enlist",12,-24,54,"read by the auction"],["2026-09-22 05:57:34","still","mend",18,-28,1091,"read by the auction"],["2026-09-22 06:12:34","still","mend",14,-18,1093,"read by the auction"],["2026-09-22 06:28:34","still","enlist",10,-1,56,"read by the auction"],["2026-09-22 06:44:34","still","enlist",10,-1,56,"read by the auction"],["2026-09-22 06:59:34","still","fletch",23,0,274,"read by the auction"],["2026-09-22 07:14:34","still","enlist",10,-1,56,"read by the auction"],["2026-09-22 07:29:34","still","mend",12,5,1147,"read by the auction"],["2026-09-22 07:44:34","still","mend",19,0,1176,"read by the auction"],["2026-09-22 07:57:34","clear","mend","","","","cleared"],["2026-09-22 08:00:34","raised","mend",13,7,1187,"read by the auction"],["2026-09-22 08:16:34","still","drill",9,2,212,"read by the auction"],["2026-09-22 08:31:34","still","sew",14,-33,1629,"read by the auction"],["2026-09-22 08:47:34","still","fletch",23,-7,320,"read by the auction"],["2026-09-22 09:03:34","still","drill",9,-9,214,"read by the auction"],["2026-09-22 09:18:34","still","mend",16,5,1229,"read by the auction"],["2026-09-22 09:22:35","raised","mend",19,4,1230,"read by the auction"],["2026-09-22 09:37:35","still","mend",19,-28,1235,"read by the auction"],["2026-09-22 09:52:35","still","mend",15,-2,1239,"read by the auction"],["2026-09-22 09:53:35","clear","mend","","","","cleared"],["2026-09-22 09:57:35","raised","inscribe",15,3,1187,"read by the auction"],["2026-09-22 09:58:35","clear","inscribe","","","","cleared"],["2026-09-22 10:03:35","raised","mine",11,2,15357,"read by the auction"],["2026-09-22 10:04:35","clear","mine","","","","cleared"],["2026-09-22 10:05:35","raised","mine",11,4,15402,"read by the auction"],["2026-09-22 10:07:35","clear","prowl","","","","cleared"],["2026-09-22 10:10:35","raised","prowl",2,-4,20478,"read by the auction"],["2026-09-22 10:11:35","clear","prowl","","","","cleared"],["2026-09-22 10:12:35","raised","mine",11,4,15572,"read by the auction"],["2026-09-22 10:13:35","clear","mine","","","","cleared"],["2026-09-22 10:18:35","raised","mine",11,0,15673,"read by the auction"],["2026-09-22 10:19:35","clear","mine","","","","cleared"],["2026-09-22 10:24:35","raised","inscribe",15,-9,1294,"read by the auction"],["2026-09-22 10:28:35","clear","inscribe","","","","cleared"],["2026-09-22 10:31:35","raised","mine",11,3,15872,"read by the auction"],["2026-09-22 10:32:35","clear","mine","","","","cleared"],["2026-09-22 10:36:35","raised","mine",11,3,15956,"read by the auction"],["2026-09-22 10:37:35","clear","mine","","","","cleared"],["2026-09-22 10:38:35","raised","mine",11,4,15988,"read by the auction"],["2026-09-22 10:40:35","clear","mine","","","","cleared"],["2026-09-22 10:41:35","raised","mine",11,2,16041,"read by the auction"],["2026-09-22 10:52:35","clear","mine","","","","cleared"],["2026-09-22 11:01:35","raised","mine",11,6,16404,"read by the auction"],["2026-09-22 11:05:45","raised","band",6,0,1016,"read by the auction"],["2026-09-22 11:09:45","clear","band","","","","cleared"],["2026-09-22 11:12:45","raised","prowl",2,-31,22312,"read by the auction"],["2026-09-22 11:13:45","clear","prowl","","","","cleared"],["2026-09-22 11:16:45","raised","band",7,-8,1027,"read by the auction"],["2026-09-22 11:32:45","still","drill",9,-6,216,"read by the auction"],["2026-09-22 11:41:06","raised","band",7,1,1043,"read by the auction"],["2026-09-22 11:42:06","clear","band","","","","cleared"],["2026-09-22 11:46:06","raised","acquire",3,-10,2388,"read by the auction"],["2026-09-22 12:01:06","still","drill",9,-5,217,"read by the auction"],["2026-09-22 12:16:24","raised","band",7,-7,1083,"read by the auction"],["2026-09-22 12:19:24","clear","band","","","","cleared"],["2026-09-22 12:20:24","raised","drill",9,-2,221,"read by the auction"],["2026-09-22 12:22:24","clear","drill","","","","cleared"],["2026-09-22 12:25:24","raised","mend",24,14,1303,"read by the auction"],["2026-09-22 12:41:24","still","mend",20,10,1312,"read by the auction"],["2026-09-22 12:56:24","still","mend",16,4,1316,"read by the auction"],["2026-09-22 13:12:25","still","reclaim",5,-24,74,"read by the auction"],["2026-09-22 13:26:32","raised","band",7,-1,1149,"read by the auction"],["2026-09-22 13:42:32","still","reclaim",5,-18,75,"read by the auction"],["2026-09-22 13:57:32","still","mine",11,5,18267,"read by the auction"],["2026-09-22 14:03:53","raised","band",7,1,1186,"read by the auction"],["2026-09-22 14:18:53","still","liberate",55,6,26,"read by the auction"],["2026-09-22 14:34:53","still","liberate",55,5,27,"read by the auction"],["2026-09-22 14:50:53","still","liberate",55,5,27,"read by the auction"],["2026-09-22 15:06:53","still","liberate",55,7,28,"read by the auction"],["2026-09-22 15:12:00","raised","mine",11,0,19479,"read by the auction"],["2026-09-22 15:27:00","still","mend",22,-3,1388,"read by the auction"],["2026-09-22 15:30:00","clear","prowl","","","","cleared"],["2026-09-22 15:34:00","raised","band",7,2,1287,"read by the auction"],["2026-09-22 15:49:21","raised","band",7,0,1296,"read by the auction"],["2026-09-22 16:04:21","still","liberate",55,6,29,"read by the auction"],["2026-09-22 16:19:21","still","liberate",55,6,29,"read by the auction"],["2026-09-22 16:34:21","still","liberate",55,6,29,"read by the auction"],["2026-09-22 16:49:21","still","liberate",55,6,29,"read by the auction"],["2026-09-22 16:59:17","raised","mend",20,-3,1432,"read by the auction"],["2026-09-22 17:14:17","still","mend",15,-2,1434,"read by the auction"],["2026-09-22 17:17:17","clear","acquire","","","","cleared"],["2026-09-22 17:18:17","raised","fletch",23,-4,457,"read by the auction"],["2026-09-22 17:20:17","clear","fletch","","","","cleared"],["2026-09-22 17:25:17","raised","prowl",2,-4,32645,"read by the auction"],["2026-09-22 17:26:17","clear","prowl","","","","cleared"],["2026-09-22 17:27:17","raised","band",7,-2,1375,"read by the auction"],["2026-09-22 17:43:17","still","band",7,0,1385,"read by the auction"],["2026-09-22 17:46:17","clear","band","","","","cleared"],["2026-09-22 17:50:17","raised","band",7,2,1391,"read by the auction"],["2026-09-22 18:05:17","still","liberate",55,5,30,"read by the auction"],["2026-09-22 18:07:32","raised","prowl",2,-6,33519,"read by the auction"],["2026-09-22 18:08:32","clear","prowl","","","","cleared"],["2026-09-22 18:13:32","raised","band",7,2,1409,"read by the auction"],["2026-09-22 18:18:32","clear","band","","","","cleared"],["2026-09-22 18:26:32","raised","band",7,2,1425,"read by the auction"],["2026-09-22 18:32:32","clear","band","","","","cleared"],["2026-09-22 18:33:32","raised","band",7,2,1432,"read by the auction"],["2026-09-22 18:48:32","still","band",7,0,1439,"read by the auction"],["2026-09-22 18:50:32","clear","prowl","","","","cleared"],["2026-09-22 18:52:32","raised","band",7,2,1446,"read by the auction"],["2026-09-22 19:07:32","still","liberate",55,4,31,"read by the auction"],["2026-09-24 01:57:50","raised","band",7,-1,1476,"read by the auction"],["2026-09-24 01:58:50","clear","band","","","","cleared"],["2026-09-24 01:59:50","raised","band",7,2,1481,"read by the auction"],["2026-09-24 02:10:24","raised","band",7,2,1488,"read by the auction"],["2026-09-24 02:13:23","raised","band",7,1,1492,"read by the auction"],["2026-09-24 02:28:23","still","band",7,-1,1507,"read by the auction"],["2026-09-24 02:41:23","clear","fletch","","","","cleared"],["2026-09-24 02:52:02","raised","band",7,2,1523,"read by the auction"],["2026-09-24 02:55:02","raised","liberate",55,2,32,"read by the auction"],["2026-09-24 03:10:02","still","liberate",55,5,33,"read by the auction"],["2026-09-24 03:25:02","still","liberate",55,5,33,"read by the auction"],["2026-09-24 03:35:31","raised","mine",11,2,25296,"read by the auction"],["2026-09-24 03:36:31","clear","mine","","","","cleared"],["2026-09-24 03:44:31","raised","band",7,2,1570,"read by the auction"],["2026-09-24 03:45:31","clear","band","","","","cleared"],["2026-09-24 03:47:31","raised","mend",18,1,1530,"read by the auction"],["2026-09-24 04:03:31","still","liberate",55,-2,35,"read by the auction"],["2026-09-24 04:17:56","raised","mend",18,7,1547,"read by the auction"],["2026-09-24 04:32:56","clear","mend","","","","cleared"],["2026-09-24 04:33:56","raised","mine",11,-2,26238,"read by the auction"],["2026-09-24 04:36:56","clear","hunt","","","","cleared"],["2026-09-24 04:39:56","raised","band",7,2,1628,"read by the auction"],["2026-09-24 04:54:56","still","liberate",55,0,36,"read by the auction"],["2026-09-24 05:01:29","raised","band",7,0,1650,"read by the auction"],["2026-09-24 05:17:29","still","liberate",55,0,37,"read by the auction"],["2026-09-24 05:32:29","still","liberate",55,0,37,"read by the auction"],["2026-09-24 05:50:20","raised","mine",11,2,26962,"read by the auction"],["2026-09-24 05:51:20","clear","mine","","","","cleared"],["2026-09-24 05:53:20","raised","band",7,2,1685,"read by the auction"],["2026-09-24 06:08:20","still","band",7,0,1696,"read by the auction"],["2026-09-24 06:16:20","clear","band","","","","cleared"],["2026-09-24 06:26:20","raised","band",7,2,1709,"read by the auction"],["2026-09-24 06:34:37","raised","band",7,1,1712,"read by the auction"],["2026-09-24 06:50:37","still","liberate",55,0,38,"read by the auction"],["2026-09-24 07:15:54","raised","band",7,2,1737,"read by the auction"],["2026-09-24 07:21:49","raised","band",7,1,1740,"read by the auction"],["2026-09-24 07:36:49","still","liberate",55,0,39,"read by the auction"],["2026-09-24 07:51:49","still","liberate",55,0,39,"read by the auction"],["2026-09-24 08:13:39","raised","band",7,2,1763,"read by the auction"],["2026-09-24 08:29:39","still","mend",14,6,1605,"read by the auction"],["2026-09-24 08:44:39","still","mend",12,4,1607,"read by the auction"],["2026-09-24 08:49:22","raised","mend",12,4,1607,"read by the auction"],["2026-09-24 08:50:22","clear","mend","","","","cleared"],["2026-09-24 09:12:22","raised","drill",9,4,55,"read by the auction"],["2026-09-24 09:14:22","clear","drill","","","","cleared"],["2026-09-24 09:17:22","raised","drill",9,4,58,"read by the auction"],["2026-09-24 09:32:36","raised","drill",9,2,62,"read by the auction"],["2026-09-24 09:33:36","clear","drill","","","","cleared"],["2026-09-24 09:34:36","raised","band",7,2,1803,"read by the auction"],["2026-09-24 09:49:36","still","band",7,1,1805,"read by the auction"],["2026-09-24 09:53:09","raised","band",7,1,1807,"read by the auction"],["2026-09-24 09:55:33","raised","liberate",55,0,39,"read by the auction"],["2026-09-24 10:10:33","still","liberate",55,0,40,"read by the auction"],["2026-09-24 10:14:40","raised","band",7,1,1809,"read by the auction"],["2026-09-24 10:21:55","raised","band",7,0,1810,"read by the auction"],["2026-09-24 10:36:55","still","liberate",55,0,41,"read by the auction"],["2026-09-24 10:51:55","still","liberate",55,0,41,"read by the auction"],["2026-09-24 11:16:21","raised","band",7,2,1838,"read by the auction"],["2026-09-24 11:25:21","clear","band","","","","cleared"],["2026-09-24 11:36:21","raised","mend",21,9,1645,"read by the auction"],["2026-09-24 11:38:21","clear","mend","","","","cleared"],["2026-09-24 11:41:21","raised","band",7,2,1859,"read by the auction"],["2026-09-24 11:48:56","raised","band",7,-21,1867,"read by the auction"],["2026-09-24 12:03:56","still","band",7,-1,1880,"read by the auction"],["2026-09-24 12:18:56","still","band",7,-34,1894,"read by the auction"],["2026-09-24 12:32:20","raised","inscribe",15,5,2506,"read by the auction"],["2026-09-24 12:36:20","clear","inscribe","","","","cleared"],["2026-09-24 12:37:20","raised","mine",11,5,29905,"read by the auction"],["2026-09-24 12:38:20","clear","mine","","","","cleared"],["2026-09-24 13:05:20","raised","mine",11,2,30139,"read by the auction"],["2026-09-24 13:06:20","clear","mine","","","","cleared"],["2026-09-24 13:11:20","raised","inscribe",15,1,2543,"read by the auction"],["2026-09-24 13:12:20","clear","inscribe","","","","cleared"],["2026-09-24 13:13:20","raised","inscribe",15,-1,2546,"read by the auction"],["2026-09-24 13:14:20","clear","inscribe","","","","cleared"],["2026-09-24 13:18:20","raised","mend",24,-15,1708,"read by the auction"],["2026-09-24 13:25:58","raised","mend",18,-16,1712,"read by the auction"],["2026-09-24 13:40:58","still","mend",21,1,1725,"read by the auction"],["2026-09-24 13:56:58","still","mend",18,-35,1728,"read by the auction"],["2026-09-24 14:06:46","raised","liberate",55,0,41,"read by the auction"],["2026-09-24 14:18:54","raised","mend",17,-12,1733,"read by the auction"],["2026-09-24 14:33:54","clear","band","","","","cleared"],["2026-09-24 14:41:54","raised","fletch",23,3,801,"read by the auction"],["2026-09-24 14:48:07","raised","band",7,1,1995,"read by the auction"],["2026-09-24 14:50:07","clear","band","","","","cleared"],["2026-09-24 14:55:07","raised","liberate",55,0,41,"read by the auction"],["2026-09-24 15:10:07","still","liberate",55,2,43,"read by the auction"],["2026-09-24 15:25:07","still","liberate",55,2,43,"read by the auction"],["2026-09-24 15:33:54","raised","band",7,1,2022,"read by the auction"],["2026-09-24 15:47:54","clear","band","","","","cleared"],["2026-09-24 15:49:54","raised","mine",11,-2,31808,"read by the auction"],["2026-09-24 15:50:54","clear","mine","","","","cleared"],["2026-09-24 15:52:54","raised","band",7,2,2031,"read by the auction"],["2026-09-24 15:58:54","clear","band","","","","cleared"],["2026-09-24 16:17:28","raised","mend",17,10,1754,"read by the auction"],["2026-09-24 16:32:28","still","mend",13,6,1756,"read by the auction"],["2026-09-24 16:42:28","clear","band","","","","cleared"],["2026-09-24 16:57:28","raised","reclaim",5,-1,118,"read by the auction"],["2026-09-24 17:13:11","raised","cook",18,-8,2392,"read by the auction"],["2026-09-24 17:14:11","clear","cook","","","","cleared"],["2026-09-24 17:20:11","raised","inscribe",15,-20,2718,"read by the auction"],["2026-09-24 17:24:11","clear","band","","","","cleared"],["2026-09-24 17:27:11","raised","fletch",23,-2,862,"read by the auction"],["2026-09-24 17:29:11","clear","sew","","","","cleared"],["2026-09-24 17:30:11","raised","mine",11,4,32917,"read by the auction"],["2026-09-24 17:31:11","clear","mine","","","","cleared"],["2026-09-24 17:34:11","raised","fletch",23,14,867,"read by the auction"],["2026-09-24 17:35:11","clear","fletch","","","","cleared"],["2026-09-24 18:02:11","raised","prowl",2,-14,50890,"read by the auction"],["2026-09-24 18:03:11","clear","prowl","","","","cleared"],["2026-09-24 18:04:11","raised","mend",13,5,1810,"read by the auction"],["2026-09-24 18:14:39","raised","mine",11,5,33165,"read by the auction"],["2026-09-24 18:15:39","clear","mine","","","","cleared"],["2026-09-24 18:16:39","raised","mine",11,3,33275,"read by the auction"],["2026-09-24 18:17:39","clear","mine","","","","cleared"],["2026-09-24 18:19:39","raised","herbs",10,5,2899,"read by the auction"],["2026-09-24 18:27:39","clear","herbs","","","","cleared"],["2026-09-24 18:39:26","raised","cook",18,1,2569,"read by the auction"],["2026-09-24 18:41:26","clear","prowl","","","","cleared"],["2026-09-24 18:42:26","raised","prowl",2,-4,51194,"read by the auction"],["2026-09-24 18:43:26","clear","prowl","","","","cleared"],["2026-09-24 18:45:26","raised","mine",11,0,33613,"read by the auction"],["2026-09-24 18:46:26","clear","mine","","","","cleared"],["2026-09-24 18:48:26","raised","band",7,2,2122,"read by the auction"],["2026-09-24 19:03:26","still","band",7,-23,2134,"read by the auction"],["2026-09-24 19:18:26","still","liberate",55,2,44,"read by the auction"],["2026-09-24 19:33:26","still","liberate",55,2,44,"read by the auction"],["2026-09-24 19:48:26","still","liberate",55,2,44,"read by the auction"],["2026-09-24 20:02:29","raised","band",7,0,2176,"read by the auction"],["2026-09-24 20:10:01","raised","liberate",55,2,44,"read by the auction"],["2026-09-24 20:25:01","still","liberate",55,6,45,"read by the auction"],["2026-09-24 20:41:01","still","liberate",55,6,45,"read by the auction"],["2026-09-24 20:56:01","still","liberate",55,6,45,"read by the auction"],["2026-09-24 21:11:01","still","liberate",55,6,45,"read by the auction"],["2026-09-25 06:18:45","raised","band",7,0,2230,"read by the auction"],["2026-09-25 06:34:35","raised","mend",25,15,1855,"read by the auction"],["2026-09-25 06:37:35","clear","mend","","","","cleared"],["2026-09-25 06:50:35","raised","hunt",22,14,20824,"read by the auction"],["2026-09-25 06:51:35","clear","hunt","","","","cleared"],["2026-09-25 06:59:35","raised","glean",4,-32,2322,"read by the auction"],["2026-09-25 07:05:02","raised","glean",4,-13,2325,"read by the auction"],["2026-09-25 07:08:02","clear","glean","","","","cleared"],["2026-09-25 07:10:02","raised","mend",17,1,1873,"read by the auction"],["2026-09-25 07:19:02","clear","mend","","","","cleared"],["2026-09-25 07:20:02","raised","prowl",2,-18,56349,"read by the auction"],["2026-09-25 07:21:02","clear","prowl","","","","cleared"],["2026-09-25 07:31:02","raised","hunt",22,9,21140,"read by the auction"],["2026-09-25 07:33:02","clear","hunt","","","","cleared"],["2026-09-25 07:46:02","raised","mine",11,2,36443,"read by the auction"],["2026-09-25 07:47:02","clear","mine","","","","cleared"],["2026-09-25 07:54:02","raised","mend",20,9,1884,"read by the auction"],["2026-09-25 07:58:14","raised","mend",24,-1,1888,"read by the auction"],["2026-09-25 08:00:14","clear","mend","","","","cleared"],["2026-09-25 08:04:14","raised","prowl",2,-4,57920,"read by the auction"],["2026-09-25 08:05:14","clear","prowl","","","","cleared"],["2026-09-25 08:06:14","raised","mend",11,-14,1897,"read by the auction"],["2026-09-25 08:22:14","still","mend",11,-12,1898,"read by the auction"],["2026-09-25 08:37:14","still","mend",11,-12,1898,"read by the auction"],["2026-09-25 08:57:21","raised","mend",12,-5,1902,"read by the auction"],["2026-09-25 09:12:21","still","mend",9,-11,1906,"read by the auction"],["2026-09-25 09:25:21","clear","mend","","","","cleared"],["2026-09-25 10:03:21","raised","prowl",2,-25,61555,"read by the auction"],["2026-09-25 10:04:21","clear","prowl","","","","cleared"],["2026-09-25 10:28:21","raised","prowl",2,-5,62155,"read by the auction"],["2026-09-25 10:29:21","clear","prowl","","","","cleared"],["2026-09-25 10:54:21","raised","prowl",2,-4,62771,"read by the auction"],["2026-09-25 10:55:21","clear","prowl","","","","cleared"],["2026-09-25 10:57:21","raised","inscribe",15,-11,3141,"read by the auction"],["2026-09-25 10:58:21","clear","inscribe","","","","cleared"],["2026-09-25 12:08:23","raised","cook",18,-3,4097,"read by the auction"],["2026-09-25 12:09:23","clear","cook","","","","cleared"],["2026-09-25 12:11:23","raised","prowl",2,-15,64527,"read by the auction"],["2026-09-25 12:12:23","clear","prowl","","","","cleared"],["2026-09-25 12:37:23","raised","prowl",2,-87,65142,"read by the auction"],["2026-09-25 12:38:23","clear","prowl","","","","cleared"],["2026-09-25 13:29:23","raised","mine",11,-31,38959,"read by the auction"],["2026-09-25 13:31:23","clear","prowl","","","","cleared"],["2026-09-25 13:45:23","raised","prowl",2,-160,66396,"read by the auction"],["2026-09-25 14:00:23","still","drill",9,-6,136,"read by the auction"],["2026-09-25 14:15:23","still","drill",9,-6,136,"read by the auction"],["2026-09-25 14:31:23","still","mend",12,4,1978,"read by the auction"],["2026-09-25 14:47:23","still","drill",9,-6,136,"read by the auction"],["2026-09-25 15:03:23","still","drill",9,-6,136,"read by the auction"],["2026-09-25 15:18:23","still","drill",9,-6,136,"read by the auction"],["2026-09-25 15:22:49","raised","mend",8,1,1987,"read by the auction"],["2026-09-25 15:23:49","clear","mend","","","","cleared"],["2026-09-25 16:19:50","raised","mend",9,2,2001,"read by the auction"],["2026-09-25 16:22:50","clear","mend","","","","cleared"],["2026-09-25 16:23:50","raised","drill",9,-6,136,"read by the auction"],["2026-09-25 16:34:50","clear","drill","","","","cleared"],["2026-09-25 16:40:50","raised","prowl",2,-7,68742,"read by the auction"],["2026-09-25 16:41:50","clear","prowl","","","","cleared"],["2026-09-25 16:45:50","raised","fletch",23,4,1126,"read by the auction"],["2026-09-25 16:48:50","clear","fletch","","","","cleared"],["2026-09-25 16:57:29","raised","prowl",2,-7,68797,"read by the auction"],["2026-09-25 16:58:29","clear","prowl","","","","cleared"],["2026-09-25 17:01:54","raised","mend",19,9,2021,"read by the auction"],["2026-09-25 17:04:54","clear","mend","","","","cleared"],["2026-09-25 17:08:54","raised","mend",15,1,2027,"read by the auction"],["2026-09-25 17:24:54","still","herbs",10,4,3688,"read by the auction"],["2026-09-25 17:28:28","raised","prowl",2,-4,69079,"read by the auction"],["2026-09-26 02:08:54","raised","mend",19,3,129,"read by the auction"],["2026-09-26 02:09:54","clear","mend","","","","cleared"],["2026-09-26 02:11:51","raised","mend",23,-18,138,"read by the auction"],["2026-09-26 02:14:51","clear","mend","","","","cleared"],["2026-09-26 02:55:02","raised","delve",65,41,25,"read by the auction"],["2026-09-26 03:09:02","clear","delve","","","","cleared"],["2026-09-26 03:14:02","raised","delve",65,42,33,"read by the auction"],["2026-09-26 03:27:54","raised","delve",65,22,38,"read by the auction"],["2026-09-26 03:32:54","clear","delve","","","","cleared"],["2026-09-26 03:49:52","raised","delve",65,32,44,"read by the auction"],["2026-09-26 03:55:52","clear","delve","","","","cleared"],["2026-09-26 04:01:52","raised","delve",65,40,48,"read by the auction"],["2026-09-26 04:08:21","raised","delve",65,28,50,"read by the auction"],["2026-09-26 04:16:54","raised","delve",65,17,53,"read by the auction"],["2026-09-26 04:22:54","clear","delve","","","","cleared"],["2026-09-26 04:30:24","raised","delve",65,34,59,"read by the auction"],["2026-09-26 04:32:52","raised","delve",65,34,59,"read by the auction"],["2026-09-26 04:48:52","still","delve",65,19,62,"read by the auction"],["2026-09-26 04:58:41","raised","delve",65,10,65,"read by the auction"],["2026-09-26 05:13:41","still","delve",65,32,68,"read by the auction"],["2026-09-26 05:29:41","still","delve",65,32,68,"read by the auction"],["2026-09-26 05:45:41","still","delve",65,32,68,"read by the auction"],["2026-09-26 06:00:41","still","delve",65,32,69,"read by the auction"],["2026-09-26 06:16:41","still","delve",65,21,71,"read by the auction"],["2026-09-26 06:26:41","clear","delve","","","","cleared"],["2026-09-26 08:01:41","raised","fletch",34,18,54,"read by the auction"],["2026-09-26 08:17:41","still","fletch",34,18,54,"read by the auction"],["2026-09-26 08:32:41","still","fletch",35,-16,56,"read by the auction"],["2026-09-26 08:47:41","still","fletch",35,-16,56,"read by the auction"],["2026-09-26 09:03:41","still","fletch",35,-16,56,"read by the auction"],["2026-09-26 09:18:41","still","delve",65,35,94,"read by the auction"],["2026-09-26 09:34:41","still","delve",65,-47,99,"read by the auction"],["2026-09-26 09:50:41","still","delve",65,19,102,"read by the auction"],["2026-09-26 10:06:41","still","delve",65,20,104,"read by the auction"],["2026-09-26 10:21:41","still","delve",65,41,107,"read by the auction"],["2026-09-26 10:36:41","still","delve",65,33,109,"read by the auction"],["2026-09-26 10:42:06","raised","delve",65,33,109,"read by the auction"],["2026-09-26 10:53:06","clear","mend","","","","cleared"],["2026-09-26 11:12:06","raised","mend",9,-69,374,"read by the auction"],["2026-09-26 11:22:06","clear","mend","","","","cleared"],["2026-09-26 11:24:06","raised","mend",13,8,391,"read by the auction"],["2026-09-26 11:39:06","still","mend",13,8,391,"read by the auction"],["2026-09-26 11:51:53","raised","prowl",2,-18,1223,"read by the auction"],["2026-09-26 11:58:53","clear","prowl","","","","cleared"],["2026-09-26 12:59:53","raised","mend",10,-29,436,"read by the auction"],["2026-09-26 13:09:53","clear","mend","","","","cleared"],["2026-09-26 13:19:44","raised","hunt",22,-7,1753,"read by the auction"],["2026-09-26 13:21:44","clear","hunt","","","","cleared"],["2026-09-26 13:48:44","raised","prowl",2,-30,1454,"read by the auction"],["2026-09-26 13:50:44","clear","prowl","","","","cleared"],["2026-09-26 13:53:44","raised","prowl",2,-4,1476,"read by the auction"],["2026-09-26 13:54:44","clear","prowl","","","","cleared"],["2026-09-26 14:09:51","raised","mend",20,13,490,"read by the auction"],["2026-09-26 14:13:00","raised","mend",19,8,492,"read by the auction"],["2026-09-26 14:26:54","raised","mend",15,8,496,"read by the auction"],["2026-09-26 14:29:54","clear","mend","","","","cleared"],["2026-09-26 14:56:34","raised","prowl",2,-11,1776,"read by the auction"],["2026-09-26 14:57:34","clear","prowl","","","","cleared"],["2026-09-26 14:59:34","raised","prowl",2,-7,1804,"read by the auction"],["2026-09-26 15:00:34","clear","prowl","","","","cleared"],["2026-09-26 15:06:34","raised","prowl",2,-20,1855,"read by the auction"],["2026-09-26 15:09:34","clear","prowl","","","","cleared"],["2026-09-26 15:12:34","raised","forage",5,-52,208,"read by the auction"],["2026-09-26 15:24:32","raised","forage",5,-19,211,"read by the auction"],["2026-09-26 15:26:32","clear","forage","","","","cleared"]],"dates":[{"date":"2026-09-18","takes":111829,"bots":85,"share_with_refusal":0.4635,"share_with_runner_up":0.5947,"share_only_offer":0.4053,"nothing-to-weigh":0,"other-map":0,"dungeon-edge":0,"outlay":17313,"no-room-for-coin":0,"breaker":0,"becalmed":0,"deaths-close":0,"deaths-keep-out":0,"hostile-strength":0,"red-in-town":36,"expected-nothing":34486,"weighed-nothing":0,"unrecognised":0},{"date":"2026-09-19","takes":96,"bots":80,"share_with_refusal":0.0208,"share_with_runner_up":0.8854,"share_only_offer":0.1146,"nothing-to-weigh":0,"other-map":0,"dungeon-edge":0,"outlay":2,"no-room-for-coin":0,"breaker":0,"becalmed":0,"deaths-close":0,"deaths-keep-out":0,"hostile-strength":0,"red-in-town":0,"expected-nothing":0,"weighed-nothing":0,"unrecognised":0},{"date":"2026-09-20","takes":33077,"bots":80,"share_with_refusal":0.3049,"share_with_runner_up":0.606,"share_only_offer":0.394,"nothing-to-weigh":0,"other-map":0,"dungeon-edge":0,"outlay":5519,"no-room-for-coin":0,"breaker":0,"becalmed":0,"deaths-close":460,"deaths-keep-out":4,"hostile-strength":0,"red-in-town":0,"expected-nothing":4103,"weighed-nothing":0,"unrecognised":0},{"date":"2026-09-21","takes":17247,"bots":80,"share_with_refusal":0.5987,"share_with_runner_up":0.5858,"share_only_offer":0.4142,"nothing-to-weigh":0,"other-map":0,"dungeon-edge":0,"outlay":2991,"no-room-for-coin":1,"breaker":4,"becalmed":0,"deaths-close":4303,"deaths-keep-out":186,"hostile-strength":0,"red-in-town":0,"expected-nothing":2840,"weighed-nothing":0,"unrecognised":0},{"date":"2026-09-22","takes":113682,"bots":79,"share_with_refusal":0.3808,"share_with_runner_up":0.6035,"share_only_offer":0.3965,"nothing-to-weigh":0,"other-map":0,"dungeon-edge":103,"outlay":17274,"no-room-for-coin":2,"breaker":24,"becalmed":182,"deaths-close":1241,"deaths-keep-out":189,"hostile-strength":0,"red-in-town":30,"expected-nothing":24244,"weighed-nothing":0,"unrecognised":0},{"date":"2026-09-24","takes":80175,"bots":98,"share_with_refusal":0.3583,"share_with_runner_up":0.619,"share_only_offer":0.381,"nothing-to-weigh":0,"other-map":0,"dungeon-edge":32,"outlay":11939,"no-room-for-coin":1,"breaker":39,"becalmed":212,"deaths-close":2608,"deaths-keep-out":292,"hostile-strength":0,"red-in-town":0,"expected-nothing":13606,"weighed-nothing":0,"unrecognised":0},{"date":"2026-09-25","takes":77186,"bots":110,"share_with_refusal":0.2855,"share_with_runner_up":0.7011,"share_only_offer":0.2989,"nothing-to-weigh":0,"other-map":0,"dungeon-edge":202,"outlay":8659,"no-room-for-coin":1,"breaker":30,"becalmed":133,"deaths-close":0,"deaths-keep-out":8,"hostile-strength":0,"red-in-town":0,"expected-nothing":13003,"weighed-nothing":0,"unrecognised":0},{"date":"2026-09-26","takes":28864,"bots":64,"share_with_refusal":0.2828,"share_with_runner_up":0.7231,"share_only_offer":0.2769,"nothing-to-weigh":0,"other-map":0,"dungeon-edge":812,"outlay":4113,"no-room-for-coin":1,"breaker":106,"becalmed":130,"deaths-close":308,"deaths-keep-out":96,"hostile-strength":182,"red-in-town":0,"expected-nothing":2414,"weighed-nothing":0,"unrecognised":0}],"bot_kind":[{"bot":"Edda","kind":"forge","takes":21929,"share_of_kind":0.6968,"first_take":"2026-09-20 08:27:33","last_take":"2026-09-25 17:23:58","estimate_median":536.0,"rate_median":164.0,"new_median":0.0,"takes_with_new_0":18518},{"bot":"Merrick","kind":"mine","takes":4992,"share_of_kind":0.0942,"first_take":"2026-09-18 00:08:23","last_take":"2026-09-26 14:52:51","estimate_median":10.0,"rate_median":11.0,"new_median":0.34,"takes_with_new_0":215},{"bot":"Sable","kind":"mine","takes":4616,"share_of_kind":0.0871,"first_take":"2026-09-18 00:08:23","last_take":"2026-09-26 03:27:56","estimate_median":12.0,"rate_median":13.0,"new_median":0.35,"takes_with_new_0":0},{"bot":"Ulla","kind":"mine","takes":3900,"share_of_kind":0.0736,"first_take":"2026-09-18 00:08:23","last_take":"2026-09-26 11:29:55","estimate_median":24.0,"rate_median":27.0,"new_median":0.5,"takes_with_new_0":0},{"bot":"Vance","kind":"mine","takes":3866,"share_of_kind":0.0729,"first_take":"2026-09-18 00:08:23","last_take":"2026-09-26 13:31:38","estimate_median":29.0,"rate_median":34.0,"new_median":0.56,"takes_with_new_0":0},{"bot":"Alden","kind":"forge","takes":3795,"share_of_kind":0.1206,"first_take":"2026-09-18 20:41:14","last_take":"2026-09-26 14:26:08","estimate_median":275.0,"rate_median":125.0,"new_median":0.01,"takes_with_new_0":1656},{"bot":"Nessa","kind":"mine","takes":3340,"share_of_kind":0.063,"first_take":"2026-09-18 00:08:23","last_take":"2026-09-26 14:49:58","estimate_median":40.0,"rate_median":47.0,"new_median":0.6,"takes_with_new_0":0},{"bot":"Lysa","kind":"mine","takes":3110,"share_of_kind":0.0587,"first_take":"2026-09-18 00:08:23","last_take":"2026-09-26 11:09:29","estimate_median":43.0,"rate_median":51.0,"new_median":0.63,"takes_with_new_0":0},{"bot":"Torvin","kind":"mine","takes":2947,"share_of_kind":0.0556,"first_take":"2026-09-18 00:08:23","last_take":"2026-09-26 11:11:26","estimate_median":32.0,"rate_median":36.0,"new_median":0.56,"takes_with_new_0":0},{"bot":"Alden","kind":"mine","takes":2888,"share_of_kind":0.0545,"first_take":"2026-09-18 20:41:37","last_take":"2026-09-26 13:55:46","estimate_median":46.0,"rate_median":49.0,"new_median":0.61,"takes_with_new_0":0},{"bot":"Perri","kind":"mine","takes":2873,"share_of_kind":0.0542,"first_take":"2026-09-18 00:08:23","last_take":"2026-09-26 15:18:37","estimate_median":43.0,"rate_median":50.0,"new_median":0.64,"takes_with_new_0":0},{"bot":"Quill","kind":"mine","takes":2507,"share_of_kind":0.0473,"first_take":"2026-09-18 00:08:23","last_take":"2026-09-25 17:10:45","estimate_median":52.0,"rate_median":61.0,"new_median":0.65,"takes_with_new_0":0}],"pairs":[{"winner":"forge","runner_up":"mine","takes":22996,"share_of_takes":0.0498,"winner_rate_median":162.0,"runner_up_rate_median":69.0},{"winner":"mine","runner_up":"unload","takes":19479,"share_of_takes":0.0421,"winner_rate_median":26.0,"runner_up_rate_median":6.0},{"winner":"restock","runner_up":"prowl","takes":12425,"share_of_takes":0.0269,"winner_rate_median":11.0,"runner_up_rate_median":2.0},{"winner":"unload","runner_up":"prowl","takes":8758,"share_of_takes":0.019,"winner_rate_median":8.0,"runner_up_rate_median":1.0},{"winner":"mine","runner_up":"prowl","takes":8628,"share_of_takes":0.0187,"winner_rate_median":37.0,"runner_up_rate_median":3.0},{"winner":"peddle","runner_up":"mine","takes":8508,"share_of_takes":0.0184,"winner_rate_median":189.0,"runner_up_rate_median":73.0},{"winner":"restock","runner_up":"unload","takes":6463,"share_of_takes":0.014,"winner_rate_median":11.0,"runner_up_rate_median":6.0},{"winner":"peddle","runner_up":"restock","takes":6403,"share_of_takes":0.0139,"winner_rate_median":150.0,"runner_up_rate_median":11.0},{"winner":"chop","runner_up":"mine","takes":6120,"share_of_takes":0.0132,"winner_rate_median":324.0,"runner_up_rate_median":101.0},{"winner":"mine","runner_up":"herbs","takes":5842,"share_of_takes":0.0126,"winner_rate_median":85.0,"runner_up_rate_median":27.0},{"winner":"peddle","runner_up":"prowl","takes":4995,"share_of_takes":0.0108,"winner_rate_median":106.0,"runner_up_rate_median":2.0},{"winner":"hunt","runner_up":"unload","takes":4861,"share_of_takes":0.0105,"winner_rate_median":143.0,"runner_up_rate_median":10.0},{"winner":"mine","runner_up":"restock","takes":4629,"share_of_takes":0.01,"winner_rate_median":68.0,"runner_up_rate_median":11.0},{"winner":"peddle","runner_up":"unload","takes":4381,"share_of_takes":0.0095,"winner_rate_median":119.0,"runner_up_rate_median":13.0},{"winner":"chop","runner_up":"peddle","takes":4319,"share_of_takes":0.0093,"winner_rate_median":339.0,"runner_up_rate_median":185.0}],"standing":[{"session":"2026-09-18_06-30","refused_kind":"prowl","expected":"-51.8","claim":"2.0","first_seen":"2026-09-18 06:31:12","last_seen":"2026-09-18 10:24:38","hours":3.89,"times":958,"bots":64},{"session":"2026-09-22_05-11","refused_kind":"prowl","expected":"-38.0","claim":"2.0","first_seen":"2026-09-22 05:12:29","last_seen":"2026-09-22 09:16:38","hours":4.07,"times":879,"bots":61},{"session":"2026-09-18_03-05","refused_kind":"prowl","expected":"-28.3","claim":"2.0","first_seen":"2026-09-18 03:08:05","last_seen":"2026-09-18 05:27:54","hours":2.33,"times":733,"bots":66},{"session":"2026-09-18_03-05","refused_kind":"prowl","expected":"-35.4","claim":"2.0","first_seen":"2026-09-18 03:06:49","last_seen":"2026-09-18 05:11:29","hours":2.08,"times":500,"bots":64},{"session":"2026-09-25_08-44","refused_kind":"prowl","expected":"-10.2","claim":"2.0","first_seen":"2026-09-25 08:46:29","last_seen":"2026-09-25 10:28:38","hours":1.7,"times":410,"bots":34},{"session":"2026-09-22_05-11","refused_kind":"prowl","expected":"-5.1","claim":"2.0","first_seen":"2026-09-22 05:14:11","last_seen":"2026-09-22 07:40:34","hours":2.44,"times":357,"bots":53},{"session":"2026-09-20_08-22","refused_kind":"prowl","expected":"-0.7","claim":"2.0","first_seen":"2026-09-20 08:53:36","last_seen":"2026-09-20 13:26:26","hours":4.55,"times":252,"bots":52},{"session":"2026-09-20_08-22","refused_kind":"prowl","expected":"-0.4","claim":"2.0","first_seen":"2026-09-20 09:41:51","last_seen":"2026-09-20 13:32:40","hours":3.85,"times":252,"bots":51}]}</script>
+<script>
+(function () {
+  "use strict";
+  var D = JSON.parse(document.getElementById("work-weights-data").textContent || "{}");
+  if (!D.summary) {
+    document.getElementById("window").textContent = "No data embedded yet: run extract.py.";
+    return;
+  }
+  var S = D.summary;
+
+  // ---------- small helpers ----------
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) { n.className = cls; }
+    if (text !== undefined && text !== null) { n.textContent = String(text); }
+    return n;
+  }
+  function int(n) { return n === null || n === undefined || n === "" ? "–" : Number(n).toLocaleString("en-US"); }
+  function pct(x, d) { return x === null || x === undefined || x === "" ? "–" : (100 * x).toFixed(d === undefined ? 1 : d) + "%"; }
+  function num(x, d) { return x === null || x === undefined || x === "" ? "–" : Number(x).toFixed(d === undefined ? 0 : d); }
+  function css(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+  function inkFor(hex) {
+    var h = hex.replace("#", "");
+    if (h.length !== 6) { return css("--ink"); }
+    var c = [0, 2, 4].map(function (i) {
+      var v = parseInt(h.substr(i, 2), 16) / 255;
+      return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+    });
+    var L = 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+    return L < 0.30 ? "#ffffff" : "#0b0b0b";
+  }
+
+  // ---------- tooltip ----------
+  var tip = document.getElementById("tip");
+  function showTip(evt, rows, anchor) {
+    while (tip.firstChild) { tip.removeChild(tip.firstChild); }
+    rows.forEach(function (r) {
+      var line = el("div");
+      if (r.key) {
+        var k = el("span", "line");
+        k.style.background = r.key;
+        line.appendChild(k);
+      }
+      if (r.v !== undefined) {
+        line.appendChild(el("span", "v", r.v));
+        if (r.k) { line.appendChild(document.createTextNode(" ")); line.appendChild(el("span", "k", r.k)); }
+      } else {
+        line.appendChild(el("span", "k", r.k));
+      }
+      tip.appendChild(line);
+    });
+    tip.style.display = "block";
+    var x, y;
+    if (evt && evt.clientX !== undefined && evt.type !== "focus") {
+      x = evt.clientX + 14; y = evt.clientY + 14;
+    } else {
+      var b = anchor.getBoundingClientRect();
+      x = b.left + Math.min(b.width, 60); y = b.bottom + 6;
+    }
+    var w = tip.offsetWidth, h = tip.offsetHeight;
+    if (x + w > window.innerWidth - 8) { x = Math.max(8, window.innerWidth - w - 8); }
+    if (y + h > window.innerHeight - 8) { y = Math.max(8, y - h - 28); }
+    tip.style.left = x + "px"; tip.style.top = y + "px";
+  }
+  function hideTip() { tip.style.display = "none"; }
+  function hover(node, rowsFn, lift) {
+    node.addEventListener("pointermove", function (e) { if (lift) { lift.classList.add("hover"); } showTip(e, rowsFn(), node); });
+    node.addEventListener("pointerleave", function () { if (lift) { lift.classList.remove("hover"); } hideTip(); });
+    node.addEventListener("focus", function (e) { if (lift) { lift.classList.add("hover"); } showTip(e, rowsFn(), node); });
+    node.addEventListener("blur", function () { if (lift) { lift.classList.remove("hover"); } hideTip(); });
+  }
+  // textCols: the columns that hold words rather than numbers, set flush left; long words wrap.
+  function table(host, head, rows, textCols) {
+    textCols = textCols || [0];
+    var t = el("table"), tr = el("tr");
+    head.forEach(function (h, i) {
+      var th = el("th", null, h);
+      if (textCols.indexOf(i) >= 0) { th.style.textAlign = "left"; }
+      tr.appendChild(th);
+    });
+    var thead = el("thead"); thead.appendChild(tr); t.appendChild(thead);
+    var tb = el("tbody");
+    rows.forEach(function (r) {
+      var row = el("tr");
+      r.forEach(function (c, i) {
+        var td = el("td", null, c);
+        if (textCols.indexOf(i) >= 0) {
+          td.style.textAlign = "left";
+          if (typeof c === "string" && c.length > 40) { td.className = "wrap"; }
+        }
+        row.appendChild(td);
+      });
+      tb.appendChild(row);
+    });
+    t.appendChild(tb);
+    host.appendChild(t);
+  }
+  function range(a, b) { return a === b ? String(a) : a + " to " + b; }
+
+  // ---------- header and KPIs ----------
+  document.getElementById("window").textContent =
+    "Take lines from " + S.window.first_take + " to " + S.window.last_take + " (" + int(S.session_files_read) +
+    " session logs, " + int(S.sessions_with_takes) + " with decisions); overstated alarms from 16.09.2026.";
+  var kpis = [
+    ["Decisions parsed", int(S.take_lines_parsed), int(S.take_lines_unparsed) + " lines not understood"],
+    ["Bots / kinds of work", int(S.bots) + " / " + int(S.kinds), "that took anything on"],
+    ["Carried a refusal", pct(S.first_refusals / S.take_lines_parsed), "another offer was vetoed"],
+    ["Only offer worth anything", pct((S.offers_worth_anything["1"] || 0) / S.take_lines_parsed), "no runner-up at all"],
+    ["Winner over runner-up", num(S.margin_over_runner_up.median, 2) + "×", "median, where there was one"],
+    ["Overstated alarm lines", int(S.overstated_alarm_lines), "raised or repeated, 16–26.09"]
+  ];
+  var kh = document.getElementById("kpis");
+  kpis.forEach(function (k) {
+    var box = el("div", "kpi");
+    box.appendChild(el("div", "label", k[0]));
+    box.appendChild(el("div", "value", k[1]));
+    box.appendChild(el("div", "note", k[2]));
+    kh.appendChild(box);
+  });
+
+  // ---------- pipeline diagram (SVG, two orientations) ----------
+  var refusals = {};
+  (D.refusals || []).forEach(function (r) { refusals[r["class"]] = r.first_refusals; });
+  function rc(code) { return refusals[code] ? int(refusals[code]) : "0"; }
+  var steps = [
+    { t: "1 · Claim", l: ["deed.Expects", "gold-equivalent a minute", "typed: mine 45, prowl 8", "forge 120, flee 2000"] },
+    { t: "2 · Island correction", l: ["BotCommons.Corrected", "(2c + paid·n) / (2 + n)", "n ≤ 25 outcomes", "never below c / 4"] },
+    { t: "3 · Own ledger", l: ["Ledger.Expect", "(2c + earned·n)/(2 + n)", "n ≤ 12, 64-tile patch", "else the island's patch"] },
+    { t: "4 · Factors", l: ["near × new × room", "× safe × purse × load", "× revel × ground", "× charter, fifth root"] },
+    { t: "5 · Who and whose", l: ["× 1.30 own trade", "× 0.60 another class's", "× (1 − toll) on land", "outside the root"] },
+    { t: "6 · Choice", l: ["rank, then score", "held work × 1.25 × 1.25", "dwell 30 s to 2 min", "steadfast hold ≤ 8 min"] }
+  ];
+  var gates = [
+    { at: 1, t: "Veto before the correction", l: [
+      "cannot pay to start · " + rc("outlay"),
+      "bots died there lately (until 26.09) · " + int((refusals["deaths-close"] || 0) + (refusals["deaths-keep-out"] || 0)),
+      "hostile strength ≥ 3× what goes (26.09) · " + rc("hostile-strength"),
+      "dungeon edge · " + rc("dungeon-edge") + " · long walk closed nothing · " + rc("becalmed"),
+      "breaker · " + rc("breaker") + " · red in town · " + rc("red-in-town") + " · coin room · " + rc("no-room-for-coin")] },
+    { at: 3, t: "Veto after the ledger", l: [
+      "expected to pay ≤ 0 here · " + rc("expected-nothing"),
+      "not Unpaid work: its typed claim stands",
+      "a prowl out of work 2 min enters at 0.01"] },
+    { at: 4, t: "Veto after the factors", l: [
+      "product of the factors is 0 · " + rc("weighed-nothing"),
+      "floors keep room and purse ≥ 0.10"] }
+  ];
+  var NS = "http://www.w3.org/2000/svg";
+  function svgEl(tag, attrs, text) {
+    var n = document.createElementNS(NS, tag);
+    Object.keys(attrs || {}).forEach(function (k) { n.setAttribute(k, attrs[k]); });
+    if (text !== undefined) { n.textContent = text; }
+    return n;
+  }
+  function box(svg, x, y, w, h, title, lines, stroke) {
+    svg.appendChild(svgEl("rect", { x: x, y: y, width: w, height: h, rx: 8, fill: "var(--surface)", stroke: stroke, "stroke-width": 1.2 }));
+    svg.appendChild(svgEl("text", { x: x + 10, y: y + 20, "font-size": 13, "font-weight": 650, fill: "var(--ink)" }, title));
+    lines.forEach(function (s, i) {
+      svg.appendChild(svgEl("text", { x: x + 10, y: y + 38 + i * 15, "font-size": 11.5, fill: "var(--ink-2)" }, s));
+    });
+  }
+  function boxHeight(lines) { return 30 + lines.length * 15; }
+  function arrowDefs(svg) {
+    var defs = svgEl("defs");
+    var m = svgEl("marker", { id: "ah", viewBox: "0 0 10 10", refX: 9, refY: 5, markerWidth: 7, markerHeight: 7, orient: "auto-start-reverse" });
+    m.appendChild(svgEl("path", { d: "M0,0 L10,5 L0,10 z", fill: "var(--muted)" }));
+    defs.appendChild(m);
+    var g = svgEl("marker", { id: "ag", viewBox: "0 0 10 10", refX: 9, refY: 5, markerWidth: 7, markerHeight: 7, orient: "auto-start-reverse" });
+    g.appendChild(svgEl("path", { d: "M0,0 L10,5 L0,10 z", fill: "var(--gate)" }));
+    defs.appendChild(g);
+    svg.appendChild(defs);
+  }
+  (function horizontal() {
+    // Six steps in a row; each gate hangs from the gap where it sits, over its own box, so nothing overlaps.
+    var W = 1104, bw = 170, gap = 16, top = 10, bh = boxHeight(steps[0].l);
+    var slots = { 1: { x: 4, w: 350 }, 3: { x: 372, w: 350 }, 4: { x: 740, w: 360 } };
+    var gy = top + bh + 56;
+    var tall = Math.max.apply(null, gates.map(function (g) { return boxHeight(g.l); }));
+    var H = gy + tall + 34;
+    var svg = svgEl("svg", { viewBox: "0 0 " + W + " " + H, width: "100%", role: "img",
+      "aria-label": "The weighing pipeline: claim, island correction, own ledger, factors under a fifth root, multipliers, choice; veto gates before the correction, after the ledger and after the factors." });
+    arrowDefs(svg);
+    steps.forEach(function (s, i) {
+      var x = 4 + i * (bw + gap);
+      box(svg, x, top, bw, bh, s.t, s.l, "var(--axis)");
+      if (i < steps.length - 1) {
+        svg.appendChild(svgEl("line", { x1: x + bw + 1, y1: top + bh / 2, x2: x + bw + gap - 1, y2: top + bh / 2, stroke: "var(--muted)", "stroke-width": 1.5, "marker-end": "url(#ah)" }));
+      }
+    });
+    gates.forEach(function (g) {
+      var gx = 4 + g.at * (bw + gap) - gap / 2, slot = slots[g.at];
+      var x = Math.min(Math.max(slot.x, gx - 40), slot.x + slot.w);
+      svg.appendChild(svgEl("circle", { cx: gx, cy: top + bh / 2, r: 3.5, fill: "var(--gate)" }));
+      svg.appendChild(svgEl("path", { d: "M" + gx + "," + (top + bh / 2 + 4) + " L" + gx + "," + (top + bh + 26) + " L" + x + "," + (top + bh + 26) + " L" + x + "," + (gy - 2),
+        fill: "none", stroke: "var(--gate)", "stroke-width": 1.4, "marker-end": "url(#ag)" }));
+      box(svg, slot.x, gy, slot.w, boxHeight(g.l), g.t, g.l, "var(--gate)");
+    });
+    svg.appendChild(svgEl("text", { x: 4, y: H - 10, "font-size": 11, fill: "var(--muted)" },
+      "Counts are first refusals on take lines, " + S.window.first_take.slice(0, 10) + " to " + S.window.last_take.slice(0, 10) + ". A veto ends the weighing at nought; the offer never reaches the auction."));
+    document.getElementById("pipe-h").appendChild(svg);
+  })();
+  (function vertical() {
+    // On a narrow screen the same steps top to bottom, each gate drawn where it stands in the flow.
+    var W = 360, x = 10, bw = 340, gapY = 22, y = 4;
+    var items = [];
+    steps.forEach(function (s, i) {
+      items.push({ s: s, gate: false });
+      gates.forEach(function (g) { if (g.at === i + 1) { items.push({ s: g, gate: true }); } });
+    });
+    var H = 4;
+    items.forEach(function (it) { H += boxHeight(it.s.l) + gapY; });
+    var svg = svgEl("svg", { viewBox: "0 0 " + W + " " + H, width: "100%", role: "img", "aria-label": "The weighing pipeline, top to bottom, with its three veto gates in place." });
+    arrowDefs(svg);
+    items.forEach(function (it, i) {
+      var h = boxHeight(it.s.l);
+      box(svg, x, y, bw, h, it.s.t, it.s.l, it.gate ? "var(--gate)" : "var(--axis)");
+      if (i < items.length - 1) {
+        svg.appendChild(svgEl("line", { x1: x + bw / 2, y1: y + h + 1, x2: x + bw / 2, y2: y + h + gapY - 1, stroke: "var(--muted)", "stroke-width": 1.5, "marker-end": "url(#ah)" }));
+      }
+      y += h + gapY;
+    });
+    document.getElementById("pipe-v").appendChild(svg);
+  })();
+
+  // ---------- dumbbell: estimate vs rate ----------
+  (function dumbbell() {
+    var kinds = (D.kinds || []).slice(0, 20);
+    var lo = 1, hi = 1000;
+    function xp(v) { v = Math.max(lo, Math.min(hi, v)); return 100 * (Math.log(v) - Math.log(lo)) / (Math.log(hi) - Math.log(lo)); }
+    var axis = document.getElementById("dumb-axis");
+    [1, 3, 10, 30, 100, 300, 1000].forEach(function (t) {
+      var s = el("span", "tick", t + "/min");
+      if (t !== 1 && t !== 1000) { s.textContent = String(t); }
+      s.style.left = xp(t) + "%";
+      // The two ends are set inside the plot so they are not cut at a narrow width.
+      if (t === 1) { s.style.transform = "translateX(0)"; }
+      if (t === 1000) { s.style.transform = "translateX(-100%)"; }
+      axis.appendChild(s);
+    });
+    var host = document.getElementById("dumb");
+    kinds.forEach(function (k) {
+      var row = el("div", "row focusable");
+      row.tabIndex = 0;
+      var name = el("div", "name", k.kind);
+      name.appendChild(el("span", "sub", int(k.takes) + " takes"));
+      row.appendChild(name);
+      var tr = el("div", "track");
+      [1, 3, 10, 30, 100, 300, 1000].forEach(function (t) {
+        var g = el("div", "gridline"); g.style.left = xp(t) + "%"; tr.appendChild(g);
+      });
+      var a = xp(k.estimate_median), b = xp(k.rate_median);
+      var line = el("div");
+      line.style.cssText = "position:absolute;top:10px;height:2px;border-radius:1px;background:var(--axis);left:" + Math.min(a, b) + "%;width:" + Math.abs(b - a) + "%";
+      tr.appendChild(line);
+      [["est", a], ["rate", b]].forEach(function (d) {
+        var dot = el("div");
+        dot.style.cssText = "position:absolute;top:5px;width:12px;height:12px;margin-left:-6px;border-radius:50%;box-shadow:0 0 0 2px var(--surface);background:var(--" + d[0] + ");left:" + d[1] + "%";
+        tr.appendChild(dot);
+      });
+      row.appendChild(tr);
+      hover(row, function () {
+        return [
+          { k: k.kind + " · " + int(k.takes) + " takes" },
+          { key: css("--est"), v: num(k.estimate_median, 0) + "/min", k: "estimate, quartiles " + num(k.estimate_p25) + "–" + num(k.estimate_p75) },
+          { key: css("--rate"), v: num(k.rate_median, 0) + "/min", k: "rate taken at, quartiles " + num(k.rate_p25) + "–" + num(k.rate_p75) },
+          { k: "combined factor " + num(k.factor_median, 2) + " · own trade " + pct(k.share_own_trade, 0) + " · another's " + pct(k.share_another_trade, 0) },
+          { k: "only offer " + pct(k.share_only_offer, 0) + " · carried a refusal " + pct(k.share_with_refusal, 0) +
+            (k.margin_over_runner_up_median ? " · beat runner-up by " + num(k.margin_over_runner_up_median, 2) + "×" : "") }
+        ];
+      }, row);
+      host.appendChild(row);
+    });
+    table(document.getElementById("dumb-table"),
+      ["kind", "takes", "estimate p25", "median", "p75", "rate p25", "median", "p75", "factor", "own trade", "only offer"],
+      kinds.map(function (k) {
+        return [k.kind, int(k.takes), num(k.estimate_p25), num(k.estimate_median), num(k.estimate_p75), num(k.rate_p25),
+          num(k.rate_median), num(k.rate_p75), num(k.factor_median, 2), pct(k.share_own_trade, 0), pct(k.share_only_offer, 0)];
+      }));
+  })();
+
+  // ---------- factor bins ----------
+  (function bins() {
+    var order = ["<0.10", "0.10-0.29", "0.30-0.59", "0.60-0.89", "0.90-0.99", "1.00", ">1.00"];
+    var colour = { "<0.10": "--b5", "0.10-0.29": "--b4", "0.30-0.59": "--b3", "0.60-0.89": "--b2", "0.90-0.99": "--b1", "1.00": "--mid", ">1.00": "--s2" };
+    var label = { "<0.10": "below 0.10", "0.10-0.29": "0.10–0.29", "0.30-0.59": "0.30–0.59", "0.60-0.89": "0.60–0.89", "0.90-0.99": "0.90–0.99", "1.00": "exactly 1.00", ">1.00": "above 1 (boost)" };
+    var factors = ["near", "new", "room", "purse", "ground", "revel", "charter", "safe", "load", "combined"];
+    var names = { near: "near", "new": "new", room: "room", purse: "purse", ground: "ground", revel: "revel", charter: "charter", safe: "safe", load: "load", combined: "combined" };
+    var subs = { near: "work ÷ (work + walk)", "new": "against repetition", room: "against crowding", purse: "short of money", ground: "whose land", revel: "the watcher's ×3", charter: "the guild's ×1.5", safe: "after a failure here", load: "over the carrying ceiling", combined: "fifth root of all" };
+    var byF = {};
+    (D.bins || []).forEach(function (b) { (byF[b.factor] = byF[b.factor] || {})[b.bin] = b; });
+    var lg = document.getElementById("bins-legend");
+    order.forEach(function (o) {
+      var key = el("span", "key"), sw = el("span", "sw");
+      sw.style.background = "var(" + colour[o] + ")";
+      if (o === "1.00") { sw.style.boxShadow = "inset 0 0 0 1px var(--axis)"; }
+      key.appendChild(sw); key.appendChild(document.createTextNode(label[o])); lg.appendChild(key);
+    });
+    var host = document.getElementById("bins");
+    var rowsForTable = [];
+    factors.forEach(function (f) {
+      var data = byF[f]; if (!data) { return; }
+      var row = el("div", "row");
+      if (f === "combined") { row.style.marginTop = "10px"; }
+      var name = el("div", "name", names[f]);
+      name.appendChild(el("span", "sub", subs[f]));
+      row.appendChild(name);
+      var stack = el("div", "stack");
+      var total = 0; order.forEach(function (o) { total += (data[o] ? data[o].takes : 0); });
+      order.forEach(function (o) {
+        var d = data[o]; if (!d || !d.takes) { return; }
+        var share = d.takes / total;
+        var seg = el("div", "seg focusable");
+        seg.tabIndex = 0;
+        seg.style.flex = share + " 1 0";
+        var fill = css(colour[o]);
+        seg.style.background = fill;
+        if (share >= 0.07) { seg.textContent = Math.round(100 * share) + "%"; seg.style.color = inkFor(fill); }
+        seg.setAttribute("aria-label", names[f] + " " + label[o] + ": " + (100 * share).toFixed(1) + "% of takes");
+        hover(seg, function () {
+          return [{ k: names[f] + " · " + label[o] }, { v: (100 * share).toFixed(1) + "%", k: "of takes" }, { v: int(d.takes), k: "take lines" }];
+        }, seg);
+        stack.appendChild(seg);
+        rowsForTable.push([names[f], label[o], int(d.takes), (100 * share).toFixed(2) + "%"]);
+      });
+      row.appendChild(stack);
+      host.appendChild(row);
+    });
+    table(document.getElementById("bins-table"), ["factor", "value", "take lines", "share"], rowsForTable, [0, 1]);
+    // Shares from the counts, not from the rounded shares, so the caption agrees with the README to the tenth.
+    function part(f, labels) {
+      var sum = 0, all = 0;
+      Object.keys(byF[f] || {}).forEach(function (o) { all += byF[f][o].takes; });
+      labels.forEach(function (o) { sum += byF[f] && byF[f][o] ? byF[f][o].takes : 0; });
+      return all ? sum / all : 0;
+    }
+    if (byF.combined && byF["new"]) {
+      document.getElementById("bins-caption").textContent =
+        "Share of all take lines by the printed value of each factor. Blue is a discount (darker is deeper), grey is exactly 1.00, orange is a boost. " +
+        "The last row is the combined factor, the fifth root of the product: a factor of 0.10 reaches the score as 0.63. Novelty alone was below 0.30 on " +
+        pct(part("new", ["<0.10", "0.10-0.29"])) + " of winning offers; the combined factor was below 0.30 on " +
+        pct(part("combined", ["<0.10", "0.10-0.29"])) + " and below 0.60 on " + pct(part("combined", ["<0.10", "0.10-0.29", "0.30-0.59"])) + ".";
+    }
+  })();
+
+  // ---------- smallest factor / largest effect ----------
+  (function decide() {
+    var rows = D.decide || [];
+    var total = S.take_lines_parsed;
+    var host = document.getElementById("decide");
+    var label = { near: "near", "new": "new", room: "room", safe: "safe", purse: "purse", load: "load", revel: "revel", ground: "ground", charter: "charter", calling: "another class's trade (× 0.60)", toll: "the toll", tie: "a tie between two", none: "nothing below 1" };
+    function draw(mode) {
+      while (host.firstChild) { host.removeChild(host.firstChild); }
+      var key = mode === "a" ? "smallest_under_root" : "largest_effect_on_score";
+      var list = rows.filter(function (r) { return r[key] !== "" && r[key] > 0; })
+        .sort(function (x, y) { return y[key] - x[key]; });
+      var max = list.length ? list[0][key] : 1;
+      list.forEach(function (r) {
+        var row = el("div", "row focusable");
+        row.tabIndex = 0;
+        row.appendChild(el("div", "name", label[r.factor] || r.factor));
+        var wrap = el("div", "barwrap");
+        var bar = el("div", "bar" + (r.factor === "none" || r.factor === "tie" ? " context" : ""));
+        bar.style.width = Math.max(0.4, 82 * r[key] / max) + "%";
+        wrap.appendChild(bar);
+        wrap.appendChild(el("span", "barlabel", pct(r[key] / total) + " · " + int(r[key])));
+        row.appendChild(wrap);
+        hover(row, function () {
+          return [{ k: label[r.factor] || r.factor }, { v: pct(r[key] / total), k: "of " + int(total) + " take lines" }, { v: int(r[key]), k: "take lines" }];
+        }, bar);
+        host.appendChild(row);
+      });
+      document.getElementById("decide-caption").textContent = mode === "a"
+        ? "For each take, the named factor with the lowest printed value (the one that bent the winner's score most among the factors under the root). Near and new decide most; room and purse follow; safe, the caution after a failure, almost never appears on a winner."
+        : "The same question with every consideration counted as it reaches the score: a factor f under the root as f^(1/5), the calling and the toll in full. The calling, applied outside the root, now shows where it bit: 0.60 for another class's trade is a harder cut than any printed factor above 0.08.";
+    }
+    var a = document.getElementById("decide-a"), b = document.getElementById("decide-b");
+    a.addEventListener("click", function () { a.setAttribute("aria-pressed", "true"); b.setAttribute("aria-pressed", "false"); draw("a"); });
+    b.addEventListener("click", function () { b.setAttribute("aria-pressed", "true"); a.setAttribute("aria-pressed", "false"); draw("b"); });
+    draw("a");
+    table(document.getElementById("decide-table"), ["factor", "smallest printed factor", "share", "largest effect on score", "share"],
+      rows.map(function (r) {
+        return [label[r.factor] || r.factor, r.smallest_under_root === "" ? "–" : int(r.smallest_under_root),
+          r.share_smallest_under_root === "" ? "–" : pct(r.share_smallest_under_root, 2), int(r.largest_effect_on_score), pct(r.share_largest_effect_on_score, 2)];
+      }));
+  })();
+
+  // ---------- refusals ----------
+  (function vetoes() {
+    var rows = D.refusals || [];
+    var host = document.getElementById("veto");
+    var max = rows.length ? rows[0].first_refusals : 1;
+    document.getElementById("veto-caption").textContent =
+      int(S.first_refusals) + " take lines (" + pct(S.first_refusals / S.take_lines_parsed) + ") name a refused offer. Two gates make up nine refusals in ten: the bot's own ledger expecting nothing or less at that place, and an outlay the bot could not pay. Only the first refused offer of each review is printed.";
+    var short = {
+      "expected-nothing": "expected to pay ≤ 0 here", "outlay": "cannot pay to start",
+      "deaths-close": "bots died there: closed", "deaths-keep-out": "bots died there: kept out",
+      "dungeon-edge": "across a dungeon's edge", "becalmed": "long walk closed nothing", "breaker": "breaker rest",
+      "hostile-strength": "hostile strength ≥ 3×", "red-in-town": "red in a guarded town",
+      "no-room-for-coin": "no room for a coin", "other-map": "on another map", "weighed-nothing": "factors came to 0"
+    };
+    rows.forEach(function (r) {
+      var row = el("div", "row focusable");
+      row.tabIndex = 0;
+      var name = el("div", "name", short[r["class"]] || r.meaning);
+      row.appendChild(name);
+      var wrap = el("div", "barwrap");
+      var bar = el("div", "bar");
+      bar.style.width = Math.max(0.4, 78 * r.first_refusals / max) + "%";
+      wrap.appendChild(bar);
+      wrap.appendChild(el("span", "barlabel", int(r.first_refusals) + " · " + pct(r.share_of_refusals)));
+      row.appendChild(wrap);
+      hover(row, function () {
+        return [{ k: r.meaning }, { v: int(r.first_refusals), k: "first refusals, " + pct(r.share_of_refusals) + " of all" },
+          { k: "kinds refused most: " + r.top_refused_kinds }, { k: "e.g. “" + r.example + "”" },
+          { k: "seen " + r.first_seen + " to " + r.last_seen }];
+      }, bar);
+      host.appendChild(row);
+    });
+    table(document.getElementById("veto-table"), ["reason", "first refusals", "share", "kinds refused most", "first seen", "last seen"],
+      rows.map(function (r) { return [r.meaning, int(r.first_refusals), pct(r.share_of_refusals), r.top_refused_kinds, r.first_seen, r.last_seen]; }),
+      [0, 3]);
+    var c = S.census_totals || {};
+    var census = [
+      ["offers refused: bots died there lately, ordinary work kept out (to 26.09)", c.refused_deaths_keep_out],
+      ["offers refused: so many died there it closed to all but running (to 26.09)", c.refused_deaths_close],
+      ["offers refused: across a dungeon's edge", c.refused_dungeon_edge],
+      ["offers refused: a long walk from here lately closed nothing", c.refused_becalmed],
+      ["offers refused while the breaker rests that work", c.refused_breaker_resting],
+      ["offers refused: hostile strength 3× what goes (from 26.09 14:05)", c.refused_hostile_strength],
+      ["offers refused: no room in the pack for a coin", c.refused_no_room_for_coin],
+      ["prowls let in at the unpaid floor (out of work 2 minutes)", c.prowls_let_in_restless],
+      ["times nothing at all was worth doing", c.nothing_worth_doing],
+      ["better offers turned down: work in hand already paid for", c.kept_committed],
+      ["offers of paperwork left for the next choice", c.paperwork_filed]
+    ];
+    table(document.getElementById("census-table"), ["census counter (" + int(S.census_sessions) + " sessions)", "total"],
+      census.map(function (r) { return [r[0], int(r[1])]; }));
+  })();
+
+  // ---------- floor table ----------
+  (function floor() {
+    var rows = (D.expected || []).slice(0, 12);
+    table(document.getElementById("floor-table"), ["refused kind", "refusals", "claim (median)", "expected here (median)", "expected (10th pct)", "expected < 0"],
+      rows.map(function (r) {
+        return [r.refused_kind, int(r.refusals), num(r.claim_median, 1), num(r.expected_median, 1), num(r.expected_p10, 1), pct(r.share_expected_below_0, 1)];
+      }));
+    var st = S.expected_nothing_readings || {};
+    document.getElementById("standing-caption").textContent =
+      "The same refusal, to the tenth of a gold piece, printed again and again within one session: " + int(st.standing_an_hour_or_more) +
+      " readings stood unchanged for an hour or more, " + int(st.standing_for_several_bots) + " of them for more than one bot, the longest for " +
+      num(st.longest_hours, 2) + " hours. In the code only a positive reading of the island's record fades; a reading at or below nought keeps " +
+      "its value until somebody works that patch again, and the refusal itself stands in the way of that.";
+    table(document.getElementById("standing-table"), ["session", "kind", "expected", "claim", "first seen", "last seen", "hours", "times", "bots"],
+      (D.standing || []).map(function (r) {
+        return [r.session, r.refused_kind, r.expected, r.claim, r.first_seen.slice(11), r.last_seen.slice(11), num(r.hours, 2), int(r.times), int(r.bots)];
+      }), [0, 1]);
+  })();
+
+  // ---------- overstated alarm timeline ----------
+  (function alarms() {
+    var lines = D.alarm_lines || [];
+    var trades = (D.alarms || []).slice(0, 14).map(function (t) { return t.trade; });
+    if (!lines.length) { return; }
+    function t(s) { return new Date(s.replace(" ", "T") + "Z").getTime(); }
+    var t0 = t(lines[0][0].slice(0, 10) + " 00:00:00"), t1 = t(S.window.last_take.slice(0, 10) + " 23:59:59");
+    function xp(s) { return 100 * (t(s) - t0) / (t1 - t0); }
+    var firstRead = null;
+    lines.forEach(function (l) { if (!firstRead && l[6] === "read by the auction") { firstRead = l[0]; } });
+    var host = document.getElementById("alarm");
+    var axis = el("div", "tl-row");
+    axis.appendChild(el("div"));
+    var ax = el("div", "tl-track");
+    ax.style.borderBottom = "0";
+    // Each day's label sits at its noon, between the hairlines drawn at its midnights.
+    var midnights = [];
+    for (var d = t0; d <= t1; d += 86400000) {
+      var day = new Date(d), tick = el("span", "tick", String(day.getUTCDate()).padStart(2, "0") + "." + String(day.getUTCMonth() + 1).padStart(2, "0"));
+      tick.style.left = (100 * (d + 43200000 - t0) / (t1 - t0)) + "%";
+      ax.appendChild(tick);
+      if (d > t0) { midnights.push(100 * (d - t0) / (t1 - t0)); }
+    }
+    axis.appendChild(ax);
+    host.appendChild(axis);
+    var counts = {};
+    (D.alarms || []).forEach(function (a) { counts[a.trade] = a; });
+    trades.forEach(function (name) {
+      var row = el("div", "tl-row");
+      var label = el("div", "name", name);
+      label.style.cssText = "font-size:13px;text-align:right";
+      label.appendChild(el("span", "sub", int(counts[name].alarm_lines) + " lines"));
+      row.appendChild(label);
+      var tr = el("div", "tl-track");
+      midnights.forEach(function (m) { var g = el("div", "gridline"); g.style.left = m + "%"; tr.appendChild(g); });
+      if (firstRead) { var mk = el("div", "tl-mark"); mk.style.left = xp(firstRead) + "%"; tr.appendChild(mk); }
+      lines.forEach(function (l) {
+        if (l[2] !== name) { return; }
+        var isClear = l[1] === "clear";
+        var m = el("div", isClear ? "tl-clear" : "tl-dot");
+        m.style.left = xp(l[0]) + "%";
+        tr.appendChild(m);
+        var hit = el("div");
+        hit.style.cssText = "position:absolute;top:-2px;width:14px;height:24px;margin-left:-7px;left:" + xp(l[0]) + "%";
+        hover(hit, function () {
+          return isClear ? [{ k: l[0] }, { k: name + ": the claim is back within 1.5× of what it pays" }]
+            : [{ k: l[0] + " · " + l[1] }, { v: l[3] + "/min", k: "claim as compared (" + (l[6] || "") + ")" }, { v: l[4] + "/min", k: "paid, over " + int(l[5]) + " outcomes" }];
+        }, m);
+        tr.appendChild(hit);
+      });
+      row.appendChild(tr);
+      host.appendChild(row);
+    });
+    var total = S.overstated_alarm_lines, named = (D.alarms || []).length;
+    document.getElementById("alarm-caption").textContent =
+      "The alarm names the one trade whose claim stands more than 1.5× and 5 gold a minute above what it paid over at least 25 outcomes — the claim as the auction reads it since build 95, the typed number before. " +
+      int(total) + " raised or repeated lines named " + named + " trades between 16.09 and 26.09; the fourteen named most are drawn. In this window band, drill and mend came back day after day, and prowl was read at 2/min — a quarter of its typed 8 — while it paid less than nothing.";
+    table(document.getElementById("alarm-table"), ["trade", "lines", "raised", "first", "last", "claim as compared", "paid", "outcomes (most)"],
+      (D.alarms || []).map(function (a) {
+        return [a.trade, int(a.alarm_lines), int(a.times_raised), a.first_seen, a.last_seen, range(a.reads_min, a.reads_max),
+          range(a.pays_min, a.pays_max), int(a.outcomes_max)];
+      }));
+  })();
+})();
+</script>
+</body>
+</html>

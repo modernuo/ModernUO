@@ -1,0 +1,79 @@
+Projects/UOContent/Engines/Craft/Core/CraftItem.cs, on top of CraftItem-heat-source.patch
+
+Adds one event to CraftItem and raises it wherever the craft system tells the crafter something. Nothing else
+changes: every message and every gump is still sent exactly as before, and nothing in the engine subscribes.
+
+ShowCraftMenu is the one place nearly every outcome passes through — twenty call sites: every refusal after
+the lock (not near an anvil and a forge, not enough metal, the tool worn out, a strange metal), and the two
+endings of an attempt that was made (created, or failed with or without the materials lost). The two exits
+above it in Craft do not pass through it, so they are told separately. The hue-aware overload of Craft is
+left alone: tailoring's hue path is not one a bot takes.
+
+WHY. The third seam of this kind, after CraftItem.IsHeatSource and HarvestDefinition.Said, and for the second
+one's reason exactly. The craft system names every reason an attempt produced nothing. A player reads them. A
+bot has no NetState, and neither Mobile.SendLocalizedMessage nor Mobile.SendGump reaches anything without
+one, so every sentence was dropped before anything could hear it — and the list of engine rules this project
+found by their symptoms is, more than anything else, a list of things crafting refuses without a word:
+the action lock, the axe that must be worn, the tool in the hand, the two-material recipe, the fire on the
+recipe, the anvil the engine will not accept.
+
+What prompted it: on 20.09.2026 Hale failed at the forge 160 times, "24 attempts, 0 made … nothing came of
+the iron", with the iron never running out — so the engine was refusing every attempt before it touched the
+metal, and every check the smith makes for itself had passed. Nothing in the code can say which sentence it
+was being told. See Projects/BotAIv2/BotCraft/BotCraftEar.cs for the listener, and DECISIONS.md, build 174.
+
+DELIBERATELY NARROW. The event reports what was said and to whom; it cannot alter the message, cannot stop
+the send, and a listener that throws is contained so it cannot take the craft with it.
+
+diff --git a/Projects/UOContent/Engines/Craft/Core/CraftItem.cs b/Projects/UOContent/Engines/Craft/Core/CraftItem.cs
+index aa1301ee2..75a9a3df7 100644
+--- a/Projects/UOContent/Engines/Craft/Core/CraftItem.cs
++++ b/Projects/UOContent/Engines/Craft/Core/CraftItem.cs
+@@ -932,6 +932,7 @@ public void Craft(Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool t
+         {
+             if (!from.BeginAction<CraftSystem>())
+             {
++                Tell(from, 500119);
+                 from.SendLocalizedMessage(500119); // You must wait to perform another action
+                 return;
+             }
+@@ -956,6 +957,7 @@ public void Craft(Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool t
+             if (!allRequiredSkills || chance <= 0.0)
+             {
+                 from.EndAction<CraftSystem>();
++                Tell(from, 1044153);
+                 if (T2ACraftSystem.Enabled)
+                 {
+                     from.SendAsciiMessage("You lack the required skill to craft this item.");
+@@ -1984,8 +1986,31 @@ protected override void OnTick()
+             }
+         }
+ 
++        // BotAIv2 seam (see Projects/BotAIv2/engine-patches/CraftItem-said.patch): what the craft system tells
++        // whoever is crafting, raised before it is sent. A bot has no NetState, and neither SendLocalizedMessage
++        // nor SendGump reaches anything without one. Nothing in the engine subscribes and a listener cannot
++        // alter or stop the message.
++        public static event Action<Mobile, TextDefinition> Said;
++
++        private static void Tell(Mobile from, TextDefinition message)
++        {
++            if (Said != null && from != null && message != null)
++            {
++                try
++                {
++                    Said(from, message);
++                }
++                catch
++                {
++                    // A listener that throws must not take the craft with it.
++                }
++            }
++        }
++
+         public static void ShowCraftMenu(Mobile from, CraftSystem system, BaseTool tool, TextDefinition message = null)
+         {
++            Tell(from, message);
++
+             if (T2ACraftSystem.Enabled)
+             {
+                 // T2A: Don't reopen menu. Player double-clicks tool to restart.

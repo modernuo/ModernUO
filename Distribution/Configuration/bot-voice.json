@@ -1,0 +1,336 @@
+{
+  "Enabled": true,
+  "World": true,
+  "Guild": true,
+  "Local": true,
+  "Mood": true,
+  "Cry": true,
+  "Trade": true,
+  "TradeConference": "Trade",
+  "TradeAtLogin": false,
+  "TradeRepeatMs": 60000,
+  "TradeOverhead": true,
+  "TradeHandOvers": false,
+  "SayEveryMs": 15000,
+  "CryEveryMs": 20000,
+  "MoodEveryMs": 900000,
+  "WorkChance": 0.35,
+  "FailChance": 0.6,
+  "DropChance": 0.15,
+  "MostLetters": 160,
+  "WorldHue": 89,
+  "GuildHue": 946,
+  "CryHue": 34,
+  "MoodHue": 946,
+  "TradeHue": 89,
+  "Broadcast": true,
+  "Phrases": {
+    "took:*": [
+      "Right. {work} it is.",
+      "Off to {work}, then.",
+      "Something to do at last: {work}.",
+      "{work} pays best today."
+    ],
+    "took:mine": [
+      "Off to the hills for ore.",
+      "The pick wants using. Ore.",
+      "There is metal in the ground and I mean to have it.",
+      "Mining. Somebody has to."
+    ],
+    "took:chop": [
+      "Trees. Logs. Coin.",
+      "Off to the woods with the axe.",
+      "The fletchers will want logs."
+    ],
+    "took:hunt": [
+      "There is something worth killing near here.",
+      "Hunting. Wish me luck.",
+      "A hide and a haunch, if it goes well."
+    ],
+    "took:prowl": [
+      "Going to look for trouble.",
+      "Off to see what is about.",
+      "A walk with a blade drawn."
+    ],
+    "took:forge": [
+      "To the anvil.",
+      "The iron will not beat itself.",
+      "Smithing. Stand clear of the sparks."
+    ],
+    "took:sew": [
+      "Needle and thread.",
+      "Somebody wants leather work done.",
+      "Sewing, for whoever pays."
+    ],
+    "took:cook": [
+      "Time to cook.",
+      "Meat on the fire.",
+      "Supper for anybody who wants it."
+    ],
+    "took:brew": [
+      "Bottles and a mortar.",
+      "Brewing. Do not touch anything."
+    ],
+    "took:fletch": [
+      "Arrows for the archers.",
+      "Shafts and feathers. Fletching."
+    ],
+    "took:inscribe": [
+      "Scrolls to write.",
+      "Quill and reagents. Inscribing."
+    ],
+    "took:restock": [
+      "I am short of {stage}.",
+      "To the shops for what I am missing."
+    ],
+    "took:peddle": [
+      "Selling to the shopkeeper.",
+      "Off to turn goods into coin."
+    ],
+    "took:unload": [
+      "My pack is full. To the counter.",
+      "Taking this lot to sell."
+    ],
+    "took:rescue": [
+      "Hold on, I am coming!",
+      "Somebody needs a hand. Going.",
+      "I hear you. On my way."
+    ],
+    "took:mend": [
+      "Let me see to that wound.",
+      "Bandages. Hold still.",
+      "Patching up."
+    ],
+    "took:flee": [
+      "Not today!",
+      "Run!",
+      "I am not dying for this."
+    ],
+    "took:delve": [
+      "Into the dark, then.",
+      "The dungeon. Stay together.",
+      "Down we go."
+    ],
+    "took:harrow": [
+      "That ground has killed enough of us. Clearing it.",
+      "To the killing field, all of you."
+    ],
+    "took:rally": [
+      "To arms! The guild calls.",
+      "Rallying to the hall.",
+      "War company. Coming."
+    ],
+    "took:homeward": [
+      "Nothing worth doing here. Going home.",
+      "Homeward."
+    ],
+    "took:herbs": [
+      "Reagents to pick.",
+      "Off to the fields for herbs."
+    ],
+    "took:forage": [
+      "Something on the ground worth having.",
+      "Foraging."
+    ],
+    "took:reclaim": [
+      "My things are on my corpse. Going back for them.",
+      "Back to where I fell."
+    ],
+    "took:escort": [
+      "I will see you there safely.",
+      "Escorting."
+    ],
+    "took:tutor": [
+      "Class is in session.",
+      "Lessons, for a fee."
+    ],
+    "took:scout": [
+      "Ground nobody has walked. Going to look.",
+      "Scouting."
+    ],
+    "took:supply": [
+      "Stocking the guild's counter.",
+      "Supplies for the hall."
+    ],
+    "took:band": [
+      "Who is with me? This wants a company.",
+      "Banding together for this."
+    ],
+    "took:enlist": [
+      "Signing on with the captain.",
+      "Enlisting."
+    ],
+    "took:order": [
+      "Putting money down for {stage}.",
+      "I will pay for {stage}."
+    ],
+    "finished:*": [
+      "Done with {work}.",
+      "That is {work} finished.",
+      "{work}: done. {minutes} minutes.",
+      "Finished. Now what."
+    ],
+    "finished:mine": [
+      "Ore put away.",
+      "A good haul of ore.",
+      "The seam paid."
+    ],
+    "finished:chop": [
+      "Logs stacked.",
+      "Enough wood for today."
+    ],
+    "finished:hunt": [
+      "Down it went.",
+      "One less of those.",
+      "Hide and meat. Good hunting."
+    ],
+    "finished:forge": [
+      "Hot work, and it came out well.",
+      "Another piece off the anvil."
+    ],
+    "finished:sew": [
+      "Sewn and ready.",
+      "Leather work done."
+    ],
+    "finished:cook": [
+      "Supper is ready.",
+      "Cooked. Eat while it is hot."
+    ],
+    "finished:brew": [
+      "Bottles filled.",
+      "Brewed."
+    ],
+    "finished:fletch": [
+      "A quiver's worth.",
+      "Arrows done."
+    ],
+    "finished:peddle": [
+      "Sold. {coin} coin richer.",
+      "The shopkeeper paid."
+    ],
+    "finished:unload": [
+      "Pack emptied.",
+      "All on the counter."
+    ],
+    "finished:rescue": [
+      "You are all right now.",
+      "That is dealt with.",
+      "Glad I got there."
+    ],
+    "finished:mend": [
+      "There. Good as new.",
+      "Mended."
+    ],
+    "finished:flee": [
+      "Lost it.",
+      "Clear. That was close.",
+      "Still breathing."
+    ],
+    "finished:delve": [
+      "Out of the dark, and richer.",
+      "Back from the dungeon."
+    ],
+    "finished:reclaim": [
+      "Got my things back.",
+      "Everything accounted for."
+    ],
+    "failed:*": [
+      "That did not work.",
+      "Nothing came of {work}.",
+      "Giving up on {work}: {reason}.",
+      "Not today. {reason}."
+    ],
+    "failed:hunt": [
+      "Too many of them.",
+      "That thing would not go down.",
+      "Leaving it. Not worth dying for."
+    ],
+    "failed:rescue": [
+      "I could not turn it.",
+      "Too late, or too few."
+    ],
+    "failed:mine": [
+      "The seam is dry.",
+      "Nothing left in that rock."
+    ],
+    "failed:flee": [
+      "Cornered.",
+      "Nowhere to run."
+    ],
+    "dropped:*": [
+      "Something better came up.",
+      "Leaving {work} for now.",
+      "This can wait."
+    ],
+    "seek": [
+      "Anyone selling {item}? I need {amount}.",
+      "Looking for {amount} {item}. Paying {price} each.",
+      "Who has {item}? Coin waiting.",
+      "I will buy {item}, {amount} of them."
+    ],
+    "cry": [
+      "Help! {foe} is on me!",
+      "{foe}! Somebody!",
+      "Under attack at {place}!",
+      "I need help here, now!"
+    ],
+    "cry:low": [
+      "I am dying! {foe}!",
+      "Help me, I cannot hold!",
+      "Almost dead here!"
+    ],
+    "died": [
+      "...",
+      "Tell them I tried.",
+      "So that is how it ends.",
+      "{killer}. Of course."
+    ],
+    "mood:high": [
+      "Good day for it.",
+      "I could do this all week.",
+      "Purse is heavy and the road is clear.",
+      "Never felt better."
+    ],
+    "mood:mid": [
+      "Could be worse.",
+      "Getting by.",
+      "Another day, another few coins.",
+      "Not much to say. Working."
+    ],
+    "mood:low": [
+      "Nothing pays around here.",
+      "Bored stiff.",
+      "My purse is empty and so is my patience.",
+      "Something had better turn up."
+    ],
+    "war:declared": [
+      "{guild}: we are at war with {enemy}. To arms.",
+      "War on {enemy}. Every blade to the hall.",
+      "{enemy} has pushed too far. It is war."
+    ],
+    "war:won": [
+      "{guild} wins. {enemy} yields.",
+      "Victory over {enemy}!"
+    ],
+    "war:lost": [
+      "We lost to {enemy}. Lick your wounds.",
+      "{enemy} had the better of us."
+    ],
+    "war:drawn": [
+      "The war with {enemy} is over. Nobody won.",
+      "A truce with {enemy}."
+    ],
+    "hall": [
+      "A hall for {guild}! Come and see.",
+      "{guild} has a roof at last."
+    ],
+    "guild:fell": [
+      "{name} has fallen at {place}.",
+      "We lost {name} at {place}. Somebody go."
+    ],
+    "greet": [
+      "Well met, {name}.",
+      "{name}. Still alive, then."
+    ]
+  }
+}

@@ -1,0 +1,1314 @@
+{
+ "cut_off": {
+  "first_fight": "2026-09-26 01:36:19",
+  "last_fight": "2026-09-26 15:28:08",
+  "last_session": "2026-09-26_15-18",
+  "last_line_of_last_session": "15:30:00"
+ },
+ "counts": {
+  "fights": 1248,
+  "companies": 115,
+  "trace_lines": 852,
+  "bots": 48,
+  "fight_lines_shape": {
+   "no 'double held' part (builds 234-237)": 19,
+   "'double held', no steps (238-251)": 295,
+   "steps, shots and paralysis (252 on)": 934
+  },
+  "unparsed_proving_lines": 0,
+  "summary_lines": 149,
+  "summary_lines_agreeing_with_parsed_lines": 149
+ },
+ "periods": {
+  "asleep": {
+   "label": "builds 234-247: the rings' creatures asleep",
+   "first_fight": "2026-09-26 01:36:19",
+   "last_fight": "2026-09-26 03:40:58",
+   "fights": 214,
+   "won": 83,
+   "lost": 92,
+   "called": 39,
+   "win_rate": 0.388,
+   "called_at_cap": 33,
+   "called_nobody_hurt": 6,
+   "bots": 39,
+   "fights_with_no_damage_taken": 51,
+   "fights_at_r_cap": 60,
+   "creatures": [
+    "AncientLich",
+    "AncientWyrm",
+    "Balron",
+    "Dragon",
+    "JukaMage",
+    "LichLord",
+    "OgreLord",
+    "OrcishMage",
+    "PoisonElemental",
+    "WhiteWyrm"
+   ],
+   "orcish_mage": {
+    "fights": 102,
+    "won": 49,
+    "lost": 49,
+    "called": 4,
+    "win_rate": 0.48
+   },
+   "r": {
+    "n": 214,
+    "min": 0.0,
+    "p10": 0.04,
+    "p25": 0.24,
+    "median": 1.135,
+    "p75": 5.0,
+    "p90": 5.0,
+    "max": 20.0
+   },
+   "proven_over_formula": {
+    "n": 214,
+    "min": 0.0,
+    "p10": 0.411,
+    "p25": 0.904,
+    "median": 8.622,
+    "p75": 18.897,
+    "p90": 71.327,
+    "max": 230.56
+   },
+   "seconds_won": {
+    "n": 83,
+    "min": 5,
+    "p10": 31.2,
+    "p25": 49.5,
+    "median": 68,
+    "p75": 98.0,
+    "p90": 148.8,
+    "max": 178
+   },
+   "seconds_lost": {
+    "n": 92,
+    "min": 4,
+    "p10": 13.4,
+    "p25": 30.0,
+    "median": 68.5,
+    "p75": 89.0,
+    "p90": 111.6,
+    "max": 173
+   }
+  },
+  "awake": {
+   "label": "builds 249-258: the rings woken, the rest of the world asleep",
+   "first_fight": "2026-09-26 03:43:23",
+   "last_fight": "2026-09-26 13:16:05",
+   "fights": 747,
+   "won": 103,
+   "lost": 643,
+   "called": 1,
+   "win_rate": 0.138,
+   "called_at_cap": 1,
+   "called_nobody_hurt": 0,
+   "bots": 47,
+   "fights_with_no_damage_taken": 2,
+   "fights_at_r_cap": 19,
+   "creatures": [
+    "Dragon",
+    "JukaMage",
+    "LichLord",
+    "OgreLord",
+    "OrcishMage",
+    "PoisonElemental"
+   ],
+   "orcish_mage": {
+    "fights": 643,
+    "won": 98,
+    "lost": 544,
+    "called": 1,
+    "win_rate": 0.152
+   },
+   "r": {
+    "n": 747,
+    "min": 0.0,
+    "p10": 0.05,
+    "p25": 0.13,
+    "median": 0.3,
+    "p75": 0.59,
+    "p90": 1.43,
+    "max": 5.0
+   },
+   "proven_over_formula": {
+    "n": 747,
+    "min": 0.0,
+    "p10": 0.175,
+    "p25": 0.436,
+    "median": 1.104,
+    "p75": 2.468,
+    "p90": 5.927,
+    "max": 33.886
+   },
+   "seconds_won": {
+    "n": 103,
+    "min": 7,
+    "p10": 12.0,
+    "p25": 21.0,
+    "median": 28,
+    "p75": 37.0,
+    "p90": 48.6,
+    "max": 179
+   },
+   "seconds_lost": {
+    "n": 643,
+    "min": 8,
+    "p10": 16.0,
+    "p25": 20.0,
+    "median": 27,
+    "p75": 33.0,
+    "p90": 42.0,
+    "max": 78
+   }
+  },
+  "awake_world_awake": {
+   "label": "build 259 on: the rings woken and the world woken round the bots",
+   "first_fight": "2026-09-26 13:17:11",
+   "last_fight": "2026-09-26 15:28:08",
+   "fights": 287,
+   "won": 63,
+   "lost": 224,
+   "called": 0,
+   "win_rate": 0.22,
+   "called_at_cap": 0,
+   "called_nobody_hurt": 0,
+   "bots": 46,
+   "fights_with_no_damage_taken": 0,
+   "fights_at_r_cap": 9,
+   "creatures": [
+    "Dragon",
+    "JukaMage",
+    "LichLord",
+    "OgreLord",
+    "OrcishMage",
+    "PoisonElemental",
+    "WhiteWyrm"
+   ],
+   "orcish_mage": {
+    "fights": 225,
+    "won": 59,
+    "lost": 166,
+    "called": 0,
+    "win_rate": 0.262
+   },
+   "r": {
+    "n": 287,
+    "min": 0.0,
+    "p10": 0.096,
+    "p25": 0.2,
+    "median": 0.43,
+    "p75": 0.83,
+    "p90": 1.624,
+    "max": 5.0
+   },
+   "proven_over_formula": {
+    "n": 287,
+    "min": 0.0,
+    "p10": 0.304,
+    "p25": 0.651,
+    "median": 1.526,
+    "p75": 3.434,
+    "p90": 6.454,
+    "max": 54.789
+   },
+   "seconds_won": {
+    "n": 63,
+    "min": 7,
+    "p10": 14.2,
+    "p25": 21.5,
+    "median": 27,
+    "p75": 36.0,
+    "p90": 48.8,
+    "max": 142
+   },
+   "seconds_lost": {
+    "n": 224,
+    "min": 7,
+    "p10": 15.0,
+    "p25": 19.0,
+    "median": 25.0,
+    "p75": 33.0,
+    "p90": 41.7,
+    "max": 106
+   }
+  }
+ },
+ "asleep_by_what_the_double_held": {
+  "blade, staff or fists": {
+   "fights": 129,
+   "won": 56,
+   "lost": 68,
+   "called": 5,
+   "win_rate": 0.434,
+   "no_damage_taken": 1
+  },
+  "bow": {
+   "fights": 66,
+   "won": 16,
+   "lost": 18,
+   "called": 32,
+   "win_rate": 0.242,
+   "no_damage_taken": 47
+  },
+  "unknown (builds 234-237)": {
+   "fights": 19,
+   "won": 11,
+   "lost": 6,
+   "called": 2,
+   "win_rate": 0.579,
+   "no_damage_taken": 3
+  }
+ },
+ "asleep_walkovers_at_r_20": [
+  "01:36:19 Doran vs OrcishMage: won in 25s, taking 0, R 20.0, 112185 of strength (formula 2250)",
+  "01:36:21 Edda vs OrcishMage: won in 27s, taking 2, R 20.0, 112185 of strength (formula 2619)",
+  "01:36:57 Edda vs JukaMage: won in 31s, taking 3, R 20.0, 251056 of strength (formula 2619)",
+  "01:38:10 Doran vs JukaMage: won in 106s, taking 0, R 20.0, 251056 of strength (formula 2250)"
+ ],
+ "first_hour": {
+  "from": "2026-09-26 01:36:19",
+  "fights": 95,
+  "won": 42,
+  "lost": 40,
+  "called": 13,
+  "win_rate": 0.442,
+  "proven_over_formula_min": 0.0,
+  "proven_over_formula_max": 230.56,
+  "note": "strength / formula per fight line, rings asleep, R capped at 20 then 5"
+ },
+ "first_35_awake": {
+  "from": "2026-09-26 03:43:23",
+  "to": "2026-09-26 03:51:29",
+  "fights": 35,
+  "won": 5,
+  "lost": 30,
+  "called": 0,
+  "win_rate": 0.143,
+  "winners": [
+   "Edda vs OgreLord",
+   "Edda vs OrcishMage",
+   "Rowan vs OrcishMage",
+   "Talia vs OrcishMage",
+   "Wynn vs OrcishMage"
+  ]
+ },
+ "first_35_of_build_250": {
+  "to": "2026-09-26 03:53:10",
+  "fights": 35,
+  "won": 2,
+  "lost": 33,
+  "called": 0,
+  "win_rate": 0.057,
+  "winners": [
+   "Edda vs OgreLord",
+   "Talia vs OrcishMage"
+  ]
+ },
+ "awake_to_report_snapshot": {
+  "to": "2026-09-26 09:26:07",
+  "fights": 320,
+  "won": 35,
+  "lost": 285,
+  "called": 0,
+  "win_rate": 0.109,
+  "bots": 38,
+  "note": "cross-check with the night report's data snapshot"
+ },
+ "awake_by_class": [
+  {
+   "class": "Warrior",
+   "fights": 331,
+   "won": 116,
+   "lost": 215,
+   "called": 0,
+   "win_rate": 0.35,
+   "bots": 11,
+   "median_r": 0.57,
+   "median_seconds": 25,
+   "median_proven_over_formula": 3.17,
+   "median_formula_power": 1529,
+   "median_hits_max": 80,
+   "median_fighting_skills": 284,
+   "median_armour": 7,
+   "mean_spells": 0.35,
+   "mean_bandages": 0.86,
+   "mean_bottles": 0.83
+  },
+  {
+   "class": "Archer",
+   "fights": 250,
+   "won": 17,
+   "lost": 233,
+   "called": 0,
+   "win_rate": 0.068,
+   "bots": 12,
+   "median_r": 0.32,
+   "median_seconds": 27.0,
+   "median_proven_over_formula": 1.268,
+   "median_formula_power": 1748.0,
+   "median_hits_max": 68.0,
+   "median_fighting_skills": 220.0,
+   "median_armour": 4.0,
+   "mean_spells": 0.04,
+   "mean_bandages": 0.83,
+   "mean_bottles": 0.32
+  },
+  {
+   "class": "WarriorMage",
+   "fights": 126,
+   "won": 10,
+   "lost": 116,
+   "called": 0,
+   "win_rate": 0.079,
+   "bots": 7,
+   "median_r": 0.425,
+   "median_seconds": 32.0,
+   "median_proven_over_formula": 0.828,
+   "median_formula_power": 3176.0,
+   "median_hits_max": 74.0,
+   "median_fighting_skills": 271.5,
+   "median_armour": 7.0,
+   "mean_spells": 3.02,
+   "mean_bandages": 1.1,
+   "mean_bottles": 1.21
+  },
+  {
+   "class": "WarriorArcher",
+   "fights": 124,
+   "won": 9,
+   "lost": 115,
+   "called": 0,
+   "win_rate": 0.073,
+   "bots": 4,
+   "median_r": 0.22,
+   "median_seconds": 26.0,
+   "median_proven_over_formula": 0.961,
+   "median_formula_power": 1856.0,
+   "median_hits_max": 71.0,
+   "median_fighting_skills": 228.5,
+   "median_armour": 7.0,
+   "mean_spells": 0.03,
+   "mean_bandages": 0.35,
+   "mean_bottles": 0.37
+  },
+  {
+   "class": "Mage",
+   "fights": 94,
+   "won": 0,
+   "lost": 94,
+   "called": 0,
+   "win_rate": 0.0,
+   "bots": 7,
+   "median_r": 0.18,
+   "median_seconds": 24.5,
+   "median_proven_over_formula": 0.373,
+   "median_formula_power": 2787.5,
+   "median_hits_max": 64.0,
+   "median_fighting_skills": 167.5,
+   "median_armour": 0.0,
+   "mean_spells": 1.5,
+   "mean_bandages": 0.61,
+   "mean_bottles": 0.34
+  },
+  {
+   "class": "Healer",
+   "fights": 48,
+   "won": 0,
+   "lost": 48,
+   "called": 0,
+   "win_rate": 0.0,
+   "bots": 3,
+   "median_r": 0.105,
+   "median_seconds": 23.0,
+   "median_proven_over_formula": 0.344,
+   "median_formula_power": 1912.0,
+   "median_hits_max": 63.0,
+   "median_fighting_skills": 160.0,
+   "median_armour": 1.0,
+   "mean_spells": 0.44,
+   "mean_bandages": 0.56,
+   "mean_bottles": 0.48
+  },
+  {
+   "class": "Brawler",
+   "fights": 20,
+   "won": 1,
+   "lost": 19,
+   "called": 0,
+   "win_rate": 0.05,
+   "bots": 1,
+   "median_r": 0.17,
+   "median_seconds": 28.5,
+   "median_proven_over_formula": 1.127,
+   "median_formula_power": 1710.0,
+   "median_hits_max": 87.0,
+   "median_fighting_skills": 225.5,
+   "median_armour": 13.0,
+   "mean_spells": 0.2,
+   "mean_bandages": 1.0,
+   "mean_bottles": 1.2
+  },
+  {
+   "class": "Captain",
+   "fights": 20,
+   "won": 7,
+   "lost": 12,
+   "called": 1,
+   "win_rate": 0.35,
+   "bots": 1,
+   "median_r": 0.695,
+   "median_seconds": 24.0,
+   "median_proven_over_formula": 2.209,
+   "median_formula_power": 2282.0,
+   "median_hits_max": 90.0,
+   "median_fighting_skills": 398.5,
+   "median_armour": 7.0,
+   "mean_spells": 0.0,
+   "mean_bandages": 1.75,
+   "mean_bottles": 1.4
+  },
+  {
+   "class": "Baron",
+   "fights": 15,
+   "won": 6,
+   "lost": 9,
+   "called": 0,
+   "win_rate": 0.4,
+   "bots": 1,
+   "median_r": 0.78,
+   "median_seconds": 33,
+   "median_proven_over_formula": 4.841,
+   "median_formula_power": 2646,
+   "median_hits_max": 98,
+   "median_fighting_skills": 496,
+   "median_armour": 50,
+   "mean_spells": 0.0,
+   "mean_bandages": 2.87,
+   "mean_bottles": 0.0
+  },
+  {
+   "class": "Sage",
+   "fights": 6,
+   "won": 0,
+   "lost": 6,
+   "called": 0,
+   "win_rate": 0.0,
+   "bots": 1,
+   "median_r": 0.1,
+   "median_seconds": 24.5,
+   "median_proven_over_formula": 0.174,
+   "median_formula_power": 3591.0,
+   "median_hits_max": 63.0,
+   "median_fighting_skills": 286.0,
+   "median_armour": 0.0,
+   "mean_spells": 0.0,
+   "mean_bandages": 0.17,
+   "mean_bottles": 0.0
+  }
+ ],
+ "awake_by_creature": [
+  {
+   "creature": "OrcishMage",
+   "fights": 868,
+   "won": 157,
+   "lost": 710,
+   "called": 1,
+   "win_rate": 0.181,
+   "bots": 48,
+   "median_r": 0.36,
+   "median_seconds": 28.0,
+   "median_proven_over_formula": 1.043,
+   "median_formula_power": 1827.0,
+   "median_hits_max": 71.0,
+   "median_fighting_skills": 229.5,
+   "median_armour": 5.0,
+   "mean_spells": 0.77,
+   "mean_bandages": 0.79,
+   "mean_bottles": 0.63
+  },
+  {
+   "creature": "JukaMage",
+   "fights": 149,
+   "won": 5,
+   "lost": 144,
+   "called": 0,
+   "win_rate": 0.034,
+   "bots": 29,
+   "median_r": 0.24,
+   "median_seconds": 20,
+   "median_proven_over_formula": 2.091,
+   "median_formula_power": 1631,
+   "median_hits_max": 80,
+   "median_fighting_skills": 290,
+   "median_armour": 7,
+   "mean_spells": 0.04,
+   "mean_bandages": 0.85,
+   "mean_bottles": 0.77
+  },
+  {
+   "creature": "OgreLord",
+   "fights": 8,
+   "won": 2,
+   "lost": 6,
+   "called": 0,
+   "win_rate": 0.25,
+   "bots": 2,
+   "median_r": 0.105,
+   "median_seconds": 19.0,
+   "median_proven_over_formula": 1.324,
+   "median_formula_power": 1547.0,
+   "median_hits_max": 82.5,
+   "median_fighting_skills": 318.0,
+   "median_armour": 0.0,
+   "mean_spells": 0.0,
+   "mean_bandages": 2.12,
+   "mean_bottles": 0.12
+  },
+  {
+   "creature": "LichLord",
+   "fights": 3,
+   "won": 1,
+   "lost": 2,
+   "called": 0,
+   "win_rate": 0.333,
+   "bots": 1,
+   "median_r": 0.78,
+   "median_seconds": 73,
+   "median_proven_over_formula": 7.365,
+   "median_formula_power": 2646,
+   "median_hits_max": 98,
+   "median_fighting_skills": 496,
+   "median_armour": 50,
+   "mean_spells": 0.0,
+   "mean_bandages": 3.67,
+   "mean_bottles": 0.0
+  },
+  {
+   "creature": "PoisonElemental",
+   "fights": 3,
+   "won": 0,
+   "lost": 3,
+   "called": 0,
+   "win_rate": 0.0,
+   "bots": 1,
+   "median_r": 0.06,
+   "median_seconds": 19,
+   "median_proven_over_formula": 0.731,
+   "median_formula_power": 2646,
+   "median_hits_max": 98,
+   "median_fighting_skills": 496,
+   "median_armour": 50,
+   "mean_spells": 0.0,
+   "mean_bandages": 1.67,
+   "mean_bottles": 0.0
+  },
+  {
+   "creature": "Dragon",
+   "fights": 2,
+   "won": 1,
+   "lost": 1,
+   "called": 0,
+   "win_rate": 0.5,
+   "bots": 1,
+   "median_r": 2.53,
+   "median_seconds": 97.5,
+   "median_proven_over_formula": 29.365,
+   "median_formula_power": 2659.5,
+   "median_hits_max": 98.5,
+   "median_fighting_skills": 495.5,
+   "median_armour": 50.0,
+   "mean_spells": 0.0,
+   "mean_bandages": 6.0,
+   "mean_bottles": 0.0
+  },
+  {
+   "creature": "WhiteWyrm",
+   "fights": 1,
+   "won": 0,
+   "lost": 1,
+   "called": 0,
+   "win_rate": 0.0,
+   "bots": 1,
+   "median_r": 0.25,
+   "median_seconds": 19,
+   "median_proven_over_formula": 4.841,
+   "median_formula_power": 2673,
+   "median_hits_max": 99,
+   "median_fighting_skills": 499,
+   "median_armour": 50,
+   "mean_spells": 0.0,
+   "mean_bandages": 1.0,
+   "mean_bottles": 0.0
+  }
+ ],
+ "awake_above_rung_1": {
+  "fights": 166,
+  "won": 9,
+  "lost": 157,
+  "called": 0,
+  "win_rate": 0.054,
+  "wins": [
+   "03:48:11 Edda the Baron (495 skills, armour 50) beat the OgreLord in 135s, R 3.27",
+   "05:21:10 Edda the Baron (496 skills, armour 50) beat the OgreLord in 179s, R 5.0",
+   "06:30:05 Edda the Baron (496 skills, armour 50) beat the LichLord in 80s, R 2.8",
+   "11:03:39 Dain the Warrior (296 skills, armour 9) beat the JukaMage in 23s, R 1.45",
+   "11:51:03 Dain the Warrior (302 skills, armour 0) beat the JukaMage in 23s, R 1.5",
+   "14:18:27 Dain the Warrior (317 skills, armour 0) beat the JukaMage in 30s, R 1.55",
+   "14:26:38 Dain the Warrior (319 skills, armour 0) beat the JukaMage in 21s, R 1.63",
+   "14:49:03 Dain the Warrior (324 skills, armour 0) beat the JukaMage in 18s, R 3.07",
+   "14:50:36 Edda the Baron (496 skills, armour 50) beat the Dragon in 142s, R 4.71"
+  ]
+ },
+ "awake_orcish_mage_rank_correlations": {
+  "formula_power": {
+   "n": 868,
+   "spearman_with_r": -0.12
+  },
+  "fighting_skills": {
+   "n": 868,
+   "spearman_with_r": 0.456
+  },
+  "armour": {
+   "n": 868,
+   "spearman_with_r": 0.115
+  },
+  "stats": {
+   "n": 868,
+   "spearman_with_r": 0.437
+  },
+  "weapon_damage": {
+   "n": 868,
+   "spearman_with_r": -0.088
+  },
+  "hits_max": {
+   "n": 868,
+   "spearman_with_r": 0.488
+  },
+  "bandages": {
+   "n": 868,
+   "spearman_with_r": 0.018
+  },
+  "bottles": {
+   "n": 868,
+   "spearman_with_r": -0.022
+  },
+  "paralysed_s": {
+   "n": 777,
+   "spearman_with_r": 0.087
+  }
+ },
+ "awake_orcish_mage_rank_correlations_per_bot": {
+  "bots": 47,
+  "formula_power": -0.468,
+  "fighting_skills": 0.666,
+  "hits_max": 0.774,
+  "armour": 0.456,
+  "stats": 0.666,
+  "weapon_damage": -0.104
+ },
+ "awake_orcish_mage_formula_implied_r": {
+  "n": 868,
+  "min": 0.059,
+  "p10": 0.215,
+  "p25": 0.266,
+  "median": 0.304,
+  "p75": 0.426,
+  "p90": 0.512,
+  "max": 0.621
+ },
+ "awake_orcish_mage_formula_implied_r_at_least_1": 0,
+ "awake_orcish_mage_won_where_formula_implied_r_under_1": 157,
+ "awake_orcish_mage_by_period": {
+  "awake": {
+   "fights": 643,
+   "won": 98,
+   "lost": 544,
+   "called": 1,
+   "win_rate": 0.152,
+   "bots": 47,
+   "median_fighting_skills": 224,
+   "median_hits_max": 71,
+   "median_armour": 7,
+   "mean_bandages": 0.85,
+   "mean_bottles": 0.69,
+   "mean_spells": 0.84,
+   "median_r": 0.3
+  },
+  "awake_world_awake": {
+   "fights": 225,
+   "won": 59,
+   "lost": 166,
+   "called": 0,
+   "win_rate": 0.262,
+   "bots": 45,
+   "median_fighting_skills": 254,
+   "median_hits_max": 71,
+   "median_armour": 1,
+   "mean_bandages": 0.61,
+   "mean_bottles": 0.45,
+   "mean_spells": 0.57,
+   "median_r": 0.49
+  }
+ },
+ "awake_casters_spells": {
+  "Healer / awake": {
+   "fights": 31,
+   "fights_with_a_spell": 5,
+   "won": 0
+  },
+  "Healer / awake_world_awake": {
+   "fights": 17,
+   "fights_with_a_spell": 1,
+   "won": 0
+  },
+  "Mage / awake": {
+   "fights": 63,
+   "fights_with_a_spell": 12,
+   "won": 0
+  },
+  "Mage / awake_world_awake": {
+   "fights": 31,
+   "fights_with_a_spell": 4,
+   "won": 0
+  },
+  "Sage / awake": {
+   "fights": 6,
+   "fights_with_a_spell": 0,
+   "won": 0
+  },
+  "WarriorMage / awake": {
+   "fights": 93,
+   "fights_with_a_spell": 54,
+   "won": 5
+  },
+  "WarriorMage / awake_world_awake": {
+   "fights": 33,
+   "fights_with_a_spell": 10,
+   "won": 5
+  }
+ },
+ "paralysis": {
+  "fights": 934,
+  "with_any": 224,
+  "seconds_when_any": {
+   "n": 224,
+   "min": 1,
+   "p10": 1.0,
+   "p25": 2.0,
+   "median": 3.0,
+   "p75": 4.0,
+   "p90": 6.0,
+   "max": 27
+  },
+  "window_0420_0428": {
+   "n": 23,
+   "min": 0,
+   "p10": 0.0,
+   "p25": 0.0,
+   "median": 0,
+   "p75": 2.0,
+   "p90": 4.8,
+   "max": 9
+  }
+ },
+ "bow_fights": {
+  "fights_starting_with_a_bow": 295,
+  "fights": 295,
+  "won": 32,
+  "lost": 262,
+  "called": 1,
+  "win_rate": 0.108,
+  "counted_from_build_254": 285,
+  "shots": {
+   "n": 285,
+   "min": 0,
+   "p10": 0.0,
+   "p25": 1.0,
+   "median": 4,
+   "p75": 6.0,
+   "p90": 7.0,
+   "max": 15
+  },
+  "fights_with_no_shot": 56,
+  "shots_per_minute": {
+   "n": 285,
+   "min": 0.0,
+   "p10": 0.0,
+   "p25": 1.71,
+   "median": 12.0,
+   "p75": 13.04,
+   "p90": 13.85,
+   "max": 18.0
+  },
+  "dealt": {
+   "n": 295,
+   "min": 0,
+   "p10": 2.0,
+   "p25": 23.0,
+   "median": 53,
+   "p75": 92.0,
+   "p90": 120.0,
+   "max": 205
+  },
+  "held_ammo_at_start": {
+   "n": 295,
+   "min": 0,
+   "p10": 0.0,
+   "p25": 8.0,
+   "median": 58,
+   "p75": 106.5,
+   "p90": 135.0,
+   "max": 180
+  }
+ },
+ "traced_fights": {
+  "fights": 29,
+  "with_a_shot": 25,
+  "shot_gaps_s": {
+   "n": 120,
+   "min": 4.0,
+   "p10": 4.0,
+   "p25": 5.0,
+   "median": 5.0,
+   "p75": 6.0,
+   "p90": 6.0,
+   "max": 35.0
+  },
+  "swing_in_ms_after_shots": {
+   "n": 145,
+   "min": 1573.0,
+   "p10": 4009.0,
+   "p25": 4305.0,
+   "median": 4653.0,
+   "p75": 5070.0,
+   "p90": 5666.0,
+   "max": 6330.0
+  },
+  "creature_within_1_tile_at_s": {
+   "n": 29,
+   "min": 2,
+   "p10": 2.0,
+   "p25": 3.0,
+   "median": 4,
+   "p75": 5.0,
+   "p90": 5.0,
+   "max": 6
+  },
+  "first_swing_in_ms_build_254": [
+   7299,
+   7300,
+   7301
+  ],
+  "first_shot_at_s_build_254": [
+   7,
+   8,
+   8
+  ],
+  "later_with_arrows": 22,
+  "later_first_shot_at_0s": 22,
+  "later_first_swing_in_ms": {
+   "n": 22,
+   "min": 4437,
+   "p10": 4505.0,
+   "p25": 4542.0,
+   "median": 4624.0,
+   "p75": 4743.0,
+   "p90": 4829.0,
+   "max": 4924
+  }
+ },
+ "companies": {
+  "asleep": {
+   "fights": 14,
+   "cleared": 5,
+   "wiped_out": 7,
+   "called": 2,
+   "rooms": [
+    "Despise: 5 OgreLord",
+    "Wrong: 4 GolemController"
+   ],
+   "seconds_wiped_out": {
+    "n": 7,
+    "min": 23,
+    "p10": 36.2,
+    "p25": 48.5,
+    "median": 69,
+    "p75": 124.0,
+    "p90": 141.8,
+    "max": 155
+   },
+   "room_health_taken_pct_wiped_out": {
+    "n": 7,
+    "min": 1,
+    "p10": 1.6,
+    "p25": 4.0,
+    "median": 11,
+    "p75": 27.5,
+    "p90": 56.0,
+    "max": 77
+   },
+   "clears": [
+    "2026-09-26 02:43:35 The Crown (Brannoc; Wynn; Kelda; Ronan; Fenna) Wrong in 88s, 2 of 5 fell",
+    "2026-09-26 02:45:22 The Blade (Rowan; Quill; Vance; Perri; Maeve) Wrong in 45s, 0 of 5 fell",
+    "2026-09-26 03:21:53 The Lantern (Elspeth; Selwyn; Pell; Dain; Talia) Wrong in 81s, 0 of 5 fell",
+    "2026-09-26 03:27:57 The Blade (Rowan; Ulla; Quill; Maeve; Bertram) Wrong in 59s, 0 of 5 fell",
+    "2026-09-26 03:29:03 The Crown (Delwyn; Wynn; Ronan; Brannoc; Fenna) Wrong in 61s, 0 of 5 fell"
+   ]
+  },
+  "awake": {
+   "fights": 101,
+   "cleared": 2,
+   "wiped_out": 99,
+   "called": 0,
+   "rooms": [
+    "Despise: 5 OgreLord",
+    "Wrong: 4 GolemController"
+   ],
+   "seconds_wiped_out": {
+    "n": 99,
+    "min": 10,
+    "p10": 18.0,
+    "p25": 21.0,
+    "median": 27,
+    "p75": 32.5,
+    "p90": 36.2,
+    "max": 49
+   },
+   "room_health_taken_pct_wiped_out": {
+    "n": 99,
+    "min": 1,
+    "p10": 4.0,
+    "p25": 7.0,
+    "median": 14,
+    "p75": 29.0,
+    "p90": 39.0,
+    "max": 89
+   },
+   "clears": [
+    "2026-09-26 12:57:36 The Blade (Ulla; Vance; Quill; Aric; Perri) Wrong in 40s, 3 of 5 fell",
+    "2026-09-26 14:51:31 The Lantern (Dain; Yarrow; Ysolt; Isolde; Lorcan) Wrong in 25s, 1 of 5 fell"
+   ]
+  }
+ },
+ "calibration": {
+  "readings": 149,
+  "first": "2026-09-26 01:40:50 x37.71",
+  "last": "2026-09-26 15:28:32 x1.31",
+  "by_build": {
+   "234": {
+    "n": 1,
+    "min": 37.71,
+    "max": 37.71
+   },
+   "237": {
+    "n": 1,
+    "min": 2.22,
+    "max": 2.22
+   },
+   "238": {
+    "n": 1,
+    "min": 2.48,
+    "max": 2.48
+   },
+   "240": {
+    "n": 1,
+    "min": 2.22,
+    "max": 2.22
+   },
+   "245": {
+    "n": 1,
+    "min": 1.21,
+    "max": 1.21
+   },
+   "246": {
+    "n": 8,
+    "min": 1.32,
+    "max": 1.64
+   },
+   "247": {
+    "n": 2,
+    "min": 1.37,
+    "max": 1.41
+   },
+   "250": {
+    "n": 4,
+    "min": 1.06,
+    "max": 1.2
+   },
+   "251": {
+    "n": 1,
+    "min": 0.62,
+    "max": 0.62
+   },
+   "252": {
+    "n": 2,
+    "min": 0.93,
+    "max": 1.04
+   },
+   "253": {
+    "n": 1,
+    "min": 1.19,
+    "max": 1.19
+   },
+   "254": {
+    "n": 5,
+    "min": 1.12,
+    "max": 1.16
+   },
+   "255": {
+    "n": 68,
+    "min": 1.0,
+    "max": 1.34
+   },
+   "256": {
+    "n": 12,
+    "min": 0.88,
+    "max": 1.28
+   },
+   "257": {
+    "n": 16,
+    "min": 1.11,
+    "max": 1.28
+   },
+   "258": {
+    "n": 1,
+    "min": 1.18,
+    "max": 1.18
+   },
+   "259": {
+    "n": 9,
+    "min": 1.16,
+    "max": 1.33
+   },
+   "260": {
+    "n": 1,
+    "min": 1.28,
+    "max": 1.28
+   },
+   "261": {
+    "n": 2,
+    "min": 1.15,
+    "max": 1.26
+   },
+   "262": {
+    "n": 1,
+    "min": 1.04,
+    "max": 1.04
+   },
+   "263": {
+    "n": 9,
+    "min": 1.16,
+    "max": 1.31
+   },
+   "264": {
+    "n": 2,
+    "min": 1.31,
+    "max": 1.32
+   }
+  },
+  "awake_rings": {
+   "n": 134,
+   "min": 0.62,
+   "p10": 1.04,
+   "p25": 1.16,
+   "median": 1.22,
+   "p75": 1.26,
+   "p90": 1.32,
+   "max": 1.34
+  }
+ },
+ "creature_might_across_boots": {
+  "OrcishMage": {
+   "boots": 30,
+   "min": 4581,
+   "max": 6474
+  },
+  "JukaMage": {
+   "boots": 30,
+   "min": 11443,
+   "max": 16729
+  },
+  "OgreLord": {
+   "boots": 30,
+   "min": 17932,
+   "max": 20565
+  },
+  "PoisonElemental": {
+   "boots": 30,
+   "min": 24973,
+   "max": 31648
+  },
+  "LichLord": {
+   "boots": 30,
+   "min": 23978,
+   "max": 30888
+  },
+  "Dragon": {
+   "boots": 30,
+   "min": 27406,
+   "max": 31824
+  },
+  "WhiteWyrm": {
+   "boots": 30,
+   "min": 50975,
+   "max": 53747
+  },
+  "Balron": {
+   "boots": 30,
+   "min": 73458,
+   "max": 87867
+  },
+  "AncientLich": {
+   "boots": 30,
+   "min": 76294,
+   "max": 84919
+  },
+  "AncientWyrm": {
+   "boots": 30,
+   "min": 80278,
+   "max": 95527
+  }
+ },
+ "wake_experiment": {
+  "on": "2026-09-26 04:08:23",
+  "off": "2026-09-26 04:14:21",
+  "minutes": 5.97,
+  "dungeon_side_deaths": 9,
+  "bots": [
+   "Alden",
+   "Brannoc",
+   "Cassia",
+   "Elspeth",
+   "Maeve",
+   "Rowan",
+   "Talia"
+  ],
+  "per_hour": 90.5,
+  "dungeons": [
+   "the Orc Caves"
+  ],
+  "killers": [
+   "Orc",
+   "OrcBomber",
+   "OrcBomber",
+   "OrcBomber",
+   "OrcBomber",
+   "OrcishLord",
+   "OrcishMage",
+   "nobody known",
+   "nobody known"
+  ]
+ },
+ "asleep_baseline": {
+  "from": "2026-09-26 01:08:00",
+  "to": "2026-09-26 04:00:00",
+  "dungeon_side_deaths": 45,
+  "per_hour": 15.7
+ },
+ "delve_offers_moved": {
+  "lines": 124,
+  "note": "the delve logs at most the first 8 differences per boot",
+  "by_target": {
+   "Shame (formula said nowhere)": 2,
+   "Shame (formula said the Orc Caves)": 1,
+   "Terathan Keep (formula said nowhere)": 1,
+   "Terathan Keep (formula said the Orc Caves)": 4,
+   "Wrong (formula said the Orc Caves)": 29,
+   "Wrong (formula said nowhere)": 20,
+   "the Orc Caves (formula said nowhere)": 67
+  },
+  "build_234": [
+   "01:36:51 Hollis's band of 4: 89881 proven vs 7992 formula -> Shame",
+   "01:36:53 Ysolt's band of 8: 90505 proven vs 8616 formula -> Shame",
+   "01:36:55 Oswin's band of 2: 100435 proven vs 2167 formula -> Shame",
+   "01:36:55 Vesna's band of 2: 204022 proven vs 4402 formula -> Terathan Keep",
+   "01:36:55 Kerrin's band of 11: 380784 proven vs 8650 formula -> Terathan Keep",
+   "01:36:56 Calla's band of 7: 429827 proven vs 9274 formula -> Terathan Keep",
+   "01:36:56 Neriah's band of 9: 379210 proven vs 8616 formula -> Terathan Keep",
+   "01:36:56 Cassia's band of 5: 427143 proven vs 9216 formula -> Terathan Keep"
+  ]
+ },
+ "census": [
+  {
+   "date": "2026-09-26",
+   "time": "04:07:51",
+   "creatures_near_bots": 47,
+   "reach_tiles": 18,
+   "ai_on": 0,
+   "would_fight": 27,
+   "would_fight_ai_on": 0,
+   "in_dungeons_ai_on": 0,
+   "in_dungeons": 18,
+   "clients": 0,
+   "wake": "off"
+  },
+  {
+   "date": "2026-09-26",
+   "time": "04:08:31",
+   "creatures_near_bots": 46,
+   "reach_tiles": 18,
+   "ai_on": 22,
+   "would_fight": 33,
+   "would_fight_ai_on": 21,
+   "in_dungeons_ai_on": 22,
+   "in_dungeons": 22,
+   "clients": 0,
+   "wake": "on inside dungeons"
+  },
+  {
+   "date": "2026-09-26",
+   "time": "04:14:19",
+   "creatures_near_bots": 25,
+   "reach_tiles": 18,
+   "ai_on": 0,
+   "would_fight": 7,
+   "would_fight_ai_on": 0,
+   "in_dungeons_ai_on": 0,
+   "in_dungeons": 0,
+   "clients": 0,
+   "wake": "on inside dungeons"
+  },
+  {
+   "date": "2026-09-26",
+   "time": "04:14:29",
+   "creatures_near_bots": 16,
+   "reach_tiles": 18,
+   "ai_on": 0,
+   "would_fight": 5,
+   "would_fight_ai_on": 0,
+   "in_dungeons_ai_on": 0,
+   "in_dungeons": 0,
+   "clients": 0,
+   "wake": "off"
+  },
+  {
+   "date": "2026-09-26",
+   "time": "04:50:18",
+   "creatures_near_bots": 18,
+   "reach_tiles": 18,
+   "ai_on": 0,
+   "would_fight": 4,
+   "would_fight_ai_on": 0,
+   "in_dungeons_ai_on": 0,
+   "in_dungeons": 0,
+   "clients": 0,
+   "wake": "off"
+  },
+  {
+   "date": "2026-09-26",
+   "time": "13:17:08",
+   "creatures_near_bots": 128,
+   "reach_tiles": 18,
+   "ai_on": 128,
+   "would_fight": 53,
+   "would_fight_ai_on": 53,
+   "in_dungeons_ai_on": 16,
+   "in_dungeons": 16,
+   "clients": 0,
+   "wake": "on everywhere a bot goes"
+  }
+ ]
+}
