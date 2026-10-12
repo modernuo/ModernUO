@@ -254,30 +254,11 @@ public sealed class BotUnload : BotDeed
             // thing left to do is the thing that needs no counter.
             if (BotLadder.Load(body) > BotLadder.Ceiling(body))
             {
-                if (Refilling(body))
-                {
-                    return BotDoing.Failed(Treadmilled(body));
-                }
-
-                // The bank needs no counter, so the bot that cannot reach one can still empty its pack into it — wanted goods
-                // too: a bot that cannot walk cannot carry them to anybody. See Store.
-                var freed = Store(bot, body, true);
-
-                Shed += freed;
-                Stranded++;
-
-                if (freed > 0)
-                {
-                    return BotDoing.Done(
-                        $"{freed} lots put in the bank box from where it stood, too heavy to walk and no counter known"
-                    );
-                }
-
                 // <b>And the dumping belongs here too, which it did not.</b> The branch below reaches it and
                 // this one did not, so the same bot in the same state was cured or abandoned according to
                 // whether the shard happened to have surveyed a counter - which is a fact about how far
-                // other bots have walked, not about this one. Both branches now end the same way.
-                return Ditch(bot, body);
+                // other bots have walked, not about this one. Both branches end in the same pass now. See StandStill.
+                return StandStill(bot, body, false);
             }
 
             return BotDoing.Failed("nowhere known to put it");
@@ -304,31 +285,21 @@ public sealed class BotUnload : BotDeed
 
         if (stuck && !body.InRange(_counter, Reach))
         {
-            if (Refilling(body))
-            {
-                return BotDoing.Failed(Treadmilled(body));
-            }
-
-            var shed = Store(bot, body, true);
-
-            Shed += shed;
-
-            if (shed > 0)
-            {
-                return BotDoing.Done($"{shed} lots put in the bank box from where it stood, too heavy to walk");
-            }
-
             // <b>Nothing sellable, and it cannot move: the one state on this shard with no way out of
             // itself.</b> Failing here puts the errand straight back on offer — the porter's own test still
             // says the pack holds something worth leaving — and the bot takes it, fails in a fifth of a
             // minute, and takes it again. Quill did that 143 times in five minutes on 09.09.2026 and dragged
             // the whole shard's completion band from 75% to 47% on its own, which is how the alarm found it.
             //
-            // So it puts something down. A bot that cannot walk is worth more than the ore nobody will buy,
-            // and everything the sale would have taken is exactly what may be dropped: never the kit, never
-            // what its trade is bound to, never coin.
-            return Ditch(bot, body);
+            // So it puts something down. A bot that cannot walk is worth more than the ore nobody will buy. What
+            // goes, and in what order, is StandStill's: piles joined, coin banked, surplus boxed, then the ground,
+            // and the kept things last of all, loudly.
+            return StandStill(bot, body, true);
         }
+
+        // Piles of one kind lying apart weigh more than the same things in one pile (see Gather); joined before the counter is
+        // asked anything, so the lots it counts are the lots there are.
+        Gather(body, true);
 
         var carried = body.Backpack?.Items.Count ?? 0;
         var held = Filled;
@@ -779,19 +750,26 @@ public sealed class BotUnload : BotDeed
     public static bool Treadmill(Mobile body) =>
         body != null && _treadmill.TryGetValue(body.Serial, out var when) && Core.TickCount - when < TreadmillMs;
 
-    /// <summary>Whether the last stand-still pass, a moment ago, left the bot no lighter than it is now. Records this pass.</summary>
-    private static bool Refilling(Mobile body)
+    /// <summary>
+    /// Whether the last stand-still pass, a moment ago, left the bot no lighter than it is now, or this is the
+    /// <see cref="MostPasses"/>th inside <see cref="PassMs"/>. <paramref name="lighter"/> tells the second case: refused, and
+    /// not a pass that got nowhere, so the breaker does not count it (12.10.2026, Fable's review). Records this pass.
+    /// </summary>
+    private static bool Refilling(Mobile body, out bool lighter)
     {
         var now = Core.TickCount;
         var load = BotLadder.Load(body);
 
         var count = 1;
 
+        lighter = false;
+
         if (_passes.TryGetValue(body.Serial, out var last) && now - last.Tick < PassMs)
         {
             // No lighter than the last pass left it, or the third pass inside the window: either way not a way off the ceiling.
             if (load >= last.Load || last.Count + 1 >= MostPasses)
             {
+                lighter = load < last.Load;
                 _passes.Remove(body.Serial);
                 _treadmill[body.Serial] = now;
                 Treadmills++;
@@ -812,9 +790,12 @@ public sealed class BotUnload : BotDeed
         return false;
     }
 
-    private static string Treadmilled(Mobile body) =>
-        $"still too heavy to walk at {BotLadder.Load(body)} of {BotLadder.Ceiling(body)} stones, no lighter than when the last pass "
-        + "put things away from where it stood; left alone for a while";
+    private static string Treadmilled(Mobile body, bool lighter) =>
+        lighter
+            ? $"still too heavy to walk at {BotLadder.Load(body)} of {BotLadder.Ceiling(body)} stones after {MostPasses} passes inside "
+              + $"{PassMs / 1000}s, each a little lighter; left alone for a while"
+            : $"still too heavy to walk at {BotLadder.Load(body)} of {BotLadder.Ceiling(body)} stones, no lighter than when the last "
+              + "pass put things away from where it stood; left alone for a while";
 
     /// <summary>Whether this bot lately proved there is nothing this errand can do for it.</summary>
     public static bool Wedged(Mobile body) =>
@@ -1123,15 +1104,603 @@ public sealed class BotUnload : BotDeed
     /// the point at which guessing has to stop and the nought has to be named.
     /// </para>
     /// </summary>
+    // ---- The stand-still pass: a way down from over the ceiling (12.10.2026) ---------------------------------------------------
+
+    /// <summary>
+    /// Whether the stand-still pass may let go of a bot's kept things — its supplies and tools, never a kind bound to it by count
+    /// (its quiver) and never what weighs nothing — when they alone hold it over its ceiling: into its bank box, or onto the
+    /// ground when the box will not take them.
+    ///
+    /// <para>
+    /// <b>The kit was the one load with no way down.</b> <see cref="Store"/> and <see cref="Dump"/> both pass over everything
+    /// within the allowance, and ammunition is kept without limit, so a bot whose kept things alone weighed more than it can
+    /// carry stood where it was until it died: Baern the Tamer, 225–276 stones of 222–229 from 09:28 on 10.10.2026 to 11:11 on
+    /// 12.10.2026, 1 035 of the 5 920 failures of 11.10 (17.5 %), cured only by the death that put his arrows into one pile.
+    /// A kit a bot cannot carry is a wrong kit, and a bot that cannot take a step earns nothing with it; the pass says so
+    /// (a warning naming the heaviest things) and lets go of it, heaviest first, until the bot can walk.
+    /// </para>
+    /// </summary>
+    public static bool Releases { get; set; } = true;
+
+    /// <summary>
+    /// Stand-still passes that left a bot no lighter, inside <see cref="StuckWindowMs"/>, before the porter stops offering it
+    /// the pass at all until its weight changes. See <see cref="SetAside"/>.
+    ///
+    /// <para>
+    /// <b>The rests already there were clocks, and a clock ends.</b> <see cref="WedgedMs"/> and <see cref="TreadmillMs"/> each
+    /// rested Baern for two minutes, and two minutes later the porter offered the same pass, which outbid whatever he was doing
+    /// ("dislodged by unload") and failed in a fifth of a minute: 454 unload failures in the 10.2 hours of 11.10, 45 an hour,
+    /// and every one of them a decision the auction made for nothing. Three in ten minutes is three of those rests in a row:
+    /// a pass that has failed that often from the same weight will fail again from it.
+    /// </para>
+    /// </summary>
+    public static int StuckFails { get; set; } = 3;
+
+    /// <summary>The window <see cref="StuckFails"/> is counted over. Ten minutes.</summary>
+    public static int StuckWindowMs { get; set; } = 600000;
+
+    /// <summary>
+    /// How often a heavy bot that can still walk has its pack gone through for piles of one kind lying apart. A bot over its
+    /// ceiling is gone through every time. See <see cref="Gather"/>.
+    /// </summary>
+    public static int JoinMs { get; set; } = 60000;
+
+    /// <summary>Piles of one kind lying apart in a pack, joined onto one pile of their kind. See <see cref="Gather"/>.</summary>
+    public static long Joined { get; private set; }
+
+    /// <summary>Packs in which piles were joined.</summary>
+    public static long JoinedPacks { get; private set; }
+
+    /// <summary>Stones the joins took off the packs: what the piles weighed apart over what they weigh together.</summary>
+    public static long JoinedStones { get; private set; }
+
+    /// <summary>Coin over its float a bot too heavy to walk put in its account from where it stood. See <see cref="StandStill"/>.</summary>
+    public static long StoodBanked { get; private set; }
+
+    /// <summary>Stand-still passes that found the kept things alone holding the bot over its ceiling: the kit was wrong.</summary>
+    public static long KitOver { get; private set; }
+
+    /// <summary>Kept things let go by a bot that could not carry them. See <see cref="Release"/>.</summary>
+    public static long Released { get; private set; }
+
+    /// <summary>Of those, into the bot's own bank box.</summary>
+    public static long ReleasedBoxed { get; private set; }
+
+    /// <summary>Of those, onto the ground, because the box would not take them.</summary>
+    public static long ReleasedGround { get; private set; }
+
+    /// <summary>What everything a stand-still pass left on the ground was worth at the market's reckoning, surplus and kept.</summary>
+    public static long GroundWorth { get; private set; }
+
+    /// <summary>Bots set aside by the breaker: <see cref="StuckFails"/> no-lighter passes in <see cref="StuckWindowMs"/>.</summary>
+    public static long StuckTrips { get; private set; }
+
+    /// <summary>Offers of the pass withheld from a bot the breaker had set aside: offers, one a review while it lasts.</summary>
+    public static long StuckWithheld { get; private set; }
+
+    /// <summary>Bots over their ceiling and set aside by the breaker at the last pack census. For an alarm to read.</summary>
+    public static int StuckNow { get; private set; }
+
+    /// <summary>When each bot's run of no-lighter passes began, how many, and the load they all left it at. Absence means none.</summary>
+    private static readonly Dictionary<Serial, (long Since, int Count, int Load)> _noLighter = [];
+
+    /// <summary>The load at which the breaker set each bot aside. Absence means it is not set aside.</summary>
+    private static readonly Dictionary<Serial, int> _stuckAt = [];
+
+    /// <summary>When each bot's pack was last gone through for piles lying apart. See <see cref="JoinMs"/>.</summary>
+    private static readonly Dictionary<Serial, long> _gatheredAt = [];
+
+    /// <summary>What one top-level thing in a pack weighs: its own pile and, for a container, what is in it.</summary>
+    private static int Stones(Item item) => item.PileWeight + item.TotalWeight;
+
+    /// <summary>
+    /// Everything a bot over its ceiling can do without taking a step, in one pass, in this order, stopping the moment it is
+    /// under: piles of one kind lying apart joined (<see cref="Gather"/>), coin over its float into its account
+    /// (<see cref="Bank"/>), surplus into its bank box (<see cref="Store"/>), what the box refused onto the ground
+    /// (<see cref="Dump"/>), and last the kept things themselves (<see cref="Release"/>), loudly.
+    ///
+    /// <para>
+    /// <b>One pass, all the way down (12.10.2026).</b> The pass used to stop at the first step that did anything: "1 lots put
+    /// in the bank box from where it stood" nineteen times on 12.10.2026 for Baern, each lot a stone or two, while the 177
+    /// arrows that weighed 177 stones were never reached. And the coin: <see cref="Sellable"/> counts coin over the float as
+    /// worth the trip, and this pass never banked it, though <c>Banker.Deposit</c> needs no counter — so the porter's own
+    /// test kept offering a pass that could not do the one thing it had counted. Coin gone, the porter's count is honest.
+    /// </para>
+    /// </summary>
+    private BotDoing StandStill(IBotWilful bot, Mobile body, bool counterKnown)
+    {
+        if (Refilling(body, out var lighter))
+        {
+            // A pass refused for coming too soon after passes that were each lighter is not a pass that got nowhere.
+            if (lighter)
+            {
+                _noLighter.Remove(body.Serial);
+            }
+            else
+            {
+                NoLighter(bot, body);
+            }
+
+            return BotDoing.Failed(Treadmilled(body, lighter));
+        }
+
+        // Counted where it always was: a pass run with no counter known, not a refusal (12.10.2026, Fable's review).
+        if (!counterKnown)
+        {
+            Stranded++;
+        }
+
+        var before = BotLadder.Load(body);
+        var joined = Gather(body, true);
+        var banked = 0;
+        var shed = 0;
+        var dumped = 0;
+        var released = 0;
+
+        // <b>Not a red's coin (12.10.2026, Fable's review).</b> A red's purse cannot reach a counter and goes to its hideout's
+        // chest, and a catch takes everything off it (BotStash); banking it from where it stands would step round that rule.
+        // A red over its ceiling goes on to the box and the ground like anybody else.
+        if (BotLadder.Overloaded(body) && !BotOutlaw.IsRed(body))
+        {
+            banked = Bank(body);
+            StoodBanked += banked;
+        }
+
+        if (BotLadder.Overloaded(body))
+        {
+            shed = Store(bot, body, true);
+            Shed += shed;
+        }
+
+        if (BotLadder.Overloaded(body))
+        {
+            dumped = Dump(bot, body);
+            Dumped += dumped;
+        }
+
+        if (BotLadder.Overloaded(body) && Releases)
+        {
+            released = Release(bot, body);
+        }
+
+        _banked = banked;
+        _stored = shed;
+
+        var after = BotLadder.Load(body);
+        var ceiling = BotLadder.Ceiling(body);
+        var did = $"{joined} piles joined, {banked}gp banked, {shed} lots boxed, {dumped} things of no use left on the ground, "
+                  + $"{released} kept things let go";
+
+        if (after <= ceiling)
+        {
+            _noLighter.Remove(body.Serial);
+
+            return BotDoing.Done($"can walk again at {after} of {ceiling} stones, from {before}, without a step: {did}");
+        }
+
+        if (after < before)
+        {
+            // Lighter is not a pass that got nowhere: the breaker's run starts again (12.10.2026, Fable's review).
+            _noLighter.Remove(body.Serial);
+
+            return BotDoing.Done($"{before - after} stones lighter from where it stood ({did}), still over at {after} of {ceiling}");
+        }
+
+        // Nothing on it that the pass may part it from: bound, worn, or kept with Releases off. Said once by the breaker, loudly,
+        // rather than four times a minute. See WedgedMs and StuckFails.
+        Immovable++;
+        _wedged[body.Serial] = Core.TickCount;
+        NoLighter(bot, body);
+
+        return BotDoing.Failed(
+            $"too heavy to walk at {after} of {ceiling} stones, and nothing on it could be joined, banked, boxed or put down; "
+            + $"the heaviest: {Heaviest(bot, body, 3)}"
+        );
+    }
+
+    /// <summary>
+    /// Joins the piles of one kind lying apart in this bot's pack, top level only, onto the first pile of their kind, look,
+    /// colour, weight and loot type, by the engine's own <c>StackWith</c>: nothing made, nothing lost. <paramref name="force"/>
+    /// for a bot over its ceiling or at a counter; otherwise once in <see cref="JoinMs"/>. Returns the piles joined.
+    ///
+    /// <para>
+    /// <b>The engine weighs a pile, not a thing, and rounds every pile up to a whole stone (12.10.2026).</b> <c>PileWeight</c> is
+    /// ceil(weight x amount), and <c>Container.DropItem</c> — the way 31 places in this project put things in a pack — never
+    /// stacks. So a missed arrow picked up off the ground is a pile of one weighing a stone where ten arrows in a pile weigh one,
+    /// and a few coins off a corpse are a stone where fifty in a pile are one. Baern carried 177 arrows in that state: kept
+    /// arrows in the census fell by 187 stones at 11:11 on 12.10.2026, the minute he died and his death put them in one pile
+    /// of 150 (noise between censuses ±20); and his gold paid 468gp and 586gp for lessons and came off 16 and 17 stones,
+    /// where one pile would have been 9 and 12.
+    /// </para>
+    ///
+    /// <para>
+    /// The weight and the loot type are part of the kind on purpose: a quiver's granted arrows are weightless and kept through
+    /// death (<see cref="BotBinding.TrimAmmunition"/>), and joining picked-up arrows onto them would make the extra arrows
+    /// weightless too, which binding never promised.
+    /// </para>
+    /// </summary>
+    public static int Gather(Mobile body, bool force)
+    {
+        var pack = body?.Backpack;
+
+        if (pack == null || pack.Deleted || pack.Items.Count < 2)
+        {
+            return 0;
+        }
+
+        if (!force)
+        {
+            var now = Core.TickCount;
+
+            if (_gatheredAt.TryGetValue(body.Serial, out var at) && now - at < JoinMs)
+            {
+                return 0;
+            }
+
+            if (_gatheredAt.Count > 4096)
+            {
+                _gatheredAt.Clear();
+            }
+
+            _gatheredAt[body.Serial] = now;
+        }
+
+        var bond = (body as BotMobile)?.Bond;
+        var before = body.TotalWeight;
+        Dictionary<(Type, int, int, double, LootType), Item> first = [];
+
+        // A snapshot: joining deletes piles out of the list being read.
+        List<Item> items = [.. pack.Items];
+        var joined = 0;
+
+        for (var i = 0; i < items.Count; i++)
+        {
+            var item = items[i];
+
+            if (item == null || item.Deleted || !item.Stackable || !item.Movable || item is Container || item.Parent != pack
+                || BotBinding.IsBound(item, bond))
+            {
+                continue;
+            }
+
+            var key = (item.GetType(), item.ItemID, item.Hue, item.Weight, item.LootType);
+
+            if (!first.TryGetValue(key, out var pile) || pile.Deleted || pile.Parent != pack)
+            {
+                first[key] = item;
+
+                continue;
+            }
+
+            if (pile.StackWith(body, item, false))
+            {
+                joined++;
+
+                continue;
+            }
+
+            // The first pile is at the engine's sixty thousand, or named apart: this one becomes the pile to join.
+            first[key] = item;
+        }
+
+        if (joined > 0)
+        {
+            Joined += joined;
+            JoinedPacks++;
+            JoinedStones += Math.Max(0, before - body.TotalWeight);
+        }
+
+        return joined;
+    }
+
+    /// <summary>
+    /// Puts <paramref name="item"/> in <paramref name="pack"/> onto a pile of its kind, weight and loot type if the pack holds
+    /// one, beside them otherwise: <c>DropItem</c> with the stacking a player's drop has. For a thing picked up a few at a time,
+    /// whose piles would otherwise each weigh a whole stone. See <see cref="Gather"/>.
+    /// </summary>
+    public static void IntoPack(Mobile body, Container pack, Item item)
+    {
+        if (pack == null || item == null || item.Deleted)
+        {
+            return;
+        }
+
+        if (item.Stackable)
+        {
+            var bond = (body as BotMobile)?.Bond;
+            var items = pack.Items;
+
+            for (var i = 0; i < items.Count; i++)
+            {
+                var pile = items[i];
+
+                if (pile is { Deleted: false } && pile is not Container && pile != item && pile.Weight == item.Weight
+                    && pile.LootType == item.LootType && !BotBinding.IsBound(pile, bond) && pile.StackWith(body, item, false))
+                {
+                    return;
+                }
+            }
+        }
+
+        pack.DropItem(item);
+    }
+
+    /// <summary>
+    /// Lets go of the kept things of a bot that is still over its ceiling with nothing else left to part with, heaviest first,
+    /// into its bank box, or onto the ground when the box will not take them, until it can walk. Says so first, as a warning
+    /// naming what it carries. Returns the things let go. See <see cref="Releases"/>.
+    /// </summary>
+    private static int Release(IBotWilful bot, Mobile body)
+    {
+        var pack = body?.Backpack;
+
+        if (pack == null)
+        {
+            return 0;
+        }
+
+        // What is left after Store and Dump is kept by construction: everything over the allowance has gone already.
+        List<Item> kept = [];
+
+        for (var i = 0; i < pack.Items.Count; i++)
+        {
+            var item = pack.Items[i];
+
+            if (item == null || item.Deleted || !item.Movable || item is Gold || BotBinding.IsBound(item, bot.Bond))
+            {
+                continue;
+            }
+
+            // <b>Nor the quiver (12.10.2026, both of Fable's reviews).</b> A granted stack is bound by count, not by serial
+            // (BotBinding.BindStack records bond.Ammunition, only Bind fills bond.Items), so IsBound does not see it. It weighs
+            // nothing, sorted last and was reached only by a bot still over on what it wears, which it could not relieve; and
+            // in the box it was gone for good, since TrimAmmunition counts pack and corpse. Nothing of a count-bound kind goes,
+            // and nothing that weighs nothing.
+            if (Stones(item) <= 0 || BotBinding.BoundCount(item.GetType(), bot.Bond) > 0)
+            {
+                continue;
+            }
+
+            kept.Add(item);
+        }
+
+        if (kept.Count == 0)
+        {
+            return 0;
+        }
+
+        KitOver++;
+
+        logger.Warning(
+            "{Name} is over its ceiling at {Load} of {Ceiling} stones on what it is allowed to keep, which is a kit it cannot carry: {Heaviest}; its kept things go to its bank box, or the ground, heaviest first, until it can walk",
+            body.Name,
+            BotLadder.Load(body),
+            BotLadder.Ceiling(body),
+            Heaviest(bot, body, Census)
+        );
+
+        kept.Sort((a, b) => Stones(b).CompareTo(Stones(a)));
+
+        var box = body.BankBox;
+        var put = 0;
+
+        for (var i = 0; i < kept.Count; i++)
+        {
+            if (!BotLadder.Overloaded(body))
+            {
+                break;
+            }
+
+            var item = kept[i];
+
+            // Heaviest first, so a thing that weighs nothing means nothing after it can help either.
+            if (Stones(item) <= 0)
+            {
+                break;
+            }
+
+            var kind = item.GetType();
+            var units = Math.Max(1, item.Amount);
+
+            // Its own counter, not Stowed: the Needs line's "lots of things went into bank boxes" is Store's (Fable's review).
+            if (box is { Deleted: false } && box.TryDropItem(body, item, false))
+            {
+                ReleasedBoxed++;
+                put++;
+
+                continue;
+            }
+
+            var worth = (long)units * BotMarket.Worth(kind, 1);
+
+            item.MoveToWorld(body.Location, body.Map);
+            ReleasedGround++;
+            GroundWorth += worth;
+            put++;
+
+            logger.Warning(
+                "{Name} put its own {Units} {Kind} on the ground at {X},{Y}, worth about {Worth}gp: kept things it could not carry and its bank box would not take",
+                body.Name,
+                units,
+                kind.Name,
+                body.X,
+                body.Y,
+                worth
+            );
+        }
+
+        Released += put;
+
+        return put;
+    }
+
+    /// <summary>
+    /// The heaviest things a bot carries, for a warning: the pack's by kind, with the piles they lie in and whether bound, and
+    /// what it wears, each in stones. Coin and bound things included, because those are what every other reading of a pack
+    /// leaves out, and a bot nobody could see the load of is how 35 hours went by.
+    /// </summary>
+    private static string Heaviest(IBotWilful bot, Mobile body, int many)
+    {
+        Dictionary<Type, (int Units, int Piles, int Stones, bool Bound)> kinds = [];
+        var pack = body.Backpack;
+
+        if (pack != null)
+        {
+            for (var i = 0; i < pack.Items.Count; i++)
+            {
+                var item = pack.Items[i];
+
+                if (item == null || item.Deleted)
+                {
+                    continue;
+                }
+
+                var kind = item.GetType();
+                var had = kinds.TryGetValue(kind, out var was) ? was : default;
+
+                // Bound by serial, or a count-bound kind (the quiver: BotBinding.BindStack), which IsBound does not see.
+                kinds[kind] = (had.Units + Math.Max(1, item.Amount), had.Piles + 1, had.Stones + Stones(item),
+                    had.Bound || BotBinding.IsBound(item, bot?.Bond) || BotBinding.BoundCount(kind, bot?.Bond) > 0);
+            }
+        }
+
+        List<(string Said, int Stones)> heavy = [];
+
+        foreach (var (kind, (units, piles, stones, bound)) in kinds)
+        {
+            var lying = piles > 1 ? $" in {piles} piles" : "";
+            var tied = bound ? ", bound" : "";
+
+            heavy.Add(($"{kind.Name} x{units}{lying}{tied}", stones));
+        }
+
+        var worn = body.Items;
+
+        for (var i = 0; i < worn.Count; i++)
+        {
+            var item = worn[i];
+
+            if (item == null || item.Deleted || item.IsVirtualItem || item.Layer == Layer.Backpack || item is Container)
+            {
+                continue;
+            }
+
+            var stones = Stones(item);
+
+            if (stones > 0)
+            {
+                heavy.Add(($"{item.GetType().Name} worn{(BotBinding.IsBound(item, bot?.Bond) ? ", bound" : "")}", stones));
+            }
+        }
+
+        if (heavy.Count == 0)
+        {
+            return "nothing that weighs";
+        }
+
+        heavy.Sort((a, b) => b.Stones.CompareTo(a.Stones));
+
+        List<string> named = [];
+
+        for (var i = 0; i < heavy.Count && i < many; i++)
+        {
+            named.Add($"{heavy[i].Said} {heavy[i].Stones} stones");
+        }
+
+        return string.Join(", ", named);
+    }
+
+    /// <summary>
+    /// Counts one stand-still pass that left the bot no lighter; the <see cref="StuckFails"/>th inside
+    /// <see cref="StuckWindowMs"/> sets the bot aside at the weight it is (see <see cref="SetAside"/>) and says so once, loudly.
+    /// </summary>
+    private static void NoLighter(IBotWilful bot, Mobile body)
+    {
+        var now = Core.TickCount;
+        var load = BotLadder.Load(body);
+        var since = now;
+        var count = 1;
+
+        // The run is of passes that got nowhere from one load: a load that changed in between, either way, starts it again —
+        // the same rule that lifts a bot the breaker set aside (12.10.2026, Fable's review). See SetAside.
+        if (_noLighter.TryGetValue(body.Serial, out var was) && now - was.Since < StuckWindowMs && was.Load == load)
+        {
+            since = was.Since;
+            count = was.Count + 1;
+        }
+
+        if (count < StuckFails)
+        {
+            if (_noLighter.Count > 4096)
+            {
+                _noLighter.Clear();
+            }
+
+            _noLighter[body.Serial] = (since, count, load);
+
+            return;
+        }
+
+        _noLighter.Remove(body.Serial);
+
+        if (_stuckAt.Count > 4096)
+        {
+            _stuckAt.Clear();
+        }
+
+        _stuckAt[body.Serial] = load;
+        StuckTrips++;
+
+        logger.Warning(
+            "{Name} got no lighter in {Count} stand-still passes in {Minutes} minutes at {Load} of {Ceiling} stones and is not offered the pass again until its weight changes; it carries {Heaviest}",
+            body.Name,
+            count,
+            (now - since) / 60000,
+            load,
+            BotLadder.Ceiling(body),
+            Heaviest(bot, body, Census)
+        );
+    }
+
+    /// <summary>
+    /// Whether the breaker has set this bot aside and its weight is what it was then, still over the ceiling: the pass would
+    /// fail again from here. Any change of weight, either way, lifts it, because a different load is a different pass.
+    /// </summary>
+    public static bool SetAside(Mobile body)
+    {
+        if (body == null || !_stuckAt.TryGetValue(body.Serial, out var load))
+        {
+            return false;
+        }
+
+        if (BotLadder.Load(body) == load && BotLadder.Overloaded(body))
+        {
+            return true;
+        }
+
+        _stuckAt.Remove(body.Serial);
+
+        return false;
+    }
+
+    /// <summary>Counts one offer of the pass withheld from a bot the breaker had set aside.</summary>
+    public static void Withhold() => StuckWithheld++;
+
     /// <summary>
     /// Puts things on the ground until the bot can walk again, heaviest first.
     ///
     /// <para>
-    /// <b>The last resort, and it only ever runs for a bot that is over its carrying ceiling with nothing the
-    /// market will take.</b> Everything it may drop is what the sale would have sold: the kit stays, whatever
-    /// the trade is bound to stays, coin stays — coin weighs almost nothing and is not what is holding it
-    /// down. What goes is merchandise nobody wants, and it goes because a frozen bot earns nothing at all
-    /// while a dropped ingot is worth what somebody would have paid for it, which by construction is nothing.
+    /// <b>The last resort for what the market would take, and it only ever runs for a bot that is over its carrying ceiling
+    /// after the box has had its turn.</b> Everything it may drop is what the sale would have sold, and only the part of a
+    /// stack over the allowance: the kit stays, whatever the trade is bound to stays, coin stays. What goes is merchandise
+    /// nobody wants, and it goes because a frozen bot earns nothing at all; it is logged with what it was worth.
+    /// </para>
+    ///
+    /// <para>
+    /// <b>Heaviest first by the pile's own weight (12.10.2026).</b> This sorted by <c>TotalWeight</c>, which is nought for
+    /// anything that is not a container (see <see cref="Weighed"/> for the night that cost), so the order was the pack's own
+    /// and the fewest things never went down for the most relief. And a stack partly over its allowance went down whole; only
+    /// the surplus does now, by the same split <see cref="Store"/> makes.
     /// </para>
     ///
     /// <para>
@@ -1139,34 +1708,6 @@ public sealed class BotUnload : BotDeed
     /// stuck, not a policy about carrying things.
     /// </para>
     /// </summary>
-    /// <summary>
-    /// The last thing an immobilised bot can try, and the note it leaves if even that fails.
-    ///
-    /// <para>
-    /// One method rather than two copies because there are two ways into this state - a counter is known and
-    /// out of reach, or none is known at all - and they are the same state. What differed between them was
-    /// only which of the two had been written most recently.
-    /// </para>
-    /// </summary>
-    private static BotDoing Ditch(IBotWilful bot, Mobile body)
-    {
-        var dumped = Dump(bot, body);
-
-        if (dumped > 0)
-        {
-            Dumped += dumped;
-
-            return BotDoing.Done($"{dumped} things nobody would buy left on the ground, to be able to walk again");
-        }
-
-        // Neither sold nor dropped: there is nothing this errand can do for this bot, and saying so once is
-        // worth more than saying it four times a minute for the rest of the night. See WedgedMs.
-        Immovable++;
-        _wedged[body.Serial] = Core.TickCount;
-
-        return BotDoing.Failed("too heavy to walk, and nothing on it the market would take or the ground would hold");
-    }
-
     private static int Dump(IBotWilful bot, Mobile body)
     {
         var pack = body?.Backpack;
@@ -1178,7 +1719,7 @@ public sealed class BotUnload : BotDeed
 
         var keep = Needed(bot);
         Dictionary<Type, int> seen = [];
-        var loose = new List<Item>();
+        List<(Item Item, int Over, double Stones)> loose = [];
 
         for (var i = 0; i < pack.Items.Count; i++)
         {
@@ -1194,18 +1735,22 @@ public sealed class BotUnload : BotDeed
                 continue;
             }
 
-            if (Over(keep, seen, item) <= 0)
+            var over = Over(keep, seen, item);
+
+            if (over <= 0)
             {
                 continue;
             }
 
-            loose.Add(item);
+            loose.Add((item, over, Stones(item) * over / (double)Math.Max(1, item.Amount)));
         }
 
         // Heaviest first, so the fewest things go down for the most relief.
-        loose.Sort((a, b) => b.TotalWeight.CompareTo(a.TotalWeight));
+        loose.Sort((a, b) => b.Stones.CompareTo(a.Stones));
 
         var put = 0;
+        var worth = 0L;
+        List<string> what = [];
 
         for (var i = 0; i < loose.Count; i++)
         {
@@ -1214,24 +1759,48 @@ public sealed class BotUnload : BotDeed
                 break;
             }
 
-            // A capped kind's surplus on the ground is counted by kind with the other routes. See BotSurplus.
-            if (keep.TryGetValue(loose[i].GetType(), out var cap) && cap > 0 && cap < int.MaxValue)
+            var (lot, over, _) = loose[i];
+
+            if (lot.Deleted || lot.Parent != pack)
             {
-                BotSurplus.Count(BotSurplus.Ground, loose[i].GetType(), Math.Max(1, loose[i].Amount));
+                continue;
             }
 
-            loose[i].MoveToWorld(body.Location, body.Map);
+            // The part over the allowance only, split off the way the store splits it: the original keeps the amount asked for
+            // and the remainder is put back beside it. A type with no parameterless constructor is left whole in the pack.
+            if (over < Math.Max(1, lot.Amount) && Mobile.LiftItemDupe(lot, over) == null)
+            {
+                continue;
+            }
+
+            var kind = lot.GetType();
+            var units = Math.Max(1, lot.Amount);
+
+            // A capped kind's surplus on the ground is counted by kind with the other routes. See BotSurplus.
+            if (keep.TryGetValue(kind, out var cap) && cap > 0 && cap < int.MaxValue)
+            {
+                BotSurplus.Count(BotSurplus.Ground, kind, units);
+            }
+
+            worth += (long)units * BotMarket.Worth(kind, 1);
+            what.Add($"{units} {kind.Name}");
+
+            lot.MoveToWorld(body.Location, body.Map);
             put++;
         }
 
         if (put > 0)
         {
+            GroundWorth += worth;
+
             logger.Warning(
-                "{Name} could neither walk nor sell, and has put {Put} things on the ground at {X},{Y} to move again",
+                "{Name} could neither walk nor sell, and has put {Put} things on the ground at {X},{Y} to move again, worth about {Worth}gp: {What}",
                 body.Name,
                 put,
                 body.X,
-                body.Y
+                body.Y,
+                worth,
+                string.Join(", ", what)
             );
         }
 
@@ -1284,6 +1853,16 @@ public sealed class BotUnload : BotDeed
         var overUnits = 0;
         var worstUnits = 0;
         var worst1 = "";
+
+        // Piles lying apart, and the bots over their ceiling (12.10.2026). See Loose and Ceilinged.
+        Dictionary<(Type, int, int, double, LootType), (int Piles, int Units, int Stones)> piles = [];
+        Dictionary<Type, int> looseKinds = [];
+        var loosePiles = 0;
+        var looseStones = 0;
+        var loosePacks = 0;
+        var overNow = 0;
+        var stuckNow = 0;
+        List<string> stuckNames = [];
         var boxes = 0;
         var full = 0;
 
@@ -1315,11 +1894,40 @@ public sealed class BotUnload : BotDeed
                 blockedBots++;
             }
 
+            // Over the ceiling now, and set aside by the breaker (12.10.2026). See StandStill and SetAside.
+            if (BotLadder.Overloaded(body))
+            {
+                overNow++;
+
+                if (SetAside(body))
+                {
+                    stuckNow++;
+                    stuckNames.Add($"{body.Name} {BotLadder.Load(body)}/{BotLadder.Ceiling(body)}");
+                }
+            }
+
+            piles.Clear();
+
             for (var j = 0; j < pack.Items.Count; j++)
             {
                 var item = pack.Items[j];
 
-                if (item == null || item.Deleted || item is Gold || BotBinding.IsBound(item, body.Bond))
+                if (item == null || item.Deleted)
+                {
+                    continue;
+                }
+
+                // Piles of one kind lying apart, coin and bound ammunition included: what each pile weighs is rounded up to a
+                // whole stone, so the census of the piles is the only reading of what that costs. See Gather.
+                if (item.Stackable && item is not Container)
+                {
+                    var key = (item.GetType(), item.ItemID, item.Hue, item.Weight, item.LootType);
+                    var heap = piles.TryGetValue(key, out var p) ? p : default;
+
+                    piles[key] = (heap.Piles + 1, heap.Units + Math.Max(1, item.Amount), heap.Stones + item.PileWeight);
+                }
+
+                if (item is Gold || BotBinding.IsBound(item, body.Bond))
                 {
                     continue;
                 }
@@ -1382,7 +1990,31 @@ public sealed class BotUnload : BotDeed
                     worst1 = body.Name;
                 }
             }
+
+            var apart = false;
+
+            foreach (var ((kind, _, _, each, _), (count, amount, weighs)) in piles)
+            {
+                if (count < 2)
+                {
+                    continue;
+                }
+
+                var extra = weighs - (int)Math.Ceiling(each * amount);
+
+                apart = true;
+                loosePiles += count - 1;
+                looseStones += extra;
+                looseKinds[kind] = looseKinds.GetValueOrDefault(kind) + extra;
+            }
+
+            if (apart)
+            {
+                loosePacks++;
+            }
         }
+
+        StuckNow = stuckNow;
 
         if (looked == 0)
         {
@@ -1415,7 +2047,55 @@ public sealed class BotUnload : BotDeed
         }
 
         return $"{looked} packs hold {carried:F0} stones, {surplus:F0} of it over what the bots are allowed to "
-               + $"keep ({surplus / Math.Max(1.0, carried) * 100.0:F0}%); heaviest: {string.Join(", ", named)}; {capped}";
+               + $"keep ({surplus / Math.Max(1.0, carried) * 100.0:F0}%); heaviest: {string.Join(", ", named)}; {capped}; "
+               + $"{Loose(loosePiles, loosePacks, looseStones, looseKinds)}; {Ceilinged(overNow, stuckNow, stuckNames)}";
+    }
+
+    /// <summary>
+    /// The clause for piles of one kind lying apart in packs (12.10.2026): how many piles more than one of each kind there are,
+    /// in how many packs, and the stones they weigh over the same things in one pile, by kind. The figure that must fall.
+    /// See <see cref="Gather"/>.
+    /// </summary>
+    private static string Loose(int piles, int packs, int stones, Dictionary<Type, int> byKind)
+    {
+        if (piles == 0)
+        {
+            return "no pack holds piles of one kind lying apart";
+        }
+
+        List<(Type Kind, int Stones)> kinds = [];
+
+        foreach (var (kind, extra) in byKind)
+        {
+            kinds.Add((kind, extra));
+        }
+
+        kinds.Sort((a, b) => b.Stones.CompareTo(a.Stones));
+
+        List<string> named = [];
+
+        for (var i = 0; i < kinds.Count && i < Census; i++)
+        {
+            named.Add($"{kinds[i].Kind.Name} {kinds[i].Stones}");
+        }
+
+        return $"loose piles: {piles} piles lying apart in {packs} packs weigh {stones} stones over the same things in one pile "
+               + $"({string.Join(", ", named)}); {Joined} piles joined in {JoinedPacks} packs so far, {JoinedStones} stones off";
+    }
+
+    /// <summary>
+    /// The clause for bots over their ceiling (12.10.2026): how many are now, how many of those the breaker has set aside —
+    /// "stuck over the ceiling: N bots", by name and load, for the alarm to read — and what the stand-still pass has done.
+    /// </summary>
+    private static string Ceilinged(int over, int stuck, List<string> names)
+    {
+        var who = stuck > 0 ? $" ({string.Join(", ", names)})" : "";
+
+        return $"over the ceiling now: {over} bots, stuck over the ceiling: {stuck} bots{who}; the stand-still pass: "
+               + $"{StoodBanked}gp banked from where a bot stood, {KitOver} packs over on their kept things alone ({Released} kept "
+               + $"things let go, {ReleasedBoxed} to the box and {ReleasedGround} to the ground), {GroundWorth}gp of things left on the "
+               + $"ground, {StuckTrips} bots set aside by the breaker ({StuckFails} passes no lighter in {StuckWindowMs / 60000} "
+               + $"minutes), {StuckWithheld} offers withheld (one a review)";
     }
 
     /// <summary>
@@ -1865,6 +2545,27 @@ public sealed class BotPorter : IBotProposer
         // in every summary read nought banked while gold was plainly arriving. Money in a pocket is money one
         // bad fight from being gone, and money in a pocket is also money the market cannot see.
         var laden = BotLadder.Load(body) >= BotLadder.Ceiling(body) * BotUnload.Heavy;
+
+        // Not to a bot the breaker has set aside: StuckFails stand-still passes in StuckWindowMs left it no lighter, and the
+        // pass is not offered again until its weight changes (12.10.2026). Asked first, before any join or walk of the pack:
+        // a set-aside bot's piles were joined by its own passes, and anything new it picks up changes its weight and lifts it
+        // (Fable's review). See BotUnload.SetAside.
+        if (laden && BotUnload.SetAside(body))
+        {
+            BotUnload.Withhold();
+
+            return null;
+        }
+
+        // <b>Piles of one kind lying apart are joined before anything is weighed (12.10.2026).</b> Each weighs a whole stone
+        // however little is in it, so a pack can read heavy, or over the ceiling, on piles alone: Baern's 177 arrows weighed
+        // 177 stones. Joining needs no errand and no step. Once a minute for a bot that can walk, every look for one that
+        // cannot. See BotUnload.Gather.
+        if (laden && BotUnload.Gather(body, BotLadder.Overloaded(body)) > 0)
+        {
+            laden = BotLadder.Load(body) >= BotLadder.Ceiling(body) * BotUnload.Heavy;
+        }
+
         var flush = (body.Backpack?.TotalGold ?? 0) >= BotUnload.Purse;
 
         // (A third reason — a want on the board for something in the pack — sent the porter to a counter to fill it from there. A

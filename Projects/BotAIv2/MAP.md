@@ -173,7 +173,7 @@ Holds the subsystems, works out what order to start them in, starts them, and sa
 
 `BotMobile : PlayerMobile` is the bot. One timer serves the whole population and gives each bot a turn on its own schedule — `BotBeat`, which is also where four of the summary lines are written. This folder also owns what survives a restart (`BotProgress`: skills, fame, karma, savings) and the three pieces of work that belong to no trade: walking home, going back for what death took, and taking a full pack to a counter.
 
-**Module** `BotPopulationModule` · **Config** `bot-names.json` · **Writes** `Getting about:` · **Writes** `The market:` · **Writes** `What we know:` · **Writes** `Money:`
+**Module** `BotPopulationModule` · **Config** `bot-population.json` · **Writes** `Getting about:` · **Writes** `The market:` · **Writes** `What we know:` · **Writes** `Money:`
 
 - **Trap.** A bot must be Player-flagged or death deletes it outright, and a dead bot counts as alive and silently drops out of the beat.
 - **Trap.** `BotProgress` is the only place skills persist. Zeroing it is not the same as touching the world save, and the world save holds Patrick's own character — never delete it.
@@ -872,7 +872,7 @@ A bot's double against a creature in Green Acres, and a guild's company of doubl
 
 The one thing this population builds that outlives it. A guild saves in its chest — the members' dues, a fifth of what their work brings in (`BotDues`), and the tithes of its ground — levies the rest off its members, finds ground the engine will take a house on, raises a hall, and fits it out with the tools of its own trade. Next start the halls are read back out of the world by the name on their signs and handed to whoever leads that guild now.
 
-**Module** `BotEstateModule` · **Config** `bot-townground.json` · **Writes** `Estate:` · **Writes** `Treasuries:`
+**Module** `BotEstateModule` · **Config** `bot-estate.json` · **Writes** `Estate:` · **Writes** `Treasuries:`
 
 | offers work | as | on the rung | handing out |
 |---|---|---|---|
@@ -1201,7 +1201,7 @@ A thinking thing that is not one of the population: an invisible figure that nob
 | `BotRevel.cs` | Something for the population to do that nobody planned: a bounty, a hunt, a contest. |
 | `BotStewardArgus.cs` | The model as a town's steward (07.10.2026, steward20): asked, when the slot is free, to choose one of the decrees the rule set found lawful in the town this rou |
 | `BotTourney.cs` | The championship: every hour Argus's herald calls the strongest of the ranks to a ring, sets them against each other one pair at a time for the right to challen |
-| `BotTourneyArena.cs` | The day's championship at the round arenas east of Papua (07.10.2026, arena27): twelve rings found in the map's statics round (6563, 3168) at boot, at least 50 free bots once a real day from 20:00, ported in batches with a moongate flash, one pair to a ring, the referee shown at the main ring, losers sent home; `do arena [force|state|stop]`. |
+| `BotTourneyArena.cs` | The day's championship at the round arenas east of Papua: the other half of . |
 | `BotVenues.cs` | Where the watchers hold what they hold: a revel's feast in a town, a hunt's waves and an orc camp in the countryside, the championship's ring — each chosen from |
 | `BotVigil.cs` | The debugger itself: the body, the watch it keeps, and the two questions it asks. |
 | `BotWatch.cs` | One bot as the debugger has actually seen it: everything here was measured by this file, on this file's own clock, since the moment the debugger first laid eyes on the bot. |
@@ -1289,7 +1289,7 @@ A thinking thing that is not one of the population: an invisible figure that nob
 | offers work | as | on the rung | handing out |
 |---|---|---|---|
 | `BotGuildScout` | Scout | Free | — |
-| `BotHeraldStand` | Herald | Free | — |
+| `BotHeraldStand` | Herald stand | Free | — |
 | `BotQuartermaster` | Quartermaster | Free | — |
 
 | file | decides |
@@ -1390,7 +1390,7 @@ Politics inside the guilds and the towns, Patrick's order of 07.10.2026: a guild
 | `BotZone.cs` | How dangerous a piece of ground is to a bot walking across it, in the four words the planners, the hunt and the dashboard share. |
 | `BotZoneBuild.cs` | Turns what is known about the haunts, the living creatures, the observed patrols and the deaths into zones: which cells are patrol, which are aggro fringe, what |
 | `BotZoneInput.cs` | The numbers a build works by, copied off the dials when its input is gathered, so a build running off the loop never reads a property the door may be changing under it. |
-| `BotZoneMemory.cs` | What the zones learned, kept across a restart: each haunt's awake seconds, sightings, observed range and tour stops, and the cells patrols were seen in. |
+| `BotZoneMemory.cs` | What the zones learned, kept across a restart: each haunt's awake seconds, sightings, observed range, tour stops and the calm sightings its reach is read from ( |
 | `BotZoneRaster.cs` | Where attacking creatures have actually been seen awake: one number per cell of four tiles, fading with time. |
 | `BotZoneScan.cs` | The sweep: every living creature of the home map passed once every few seconds, a window of sectors at a time, within a budget of loop time per beat. |
 | `BotZoneShapes.cs` | The outline of a patch of cells as a few smooth rings: marching squares round the cells, Douglas–Peucker to drop the staircase, Chaikin to round the corners. |
