@@ -112,6 +112,108 @@ public static class BotRendezvous
     /// <summary>Calls not taken because another carrier's meeting with the same buyer stood.</summary>
     public static long Doubled { get; private set; }
 
+    // ---- The buyer stands for its carrier (12.10.2026, w7) -------------------------------------------------------------------
+
+    /// <summary>
+    /// <b>How near a carrier walking after its buyer must be before the buyer stands still for it (12.10.2026, w7).</b> Ten
+    /// tiles. Of the 1 436 deliveries that ended "could not get nearer" on 11–12.10, 937 (65 %) ended with the carrier ten
+    /// tiles or less from the buyer, 618 of them three to five. A meeting had been called for nearly all of them (L2: 568 of
+    /// 585) and 544 of those buyers had not taken it up — they were mining, carrying their own deliveries, on supply runs —
+    /// and walked on at their own pace, or a horse's. Patrick's order of 02.10 was that the two meet; the meeting is the buyer's choice and loses to its work, and
+    /// this is the part that costs the buyer nothing: its walk is held where it stands (<see cref="BotJourney.Hold"/>, the
+    /// delve leader's hold for its column) for <see cref="StandMs"/> at each of the carrier's beats, its work and its plan
+    /// kept, until the goods are in its pack. Nought turns it off.
+    /// </summary>
+    public static int StandTiles { get; set; } = 10;
+
+    /// <summary>How long each of the carrier's beats holds the buyer's walk; renewed by the next one, lapsing by itself (the delve's 1.5 s).</summary>
+    public static int StandMs { get; set; } = 1500;
+
+    /// <summary>
+    /// The most a buyer stands for one carrier's walk, in all. Ten seconds: ten tiles is four seconds on foot, and a carrier
+    /// that has not closed in ten is not closing; the buyer walks on and the carrier follows it as before. Not thirty (the first
+    /// draft, review A of w7): the buyer's own work counts the beats it gets no nearer — a miner's walk to its seam, a supply
+    /// run, a hire, a prowl give up at <c>TrekLimit</c> 200 beats, forty seconds — and although those counts now skip a held
+    /// beat, a stand is somebody else's time spent and is kept short.
+    /// </summary>
+    public static int StandMostMs { get; set; } = 10000;
+
+    /// <summary>Carriers' walks whose buyer stood for them, once a walk; of them handed over; and those whose buyer stood <see cref="StandMostMs"/> and walked on.</summary>
+    public static long Stood { get; private set; }
+
+    public static long StoodHanded { get; private set; }
+
+    public static long StandSpent { get; private set; }
+
+    /// <summary>Carriers' beats within <see cref="StandTiles"/> of a walking buyer that was not stood: in a company, a fight, a flight, or walking to a meeting.</summary>
+    public static long StandPassed { get; private set; }
+
+    /// <summary>One carrier's walk's account of how long its buyer has stood for it. Kept by the work that walks.</summary>
+    public sealed class StandClock
+    {
+        internal bool Began;
+
+        internal bool Spent;
+
+        internal long Since;
+    }
+
+    /// <summary>
+    /// The carrier is <paramref name="apart"/> tiles from its buyer and walking after it: a buyer walking about its own business
+    /// is held where it stands for <see cref="StandMs"/>, within <see cref="StandMostMs"/> of the first time for this walk.
+    /// Returns whether it was held. Not a buyer in a company (its company decides where it stands), in a fight, in flight, on a
+    /// walk somebody pushed on top of its own, or walking to a meeting (it is coming already).
+    /// </summary>
+    public static bool Stand(Mobile carrier, Mobile buyer, int apart, StandClock clock)
+    {
+        if (!Running || StandTiles <= 0 || clock == null || clock.Spent || apart > StandTiles
+            || buyer is not BotMobile { Deleted: false, Alive: true } bot || carrier == null || bot.Map != carrier.Map)
+        {
+            return false;
+        }
+
+        var journey = bot.Journey;
+
+        // Not walking: it is at its work and standing already, and the carrier's next steps reach it. Walking is a step in the
+        // last two seconds (BotJourney.Moving), or a stand already holding it.
+        if (journey is not { Active: true } || journey.Current is not { } walk || !journey.Moving && !journey.Held)
+        {
+            return false;
+        }
+
+        if (walk.Interruption || bot.Squad != null || bot.Combatant != null || bot.Hidden
+            || walk.Reason != null && walk.Reason.StartsWith("away from", StringComparison.Ordinal)
+            || bot.Resolve?.Deed is BotMeet || bot.Resolve?.Deed is { } deed && (deed.Foe != null || deed.Braves))
+        {
+            StandPassed++;
+
+            return false;
+        }
+
+        var now = Core.TickCount;
+
+        if (!clock.Began)
+        {
+            clock.Began = true;
+            clock.Since = now;
+            Stood++;
+        }
+        else if (now - clock.Since >= StandMostMs)
+        {
+            clock.Spent = true;
+            StandSpent++;
+
+            return false;
+        }
+
+        journey.Hold(StandMs);
+
+        return true;
+    }
+
+    /// <summary>The goods changed hands on a walk whose buyer had stood for it. See <see cref="Stand"/>.</summary>
+    internal static void HandedAfterStand() => StoodHanded++;
+
     /// <summary>
     /// The carrier is near: the meeting is called, or said again. Returns the standing approach, or null when another
     /// carrier's meeting with this buyer stands.
@@ -350,7 +452,8 @@ public static class BotRendezvous
     public static string Describe() =>
         !Running
             ? "meetings are off; the carrier follows the buyer"
-            : $"meetings: {Arranged} called by a carrier within {CallTiles} tiles ({OnSafeGround} of them moved to guarded ground for the ground one stood on), {TakenUp} taken up by the buyer, {Met} met with the goods handed over, {Missed} missed ({BuyerWaited} the buyer waited {MeetMs / 60000} minutes and the carrier never came, {StoodApart} stood together {WaitMs / 1000}s and nothing changed hands, {CarrierGaveUp} the carrier gave the delivery up first, {FellOutOfCall} the carrier fell out of call for {StaleMs / 1000}s), {Doubled} calls for a buyer already meeting another carrier";
+            : $"meetings: {Arranged} called by a carrier within {CallTiles} tiles ({OnSafeGround} of them moved to guarded ground for the ground one stood on), {TakenUp} taken up by the buyer, {Met} met with the goods handed over, {Missed} missed ({BuyerWaited} the buyer waited {MeetMs / 60000} minutes and the carrier never came, {StoodApart} stood together {WaitMs / 1000}s and nothing changed hands, {CarrierGaveUp} the carrier gave the delivery up first, {FellOutOfCall} the carrier fell out of call for {StaleMs / 1000}s), {Doubled} calls for a buyer already meeting another carrier; "
+              + $"buyers stood for their carrier within {StandTiles} tiles: {Stood} walks ({StoodHanded} of them handed over, {StandSpent} stood {StandMostMs / 1000}s and walked on), {StandPassed} beats a walking buyer was not stood (a company, a fight, a flight, a meeting)";
 
     public static void Forget()
     {
@@ -365,6 +468,10 @@ public static class BotRendezvous
         CarrierGaveUp = 0;
         FellOutOfCall = 0;
         Doubled = 0;
+        Stood = 0;
+        StoodHanded = 0;
+        StandSpent = 0;
+        StandPassed = 0;
     }
 }
 
@@ -572,6 +679,7 @@ public sealed class BotMeet : BotDeed
             return BotDoing.Work($"at the meeting place, waiting for {carrier.Name}");
         }
 
-        return BotDoing.Walk(_map, carrier, BotArrival.Within(BotHandover.MeetTiles), $"towards {carrier.Name} to meet it");
+        // After a carrier that is walking too: a reached plan is a way (BotDoing.WalkAfter, 12.10.2026, w7); MeetMs ends it.
+        return BotDoing.WalkAfter(_map, carrier, BotArrival.Within(BotHandover.MeetTiles), $"towards {carrier.Name} to meet it");
     }
 }

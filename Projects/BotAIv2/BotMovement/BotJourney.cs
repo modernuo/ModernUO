@@ -112,6 +112,45 @@ public sealed class BotJourney
     public static int MaxPlansWithoutCloser { get; set; } = 12;
 
     /// <summary>
+    /// <b>A plan that reached somebody walking its own way is a way, not a plan without getting closer (12.10.2026, w7).</b> On
+    /// a walk sent by <c>BotDoing.WalkAfter</c> — a carrier after its buyer, a buyer to its carrier, a guard after its trader —
+    /// a plan whose outcome is Reached starts the count above again from where the walker stands. False keeps the old count.
+    ///
+    /// <para>
+    /// <b>Measured over 11–12.10 (builds 432–434):</b> 1 436 deliveries and 100 caravan guards ended "could not get nearer to
+    /// &lt;the one they walked after&gt;"; in the forty seconds before all of them the paths page holds 22 searches that came
+    /// back without reaching it (every other plan reached it), over 80 % of the deliveries ended inside twelve seconds of
+    /// walking, and 618 of them with the carrier three to five tiles off. The count wants each plan to end two tiles (<see cref="FollowSlack"/>) nearer than the best so far,
+    /// which nobody walking after a body that walks at its own pace does, and near the end cannot do at all: from four tiles
+    /// off "nearer" is one tile off, and the hand-over is at two. The buyer was at work — mining 27 %, its own delivery 17 %,
+    /// a supply run, a prowl, a restock (in L2 544 of the 568 called to a meeting had not taken it up) — and it was on a horse often
+    /// enough: Falk Ashdown rode off at eight tiles a second from Mirthal on foot (live, 12.10 22:45). Of what the old count
+    /// did on top of the failure: the place the buyer stood was filed "no way" for every carrier (<c>BotWayless</c>, 823
+    /// answers, 3 365 carrier looks passing a buyer over in L2), and the buyer was marked beyond reach for healers
+    /// (<c>BotMend.Beyond</c>). The chase guard of build 382 (<c>BotWalk.ChasePlans</c>) already clears its own count on a
+    /// reached plan for the same reason — "reachable is reachable, however far it runs"; this is the journey's count
+    /// brought into line with it for the walks whose work has a clock of its own. Partial plans count as before, so a buyer
+    /// in a shut room still ends the walk.
+    /// </para>
+    /// </summary>
+    public static bool KeepUp { get; set; } = true;
+
+    /// <summary>Plans of a walk after somebody about its own business that reached it and so started the closing count again. See <see cref="KeepUp"/>.</summary>
+    public static long KeptUp { get; private set; }
+
+    /// <summary>
+    /// Walks after somebody about its own business that the old count would have given up — <see cref="MaxPlansWithoutCloser"/>
+    /// plans without closing by <see cref="FollowSlack"/>, counted on the side — and that went on. Once a walk.
+    /// </summary>
+    public static long KeptOn { get; private set; }
+
+    internal static void ForgetKeptUp()
+    {
+        KeptUp = 0;
+        KeptOn = 0;
+    }
+
+    /// <summary>
     /// How long ground that nearly killed the bot stays out of its plans. Long enough for whatever it was to
     /// move on, short enough that the world does not fill up with ground nobody will cross.
     /// </summary>
@@ -173,6 +212,13 @@ public sealed class BotJourney
     private int _bestAway = int.MaxValue;
 
     private int _plansSinceCloser;
+
+    /// <summary>The old closing count and best, kept on the side for a walk that keeps up, so <see cref="KeptOn"/> says what it spared.</summary>
+    private int _oldBestAway = int.MaxValue;
+
+    private int _oldSinceCloser;
+
+    private bool _keptOn;
 
     /// <summary>
     /// Which errand those two figures describe.
@@ -741,14 +787,14 @@ public sealed class BotJourney
     /// escort, somebody being followed home. Without it those could only be pushed as interruptions, and an
     /// interruption is by definition the thing happening now, not the thing the bot is fundamentally doing.
     /// </summary>
-    public void Rebase(Map map, Mobile follow, BotArrival arrival, string reason)
+    public void Rebase(Map map, Mobile follow, BotArrival arrival, string reason, bool keepsUp = false)
     {
         if (map == null || follow == null)
         {
             return;
         }
 
-        Rebase(new BotErrand { Map = map, Follow = follow, Arrival = arrival, Reason = reason });
+        Rebase(new BotErrand { Map = map, Follow = follow, Arrival = arrival, Reason = reason, KeepsUp = keepsUp });
     }
 
     private void Rebase(BotErrand errand)
@@ -919,12 +965,22 @@ public sealed class BotJourney
     /// the plan and the route stay as they are, and the next turn that is not a hold walks on from where the plan left off.
     /// Renewed by every held turn; it lapses by itself. Any new order lifts it (<see cref="Discard"/>).
     /// </summary>
-    public void Hold(int ms) => _heldUntil = Core.TickCount + System.Math.Max(0, ms);
+    public void Hold(int ms)
+    {
+        _heldUntil = Core.TickCount + System.Math.Max(0, ms);
+        _holding = true;
+    }
 
-    /// <summary>Whether the walk is being held where it stands. See <see cref="Hold"/>.</summary>
-    public bool Held => Active && Core.TickCount < _heldUntil;
+    /// <summary>
+    /// Whether the walk is being held where it stands. See <see cref="Hold"/>. By subtraction from a deadline seeded by a real
+    /// tick, with a flag for "no hold" rather than a nought deadline (12.10.2026, w7: rule 20 of the fork, now asked by every
+    /// delivery's buyer and every caravan trader, not a delve leader now and then).
+    /// </summary>
+    public bool Held => Active && _holding && Core.TickCount - _heldUntil < 0;
 
     private long _heldUntil;
+
+    private bool _holding;
 
     /// <summary>Whether standing at <paramref name="at"/> is arriving at what the bot is doing now.</summary>
     /// <summary>
@@ -1039,6 +1095,7 @@ public sealed class BotJourney
         {
             _awayStamp = RouteStamp;
             _bestAway = int.MaxValue;
+            _oldBestAway = int.MaxValue;
         }
 
         // A different errand entirely — pushed, resumed or rebased. Its own history starts here.
@@ -1047,6 +1104,9 @@ public sealed class BotJourney
             _awayErrand = Current;
             _bestAway = int.MaxValue;
             _plansSinceCloser = 0;
+            _oldBestAway = int.MaxValue;
+            _oldSinceCloser = 0;
+            _keptOn = false;
             Probed = false;
             Escalated = false;
         }
@@ -1061,7 +1121,30 @@ public sealed class BotJourney
         // worth redrawing, so a chase must close by more than that to count. Only a chase: a fixed place does not move.
         var slack = Current?.Follow != null ? FollowSlack : 0;
 
-        if (away < _bestAway - slack)
+        // <b>Except a walk after somebody about its own business, whose reached plan is a way (12.10.2026, w7).</b> See KeepUp: the
+        // count starts again from here, and the old count is kept on the side only to say what this spared.
+        var keeps = KeepUp && Current is { KeepsUp: true, Follow: not null };
+
+        if (keeps)
+        {
+            if (away < _oldBestAway - slack)
+            {
+                _oldBestAway = away;
+                _oldSinceCloser = 0;
+            }
+            else
+            {
+                _oldSinceCloser++;
+            }
+        }
+
+        if (keeps && outcome == BotPathOutcome.Reached)
+        {
+            KeptUp++;
+            _bestAway = away;
+            _plansSinceCloser = 0;
+        }
+        else if (away < _bestAway - slack)
         {
             _bestAway = away;
             _plansSinceCloser = 0;
@@ -1069,6 +1152,12 @@ public sealed class BotJourney
         else
         {
             _plansSinceCloser++;
+        }
+
+        if (keeps && !_keptOn && _oldSinceCloser >= MaxPlansWithoutCloser && _plansSinceCloser < MaxPlansWithoutCloser)
+        {
+            _keptOn = true;
+            KeptOn++;
         }
 
         // A new plan, so what counts as progress starts again. This single line is the fix for the second of
@@ -1327,7 +1416,7 @@ public sealed class BotJourney
         _plan.Clear();
         _step = 0;
         _beside = false;
-        _heldUntil = 0;
+        _holding = false;
         _planErrand = null;
         _planGoal = Point3D.Zero;
         _planBuiltTick = 0;
@@ -1346,6 +1435,7 @@ public sealed class BotJourney
         // stations and corpses that were perfectly walkable. A reset list is exactly as good as its shortest
         // omission, and nothing about the symptom pointed at the reset.
         _plansSinceCloser = 0;
+        _oldSinceCloser = 0;
 
         Plans = 0;
         Partial = false;

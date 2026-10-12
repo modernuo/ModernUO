@@ -34,7 +34,7 @@ public sealed class BotEventsModule : BotModule
 
         logger.Information(
             "The events of the world are {State}: an invasion every {Invasion:F1} hours (±{Jitter:P0}, the first after {First} minutes) of at most {Odds:P0} of the militia that answers, {Pool}gp a raid from the city's purse; "
-            + "a fair every {Fair:F0} hours for {Lasts:F1}, counters at {Discount:P0}, tickets {Ticket}gp; a caravan every {Caravan} minutes, {Guards} guards at {Wage}gp; night {From:00}–{To:00} at roads ×{Danger:F2} and carriage ×{Pay:F2}; a rumour every {Rumour} minutes of {Chest}gp from the crown",
+            + "a fair every {Fair:F0} hours for {Lasts:F1}, counters at {Discount:P0}, tickets {Ticket}gp; a caravan every {Caravan} minutes, {Guards} guards at {Wage}gp, its trader standing for a guard more than {Spread} tiles back, {GuardBeat}ms a beat and {GuardWait}s a run at most; night {From:00}–{To:00} at roads ×{Danger:F2} and carriage ×{Pay:F2}; a rumour every {Rumour} minutes of {Chest}gp from the crown",
             BotSeasons.Running ? "on" : "off",
             BotInvasion.EveryMs / 3600000.0,
             BotInvasion.Jitter,
@@ -48,6 +48,9 @@ public sealed class BotEventsModule : BotModule
             BotCaravans.EveryMs / 60000,
             BotCaravans.MostGuards,
             BotCaravans.Wage,
+            BotCaravans.GuardSpread,
+            BotCaravans.GuardWaitBeatMs,
+            BotCaravans.GuardWaitMs / 1000,
             BotNight.From,
             BotNight.To,
             BotNight.NightDanger,
@@ -135,6 +138,11 @@ public sealed class BotEventsSettings
 
     public int? CaravanGuards { get; set; }
 
+    /// <summary>How far a guard may drop back before its trader stands for it, and the most it stands a run (12.10.2026, w7). See <see cref="BotCaravans.GuardSpread"/>.</summary>
+    public int? CaravanGuardSpread { get; set; }
+
+    public int? CaravanGuardWaitMs { get; set; }
+
     public bool? Night { get; set; }
 
     public int? NightFrom { get; set; }
@@ -196,6 +204,8 @@ public static class BotEventsConfig
         BotCaravans.EveryMs = s.CaravanEveryMs ?? BotCaravans.EveryMs;
         BotCaravans.Wage = s.CaravanWage ?? BotCaravans.Wage;
         BotCaravans.MostGuards = s.CaravanGuards ?? BotCaravans.MostGuards;
+        BotCaravans.GuardSpread = s.CaravanGuardSpread ?? BotCaravans.GuardSpread;
+        BotCaravans.GuardWaitMs = s.CaravanGuardWaitMs ?? BotCaravans.GuardWaitMs;
 
         BotNight.Running = s.Night ?? BotNight.Running;
         BotNight.From = s.NightFrom ?? BotNight.From;

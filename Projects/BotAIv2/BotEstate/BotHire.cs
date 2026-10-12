@@ -176,6 +176,13 @@ public sealed class BotHire : BotDeed
             return true;
         }
 
+        // A held walk is not a walk that stopped closing (12.10.2026, w7): a buyer stood for its carrier (BotRendezvous.Stand)
+        // or a trader for its guards stands by somebody else's word, and BotWill's own watch skips those beats too.
+        if (body is BotMobile { Journey.Held: true })
+        {
+            return true;
+        }
+
         return ++_stalled < TrekLimit;
     }
 

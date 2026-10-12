@@ -49,6 +49,9 @@ public sealed class BotMovementSettings
     /// <summary>How many plans in a row may fail to bring the errand any closer before it is given up.</summary>
     public int? MaxPlansWithoutCloser { get; set; }
 
+    /// <summary>Whether a reached plan after somebody about its own business starts the closing count again (12.10.2026, w7). See <c>BotJourney.KeepUp</c>.</summary>
+    public bool? KeepUp { get; set; }
+
     /// <summary>How long ground that nearly killed a bot stays out of its plans.</summary>
     public int? DangerAvoidMs { get; set; }
 
@@ -216,6 +219,7 @@ public static class BotMovementConfig
         BotJourney.StallAttempts = settings.StallAttempts ?? BotJourney.StallAttempts;
         BotJourney.MaxEmptyPlans = settings.MaxEmptyPlans ?? BotJourney.MaxEmptyPlans;
         BotJourney.MaxPlansWithoutCloser = settings.MaxPlansWithoutCloser ?? BotJourney.MaxPlansWithoutCloser;
+        BotJourney.KeepUp = settings.KeepUp ?? BotJourney.KeepUp;
         BotJourney.DangerAvoidMs = settings.DangerAvoidMs ?? BotJourney.DangerAvoidMs;
         BotPath.EnclosureCells = settings.EnclosureCells ?? BotPath.EnclosureCells;
         BotPath.EnclosureCeilingMs = settings.EnclosureCeilingMs ?? BotPath.EnclosureCeilingMs;

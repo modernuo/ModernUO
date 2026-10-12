@@ -72,6 +72,16 @@ public sealed class BotMarketSettings
     public int? MeetingSafeReach { get; set; }
 
     public double? MeetingExpects { get; set; }
+
+    /// <summary>The buyer that stands for its carrier (12.10.2026, w7). See <see cref="BotRendezvous.StandTiles"/>.</summary>
+    public int? MeetingStandTiles { get; set; }
+
+    public int? MeetingStandMs { get; set; }
+
+    public int? MeetingStandMostMs { get; set; }
+
+    /// <summary>How long a carrier walks after its buyer coming no nearer before it lets it go (12.10.2026, w7). See <see cref="BotDeliver.LosingMs"/>.</summary>
+    public int? DeliverLosingMs { get; set; }
 }
 
 public static class BotMarketConfig
@@ -130,5 +140,9 @@ public static class BotMarketConfig
         BotRendezvous.WaitMs = settings.MeetingWaitMs ?? BotRendezvous.WaitMs;
         BotRendezvous.SafeReach = settings.MeetingSafeReach ?? BotRendezvous.SafeReach;
         BotRendezvous.Prior = settings.MeetingExpects ?? BotRendezvous.Prior;
+        BotRendezvous.StandTiles = settings.MeetingStandTiles ?? BotRendezvous.StandTiles;
+        BotRendezvous.StandMs = settings.MeetingStandMs ?? BotRendezvous.StandMs;
+        BotRendezvous.StandMostMs = settings.MeetingStandMostMs ?? BotRendezvous.StandMostMs;
+        BotDeliver.LosingMs = settings.DeliverLosingMs ?? BotDeliver.LosingMs;
     }
 }

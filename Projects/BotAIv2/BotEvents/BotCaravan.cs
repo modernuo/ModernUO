@@ -165,6 +165,10 @@ public sealed class BotCaravan : BotDeed
             return BotDoing.Done($"delivered the caravan to {_run.To.Name} for {_paid}gp");
         }
 
+        // A caravan goes at its guards' pace: the walk is held where it stands while a guard has dropped back (12.10.2026, w7).
+        // The order is the same either way, so the Will keeps the road it has. See BotCaravans.GuardSpread.
+        BotCaravans.WaitForGuards(_run, body);
+
         return BotDoing.Walk(_run.Source.Map, _run.To.Square, BotArrival.Within(BotCaravans.ArriveReach), $"leading the caravan to {_run.To.Name}");
     }
 
@@ -350,7 +354,11 @@ public sealed class BotGuard : BotDeed
 
         if (!body.InRange(leader.Location, slack))
         {
-            return BotDoing.Walk(leader.Map, leader, BotArrival.Within(slack), $"guarding {leader.Name}'s caravan to {_run.To.Name}");
+            // <b>Kept up with (12.10.2026, w7).</b> 100 of the 104 guards that failed on 11–12.10 ended "could not get nearer to" their
+            // trader, four to fifteen tiles behind it on the road north through Britain (x 1466–1490, z 20–30), every plan but one
+            // reaching it; Ingram was hired and lost five times in nineteen seconds behind Ilphrin. A plan that reaches the trader is a way
+            // (BotDoing.WalkAfter); Behind and BehindMs end a guard that cannot keep up, and the trader waits for its guards (BotCaravan).
+            return BotDoing.WalkAfter(leader.Map, leader, BotArrival.Within(slack), $"guarding {leader.Name}'s caravan to {_run.To.Name}");
         }
 
         return BotDoing.Work($"guarding {leader.Name}'s caravan to {_run.To.Name}");

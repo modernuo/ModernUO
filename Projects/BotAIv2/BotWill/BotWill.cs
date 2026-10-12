@@ -1547,7 +1547,7 @@ public static class BotWill
                     // happening to it.
                     if (doing.Follow != null)
                     {
-                        journey.Rebase(doing.Map, doing.Follow, doing.Arrival, doing.Note ?? deed.Kind);
+                        journey.Rebase(doing.Map, doing.Follow, doing.Arrival, doing.Note ?? deed.Kind, doing.KeepsUp);
                     }
                     else
                     {

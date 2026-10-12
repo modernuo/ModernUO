@@ -339,6 +339,7 @@ changed without a rebuild.
 | `BotGates` | `UnwedgeReach` | `2` | *code only* |
 | `BotJourney` | `DangerAvoidMs` | `120000` | `DangerAvoidMs` |
 | `BotJourney` | `DirectTiles` | `24` | *code only* |
+| `BotJourney` | `KeepUp` | `true` | `KeepUp` |
 | `BotJourney` | `LegReached` | `3` | *code only* |
 | `BotJourney` | `LegTiles` | `24` | *code only* |
 | `BotJourney` | `MaxEmptyPlans` | `8` | `MaxEmptyPlans` |
@@ -1076,6 +1077,7 @@ changed without a rebuild.
 | `BotCourier` | `TailExempt` | `true` | *code only* |
 | `BotDeliver` | `GiveUpMs` | `480000` | `DeliverGiveUpMs` |
 | `BotDeliver` | `HoldStretch` | `1.5` | *code only* |
+| `BotDeliver` | `LosingMs` | `60000` | `DeliverLosingMs` |
 | `BotDeliver` | `ReleaseDownMs` | `180000` | *code only* |
 | `BotDeliver` | `WorkMinutes` | `0.5` | *code only* |
 | `BotGlut` | `Enabled` | `true` | `GlutEnabled` |
@@ -1121,6 +1123,9 @@ changed without a rebuild.
 | `BotRendezvous` | `Running` | `true` | `Meetings` |
 | `BotRendezvous` | `SafeReach` | `160` | `MeetingSafeReach` |
 | `BotRendezvous` | `StaleMs` | `45000` | *code only* |
+| `BotRendezvous` | `StandMostMs` | `10000` | `MeetingStandMostMs` |
+| `BotRendezvous` | `StandMs` | `1500` | `MeetingStandMs` |
+| `BotRendezvous` | `StandTiles` | `10` | `MeetingStandTiles` |
 | `BotRendezvous` | `WaitMs` | `20000` | `MeetingWaitMs` |
 | `BotRoom` | `MarkMs` | `600000` | *code only* |
 | `BotRoom` | `PackedShare` | `0.8` | *code only* |
@@ -2878,6 +2883,9 @@ changed without a rebuild.
 | `BotCaravans` | `GuardPrior` | `30.0` | *code only* |
 | `BotCaravans` | `GuardRate` | `60.0` | *code only* |
 | `BotCaravans` | `GuardReach` | `60` | *code only* |
+| `BotCaravans` | `GuardSpread` | `8` | `CaravanGuardSpread` |
+| `BotCaravans` | `GuardWaitBeatMs` | `1500` | *code only* |
+| `BotCaravans` | `GuardWaitMs` | `90000` | `CaravanGuardWaitMs` |
 | `BotCaravans` | `LateMs` | `300000` | *code only* |
 | `BotCaravans` | `LeastGuards` | `2` | *code only* |
 | `BotCaravans` | `LeastPremium` | `100` | *code only* |
