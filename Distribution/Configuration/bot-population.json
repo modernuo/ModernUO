@@ -9,8 +9,8 @@
   "Run": true,
   "Roam": 1000,
   "Growth": {
-    "Most": 500,
-    "FillTo": 500,
+    "Most": 450,
+    "FillTo": 450,
     "BurstBy": 5
   },
   "Classes": {
