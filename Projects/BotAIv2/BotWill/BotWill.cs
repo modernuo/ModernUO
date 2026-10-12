@@ -125,6 +125,39 @@ public static class BotWill
     public static int AsideCapMs { get; set; } = 600000;
 
     /// <summary>
+    /// Whether work put down for something that keeps it (<see cref="BotDeed.Keeps"/>: a company's call) is measured on
+    /// <see cref="AsideCapMs"/> from the moment the company let the bot go, rather than from the moment the work was put
+    /// down (12.10.2026, w2).
+    ///
+    /// <para>
+    /// <b>The company's time was not the bot's.</b> The ten minutes above were written for the bot's own interruptions — a
+    /// flight, a bandage, a rescue — and on 09–11.10 they were the whole reason for the largest drop on the shard: of the work
+    /// put down for an enlistment, 95 % was taken up again when the company lasted under ten minutes and 2 of 1 578 pieces
+    /// when it lasted longer (L2, 11.10, 10.2 h; L1, 38.7 h: 6 of 4 836), every one of the rest dropped "not taken up again
+    /// after enlist: it was put down for N minutes" — 1 351 of 4 332 drops in L2, 3 472 of 13 672 in L1. The work was not
+    /// stale: taken up again after a short company it finished 90 % of the time, and the 116 bots that took the same kind up
+    /// from scratch within two minutes of the drop finished it 77 of 83 times. So a kept pause is not timed while the
+    /// company holds the bot; its clock starts when the company breaks up, and it is the same ten minutes: the bot that
+    /// comes back hurt has that long to be mended and go back. A switch, so it can be taken off a running shard; off, a
+    /// company's call is an interruption like any other.
+    /// </para>
+    /// </summary>
+    public static bool Keep { get; set; } = true;
+
+    /// <summary>
+    /// The longest work is kept for a company all told, from the put-down to the taking up, whatever the company's length;
+    /// past it a kept pause lapses as any other would. See <see cref="Keep"/>.
+    ///
+    /// <para>
+    /// An hour. The long companies of 09–11.10 ran 30–41 minutes (1 273 of 42 156 enlistments past thirty minutes, 32 past
+    /// forty-five, 16 past sixty); the one at 386 minutes was Naevys, "too tired to go on" in a company that never broke up,
+    /// and its mine of six hours before is a fact from six hours before. A ceiling, not a budget: counted apart
+    /// (<see cref="KeptLapsed"/>) so that the day it fires more than a few times an hour is the day it is wrong.
+    /// </para>
+    /// </summary>
+    public static int KeptCapMs { get; set; } = 3600000;
+
+    /// <summary>
     /// How many beats an undertaking may hold one unchanged walk order without ever beating its own best
     /// distance to the place, before it is given up.
     ///
@@ -254,6 +287,24 @@ public static class BotWill
 
     /// <summary>Work left put down a while longer because the bot came back too hurt to take it up. See <see cref="Unpause"/>.</summary>
     public static long HeldHurt { get; private set; }
+
+    /// <summary>Work put down for a company's call and kept for as long as it lasted (<see cref="Keep"/>). Of <see cref="Paused"/>.</summary>
+    public static long KeptForCompany { get; private set; }
+
+    /// <summary>
+    /// Of those, the ones taken up again having been put down longer than <see cref="AsideCapMs"/> — what the rule changed:
+    /// every one of these was a drop before 12.10.2026. Of <see cref="Resumed"/>.
+    /// </summary>
+    public static long KeptPastCap { get; private set; }
+
+    /// <summary>Kept work not taken up again for having been put down longer than <see cref="KeptCapMs"/> all told. Of <see cref="Unresumed"/>.</summary>
+    public static long KeptLapsed { get; private set; }
+
+    /// <summary>Kept work not taken up again within <see cref="AsideCapMs"/> of the company letting the bot go (it was being mended). Of <see cref="Unresumed"/>.</summary>
+    public static long KeptLate { get; private set; }
+
+    /// <summary>Kept work refused by its own word (<see cref="BotDeed.Stale"/>) or for the bot being on another map. Of <see cref="Unresumed"/>.</summary>
+    public static long KeptStale { get; private set; }
 
     /// <summary>Kinds of work taken up again within <see cref="ReturnMs"/> of being dropped for something else.</summary>
     public static long Returned { get; private set; }
@@ -2270,7 +2321,7 @@ public static class BotWill
                     }
                 }
 
-                Pause(bot, resolve, deed.Kind, now);
+                Pause(bot, resolve, deed.Kind, now, keeps: deed.Keeps);
 
                 gone = $"; put down {dropped} to take up again ({account})";
             }
@@ -2517,7 +2568,7 @@ public static class BotWill
                 putDown = $"; put down {held} to take up again";
                 PressPaused++;
 
-                Pause(bot, resolve, deed.Kind, now, deed.Shelters);
+                Pause(bot, resolve, deed.Kind, now, deed.Shelters, deed.Keeps);
             }
             else if (stack && Resume && held.Resumes && resolve.Paused != null && resolve.Under == null)
             {
@@ -2531,7 +2582,7 @@ public static class BotWill
                 Stacked++;
                 PressPaused++;
 
-                Pause(bot, resolve, deed.Kind, now, deed.Shelters);
+                Pause(bot, resolve, deed.Kind, now, deed.Shelters, deed.Keeps);
             }
             else
             {
@@ -3038,10 +3089,19 @@ public static class BotWill
     /// Puts the work in hand down so that something which will not wait can be taken on, keeping everything
     /// needed to take it up again. The caller assigns the new work straight after.
     /// </summary>
-    private static void Pause(IBotWilful bot, BotResolve resolve, string forKind, long now, bool sheltered = false)
+    private static void Pause(IBotWilful bot, BotResolve resolve, string forKind, long now, bool sheltered = false, bool keeps = false)
     {
         var deed = resolve.Deed;
         var body = bot.Self;
+
+        // Read here, not at the taking up, so that the switch turned off on a running shard leaves pauses already made as
+        // they were made and changes only the next ones; the counter says how many are kept.
+        var kept = keeps && Keep;
+
+        if (kept)
+        {
+            KeptForCompany++;
+        }
 
         resolve.Paused = new BotPause
         {
@@ -3057,7 +3117,8 @@ public static class BotWill
             Aside = BotYield.AsideOf(body),
             Skill = BotYield.SkillOf(body, deed.Trains),
             For = forKind,
-            Sheltered = sheltered
+            Sheltered = sheltered,
+            Kept = kept
         };
 
         Count(deed.Kind, -1);
@@ -3111,14 +3172,33 @@ public static class BotWill
         string refusal = null;
         var died = ending == BotEnding.Died || body is not { Deleted: false, Alive: true };
 
+        // <b>A kept pause is timed from the moment the company let the bot go (12.10.2026, w2).</b> The first time the bot
+        // is asked to take it up is that moment; a bot sent to be mended first is asked again when the bandage settles, and
+        // only then does the aside clock run. See Keep and BotDeed.Keeps for the numbers.
+        var kept = pause.Kept;
+        var idle = kept ? (pause.Freed ? now - pause.FreedAt : 0L) : away;
+
         if (died)
         {
             refusal = "the bot died while it was put down";
         }
-        // Not for work put down under a hold that shelters it (07.10.2026, arena27): an arena entrant's work waits out the championship.
-        else if (away >= AsideCapMs && !pause.Sheltered)
+        else if (kept && away >= KeptCapMs)
         {
-            refusal = $"it was put down for {away / 60000.0:F0} minutes";
+            KeptLapsed++;
+            refusal = $"it was put down for {away / 60000.0:F0} minutes, longer than a company may keep it";
+        }
+        // Not for work put down under a hold that shelters it (07.10.2026, arena27): an arena entrant's work waits out the championship.
+        else if (idle >= AsideCapMs && !pause.Sheltered)
+        {
+            if (kept)
+            {
+                KeptLate++;
+                refusal = $"the company let the bot go {idle / 60000.0:F0} minutes ago and it did not get back to it";
+            }
+            else
+            {
+                refusal = $"it was put down for {away / 60000.0:F0} minutes";
+            }
         }
         else if (!deed.ResumesHurt && body.HitsMax > 0 && body.Hits < body.HitsMax * ResumeHealth)
         {
@@ -3126,6 +3206,12 @@ public static class BotWill
             // health was settled dropped the moment the flight ended, and the bot was offered its own bandage in the
             // same beat. Kept put down instead, it is asked again when whatever the bot does next — the bandage,
             // most often — settles; AsideCapMs above is the clock that ends the waiting, and it is the only one.
+            if (kept && !pause.Freed)
+            {
+                pause.Freed = true;
+                pause.FreedAt = now;
+            }
+
             resolve.Paused = pause;
             HeldHurt++;
 
@@ -3134,11 +3220,21 @@ public static class BotWill
         else if (deed.Map != body.Map)
         {
             refusal = "the bot is on another map now";
+
+            if (kept)
+            {
+                KeptStale++;
+            }
         }
         else if (deed.Stale(bot) is { } stale)
         {
             // The work's own word that the world moved on while it was put down. See BotDeed.Stale.
             refusal = stale;
+
+            if (kept)
+            {
+                KeptStale++;
+            }
         }
 
         // Restored either way: a refused resumption is settled as the dropped work it now is, and settling needs
@@ -3213,6 +3309,12 @@ public static class BotWill
 
         Resumed++;
         TallyOf(deed.Kind).Resumed++;
+
+        // What the kept clock bought: before 12.10.2026 this piece of work was a drop. See KeptPastCap.
+        if (kept && away >= AsideCapMs)
+        {
+            KeptPastCap++;
+        }
 
         BotReflex.Took(bot, deed, resumed: true);
 
@@ -3427,7 +3529,7 @@ public static class BotWill
         var ended = Finished + Failed + Dropped + Deaths;
 
         line.Append(
-            $"{Finished} of {ended} endings finished ({Percent(Finished, ended)}%), {Failed} failed, {Dropped} dropped, {Deaths} died ({EchoDeaths} more pieces of work that had been put down died with their bot, counted with their trades only); self-defence kept out of the share: {DefenceFinished} finished, {DefenceFailed} failed, {DefenceDropped} dropped, {DefenceDeaths} died; of the drops {Jumped} for something that would not wait, {Summoned} for a call from outside, {Interrupted} for a rung above, {Dislodged} for a full pack and {Outbid} outbid; {Held} better offers refused inside a hold, {Repeated} offers of the work already in hand let alone and {Troubled} holds lifted for trouble; {Paused} put down ({PressPaused} of them for a press), {Resumed} taken up again, {Unresumed} not and {HeldHurt} left put down until the bot was mended; {Returned} kinds of work taken back within {ReturnMs / 60000} minutes of being dropped; {Pressed} pieces pressed into hands, {Repressed} presses let alone as the work already in hand; {Stacked} enlistments put down for a flight or a bandage over work they had already put down; {KeptOut} endings kept out of the share for being no work at all (levied members let go before they ever stood with their company); by trade, taken: finished/dropped %, held, put down/taken up:"
+            $"{Finished} of {ended} endings finished ({Percent(Finished, ended)}%), {Failed} failed, {Dropped} dropped, {Deaths} died ({EchoDeaths} more pieces of work that had been put down died with their bot, counted with their trades only); self-defence kept out of the share: {DefenceFinished} finished, {DefenceFailed} failed, {DefenceDropped} dropped, {DefenceDeaths} died; of the drops {Jumped} for something that would not wait, {Summoned} for a call from outside, {Interrupted} for a rung above, {Dislodged} for a full pack and {Outbid} outbid; {Held} better offers refused inside a hold, {Repeated} offers of the work already in hand let alone and {Troubled} holds lifted for trouble; {Paused} put down ({PressPaused} of them for a press), {Resumed} taken up again, {Unresumed} not and {HeldHurt} left put down until the bot was mended; {KeptForCompany} put down for a company's call and kept for as long as it lasted ({KeptPastCap} of them taken up again past the {AsideCapMs / 60000}-minute cap once the company let the bot go, {KeptLapsed} lapsed for outlasting {KeptCapMs / 60000} minutes in a company, {KeptLate} not taken up within {AsideCapMs / 60000} minutes of being let go, {KeptStale} refused by the work's own word or another map{(Keep ? "" : "; off")}); {Returned} kinds of work taken back within {ReturnMs / 60000} minutes of being dropped; {Pressed} pieces pressed into hands, {Repressed} presses let alone as the work already in hand; {Stacked} enlistments put down for a flight or a bandage over work they had already put down; {KeptOut} endings kept out of the share for being no work at all (levied members let go before they ever stood with their company); by trade, taken: finished/dropped %, held, put down/taken up:"
         );
 
         var rows = new List<KeyValuePair<string, Tally>>(_tallies);
@@ -3803,6 +3905,11 @@ public static class BotWill
         Resumed = 0;
         Unresumed = 0;
         HeldHurt = 0;
+        KeptForCompany = 0;
+        KeptPastCap = 0;
+        KeptLapsed = 0;
+        KeptLate = 0;
+        KeptStale = 0;
         Returned = 0;
         Stacked = 0;
         KeptOut = 0;

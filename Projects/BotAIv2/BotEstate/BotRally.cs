@@ -93,6 +93,13 @@ public sealed class BotRally : BotDeed
     /// <summary>The guild's war company calling its members in. See <see cref="BotDeed.Summons"/>.</summary>
     public override bool Summons => true;
 
+    /// <summary>
+    /// Work put down for a war's muster is kept for as long as the war company holds the bot, as it is for any other company's
+    /// call (12.10.2026, w2): 45 pieces in 10.2 h on 11.10 and 74 in 38.7 h on 09–10.10 were dropped "not taken up again after
+    /// rally: it was put down for N minutes". See <see cref="BotDeed.Keeps"/>.
+    /// </summary>
+    public override bool Keeps => true;
+
     public override Map Map => _map;
 
     /// <summary>Where the company stands, or where the enemy was seen until there is a company.</summary>

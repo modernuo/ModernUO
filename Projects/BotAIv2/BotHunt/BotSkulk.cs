@@ -121,7 +121,8 @@ public sealed class BotSkulk : BotDeed
 
     private readonly Map _map;
 
-    private readonly Point3D _where;
+    /// <summary>Where the stint practises; moved to wherever the bot stands when the stint is taken up again. See <see cref="Resumed"/>.</summary>
+    private Point3D _where;
 
     private bool _started;
 
@@ -142,6 +143,14 @@ public sealed class BotSkulk : BotDeed
     public override string Kind => Trade;
 
     public override bool Committed => true;
+
+    /// <summary>
+    /// Put down for what will not wait and taken up again, rather than dropped (12.10.2026, w2). A stint is five minutes of
+    /// standing still, and a company's call cut 373 of them short in 10.2 h on 11.10 — "dropped skulk: pressed to enlist" was
+    /// 80 % of every skulk dropped and the largest single kind among the shard's drops. Not steadfast: a real offer still
+    /// outbids practice, as it should. See <see cref="Resumed"/> for what a stint taken up again does.
+    /// </summary>
+    public override bool Resumes => true;
 
     public override bool Unpaid => true;
 
@@ -255,6 +264,34 @@ public sealed class BotSkulk : BotDeed
         }
     }
 
+    /// <summary>
+    /// A stint taken up again practises where the bot now stands, for a whole stint. The clock would otherwise have run out
+    /// in the company and the first beat back would have "practised" five minutes of fighting; and <see cref="Aim"/> picks its
+    /// quiet steps round where the stint began, which may be a company's field away. A stint not yet begun — The Shadow's
+    /// member on its way to the hideout — keeps its destination.
+    /// </summary>
+    public override void Resumed(IBotWilful bot)
+    {
+        if (bot?.Self is not { } body)
+        {
+            return;
+        }
+
+        var hideout = BotUnderworld.Hideout;
+
+        if (_started || hideout == Point3D.Zero || _where != hideout)
+        {
+            _where = body.Location;
+        }
+
+        _aim = Point3D.Zero;
+
+        if (_started)
+        {
+            _began = Core.TickCount;
+        }
+    }
+
     private BotDoing Finish(Mobile body)
     {
         Ended++;
@@ -362,8 +399,11 @@ public sealed class BotSkulk : BotDeed
 
         _urgedTick[body.Serial] = now;
 
+        // Nor over an enlistment on its way to its company, nor over a stint already put down beneath whatever took the bot off
+        // it (12.10.2026, w2): a stint resumes now, and a second one pressed on top would drop the work in hand to make room.
         if (body.Map is not { } map || map == Map.Internal || body.Squad != null || BotDuel.Duelling(body) || BotOutlaw.Jailed(body)
-            || body.Resolve?.Deed is BotSkulk or BotRob or BotLieLow or BotBrawl or BotManhunt or BotSentence)
+            || body.Resolve?.Deed is BotSkulk or BotRob or BotLieLow or BotBrawl or BotManhunt or BotSentence or BotEnlist
+            || body.Resolve?.Paused?.Deed is BotSkulk)
         {
             return;
         }

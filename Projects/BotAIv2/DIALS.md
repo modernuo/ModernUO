@@ -243,6 +243,8 @@ changed without a rebuild.
 | `BotWill` | `DwellMs` | `30000` | `DwellMs` |
 | `BotWill` | `GuessHolds` | `true` | *code only* |
 | `BotWill` | `IdleMs` | `2000` | `IdleMs` |
+| `BotWill` | `Keep` | `true` | `Keep` |
+| `BotWill` | `KeptCapMs` | `3600000` | `KeptCapMs` |
 | `BotWill` | `LabourMs` | `900000` | *code only* |
 | `BotWill` | `MetCounts` | `true` | *code only* |
 | `BotWill` | `MindSampleEvery` | `25` | *code only* |

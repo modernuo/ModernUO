@@ -110,6 +110,14 @@ public sealed class BotSupply : BotDeed
     public override bool Unpaid => true;
 
     /// <summary>
+    /// Put down for what will not wait and taken up again, rather than dropped (12.10.2026, w2). In 10.2 h on 11.10, 191 of the
+    /// 232 supply runs dropped were "pressed to enlist", 98 of them with the guild's batch already bought and in the pack — the
+    /// guild's money left in a pocket and the shelf still bare. The batch and the shopkeeper are on the deed, so the run goes on
+    /// from where it was. Not steadfast: a better offer still outbids the walk to the counter.
+    /// </summary>
+    public override bool Resumes => true;
+
+    /// <summary>
     /// What the bot's own purse put into this, handed straight back as takings.
     ///
     /// <para>

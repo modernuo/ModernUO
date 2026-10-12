@@ -477,6 +477,17 @@ public abstract class BotDeed
     public virtual bool Shelters => false;
 
     /// <summary>
+    /// Whether work put down for this one is kept for as long as this lasts, the aside clock (<c>BotWill.AsideCapMs</c>) running
+    /// only from the moment this ends (12.10.2026, w2). For a company's call: the company's length is the company's, not the
+    /// bot's, and on 09–11.10 every piece of work put down for an enlistment that outlasted the ten minutes was dropped "not
+    /// taken up again after enlist" (3 472 in 38.7 h, 1 351 in 10.2 h — a third of all drops) while the same work put down for
+    /// a shorter one was taken up again 95 % of the time and finished 90 % of the time. Unlike <see cref="Shelters"/> there is
+    /// still a ceiling, <c>BotWill.KeptCapMs</c>, because a company that never breaks up is not a reason to go back to a seam
+    /// six hours later. False by default.
+    /// </summary>
+    public virtual bool Keeps => false;
+
+    /// <summary>
     /// Whether this work goes where the fighting is on purpose: a hunt, a prowl, a company's sweep or delve, the band, the
     /// harrowing, going through what was killed, plunder, escorting a fighter, scouting, and running away.
     ///
