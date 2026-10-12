@@ -357,8 +357,10 @@ public sealed class BotDelver : IBotProposer
     /// <summary>
     /// How many the party could go down with, the leader included, within <paramref name="reach"/> of <paramref name="round"/> (its
     /// muster), by the tests <see cref="Gather"/> uses: every body that holds the dungeon's floor, and of those under it as many
-    /// as the smallest party that may go down keeps seats for (<c>BotDelve.WeakSeats</c> of <c>BotDelve.Least</c>, which is exact
-    /// for that party and generous for a larger one). <paramref name="all"/> is the count without the floor, the old answer.
+    /// as the smallest party that may go down keeps seats for (<c>BotDelve.WeakSeats</c> of <c>BotDelve.Least</c>). That is the
+    /// effective rule stated as a go/no-go: at least <c>Least − ⌊Least × WeakShare⌋</c> bodies over the floor must stand in reach
+    /// (5 of the Orc Caves' 7 at a third, 6 at a quarter) — the same question the descent asks of the party that stood up, since a
+    /// larger party keeps more seats and never fewer. <paramref name="all"/> is the count without the floor, the old answer.
     /// </summary>
     private static int Raisable(Map map, Mobile leader, Point3D round, int reach, BotDungeon.Deep deep, out int lines, out int all)
     {

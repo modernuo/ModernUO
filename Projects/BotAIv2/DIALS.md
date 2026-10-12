@@ -1605,7 +1605,7 @@ changed without a rebuild.
 | `BotDelve` | `Station` | `2` | *code only* |
 | `BotDelve` | `SweepMs` | `5000` | *code only* |
 | `BotDelve` | `WeakFloor` | `0.4` | `WeakFloor` |
-| `BotDelve` | `WeakShare` | `0.25` | `WeakShare` |
+| `BotDelve` | `WeakShare` | `0.34` | `WeakShare` |
 | `BotDelve` | `WorkMinutes` | `25.0` | *code only* |
 | `BotDelveModule` | `Enabled` | `true` | *code only* |
 | `BotDelveModule` | `SayEveryMs` | `300000` | *code only* |
