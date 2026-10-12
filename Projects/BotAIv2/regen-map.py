@@ -601,8 +601,12 @@ def collect():
             for dial in DIAL.finditer(text):
                 here["dials"].append((stem, dial.group(2), " ".join(dial.group(3).split())))
 
+            found = re.search(r"Configuration/(bot-[a-z-]+\.json)", text)
+
+            # Each key is credited to the file its setter reads, not to the folder: BotPopulation/ reads bot-population.json,
+            # bot-rest.json and bot-names.json, and the folder heading alone named bot-names.json for all of them (12.10.2026).
             for reach in SETTABLE.finditer(text):
-                here["settable"][(reach.group(1), reach.group(2))] = reach.group(3)
+                here["settable"][(reach.group(1), reach.group(2))] = (reach.group(3), found.group(1) if found else None)
 
             if re.search(r"class\s+%s\s*:\s*[^{\n]*BotModule" % re.escape(stem), text):
                 here["module"] = stem
@@ -610,10 +614,10 @@ def collect():
             if re.search(r"class\s+%s\s*:\s*[^{\n]*BotDeed" % re.escape(stem), text):
                 here["deeds"].add(stem)
 
-            found = re.search(r"Configuration/(bot-[a-z-]+\.json)", text)
-
-            if found and not here["config"]:
+            # The heading names the file the folder's first *Config.cs reads, and only failing one the first file named anywhere.
+            if found and (not here["config"] or stem.endswith("Config") and not here.get("owned")):
                 here["config"] = found.group(1)
+                here["owned"] = here.get("owned") or stem.endswith("Config")
 
             if re.search(r"class\s+%s\s*:\s*[^{\n]*IBotProposer" % re.escape(stem), text):
                 offers = re.search(r'public string Name\s*=>\s*"([^"]+)"', text)
@@ -713,9 +717,10 @@ def dials(folders, order):
         out.append("|---|---|---|---|")
 
         for owner, field, value in sorted(here["dials"]):
-            key = here["settable"].get((owner, field))
+            key, source = here["settable"].get((owner, field), (None, None))
+            where = " in `%s`" % source if source and source != here["config"] else ""
             out.append("| `%s` | `%s` | `%s` | %s |" % (
-                owner, field, value, "`%s`" % key if key else "*code only*"))
+                owner, field, value, "`%s`%s" % (key, where) if key else "*code only*"))
 
     with open("DIALS.md", "w", encoding="utf-8", newline="\n") as handle:
         handle.write("\n".join(out) + "\n")

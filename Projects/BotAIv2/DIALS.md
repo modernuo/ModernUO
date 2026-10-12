@@ -8,7 +8,7 @@ sets wins, and a key spelled in the wrong case is silently ignored rather than r
 proof of a live value is the line the module writes at boot. A dial marked *code only* cannot be
 changed without a rebuild.
 
-## `BotPopulation/`  —  `bot-names.json`
+## `BotPopulation/`  —  `bot-population.json`
 
 | class | dial | default | config key |
 |---|---|---|---|
@@ -23,8 +23,8 @@ changed without a rebuild.
 | `BotCharter` | `Reach` | `60` | *code only* |
 | `BotCharter` | `Running` | `true` | *code only* |
 | `BotCharter` | `WantHoldsMs` | `1800000` | *code only* |
-| `BotCritical` | `EarlyMinutes` | `480` | `EarlyMinutes` |
-| `BotCritical` | `Running` | `true` | `Running` |
+| `BotCritical` | `EarlyMinutes` | `480` | `EarlyMinutes` in `bot-rest.json` |
+| `BotCritical` | `Running` | `true` | `Running` in `bot-rest.json` |
 | `BotGrowth` | `BurstBy` | `5` | `BurstBy` |
 | `BotGrowth` | `By` | `2` | `By` |
 | `BotGrowth` | `EveryMinutes` | `120` | `EveryMinutes` |
@@ -100,10 +100,10 @@ changed without a rebuild.
 | `BotPopulation` | `Spread` | `10` | `Spread` |
 | `BotPopulation` | `StrandedLimit` | `12` | *code only* |
 | `BotPopulation` | `Where` | `new(1592, 1680, 10)` | *code only* |
-| `BotPrime` | `RampMinutes` | `30` | `RampMinutes` |
-| `BotPrime` | `ReturnPerLook` | `5` | `ReturnPerLook` |
-| `BotPrime` | `Running` | `true` | `Running` |
-| `BotPrime` | `TirePerLook` | `5` | `TirePerLook` |
+| `BotPrime` | `RampMinutes` | `30` | `RampMinutes` in `bot-rest.json` |
+| `BotPrime` | `ReturnPerLook` | `5` | `ReturnPerLook` in `bot-rest.json` |
+| `BotPrime` | `Running` | `true` | `Running` in `bot-rest.json` |
+| `BotPrime` | `TirePerLook` | `5` | `TirePerLook` in `bot-rest.json` |
 | `BotPurse` | `BanksBeforeTrips` | `true` | *code only* |
 | `BotPurse` | `Float` | `100` | *code only* |
 | `BotPurse` | `KeepBack` | `100` | *code only* |
@@ -122,19 +122,19 @@ changed without a rebuild.
 | `BotReclaim` | `Reach` | `2` | *code only* |
 | `BotReclaim` | `TilesPerMinute` | `120.0` | *code only* |
 | `BotReclaim` | `WorkMinutes` | `1.5` | *code only* |
-| `BotRest` | `CallGraceMs` | `600000` | `CallGraceMs` |
-| `BotRest` | `CallMost` | `5` | `CallMost` |
-| `BotRest` | `CallMostBig` | `10` | `CallMostBig` |
-| `BotRest` | `CalledLeastRestHours` | `1.0` | `CalledLeastRestHours` |
-| `BotRest` | `Calls` | `true` | `Calls` |
-| `BotRest` | `EarlyMinutes` | `60` | `EarlyMinutes` |
-| `BotRest` | `FirstShare` | `0.85` | `FirstShare` |
-| `BotRest` | `FloorShare` | `0.5` | `FloorShare` |
-| `BotRest` | `GraceMs` | `3600000` | `GraceMs` |
-| `BotRest` | `LeastRestHours` | `5.0` | `LeastRestHours` |
-| `BotRest` | `LookMs` | `20000` | `LookMs` |
-| `BotRest` | `MostRestHours` | `8.0` | `MostRestHours` |
-| `BotRest` | `Running` | `true` | `Running` |
+| `BotRest` | `CallGraceMs` | `600000` | `CallGraceMs` in `bot-rest.json` |
+| `BotRest` | `CallMost` | `5` | `CallMost` in `bot-rest.json` |
+| `BotRest` | `CallMostBig` | `10` | `CallMostBig` in `bot-rest.json` |
+| `BotRest` | `CalledLeastRestHours` | `1.0` | `CalledLeastRestHours` in `bot-rest.json` |
+| `BotRest` | `Calls` | `true` | `Calls` in `bot-rest.json` |
+| `BotRest` | `EarlyMinutes` | `60` | `EarlyMinutes` in `bot-rest.json` |
+| `BotRest` | `FirstShare` | `0.85` | `FirstShare` in `bot-rest.json` |
+| `BotRest` | `FloorShare` | `0.5` | `FloorShare` in `bot-rest.json` |
+| `BotRest` | `GraceMs` | `3600000` | `GraceMs` in `bot-rest.json` |
+| `BotRest` | `LeastRestHours` | `5.0` | `LeastRestHours` in `bot-rest.json` |
+| `BotRest` | `LookMs` | `20000` | `LookMs` in `bot-rest.json` |
+| `BotRest` | `MostRestHours` | `8.0` | `MostRestHours` in `bot-rest.json` |
+| `BotRest` | `Running` | `true` | `Running` in `bot-rest.json` |
 | `BotRoster` | `EveryMs` | `1800000` | *code only* |
 | `BotRoster` | `Running` | `true` | *code only* |
 | `BotRoster` | `Shortlist` | `5` | *code only* |
@@ -155,6 +155,7 @@ changed without a rebuild.
 | `BotUnload` | `Heavy` | `0.7` | *code only* |
 | `BotUnload` | `Hoard` | `40` | *code only* |
 | `BotUnload` | `HoldMs` | `900000` | *code only* |
+| `BotUnload` | `JoinMs` | `60000` | `JoinMs` |
 | `BotUnload` | `KitNear` | `60` | *code only* |
 | `BotUnload` | `KitSlack` | `3` | *code only* |
 | `BotUnload` | `KitWaitMs` | `600000` | *code only* |
@@ -163,9 +164,12 @@ changed without a rebuild.
 | `BotUnload` | `PassMs` | `60000` | *code only* |
 | `BotUnload` | `Prior` | `30.0` | *code only* |
 | `BotUnload` | `Purse` | `250` | *code only* |
+| `BotUnload` | `Releases` | `true` | `Releases` |
 | `BotUnload` | `Risk` | `8` | *code only* |
 | `BotUnload` | `SpareTools` | `2` | *code only* |
 | `BotUnload` | `Stuck` | `120.0` | *code only* |
+| `BotUnload` | `StuckFails` | `3` | `StuckFails` |
+| `BotUnload` | `StuckWindowMs` | `600000` | `StuckWindowMs` |
 | `BotUnload` | `TreadmillMs` | `120000` | *code only* |
 | `BotUnload` | `WedgedMs` | `120000` | *code only* |
 | `BotUnload` | `WorkMinutes` | `2.0` | *code only* |
@@ -774,6 +778,7 @@ changed without a rebuild.
 | `BotOutlaw` | `BloodReach` | `24` | *code only* |
 | `BotOutlaw` | `EveryMs` | `1000` | *code only* |
 | `BotOutlaw` | `JailMs` | `3600000` | *code only* |
+| `BotOutlaw` | `KeepsWeapons` | `true` | *code only* |
 | `BotOutlaw` | `Posse` | `4` | *code only* |
 | `BotOutlaw` | `Reach` | `60` | *code only* |
 | `BotOutlaw` | `RedKills` | `5` | *code only* |
@@ -1256,12 +1261,14 @@ changed without a rebuild.
 | `BotFugitive` | `MostRepeats` | `2` | *code only* |
 | `BotFugitive` | `PoisonedHealth` | `0.9` | *code only* |
 | `BotFugitive` | `RepeatMs` | `120000` | *code only* |
+| `BotHaven` | `CallEveryMs` | `3000` | *code only* |
 | `BotHaven` | `MostSeconds` | `90` | *code only* |
 | `BotHaven` | `NearTiles` | `40` | *code only* |
 | `BotHaven` | `Reach` | `300` | *code only* |
 | `BotHaven` | `Running` | `true` | *code only* |
 | `BotHaven` | `Stride` | `8` | *code only* |
 | `BotHaven` | `Towns` | `3` | *code only* |
+| `BotHaven` | `WatchMs` | `60000` | *code only* |
 | `BotPeril` | `BaulkMs` | `600000` | *code only* |
 | `BotPeril` | `CloseDeaths` | `3.0` | *code only* |
 | `BotPeril` | `Deadly` | `1` | *code only* |
@@ -1887,7 +1894,7 @@ changed without a rebuild.
 | `BotWake` | `EveryMs` | `2000` | *code only* |
 | `BotWake` | `GraceMs` | `60000` | *code only* |
 
-## `BotEstate/`  —  `bot-townground.json`
+## `BotEstate/`  —  `bot-estate.json`
 
 | class | dial | default | config key |
 |---|---|---|---|
@@ -2572,6 +2579,30 @@ changed without a rebuild.
 | `BotTourney` | `SupplyHeals` | `3` | *code only* |
 | `BotTourney` | `SupplyReagents` | `20` | *code only* |
 | `BotTourney` | `TitleWaitMs` | `900000` | `TitleWaitMs` |
+| `BotTourneyArena` | `Arena` | `true` | *code only* |
+| `BotTourneyArena` | `ArenaAnchor` | `new(6563, 3168, -20)` | *code only* |
+| `BotTourneyArena` | `ArenaEntrants` | `64` | *code only* |
+| `BotTourneyArena` | `ArenaName` | `"the arenas east of Papua"` | *code only* |
+| `BotTourneyArena` | `ArenaScan` | `320` | *code only* |
+| `BotTourneyArena` | `ArenaSummaryMs` | `300000` | *code only* |
+| `BotTourneyArena` | `Crafters` | `true` | *code only* |
+| `BotTourneyArena` | `FightRings` | `0` | *code only* |
+| `BotTourneyArena` | `KeepMs` | `2000` | *code only* |
+| `BotTourneyArena` | `LeastDayGapMs` | `43200000L` | *code only* |
+| `BotTourneyArena` | `MinEntrants` | `50` | *code only* |
+| `BotTourneyArena` | `NoticeMs` | `180000` | *code only* |
+| `BotTourneyArena` | `PenSpread` | `9` | *code only* |
+| `BotTourneyArena` | `PortedBatches` | `3` | *code only* |
+| `BotTourneyArena` | `RefereeOff` | `6` | *code only* |
+| `BotTourneyArena` | `ReseatApart` | `2` | *code only* |
+| `BotTourneyArena` | `RetryMs` | `600000` | *code only* |
+| `BotTourneyArena` | `RingMaxSpan` | `90` | *code only* |
+| `BotTourneyArena` | `RingMaxWall` | `600` | *code only* |
+| `BotTourneyArena` | `RingMinInside` | `300` | *code only* |
+| `BotTourneyArena` | `RingMinSpan` | `24` | *code only* |
+| `BotTourneyArena` | `RingMinWall` | `100` | *code only* |
+| `BotTourneyArena` | `StartHourLocal` | `20` | *code only* |
+| `BotTourneyArena` | `WatchdogMs` | `10800000L` | *code only* |
 | `BotVenues` | `EmptyWeight` | `0.25` | *code only* |
 | `BotVenues` | `FieldFar` | `42` | *code only* |
 | `BotVenues` | `FieldNear` | `18` | *code only* |
@@ -3340,6 +3371,7 @@ changed without a rebuild.
 | `BotHaunts` | `ResurveyMs` | `1800000` | *code only* |
 | `BotHaunts` | `StaleMs` | `180000` | *code only* |
 | `BotHaunts` | `StripTiles` | `256` | *code only* |
+| `BotHaunts` | `TrailMost` | `32` | *code only* |
 | `BotZoneMemory` | `File` | `"Data/bot-zones-seen.json"` | *code only* |
 | `BotZoneMemory` | `MostCells` | `80000` | *code only* |
 | `BotZoneMemory` | `Running` | `true` | `Memory` |
@@ -3387,6 +3419,7 @@ changed without a rebuild.
 | `BotZones` | `DeathsWindowHours` | `24` | `DeathsWindowHours` |
 | `BotZones` | `DeclaredMost` | `64` | `DeclaredMost` |
 | `BotZones` | `EmptyWeight` | `0.5` | `EmptyWeight` |
+| `BotZones` | `Events` | `true` | `Events` |
 | `BotZones` | `InlineRefreshMs` | `120000` | `InlineRefreshMs` |
 | `BotZones` | `JoinGap` | `8` | `JoinGap` |
 | `BotZones` | `JsonEveryMs` | `4000` | `JsonEveryMs` |
@@ -3404,6 +3437,9 @@ changed without a rebuild.
 | `BotZones` | `OffLoopCores` | `4` | `OffLoopCores` |
 | `BotZones` | `PassiveRadius` | `8` | `PassiveRadius` |
 | `BotZones` | `PerceptionMost` | `20` | `PerceptionMost` |
+| `BotZones` | `ReachHalfLifeMinutes` | `180` | `ReachHalfLifeMinutes` |
+| `BotZones` | `ReachLeast` | `20` | `ReachLeast` |
+| `BotZones` | `ReachPercentile` | `0.95` | `ReachPercentile` |
 | `BotZones` | `ReferenceEveryMs` | `120000` | *code only* |
 | `BotZones` | `ReferenceFloor` | `1116` | *code only* |
 | `BotZones` | `RefreshMs` | `20000` | `RefreshMs` |
@@ -3415,6 +3451,8 @@ changed without a rebuild.
 | `BotZones` | `StrayBeyond` | `16` | `StrayBeyond` |
 | `BotZones` | `TickMs` | `250` | `TickMs` |
 | `BotZones` | `TownsClear` | `true` | `TownsClear` |
+| `BotZones` | `WanderMinutes` | `10` | `WanderMinutes` |
+| `BotZones` | `WanderMostCells` | `64` | `WanderMostCells` |
 | `BotZones` | `WaterCasterReach` | `12` | `WaterCasterReach` |
 | `BotZones` | `WaterGroup` | `40` | `WaterGroup` |
 | `BotZones` | `WaterMeleeReach` | `3` | `WaterMeleeReach` |

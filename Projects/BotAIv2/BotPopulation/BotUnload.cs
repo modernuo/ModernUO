@@ -258,9 +258,7 @@ public sealed class BotUnload : BotDeed
                 // this one did not, so the same bot in the same state was cured or abandoned according to
                 // whether the shard happened to have surveyed a counter - which is a fact about how far
                 // other bots have walked, not about this one. Both branches end in the same pass now. See StandStill.
-                Stranded++;
-
-                return StandStill(bot, body);
+                return StandStill(bot, body, false);
             }
 
             return BotDoing.Failed("nowhere known to put it");
@@ -296,7 +294,7 @@ public sealed class BotUnload : BotDeed
             // So it puts something down. A bot that cannot walk is worth more than the ore nobody will buy. What
             // goes, and in what order, is StandStill's: piles joined, coin banked, surplus boxed, then the ground,
             // and the kept things last of all, loudly.
-            return StandStill(bot, body);
+            return StandStill(bot, body, true);
         }
 
         // Piles of one kind lying apart weigh more than the same things in one pile (see Gather); joined before the counter is
@@ -752,19 +750,26 @@ public sealed class BotUnload : BotDeed
     public static bool Treadmill(Mobile body) =>
         body != null && _treadmill.TryGetValue(body.Serial, out var when) && Core.TickCount - when < TreadmillMs;
 
-    /// <summary>Whether the last stand-still pass, a moment ago, left the bot no lighter than it is now. Records this pass.</summary>
-    private static bool Refilling(Mobile body)
+    /// <summary>
+    /// Whether the last stand-still pass, a moment ago, left the bot no lighter than it is now, or this is the
+    /// <see cref="MostPasses"/>th inside <see cref="PassMs"/>. <paramref name="lighter"/> tells the second case: refused, and
+    /// not a pass that got nowhere, so the breaker does not count it (12.10.2026, Fable's review). Records this pass.
+    /// </summary>
+    private static bool Refilling(Mobile body, out bool lighter)
     {
         var now = Core.TickCount;
         var load = BotLadder.Load(body);
 
         var count = 1;
 
+        lighter = false;
+
         if (_passes.TryGetValue(body.Serial, out var last) && now - last.Tick < PassMs)
         {
             // No lighter than the last pass left it, or the third pass inside the window: either way not a way off the ceiling.
             if (load >= last.Load || last.Count + 1 >= MostPasses)
             {
+                lighter = load < last.Load;
                 _passes.Remove(body.Serial);
                 _treadmill[body.Serial] = now;
                 Treadmills++;
@@ -785,9 +790,12 @@ public sealed class BotUnload : BotDeed
         return false;
     }
 
-    private static string Treadmilled(Mobile body) =>
-        $"still too heavy to walk at {BotLadder.Load(body)} of {BotLadder.Ceiling(body)} stones, no lighter than when the last pass "
-        + "put things away from where it stood; left alone for a while";
+    private static string Treadmilled(Mobile body, bool lighter) =>
+        lighter
+            ? $"still too heavy to walk at {BotLadder.Load(body)} of {BotLadder.Ceiling(body)} stones after {MostPasses} passes inside "
+              + $"{PassMs / 1000}s, each a little lighter; left alone for a while"
+            : $"still too heavy to walk at {BotLadder.Load(body)} of {BotLadder.Ceiling(body)} stones, no lighter than when the last "
+              + "pass put things away from where it stood; left alone for a while";
 
     /// <summary>Whether this bot lately proved there is nothing this errand can do for it.</summary>
     public static bool Wedged(Mobile body) =>
@@ -1099,8 +1107,9 @@ public sealed class BotUnload : BotDeed
     // ---- The stand-still pass: a way down from over the ceiling (12.10.2026) ---------------------------------------------------
 
     /// <summary>
-    /// Whether the stand-still pass may let go of a bot's kept things — its ammunition, supplies and tools — when they alone hold
-    /// it over its ceiling: into its bank box, or onto the ground when the box will not take them.
+    /// Whether the stand-still pass may let go of a bot's kept things — its supplies and tools, never a kind bound to it by count
+    /// (its quiver) and never what weighs nothing — when they alone hold it over its ceiling: into its bank box, or onto the
+    /// ground when the box will not take them.
     ///
     /// <para>
     /// <b>The kit was the one load with no way down.</b> <see cref="Store"/> and <see cref="Dump"/> both pass over everything
@@ -1172,8 +1181,8 @@ public sealed class BotUnload : BotDeed
     /// <summary>Bots over their ceiling and set aside by the breaker at the last pack census. For an alarm to read.</summary>
     public static int StuckNow { get; private set; }
 
-    /// <summary>When each bot's run of no-lighter passes began, and how many. Absence means none.</summary>
-    private static readonly Dictionary<Serial, (long Since, int Count)> _noLighter = [];
+    /// <summary>When each bot's run of no-lighter passes began, how many, and the load they all left it at. Absence means none.</summary>
+    private static readonly Dictionary<Serial, (long Since, int Count, int Load)> _noLighter = [];
 
     /// <summary>The load at which the breaker set each bot aside. Absence means it is not set aside.</summary>
     private static readonly Dictionary<Serial, int> _stuckAt = [];
@@ -1198,13 +1207,27 @@ public sealed class BotUnload : BotDeed
     /// test kept offering a pass that could not do the one thing it had counted. Coin gone, the porter's count is honest.
     /// </para>
     /// </summary>
-    private BotDoing StandStill(IBotWilful bot, Mobile body)
+    private BotDoing StandStill(IBotWilful bot, Mobile body, bool counterKnown)
     {
-        if (Refilling(body))
+        if (Refilling(body, out var lighter))
         {
-            NoLighter(bot, body);
+            // A pass refused for coming too soon after passes that were each lighter is not a pass that got nowhere.
+            if (lighter)
+            {
+                _noLighter.Remove(body.Serial);
+            }
+            else
+            {
+                NoLighter(bot, body);
+            }
 
-            return BotDoing.Failed(Treadmilled(body));
+            return BotDoing.Failed(Treadmilled(body, lighter));
+        }
+
+        // Counted where it always was: a pass run with no counter known, not a refusal (12.10.2026, Fable's review).
+        if (!counterKnown)
+        {
+            Stranded++;
         }
 
         var before = BotLadder.Load(body);
@@ -1214,7 +1237,10 @@ public sealed class BotUnload : BotDeed
         var dumped = 0;
         var released = 0;
 
-        if (BotLadder.Overloaded(body))
+        // <b>Not a red's coin (12.10.2026, Fable's review).</b> A red's purse cannot reach a counter and goes to its hideout's
+        // chest, and a catch takes everything off it (BotStash); banking it from where it stands would step round that rule.
+        // A red over its ceiling goes on to the box and the ground like anybody else.
+        if (BotLadder.Overloaded(body) && !BotOutlaw.IsRed(body))
         {
             banked = Bank(body);
             StoodBanked += banked;
@@ -1254,6 +1280,9 @@ public sealed class BotUnload : BotDeed
 
         if (after < before)
         {
+            // Lighter is not a pass that got nowhere: the breaker's run starts again (12.10.2026, Fable's review).
+            _noLighter.Remove(body.Serial);
+
             return BotDoing.Done($"{before - after} stones lighter from where it stood ({did}), still over at {after} of {ceiling}");
         }
 
@@ -1422,6 +1451,16 @@ public sealed class BotUnload : BotDeed
                 continue;
             }
 
+            // <b>Nor the quiver (12.10.2026, both of Fable's reviews).</b> A granted stack is bound by count, not by serial
+            // (BotBinding.BindStack records bond.Ammunition, only Bind fills bond.Items), so IsBound does not see it. It weighs
+            // nothing, sorted last and was reached only by a bot still over on what it wears, which it could not relieve; and
+            // in the box it was gone for good, since TrimAmmunition counts pack and corpse. Nothing of a count-bound kind goes,
+            // and nothing that weighs nothing.
+            if (Stones(item) <= 0 || BotBinding.BoundCount(item.GetType(), bot.Bond) > 0)
+            {
+                continue;
+            }
+
             kept.Add(item);
         }
 
@@ -1453,13 +1492,20 @@ public sealed class BotUnload : BotDeed
             }
 
             var item = kept[i];
+
+            // Heaviest first, so a thing that weighs nothing means nothing after it can help either.
+            if (Stones(item) <= 0)
+            {
+                break;
+            }
+
             var kind = item.GetType();
             var units = Math.Max(1, item.Amount);
 
+            // Its own counter, not Stowed: the Needs line's "lots of things went into bank boxes" is Store's (Fable's review).
             if (box is { Deleted: false } && box.TryDropItem(body, item, false))
             {
                 ReleasedBoxed++;
-                Stowed += units;
                 put++;
 
                 continue;
@@ -1512,8 +1558,9 @@ public sealed class BotUnload : BotDeed
                 var kind = item.GetType();
                 var had = kinds.TryGetValue(kind, out var was) ? was : default;
 
+                // Bound by serial, or a count-bound kind (the quiver: BotBinding.BindStack), which IsBound does not see.
                 kinds[kind] = (had.Units + Math.Max(1, item.Amount), had.Piles + 1, had.Stones + Stones(item),
-                    had.Bound || BotBinding.IsBound(item, bot?.Bond));
+                    had.Bound || BotBinding.IsBound(item, bot?.Bond) || BotBinding.BoundCount(kind, bot?.Bond) > 0);
             }
         }
 
@@ -1570,10 +1617,13 @@ public sealed class BotUnload : BotDeed
     private static void NoLighter(IBotWilful bot, Mobile body)
     {
         var now = Core.TickCount;
+        var load = BotLadder.Load(body);
         var since = now;
         var count = 1;
 
-        if (_noLighter.TryGetValue(body.Serial, out var was) && now - was.Since < StuckWindowMs)
+        // The run is of passes that got nowhere from one load: a load that changed in between, either way, starts it again —
+        // the same rule that lifts a bot the breaker set aside (12.10.2026, Fable's review). See SetAside.
+        if (_noLighter.TryGetValue(body.Serial, out var was) && now - was.Since < StuckWindowMs && was.Load == load)
         {
             since = was.Since;
             count = was.Count + 1;
@@ -1586,7 +1636,7 @@ public sealed class BotUnload : BotDeed
                 _noLighter.Clear();
             }
 
-            _noLighter[body.Serial] = (since, count);
+            _noLighter[body.Serial] = (since, count, load);
 
             return;
         }
@@ -1597,8 +1647,6 @@ public sealed class BotUnload : BotDeed
         {
             _stuckAt.Clear();
         }
-
-        var load = BotLadder.Load(body);
 
         _stuckAt[body.Serial] = load;
         StuckTrips++;
@@ -2498,6 +2546,17 @@ public sealed class BotPorter : IBotProposer
         // bad fight from being gone, and money in a pocket is also money the market cannot see.
         var laden = BotLadder.Load(body) >= BotLadder.Ceiling(body) * BotUnload.Heavy;
 
+        // Not to a bot the breaker has set aside: StuckFails stand-still passes in StuckWindowMs left it no lighter, and the
+        // pass is not offered again until its weight changes (12.10.2026). Asked first, before any join or walk of the pack:
+        // a set-aside bot's piles were joined by its own passes, and anything new it picks up changes its weight and lifts it
+        // (Fable's review). See BotUnload.SetAside.
+        if (laden && BotUnload.SetAside(body))
+        {
+            BotUnload.Withhold();
+
+            return null;
+        }
+
         // <b>Piles of one kind lying apart are joined before anything is weighed (12.10.2026).</b> Each weighs a whole stone
         // however little is in it, so a pack can read heavy, or over the ceiling, on piles alone: Baern's 177 arrows weighed
         // 177 stones. Joining needs no errand and no step. Once a minute for a bot that can walk, every look for one that
@@ -2517,16 +2576,6 @@ public sealed class BotPorter : IBotProposer
         // makes sense for a bot that is not going to walk anywhere, because for that bot this errand is not
         // a trip. See BotUnload.Cornered.
         var immobile = BotLadder.Load(body) > BotLadder.Ceiling(body);
-
-        // Nor to a bot the breaker has set aside: StuckFails stand-still passes in StuckWindowMs left it no lighter, and the
-        // pass is not offered again until its weight changes (12.10.2026). Asked before the pack is walked, which is the
-        // expensive part of this proposal. See BotUnload.SetAside.
-        if (immobile && BotUnload.SetAside(body))
-        {
-            BotUnload.Withhold();
-
-            return null;
-        }
 
         // <b>A sixth, about the pack's slots rather than its weight.</b> See BotYield.Pocket: a pack at the engine's
         // cap can neither pay nor be paid at a counter, so it is refused every trade that does either, and the only
