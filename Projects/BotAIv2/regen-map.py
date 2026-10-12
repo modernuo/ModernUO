@@ -471,6 +471,22 @@ BLOCKS = {
          "`Society:` counts what was heard by mood, offered by kind, accepted, finished, lapsed, and refused for hostility; "
          "`Voice:` counts moods said to somebody against moods said to nobody."],
     ),
+    "BotDay": (
+        "the daily cycle",
+        "A clock of six named parts of the day on local time (`BotDay`: dawn from 05, morning 07, noon 12, afternoon 14, "
+        "evening 18, night 22, each a dial in `bot-day.json`), a timetable per bot drawn once from its name, class and nature "
+        "and kept in its own store (`BotTimetable`: wake and bed hours, meal hours, an evening habit — tavern, fireside, home, "
+        "prowl — night owls who live the day ten hours later, and where it sleeps without a house), and the hour as one more "
+        "multiplier outside the auction's root beside the calling, the toll and the nature (`BotDay.Factor`: the evening's "
+        "tavern and fireside, the night's fire and the night's trades, the dawn's market, ×0.67–×1.5 held in ×0.5–×2). The "
+        "rest clock's queue to tire is put bedtime-first and its queue back wake-hour-first. PLAN-life A1, the week of "
+        "12.10.2026; measured on the `Day:` line and under `day` in `/api/state`.",
+        ["A factor without a floor is a veto: a markdown is never applied to a broke bot's paid work (`Floored` counts them), "
+         "and the whole factor is held in `Least`–`Most`, never nought.",
+         "The prime time's bands and shares are Patrick's and untouched: the cycle chooses *who* rests, never how many. "
+         "`BotRest.Look` asks `AtBed` for the order and the early candidates; the allowance arithmetic is the same.",
+         "The part of the day is read into a static on the module's two-second clock; the auction never reads the wall clock."],
+    ),
     "BotWeb": (
         "the shard as a page",
         "The whole population as one JSON document on `127.0.0.1:2599`, rebuilt on the game loop every two "

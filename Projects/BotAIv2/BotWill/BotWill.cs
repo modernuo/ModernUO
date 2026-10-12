@@ -2438,6 +2438,9 @@ public static class BotWill
                 )
             );
 
+            // Counted by the part of the day it was taken in, for the Day: line (PLAN-life A1).
+            BotDay.Took(self, deed);
+
             try
             {
                 Started?.Invoke(self, deed, resolve.Because);

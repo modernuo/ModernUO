@@ -123,7 +123,8 @@ public static class BotRest
     /// <summary>Bots brought back early to hold the floor, this session.</summary>
     public static long Early { get; private set; }
 
-    private static readonly List<(BotMobile Bot, Record Record, double Over)> _due = [];
+    /// <summary>The ones that may tire this look: past their hours, or at their bedtime (<see cref="BotDay.AtBed"/>), who go first.</summary>
+    private static readonly List<(BotMobile Bot, Record Record, double Over, bool AtBed)> _due = [];
 
     private static int _heldByFloor;
 
@@ -223,6 +224,54 @@ public static class BotRest
 
         /// <summary>Until when the rested buff runs, so a restart neither loses it nor grants it twice.</summary>
         public DateTime BuffUntil;
+
+        /// <summary>
+        /// Tired at its bedtime before its hours were up (<see cref="BotDay.AtBed"/>), so the next look does not read "under its
+        /// hours" and wake it again; cleared when it leaves or comes back. Not saved: a process that restarts reads the hour afresh.
+        /// </summary>
+        public bool AtBed;
+    }
+
+    /// <summary>Where a record says the bot sleeps, read off the inn's name the leave wrote into it. See <see cref="BotDay"/>.</summary>
+    internal static BotBedPlace BedOf(Record record) =>
+        record?.Inn == null ? BotBedPlace.Ground
+        : record.Inn == "its own house" ? BotBedPlace.Home
+        : record.Inn.StartsWith(BotCamp.FirePrefix, StringComparison.Ordinal) ? BotBedPlace.Field
+        : BotBedPlace.Inn;
+
+    /// <summary>Who is asleep where, now: the resting bots by the place their record says they left from. For the <c>Day:</c> line.</summary>
+    public static void Sleepers(out int home, out int inn, out int field, out int ground)
+    {
+        home = 0;
+        inn = 0;
+        field = 0;
+        ground = 0;
+
+        var away = BotPopulation.Away;
+
+        for (var i = 0; i < away.Count; i++)
+        {
+            if (away[i] is not { Deleted: false } bot || !_records.TryGetValue(bot.Name ?? "", out var record) || record.RestUntil == default)
+            {
+                continue;
+            }
+
+            switch (BedOf(record))
+            {
+                case BotBedPlace.Home:
+                    home++;
+                    break;
+                case BotBedPlace.Inn:
+                    inn++;
+                    break;
+                case BotBedPlace.Field:
+                    field++;
+                    break;
+                default:
+                    ground++;
+                    break;
+            }
+        }
     }
 
     private static readonly Dictionary<string, Record> _records = new(StringComparer.OrdinalIgnoreCase);
@@ -595,10 +644,16 @@ public static class BotRest
 
             var over = record.PlayedMinutes - record.Hours * 60;
 
-            if (over < 0)
+            // <b>The daily cycle chooses who, not how many (PLAN-life A1).</b> A bot at its bedtime that has played enough of its
+            // hours may tire before they are up, and goes ahead of the ones merely over their hours in the queue below; the
+            // allowance that caps how many tire a look is untouched. One tired that way stays tired (AtBed) until it leaves.
+            var atBed = BotDay.AtBed(bot, record.Hours > 0 ? record.PlayedMinutes / (record.Hours * 60) : 0.0, out _);
+
+            if (over < 0 && !atBed && !(bot.Tired && record.AtBed))
             {
                 bot.Tired = false;
                 record.TiredTick = 0;
+                record.AtBed = false;
                 continue;
             }
 
@@ -608,7 +663,7 @@ public static class BotRest
             }
             else
             {
-                _due.Add((bot, record, over));
+                _due.Add((bot, record, over, atBed));
             }
         }
 
@@ -641,16 +696,23 @@ public static class BotRest
 
         var tiredNow = 0;
 
-        // Longest past their hours first: when the floor binds, those who have played on the most go before the rest.
-        _due.Sort((a, b) => b.Over.CompareTo(a.Over));
+        // Longest past their hours first: when the floor binds, those who have played on the most go before the rest. And since
+        // the daily cycle, the ones whose bedtime it is before any of them, so who is offline makes sense (BotDay).
+        _due.Sort((a, b) => a.AtBed != b.AtBed ? b.AtBed.CompareTo(a.AtBed) : b.Over.CompareTo(a.Over));
 
         for (var i = 0; i < _due.Count; i++)
         {
-            var (bot, record, _) = _due[i];
+            var (bot, record, over, atBed) = _due[i];
 
             if (allowance <= 0)
             {
                 _heldByFloor++;
+
+                if (atBed)
+                {
+                    BotDay.HeldPastBed++;
+                }
+
                 continue;
             }
 
@@ -703,14 +765,26 @@ public static class BotRest
             bot.Tired = true;
             record.TiredTick = tick;
             record.HeldTick = 0;
+            record.AtBed = atBed && over < 0;
             BotCritical.Tired(bot);
 
+            if (atBed)
+            {
+                BotDay.ToBedOnTime++;
+
+                if (over < 0)
+                {
+                    BotDay.ToBedEarly++;
+                }
+            }
+
             logger.Information(
-                "{Name} the {Class}, {Kind}, is tired after {Played:0.0}h of play and takes on nothing new; it leaves when it is free",
+                "{Name} the {Class}, {Kind}, is tired after {Played:0.0}h of play{Bed} and takes on nothing new; it leaves when it is free",
                 bot.Name,
                 bot.Class?.Name,
                 KindName(record),
-                record.PlayedMinutes / 60.0
+                record.PlayedMinutes / 60.0,
+                atBed ? (over < 0 ? " - its bedtime, before its hours" : " - its bedtime") : ""
             );
         }
 
@@ -747,6 +821,13 @@ public static class BotRest
                 // BotRepose.HomeToRest (Patrick's order of 26.09.2026: houses to pass the time in).
                 if (BotRepose.HomeToRest(bot))
                 {
+                    continue;
+                }
+
+                // A bot whose timetable says the field sleeps by a fire before any inn is looked for (BotDay, PLAN-life A1).
+                if (BotDay.PrefersField(bot) && BotCamp.ToFire(bot))
+                {
+                    BotDay.FieldFirst++;
                     continue;
                 }
 
@@ -810,25 +891,31 @@ public static class BotRest
 
             if (present < floor)
             {
-                List<(BotMobile Bot, Record Record)> soon = [];
+                List<(BotMobile Bot, Record Record, bool Awake)> soon = [];
 
                 for (var i = 0; i < away.Count; i++)
                 {
                     if (away[i] is { Deleted: false } bot && _records.TryGetValue(bot.Name ?? "", out var record)
                         && record.RestUntil != default && (record.RestUntil - now).TotalMinutes <= window)
                     {
-                        soon.Add((bot, record));
+                        soon.Add((bot, record, BotDay.Awake(bot)));
                     }
                 }
 
-                soon.Sort((a, b) => a.Record.RestUntil.CompareTo(b.Record.RestUntil));
+                // Whose wake hour has come first (BotDay), then soonest due back, as before.
+                soon.Sort((a, b) => a.Awake != b.Awake ? b.Awake.CompareTo(a.Awake) : a.Record.RestUntil.CompareTo(b.Record.RestUntil));
 
                 var came = 0;
 
                 for (var i = 0; i < soon.Count && present < floor && came < most; i++)
                 {
-                    var (bot, record) = soon[i];
+                    var (bot, record, awake) = soon[i];
                     var early = (record.RestUntil - now).TotalMinutes;
+
+                    if (awake)
+                    {
+                        BotDay.WokeOnTime++;
+                    }
 
                     if (scheduled && early > EarlyMinutes)
                     {
@@ -1052,6 +1139,7 @@ public static class BotRest
 
         record.PlayedMinutes = 0;
         record.TiredTick = 0;
+        record.AtBed = false;
         record.Sessions++;
         record.LeftAt = Core.Now;
         record.RestUntil = Core.Now + TimeSpan.FromHours(rest);
@@ -1129,6 +1217,7 @@ public static class BotRest
             record.RestUntil = default;
             record.PlayedMinutes = 0;
             record.TiredTick = 0;
+            record.AtBed = false;
         }
 
         bot.Tired = false;
