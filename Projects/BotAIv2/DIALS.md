@@ -1582,6 +1582,7 @@ changed without a rebuild.
 | `BotDelve` | `LeaveMs` | `300000` | *code only* |
 | `BotDelve` | `LevyMs` | `2000` | *code only* |
 | `BotDelve` | `LevyWalkingMs` | `10000` | *code only* |
+| `BotDelve` | `LiftWhenBled` | `true` | `LiftWhenBled` |
 | `BotDelve` | `LineReach` | `400` | *code only* |
 | `BotDelve` | `MarchBends` | `2` | *code only* |
 | `BotDelve` | `MarchCapTimes` | `3` | *code only* |
@@ -1598,7 +1599,7 @@ changed without a rebuild.
 | `BotDelve` | `MusterBack` | `48` | *code only* |
 | `BotDelve` | `MusterMs` | `180000` | `MusterMs` |
 | `BotDelve` | `OfferHoldMs` | `15000` | *code only* |
-| `BotDelve` | `Prior` | `260.0` | `Prior` |
+| `BotDelve` | `Prior` | `120.0` | `Prior` |
 | `BotDelve` | `ProgressEveryMs` | `5000` | *code only* |
 | `BotDelve` | `ProgressTiles` | `8` | *code only* |
 | `BotDelve` | `Quota` | `20` | `Quota` |
@@ -1608,6 +1609,8 @@ changed without a rebuild.
 | `BotDelve` | `Sight` | `18` | `Sight` |
 | `BotDelve` | `Station` | `2` | *code only* |
 | `BotDelve` | `SweepMs` | `5000` | *code only* |
+| `BotDelve` | `WeakFloor` | `0.4` | `WeakFloor` |
+| `BotDelve` | `WeakShare` | `0.34` | `WeakShare` |
 | `BotDelve` | `WorkMinutes` | `25.0` | *code only* |
 | `BotDelveModule` | `Enabled` | `true` | *code only* |
 | `BotDelveModule` | `SayEveryMs` | `300000` | *code only* |
