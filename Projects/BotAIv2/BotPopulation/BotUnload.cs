@@ -457,6 +457,21 @@ public sealed class BotUnload : BotDeed
         // A snapshot: storing takes things out of the pack, which mutates the list being read.
         List<Item> carried = [.. pack.Items];
 
+        // <b>From where it stands, the wares go to the box first (12.10.2026, build 434's check).</b> A box with a few places
+        // left fills in the pack's own order otherwise, and logs could take the last place a crafter's arrows needed: what was
+        // made to sell, then the dearest a stone, so whatever the box cannot take is the cheapest to put down. See Dump.
+        if (all)
+        {
+            carried.Sort(
+                (a, b) =>
+                {
+                    var made = b.PlayerConstructed.CompareTo(a.PlayerConstructed);
+
+                    return made != 0 ? made : WorthPerStone(b).CompareTo(WorthPerStone(a));
+                }
+            );
+        }
+
         for (var i = 0; i < carried.Count; i++)
         {
             var item = carried[i];
@@ -1117,7 +1132,7 @@ public sealed class BotUnload : BotDeed
     /// carry stood where it was until it died: Baern the Tamer, 225–276 stones of 222–229 from 09:28 on 10.10.2026 to 11:11 on
     /// 12.10.2026, 1 035 of the 5 920 failures of 11.10 (17.5 %), cured only by the death that put his arrows into one pile.
     /// A kit a bot cannot carry is a wrong kit, and a bot that cannot take a step earns nothing with it; the pass says so
-    /// (a warning naming the heaviest things) and lets go of it, heaviest first, until the bot can walk.
+    /// (a warning naming the heaviest things) and lets go of it, least worth a stone first, until the bot can walk.
     /// </para>
     /// </summary>
     public static bool Releases { get; set; } = true;
@@ -1236,6 +1251,7 @@ public sealed class BotUnload : BotDeed
         var shed = 0;
         var dumped = 0;
         var released = 0;
+        var stocked = 0;
 
         // <b>Not a red's coin (12.10.2026, Fable's review).</b> A red's purse cannot reach a counter and goes to its hideout's
         // chest, and a catch takes everything off it (BotStash); banking it from where it stands would step round that rule.
@@ -1252,9 +1268,10 @@ public sealed class BotUnload : BotDeed
             Shed += shed;
         }
 
+        // Raw surplus first, least worth a stone first; the bot's own wares wait (12.10.2026, build 434's check). See Ware.
         if (BotLadder.Overloaded(body))
         {
-            dumped = Dump(bot, body);
+            dumped = Dump(bot, body, false);
             Dumped += dumped;
         }
 
@@ -1263,13 +1280,20 @@ public sealed class BotUnload : BotDeed
             released = Release(bot, body);
         }
 
+        // The very last step: its own wares, when nothing else is left to put down, counted apart and said with their worth.
+        if (BotLadder.Overloaded(body))
+        {
+            stocked = Dump(bot, body, true);
+            Dumped += stocked;
+        }
+
         _banked = banked;
         _stored = shed;
 
         var after = BotLadder.Load(body);
         var ceiling = BotLadder.Ceiling(body);
-        var did = $"{joined} piles joined, {banked}gp banked, {shed} lots boxed, {dumped} things of no use left on the ground, "
-                  + $"{released} kept things let go";
+        var did = $"{joined} piles joined, {banked}gp banked, {shed} lots boxed, {dumped} surplus things left on the ground, "
+                  + $"{released} kept things let go, {stocked} lots of its own wares left on the ground";
 
         if (after <= ceiling)
         {
@@ -1426,9 +1450,9 @@ public sealed class BotUnload : BotDeed
     }
 
     /// <summary>
-    /// Lets go of the kept things of a bot that is still over its ceiling with nothing else left to part with, heaviest first,
-    /// into its bank box, or onto the ground when the box will not take them, until it can walk. Says so first, as a warning
-    /// naming what it carries. Returns the things let go. See <see cref="Releases"/>.
+    /// Lets go of the kept things of a bot that is still over its ceiling with nothing else left to part with, least worth a
+    /// stone first, into its bank box, or onto the ground when the box will not take them, until it can walk. Says so first, as
+    /// a warning naming what it carries. Returns the things let go. See <see cref="Releases"/>.
     /// </summary>
     private static int Release(IBotWilful bot, Mobile body)
     {
@@ -1439,7 +1463,10 @@ public sealed class BotUnload : BotDeed
             return 0;
         }
 
-        // What is left after Store and Dump is kept by construction: everything over the allowance has gone already.
+        // What is kept, read the way the sale reads it: surplus still here is the bot's own wares, which the last step of the
+        // pass puts down only if it must (12.10.2026, build 434's check). See Dump.
+        var keep = Needed(bot);
+        Dictionary<Type, int> seen = [];
         List<Item> kept = [];
 
         for (var i = 0; i < pack.Items.Count; i++)
@@ -1447,6 +1474,11 @@ public sealed class BotUnload : BotDeed
             var item = pack.Items[i];
 
             if (item == null || item.Deleted || !item.Movable || item is Gold || BotBinding.IsBound(item, bot.Bond))
+            {
+                continue;
+            }
+
+            if (Over(keep, seen, item) > 0)
             {
                 continue;
             }
@@ -1472,14 +1504,23 @@ public sealed class BotUnload : BotDeed
         KitOver++;
 
         logger.Warning(
-            "{Name} is over its ceiling at {Load} of {Ceiling} stones on what it is allowed to keep, which is a kit it cannot carry: {Heaviest}; its kept things go to its bank box, or the ground, heaviest first, until it can walk",
+            "{Name} is over its ceiling at {Load} of {Ceiling} stones on what it is allowed to keep, which is a kit it cannot carry: {Heaviest}; its kept things go to its bank box, or the ground, least worth a stone first, until it can walk",
             body.Name,
             BotLadder.Load(body),
             BotLadder.Ceiling(body),
             Heaviest(bot, body, Census)
         );
 
-        kept.Sort((a, b) => Stones(b).CompareTo(Stones(a)));
+        // Least worth a stone first, as the ground drop goes, and between equals the heavier: a crafter's twenty logs before its
+        // tools and draughts (12.10.2026, build 434's check). See Dump.
+        kept.Sort(
+            (a, b) =>
+            {
+                var order = WorthPerStone(a).CompareTo(WorthPerStone(b));
+
+                return order != 0 ? order : Stones(b).CompareTo(Stones(a));
+            }
+        );
 
         var box = body.BankBox;
         var put = 0;
@@ -1493,7 +1534,7 @@ public sealed class BotUnload : BotDeed
 
             var item = kept[i];
 
-            // Heaviest first, so a thing that weighs nothing means nothing after it can help either.
+            // Never what weighs nothing (filtered above; kept here as the guard): putting it down helps nothing.
             if (Stones(item) <= 0)
             {
                 break;
@@ -1687,20 +1728,67 @@ public sealed class BotUnload : BotDeed
     public static void Withhold() => StuckWithheld++;
 
     /// <summary>
-    /// Puts things on the ground until the bot can walk again, heaviest first.
+    /// Lots of a bot's own wares — what it made, or what a want near waits for — that the ground drop passed over while it put
+    /// raw surplus down instead (12.10.2026, build 434's check). See <see cref="Ware"/>.
+    /// </summary>
+    public static long StockSpared { get; private set; }
+
+    /// <summary>Lots of a bot's own wares put on the ground as the very last step, nothing else being left to put down.</summary>
+    public static long StockGround { get; private set; }
+
+    /// <summary>What those wares were worth at the market's reckoning.</summary>
+    public static long StockGroundWorth { get; private set; }
+
+    /// <summary>
+    /// Whether this surplus lot is one of the bot's wares rather than raw surplus: something the engine's craft system made
+    /// (<c>PlayerConstructed</c>, stamped on every crafted item, and kept only while a pile holds nothing but crafted things),
+    /// or something a want within a carrier's reach waits for (<see cref="BotMarket.Holding"/>). A ware is what the bot's
+    /// shop by the bank and the carriers live on; raw surplus is what a craft or a harvest left over.
+    ///
+    /// <para>
+    /// <b>Build 434, 22:14:41 on 12.10.2026:</b> Yorick Ashdown (Crafter) was 3 stones over at 250 of 247 with 105 arrows he
+    /// had fletched to sell, 20 logs and 20 leather he had just bought; his bank box was full, so nothing was boxed, and the
+    /// drop, heaviest first, put the arrows on the road (about 105gp) where 3 logs would have done. At 22:26 his shop by the
+    /// bank sold 290 things out of that box, and from 22:31 it took his lots again.
+    /// </para>
+    /// </summary>
+    private static bool Ware(IBotWilful bot, Item item, int over, Dictionary<Type, int> held) =>
+        item.PlayerConstructed || BotMarket.Holding(bot, item.GetType(), over, held) > 0;
+
+    /// <summary>
+    /// Gold a unit of this lot is worth for each stone it weighs: the order the ground takes things in, least first. A thing
+    /// that weighs nothing is worth infinitely much a stone, which is the same as never, since putting it down helps nothing.
+    /// A container goes after every other thing that weighs: its own price says nothing of what is in it.
+    /// </summary>
+    private static double WorthPerStone(Item item)
+    {
+        var weight = item.Weight;
+
+        if (weight <= 0.0 && item.TotalWeight <= 0)
+        {
+            return double.MaxValue;
+        }
+
+        return item is Container ? double.MaxValue / 2 : BotMarket.Worth(item.GetType(), 1) / Math.Max(weight, 0.01);
+    }
+
+    /// <summary>
+    /// Puts surplus on the ground until the bot can walk again, least worth a stone first: raw surplus, and with
+    /// <paramref name="wares"/> the bot's own wares (<see cref="Ware"/>), which only the very last step of the pass touches.
     ///
     /// <para>
     /// <b>The last resort for what the market would take, and it only ever runs for a bot that is over its carrying ceiling
     /// after the box has had its turn.</b> Everything it may drop is what the sale would have sold, and only the part of a
-    /// stack over the allowance: the kit stays, whatever the trade is bound to stays, coin stays. What goes is merchandise
-    /// nobody wants, and it goes because a frozen bot earns nothing at all; it is logged with what it was worth.
+    /// stack over the allowance: the kit stays, whatever the trade is bound to stays, coin stays. It is logged with its worth.
     /// </para>
     ///
     /// <para>
-    /// <b>Heaviest first by the pile's own weight (12.10.2026).</b> This sorted by <c>TotalWeight</c>, which is nought for
-    /// anything that is not a container (see <see cref="Weighed"/> for the night that cost), so the order was the pack's own
-    /// and the fewest things never went down for the most relief. And a stack partly over its allowance went down whole; only
-    /// the surplus does now, by the same split <see cref="Store"/> makes.
+    /// <b>Least worth a stone first, and the wares apart (12.10.2026, build 434's check).</b> The first cut of this pass went
+    /// heaviest first, which put Yorick Ashdown's 105 fletched arrows (about 105gp, 11 stones) on the road ahead of his logs
+    /// and leather (a gold or less for two stones) — a crafter's stock thrown away while its raw surplus stayed. Before that,
+    /// it sorted by <c>TotalWeight</c>, nought for anything that is not a container. Raw surplus by worth a stone puts the
+    /// fewest coins on the ground for each stone of relief; the wares wait for the box, and go down only when nothing else is
+    /// left (<see cref="StockGround"/>), counted apart and said with their worth.
     /// </para>
     ///
     /// <para>
@@ -1708,7 +1796,7 @@ public sealed class BotUnload : BotDeed
     /// stuck, not a policy about carrying things.
     /// </para>
     /// </summary>
-    private static int Dump(IBotWilful bot, Mobile body)
+    private static int Dump(IBotWilful bot, Mobile body, bool wares)
     {
         var pack = body?.Backpack;
 
@@ -1719,7 +1807,9 @@ public sealed class BotUnload : BotDeed
 
         var keep = Needed(bot);
         Dictionary<Type, int> seen = [];
-        List<(Item Item, int Over, double Stones)> loose = [];
+        Dictionary<Type, int> held = [];
+        List<(Item Item, int Over, double PerStone)> loose = [];
+        var spared = 0;
 
         for (var i = 0; i < pack.Items.Count; i++)
         {
@@ -1742,11 +1832,25 @@ public sealed class BotUnload : BotDeed
                 continue;
             }
 
-            loose.Add((item, over, Stones(item) * over / (double)Math.Max(1, item.Amount)));
+            if (Ware(bot, item, over, held) != wares)
+            {
+                spared += wares ? 0 : 1;
+
+                continue;
+            }
+
+            loose.Add((item, over, WorthPerStone(item)));
         }
 
-        // Heaviest first, so the fewest things go down for the most relief.
-        loose.Sort((a, b) => b.Stones.CompareTo(a.Stones));
+        // Least worth a stone first; between equals, the heavier lot, so the fewest things go down for the most relief.
+        loose.Sort(
+            (a, b) =>
+            {
+                var order = a.PerStone.CompareTo(b.PerStone);
+
+                return order != 0 ? order : Stones(b.Item).CompareTo(Stones(a.Item));
+            }
+        );
 
         var put = 0;
         var worth = 0L;
@@ -1759,7 +1863,13 @@ public sealed class BotUnload : BotDeed
                 break;
             }
 
-            var (lot, over, _) = loose[i];
+            var (lot, over, perStone) = loose[i];
+
+            // A thing that weighs nothing: nothing after it in this order can help either.
+            if (perStone >= double.MaxValue)
+            {
+                break;
+            }
 
             if (lot.Deleted || lot.Parent != pack)
             {
@@ -1789,19 +1899,43 @@ public sealed class BotUnload : BotDeed
             put++;
         }
 
+        if (!wares)
+        {
+            StockSpared += spared;
+        }
+
         if (put > 0)
         {
             GroundWorth += worth;
 
-            logger.Warning(
-                "{Name} could neither walk nor sell, and has put {Put} things on the ground at {X},{Y} to move again, worth about {Worth}gp: {What}",
-                body.Name,
-                put,
-                body.X,
-                body.Y,
-                worth,
-                string.Join(", ", what)
-            );
+            if (wares)
+            {
+                StockGround += put;
+                StockGroundWorth += worth;
+
+                logger.Warning(
+                    "{Name} could neither walk nor sell, had nothing left to put down but its own wares, and has put {Put} lots of them on the ground at {X},{Y}, worth about {Worth}gp: {What}",
+                    body.Name,
+                    put,
+                    body.X,
+                    body.Y,
+                    worth,
+                    string.Join(", ", what)
+                );
+            }
+            else
+            {
+                logger.Warning(
+                    "{Name} could neither walk nor sell, and has put {Put} things on the ground at {X},{Y} to move again, worth about {Worth}gp, least worth a stone first ({Spared} lots of its own wares kept): {What}",
+                    body.Name,
+                    put,
+                    body.X,
+                    body.Y,
+                    worth,
+                    spared,
+                    string.Join(", ", what)
+                );
+            }
         }
 
         return put;
@@ -2094,7 +2228,8 @@ public sealed class BotUnload : BotDeed
         return $"over the ceiling now: {over} bots, stuck over the ceiling: {stuck} bots{who}; the stand-still pass: "
                + $"{StoodBanked}gp banked from where a bot stood, {KitOver} packs over on their kept things alone ({Released} kept "
                + $"things let go, {ReleasedBoxed} to the box and {ReleasedGround} to the ground), {GroundWorth}gp of things left on the "
-               + $"ground, {StuckTrips} bots set aside by the breaker ({StuckFails} passes no lighter in {StuckWindowMs / 60000} "
+               + $"ground; wares: {StockSpared} lots spared by the ground drop, {StockGround} lots put down last ({StockGroundWorth}gp); "
+               + $"{StuckTrips} bots set aside by the breaker ({StuckFails} passes no lighter in {StuckWindowMs / 60000} "
                + $"minutes), {StuckWithheld} offers withheld (one a review)";
     }
 
