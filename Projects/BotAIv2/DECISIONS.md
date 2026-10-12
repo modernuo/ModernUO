@@ -631,7 +631,14 @@ first sign is a behaviour, not an error. **Remedy.** Read the fork's source firs
 
 ### 4.1 Full entries, newest first
 
-**12.10.2026 · live 02:05 · A catch leaves the weapon; the caught get theirs back**
+**12.10.2026 · build 434 (written by a Fable agent: w2) · Work put down for a company is kept until the company lets the bot go**
+- *Patrick:* the work share stands at 91–92 % against 95 %; W2 of the week's plan — work put down for a company is not taken up again.
+- *What there was:* `AsideCapMs` (10 min) was timed from the put-down, and 2 000 of 10 181 enlistments on 11.10 outlasted it; of the work put down beneath them 2 of 1 578 pieces were taken up again, the rest dropped "not taken up again after enlist: it was put down for N minutes" — 1 351 of 4 332 drops (31 %; 3 472 of 13 672 on 09–10.10). The work was not stale: after a shorter company it was taken up 95 % and finished 90 % of the time; 116 bots retook the same kind within two minutes and finished it 77 of 83 times. The press itself was never counted as a drop; the 963 "pressed to enlist" drops were non-resumable kinds, 564 of them skulk and supply.
+- *Decision:* `BotDeed.Keeps` (enlist, rally): a kept pause is timed from the beat the bot is first free to take the work up, the same ten minutes; ceiling `KeptCapMs` = 60 min; switch `Keep`; counters `KeptForCompany`, `KeptPastCap`, `KeptLapsed`, `KeptLate`, `KeptStale` on `Resolve:` (counted only where the work is settled dropped). Skulk and supply resume: a stint's clock is moved by the pause and it practises where the bot stands, but refuses (`Stale`: a cell, underground, ground not clear, a foe within `BotBolt.Watch`) where the company left it, counted in `BotSkulk.StaleResumes`; the itch does not press over an enlistment; a supply run with its batch bought is spared from ordinary calls like a delivery (`Carrying`), and forgets its walk's best distance on resume. Not done: `drill-in`, inscribe, homeward/guard-duty's "jumped by meet", `Expected` re-reckoning.
+- *Checked:* build `Ошибок: 0`; measured in L1/L2 only (not run); two Fable reviews (A: ship with two follow-ups, B: ship after three fixes) — all six items in the second commit. After deploy: the phrase's rate 132/h → 0, press-drops 94/h → ~40/h, `KeptPastCap` ≈ 150/h, `died doing skulk` not above 2/h, share 91.1 → 92.3–92.6 %.
+- *Status:* built on `agent/w2` (two commits), reviewed, not deployed.
+
+**12.10.2026 · build 433 (live 02:05, fixes 02:08) · A catch leaves the weapon; the caught get theirs back**
 
 - *Patrick (12.10, night):* "when The Shadow are caught everything is taken, but the weapon should be left"; then
   "give the current bandits their weapons back", and "the bound weapon must not be taken".
