@@ -8,6 +8,12 @@
   "Purse": 400,
   "Run": true,
   "Roam": 1000,
+  "Unload": {
+    "StuckFails": 3,
+    "StuckWindowMs": 600000,
+    "JoinMs": 60000,
+    "Releases": true
+  },
   "Growth": {
     "Most": 450,
     "FillTo": 450,
