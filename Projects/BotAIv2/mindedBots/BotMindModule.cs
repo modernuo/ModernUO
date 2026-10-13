@@ -47,6 +47,10 @@ public sealed class BotMindModule : BotModule
             BotOllama.LastMs
         );
 
+        // The model as the island's chronicler: the stories' one seam to it, filled whether or not any mind is running, since the
+        // stories are the population's and the model is the machine's (PLAN-life A3, 13.10.2026). See BotStoryVoice.
+        BotStoryVoice.Open();
+
         // Both of these are for minds that exist. With none running, the proposer would be asked for an
         // offer for every bot on every beat only to answer nothing, and the boot line below would announce
         // three thinkers that are not there — which is the same fault as the log file: a subsystem that is
@@ -102,6 +106,7 @@ public sealed class BotMindModule : BotModule
 
     public override void Reset()
     {
+        BotStoryVoice.Close();
         BotMinds.Stop();
         BotOllama.Forget();
     }

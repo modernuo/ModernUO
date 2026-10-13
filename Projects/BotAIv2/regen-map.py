@@ -415,6 +415,27 @@ BLOCKS = {
          "seconds puts it where the registry says. Never delete a `BotRelicItem` by hand without `do relic <name> ; hide`.",
          "A restart hides a relic that was in a lair and takes its warden away; every other relic stays where it was."],
     ),
+    "BotStory": (
+        "each bot's story and the island's Chronicle",
+        "PLAN-life A3, 13.10.2026. Every bot has a book of notes (`BotStoryBook`), written from two places: the event stream "
+        "as each event is posted (`BotEvents.Heard` → `BotStory.Heard`: offices, elections, relics, crime's turning points, "
+        "residences, halls and the guild services opened) and a slow walk over the population that notices what no event says "
+        "(a guild joined or left, a rank risen, a house bought, the champion's yellow, the veteran's title). `BotStoryWriter` "
+        "turns a book, the biography's three tales and the strongest ties into chapters by stage — youth, apprenticeship, the "
+        "guild, deeds, friends and foes, home, family, old age — one dated sentence a fact; that template is always the story. "
+        "When the minds assembly is loaded, `BotStoryVoice` asks the model to retell one chapter or one closed day, at most "
+        "`VoicePerHour` an hour, once for each set of facts (kept against their hash in the save), and the answer is thrown "
+        "away if it names anybody or any number the facts do not. `BotChronicle` keeps a page a day of the wars, guilds, "
+        "champions, relics, elections, the duke's words and the towns' news. The page reads both through volatile snapshots "
+        "(`/api/story?bot=`, `/api/chronicle`, the Story tab).",
+        ["The model's HTTP call is the only thing off the loop, inside `BotOllama`; the answer comes back through "
+         "`Core.LoopContext.Post` and is checked and stored on the loop. Nothing on a listener thread touches a book: it "
+         "reads the shelf and posts the name it was asked for.",
+         "A book is keyed by name, like a life. The first two minutes after a start (`SettleMs`) are taken as where a bot "
+         "stands, not as news — ranks are worked out and houses adopted a few seconds after the reclaim, and without the "
+         "settle every restart wrote \"became an Expert Tailor\" for the whole population.",
+         "`do reset` empties the store through `BotStory.Wipe` and seals the stories until the restart."],
+    ),
     "BotQuad": (
         "the island as squares",
         "The map cut into squares thirty tiles across, each carrying one number: how safe the population has "
@@ -558,6 +579,7 @@ LINES = {
     "BotQuest": ["Quests:"],
     "BotQuad": ["The captain:"],
     "mindedBots": ["Minds:"],
+    "BotStory": ["Stories:"],
 }
 
 TYPE_SUMMARY = re.compile(

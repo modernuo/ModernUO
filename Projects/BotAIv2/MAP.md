@@ -122,6 +122,7 @@ there is.
 | `Relics:` | `BotRelics/BotRelicsModule.cs` | `BotRelics` (the registry: town relics hidden and held, banners and trophies, hangings, handovers, war's spoils, grudges, revenge let past a truce, banner ransoms and returns, the fence's ransoms and sales, rebates at the relic's town and Great Fairs), `BotRelicLair` (lairs laid, captains, companies, wardens, cleared, lapsed, deaths), `BotRelicHomeward`, `BotRelicSnatch` — 07.10.2026 |
 | `Stewards:` | `BotPolitics/BotStewardship.cs` | each town's steward (`BotStewardship`): tax, coffer, regard; chosen and deposed; decrees by kind and by rule, model or Argus (`BotStewardshipDecrees`); the coffers' coin drawn, taxed, paid and held; bars, refused work and walks turned back — 07.10.2026 |
 | `Events:` | `BotEvents/BotSeasons.cs` | `BotInvasion` (raids called, answered, waves, heads, kills, deaths on the field, head money), `BotMilitia`, `BotFair` (counter prices, fairgoers, lottery), `BotCaravans` (posted, led, arrived, lost, wages, premiums), `BotNight`, `BotRumour`, and the city's coin held, paid and handed back — 07.10.2026 |
+| `Stories:` | `BotStory/BotStoryModule.cs` | `BotStory` (books opened, born or found, chapters by stage, stories with three chapters or more and with three of things seen to happen, notes from births, events and the walk, build time per story, the model's asks, answers, kept and thrown away by reason, slot busy, chapters retold and waiting, reads in the model's words and the template's), `BotChronicle` (days, entries today, recorded by kind, repeats, past a full page, days retold) — PLAN-life A3, 13.10.2026 |
 
 `Spells ready:` is written once at boot by `BotSpells/BotSpellsModule.cs`, not every five minutes.
 
@@ -1173,6 +1174,7 @@ The four crafters — and from 07.09.2026 nobody else — choose what to do next
 | `BotMindTalk.cs` | The one place the thinking bots can hear each other. |
 | `BotMinds.cs` | What is kept between sessions: one bot's name and the rules it has written for itself. |
 | `BotOllama.cs` | The only thing in this assembly that talks to the model, and the only thing that leaves the game thread. |
+| `BotStoryVoice.cs` | The model as the island's chronicler: one chapter or one closed day retold from its dated facts, when the model's slot is free. |
 
 ### `mindedBots/debugger/` — Argus, the observer
 
@@ -1363,6 +1365,24 @@ Politics inside the guilds and the towns, Patrick's order of 07.10.2026: a guild
 | `BotReachSnapshot.cs` | The reach map as one solve left it: a class for every tile, and for a tile whose standing places differ (a bridge over a road, a roof over a room) the class of each with its height. |
 | `BotReachSolve.cs` | What one tile of the map is to a walker. |
 | `BotReachWeb.cs` | The reach map on the dashboard: a summary the loop writes, and the tiles themselves, cut out of the immutable snapshot on the listener's own threads. |
+
+### `BotStory/` — each bot's story and the island's Chronicle
+
+PLAN-life A3, 13.10.2026. Every bot has a book of notes (`BotStoryBook`), written from two places: the event stream as each event is posted (`BotEvents.Heard` → `BotStory.Heard`: offices, elections, relics, crime's turning points, residences, halls and the guild services opened) and a slow walk over the population that notices what no event says (a guild joined or left, a rank risen, a house bought, the champion's yellow, the veteran's title). `BotStoryWriter` turns a book, the biography's three tales and the strongest ties into chapters by stage — youth, apprenticeship, the guild, deeds, friends and foes, home, family, old age — one dated sentence a fact; that template is always the story. When the minds assembly is loaded, `BotStoryVoice` asks the model to retell one chapter or one closed day, at most `VoicePerHour` an hour, once for each set of facts (kept against their hash in the save), and the answer is thrown away if it names anybody or any number the facts do not. `BotChronicle` keeps a page a day of the wars, guilds, champions, relics, elections, the duke's words and the towns' news. The page reads both through volatile snapshots (`/api/story?bot=`, `/api/chronicle`, the Story tab).
+
+**Module** `BotStoryModule` · **Config** `bot-story.json` · **Writes** `Stories:`
+
+- **Trap.** The model's HTTP call is the only thing off the loop, inside `BotOllama`; the answer comes back through `Core.LoopContext.Post` and is checked and stored on the loop. Nothing on a listener thread touches a book: it reads the shelf and posts the name it was asked for.
+- **Trap.** A book is keyed by name, like a life. The first two minutes after a start (`SettleMs`) are taken as where a bot stands, not as news — ranks are worked out and houses adopted a few seconds after the reclaim, and without the settle every restart wrote "became an Expert Tailor" for the whole population.
+- **Trap.** `do reset` empties the store through `BotStory.Wipe` and seals the stories until the restart.
+
+| file | decides |
+|---|---|
+| `BotChronicle.cs` | Which events are the island's history, and the Chronicle's page a day of them. |
+| `BotStory.cs` | What goes into a bot's book, when its story is rebuilt and handed to the page, and which chapter the model retells next. |
+| `BotStoryBook.cs` | One bot's book: when the chronicle first saw it, what it was then, its notes, and the chapters the model retold. |
+| `BotStoryModule.cs` | The stories as a module: reads bot-story.json, listens to the event stream, starts the story's clock and the Stories: line. |
+| `BotStoryWriter.cs` | The chapters by template, and the check that throws away a retelling which names anything the facts do not. |
 
 ### `BotTraders/`
 

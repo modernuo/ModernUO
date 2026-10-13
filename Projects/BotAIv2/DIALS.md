@@ -3238,6 +3238,34 @@ changed without a rebuild.
 | `BotReachSolve` | `LargestKept` | `32` | *code only* |
 | `BotReachWeb` | `MostCells` | `2 * 1024 * 1024` | *code only* |
 
+## `BotStory/`  —  `bot-story.json`
+
+| class | dial | default | config key |
+|---|---|---|---|
+| `BotChronicle` | `EveryMs` | `60000` | `ChronicleEveryMs` |
+| `BotChronicle` | `MostDays` | `30` | `ChronicleDays` |
+| `BotChronicle` | `MostPerDay` | `80` | `ChroniclePerDay` |
+| `BotChronicle` | `RepeatDayBelow` | `30.0` | `ChronicleRepeatDayBelow` |
+| `BotChronicle` | `RepeatMinutes` | `30` | `ChronicleRepeatMinutes` |
+| `BotChronicle` | `VoiceLeast` | `4` | `ChronicleVoiceLeast` |
+| `BotChronicle` | `VoiceMostFacts` | `30` | `ChronicleVoiceMostFacts` |
+| `BotStory` | `EveryMs` | `300000` | `EveryMs` |
+| `BotStory` | `MostBooks` | `1500` | `MostBooks` |
+| `BotStory` | `MostNotes` | `40` | `MostNotes` |
+| `BotStory` | `MostWanted` | `20` | `MostWanted` |
+| `BotStory` | `OldAgeDays` | `14` | `OldAgeDays` |
+| `BotStory` | `PublishEveryMs` | `10000` | `PublishEveryMs` |
+| `BotStory` | `Running` | `true` | `Running` |
+| `BotStory` | `SettleMs` | `120000` | `SettleMs` |
+| `BotStory` | `TickMs` | `2000` | `TickMs` |
+| `BotStory` | `VoiceLeastFacts` | `3` | `VoiceLeastFacts` |
+| `BotStory` | `VoiceMostChars` | `1200` | `VoiceMostChars` |
+| `BotStory` | `VoiceMostWords` | `150` | `VoiceMostWords` |
+| `BotStory` | `VoiceModel` | `""` | `VoiceModel` |
+| `BotStory` | `VoicePerHour` | `6` | `VoicePerHour` |
+| `BotStory` | `Voiced` | `true` | `Voiced` |
+| `BotStoryModule` | `SayEveryMs` | `300000` | `SayEveryMs` |
+
 ## `BotTraders/`  —  `bot-traders.json`
 
 | class | dial | default | config key |

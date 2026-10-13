@@ -290,6 +290,18 @@ td .hp i.crit { background: var(--crit); }
 #detail .head { display: flex; align-items: center; gap: 8px; }
 #detail .head b { font-size: 15px; }
 .mini td, .mini th { padding: 3px 6px; font-size: 12px; }
+/* ---------- story and chronicle (/api/story, /api/chronicle; PLAN-life A3) ---------- */
+.stHead { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+.stHead b { font-size: 15px; }
+.stCh { margin: 0 0 12px; }
+.stCh h4 { margin: 0 0 4px; font-size: 13px; display: flex; gap: 8px; align-items: center; }
+.stCh p { margin: 0 0 4px; line-height: 1.5; max-width: 76ch; }
+.stTag { font-size: 10.5px; font-weight: 500; padding: 1px 6px; border-radius: 8px; background: var(--surface-3); color: var(--muted); }
+.stFacts { margin: 2px 0 0 18px; padding: 0; font-size: 11.5px; color: var(--muted); }
+.stDay { border: 1px solid var(--border); border-radius: 6px; padding: 6px 8px; margin-bottom: 6px; }
+.stDay summary { cursor: pointer; font-weight: 600; }
+.stDay p { line-height: 1.5; max-width: 90ch; }
+.stRow { display: grid; grid-template-columns: 44px 76px minmax(0, 1fr); gap: 6px; font-size: 12px; padding: 2px 0; }
 /* ---------- live window (/api/live, /api/debuggers) ---------- */
 #liveGrid { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
 .lvBox { border: 1px solid var(--border); border-radius: 8px; padding: 10px; min-width: 0; }
@@ -446,7 +458,7 @@ a.subj { cursor: pointer; font-weight: 600; }
       <div class="card-b" id="zoneBody"></div>
     </section>
     <section id="detail" class="card hidden">
-      <div class="card-h"><h2>Bot</h2><span class="spacer" style="flex:1"></span><button id="btnLive" title="Watch this bot live, once a second">live</button><button id="btnCentre" title="Centre the map on this bot">centre</button><button id="btnClose">close</button></div>
+      <div class="card-h"><h2>Bot</h2><span class="spacer" style="flex:1"></span><button id="btnLive" title="Watch this bot live, once a second">live</button><button id="btnStory" title="This bot's life story">story</button><button id="btnCentre" title="Centre the map on this bot">centre</button><button id="btnClose">close</button></div>
       <div class="card-b" id="detailBody"></div>
     </section>
     <section id="events" class="card">
@@ -480,6 +492,7 @@ a.subj { cursor: pointer; font-weight: 600; }
       <button data-tab="craft">Craft</button>
       <button data-tab="log">Log</button>
       <button data-tab="live" title="One bot once a second, and what the debuggers are doing and thinking">Live</button>
+      <button data-tab="story" title="Each bot's life story in chapters, and the island's Chronicle by day">Story</button>
     </div>
 
     <div class="pane on" data-pane="bots">
@@ -583,6 +596,24 @@ a.subj { cursor: pointer; font-weight: 600; }
       </div>
       <pre id="logOut" class="mono"></pre>
     </div>
+    <div class="pane" data-pane="story">
+      <div class="toolbar">
+        <input type="search" id="stName" placeholder="a bot's name…" list="stNames" autocomplete="off">
+        <datalist id="stNames"></datalist>
+        <button id="stGo" title="Show this bot's story; its chapters go first to the model">show</button>
+        <button id="stSel" title="The bot selected on the map or in the table">selected bot</button>
+        <label title="The dated facts each chapter is written from, and the template beside the model's words"><input type="checkbox" id="stFactsBox"> facts</label>
+        <span class="sp"></span>
+        <span class="muted" id="stInfo"></span>
+      </div>
+      <div class="cols">
+        <div><h3>Stories <span class="count" id="stCount"></span></h3><div class="list" id="stIndex" style="max-height:560px;overflow:auto"></div></div>
+        <div style="grid-column: span 2"><h3>Life</h3><div id="stStory"><div class="muted">Pick a bot: its life in chapters, by template from what the shard saw happen, and in the model's words where it has retold a chapter.</div></div></div>
+      </div>
+      <h3 style="margin-top:14px">The Chronicle <span class="count" id="stDays"></span></h3>
+      <div id="stChronicle"></div>
+    </div>
+
     <div class="pane" data-pane="live">
       <div class="toolbar">
         <input type="search" id="liveName" placeholder="bot name…" list="liveNames" autocomplete="off">
@@ -2309,6 +2340,7 @@ function showTab(name) {
   if (name === 'log' && !$('#logOut').textContent) loadLog();
   if (name === 'work') renderHistory();
   if (name === 'live') lvShow();
+  if (name === 'story') stShow();
   if (name === 'needs' && S.state) renderNeeds(S.state.needs || {});
 }
 $$('#tabbar button').forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
@@ -3119,6 +3151,81 @@ $('#liveName').addEventListener('keydown', e => { if (e.key === 'Enter') lvSet($
 $('#btnLive').addEventListener('click', () => { if (S.selected) lvSet(S.selected); showTab('live'); $('#tabs').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
 window.addEventListener('resize', () => { if (S.tab === 'live') { if (ISO.on) isoRequest(); else lvDraw(LV.frame); } });
 (() => { let nm = null; try { nm = localStorage.getItem('botweb.live'); } catch (e) { nm = null; } if (nm) { LV.bot = nm; $('#liveName').value = nm; } })();
+
+// ================================================================ story and chronicle (PLAN-life A3)
+const ST = { bot: null, story: null, index: null, names: '', open: null };
+function stSet(name) {
+  const nm = str(name).trim();
+  if (!nm) return;
+  ST.bot = nm; ST.story = null;
+  $('#stName').value = nm;
+  try { localStorage.setItem('botweb.story', nm); } catch (e) { /* storage blocked */ }
+  stLoadStory(0);
+}
+// poll: the tab's own half-minute refresh, which the shard does not count as a read (a3 review B).
+async function stLoadStory(tries, poll) {
+  const nm = ST.bot;
+  if (!nm) return;
+  const d = await getJSON('/api/story?bot=' + encodeURIComponent(nm) + (poll ? '&poll=1' : ''));
+  if (nm !== ST.bot) return;
+  if (!d) {
+    // A story not yet in the snapshot is built on the loop within a few seconds of being asked for.
+    $('#stStory').replaceChildren(el('div', { class: 'muted', text: tries < 3 ? `building ${nm}'s story…` : `no story for ${nm}: not a bot the shard knows, or the stories are off` }));
+    if (tries < 3) setTimeout(() => stLoadStory(tries + 1, poll), 2500);
+    return;
+  }
+  ST.story = d;
+  stRenderStory();
+}
+function stRenderStory() {
+  const d = ST.story;
+  if (!d) return;
+  const facts = $('#stFactsBox').checked;
+  const who = [str(d.rank) || str(d.class), d.guild ? 'of ' + d.guild : '', (d.born ? 'born ' : 'first seen ') + str(d.firstSeen).slice(0, 10), d.inWorld ? '' : 'not in the world now'].filter(Boolean).join(' · ');
+  const head = el('div', { class: 'stHead' }, el('b', { text: str(d.bot) }), el('span', { class: 'muted', text: who }), el('span', { class: 'muted', text: `${fmtInt(d.count)} chapters, ${fmtInt(d.lived)} of things seen to happen · built ${timeOf(str(d.built).slice(11))}` }));
+  const chapters = (d.chapters || []).map(c => el('div', { class: 'stCh' },
+    el('h4', { text: str(c.title) }, c.voiced ? el('span', { class: 'stTag', title: 'retold by the model from the facts of this chapter, checked to name nobody and no number the facts do not', text: 'in the model\'s words' }) : null),
+    c.voiced ? el('p', { text: c.voiced }) : (c.text ? el('p', { text: c.text }) : null),
+    c.tally ? el('p', { class: 'muted', text: c.tally }) : null,
+    facts && c.voiced && c.text ? el('p', { class: 'muted', text: 'template: ' + c.text }) : null,
+    facts && (c.facts || []).length ? el('ul', { class: 'stFacts' }, (c.facts || []).map(f => el('li', { text: str(f) }))) : null));
+  $('#stStory').replaceChildren(head, ...(chapters.length ? chapters : [el('div', { class: 'muted', text: 'no chapter yet' })]));
+}
+async function stLoadIndex() {
+  const d = await getJSON('/api/story');
+  if (!d) { $('#stInfo').textContent = 'the stories are off or not built yet'; return; }
+  ST.index = d;
+  const list = d.stories || [];
+  $('#stCount').textContent = `(${fmtInt(d.books)} books, the fullest ${list.length})`;
+  $('#stIndex').replaceChildren(...list.map(s => el('div', { class: 'it', onclick: () => stSet(s.bot) },
+    el('div', { class: 't' }, el('b', { text: str(s.bot) }), el('span', { class: 'muted', text: `${fmtInt(s.chapters)} ch · ${fmtInt(s.lived)} lived` })),
+    el('div', { class: 'd', text: [str(s.class), s.guild ? 'of ' + s.guild : '', s.born ? 'born under the chronicle' : ''].filter(Boolean).join(' · ') }))));
+  const names = S.bots.map(b => str(b.name)).filter(Boolean).sort();
+  const key = names.join('|');
+  if (key !== ST.names) { ST.names = key; $('#stNames').replaceChildren(...names.map(n => el('option', { value: n }))); }
+  const st = S.state && S.state.stories;
+  $('#stInfo').textContent = st ? `${fmtInt(st.threeChapters)} of ${fmtInt(st.books)} with 3 chapters or more · the model ${st.voiced ? (st.wired ? `on, ${fmtInt(st.voiceKept)} kept of ${fmtInt(st.voiceAnswered)} answered` : 'on but not wired') : 'off'} · ${fmtInt(st.buildMeanUs)} µs a story` : '';
+}
+async function stLoadChronicle() {
+  const d = await getJSON('/api/chronicle');
+  if (!d) return;
+  const days = d.days || [];
+  $('#stDays').textContent = `(${days.length} days)`;
+  // The days a reader opened stay open across the half-minute refresh; until one is touched, the newest is open.
+  if (ST.open === null) ST.open = new Set(days.length ? [str(days[0].day)] : []);
+  $('#stChronicle').replaceChildren(...(days.length ? days.map(day => el('details', { class: 'stDay', open: ST.open.has(str(day.day)) ? 'open' : null, ontoggle: ev => { if (ev.target.open) ST.open.add(str(day.day)); else ST.open.delete(str(day.day)); } },
+    el('summary', { text: `${str(day.title)} · ${fmtInt(day.count)} entries${day.voiced ? ' · in the chronicler\'s words' : ''}` }),
+    day.voiced ? el('p', { text: day.voiced }) : null,
+    ...(day.entries || []).map(e => el('div', { class: 'stRow' }, el('span', { class: 'muted', text: str(e.at) }), el('span', { class: 'muted', text: str(e.kind) }), el('span', { text: str(e.text) }))))) : [el('div', { class: 'muted', text: 'nothing kept yet' })]));
+}
+function stShow(poll) { stLoadIndex(); stLoadChronicle(); if (ST.bot) stLoadStory(0, poll); }
+$('#stGo').addEventListener('click', () => stSet($('#stName').value));
+$('#stName').addEventListener('keydown', e => { if (e.key === 'Enter') stSet($('#stName').value); });
+$('#stSel').addEventListener('click', () => { if (S.selected) stSet(S.selected); });
+$('#stFactsBox').addEventListener('change', stRenderStory);
+$('#btnStory').addEventListener('click', () => { if (S.selected) stSet(S.selected); showTab('story'); $('#tabs').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+setInterval(() => { if (S.tab === 'story') stShow(true); }, 30000);
+(() => { let nm = null; try { nm = localStorage.getItem('botweb.story'); } catch (e) { nm = null; } if (nm) { ST.bot = nm; $('#stName').value = nm; } })();
 
 // ================================================================ theme
 function applyTheme(t) {

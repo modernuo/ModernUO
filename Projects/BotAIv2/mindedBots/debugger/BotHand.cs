@@ -1105,6 +1105,10 @@ public static class BotHand
         // And the guilds' runes (reset26 review): kept by the guild's name, so a guild founded again under an old name inherited them.
         // Guild property, not the island's map: the danger map, the zones and the roads stay. See BotRuneShelf.Wipe.
         var runes = BotRuneShelf.Wipe();
+
+        // And the stories and the island's Chronicle (PLAN-life A3, 13.10.2026): a new world has no history, and a name born again
+        // starts a new book. The store writes itself empty at the save below. See BotStory.Wipe.
+        var stories = BotStory.Wipe();
         var unheld = BotCity.Unhold();
 
         var saving = SaveWiped(0);
@@ -1114,7 +1118,7 @@ public static class BotHand
                + $"the market, the wants and the board of errands emptied, the city's wants and bounties and the championship's record forgotten, every crime and the band forgotten, the guilds disbanded, "
                + $"{lives} bots' characters, ties and tales forgotten, {timetables} timetables forgotten, {charters} charters let go, {colonies} colonies given up with their stores, {wanted} names struck off the books on crime, {loans} loans and {posts} officers' posts with the guilds' stores and kit debts, "
                + $"the politics and the stewardships ({coffers}gp of coffers and watches' wages back into the treasury), the events ({held}gp of their holds back to the purse and the crown), "
-               + $"{relics} relic items taken out of the world (the town relics hidden again), {runes} guilds' runes forgotten, the seizures, the guild splits and widenings, {unheld}gp held for nobody back into the treasury; "
+               + $"{relics} relic items taken out of the world (the town relics hidden again), {runes} guilds' runes forgotten, {stories} bots' stories and the Chronicle forgotten, the seizures, the guild splits and widenings, {unheld}gp held for nobody back into the treasury; "
                + $"everything known about what pays where wiped (the island's danger map, the zones and the roads walked are kept); "
                + (saving
                    ? "the world is being saved"

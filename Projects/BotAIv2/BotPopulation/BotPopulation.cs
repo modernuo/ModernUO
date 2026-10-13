@@ -852,12 +852,19 @@ public static class BotPopulation
         // the belongings are still built from nothing.
         BotProgress.Restore(bot);
 
+        // Whether its character is drawn fresh rather than read back: read before BotTraits.Born, which marks it announced. A fresh
+        // character is a birth for its story (PLAN-life A3, 13.10.2026). See BotStory.Born.
+        var fresh = BotLives.Of(bot) is { Fresh: true };
+
         // Its nature, read back or drawn from its name; said in the log when it is a newcomer after the boot (07.10.2026,
         // traits17). See BotTraits.Born.
         BotTraits.Born(bot, BotCharacterModule.Started);
 
         // Its town of residence before it is put down, so it is born there (29.09.2026). See BotResidence.Raised.
         BotResidence.Raised(bot);
+
+        // Its story: a birth in its town when the character is fresh, else the book found or opened as it stands.
+        BotStory.Born(bot, fresh);
 
         if (!TryPlace(bot))
         {
