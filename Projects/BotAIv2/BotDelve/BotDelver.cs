@@ -289,9 +289,21 @@ public sealed class BotDelver : IBotProposer
 
         var round = muster == Point3D.Zero ? body.Location : muster;
 
-        if (Raisable(map, body, round, BotDelve.Reach, out var lines) + 1 < least)
+        // <b>Counted with the floor (12.10.2026, build 434).</b> The call fills its weak seats (BotDelve.WeakShare) and no more, and
+        // the descent lets go whoever is beyond the seats of the party that stood up; a call that could raise bodies enough but
+        // not enough holding the floor is a call that cannot fill, and is not offered — counted apart from Unraisable.
+        var bodies = Raisable(map, body, round, BotDelve.Reach, deep, out var lines, out var all);
+
+        if (bodies < least)
         {
-            Unraisable++;
+            if (all >= least)
+            {
+                ShortOfFloor++;
+            }
+            else
+            {
+                Unraisable++;
+            }
 
             return null;
         }
@@ -339,17 +351,35 @@ public sealed class BotDelver : IBotProposer
     /// <summary>Delves not offered because another call was already gathering within its reach. See <c>BotDelve.CallingNear</c>.</summary>
     public static long Answering { get; private set; }
 
-    /// <summary>How many bots the call could raise within <paramref name="reach"/> of <paramref name="round"/> (its muster), by the tests <see cref="Gather"/> uses.</summary>
-    private static int Raisable(Map map, Mobile leader, Point3D round, int reach, out int lines)
+    /// <summary>Offers not made because, though bodies enough stood within the call's reach, too few of them hold the dungeon's floor to fill the party's seats. See <c>BotDelve.WeakShare</c>.</summary>
+    public static long ShortOfFloor { get; private set; }
+
+    /// <summary>
+    /// How many the party could go down with, the leader included, within <paramref name="reach"/> of <paramref name="round"/> (its
+    /// muster), by the tests <see cref="Gather"/> uses: every body that holds the dungeon's floor, and of those under it as many
+    /// as the smallest party that may go down keeps seats for (<c>BotDelve.WeakSeats</c> of <c>BotDelve.Least</c>). That is the
+    /// effective rule stated as a go/no-go: at least <c>Least − ⌊Least × WeakShare⌋</c> bodies over the floor must stand in reach
+    /// (5 of the Orc Caves' 7 at a third, 6 at a quarter) — the same question the descent asks of the party that stood up, since a
+    /// larger party keeps more seats and never fewer. <paramref name="all"/> is the count without the floor, the old answer.
+    /// </summary>
+    private static int Raisable(Map map, Mobile leader, Point3D round, int reach, BotDungeon.Deep deep, out int lines, out int all)
     {
-        var count = 0;
+        var strong = 0;
+        var weak = 0;
         lines = 0;
 
         foreach (var mobile in map.GetMobilesInRange<Mobile>(round, reach))
         {
             if (mobile != leader && mobile is BotMobile other && Eligible(other) && !BotRegard.Hostile(leader, other))
             {
-                count++;
+                if (BotDelve.Weak(other, deep))
+                {
+                    weak++;
+                }
+                else
+                {
+                    strong++;
+                }
 
                 if (other.Class?.Role == BotRole.Melee)
                 {
@@ -358,7 +388,18 @@ public sealed class BotDelver : IBotProposer
             }
         }
 
-        return count;
+        if (BotDelve.Weak(leader, deep))
+        {
+            weak++;
+        }
+        else
+        {
+            strong++;
+        }
+
+        all = strong + weak;
+
+        return strong + Math.Min(weak, BotDelve.WeakSeats(BotDelve.Least(map, deep)));
     }
 
     /// <summary>How many who could hold a line the call could raise within <paramref name="reach"/> of its muster. See <see cref="Propose"/>.</summary>
@@ -1125,7 +1166,7 @@ public sealed class BotDelver : IBotProposer
             ? $"no guild member has ever been offered a delve ({NotALeader} answers went to bots in no guild)"
             : $"{Asked} times a guild member was asked: {Offered} were offered a dungeon and {Taken} took one, {Held} were already leading a company, "
             + $"{Unfit} were too hurt, {Unsupplied} lacked their supplies, {Resting} came too soon after a call that failed, {TooSoon} too soon after their band's last delve, "
-            + $"{Unsurveyed} found nothing surveyed, {Crowded} found every dungeon they could survive already full, {Unraisable} could not raise the party's floor within the call's reach of its muster, {Lineless} could raise nobody there to hold a line, {Answering} left to a call already gathering near them, "
+            + $"{Unsurveyed} found nothing surveyed, {Crowded} found every dungeon they could survive already full, {Unraisable} could not raise the party's floor within the call's reach of its muster, {ShortOfFloor} could raise bodies enough there but too few holding the dungeon's floor, {Lineless} could raise nobody there to hold a line, {Answering} left to a call already gathering near them, "
             + $"{Outmatched} found nothing their band could come back out of at ×{Odds:F2} the worst of it (the nearest came to {_nearest:P0} of it: {_nearestSaid}); "
             + $"judged by the proving ground: {Lifted} offers went deeper than the old formula would have sent them, {Lowered} less deep, "
             + $"{HeldBack} bands kept on the island that the formula would have sent down, {Rechosen} parties sent elsewhere once raised, "
@@ -1155,6 +1196,10 @@ public sealed class BotDelver : IBotProposer
         Weakest = 0;
         Unproven = 0;
         Uncompanied = 0;
+        Unraisable = 0;
+        ShortOfFloor = 0;
+        Lineless = 0;
+        Answering = 0;
         _compared = 0;
         _band.Clear();
         _last.Clear();

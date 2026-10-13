@@ -549,6 +549,9 @@ public static class BotTaverns
         Meals += given;
         Gold += paid;
 
+        // A guest by the hour of the day, for the Day: line (PLAN-life A1).
+        BotDay.Guest();
+
         Count(tavern, Core.TickCount);
 
         return paid;

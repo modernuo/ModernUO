@@ -1,1 +1,4 @@
-{}
+{
+  "WeakFloor": 0.0,
+  "LiftWhenBled": false
+}

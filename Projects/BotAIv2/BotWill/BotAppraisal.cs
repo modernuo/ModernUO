@@ -21,9 +21,13 @@ public readonly struct BotWeigh
         double calling = 1.0,
         double toll = 1.0,
         double nature = 1.0,
-        BotTrait natureBit = BotTrait.None
+        BotTrait natureBit = BotTrait.None,
+        double day = 1.0,
+        string dayWhy = null
     )
     {
+        Day = day;
+        DayWhy = dayWhy;
         Estimate = estimate;
         Nearness = nearness;
         Novelty = novelty;
@@ -81,6 +85,12 @@ public readonly struct BotWeigh
     /// <summary>Which of its traits bit, for the sentence.</summary>
     public BotTrait NatureBit { get; }
 
+    /// <summary>The hour of the day on this work, outside the root like the nature (PLAN-life A1). See <c>BotDay.Factor</c>.</summary>
+    public double Day { get; }
+
+    /// <summary>Why the hour bit, for the sentence: "the evening (tavern)".</summary>
+    public string DayWhy { get; }
+
     public double Score { get; }
 
     /// <summary>
@@ -99,7 +109,7 @@ public readonly struct BotWeigh
     {
         // The calling multiplies the score after the root rather than joining the product under it, so the root
         // is recovered by taking it back out; the line then checks against itself: score = estimate x root x calling.
-        var bend = Estimate > 0.0 && Calling > 0.0 && Toll > 0.0 && Nature > 0.0 ? Score / (Estimate * Calling * Toll * Nature) : 0.0;
+        var bend = Estimate > 0.0 && Calling > 0.0 && Toll > 0.0 && Nature > 0.0 && Day > 0.0 ? Score / (Estimate * Calling * Toll * Nature * Day) : 0.0;
 
         // <b>And then three more factors were added over a fortnight and none of them was ever printed.</b>
         // The note above is about a line that could not be checked against itself; the same thing happened
@@ -127,6 +137,11 @@ public readonly struct BotWeigh
         if (Nature != 1.0)
         {
             called += $"; × {Nature:F2} for its nature ({BotTraits.Words(NatureBit)})";
+        }
+
+        if (Day != 1.0)
+        {
+            called += $"; × {Day:F2} for {DayWhy ?? "the hour"}";
         }
 
         // The root named as it stands, since BotAppraisal.Root became a dial: the words must not say "fifth" over a seventh.
@@ -828,9 +843,14 @@ public static class BotAppraisal
         // traits17). Outside the root as the calling is, so the lean it names is the lean it gives. See BotTraits.Nature.
         var nature = BotTraits.Nature(body, deed, out var natureBit);
 
-        var score = estimate * Math.Pow(product, 1.0 / Math.Max(1, Root)) * calling * toll * nature;
+        // And the hour of the day against the bot's own timetable: the evening's tavern, the night's fire, the dawn's market
+        // (PLAN-life A1). Outside the root as the nature is, held in ×0.5–×2, and never a markdown on a broke bot's paid work —
+        // a factor without a floor is a veto. One for most work at most hours. See BotDay.Factor.
+        var day = BotDay.Factor(body, deed, out var dayWhy);
 
-        weigh = new BotWeigh(estimate, nearness, novelty, room, caution, purse, score, stopped, revel, charter, ground, calling, toll, nature, natureBit);
+        var score = estimate * Math.Pow(product, 1.0 / Math.Max(1, Root)) * calling * toll * nature * day;
+
+        weigh = new BotWeigh(estimate, nearness, novelty, room, caution, purse, score, stopped, revel, charter, ground, calling, toll, nature, natureBit, day, dayWhy);
 
         return score;
     }

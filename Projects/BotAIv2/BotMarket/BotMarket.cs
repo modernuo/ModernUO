@@ -73,8 +73,19 @@ public static class BotMarket
     /// </summary>
     public static int Floor { get; set; } = 2;
 
-    /// <summary>How many wants may stand at once. A backstop against a leak, never a shelf to run out of.</summary>
-    public static int MaxWants { get; set; } = 512;
+    /// <summary>
+    /// How many wants may stand at once. A backstop against a leak, never a shelf to run out of — and at 512 it became a
+    /// shelf on the night of 12.10.2026, when 450 bots held 468 wants and 7 227 asks an hour were turned away (ribs,
+    /// leather, feathers, logs), each refusal an ERR line. 1200 since, about two and a half a bot; the refusals are
+    /// counted in <see cref="BoardFull"/> and said once a minute.
+    /// </summary>
+    public static int MaxWants { get; set; } = 1200;
+
+    /// <summary>Asks turned away because the board stood at <see cref="MaxWants"/>. Printed on the Lines: line.</summary>
+    public static int BoardFull { get; private set; }
+
+    // Seeded a minute in the past from a real tick, so the first refusal is said at once and no zero stands in for "never".
+    private static long _boardFullSaidTick = Core.TickCount - 60000;
 
     /// <summary>How often the market looks at its wants: offers raised, wants given up, reservations swept.</summary>
     public static int BeatMs { get; set; } = 30000;
@@ -1497,7 +1508,22 @@ public static class BotMarket
 
         if (_wants.Count >= MaxWants)
         {
-            logger.Error("The market already holds {Count} wants, so {Name} could not ask for {Item}", _wants.Count, body.Name, kind.Name);
+            BoardFull++;
+
+            // Once a minute, not once an ask: the same bots ask for the same ribs every look while the board is full.
+            if (Core.TickCount - _boardFullSaidTick >= 60000)
+            {
+                _boardFullSaidTick = Core.TickCount;
+
+                logger.Warning(
+                    "The market already holds {Count} wants (MaxWants {Max}), so {Name} could not ask for {Item}; {Refused} asks turned away so far",
+                    _wants.Count,
+                    MaxWants,
+                    body.Name,
+                    kind.Name,
+                    BoardFull
+                );
+            }
 
             return null;
         }
@@ -2722,7 +2748,7 @@ public static class BotMarket
                + $"{KeptThroughDeath} wants kept through their buyer's death and {KeptRising} through its first {RisenGraceMs / 60000} minutes back, {UnpaidAfterDeath} of the stand-downs after a death, {KeptAway} kept while their buyer rested out of the world; "
                + $"{Held} raises the buyer could not reserve, the want waiting at its price, {AgedOut} given up at {MostAgeMs / 60000} minutes for it; "
                + $"taken back: {_retractedFor[(int)BotWithdraw.Have]} had it another way, {_retractedFor[(int)BotWithdraw.Walked]} walked to a counter, {_retractedFor[(int)BotWithdraw.Unpaid]} could not pay at the meeting, {_retractedFor[(int)BotWithdraw.Closed]} gatherings closed, {_retractedFor[(int)BotWithdraw.Other]} other; "
-               + $"the board kept across restarts: {RestoredWants} wants and {RestoredLines} lines read back, {DroppedWants} dropped (buyer gone or kind unknown), {Recapped} given their material's ceiling on the beat and {BroughtDown} of them brought down to it ({BroughtDownGold}gp less held); "
+               + $"{BoardFull} asks turned away by the board's ceiling of {MaxWants}; the board kept across restarts: {RestoredWants} wants and {RestoredLines} lines read back, {DroppedWants} dropped (buyer gone or kind unknown), {Recapped} given their material's ceiling on the beat and {BroughtDown} of them brought down to it ({BroughtDownGold}gp less held); "
                + $"carriage over the offer agreed with traders and held now: {Carriage()}gp";
     }
 
@@ -2758,6 +2784,7 @@ public static class BotMarket
         w.WriteNumber("keptThroughDeath", KeptThroughDeath);
         w.WriteNumber("raisesHeld", Held);
         w.WriteNumber("restoredWants", RestoredWants);
+        w.WriteNumber("boardFull", BoardFull);
         w.WriteNumber("secured", Secured);
         w.WriteNumber("securedGold", SecuredGold);
         w.WriteNumber("savedByBank", SavedByBank);

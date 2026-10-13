@@ -60,6 +60,15 @@ public sealed class BotDelveSettings
     /// <summary>What a delve is reckoned at per minute before the ledger has measured one.</summary>
     public double? Prior { get; set; }
 
+    /// <summary>The least a body is worth, as a share of its dungeon's worst, to hold an ordinary seat in a party.</summary>
+    public double? WeakFloor { get; set; }
+
+    /// <summary>The share of a party's seats, the leader's among them, that bodies under the floor may hold.</summary>
+    public double? WeakShare { get; set; }
+
+    /// <summary>Whether a party that lost two inside a minute is lifted out where it stands rather than walked out.</summary>
+    public bool? LiftWhenBled { get; set; }
+
     public int? MaxStrays { get; set; }
 
     public int? HeadsPerParty { get; set; }
@@ -121,7 +130,7 @@ public sealed class BotDelveModule : BotModule
         }
 
         logger.Information(
-            "Delving is {State}: any member of a guild may take {Multiple} for each creature of a dungeon's worst room down it, {Company} at the fewest and {Most} at the most — {Fighters} of them able to hold a line, its own band called first, and more than the worst room holds or it does not go — for {Quota} corpses or {Minutes} minutes, after {Muster} minutes of calling at the home ground. It goes to the richest dungeon whose worst inhabitant the band is ×{Odds} the strength of, walks in by the cave mouth where the world's teleporters join it to the island and walks out by it (put down by hand only where none does), and has {Raisings} raisings between them; a fighter alone may venture into a dungeon whose worst it is ×{Alone} the strength of, once an hour; what it takes is swept into one pot and divided at the end, {Share} to the leader and the rest evenly. A band waits {Between} minutes between delves",
+            "Delving is {State}: any member of a guild may take {Multiple} for each creature of a dungeon's worst room down it, {Company} at the fewest and {Most} at the most — {Fighters} of them able to hold a line, its own band called first, and more than the worst room holds or it does not go — for {Quota} corpses or {Minutes} minutes, after {Muster} minutes of calling at the home ground. It goes to the richest dungeon whose worst inhabitant the band is ×{Odds} the strength of, walks in by the cave mouth where the world's teleporters join it to the island and walks out by it (put down by hand only where none does), and has {Raisings} raisings between them; a party keeps {WeakShare} of its seats, the leader's among them and never a medic's, for bodies under {WeakFloor} of its dungeon's worst and levies no more of them, and one that loses two inside a minute is {Bled}; a fighter alone may venture into a dungeon whose worst it is ×{Alone} the strength of, once an hour; what it takes is swept into one pot and divided at the end, {Share} to the leader and the rest evenly. A band waits {Between} minutes between delves; a delve is reckoned at {Prior} a minute until the ledger has measured one",
             Enabled ? "on" : "off",
             BotProving.PartyMultiple,
             BotDelve.Company,
@@ -131,10 +140,14 @@ public sealed class BotDelveModule : BotModule
             BotDelve.CapMs / 60000,
             BotDelve.MusterMs / 60000,
             BotDelver.Odds.ToString("F2"),
-            BotVenturer.Odds.ToString("F2"),
             BotDelveParty.Raisings,
+            BotDelve.WeakShare.ToString("P0"),
+            BotDelve.WeakFloor.ToString("P0"),
+            BotDelve.LiftWhenBled ? "lifted out where it stands" : "walked out by the mouth",
+            BotVenturer.Odds.ToString("F2"),
             BotDelveParty.LeadersShare.ToString("P0"),
-            BotDelver.BetweenMs / 60000
+            BotDelver.BetweenMs / 60000,
+            BotDelve.Prior.ToString("F0")
         );
 
         _timer?.Stop();
@@ -170,6 +183,9 @@ public sealed class BotDelveModule : BotModule
         BotDelve.RoomMs = settings.RoomMs ?? BotDelve.RoomMs;
         BotDelve.Sight = settings.Sight ?? BotDelve.Sight;
         BotDelve.Prior = settings.Prior ?? BotDelve.Prior;
+        BotDelve.WeakFloor = settings.WeakFloor ?? BotDelve.WeakFloor;
+        BotDelve.WeakShare = settings.WeakShare ?? BotDelve.WeakShare;
+        BotDelve.LiftWhenBled = settings.LiftWhenBled ?? BotDelve.LiftWhenBled;
         BotDelve.MaxStrays = settings.MaxStrays ?? BotDelve.MaxStrays;
         BotDelver.HeadsPerParty = settings.HeadsPerParty ?? BotDelver.HeadsPerParty;
         BotDungeon.Margin = settings.Margin ?? BotDungeon.Margin;

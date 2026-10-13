@@ -416,18 +416,19 @@ public sealed class BotDelveParty
     /// The delve is over: everything still in the pot is handed out, and everybody still down there is put
     /// back on the island.
     /// </summary>
-    public void Settle(string why) => Settle(why, true);
+    public int Settle(string why) => Settle(why, true);
 
     /// <summary>
     /// The same; with <paramref name="lift"/> false, everybody still down there is left to walk out by the mouth — the delve
     /// leads them (BotDelve.Leaving) — and the watchdog lifts whoever is still below <see cref="LeaveMs"/> later. Patrick's
-    /// order of 29.09.2026: the way out is the entrance, as the way in is.
+    /// order of 29.09.2026: the way out is the entrance, as the way in is. Returns how many bodies it surfaced: nought when
+    /// walking them out, or when the party had settled already.
     /// </summary>
-    public void Settle(string why, bool lift)
+    public int Settle(string why, bool lift)
     {
         if (Ended)
         {
-            return;
+            return 0;
         }
 
         Ended = true;
@@ -436,6 +437,7 @@ public sealed class BotDelveParty
         Sweep();
 
         var handed = 0;
+        var surfaced = 0;
 
         for (var i = 0; i < _shares.Count; i++)
         {
@@ -461,6 +463,7 @@ public sealed class BotDelveParty
             if (lift && (share.Down || (_deep != null && _deep.Holds(body.Location))))
             {
                 Surface(body);
+                surfaced++;
             }
 
             if (lift)
@@ -483,6 +486,8 @@ public sealed class BotDelveParty
         {
             _parties.Remove(this);
         }
+
+        return surfaced;
     }
 
     /// <summary>

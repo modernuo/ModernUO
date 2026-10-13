@@ -157,7 +157,8 @@ public sealed class BotDelve : BotDeed
                 var want = Math.Min(Math.Max(Company, room.Count * Math.Max(1, BotProving.PartyMultiple)), Math.Max(Company, BotDelver.HeadsPerParty));
                 var least = Math.Min(want, Math.Max(Fewest, room.Count + 1));
 
-                say.Append($"{name} {want} against {room.Count} ({least} at the fewest)");
+                // The effective floor per dungeon: the fewest less the seats a party of that size keeps for the weak. See WeakShare.
+                say.Append($"{name} {want} against {room.Count} ({least} at the fewest, {least - WeakSeats(least)} of them over the floor)");
             }
 
             return say.ToString();
@@ -170,6 +171,147 @@ public sealed class BotDelve : BotDeed
 
     /// <summary>How many of them must be able to hold a line.</summary>
     public static int Fighters { get; set; } = 1;
+
+    /// <summary>
+    /// <b>The least a body is worth, as a share of its dungeon's worst creature, to hold an ordinary seat in the party; under it
+    /// the body takes one of the few seats a party keeps for the weak (<see cref="WeakShare"/>). Two fifths (12.10.2026, build 434).</b>
+    ///
+    /// <para>
+    /// The evening the population grew from 310 to 450 the Orc Caves took 112 deaths in 4.26 hours (26 an hour against 6–8 on
+    /// 432–433) from 60 parties, 1.9 a party. The party's sum cleared the dungeon's ask three times over at every mouth count
+    /// (median 22 567 of strength against the 7 710 wanted), so the sum was not the measure; nor was the body's own strength,
+    /// since members died at 0.12–0.16 a descent in every band of <c>BotThreat.Power</c> from under 1 500 to over 6 000. What
+    /// separated the parties was how many bodies under 2 000 they carried: with two or fewer, 0.25 a party (4 parties) and
+    /// no newcomer dead of 13; with three or more, 1.88 (56 parties, 55 of 322 newcomers dead). 2 000 is two fifths of the
+    /// orcish lord the Orc Caves are measured by (5 140); the proving ground's fifth (<c>BotDelver.WeakestShare</c>, 1 028) is
+    /// a different rule — a body that may not go at all — and at that floor the parties read alike (1.4 a party with nobody
+    /// under it), which is why it is not reused here.
+    /// </para>
+    ///
+    /// <para>
+    /// <b>434's dose–response did not reproduce on 436 (13.10.2026, reviews A and B).</b> The overnight run of 436 (23:18–03:37,
+    /// 450 bots, no floor) made 105 descents and lost 34 in the box, 0.32 a party, with newcomers still a third of the pressings
+    /// (432 of 1 355) — the make-up this comment's table puts at 1.86. The 434 spike was the first hours of a 140-bot burst, before
+    /// the newcomers had levelled or found gear, and it closed on its own. So the floor is not kept for a sink that is shown to
+    /// be composition; it is kept for Patrick's standing rule (25.09, 30.09) that newcomers level before dungeons. The floor is a
+    /// share of the dungeon's worst, so at Worst 10 000 it is 4 000, over the veterans' median of 2 276: untested past the Orc
+    /// Caves (every descent of 434–436 was the Orc Caves) and a possible wall on the way to Despise; <c>dial BotDelve.WeakFloor 0</c>
+    /// is the off switch (nothing is worth less than nought).
+    /// </para>
+    /// </summary>
+    public static double WeakFloor { get; set; } = 0.4;
+
+    /// <summary>
+    /// <b>The share of a party's bodies, the leader among them, that may be under <see cref="WeakFloor"/>. A third.</b>
+    ///
+    /// <para>
+    /// <b>The effective rule, in one sentence: a party goes down with at least <c>Least − ⌊Least × share⌋</c> bodies over the
+    /// floor</b> — 5 of the Orc Caves' 7 at a third (⌊7 × 0.34⌋ = 2 seats), 6 at a quarter (⌊7/4⌋ = 1). One rule asked at three
+    /// doors on the one count that is true there: the offer counts the smallest party that may go (<c>BotDelver.Raisable</c>, seats
+    /// of <see cref="Least"/>); the levy admits a weak body only while the seats of the party it would make are not all taken
+    /// (<c>WeakIn &lt; WeakSeats(Count + 1)</c>, so the seats grow with the company and nobody is pressed to be let go again); the
+    /// descent counts the seats of the party that stood up, once, before letting anybody go (<see cref="Trimmed"/>). Reviews A
+    /// and B of 13.10 found three counts for one party in the first draft — seats of <see cref="Least"/>, of the called size and
+    /// of the shrinking count inside the trim — under which 8 with 3 weak trimmed to 6 and failed.
+    /// </para>
+    ///
+    /// <para>
+    /// Counted with the leader, because the leader is the body the line is there to cover and the one that fell in 17 of the
+    /// 56 parties over the share on 434, and in none of the 4 under it; a medic never counts (<see cref="Weak"/>). A third rather
+    /// than the quarter 434 argued for: 436 ran a night at a third newcomers and 0.32 a party (see <see cref="WeakFloor"/>), and
+    /// the quarter's 0.33–0.38 rests on 6–8 parties. The quarter stays at the door for the next burst: if its first four hours
+    /// repeat 434's 1.9 a party, <c>dial BotDelve.WeakShare 0.25</c>.
+    /// </para>
+    /// </summary>
+    public static double WeakShare { get; set; } = 0.34;
+
+    /// <summary>
+    /// <b>Whether a party that bled (<c>BotSquad.Bleed</c>, two lost inside a minute) is lifted out where it stands rather than
+    /// walked out by the mouth. On.</b> Of the 118 Orc Caves deaths on 434, 33 came after the party's first pull-back: 17 parties
+    /// bled, 27 died before the bleed and 33 after it, walking out through the room that had just killed two, and in 5 of them
+    /// the leader fell on the way. A party that lost two in a minute is routed, and a rout walked out in formation through the
+    /// same orcs is the second half of the rout. Patrick's walk-out order (29.09) stands for a party that finished.
+    /// </summary>
+    public static bool LiftWhenBled { get; set; } = true;
+
+    /// <summary>
+    /// Whether this body is under the party's floor for this dungeon. See <see cref="WeakFloor"/>.
+    ///
+    /// <b>Never a medic.</b> <c>BotThreat.Power</c> is health times the weapon's hit plus half the Magery; Healing counts for
+    /// nothing, so a healer of 80 — the one body that can raise the fallen (<c>BotDelveParty.Fell</c>) — read as the weakest thing
+    /// in the company and, levied in the last pass, was the first let go at the descent (review B, 13.10.2026). A tamer's pets
+    /// are not in the number either, but a tamer fights with its bow and is read by it; left as it is, unmeasured.
+    /// </summary>
+    public static bool Weak(Mobile who, BotDungeon.Deep deep) =>
+        who is { Deleted: false } && who is not BotMobile { Class.Role: BotRole.Medic } && deep is { Worst: > 0.0 }
+        && BotThreat.Power(who) < deep.Worst * WeakFloor;
+
+    /// <summary>How many of a party of this many bodies may be under the floor. See <see cref="WeakShare"/>.</summary>
+    public static int WeakSeats(int bodies) => (int)(Math.Max(0, bodies) * WeakShare);
+
+    /// <summary>The living members of the company on this map under the floor, the leader among them.</summary>
+    private int WeakIn(BotSquad squad)
+    {
+        var weak = 0;
+        var members = squad.Members;
+
+        for (var i = 0; i < members.Count; i++)
+        {
+            if (members[i]?.Self is { Deleted: false, Alive: true } self && self.Map == _map && Weak(self, _deep))
+            {
+                weak++;
+            }
+        }
+
+        return weak;
+    }
+
+    /// <summary>Bots the levy passed over for being under the floor with the party's weak seats already taken. See <see cref="WeakShare"/>.</summary>
+    public static long PassedWeak { get; private set; }
+
+    /// <summary>Members let go at the descent for being under the floor beyond the seats the party that stood up keeps for them.</summary>
+    public static long Trimmed { get; private set; }
+
+    /// <summary>Descents not made because, with the weak beyond their seats let go, fewer than <see cref="Least"/> were left.</summary>
+    public static long ShortOfFloor { get; private set; }
+
+    /// <summary>Parties turned back at a count on the road or at the mouth for carrying more under the floor than their seats, after losses.</summary>
+    public static long WeakAtMouth { get; private set; }
+
+    /// <summary>Bodies lifted out at once because their party bled. See <see cref="LiftWhenBled"/>.</summary>
+    public static long BledLifted { get; private set; }
+
+    /// <summary>Bodies lifted out of a settled party whose leader fell on the walk out, rather than left to the watchdog's ten minutes.</summary>
+    public static long LeaderlessLifted { get; private set; }
+
+    /// <summary>
+    /// Descents made while a quarantine (<c>BotBarred</c>, a killing field) stood over any room of the dungeon. Counted, not
+    /// refused: 23 of 434's 60 descents went in under the one raised over the Orc Caves at 19:27 and lost 2.26 a party against
+    /// 1.38 outside the window, but the window was also the newcomers' peak and 436 raised none; the count is what a later test
+    /// of a gate needs (review B, 13.10.2026). The delve itself asks the quarantine only about its muster.
+    /// </summary>
+    public static long UnderQuarantine { get; private set; }
+
+    /// <summary>Whether a standing quarantine holds any room of this dungeon. Asked once a descent.</summary>
+    private static bool Quarantined(Map map, BotDungeon.Deep deep)
+    {
+        if (map == null || deep == null)
+        {
+            return false;
+        }
+
+        var rooms = deep.Rooms;
+
+        for (var i = 0; i < rooms.Count; i++)
+        {
+            if (BotBarred.Holds(map, rooms[i]))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     /// <summary>
     /// The fewest a party goes down with when the call runs out. Three: 17 of the 18 delves that failed between 28.09 and
@@ -454,8 +596,19 @@ public sealed class BotDelve : BotDeed
     /// </summary>
     public static int MaxStrays { get; set; } = 2;
 
-    /// <summary>What a delve is reckoned at per minute before the ledger has measured one.</summary>
-    public static double Prior { get; set; } = 260.0;
+    /// <summary>
+    /// What a delve is reckoned at per minute before the ledger has measured one.
+    ///
+    /// <para>
+    /// <b>120 from 260 (12.10.2026, build 434).</b> The auction reads a claim no lower than a quarter of it (<c>BotCommons.LeastShare</c>),
+    /// so 260 held the reading at 65 a minute while the ledger measured 35–42 over 826–1 502 outcomes, and the shard's own alarm
+    /// stood on it for 1 441 minutes on 09–10.10 and from 18:36 on 12.10: "a number in the source the correction cannot bring
+    /// down". At 120 the floor is 30, under anything the ledger has measured, and the reading is the ledger's: 48 a minute at
+    /// 42 measured, 41 at 35. Twice the measured pay rather than the measured pay itself because a delve that stops dying
+    /// pays more — the 41 that finished on 434 paid 57 a minute; the 20 whose leader fell paid nothing over 2 598 minutes.
+    /// </para>
+    /// </summary>
+    public static double Prior { get; set; } = 120.0;
 
     /// <summary>How long the decision layer is told it takes.</summary>
     public static double WorkMinutes { get; set; } = 25.0;
@@ -1323,6 +1476,20 @@ public sealed class BotDelve : BotDeed
             return true;
         }
 
+        // The seats for the weak are counted again on who is standing: a party that lost its strong on the road is a party
+        // of the weak, whatever it was at the muster. See WeakShare.
+        var weak = WeakIn(squad);
+        var seats = WeakSeats(living);
+
+        if (weak > seats)
+        {
+            WeakAtMouth++;
+
+            why = $"{weak} of the {living} standing are under {_deep.Name}'s floor of {_deep.Worst * WeakFloor:F0}, more than the {seats} seats a party of {living} keeps for them";
+
+            return true;
+        }
+
         worth = BotDelver.Worth(squad, body, _deep);
 
         if (_setOut > 0.0 && worth < _setOut * GoOnShare && worth < _deep.Worst * BotDelver.Odds)
@@ -1438,6 +1605,11 @@ public sealed class BotDelve : BotDeed
         Marches++;
         Heads += Living(squad);
 
+        if (Quarantined(_map, _deep))
+        {
+            UnderQuarantine++;
+        }
+
         Adopt(squad);
 
         // "Led 1" read as a party of one (10:23:41 on build 384, Thrain's twelve): the leader steps through first, and only who is
@@ -1446,8 +1618,8 @@ public sealed class BotDelve : BotDeed
             "{Name} has led its company of {Living} into {Deep} by its mouth ({Count} down so far) after {Minutes:F1} minutes' march: {Quota} of them to kill or {Cap} minutes, {Raisings} raisings between them",
             body.Name,
             Living(squad),
-            _count,
             _deep.Name,
+            _count,
             (now - _marchTick) / 60000.0,
             Quota,
             CapMs / 60000,
@@ -1744,16 +1916,52 @@ public sealed class BotDelve : BotDeed
             Size();
         }
 
+        // <b>The weak beyond their seats are let go here, on the party that actually stood up (12.10.2026, build 434).</b> The levy
+        // keeps the seats of the party it called (WeakSeats of _want); a call that ran out short has fewer seats, and a party sent
+        // elsewhere is judged against that dungeon's floor. The last levied go first: the levy put the leader's guild and then the
+        // nearest at the front, so the last are the strangers from furthest off. See WeakShare.
+        var stood = squad.Count;
+        var weak = WeakIn(squad);
+
+        // The seats of the party that stood, counted once: read again on the shrinking count, 8 with 3 weak trimmed to 6 and failed
+        // where 7 with 2 is a party (review B, 13.10.2026).
+        var seats = WeakSeats(stood);
+
+        for (var i = squad.Members.Count - 1; i >= 0 && weak > seats; i--)
+        {
+            var member = squad.Members[i];
+
+            if (ReferenceEquals(member, squad.Leader) || member?.Self is not { Deleted: false, Alive: true } self || !Weak(self, _deep))
+            {
+                continue;
+            }
+
+            BotSquads.Leave(member);
+            Trimmed++;
+            weak--;
+        }
+
         // A party sent somewhere else is sized for there, and one too few to outnumber its worst room does not go (build 359).
         if (squad.Count < _least)
         {
-            Undermanned++;
+            // Its own count when the floor made the difference: enough bodies stood at the muster, too few of them hold the floor.
+            if (stood >= _least)
+            {
+                ShortOfFloor++;
+            }
+            else
+            {
+                Undermanned++;
+            }
+
             Rest(body);
             BotSquads.Leave(leader);
             _squad = null;
 
             return BotDoing.Failed(
-                $"only {squad.Count} stood at the muster for {_deep.Name}, fewer than the {_least} that outnumber its worst room"
+                stood >= _least
+                    ? $"only {squad.Count} of the {stood} that stood at the muster for {_deep.Name} hold its floor of {_deep.Worst * WeakFloor:F0} or a seat kept for the weak, fewer than the {_least} that outnumber its worst room"
+                    : $"only {squad.Count} stood at the muster for {_deep.Name}, fewer than the {_least} that outnumber its worst room"
             );
         }
 
@@ -1862,6 +2070,11 @@ public sealed class BotDelve : BotDeed
         Marches++;
         Heads += went;
 
+        if (Quarantined(_map, _deep))
+        {
+            UnderQuarantine++;
+        }
+
         logger.Information(
             "{Name} has taken {Count} into {Deep} at ({X}, {Y}): {Quota} of them to kill or {Minutes} minutes, {Raisings} raisings between them",
             body.Name,
@@ -1960,6 +2173,19 @@ public sealed class BotDelve : BotDeed
         if (member.Squad is { } bleeding && bleeding.Bled > _bledAt)
         {
             BledOut++;
+
+            // Lifted where it stands rather than walked out through the room that just killed two: 33 of the 118 Orc Caves deaths
+            // on 434 came after the bleed, on the walk out. See LiftWhenBled.
+            if (LiftWhenBled)
+            {
+                var lifted = Finish($"the party lost {BotSquad.BleedDeaths} inside a minute in {_deep.Name} at {_kills} down; it is lifted out", null);
+
+                // What the settle surfaced, not what the book said was down: Fell clears Down on a death, and a straggler on the walk
+                // in is surfaced by where it stands (review A, 13.10.2026).
+                BledLifted += _surfaced;
+
+                return lifted;
+            }
 
             return Finish($"the party lost {BotSquad.BleedDeaths} inside a minute in {_deep.Name} at {_kills} down; it comes up", body);
         }
@@ -2140,11 +2366,14 @@ public sealed class BotDelve : BotDeed
             return BotDoing.Work($"leaving {_deep.Name} by its mouth: {why}");
         }
 
-        _party?.Settle(why);
+        _surfaced = _party?.Settle(why) ?? 0;
         Release(_squad);
 
         return BotDoing.Done($"{why} — {_count} of us, {pot}gp between them");
     }
+
+    /// <summary>How many bodies the last lifting settle surfaced. See <see cref="BledLifted"/>.</summary>
+    private int _surfaced;
 
     /// <summary>Parties that went down short of what they called, with enough to outnumber the worst room and a line. See <see cref="Least"/>.</summary>
     public static long Undersized { get; private set; }
@@ -2364,12 +2593,12 @@ public sealed class BotDelve : BotDeed
     /// reach were doing. Counted per call on each levy's last look, by the first test that turned a bot away, and printed in
     /// the failure. Instrument first: the fix follows the largest of these.
     /// </summary>
-    private readonly int[] _passed = new int[9];
+    private readonly int[] _passed = new int[10];
 
     private static readonly string[] _passedFor =
     [
         "in a company already", "unable to fight", "producers", "not holding a line and beyond reach", "down a dungeon",
-        "answering to a company or class", "without supplies", "of a hostile guild", "no bot"
+        "answering to a company or class", "without supplies", "of a hostile guild", "under the floor with the weak seats taken", "no bot"
     ];
 
     private string PassedOver()
@@ -2518,6 +2747,20 @@ public sealed class BotDelve : BotDeed
 
             if (other.Squad != null || role != null && other.Class?.Role != role)
             {
+                continue;
+            }
+
+            // <b>A body under the floor takes one of the seats kept for the weak, and no more than those (12.10.2026, build 434).</b>
+            // The seats are those of the party this body would make (WeakSeats of Count + 1), so they grow with the company and a
+            // weak body is never pressed off its errand to be let go at the descent for a seat that was never going to be there —
+            // review A found the called size (12) admitting three that a party of seven then trimmed. Asked again every levy beat,
+            // so a body passed over now is taken once the strong have filled the seats around it. Counted by the floor of the
+            // dungeon the call is for; the descent counts once more on the party that stood up. See WeakFloor and WeakShare.
+            if (Weak(other, _deep) && WeakIn(squad) >= WeakSeats(squad.Count + 1))
+            {
+                PassedWeak++;
+                _passed[8]++;
+
                 continue;
             }
 
@@ -2841,6 +3084,14 @@ public sealed class BotDelve : BotDeed
         // implemented and it is worth a reader being told which of the two happened.
         var fell = bot?.Self is { Deleted: false, Alive: false };
 
+        // <b>A party already settled and walking out, whose leader then fell, is lifted (12.10.2026, build 434).</b> Settle does nothing
+        // twice, so Elaria's party, settled at 19:26:19 on 434 to walk out and leaderless twelve seconds later, stood in the room
+        // that had killed her until the watchdog's ten minutes; seven of it died there. 27 members died after their leader on 434.
+        if (fell && _party is { Ended: true })
+        {
+            LeaderlessLifted += _party.Lift();
+        }
+
         _party?.Settle(fell ? "whoever was leading it fell" : "the errand was let go");
 
         // Runes: a gate half used is let go with the errand; whoever went through is on the island by the mouth. See BotPassage.
@@ -2881,8 +3132,9 @@ public sealed class BotDelve : BotDeed
             : $"{Calls} delves called and {Called} bots called up ({LeviedEarly} levies made while the leader walked to its muster; {LinesFar} of them line-holders called from beyond {Reach} tiles for a company that had none; {Hostiles} passed over for a guild hostile to the leader's; {MusterMoved} musters moved off a home with no floor or on dangerous ground), {Marches} parties went down with {Heads} bots between them ({Undersized} of them short of what they called, with enough to outnumber the worst room; {Walked} marched to a cave mouth ({MusteredForward} musters set forward on the road, {Pressed} levied bots put their errand down for it, {Ungathered} let go at the descent for not standing at the muster, {Held} holds for stragglers, {LeftBehind} left behind, {Stood} fights stood to on the road with the leader, {MarchRefused} roads refused on the march; {WentOn} counted at the mouth and went in, {TurnedBack} turned back together and {BroughtBack} of those reached the muster), {Carried} were put down by hand, {Unreached} never reached the mouth in {MarchMs / 60000} minutes ({KeptMarching} marches kept going past it for still closing on their next gate, up to {MarchMs * MarchCapTimes / 60000} minutes; {Deserted} members struck off a march for holding something other than their place in it; members across a gate read as {GateApart} tiles behind or more; {MoonLed} leaders and {BotEnlist.MoonFollowed} members put through a moongate on the road); {WalkedOut} walked out by the mouth, {LeftBelow} leaders gave up the walk out, {LiftedAtRefusal} parties lifted out at once when the walk out was refused ({LiftedBodies} bodies)); {Undermanned} could not raise "
             + $"enough to outnumber their dungeon's worst room in {MusterMs / 60000} minutes and {Lineless} could raise nobody to hold a line ({LineAway} of them with one called who never reached the muster); "
             + $"a party calls {BotProving.PartyMultiple} for each creature of its dungeon's worst room, {Company} at the fewest and {Math.Max(Company, MostParty)} at the most: {Sizes()}; "
-            + $"{Emptied} came out on {Quota} corpses, {Timedout} on the {CapMs / 60000} minutes, {Broken} because too few were left, {BledOut} because the company lost {BotSquad.BleedDeaths} inside a minute, {Leaderless} because whoever led them was no longer down there "
-            + $"and {Walled} because the walls would not let them past ({Bends} refused roads shrugged off, {Shifted} musters moved to the caller's own tile, {Strayed} leaders fetched back out of the world); "
+            + $"{Emptied} came out on {Quota} corpses, {Timedout} on the {CapMs / 60000} minutes, {Broken} because too few were left, {BledOut} because the company lost {BotSquad.BleedDeaths} inside a minute ({BledLifted} bodies lifted out at once for it{(LiftWhenBled ? "" : ", off")}), {Leaderless} because whoever led them was no longer down there "
+            + $"and {Walled} because the walls would not let them past ({Bends} refused roads shrugged off, {Shifted} musters moved to the caller's own tile, {Strayed} leaders fetched back out of the world; {LeaderlessLifted} bodies lifted out of a settled party whose leader fell on the walk out); "
+            + $"the floor: a party of n keeps {WeakShare:P0} of its seats (n × share, rounded down) for bodies under {WeakFloor:P0} of its dungeon's worst, the leader counted and medics never, so it goes down with at least the fewest less those seats over the floor — {PassedWeak} passed over at the levy with the seats of the party they would make taken, {Trimmed} let go at the descent beyond the seats of the party that stood, {ShortOfFloor} descents not made for too few holding the floor, {WeakAtMouth} parties turned back at a count for the same; {UnderQuarantine} descents made under a standing quarantine of the dungeon (counted, not refused); "
             + $"{Killed} things killed down there; {BotHalls.Describe()}; {BotDelveParty.Describe()}";
 
     public static void Forget()
@@ -2922,6 +3174,13 @@ public sealed class BotDelve : BotDeed
         LinesFar = 0;
         LineAway = 0;
         Heads = 0;
+        PassedWeak = 0;
+        Trimmed = 0;
+        ShortOfFloor = 0;
+        WeakAtMouth = 0;
+        BledLifted = 0;
+        LeaderlessLifted = 0;
+        UnderQuarantine = 0;
         _resting.Clear();
         _called0.Clear();
         _worstRooms.Clear();

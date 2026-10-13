@@ -1091,6 +1091,9 @@ public static class BotHand
         var coffers = BotPolitics.Wipe();
         var held = BotSeasons.Wipe();
         var lives = BotLives.Wipe();
+
+        // And the timetables of the daily cycle (PLAN-life A1), kept by name in their own store as the characters are.
+        var timetables = BotTimetables.Wipe();
         var charters = BotCharters.Wipe();
         var colonies = BotColonies.Wipe();
         var wanted = BotCrime.Wipe();
@@ -1113,7 +1116,7 @@ public static class BotHand
         return $"reset: {halls} halls razed, {claims} claims let go, {seats} hand-set seats forgotten, {houses} guild houses emptied, wars, truces and opinions forgotten, "
                + $"{learned} bots' learning wiped and {bodies} bodies deleted with everything they were carrying, "
                + $"the market, the wants and the board of errands emptied, the city's wants and bounties and the championship's record forgotten, every crime and the band forgotten, the guilds disbanded, "
-               + $"{lives} bots' characters, ties and tales forgotten, {charters} charters let go, {colonies} colonies given up with their stores, {wanted} names struck off the books on crime, {loans} loans and {posts} officers' posts with the guilds' stores and kit debts, "
+               + $"{lives} bots' characters, ties and tales forgotten, {timetables} timetables forgotten, {charters} charters let go, {colonies} colonies given up with their stores, {wanted} names struck off the books on crime, {loans} loans and {posts} officers' posts with the guilds' stores and kit debts, "
                + $"the politics and the stewardships ({coffers}gp of coffers and watches' wages back into the treasury), the events ({held}gp of their holds back to the purse and the crown), "
                + $"{relics} relic items taken out of the world (the town relics hidden again), {runes} guilds' runes forgotten, {stories} bots' stories and the Chronicle forgotten, the seizures, the guild splits and widenings, {unheld}gp held for nobody back into the treasury; "
                + $"everything known about what pays where wiped (the island's danger map, the zones and the roads walked are kept); "

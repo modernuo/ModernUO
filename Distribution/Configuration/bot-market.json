@@ -1,4 +1,5 @@
 {
   "RisenGraceMs": 300000,
-  "MostAgeMs": 6600000
+  "MostAgeMs": 6600000,
+  "MaxWants": 1200
 }
