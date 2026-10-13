@@ -1364,8 +1364,8 @@ changed without a rebuild.
 | `BotSalve` | `Urgency` | `3.0` | `Urgency` |
 | `BotSalve` | `WorkMinutes` | `1.0` | `WorkMinutes` |
 | `BotSurgeon` | `Calls` | `true` | *code only* |
-| `BotSurgeon` | `Presses` | `true` | `SurgeonPresses` |
 | `BotSurgeon` | `MovingMs` | `1500` | *code only* |
+| `BotSurgeon` | `Presses` | `true` | `SurgeonPresses` |
 | `BotSurgeon` | `Reach` | `20` | `Watch` |
 | `BotSurgeon` | `Upstairs` | `8` | *code only* |
 
@@ -1467,8 +1467,8 @@ changed without a rebuild.
 | `BotSquadField` | `Musters` | `true` | *code only* |
 | `BotSquadField` | `Peels` | `true` | *code only* |
 | `BotSquadSpare` | `MostSpared` | `2` | `MostSpared` |
-| `BotSquadSpare` | `SpareMs` | `30000` | `SpareMs` |
 | `BotSquadSpare` | `SpareDyingShare` | `0.35` | `SpareDyingShare` |
+| `BotSquadSpare` | `SpareMs` | `30000` | `SpareMs` |
 | `BotSquadSpare` | `SpareReach` | `24` | `SpareReach` |
 | `BotSquadSpare` | `SpareShare` | `0.5` | `SpareShare` |
 | `BotSquadSpare` | `Spares` | `true` | `Spares` |

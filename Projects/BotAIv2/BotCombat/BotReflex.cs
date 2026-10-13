@@ -980,7 +980,8 @@ public static class BotReflex
 
         _cryNeverHeard++;
 
-        if (SampleEvery <= 0 || _cryNeverHeard % SampleEvery != 1 || crier == null)
+        // The first, the (SampleEvery + 1)th, and so on: at one, every one (a remainder test against one never fires at one).
+        if (SampleEvery <= 0 || (_cryNeverHeard - 1) % SampleEvery != 0 || crier == null)
         {
             return;
         }

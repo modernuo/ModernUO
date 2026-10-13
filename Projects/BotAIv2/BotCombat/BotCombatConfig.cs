@@ -47,9 +47,10 @@ public sealed class BotCombatSettings
     /// <summary>How long a bot called to one cry is left alone by the next, in milliseconds.</summary>
     public int? HelperRestMs { get; set; }
 
-    /// <summary>How far a cry carries, and how long it is worth answering, in milliseconds.</summary>
+    /// <summary>How far a cry carries, in tiles.</summary>
     public int? Carries { get; set; }
 
+    /// <summary>How long a cry stands unrenewed before it lapses, in milliseconds. See <c>BotCry.HoldsMs</c>.</summary>
     public int? CryHoldsMs { get; set; }
 
     /// <summary>Whether the reflex stopwatch runs. See <c>BotReflex.On</c>.</summary>
