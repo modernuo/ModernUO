@@ -6,6 +6,7 @@ using Server.Text;
 namespace Server.BotAI.V2;
 
 /// <summary>
+/// Which events are the island's history, and the Chronicle's page a day of them.
 /// The island's Chronicle (PLAN-life A3): a page a day of its wars, guilds founded, closed and split, champions, relics,
 /// elections and depositions, the duke's words between guilds, invasions and fairs — taken from the event stream as it is
 /// posted (<see cref="BotEvents"/>, including the alarm channel's war and guild notes) and from the story's own walk (the

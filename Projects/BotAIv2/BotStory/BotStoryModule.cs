@@ -6,8 +6,8 @@ using Server.Logging;
 namespace Server.BotAI.V2;
 
 /// <summary>
-/// The stories as a module: reads <c>Configuration/bot-story.json</c>, hangs <see cref="BotStory.Heard"/> on the event stream,
-/// starts the story's clock and the <c>Stories:</c> line. It offers no work and asks nothing of any bot.
+/// The stories as a module: reads bot-story.json, listens to the event stream, starts the story's clock and the Stories: line.
+/// It hangs <see cref="BotStory.Heard"/> on <see cref="BotEvents"/>; it offers no work and asks nothing of any bot.
 /// </summary>
 public sealed class BotStoryModule : BotModule
 {

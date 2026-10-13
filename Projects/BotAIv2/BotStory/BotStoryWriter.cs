@@ -7,9 +7,9 @@ using Server.Text;
 namespace Server.BotAI.V2;
 
 /// <summary>
-/// The template writer: a bot's chapters out of its book (<see cref="BotStoryBook"/>), its biography's tales and counts
-/// (<see cref="BotLife"/>) and its ties, in English, with the real names, places and numbers and nothing else; and the check
-/// that a model's retelling of a chapter says nothing the facts do not.
+/// The chapters by template, and the check that throws away a retelling which names anything the facts do not.
+/// A bot's chapters come out of its book (<see cref="BotStoryBook"/>), its biography's tales and counts (<see cref="BotLife"/>)
+/// and its ties, in English, with the real names, places and numbers and nothing else.
 ///
 /// <para>
 /// <b>The template is the story; the model is a voice laid over it.</b> Every chapter is written here, always, with or without

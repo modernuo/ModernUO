@@ -154,6 +154,7 @@ Without that, "it learns" is a claim nothing can support.
 | `BotMindDeed.cs` | The wrapper: forwards real work, bids the work's own worth, measures the result against the mind's forecast. |
 | `BotMindProposer.cs` | The one place a thought becomes an offer. |
 | `BotOllama.cs` | The only thing that leaves the game thread. |
+| `BotStoryVoice.cs` | The model as the island's chronicler: a chapter of a bot's life or a closed day of the Chronicle retold from its dated facts, through `BotOllama`, when the slot is free (PLAN-life A3). |
 | `BotMindLog.cs` | `logs/bot-minds.log` — decisions and reckonings, in order. |
 | `BotMindConfig.cs` | what Configuration/bot-mind.json is allowed to say |
 | `BotMindTalk.cs` | the one place the thinking bots can hear each other |

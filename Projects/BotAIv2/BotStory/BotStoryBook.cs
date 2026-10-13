@@ -4,9 +4,9 @@ using System.Collections.Generic;
 namespace Server.BotAI.V2;
 
 /// <summary>
-/// One bot's story as this chronicle keeps it: when it first saw the bot and whether it saw it born, what it was then, the notes
-/// of its life since, what the slow walk last saw of it (so a change is a note and a restart is not), and the chapters the model
-/// has retold. Keyed by name, as <see cref="BotLife"/> is: a bot is raised with a new serial at every boot.
+/// One bot's book: when the chronicle first saw it, what it was then, its notes, and the chapters the model retold.
+/// Whether it was seen born, what the slow walk last saw of it (so a change is a note and a restart is not). Keyed by name, as
+/// <see cref="BotLife"/> is: a bot is raised with a new serial at every boot.
 /// </summary>
 public sealed class BotStoryBook
 {

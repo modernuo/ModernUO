@@ -5,8 +5,9 @@ using Server.BotAI.V2;
 namespace Server.BotAI.Mind;
 
 /// <summary>
-/// The model as the island's chronicler (PLAN-life A3, 13.10.2026): asked, when its one slot is free, to retell one chapter of a
-/// bot's life or one closed day of the Chronicle from the dated facts the template was written from, and to say nothing else.
+/// The model as the island's chronicler: one chapter or one closed day retold from its dated facts, when the model's slot is free.
+/// PLAN-life A3, 13.10.2026: asked to retell one chapter of a bot's life or one closed day of the Chronicle from the dated facts
+/// the template was written from, and to say nothing else.
 /// Filled into <see cref="BotStory.Ask"/> from <c>BotMindModule.Start</c> and emptied on a reload, as the steward's
 /// (<c>BotStewardArgus</c>) is from the debugger's; the bots' assembly never references this one.
 ///

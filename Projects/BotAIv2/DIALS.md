@@ -3205,6 +3205,7 @@ changed without a rebuild.
 | `BotChronicle` | `EveryMs` | `60000` | `ChronicleEveryMs` |
 | `BotChronicle` | `MostDays` | `30` | `ChronicleDays` |
 | `BotChronicle` | `MostPerDay` | `80` | `ChroniclePerDay` |
+| `BotChronicle` | `RepeatMinutes` | `30` | `ChronicleRepeatMinutes` |
 | `BotChronicle` | `VoiceLeast` | `4` | `ChronicleVoiceLeast` |
 | `BotChronicle` | `VoiceMostFacts` | `30` | `ChronicleVoiceMostFacts` |
 | `BotStory` | `EveryMs` | `300000` | `EveryMs` |

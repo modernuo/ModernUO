@@ -10,6 +10,7 @@ using Server.Text;
 namespace Server.BotAI.V2;
 
 /// <summary>
+/// What goes into a bot's book, when its story is rebuilt and handed to the page, and which chapter the model retells next.
 /// Each bot's life story in chapters, and the island's Chronicle (PLAN-life A3, Patrick 08.10.2026: "the generation of the
 /// bots' history"; the week's plan of 12.10.2026, §5 A3).
 ///
