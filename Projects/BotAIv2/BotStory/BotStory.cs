@@ -63,7 +63,8 @@ public static class BotStory
     public static int PublishEveryMs { get; set; } = 10000;
 
     /// <summary>
-    /// How long a book just opened, and the walk after a boot, take what they see as where the bot stands rather than as news.
+    /// How long a book just opened (and its first look after this), and the walk after a boot, take what they see as where the bot
+    /// stands rather than as news.
     /// Two minutes. A bot's rank is worked out on its own clock some seconds after it is reclaimed, and the houses are adopted by
     /// the estate's start: without this, the first deploy would have written "became an Expert Tailor" and "bought a house" for
     /// every bot that had been both for a week, and every restart "left The Anchor" for a guild re-formed a few ticks late.
@@ -775,9 +776,18 @@ public static class BotStory
 
         var tick = Core.TickCount;
 
-        if (book.OpenedTick is { } opened && tick - opened < Math.Max(0, SettleMs))
+        if (book.OpenedTick is { } opened)
         {
+            // A just-opened book takes what it sees as where the bot stands on every look within the settle, and on the first look
+            // after it too: books are opened at the module's start, before any bot has had the beat that works out its rank, and
+            // the walk comes round once in five minutes — a settle that ended by the clock alone left three bots in five to be
+            // looked at first after it, and the rank they had all along would have been written as "became a Journeyman".
             Absorb(book, bot, life, now);
+
+            if (tick - opened >= Math.Max(0, SettleMs))
+            {
+                book.OpenedTick = null;
+            }
         }
         else if (!Booting(tick))
         {
