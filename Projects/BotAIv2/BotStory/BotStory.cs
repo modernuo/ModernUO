@@ -784,6 +784,13 @@ public static class BotStory
             // looked at first after it, and the rank they had all along would have been written as "became a Journeyman".
             Absorb(book, bot, life, now);
 
+            // A bot born under the chronicle has no standing to take in but its rank: the guild it founds or joins in its first
+            // minutes is news. After a wipe that is every guild of the new world, founded within minutes of the boot.
+            if (book.Born && !Booting(tick))
+            {
+                Guilds(book, bot, now);
+            }
+
             if (tick - opened >= Math.Max(0, SettleMs))
             {
                 book.OpenedTick = null;
@@ -809,13 +816,13 @@ public static class BotStory
     /// <summary>
     /// A book just opened: what the walk sees is where the bot stands, not news. For a bot found living it goes into the chronicle's
     /// first sight of it ("seen" notes, replaced as the picture fills in); for a bot born under the chronicle it is only remembered,
-    /// its birth being the whole of its story so far.
+    /// its birth being the whole of its story so far — all but its guild, which the walk notes as news (see <see cref="Look"/>).
     /// </summary>
     private static void Absorb(BotStoryBook book, BotMobile bot, BotLife life, DateTime now)
     {
         var guild = (bot.Guild as Guild)?.Name;
 
-        if (!string.Equals(guild, book.SeenGuild, StringComparison.Ordinal))
+        if (!book.Born && !string.Equals(guild, book.SeenGuild, StringComparison.Ordinal))
         {
             book.SeenGuild = guild;
             Seen(book, BotStage.Guild, guild != null ? $"{book.Name} belonged to {guild}" : null, now);
