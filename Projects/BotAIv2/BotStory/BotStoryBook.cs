@@ -124,6 +124,9 @@ public sealed class BotStoryBook
     /// <summary>The model's retelling of each stage's chapter, or null. See <see cref="BotStoryProse"/>.</summary>
     public readonly BotStoryProse[] Voiced = new BotStoryProse[BotStages.Count];
 
+    /// <summary>When this book was opened in this run, a tick; null for a book read back from the save. Not saved. See <see cref="BotStory.SettleMs"/>.</summary>
+    public long? OpenedTick;
+
     /// <summary>Chapters at the last build, and of them the ones holding something seen to happen. Not saved.</summary>
     public int Chapters;
 

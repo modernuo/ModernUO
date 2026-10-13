@@ -55,6 +55,7 @@ public sealed class BotStoryModule : BotModule
         Stop();
 
         BotEvents.Heard = BotStory.Heard;
+        BotStory.Started(Core.TickCount);
 
         _clock = Timer.DelayCall(
             TimeSpan.FromMilliseconds(Math.Max(250, BotStory.TickMs)),
@@ -132,6 +133,8 @@ public sealed class BotStorySettings
 
     public int? PublishEveryMs { get; set; }
 
+    public int? SettleMs { get; set; }
+
     public int? MostNotes { get; set; }
 
     public int? MostBooks { get; set; }
@@ -189,6 +192,7 @@ public static class BotStoryConfig
         BotStory.TickMs = s.TickMs ?? BotStory.TickMs;
         BotStory.EveryMs = s.EveryMs ?? BotStory.EveryMs;
         BotStory.PublishEveryMs = s.PublishEveryMs ?? BotStory.PublishEveryMs;
+        BotStory.SettleMs = s.SettleMs ?? BotStory.SettleMs;
         BotStory.MostNotes = s.MostNotes ?? BotStory.MostNotes;
         BotStory.MostBooks = s.MostBooks ?? BotStory.MostBooks;
         BotStory.OldAgeDays = s.OldAgeDays ?? BotStory.OldAgeDays;

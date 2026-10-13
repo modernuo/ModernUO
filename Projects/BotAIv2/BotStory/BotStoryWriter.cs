@@ -135,6 +135,7 @@ public static class BotStoryWriter
                 case BotStage.Deeds:
                     {
                         chapter.Tally = Tally(book, life);
+                        chapter.Lived |= chapter.Tally != null;
 
                         break;
                     }
@@ -649,7 +650,7 @@ public static class BotStoryWriter
                     i++;
                 }
 
-                var number = text[from..i];
+                var number = Number(text.AsSpan(from, i - from));
 
                 if (!numbers.Contains(number))
                 {
@@ -675,6 +676,14 @@ public static class BotStoryWriter
         why = null;
 
         return text;
+    }
+
+    /// <summary>A run of digits without its leading zeros: "02:37" and "2:37" are the same time.</summary>
+    private static string Number(ReadOnlySpan<char> digits)
+    {
+        var trimmed = digits.TrimStart('0');
+
+        return trimmed.Length == 0 ? "0" : trimmed.ToString();
     }
 
     /// <summary>The first word of a name: "Brokk" of "Brokk Ironfoot", which is what a retelling is sure to use.</summary>
@@ -726,7 +735,7 @@ public static class BotStoryWriter
                     i++;
                 }
 
-                numbers.Add(text[from..i]);
+                numbers.Add(Number(text.AsSpan(from, i - from)));
 
                 continue;
             }

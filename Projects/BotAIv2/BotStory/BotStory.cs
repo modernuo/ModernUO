@@ -90,6 +90,14 @@ public static class BotStory
     public static int PublishEveryMs { get; set; } = 10000;
 
     /// <summary>
+    /// How long a book just opened, and the walk after a boot, take what they see as where the bot stands rather than as news.
+    /// Two minutes. A bot's rank is worked out on its own clock some seconds after it is reclaimed, and the houses are adopted by
+    /// the estate's start: without this, the first deploy would have written "became an Expert Tailor" and "bought a house" for
+    /// every bot that had been both for a week, and every restart "left The Anchor" for a guild re-formed a few ticks late.
+    /// </summary>
+    public static int SettleMs { get; set; } = 120000;
+
+    /// <summary>
     /// Notes kept a bot; past it the lightest goes, never the last of its stage. Forty: a busy bot of 12.10 gathers four or five
     /// a day (a guild, a rank, a home, an office, a relic), so this is a week or two of a full life before anything is let go.
     /// </summary>
@@ -213,6 +221,20 @@ public static class BotStory
     /// <summary>Bumped by a reload or a wipe, so an answer asked for in the old world is not written into the new one.</summary>
     private static int _generation;
 
+    private static long _startedTick;
+
+    private static bool _started;
+
+    /// <summary>Within <see cref="SettleMs"/> of the module's start: the walk builds but notes nothing, the books note no event.</summary>
+    private static bool Booting(long now) => !_started || now - _startedTick < Math.Max(0, SettleMs);
+
+    /// <summary>The module started: the boot's grace runs from here. Game loop only.</summary>
+    public static void Started(long now)
+    {
+        _startedTick = now;
+        _started = true;
+    }
+
     /// <summary>What the dashboard reads: every story's JSON and the index, made on the loop and never changed after it is handed over.</summary>
     private sealed class Shelf
     {
@@ -299,7 +321,8 @@ public static class BotStory
         var bot = e.Bot;
         var text = e.Text;
 
-        if (bot == null || string.IsNullOrEmpty(text))
+        // A boot's own settling (residences re-read, offices re-filled) is not a life's news; the Chronicle still takes the day's.
+        if (bot == null || string.IsNullOrEmpty(text) || Booting(Core.TickCount))
         {
             return;
         }
@@ -563,6 +586,7 @@ public static class BotStory
             SeenVeteran = BotLives.Find(body.Name) is { Veteran: true }
         };
 
+        book.OpenedTick = Core.TickCount;
         _books[book.Name] = book;
         Opened++;
         _changed = true;
@@ -733,18 +757,116 @@ public static class BotStory
             }
         }
 
-        Guilds(book, bot, now);
-        Rank(book, bot, now);
-        Houses(book, bot, now);
-        Champion(book, bot, now);
+        // Its sex is set by the newcomer's caller after it is raised (BotPopulation.RaiseNewcomer), after the book was opened.
+        book.Female = bot.Female;
+
+        var tick = Core.TickCount;
+
+        if (book.OpenedTick is { } opened && tick - opened < Math.Max(0, SettleMs))
+        {
+            Absorb(book, bot, life, now);
+        }
+        else if (!Booting(tick))
+        {
+            Guilds(book, bot, now);
+            Rank(book, bot, now);
+            Houses(book, bot, now);
+            Champion(book, bot, now);
+
+            if (life is { Veteran: true } && !book.SeenVeteran)
+            {
+                book.SeenVeteran = true;
+                Walked(book, BotStage.Deeds, "veteran", $"{book.Name} was called {BotTraits.VeteranTitle} from then on, for {BotTraits.VeteranKills} kills and more", 55.0, life.VeteranAt == default ? now : life.VeteranAt);
+            }
+        }
+
+        Build(book, life, bot, false);
+    }
+
+    /// <summary>
+    /// A book just opened: what the walk sees is where the bot stands, not news. For a bot found living it goes into the chronicle's
+    /// first sight of it ("seen" notes, replaced as the picture fills in); for a bot born under the chronicle it is only remembered,
+    /// its birth being the whole of its story so far.
+    /// </summary>
+    private static void Absorb(BotStoryBook book, BotMobile bot, BotLife life, DateTime now)
+    {
+        var guild = (bot.Guild as Guild)?.Name;
+
+        if (!string.Equals(guild, book.SeenGuild, StringComparison.Ordinal))
+        {
+            book.SeenGuild = guild;
+            Seen(book, BotStage.Guild, guild != null ? $"{book.Name} was of {guild}" : null, now);
+        }
+
+        var rank = bot.BotRank;
+
+        if (!string.IsNullOrEmpty(rank) && Level(rank) > Level(book.SeenRank))
+        {
+            book.SeenRank = rank;
+            Seen(book, BotStage.Apprenticeship, Level(rank) >= 2 ? $"{book.Name} was already {BotStoryWriter.A(rank)}" : null, now);
+        }
+
+        var house = House(bot);
+
+        if (!string.Equals(house, book.SeenHouse, StringComparison.Ordinal))
+        {
+            book.SeenHouse = house;
+            Seen(book, BotStage.Home, house != null ? $"{book.Name} had a house of {BotStoryWriter.Possessive(book)} own {house}" : null, now);
+        }
+
+        var champion = bot.NameHue == BotMobile.ChampionHue;
+
+        if (champion != book.SeenChampion)
+        {
+            book.SeenChampion = champion;
+            Seen(book, BotStage.Deeds, champion ? $"{book.Name} was the champion of the island" : null, now, "champion");
+        }
 
         if (life is { Veteran: true } && !book.SeenVeteran)
         {
             book.SeenVeteran = true;
-            Walked(book, BotStage.Deeds, "veteran", $"{book.Name} was called {BotTraits.VeteranTitle} from then on, for {BotTraits.VeteranKills} kills and more", 55.0, life.VeteranAt == default ? now : life.VeteranAt);
+            Seen(book, BotStage.Deeds, $"{book.Name} was already called {BotTraits.VeteranTitle}", now, "called");
+        }
+    }
+
+    /// <summary>
+    /// The first-sight note of a stage written, replaced or (null) taken out; nothing for a bot seen born. The deeds stage holds two
+    /// such notes (the champion, the veteran), told apart by a word of theirs (<paramref name="about"/>).
+    /// </summary>
+    private static void Seen(BotStoryBook book, BotStage stage, string text, DateTime now, string about = null)
+    {
+        if (book.Born)
+        {
+            return;
         }
 
-        Build(book, life, bot, false);
+        for (var i = 0; i < book.Notes.Count; i++)
+        {
+            var note = book.Notes[i];
+
+            if (note.Kind != "seen" || note.Stage != stage || (about != null && !note.Text.Contains(about, StringComparison.Ordinal)))
+            {
+                continue;
+            }
+
+            if (text == null)
+            {
+                book.Notes.RemoveAt(i);
+            }
+            else
+            {
+                note.Text = Plain(text);
+            }
+
+            _changed = true;
+
+            return;
+        }
+
+        if (text != null)
+        {
+            Write(book, stage, "seen", text, 10.0, now);
+        }
     }
 
     private static void Walked(BotStoryBook book, BotStage stage, string kind, string text, double weight, DateTime at)
@@ -1339,7 +1461,9 @@ public static class BotStory
 
             VoiceAnswered++;
 
-            var kept = BotStoryWriter.Check(text, q.Facts, q.Kind == "chapter" ? q.Subject : null, VoiceMostChars, out var why, out var word);
+            // What the model was told is what it may say: the facts, who they are about, and the chapter's title.
+            var told = $"{q.Facts}\n{q.Who}\n{q.Title}\n{q.Subject}";
+            var kept = BotStoryWriter.Check(text, told, q.Kind == "chapter" ? q.Subject : null, VoiceMostChars, out var why, out var word);
 
             if (kept == null)
             {
