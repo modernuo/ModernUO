@@ -99,6 +99,7 @@ public sealed class BotSquadModule : BotModule
 
         BotSquads.Stop();
         BotSquads.Reset();
+        BotSquad.ForgetSpares();
     }
 
     public static string Summarise() => $"{BotSquads.Describe()}; {BotEnlister.Describe()}; {BotPatrol.Describe()}";

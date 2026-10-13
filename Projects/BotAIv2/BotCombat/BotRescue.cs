@@ -209,6 +209,20 @@ public sealed class BotRescue : BotDeed
 
     private int _lowest = int.MaxValue;
 
+    /// <summary>A stand is counted where it is taken — won at auction or pressed — never where it is offered. See <c>BotDefender.Stood</c>.</summary>
+    public override void Taken(IBotWilful bot)
+    {
+        if (_own && ToTheEnd)
+        {
+            BotDefender.Stood(bot?.Self, _foe);
+        }
+    }
+
+    /// <summary>
+    /// The stand's honest price — the bot that died in it — is counted in <c>BotWill.Settle</c> on the death itself, not here: a stand
+    /// put down for a flight the bot then died in is dropped here too, with the bot dead, and read as a death in the stand until
+    /// 13.10.2026 (w5 review A).
+    /// </summary>
     public override void Drop(IBotWilful bot)
     {
         _fight.Drop(bot);

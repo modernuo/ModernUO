@@ -74,6 +74,24 @@ public sealed class BotSquadSettings
 
     /// <summary>How near a road between towns a square must lie to count as on it.</summary>
     public int? ClearRoadWidth { get; set; }
+
+    /// <summary>Whether a company whose fight is well in hand spares members to a dire cry near it. See <c>BotSquadSpare</c>.</summary>
+    public bool? Spares { get; set; }
+
+    /// <summary>The share of the company's strength its own enemy may come to for the fight to count as well in hand.</summary>
+    public double? SpareShare { get; set; }
+
+    /// <summary>How far from the thing on the crier a member may be to be spared to it.</summary>
+    public int? SpareReach { get; set; }
+
+    /// <summary>The most members spared to one cry.</summary>
+    public int? MostSpared { get; set; }
+
+    /// <summary>How long a spared member is left on the thing before the press takes it back, in milliseconds.</summary>
+    public int? SpareMs { get; set; }
+
+    /// <summary>Under this share of its health a member makes its company one that spares nobody (12.10.2026, w5).</summary>
+    public double? SpareDyingShare { get; set; }
 }
 
 /// <summary>Reads the squad file and moves the numbers it names.</summary>
@@ -121,5 +139,13 @@ public static class BotSquadConfig
         BotClearer.RoadWidth = settings.ClearRoadWidth ?? BotClearer.RoadWidth;
         BotHarrow.ClearFit = settings.ClearFit ?? BotHarrow.ClearFit;
         BotHarrow.ClearPrior = settings.ClearExpects ?? BotHarrow.ClearPrior;
+
+        // A company sparing members to a dire cry (06.10.2026, react18; bound to the file on 12.10.2026, w5). See BotSquadSpare.
+        BotSquad.Spares = settings.Spares ?? BotSquad.Spares;
+        BotSquad.SpareShare = settings.SpareShare ?? BotSquad.SpareShare;
+        BotSquad.SpareReach = settings.SpareReach ?? BotSquad.SpareReach;
+        BotSquad.MostSpared = settings.MostSpared ?? BotSquad.MostSpared;
+        BotSquad.SpareMs = settings.SpareMs ?? BotSquad.SpareMs;
+        BotSquad.SpareDyingShare = settings.SpareDyingShare ?? BotSquad.SpareDyingShare;
     }
 }

@@ -37,6 +37,9 @@ public sealed class BotHuntModule : BotModule
     {
         BotHuntConfig.Load();
 
+        // The cry, the stand and the stopwatch read Configuration/bot-combat.json (12.10.2026, w5). See BotCombatConfig.
+        BotCombatConfig.Load();
+
         BotWill.Offer(new BotHunter());
 
         // Taming: a class that lists Animal Taming brings a beast to heel, and the beast fights beside it. See BotTame.
@@ -101,12 +104,20 @@ public sealed class BotHuntModule : BotModule
         );
 
         logger.Information(
-            "A cry for help carries {Carries} tiles and stands {Holds}ms; anybody above {Fit:P0} health within {Reach} tiles may answer, and a bot hits back at whatever is on it inside {Near} tiles",
+            "A cry for help carries {Carries} tiles and stands {Holds}ms; anybody above {Fit:P0} health within {Reach} tiles may answer, and a bot hits back at whatever is on it inside {Near} tiles; a dire cry (under {Dire:P0}) summons up to {Most} at once{Summons}, a steady one its nearest free neighbour within {NearReach} tiles when the thing is {NearOdds:P0} of its own strength or more{NearCalls}; a bot refused the fight for the odds with no flight on offer takes the stand{Stands}; one unanswered cry in {Sample} is said with who was in earshot",
             BotCry.Carries,
             BotCry.HoldsMs,
             BotRescuer.FitAt,
             BotRescuer.Reach,
-            BotDefender.Reach
+            BotDefender.Reach,
+            BotCry.DireAt,
+            BotCry.MostCalled,
+            BotCry.Summons ? "" : " (off)",
+            BotCry.NearReach,
+            BotCry.NearOdds,
+            BotCry.NearCalls ? "" : " (off)",
+            BotDefender.Stands ? "" : " (off)",
+            BotReflex.SampleEvery
         );
 
         logger.Information(

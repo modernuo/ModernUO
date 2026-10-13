@@ -97,6 +97,7 @@ there is.
 | `The ground:` | `BotSquad/BotSquads.cs` | `BotGround`, `BotWoodsman`, `BotStable` |
 | `Getting about:` | `BotPopulation/BotBeat.cs` | `BotPath`, `BotStep`, `BotJourney`, `BotDanger`, `BotSight` (the `sight:` clause: creatures a walker saw and could not beat, the walks changed for them by kind, and deaths by what the bot had made of its killer — 03.10.2026) |
 | `The market:` | `BotPopulation/BotBeat.cs` | `BotAuction`, `BotHaggle`, `BotListing` |
+| `Reflexes:` | `BotPopulation/BotBeat.cs` | `BotReflex` (the stopwatch: struck, seen coming, the failing line, first cries, patients, fights ended — each with its spread, its "never" and who died undecided); then `the answers:` from `BotMobile.DescribeAlarms` — `BotWill.Alerts`, `BotSurgeon` (the healer's call and the press to a failing patient), `BotCry` (dire cries summoned for, steady cries' near call, `BotSquadSpare`'s spares), `BotDefender` (blows answered, the stand), `BotSquads.DescribeAnswers` (12.10.2026, w5: the near call, the stand taken, the spare and the press are each their own bucket here) |
 | `Lines:` | `BotPopulation/BotBeat.cs` | `BotLines` — Patrick's Needs measure: each line a bot asks for, met in its first hour or not, by whom, and the cause of each failure; the `needs` block of `/api/state` holds the same counters (02.10.2026, build 391) |
 | `Bot shops:` | `BotShopkeep/BotShopkeepModule.cs` | `BotShopkeep`, `BotShopkeeper`, `BotPatron`, `BotShopBook`, `BotAuction.Capped` — shops by the banks: shifts, sales to bots short of their kit or with a want on the board, the customer's weighing against counter and stall, the till, and the auction's lot cap (29.09.2026) |
 | `What we know:` | `BotPopulation/BotBeat.cs` | `BotLedger` |
@@ -135,6 +136,7 @@ Per-bot lines, which are the other half of the log:
 | `; put down <trade> to take up again (<cause> by …)` on a take line | `BotWill/BotWill.cs` | steadfast work paused rather than dropped, because what took the bot off it would not wait |
 | `X took up <trade> again after <other>, Ns after putting it down` | `BotWill/BotWill.cs` | the paused work resumed when the interruption ended |
 | `X dropped <trade>: … — outbid by <other> at N/min after A of B minutes reckoned, taken at T/min and worth W/min by then` | `BotWill/BotWill.cs` | a real change of mind, with the numbers that decided it |
+| `A cry nobody answered: X cried about <foe> and <died / is at N %>; the nearest of ours able at the cry was Y the <class> N tiles off, holding <work>, now holding <work>` | `BotCombat/BotReflex.cs` | one unanswered first cry in `BotReflex.SampleEvery` that had somebody in earshot: who stood nearest and what it held, for the next analysis (12.10.2026, w5) |
 | `X opened a shop by the bank at (x, y) in <town>: …` / `X shut its shop in <town> after N minutes: …` | `BotShopkeep/BotShopkeep.cs` | a shift of a bot's shop begun and ended, with its stock and its takings |
 | `X bought N <kind> at Y's shop in <town> for Ngp, P each — short of it for its kit` / `— against its own want on the board` | `BotShopkeep/BotShopkeep.cs` | one sale at a bot's shop, and which need brought the buyer |
 
@@ -586,7 +588,7 @@ Scrolls, reagents and spellbooks: the first work in the project whose output no 
 
 The fight itself belongs to the engine — `Warmode` and `Combatant` are enough, and its own skill checks train skills exactly as they do for a player. What is here is the judgement around it: is this thing worth fighting, is this fight being lost, is somebody calling for help, and how a shooter keeps its distance.
 
-**Writes** `Arms:` · **Writes** `Bows:`
+**Config** `bot-combat.json` · **Writes** `Arms:` · **Writes** `Bows:`
 
 | offers work | as | on the rung | handing out |
 |---|---|---|---|
@@ -600,6 +602,7 @@ The fight itself belongs to the engine — `Warmode` and `Combatant` are enough,
 | `BotArms.cs` | Whether a bot has anything in its hands, asked at the moment it matters. |
 | `BotBolt.cs` | Getting away from whatever is killing it. |
 | `BotBrawl.cs` | A fight with one of our own — a duel, a robbery, a manhunt — as a piece of work: close, hit, and stop when told. |
+| `BotCombatConfig.cs` | What Configuration/bot-combat.json is allowed to say about the cry, the stand and the stopwatch. |
 | `BotCry.cs` | Somebody of ours is being killed and has said so out loud. |
 | `BotDuel.cs` | Two of ours set against each other on purpose, and the rule that says when it is over. |
 | `BotFugitive.cs` | Offers a bot whose health is going the one thing that was missing from that rung: leaving. |
