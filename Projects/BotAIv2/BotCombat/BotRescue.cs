@@ -218,15 +218,14 @@ public sealed class BotRescue : BotDeed
         }
     }
 
+    /// <summary>
+    /// The stand's honest price — the bot that died in it — is counted in <c>BotWill.Settle</c> on the death itself, not here: a stand
+    /// put down for a flight the bot then died in is dropped here too, with the bot dead, and read as a death in the stand until
+    /// 13.10.2026 (w5 review A).
+    /// </summary>
     public override void Drop(IBotWilful bot)
     {
         _fight.Drop(bot);
-
-        // The stand's honest price: the bot that died in it. Settle drops the deed of a dead bot before anything else reads it.
-        if (_own && ToTheEnd && bot?.Self is { Alive: false })
-        {
-            BotDefender.StoodDied++;
-        }
 
         // Whoever was crying has had somebody come; if they are still in trouble they will say so again on
         // their own next beat. Leaving the cry standing would send a second and a third bot at a fight that

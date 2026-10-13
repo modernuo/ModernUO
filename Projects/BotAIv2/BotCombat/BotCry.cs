@@ -475,7 +475,9 @@ public static class BotCry
             return 0;
         }
 
-        var ours = BotThreat.OurPower(who, BotMobile.NoticeRange);
+        // Ours against this thing: a company member beside the crier but held by its own enemy is not on the crier's side (13.10.2026,
+        // w5 review A; until then it was, and the need read as met by bots that would never turn).
+        var ours = BotThreat.OurPower(who, BotMobile.NoticeRange, foe);
         var need = threat / Math.Max(0.1, BotThreat.Tolerance) - ours;
 
         _chosen.Clear();
@@ -621,7 +623,11 @@ public static class BotCry
     /// <summary>The most neighbours a steady cry sends. One: the crier is winning, the neighbour makes it quick.</summary>
     public static int MostNear { get; set; } = 1;
 
-    /// <summary>Steady bouts of crying that called, and what came of each first calling: one bucket each.</summary>
+    /// <summary>
+    /// Steady bouts of crying that called, and what came of each <b>first</b> calling: one bucket each, every bucket counted on the first
+    /// round only (13.10.2026, w5 review B: the callings counted every round for a day, and a bout whose first round found nobody and
+    /// whose second sent one sat in two buckets). <see cref="NearCalled"/> counts bots, every round.
+    /// </summary>
     public static long NearCries { get; private set; }
 
     public static long NearCallings { get; private set; }
@@ -794,7 +800,10 @@ public static class BotCry
             return 0;
         }
 
-        NearCallings++;
+        if (first)
+        {
+            NearCallings++;
+        }
 
         return sent;
     }

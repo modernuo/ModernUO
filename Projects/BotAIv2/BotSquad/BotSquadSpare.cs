@@ -73,8 +73,15 @@ public sealed partial class BotSquad
 
     public static long SpareRefusedNobody { get; private set; }
 
-    /// <summary>Companies asked that were at war, and companies whose members near, all spared, would still have been short of what the thing asks.</summary>
+    /// <summary>
+    /// Companies asked that were at war; companies whose own enemy would stop being in hand against what they kept the moment the
+    /// first member went (a gate of its own since 13.10.2026, w5 review A — it borrowed <see cref="SpareRefusedFight"/> for a day);
+    /// and companies whose members near, all spared, would still have been short of what the thing asks — the members already on the
+    /// crier's side in the summons' reckoning (standing by it and held by nothing else) adding nothing.
+    /// </summary>
     public static long SpareRefusedWar { get; private set; }
+
+    public static long SpareRefusedKept { get; private set; }
 
     public static long SpareRefusedShort { get; private set; }
 
@@ -190,7 +197,10 @@ public sealed partial class BotSquad
         }
 
         // Nearest first, until the thing's need is met; never past the point where the company's own enemy stops being in hand
-        // against what the company keeps. One standing by the crier is already counted on its side (BotThreat.OurPower).
+        // against what the company keeps. One standing by the crier and held by nothing else is already counted on its side
+        // (BotThreat.OurPower with the foe); one standing by it but held by the company's own enemy is not, and adds its strength
+        // (13.10.2026, w5 review A: until then every member beside the crier read as on its side whatever it fought, so the need read
+        // as met by bots that would never turn and the company was refused "short").
         var enemy = Focus is { Deleted: false, Alive: true } focus ? Reckon(focus) : 0.0;
         var kept = Able();
         var count = 0;
@@ -207,7 +217,7 @@ public sealed partial class BotSquad
             kept -= power;
             count++;
 
-            if (_spareable[i].OffCrier > BotMobile.NoticeRange)
+            if (_spareable[i].OffCrier > BotMobile.NoticeRange || BotThreat.Held(_spareable[i].Body, foe))
             {
                 brought += power;
             }
@@ -220,7 +230,7 @@ public sealed partial class BotSquad
 
         if (count == 0)
         {
-            SpareRefusedFight++;
+            SpareRefusedKept++;
 
             return 0;
         }
@@ -315,11 +325,12 @@ public sealed partial class BotSquad
         SpareRefusedBleeding = 0;
         SpareRefusedNobody = 0;
         SpareRefusedWar = 0;
+        SpareRefusedKept = 0;
         SpareRefusedShort = 0;
         SparingBeats = 0;
     }
 
     /// <summary>The spares, for the <c>Reflexes:</c> line.</summary>
     public static string DescribeSpares() =>
-        $"{SparedTo} dire cries answered by a company sparing {Spared} members from a fight well in hand (its enemy under {SpareShare:P0} of its strength, nobody under {SpareDyingShare:P0}), {SparingBeats} beats the press left them on it; companies asked that would not: {SpareRefusedFight} with a fight not in hand (or not in hand without the member), {SpareRefusedDying} with a member under {SpareDyingShare:P0}, {SpareRefusedBleeding} pulling back or mustering, {SpareRefusedWar} at war, {SpareRefusedNobody} with nobody fit within {SpareReach} tiles of the thing, {SpareRefusedShort} with too little to spare for what the thing asks{(Spares ? "" : " (off)")}";
+        $"{SparedTo} dire cries answered by a company sparing {Spared} members from a fight well in hand (its enemy under {SpareShare:P0} of its strength, nobody under {SpareDyingShare:P0}), {SparingBeats} beats the press left them on it; companies asked that would not: {SpareRefusedFight} with a fight not in hand, {SpareRefusedKept} whose fight would not stay in hand without the member nearest, {SpareRefusedDying} with a member under {SpareDyingShare:P0}, {SpareRefusedBleeding} pulling back or mustering, {SpareRefusedWar} at war, {SpareRefusedNobody} with nobody fit within {SpareReach} tiles of the thing, {SpareRefusedShort} with too little to spare for what the thing asks (members already on the crier's side adding nothing){(Spares ? "" : " (off)")}";
 }

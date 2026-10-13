@@ -1071,9 +1071,11 @@ public class BotMobile : PlayerMobile, IBotWilful, IBotAside
 
         var hurtAt = HitsMax * BotMend.Hurt;
 
+        // The failing fact is passed in: Hits still read the blow away here (OnDamage runs before the engine writes them), so the
+        // surgeon cannot ask the patient (13.10.2026, w5 review B).
         if (fails || Hits >= hurtAt && after < hurtAt)
         {
-            BotSurgeon.Call(this);
+            BotSurgeon.Call(this, fails);
         }
     }
 

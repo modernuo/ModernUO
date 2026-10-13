@@ -2907,6 +2907,13 @@ public static class BotWill
                 else if (defence)
                 {
                     DefenceDeaths++;
+
+                    // The stand's honest price, counted on the death itself and never on the echo of a stand put down for the flight
+                    // the bot died in (13.10.2026, w5 review A). See BotDefender.StoodDied.
+                    if (deed is BotRescue { ToTheEnd: true })
+                    {
+                        BotDefender.StoodDied++;
+                    }
                 }
                 else
                 {

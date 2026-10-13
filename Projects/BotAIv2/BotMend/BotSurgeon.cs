@@ -99,7 +99,7 @@ public sealed class BotSurgeon : IBotProposer
     /// patient, at the blow; nothing per beat.
     /// </para>
     /// </summary>
-    public static void Call(BotMobile patient)
+    public static void Call(BotMobile patient, bool failing = false)
     {
         var map = patient?.Map;
 
@@ -232,7 +232,11 @@ public sealed class BotSurgeon : IBotProposer
         // crossings of the failing line 140 died with nothing decided. For a patient under its failing line the nearest able is
         // pressed to the mending as a dire crier's healer is (BotCry.Summon): its work put down and taken up again, never thrown
         // away — a healer holding work that is not taken up again is told to look up, as before.
-        if (Presses && BotLadder.Failing(patient) && best.Resolve is { } free
+        //
+        // Whether the patient is failing is the caller's word (BotMobile.Alarm): this is called from OnDamage, which the engine runs
+        // before it writes the new health, so the patient's own Hits still read the blow away and BotLadder.Failing(patient) was false at
+        // every call — the press was dead code until 13.10.2026 (w5 review B).
+        if (Presses && failing && best.Resolve is { } free
             && (free.Deed == null || free.Deed.Resumes && (free.Paused == null || BotCry.StackCalls && free.Under == null)))
         {
             var trains = BotMend.Spell(best, patient) >= 0 ? SkillName.Magery : SkillName.Healing;

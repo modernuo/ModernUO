@@ -986,17 +986,21 @@ public static class BotReflex
             return;
         }
 
-        // The sample: who was nearest and able when the cry went up, and what it holds now. See SampleEvery.
+        // The sample: who was nearest and able when the cry went up, what it holds now, and whose it is — Heard counts any able ally
+        // within the cry's reach, a hostile guild's included, so without the guild and the hostility the next analysis could not tell
+        // "nobody came" from "nobody of ours was there" (13.10.2026, w5 review B). See SampleEvery.
         var near = World.FindMobile(s.CryNearest);
         var foe = World.FindMobile(s.CryWhat);
 
         logger.Information(
-            "A cry nobody answered: {Crier} cried about {Foe} and {Fate}; the nearest of ours able at the cry was {Near} the {Class} {Off} tiles off, holding {Held}{Company}, now holding {Now}{Squad}",
+            "A cry nobody answered: {Crier} cried about {Foe} and {Fate}; the nearest of ours able at the cry was {Near} the {Class} of {Guild}{Hostile} {Off} tiles off, holding {Held}{Company}, now holding {Now}{Squad}",
             crier.Name,
             foe?.Name ?? "something",
             died ? "died" : crier.HitsMax > 0 ? $"is at {crier.Hits / (double)crier.HitsMax:P0}" : "lives",
             near?.Name ?? "nobody found",
             (near as BotMobile)?.Class?.Name ?? "?",
+            (near?.Guild as Guilds.Guild)?.Name ?? "no guild",
+            near != null && BotRegard.Hostile(near, crier) ? " (hostile to the crier)" : "",
             s.CryNearOff,
             s.CryNearHeld ?? "nothing",
             s.CryNearSquad > 0 ? $" in company {s.CryNearSquad}" : "",

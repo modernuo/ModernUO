@@ -410,6 +410,41 @@ public static class BotThreat
     }
 
     /// <summary>
+    /// Our side against one thing: this bot plus every able one of its own near enough — <b>less those held by a foe of their own</b>
+    /// (13.10.2026, w5 review A). The reckoning above counts a company member fighting its own enemy beside a crier as on the crier's
+    /// side, so the crier's need read as met by bots that would never turn, and a company asked to spare them found nothing to add
+    /// (<c>BotSquad.Spare</c>: "too little to spare"). For the summons' need only; a bot's own odds (<see cref="Decide"/>) keep the
+    /// reckoning above, which is what the whole population's fight-or-flee has been measured on.
+    /// </summary>
+    public static double OurPower(Mobile bot, int range, Mobile foe)
+    {
+        var map = bot?.Map;
+
+        if (map == null || map == Map.Internal)
+        {
+            return 0.0;
+        }
+
+        var total = Power(bot);
+
+        foreach (var mobile in map.GetMobilesInRange<Mobile>(bot.Location, range))
+        {
+            if (mobile == bot || mobile is not IBotAlly { AbleToFight: true } || Held(mobile, foe))
+            {
+                continue;
+            }
+
+            total += Power(mobile);
+        }
+
+        return total;
+    }
+
+    /// <summary>Whether an ally is held by a living foe of its own that is not <paramref name="foe"/>: it is no reinforcement against this one.</summary>
+    public static bool Held(Mobile ally, Mobile foe) =>
+        ally?.Combatant is { Deleted: false, Alive: true } own && own != foe && own != ally;
+
+    /// <summary>
     /// The same reckoning of the opposition, taken where the fight would be rather than where the bot is.
     ///
     /// <para>
