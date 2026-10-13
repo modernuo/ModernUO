@@ -190,6 +190,15 @@ public static class BotStory
 
     private static bool _changed;
 
+    /// <summary>A story asked for on the page came within a second of the last snapshot: the next tick hands it over.</summary>
+    private static bool _owed;
+
+    /// <summary>
+    /// Set by <see cref="Wipe"/> and cleared by the next <see cref="Started"/>: between <c>do reset</c> and the restart that follows
+    /// it nothing is noted or recorded, so the save the reset takes writes the store empty rather than with the minutes in between.
+    /// </summary>
+    private static bool _sealed;
+
     /// <summary>Bumped by a reload or a wipe, so an answer asked for in the old world is not written into the new one.</summary>
     private static int _generation;
 
@@ -210,6 +219,7 @@ public static class BotStory
     {
         _startedTick = now;
         _started = true;
+        _sealed = false;
 
         if (!Running)
         {
@@ -292,7 +302,7 @@ public static class BotStory
     /// </summary>
     public static void Heard(BotEvent e)
     {
-        if (!Running || e?.Kind == null)
+        if (!Running || _sealed || e?.Kind == null)
         {
             return;
         }
@@ -451,7 +461,7 @@ public static class BotStory
     /// </summary>
     public static BotStoryBook Note(string name, BotStage stage, string kind, string text, double weight, bool once = false, bool own = false)
     {
-        if (!Running || string.IsNullOrEmpty(name) || BotLives.Find(name) == null)
+        if (!Running || _sealed || string.IsNullOrEmpty(name) || BotLives.Find(name) == null)
         {
             return null;
         }
@@ -487,7 +497,7 @@ public static class BotStory
     /// </summary>
     public static void Born(BotMobile bot, bool fresh)
     {
-        if (!Running || bot?.Name == null)
+        if (!Running || _sealed || bot?.Name == null)
         {
             return;
         }
@@ -680,7 +690,7 @@ public static class BotStory
     /// <summary>The story's clock. Game loop only.</summary>
     public static void Tick(long now)
     {
-        if (!Running)
+        if (!Running || _sealed)
         {
             return;
         }
@@ -1009,6 +1019,59 @@ public static class BotStory
         BotChronicle.Record("champion", $"{book.Name} the {BotStoryWriter.Words(bot.Class?.Name)}{(guild != null ? $" of {guild}" : "")} became the champion of the island", 75.0);
     }
 
+    /// <summary>
+    /// The championship's own word that a bot was crowned (<c>BotTourney.Crown</c>, in the minds assembly, which this one cannot
+    /// see): the Chronicle's entry at the minute it happened and in the tourney's words of how ("took the title from Faron in the
+    /// ring"), and the bot's own note. The book is told the yellow is seen, so the walk, which would find it up to
+    /// <see cref="EveryMs"/> later, writes nothing more; the walk stays the way in for a crown this call does not report.
+    /// A forced test is not a championship and is not reported. Game loop only.
+    /// </summary>
+    public static void Crowned(BotMobile bot, string how)
+    {
+        if (!Running || _sealed || bot?.Name == null)
+        {
+            return;
+        }
+
+        try
+        {
+            var guild = (bot.Guild as Guild)?.Name;
+            var said = string.IsNullOrWhiteSpace(how) ? "" : $": {how}";
+
+            BotChronicle.Record("champion", $"{bot.Name} the {BotStoryWriter.Words(bot.Class?.Name)}{(guild != null ? $" of {guild}" : "")} became the champion of the island{said}", 75.0);
+
+            if (Note(bot.Name, BotStage.Deeds, "champion", $"{bot.Name} became the champion of the island{said}", 70.0) is { } book)
+            {
+                book.SeenChampion = true;
+            }
+        }
+        catch (Exception ex)
+        {
+            Fault(ex, "a crowning");
+        }
+    }
+
+    /// <summary>A champion who kept the title in the ring (<c>BotTourney</c>): a line of the Chronicle and a deed of the champion's. Game loop only.</summary>
+    public static void Defended(string champion, string challenger, int defences)
+    {
+        if (!Running || _sealed || champion == null)
+        {
+            return;
+        }
+
+        try
+        {
+            var against = challenger != null ? $" against {challenger}" : "";
+
+            BotChronicle.Record("champion", $"{champion} defended the title of champion{against}, {defences} {(defences == 1 ? "defence" : "defences")} in this reign", 45.0);
+            Note(champion, BotStage.Deeds, "defence", $"{champion} defended the title of champion{against}", 45.0);
+        }
+        catch (Exception ex)
+        {
+            Fault(ex, "a title defence");
+        }
+    }
+
     private static string House(BotMobile bot) =>
         BotAbode.Of(bot) is { Deleted: false } house ? BotBiography.Place(house.Map, house.Location) : null;
 
@@ -1149,7 +1212,7 @@ public static class BotStory
     /// <summary>A name asked for on the page (posted from the listener): built now, handed over now, and its chapters put first for the model.</summary>
     private static void Wanted(string name)
     {
-        if (!Running)
+        if (!Running || _sealed)
         {
             return;
         }
@@ -1213,14 +1276,24 @@ public static class BotStory
         return null;
     }
 
-    /// <summary>The snapshot the page reads: a copy of every story's JSON and the index, swapped in whole.</summary>
+    /// <summary>
+    /// The snapshot the page reads: a copy of every story's JSON and the index, swapped in whole. A story asked for on the page
+    /// forces it, but never twice within a second — the copy and the index are a few hundred microseconds at 1500 books, and a
+    /// page left open, or a script asking in a loop, must not turn them into a cost per request; a force refused is owed, and the
+    /// story's next tick pays it.
+    /// </summary>
     private static void Publish(long now, bool force)
     {
-        if (!_changed || !force && _publishedOnce && now - _publishedTick < Math.Max(1000, PublishEveryMs))
+        force |= _owed;
+
+        if (!_changed || _publishedOnce && now - _publishedTick < (force ? 1000 : Math.Max(1000, PublishEveryMs)))
         {
+            _owed = force && _changed;
+
             return;
         }
 
+        _owed = false;
         _changed = false;
         _publishedOnce = true;
         _publishedTick = now;
@@ -1448,17 +1521,18 @@ public static class BotStory
     /// <summary>The model's answer, back on the loop: checked, and kept against the facts' hash, or thrown away with the reason.</summary>
     private static void Answered(int generation, BotStoryAsk q, string key, int stage, ulong hash, string text, long waited)
     {
+        // An answer asked for before a reload or a wipe frees nothing: the slot mark belongs to whatever was asked since.
+        if (generation != _generation)
+        {
+            VoiceStale++;
+
+            return;
+        }
+
         _asking = false;
 
         try
         {
-            if (generation != _generation)
-            {
-                VoiceStale++;
-
-                return;
-            }
-
             VoiceWaitedMs += waited;
 
             if (text == null)
@@ -1872,6 +1946,11 @@ public static class BotStory
 
         if (shape != Shape)
         {
+            // Skipped to its end rather than left half read: the engine checks that a store was read to its last byte and otherwise
+            // stops the boot on a console prompt (GenericPersistence.Deserialize), which a shard started from a script never answers.
+            // The stories are worth less than a boot. The shard runs Release, where the reader's own assertion on this seek is gone.
+            reader.Seek(0, System.IO.SeekOrigin.End);
+
             logger.Warning("The saved stories are shape {Found} and this build reads {Wanted}; they are dropped, and every book opens again at its next look", shape, Shape);
 
             return;
@@ -2002,6 +2081,13 @@ public static class BotStory
         BotChronicle.Wipe();
         _shelf = Shelf.Empty;
 
+        // Until the restart: the guilds disbanded and the bodies purged by the same reset, or a clock that fires before the save,
+        // would otherwise write the old world's last minutes into the new world's first page.
+        _sealed = true;
+
         return books;
     }
+
+    /// <summary>True between <c>do reset</c> and the next start: nothing is written. See <see cref="Wipe"/>.</summary>
+    public static bool Sealed => _sealed;
 }

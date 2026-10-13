@@ -39,6 +39,15 @@ public static class BotChronicle
     /// <summary>The heaviest entries of a day the model is told, in the order they happened: a prompt has to fit the model's context.</summary>
     public static int VoiceMostFacts { get; set; } = 30;
 
+    /// <summary>
+    /// The same sentence again within this many minutes is one thing said twice, and is not written; later it is a new thing.
+    /// Thirty. The first cut kept a sentence once a day, and the stream of 11.10.2026 shows why that was wrong: "The Ash declared
+    /// war on The Crown over seizing: a claim on its square…" came at 10:03 and again at 11:27, two wars (the first ended in 27
+    /// minutes), and the second would have been lost as a repeat; the doubles the rule is for (an infirmary "opened" twice in
+    /// nine minutes, the duke's same word heard by both sides) come within minutes.
+    /// </summary>
+    public static int RepeatMinutes { get; set; } = 30;
+
     public static long Recorded { get; private set; }
 
     public static long Repeats { get; private set; }
@@ -350,7 +359,7 @@ public static class BotChronicle
     /// </summary>
     public static void Record(string kind, string text, double weight)
     {
-        if (!BotStory.Running || string.IsNullOrWhiteSpace(text))
+        if (!BotStory.Running || BotStory.Sealed || string.IsNullOrWhiteSpace(text))
         {
             return;
         }
@@ -359,9 +368,11 @@ public static class BotChronicle
         var day = Day(now);
         var line = BotStoryWriter.Sentence(BotStory.Plain(text));
 
-        for (var i = 0; i < day.Entries.Count; i++)
+        for (var i = day.Entries.Count - 1; i >= 0; i--)
         {
-            if (string.Equals(day.Entries[i].Text, line, StringComparison.Ordinal))
+            var entry = day.Entries[i];
+
+            if ((now - entry.At).TotalMinutes < Math.Max(0, RepeatMinutes) && string.Equals(entry.Text, line, StringComparison.Ordinal))
             {
                 Repeats++;
 

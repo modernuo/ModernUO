@@ -1087,6 +1087,12 @@ public static partial class BotTourney
                     _reignSince
                 );
 
+                // A defence in a forced test is not a defence of the title (see Crown): the story keeps the real ones. See BotStory.Defended.
+                if (!(ArenaOn && _forced))
+                {
+                    BotStory.Defended(winner.Name, loser?.Name, _reignDefences);
+                }
+
                 Finish($"{Billing(winner)} defends the title against {loser?.Name} — {_reignDefences} {(_reignDefences == 1 ? "defence" : "defences")} now.", false);
                 winner.Say($"The title stays with me, {loser?.Name}.");
 
@@ -1165,6 +1171,12 @@ public static partial class BotTourney
         );
 
         BotVenues.Announce(test ? $"{line} (A test bout: no prize.)" : line);
+
+        // The island's Chronicle and the champion's own story, at the minute of the crowning (PLAN-life A3, 13.10.2026). See BotStory.Crowned.
+        if (!test)
+        {
+            BotStory.Crowned(winner, how);
+        }
 
         winner?.Say($"I am the champion of this island, and my name is {winner.Name}!");
     }

@@ -117,6 +117,10 @@ public static class BotStoryCore
             return;
         }
 
+        // Read here as well as at the module's start: the population raises its bots (and BotStory.Born writes their births) in its
+        // own start, before this module's, and a Running of false must already hold for them.
+        BotStoryConfig.Load();
+
         BotStoryStore.Open();
         BotModules.Register(new BotStoryModule());
     }
@@ -165,6 +169,8 @@ public sealed class BotStorySettings
 
     public int? ChronicleVoiceMostFacts { get; set; }
 
+    public int? ChronicleRepeatMinutes { get; set; }
+
     public int? SayEveryMs { get; set; }
 }
 
@@ -209,6 +215,7 @@ public static class BotStoryConfig
         BotChronicle.EveryMs = settings.ChronicleEveryMs ?? BotChronicle.EveryMs;
         BotChronicle.VoiceLeast = settings.ChronicleVoiceLeast ?? BotChronicle.VoiceLeast;
         BotChronicle.VoiceMostFacts = settings.ChronicleVoiceMostFacts ?? BotChronicle.VoiceMostFacts;
+        BotChronicle.RepeatMinutes = settings.ChronicleRepeatMinutes ?? BotChronicle.RepeatMinutes;
 
         BotStoryModule.SayEveryMs = settings.SayEveryMs ?? BotStoryModule.SayEveryMs;
     }
