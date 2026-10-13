@@ -37,7 +37,7 @@ public static class BotStoryVoice
 
     private static bool Ask(BotStoryAsk q, Action<string, long> then)
     {
-        if (q == null || then == null || string.IsNullOrWhiteSpace(q.Facts) || !BotOllama.Free || World.Saving)
+        if (q == null || then == null || string.IsNullOrWhiteSpace(q.Facts) || !BotOllama.Free || World.WorldState != WorldState.Running)
         {
             return false;
         }

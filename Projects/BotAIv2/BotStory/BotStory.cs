@@ -1287,7 +1287,8 @@ public static class BotStory
             VoiceLost++;
         }
 
-        if (!Voiced || _asking || Ask is not { } ask || World.Saving || VoicePerHour <= 0)
+        // Not while a save is pending, taken or written (CLAUDE.md rule 3): the call itself touches nothing, but it waits its turn.
+        if (!Voiced || _asking || Ask is not { } ask || World.WorldState != WorldState.Running || VoicePerHour <= 0)
         {
             return;
         }
