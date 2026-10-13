@@ -3254,6 +3254,7 @@ changed without a rebuild.
 | `BotStory` | `VoiceLeastFacts` | `3` | `VoiceLeastFacts` |
 | `BotStory` | `VoiceMostChars` | `1200` | `VoiceMostChars` |
 | `BotStory` | `VoiceMostWords` | `150` | `VoiceMostWords` |
+| `BotStory` | `VoiceModel` | `""` | `VoiceModel` |
 | `BotStory` | `VoicePerHour` | `6` | `VoicePerHour` |
 | `BotStory` | `Voiced` | `true` | `Voiced` |
 | `BotStoryModule` | `SayEveryMs` | `300000` | `SayEveryMs` |

@@ -3162,15 +3162,16 @@ function stSet(name) {
   try { localStorage.setItem('botweb.story', nm); } catch (e) { /* storage blocked */ }
   stLoadStory(0);
 }
-async function stLoadStory(tries) {
+// poll: the tab's own half-minute refresh, which the shard does not count as a read (a3 review B).
+async function stLoadStory(tries, poll) {
   const nm = ST.bot;
   if (!nm) return;
-  const d = await getJSON('/api/story?bot=' + encodeURIComponent(nm));
+  const d = await getJSON('/api/story?bot=' + encodeURIComponent(nm) + (poll ? '&poll=1' : ''));
   if (nm !== ST.bot) return;
   if (!d) {
     // A story not yet in the snapshot is built on the loop within a few seconds of being asked for.
     $('#stStory').replaceChildren(el('div', { class: 'muted', text: tries < 3 ? `building ${nm}'s story…` : `no story for ${nm}: not a bot the shard knows, or the stories are off` }));
-    if (tries < 3) setTimeout(() => stLoadStory(tries + 1), 2500);
+    if (tries < 3) setTimeout(() => stLoadStory(tries + 1, poll), 2500);
     return;
   }
   ST.story = d;
@@ -3217,13 +3218,13 @@ async function stLoadChronicle() {
     day.voiced ? el('p', { text: day.voiced }) : null,
     ...(day.entries || []).map(e => el('div', { class: 'stRow' }, el('span', { class: 'muted', text: str(e.at) }), el('span', { class: 'muted', text: str(e.kind) }), el('span', { text: str(e.text) }))))) : [el('div', { class: 'muted', text: 'nothing kept yet' })]));
 }
-function stShow() { stLoadIndex(); stLoadChronicle(); if (ST.bot) stLoadStory(0); }
+function stShow(poll) { stLoadIndex(); stLoadChronicle(); if (ST.bot) stLoadStory(0, poll); }
 $('#stGo').addEventListener('click', () => stSet($('#stName').value));
 $('#stName').addEventListener('keydown', e => { if (e.key === 'Enter') stSet($('#stName').value); });
 $('#stSel').addEventListener('click', () => { if (S.selected) stSet(S.selected); });
 $('#stFactsBox').addEventListener('change', stRenderStory);
 $('#btnStory').addEventListener('click', () => { if (S.selected) stSet(S.selected); showTab('story'); $('#tabs').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
-setInterval(() => { if (S.tab === 'story') stShow(); }, 30000);
+setInterval(() => { if (S.tab === 'story') stShow(true); }, 30000);
 (() => { let nm = null; try { nm = localStorage.getItem('botweb.story'); } catch (e) { nm = null; } if (nm) { ST.bot = nm; $('#stName').value = nm; } })();
 
 // ================================================================ theme

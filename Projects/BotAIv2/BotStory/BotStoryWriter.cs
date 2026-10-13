@@ -558,13 +558,6 @@ public static class BotStoryWriter
         "towards", "ever", "always", "often", "rarely", "seldom", "already", "eventually", "ultimately", "shortly"
     };
 
-    /// <summary>Months and days are words in the facts as dates, but a model may spell a date its own way.</summary>
-    private static readonly HashSet<string> Calendar = new(StringComparer.Ordinal)
-    {
-        "january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november",
-        "december", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"
-    };
-
     /// <summary>
     /// The model's paragraph made fit to show, or null with the reason: <c>empty</c>, <c>length</c> (no whole sentence within
     /// the bound), <c>names</c> (a capitalised word the facts do not hold, outside the starters), <c>numbers</c> (a number the
@@ -641,7 +634,9 @@ public static class BotStoryWriter
 
                 var token = Bare(text.AsSpan(from, i - from));
 
-                if (char.IsUpper(c) && token.Length > 0 && !known.Contains(token) && !Calendar.Contains(token) && !(start && Starters.Contains(token)))
+                // A month or a weekday must be in the facts like any name: the dates are written there in full ("4 October", "Monday,
+                // 12 October 2026"), and one the facts do not hold is a day the model made up (a3 review B, 3.4e).
+                if (char.IsUpper(c) && token.Length > 0 && !known.Contains(token) && !(start && Starters.Contains(token)))
                 {
                     why = "names";
                     word = text[from..i];

@@ -95,7 +95,7 @@ public static class BotStory
     public static int VoicePerHour { get; set; } = 6;
 
     /// <summary>The model the story asks; empty means the duke's (<c>BotParley.JudgeModel</c>), else the population's own.</summary>
-    public static string VoiceModel { get; set; }
+    public static string VoiceModel { get; set; } = "";
 
     /// <summary>A chapter is offered to the model only with this many facts of things seen to happen: a thin chapter gains nothing by a voice.</summary>
     public static int VoiceLeastFacts { get; set; } = 3;
@@ -164,7 +164,13 @@ public static class BotStory
 
     public static long Faults { get; private set; }
 
+    /// <summary>Crowns of forced tests the walk was told to take as seen and not write (<see cref="TestCrowned"/>).</summary>
+    public static long TestCrowns { get; private set; }
+
     private static readonly Dictionary<string, long> _thrown = new(StringComparer.Ordinal);
+
+    /// <summary>Notes written from events and the walk, by kind (office, guild, opened:shop …). See <see cref="Counted"/>.</summary>
+    private static readonly Dictionary<string, long> _byKind = new(StringComparer.Ordinal);
 
     /// <summary>Events heard on a thread not the loop's and dropped. Should stay 0; the only field touched off the loop, by Interlocked.</summary>
     private static long _offLoop;
@@ -281,10 +287,12 @@ public static class BotStory
 
     /// <summary>
     /// A bot's story as the last snapshot holds it, or the index of stories when no name is given; null for a name the snapshot
-    /// has no story for. The name is posted to the loop, which builds that story now and puts its chapters first for the model.
-    /// Any thread: it reads one volatile reference and posts; it touches no book.
+    /// has no story for. A read is posted to the loop, which builds that story now, counts the read and puts its chapters first for
+    /// the model; a page's own refresh (<paramref name="poll"/>) of a story already on the shelf is not a read and posts nothing —
+    /// counted as reads, an open Story tab made two a minute of every cache hit and request (a3 review B, 3.5). Any thread: it
+    /// reads one volatile reference and posts; it touches no book.
     /// </summary>
-    public static string Story(string name)
+    public static string Story(string name, bool poll = false)
     {
         var shelf = _shelf;
 
@@ -295,9 +303,14 @@ public static class BotStory
 
         name = name.Trim();
 
-        Core.LoopContext.Post(() => Wanted(name));
+        var json = shelf.Stories.TryGetValue(name, out var found) ? found : null;
 
-        return shelf.Stories.TryGetValue(name, out var json) ? json : null;
+        if (!poll || json == null)
+        {
+            Core.LoopContext.Post(() => Wanted(name));
+        }
+
+        return json;
     }
 
     // ------------------------------------------------------------------ what comes in: game loop only
@@ -377,15 +390,31 @@ public static class BotStory
                         break;
                     }
 
+                    // A line goes into the book of the bot it names, never only of the bot that carried it. The steward's lines are
+                    // carried by whoever said them in the town (BotStewardship.Speak: any member of the steward's guild standing there),
+                    // and 47 of the 62 such lines in the stream named somebody else ("Dunstan Ashdown" carrying "Malachi of The Hammer is
+                    // the steward of Britain now.") — written into the carrier's book, the model was then told to name the carrier as
+                    // the steward (a3 review B, 3.1). So the steward is read off the sentence, and a head's election or deposition is
+                    // kept only when the sentence names the bot it came with.
                     if (text.Contains(" elected head of ", StringComparison.Ordinal))
                     {
-                        Note(bot, BotStage.Guild, "office", text.Replace(" elected head of ", " was elected head of ", StringComparison.Ordinal), 55.0);
+                        if (text.StartsWith($"{bot} elected head of ", StringComparison.Ordinal))
+                        {
+                            Note(bot, BotStage.Guild, "office", text.Replace(" elected head of ", " was elected head of ", StringComparison.Ordinal), 55.0);
+                        }
                     }
-                    else if (e.Channel == "steward" && text.Contains(" is the steward of ", StringComparison.Ordinal))
+                    else if (e.Channel == "steward")
                     {
-                        Note(bot, BotStage.Guild, "office", BotChronicle.Steward(text), 50.0);
+                        if (StewardNamed(text, e.Guild) is { } steward)
+                        {
+                            Note(steward, BotStage.Guild, "office", BotChronicle.Steward(text), 50.0);
+                        }
+                        else if (DeposedSteward(text, e.Guild) is { } deposed)
+                        {
+                            Note(deposed, BotStage.Guild, "office", text, 50.0);
+                        }
                     }
-                    else if (text.Contains(" deposed ", StringComparison.Ordinal))
+                    else if (text.Contains($" deposed {bot}", StringComparison.Ordinal))
                     {
                         Note(bot, BotStage.Guild, "office", text, 50.0);
                     }
@@ -439,7 +468,9 @@ public static class BotStory
                     // The guild's leader carries the event: "The Anchor settles in Britain at 1424,1687 for 5000gp".
                     var settled = text.Replace(" settles in ", " settled in ", StringComparison.Ordinal);
 
-                    Note(bot, BotStage.Guild, "hall", $"{settled}, with {bot} at its head", 40.0);
+                    // Keyed by the sentence with its coordinates: two settlings in one town a day apart read the same once they
+                    // are taken out of the words (a3 review B, 3.2).
+                    Note(bot, BotStage.Guild, "hall", $"{settled}, with {bot} at its head", 40.0, key: text);
 
                     break;
                 }
@@ -459,7 +490,11 @@ public static class BotStory
                 {
                     if (text.StartsWith("opened a shop ", StringComparison.Ordinal))
                     {
-                        Note(bot, BotStage.Apprenticeship, "opened:shop", $"{bot} first {text}", 20.0, true);
+                        // "First" only for a bot seen born: for one found living the chronicle has seen its first shop since it
+                        // began, not its first (148 bots opened 2022 shops on 12.10.2026; a3 review B, 3.3).
+                        var first = _books.TryGetValue(bot, out var opener) && opener.Born ? "first " : "";
+
+                        Note(bot, BotStage.Apprenticeship, "opened:shop", $"{bot} {first}{text}", 20.0, true);
                     }
 
                     break;
@@ -467,14 +502,52 @@ public static class BotStory
         }
     }
 
+    /// <summary>"Malachi of The Hammer is the steward of Britain now." → "Malachi" (<c>BotStewardship</c>'s chosen line); null for another line.</summary>
+    private static string StewardNamed(string text, string guild)
+    {
+        var at = text.IndexOf(" is the steward of ", StringComparison.Ordinal);
+
+        return at > 0 ? Before(text[..at], guild) : null;
+    }
+
+    /// <summary>"Britain deposed its steward Malachi of The Hammer: …" → "Malachi"; null for another line.</summary>
+    private static string DeposedSteward(string text, string guild)
+    {
+        const string deposed = " deposed its steward ";
+
+        var at = text.IndexOf(deposed, StringComparison.Ordinal);
+
+        if (at < 0)
+        {
+            return null;
+        }
+
+        var rest = text[(at + deposed.Length)..];
+        var colon = rest.IndexOf(':');
+
+        return Before(colon > 0 ? rest[..colon] : rest, guild);
+    }
+
+    /// <summary>"Malachi Ashdown of The Hammer" → "Malachi Ashdown": the name before the guild, by the guild's own name when it is known.</summary>
+    private static string Before(string who, string guild)
+    {
+        var of = guild != null && who.EndsWith($" of {guild}", StringComparison.Ordinal)
+            ? who.Length - guild.Length - 4
+            : who.LastIndexOf(" of ", StringComparison.Ordinal);
+
+        return of > 0 ? who[..of] : null;
+    }
+
     /// <summary>
     /// A note into a bot's book, by name — also the seam for what is to come (an apprenticeship of A5, a family of A7, a legend
     /// slain of A8). <paramref name="once"/> keeps only the first note of its kind. <paramref name="own"/>: the stream calls a bot
     /// "it" ("on its head", "after its term", "its trade"), and in a sentence about the bot that "its" is the bot's own, so it is
-    /// said as his or her; not for sentences where "its" is a guild's ("at its herald's invitation"). Returns the book, or null
-    /// when the name is no bot's or the note was not written. Game loop only.
+    /// said as his or her; not for sentences where "its" is a guild's ("at its herald's invitation"). <paramref name="key"/>: what tells
+    /// this note from an earlier one when the words alone do not (the sentence before its coordinates were taken out). Returns the
+    /// book, or null when the name is no bot's or the note was refused as one of a kind already kept; a note left out as said in
+    /// the last day still returns the book. Game loop only.
     /// </summary>
-    public static BotStoryBook Note(string name, BotStage stage, string kind, string text, double weight, bool once = false, bool own = false)
+    public static BotStoryBook Note(string name, BotStage stage, string kind, string text, double weight, bool once = false, bool own = false, string key = null)
     {
         if (!Running || _sealed || string.IsNullOrEmpty(name) || BotLives.Find(name) == null)
         {
@@ -500,8 +573,11 @@ public static class BotStory
             text = text.Replace(" its ", $" {BotStoryWriter.Possessive(book)} ", StringComparison.Ordinal);
         }
 
-        Write(book, stage, kind, text, weight, DateTime.UtcNow);
-        FromEvents++;
+        if (Write(book, stage, kind, text, weight, DateTime.UtcNow, key))
+        {
+            FromEvents++;
+            Counted(kind);
+        }
 
         return book;
     }
@@ -646,25 +722,31 @@ public static class BotStory
         }
     }
 
-    private static void Write(BotStoryBook book, BotStage stage, string kind, string text, double weight, DateTime at)
+    /// <summary>A note written, or left out (false) as the same thing said in the last day; only a written note is counted.</summary>
+    private static bool Write(BotStoryBook book, BotStage stage, string kind, string text, double weight, DateTime at, string key = null)
     {
         text = Plain(text);
 
-        if (book.Said(text, at))
+        if (book.Said(text, key, at))
         {
             Repeats++;
 
-            return;
+            return false;
         }
 
-        book.Notes.Add(new BotStoryNote { Stage = stage, Kind = kind, Text = text, At = at, Weight = weight });
+        book.Notes.Add(new BotStoryNote { Stage = stage, Kind = kind, Text = text, Key = key, At = at, Weight = weight });
         _changed = true;
 
         while (book.Notes.Count > Math.Max(BotStages.Count, MostNotes))
         {
             Trim(book);
         }
+
+        return true;
     }
+
+    /// <summary>Notes from events and the walk by kind, for the line: "from events" alone passes on shop openings (a3 review B, §4).</summary>
+    private static void Counted(string kind) => _byKind[kind] = _byKind.GetValueOrDefault(kind) + 1;
 
     /// <summary>The lightest note goes, but never the last of its stage while another stage has two; ties go to the older.</summary>
     private static void Trim(BotStoryBook book)
@@ -914,8 +996,11 @@ public static class BotStory
 
     private static void Walked(BotStoryBook book, BotStage stage, string kind, string text, double weight, DateTime at)
     {
-        Write(book, stage, kind, text, weight, at);
-        FromWalk++;
+        if (Write(book, stage, kind, text, weight, at))
+        {
+            FromWalk++;
+            Counted(kind);
+        }
     }
 
     private static void Guilds(BotStoryBook book, BotMobile bot, DateTime now)
@@ -1039,7 +1124,11 @@ public static class BotStory
 
         if (!champion)
         {
-            Walked(book, BotStage.Deeds, "champion", $"{book.Name} lost the champion's title", 40.0, now);
+            // Lost only what the book says was held: a yellow taken in a forced test was never written (see TestCrowned).
+            if (HeldTitle(book))
+            {
+                Walked(book, BotStage.Deeds, "champion", $"{book.Name} lost the champion's title", 40.0, now);
+            }
 
             return;
         }
@@ -1048,6 +1137,44 @@ public static class BotStory
 
         Walked(book, BotStage.Deeds, "champion", $"{book.Name} became the champion of the island", 70.0, now);
         BotChronicle.Record("champion", $"{book.Name} the {BotStoryWriter.Words(bot.Class?.Name)}{(guild != null ? $" of {guild}" : "")} became the champion of the island", 75.0);
+    }
+
+    /// <summary>Whether the book's last word on the title is that the bot held it (crowned, or found champion), not that it lost it.</summary>
+    private static bool HeldTitle(BotStoryBook book)
+    {
+        for (var i = book.Notes.Count - 1; i >= 0; i--)
+        {
+            var note = book.Notes[i];
+
+            if (note.Kind == "champion")
+            {
+                return !note.Text.Contains("lost the champion's title", StringComparison.Ordinal);
+            }
+
+            if (note.Baseline && note.Text.Contains("was the champion of the island", StringComparison.Ordinal))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// A forced test crowned this bot on a vacant title (<c>BotTourney.Crown</c>): it wears the yellow, but a test is not a
+    /// championship, so nothing is written — the book is only told the yellow is seen, so that the walk, which reads the hue, does
+    /// not write the crown five minutes later, nor its loss when a real championship takes it (a3 review B, §2). A book not yet
+    /// open is not opened for it. Game loop only.
+    /// </summary>
+    public static void TestCrowned(BotMobile bot)
+    {
+        if (!Running || _sealed || bot?.Name == null || !_books.TryGetValue(bot.Name, out var book))
+        {
+            return;
+        }
+
+        book.SeenChampion = true;
+        TestCrowns++;
     }
 
     /// <summary>
@@ -1523,16 +1650,18 @@ public static class BotStory
                 continue;
             }
 
-            var guild = (body?.Guild as Guild)?.Name ?? book.SeenGuild;
-
             stage = s;
             hash = chapter.Hash;
+
+            // Who without the guild: the guild named here is the present one, and told it, the model could retell a chapter about
+            // a former guild with the present one and the check would let it pass (a3 review B, 3.4b). A guild the chapter is
+            // about is in its facts.
             q = new BotStoryAsk
             {
                 Kind = "chapter",
                 Subject = book.Name,
                 Title = BotStages.Title(chapter.Stage),
-                Who = $"{book.Name}, {BotStoryWriter.A(Kind(book))}{(guild != null ? $" of {guild}" : "")}",
+                Who = $"{book.Name}, {BotStoryWriter.A(Kind(book))}",
                 Facts = string.Join('\n', chapter.Facts),
                 MostWords = VoiceMostWords,
                 Model = VoiceModel
@@ -1812,14 +1941,37 @@ public static class BotStory
 
         return $"{_books.Count} stories ({born} born under this chronicle, {_books.Count - born} found living); {three} with 3 chapters or more ({100.0 * three / books:F0}%), "
                + $"{threeLived} with 3 or more of things seen to happen ({100.0 * threeLived / books:F0}%); chapters: youth {stages[0]}, apprenticeship {stages[1]}, guild {stages[2]}, deeds {stages[3]}, "
-               + $"friends {stages[4]}, home {stages[5]}, family {stages[6]}, old age {stages[7]}; notes: {BornNoted} births, {FromEvents} from events, {FromWalk} from the walk, "
+               + $"friends {stages[4]}, home {stages[5]}, family {stages[6]}, old age {stages[7]}; notes: {BornNoted} births, {FromEvents} from events, {FromWalk} from the walk (by kind: {ByKind()}), "
                + $"{Trimmed} trimmed, {Repeats} repeats left out; {Looks} looks, built {Builds} times at {mean:F0}µs a story ({most:F0}µs the longest), "
                + $"handed to the page {Published} times, asked for there {Requests} times ({Unknown} unknown); "
                + $"the model: {(Voiced ? Ask == null ? "on but not wired" : $"on, at most {VoicePerHour} an hour" : "off")}, {hour} in the last hour, asked {VoiceAsked}, answered {VoiceAnswered}, "
                + $"kept {VoiceKept}, thrown away {VoiceAnswered - VoiceKept} ({(thrown.Length == 0 ? "none" : thrown)}), no answer {VoiceNone}, slot busy {VoiceBusy}, stale {VoiceStale}, lost {VoiceLost}, "
                + $"{VoiceWaitedMs / Math.Max(1, VoiceAnswered + VoiceNone)}ms a call; {voiced} chapters retold, {voiceable} waiting; read on the page {CacheHits} in the model's words and {CacheMisses} in the template's; "
                + $"the Chronicle: {BotChronicle.Days.Count} days, {BotChronicle.Today()} entries today, {BotChronicle.Recorded} recorded ({BotChronicle.Kinds()}), {BotChronicle.Repeats} repeats, "
-               + $"{BotChronicle.Dropped} past a full page, {BotChronicle.Voiced()} days retold; {Faults} faults, {Interlocked.Read(ref _offLoop)} events heard off the loop";
+               + $"{BotChronicle.Dropped} past a full page, {BotChronicle.Voiced()} days retold; {TestCrowns} test crowns left out; {Faults} faults, {Interlocked.Read(ref _offLoop)} events heard off the loop";
+    }
+
+    /// <summary>"office 3, guild 12, opened:shop 40": the notes from events and the walk by kind, the heaviest count first.</summary>
+    private static string ByKind()
+    {
+        if (_byKind.Count == 0)
+        {
+            return "none";
+        }
+
+        var kinds = new List<KeyValuePair<string, long>>(_byKind);
+
+        kinds.Sort(static (a, b) => b.Value.CompareTo(a.Value));
+
+        using var sb = ValueStringBuilder.Create(256);
+
+        for (var i = 0; i < kinds.Count; i++)
+        {
+            sb.Append(i == 0 ? "" : ", ");
+            sb.Append($"{kinds[i].Key} {kinds[i].Value}");
+        }
+
+        return sb.ToString();
     }
 
     private static void Stages(Span<int> stages)
@@ -2067,6 +2219,7 @@ public static class BotStory
         _wanted.Clear();
         _asks.Clear();
         _thrown.Clear();
+        _byKind.Clear();
         BornNoted = 0;
         Opened = 0;
         FromEvents = 0;
@@ -2091,6 +2244,7 @@ public static class BotStory
         CacheHits = 0;
         CacheMisses = 0;
         Faults = 0;
+        TestCrowns = 0;
         _publishedOnce = false;
         _owed = false;
         _changed = true;

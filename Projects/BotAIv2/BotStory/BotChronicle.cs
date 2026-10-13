@@ -105,7 +105,9 @@ public static class BotChronicle
         {
             case "war":
                 {
-                    Record("war", text, 80.0);
+                    // Keyed by the sentence with its square: on 09.10.2026 The Blade declared war on The Mill over a square at 705,855
+                    // at 08:23 and over one at 675,855 at 08:43, two wars that read the same once the coordinates are out (review B, 3.2).
+                    Record("war", text, 80.0, text);
 
                     break;
                 }
@@ -115,7 +117,7 @@ public static class BotChronicle
 
                     if (kind == "guild")
                     {
-                        Record("guild", text, 70.0);
+                        Record("guild", Closing(text), 70.0);
                         Guilds(text);
                     }
                     else if (kind == "exile")
@@ -127,7 +129,7 @@ public static class BotChronicle
                 }
             case "relic":
                 {
-                    Record("relic", e.Bot != null ? $"{e.Bot} {text}" : text, 65.0);
+                    Record("relic", e.Bot != null ? $"{e.Bot} {text}" : text, 65.0, text);
 
                     break;
                 }
@@ -147,7 +149,7 @@ public static class BotChronicle
                     }
                     else if (e.Channel == null && text.Contains(" laid claim to ", StringComparison.Ordinal))
                     {
-                        Record("war", text, 50.0);
+                        Record("war", text, 50.0, text);
                     }
 
                     break;
@@ -183,7 +185,7 @@ public static class BotChronicle
                 }
             case "house":
                 {
-                    Record("guild", text, 40.0);
+                    Record("guild", text, 40.0, text);
 
                     break;
                 }
@@ -304,6 +306,25 @@ public static class BotChronicle
         }
     }
 
+    /// <summary>
+    /// A guild's closing without the alarm's reckoning: "The Moon closed: attractiveness 0.2 with 1 members for 123 minutes, nobody
+    /// joining; 50gp shared" → "The Moon closed, nobody joining; 50gp shared among its members". The rest is for the log.
+    /// </summary>
+    private static string Closing(string text)
+    {
+        var at = text.IndexOf(" closed:", StringComparison.Ordinal);
+
+        if (at <= 0)
+        {
+            return text;
+        }
+
+        var shared = text.LastIndexOf("; ", StringComparison.Ordinal);
+        var gold = shared > at && text.EndsWith("gp shared", StringComparison.Ordinal) ? $"; {text[(shared + 2)..]} among its members" : "";
+
+        return $"{text[..at]} closed, nobody joining{gold}";
+    }
+
     /// <summary>Who founded a guild, or led the band that split off into it, read off the alarm channel's own sentence.</summary>
     private static void Guilds(string text)
     {
@@ -365,8 +386,9 @@ public static class BotChronicle
     /// <summary>
     /// An entry on today's page. Also the seam for what is to come (legends, festivals): any module may record a line of history.
     /// A sentence already on today's page is not written twice; a full page lets its lightest entry go for a heavier one.
+    /// <paramref name="key"/>: what tells this entry from another with the same words (the event's sentence with its coordinates).
     /// </summary>
-    public static void Record(string kind, string text, double weight)
+    public static void Record(string kind, string text, double weight, string key = null)
     {
         if (!BotStory.Running || BotStory.Sealed || string.IsNullOrWhiteSpace(text))
         {
@@ -376,12 +398,14 @@ public static class BotChronicle
         var now = DateTime.Now;
         var day = Day(now);
         var line = BotStoryWriter.Sentence(BotStory.Plain(text));
+        var self = key ?? line;
 
         for (var i = day.Entries.Count - 1; i >= 0; i--)
         {
             var entry = day.Entries[i];
 
-            if ((weight < RepeatDayBelow || (now - entry.At).TotalMinutes < Math.Max(0, RepeatMinutes)) && string.Equals(entry.Text, line, StringComparison.Ordinal))
+            if ((weight < RepeatDayBelow || (now - entry.At).TotalMinutes < Math.Max(0, RepeatMinutes))
+                && string.Equals(entry.Key ?? entry.Text, self, StringComparison.Ordinal))
             {
                 Repeats++;
 
@@ -413,7 +437,7 @@ public static class BotChronicle
             day.Hashed = null;
         }
 
-        day.Entries.Add(new BotChronicleEntry { At = now, Kind = kind, Text = line, Weight = weight });
+        day.Entries.Add(new BotChronicleEntry { At = now, Kind = kind, Text = line, Key = key, Weight = weight });
         day.Hashed = null;
         Recorded++;
         _byKind[kind] = _byKind.GetValueOrDefault(kind) + 1;

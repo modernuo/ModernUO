@@ -276,7 +276,8 @@ public static class BotStoryConfig
         BotStory.OldAgeDays = settings.OldAgeDays ?? BotStory.OldAgeDays;
         BotStory.Voiced = settings.Voiced ?? BotStory.Voiced;
         BotStory.VoicePerHour = settings.VoicePerHour ?? BotStory.VoicePerHour;
-        BotStory.VoiceModel = string.IsNullOrWhiteSpace(settings.VoiceModel) ? BotStory.VoiceModel : settings.VoiceModel.Trim();
+        BotStory.VoiceModel = settings.VoiceModel ?? BotStory.VoiceModel;
+        BotStory.VoiceModel = BotStory.VoiceModel?.Trim() ?? "";
         BotStory.VoiceLeastFacts = settings.VoiceLeastFacts ?? BotStory.VoiceLeastFacts;
         BotStory.VoiceMostChars = settings.VoiceMostChars ?? BotStory.VoiceMostChars;
         BotStory.VoiceMostWords = settings.VoiceMostWords ?? BotStory.VoiceMostWords;

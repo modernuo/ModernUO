@@ -267,7 +267,7 @@ public static class BotWebServer
                 // The stories (PLAN-life A3, 13.10.2026): one bot's chapters, or the index of stories when no bot is named; and the
                 // island's Chronicle. Both are strings the loop wrote; asking for a story posts its name to the loop. See BotStory.
                 case "/api/story":
-                    Story(response, request.QueryString["bot"]);
+                    Story(response, request.QueryString["bot"], request.QueryString["poll"] == "1");
 
                     return;
                 case "/api/chronicle":
@@ -526,7 +526,7 @@ public static class BotWebServer
         );
     }
 
-    private static void Story(HttpListenerResponse response, string bot)
+    private static void Story(HttpListenerResponse response, string bot, bool poll)
     {
         if (!BotStory.Running)
         {
@@ -536,7 +536,15 @@ public static class BotWebServer
             return;
         }
 
-        var json = BotStory.Story(bot);
+        if (BotStory.Sealed && !string.IsNullOrWhiteSpace(bot))
+        {
+            response.StatusCode = 503;
+            Text(response, "{\"error\":\"the stories are sealed by do reset until the restart\"}", "application/json; charset=utf-8");
+
+            return;
+        }
+
+        var json = BotStory.Story(bot, poll);
 
         if (json != null)
         {

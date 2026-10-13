@@ -1177,6 +1177,12 @@ public static partial class BotTourney
         {
             BotStory.Crowned(winner, how);
         }
+        else
+        {
+            // A test on a vacant title still crowns (Patrick asked to see a champion chosen in battle) and turns the name yellow;
+            // the story is told so, and writes neither the crown nor, later, its loss. See BotStory.TestCrowned.
+            BotStory.TestCrowned(winner);
+        }
 
         winner?.Say($"I am the champion of this island, and my name is {winner.Name}!");
     }

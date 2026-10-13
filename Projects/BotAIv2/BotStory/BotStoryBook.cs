@@ -73,14 +73,19 @@ public sealed class BotStoryBook
         return false;
     }
 
-    /// <summary>Whether this very sentence was written into the book in the last day: an event said twice is one thing that happened.</summary>
-    public bool Said(string text, DateTime now)
+    /// <summary>
+    /// Whether this very thing was written into the book in the last day: an event said twice is one thing that happened. Compared
+    /// by its key when it has one (the sentence with its coordinates), else by its words.
+    /// </summary>
+    public bool Said(string text, string key, DateTime now)
     {
+        var self = key ?? text;
+
         for (var i = Notes.Count - 1; i >= 0; i--)
         {
             var note = Notes[i];
 
-            if ((now - note.At).TotalHours < 24 && string.Equals(note.Text, text, StringComparison.Ordinal))
+            if ((now - note.At).TotalHours < 24 && string.Equals(note.Key ?? note.Text, self, StringComparison.Ordinal))
             {
                 return true;
             }
@@ -133,6 +138,9 @@ public sealed class BotStoryNote
 
     /// <summary>The sentence, beginning with the bot's name or the guild's, with no date: the writer adds the date.</summary>
     public string Text;
+
+    /// <summary>What tells this note from another with the same words (the event's sentence with its coordinates), or null. Not saved.</summary>
+    public string Key;
 
     /// <summary>When it happened, in UTC, as the biography's tales are kept.</summary>
     public DateTime At;
@@ -274,6 +282,9 @@ public sealed class BotChronicleEntry
     public string Kind;
 
     public string Text;
+
+    /// <summary>What tells this entry from another with the same words (the event's sentence with its coordinates), or null. Not saved.</summary>
+    public string Key;
 
     public double Weight;
 }
