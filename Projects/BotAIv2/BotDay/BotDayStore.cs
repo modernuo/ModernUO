@@ -1,3 +1,4 @@
+using System;
 using Server.Logging;
 
 namespace Server.BotAI.V2;
@@ -65,9 +66,11 @@ public sealed class BotDayStore : GenericPersistence
                 Bed = reader.ReadDouble(),
                 Meal = reader.ReadDouble(),
                 Supper = reader.ReadDouble(),
-                Habit = (BotHabit)reader.ReadEncodedInt(),
+                // Held inside the enums: the Day: line indexes stack arrays by them, and a damaged save must not throw every five
+                // minutes and on every snapshot (review A of 13.10.2026, §3.7).
+                Habit = (BotHabit)Math.Clamp(reader.ReadEncodedInt(), (int)BotHabit.Tavern, (int)BotHabit.Prowl),
                 Owl = reader.ReadBool(),
-                Place = (BotBedPlace)reader.ReadEncodedInt()
+                Place = (BotBedPlace)Math.Clamp(reader.ReadEncodedInt(), (int)BotBedPlace.Home, (int)BotBedPlace.Ground)
             };
 
             if (string.IsNullOrEmpty(table.Name))

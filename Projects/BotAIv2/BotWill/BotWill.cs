@@ -2611,6 +2611,9 @@ public static class BotWill
 
         BotReflex.Took(bot, deed);
 
+        // A press is work taken up too, for the Day: line's table by part of the day: the walks to bed are presses (PLAN-life A1).
+        BotDay.Took(bot.Self, deed);
+
         // A company's call out of town is a trip like any other. See BotPurse.BeforeTrip.
         BotPurse.BeforeTrip(bot, deed);
 

@@ -23,9 +23,9 @@ nature × day`. `Lift` 1.5 up, 1/`Lift` down, half the lean on leisure that is n
 
 | the bot's own part | raised | lowered |
 |---|---|---|
-| dawn | market work (trade, peddle, shopkeep, restock, resell, order, acquire, supply, haul, deliver, unload, fetch, fair, keep-store) | leisure |
+| dawn | market work (trade, peddle, shopkeep, restock, resell, order, acquire, supply, haul, deliver, unload, fetch, fair, keep-store, keeping a tavern) | leisure |
 | morning | — | leisure |
-| evening | leisure (supper, fireside, camp, home, chat, meet, keeping a tavern); a prowler's prowl | journeys (travel, voyage, venture, expedition, caravan, delve, scout, prospect, colony-run, escort, a caravan guard, any walk ≥ `BotTraits.FarTiles`) |
+| evening | leisure (supper, fireside, camp, home, chat, meet); keeping a tavern (the full house); a prowler's prowl | journeys (travel, voyage, venture, expedition, caravan, delve, scout, prospect, colony-run, escort, a caravan guard, any walk ≥ `JourneyTiles` 200) |
 | night | fireside, camp, home | journeys |
 | the clock's night, everybody | the night's trades (watch, guard-duty, ward, skulk, steal, burgle, rob, waylay, ambush, lielow, manhunt) | — |
 | within an hour of a meal hour | supper | — |
@@ -44,6 +44,7 @@ Shadow live) live the same day `OwlShift` 10 hours later.
 ## Measure
 
 `Day:` every five minutes and `day` in `/api/state`: the part and hour, the timetables' mix, offers raised / lowered / floored,
-offers taken by part × group (work, leisure, journey, market, night), tavern guests by hour, sleepers at home / inn / field /
-ground, `ToBedOnTime`, `ToBedEarly`, `HeldPastBed`, `WokeOnTime`, `FieldFirst`. The guards are the work share, Needs and
+offers taken by part × group (work, leisure, journey, market, night — auction takes and presses both), tavern guests by hour,
+sleepers at home / inn / field / ground, `ToBedOnTime`, `ToBedEarly`, `HeldPastBed` (once a bot a spell), `WokeOnTime`,
+`FieldFirst`, `FieldFirstMissed`. The guards are the work share, Needs and
 deaths per bot-hour: the cycle must pay for itself in life, not cost work.

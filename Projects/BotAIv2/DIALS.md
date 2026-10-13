@@ -2883,6 +2883,7 @@ changed without a rebuild.
 | `BotDay` | `BrokeUnder` | `100` | `BrokeUnder` |
 | `BotDay` | `DawnAt` | `5.0` | `DawnAt` |
 | `BotDay` | `EveningAt` | `18.0` | `EveningAt` |
+| `BotDay` | `JourneyTiles` | `200` | `JourneyTiles` |
 | `BotDay` | `Least` | `0.5` | `Least` |
 | `BotDay` | `Lift` | `1.5` | `Lift` |
 | `BotDay` | `MealWindowHours` | `1.0` | `MealWindowHours` |

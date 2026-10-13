@@ -41,6 +41,9 @@ public sealed class BotDaySettings
     /// <summary>How far either side of a meal hour supper is raised.</summary>
     public double? MealWindowHours { get; set; }
 
+    /// <summary>A walk this long or longer is a journey whatever the work.</summary>
+    public int? JourneyTiles { get; set; }
+
     /// <summary>How many hours later a night owl lives its day.</summary>
     public double? OwlShift { get; set; }
 
@@ -94,6 +97,7 @@ public static class BotDayConfig
             Most = BotDay.Most,
             BrokeUnder = BotDay.BrokeUnder,
             MealWindowHours = BotDay.MealWindowHours,
+            JourneyTiles = BotDay.JourneyTiles,
             OwlShift = BotDay.OwlShift,
             OwlShareFighters = BotDay.OwlShareFighters,
             OwlShareOthers = BotDay.OwlShareOthers,
@@ -151,10 +155,21 @@ public static class BotDayConfig
         }
 
         BotDay.Lift = settings.Lift ?? BotDay.Lift;
-        BotDay.Least = settings.Least ?? BotDay.Least;
         BotDay.Most = settings.Most ?? BotDay.Most;
+
+        // A factor without a floor is a veto: whatever the file says, the least the hour may do is a tenth (review A, §3.8).
+        var least = settings.Least ?? BotDay.Least;
+
+        if (least < 0.1)
+        {
+            logger.Warning("Least in {Path} is {Least}, under the floor of 0.1 that keeps the hour from being a veto; 0.1 stands", ConfigPath, least);
+            least = 0.1;
+        }
+
+        BotDay.Least = least;
         BotDay.BrokeUnder = settings.BrokeUnder ?? BotDay.BrokeUnder;
         BotDay.MealWindowHours = settings.MealWindowHours ?? BotDay.MealWindowHours;
+        BotDay.JourneyTiles = settings.JourneyTiles ?? BotDay.JourneyTiles;
         BotDay.OwlShift = settings.OwlShift ?? BotDay.OwlShift;
         BotDay.OwlShareFighters = settings.OwlShareFighters ?? BotDay.OwlShareFighters;
         BotDay.OwlShareOthers = settings.OwlShareOthers ?? BotDay.OwlShareOthers;

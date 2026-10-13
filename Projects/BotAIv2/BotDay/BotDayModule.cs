@@ -70,7 +70,7 @@ public sealed class BotDayModule : BotModule
 
         logger.Information(
             "The daily cycle is {State}: {Schedule}, local time; the hour leans a price ×{Drop:F2}–×{Lift:F2} (held in ×{Least:F2}–×{Most:F2}), never a markdown on paid work for a bot under {Broke}gp or in need; "
-            + "supper raised within {Meal:0.0}h of a meal hour; night owls live {Shift:0}h later ({Fighters:P0} of fighters, {Others:P0} of the rest); bedtimes drawn from {BedFrom:0}h over {BedSpan:0}h (owls from {OwlBedFrom:0}h over {OwlBedSpan:0}h); "
+            + "supper raised within {Meal:0.0}h of a meal hour; a walk of {Journey} tiles or more is a journey; night owls live {Shift:0}h later ({Fighters:P0} of fighters, {Others:P0} of the rest); bedtimes drawn from {BedFrom:0}h over {BedSpan:0}h (owls from {OwlBedFrom:0}h over {OwlBedSpan:0}h); "
             + "bedtime tires {Bedtime} ({Window:0.0}h window, after {Played:P0} of the hours), the wake hour counts for {Wake:0.0}h; {Drawn} timetables drawn just now. Now: {Now}",
             BotDay.Running ? "ON" : "OFF",
             BotDay.Schedule(),
@@ -80,6 +80,7 @@ public sealed class BotDayModule : BotModule
             BotDay.Most,
             BotDay.BrokeUnder,
             BotDay.MealWindowHours,
+            BotDay.JourneyTiles,
             BotDay.OwlShift,
             BotDay.OwlShareFighters,
             BotDay.OwlShareOthers,

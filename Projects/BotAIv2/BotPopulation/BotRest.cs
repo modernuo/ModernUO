@@ -230,6 +230,9 @@ public static class BotRest
         /// hours" and wake it again; cleared when it leaves or comes back. Not saved: a process that restarts reads the hour afresh.
         /// </summary>
         public bool AtBed;
+
+        /// <summary>At its bedtime and held by the floor this spell, so that is counted once a bot and not once a look. Not saved.</summary>
+        public bool HeldAtBed;
     }
 
     /// <summary>Where a record says the bot sleeps, read off the inn's name the leave wrote into it. See <see cref="BotDay"/>.</summary>
@@ -649,6 +652,11 @@ public static class BotRest
             // allowance that caps how many tire a look is untouched. One tired that way stays tired (AtBed) until it leaves.
             var atBed = BotDay.AtBed(bot, record.Hours > 0 ? record.PlayedMinutes / (record.Hours * 60) : 0.0, out _);
 
+            if (!atBed)
+            {
+                record.HeldAtBed = false;
+            }
+
             if (over < 0 && !atBed && !(bot.Tired && record.AtBed))
             {
                 bot.Tired = false;
@@ -708,8 +716,10 @@ public static class BotRest
             {
                 _heldByFloor++;
 
-                if (atBed)
+                // Once a bot a spell of being held, not once a look (review A of 13.10.2026, §3.2).
+                if (atBed && !record.HeldAtBed)
                 {
+                    record.HeldAtBed = true;
                     BotDay.HeldPastBed++;
                 }
 
@@ -766,6 +776,7 @@ public static class BotRest
             record.TiredTick = tick;
             record.HeldTick = 0;
             record.AtBed = atBed && over < 0;
+            record.HeldAtBed = false;
             BotCritical.Tired(bot);
 
             if (atBed)
@@ -824,8 +835,9 @@ public static class BotRest
                     continue;
                 }
 
-                // A bot whose timetable says the field sleeps by a fire before any inn is looked for (BotDay, PLAN-life A1).
-                if (BotDay.PrefersField(bot) && BotCamp.ToFire(bot))
+                // A bot whose timetable says the field sleeps by a fire before any inn is looked for (BotDay, PLAN-life A1); a
+                // miss here is its own count, not the open ground's.
+                if (BotDay.PrefersField(bot) && BotCamp.ToFire(bot, fieldFirst: true))
                 {
                     BotDay.FieldFirst++;
                     continue;
@@ -1140,6 +1152,7 @@ public static class BotRest
         record.PlayedMinutes = 0;
         record.TiredTick = 0;
         record.AtBed = false;
+        record.HeldAtBed = false;
         record.Sessions++;
         record.LeftAt = Core.Now;
         record.RestUntil = Core.Now + TimeSpan.FromHours(rest);
@@ -1218,6 +1231,7 @@ public static class BotRest
             record.PlayedMinutes = 0;
             record.TiredTick = 0;
             record.AtBed = false;
+            record.HeldAtBed = false;
         }
 
         bot.Tired = false;

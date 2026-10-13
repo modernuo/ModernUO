@@ -84,6 +84,14 @@ public static class BotDay
     /// <summary>How far either side of a meal hour supper is raised. An hour.</summary>
     public static double MealWindowHours { get; set; } = 1.0;
 
+    /// <summary>
+    /// A walk this many tiles long or longer is a journey whatever the work, and marked down in the evening and at night. Two
+    /// hundred: the nature's far walk (<see cref="BotTraits.FarTiles"/> 120) reaches most of a town's fields and would have made
+    /// nearly every out-of-town paid offer a journey (review A of 13.10.2026, §3.5); under the inn's reach of 400, the walk home.
+    /// Its own dial so the "roads empty" effect can be widened or narrowed without touching the natures.
+    /// </summary>
+    public static int JourneyTiles { get; set; } = 200;
+
     /// <summary>How many hours later a night owl lives its day. Ten: to bed about six, up about one, its evening at three in the morning.</summary>
     public static double OwlShift { get; set; } = 10.0;
 
@@ -101,11 +109,13 @@ public static class BotDay
     /// </summary>
     public static double BedFrom { get; set; } = 21.0;
 
+    /// <summary>How many hours the day bots' bedtime draw spans from <see cref="BedFrom"/>: 21–24 at three, before the nature's lean.</summary>
     public static double BedSpan { get; set; } = 3.0;
 
     /// <summary>The same for a night owl: to bed between four and nine in the morning.</summary>
     public static double OwlBedFrom { get; set; } = 4.0;
 
+    /// <summary>How many hours the owls' bedtime draw spans from <see cref="OwlBedFrom"/>. Five, so the owls leave over the morning band.</summary>
     public static double OwlBedSpan { get; set; } = 5.0;
 
     /// <summary>Whether a bot at its bedtime may tire before its hours are up. The number in the world stays the floor's.</summary>
@@ -120,20 +130,22 @@ public static class BotDay
     /// <summary>How long after its wake hour a resting bot is one whose hour has come, and goes first under the floor. Three hours.</summary>
     public static double WakeWindowHours { get; set; } = 3.0;
 
-    /// <summary>Offers whose price the hour raised, and lowered.</summary>
+    /// <summary>Offers whose price the hour raised.</summary>
     public static long Raised { get; private set; }
 
+    /// <summary>Offers whose price the hour lowered, after the floor: a broke bot's paid work is not among them.</summary>
     public static long Lowered { get; private set; }
 
     /// <summary>Markdowns withheld from a broke bot's paid work: the floor.</summary>
     public static long Floored { get; private set; }
 
-    /// <summary>Bots tired at their bedtime this session, and of those how many before their hours were up.</summary>
+    /// <summary>Bots tired at their bedtime this session.</summary>
     public static long ToBedOnTime { get; internal set; }
 
+    /// <summary>Of those, how many were tired before their hours were up — the bedtime alone sent them, not the session's length.</summary>
     public static long ToBedEarly { get; internal set; }
 
-    /// <summary>Bots at their bedtime the floor kept in the world.</summary>
+    /// <summary>Bots at their bedtime the floor kept in the world: once a bot a spell, not once a look (review A of 13.10.2026, §3.2).</summary>
     public static long HeldPastBed { get; internal set; }
 
     /// <summary>Resting bots brought back under the floor whose wake hour had come.</summary>
@@ -141,6 +153,9 @@ public static class BotDay
 
     /// <summary>Tired field sleepers sent to a fire before any inn was looked for.</summary>
     public static long FieldFirst { get; internal set; }
+
+    /// <summary>Tired field sleepers that found no fire and could make none, and went on to the inn. Its own count, not the open ground's.</summary>
+    public static long FieldFirstMissed { get; internal set; }
 
     /// <summary>The groups the table counts offers in. Work is everything the day does not touch.</summary>
     internal enum Group
@@ -262,7 +277,6 @@ public static class BotDay
             case "home":
             case "chat":
             case "meet":
-            case "tavern":
                 return Group.Leisure;
             case "travel":
             case "voyage":
@@ -291,6 +305,9 @@ public static class BotDay
             case "fetch":
             case "fair":
             case "keep-store":
+            // The cook's keeping (BotKeepTavern) is paid work with a counter: market work, filed under leisure it was marked
+            // down ×0.67 for every solvent cook at 05–12, the hours the markets should fill (review A of 13.10.2026, §3.1).
+            case "tavern":
                 return Group.Market;
             case "watch":
             case "guard-duty":
@@ -306,9 +323,9 @@ public static class BotDay
                 return Group.Night;
         }
 
-        // A long walk is a journey whatever it is for: the nature's own measure of far (BotTraits.FarTiles).
+        // A long walk is a journey whatever it is for. See JourneyTiles.
         if (deed != null && body != null && deed.Map == body.Map && deed.Where != Point3D.Zero
-            && Math.Max(Math.Abs(body.Location.X - deed.Where.X), Math.Abs(body.Location.Y - deed.Where.Y)) >= BotTraits.FarTiles)
+            && Math.Max(Math.Abs(body.Location.X - deed.Where.X), Math.Abs(body.Location.Y - deed.Where.Y)) >= JourneyTiles)
         {
             return Group.Journey;
         }
@@ -328,7 +345,7 @@ public static class BotDay
 
         return habit switch
         {
-            BotHabit.Tavern => kind is "supper" or "tavern",
+            BotHabit.Tavern => kind is "supper",
             BotHabit.Fireside => kind is "fireside" or "camp",
             BotHabit.Home => kind is "home",
             _ => false
@@ -392,22 +409,29 @@ public static class BotDay
 
                 break;
             case BotDayPart.Evening:
-                if (group == Group.Leisure)
+                // The prowler before the journey test: a far prowl is its evening, not a journey (review A, §3.6).
+                if (table.Habit == BotHabit.Prowl && kind is "prowl" or "stroll")
+                {
+                    factor = lift;
+                    why = "the evening (prowl)";
+                }
+                else if (group == Group.Leisure)
                 {
                     var fits = Fits(table, kind, bot);
 
                     factor = fits ? lift : half;
                     why = fits ? $"the evening ({BotTimetable.Word(table.Habit)})" : "the evening";
                 }
+                else if (kind == "tavern")
+                {
+                    // The cook's full house: market work by day, lifted in the evening, never marked down.
+                    factor = lift;
+                    why = "the evening's guests";
+                }
                 else if (group == Group.Journey)
                 {
                     factor = drop;
                     why = "the evening, too late to set out";
-                }
-                else if (table.Habit == BotHabit.Prowl && kind is "prowl" or "stroll")
-                {
-                    factor = lift;
-                    why = "the evening (prowl)";
                 }
 
                 break;
@@ -470,7 +494,11 @@ public static class BotDay
         return factor;
     }
 
-    /// <summary>An offer was taken: counted by the clock's part and the work's group. From <c>BotWill</c>, at the take.</summary>
+    /// <summary>
+    /// Work was taken up: counted by the clock's part and the work's group. From <c>BotWill</c> at the auction's take and at a
+    /// press (<c>BotWill.Press</c>: the walks to bed — lodge, home to rest, sleep by a fire — are presses, and without them the
+    /// evening's leisure read low; review A of 13.10.2026, §3.4).
+    /// </summary>
     public static void Took(Mobile body, BotDeed deed)
     {
         if (!Running || deed == null)
@@ -631,7 +659,7 @@ public static class BotDay
         }
 
         line.Append($"; asleep now: {home} at home, {inn} at an inn, {field} by a fire, {ground} on the open ground; ");
-        line.Append($"this session {ToBedOnTime} went to bed at their bedtime ({ToBedEarly} before their hours, {HeldPastBed} held past it by the floor), {WokeOnTime} woke at their hour, {FieldFirst} chose a fire over an inn");
+        line.Append($"this session {ToBedOnTime} went to bed at their bedtime ({ToBedEarly} before their hours, {HeldPastBed} held past it by the floor), {WokeOnTime} woke at their hour, {FieldFirst} chose a fire over an inn and {FieldFirstMissed} found none and went to the inn");
 
         return line.ToString();
     }
@@ -724,6 +752,7 @@ public static class BotDay
         w.WriteNumber("heldPastBed", HeldPastBed);
         w.WriteNumber("wokeOnTime", WokeOnTime);
         w.WriteNumber("fieldFirst", FieldFirst);
+        w.WriteNumber("fieldFirstMissed", FieldFirstMissed);
         w.WriteEndObject();
     }
 
@@ -758,6 +787,7 @@ public static class BotDay
         HeldPastBed = 0;
         WokeOnTime = 0;
         FieldFirst = 0;
+        FieldFirstMissed = 0;
         Array.Clear(_taken);
         Array.Clear(_guests);
     }
