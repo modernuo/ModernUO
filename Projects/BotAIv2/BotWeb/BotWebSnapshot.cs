@@ -313,6 +313,9 @@ public static class BotWebSnapshot
             // The bots' own houses (BotAbode): owner, kind, place, and whether the owner is at home (07.10.2026).
             WriteAbodes(w);
 
+            // The stories and the Chronicle: books, chapters, the model's retellings and the day's entries (PLAN-life A3, 13.10.2026).
+            BotStory.Web(w);
+
             // The zone watch: the danger map's accuracy both ways, the keeper, the end (07.10.2026). See BotZoneWatch.
             BotZoneWatch.Web(w);
 

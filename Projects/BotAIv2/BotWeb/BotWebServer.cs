@@ -263,6 +263,21 @@ public static class BotWebServer
                     Text(response, BotReachWeb.Tile(request), "application/json; charset=utf-8");
 
                     return;
+
+                // The stories (PLAN-life A3, 13.10.2026): one bot's chapters, or the index of stories when no bot is named; and the
+                // island's Chronicle. Both are strings the loop wrote; asking for a story posts its name to the loop. See BotStory.
+                case "/api/story":
+                    Story(response, request.QueryString["bot"]);
+
+                    return;
+                case "/api/chronicle":
+                    Text(
+                        response,
+                        BotStory.Running ? BotChronicle.Json : "{\"days\":[],\"note\":\"the stories are off: bot-story.json says Running is false\"}",
+                        "application/json; charset=utf-8"
+                    );
+
+                    return;
             }
 
             // The client's own pictures, decoded on this thread from the client's files and kept. See BotWebArt.
@@ -505,6 +520,41 @@ public static class BotWebServer
                     w.WriteString("bot", bot.Trim());
                     w.WriteBoolean("pending", true);
                     w.WriteString("note", "watched from now; the first frame is built on the loop within a second");
+                }
+            ),
+            "application/json; charset=utf-8"
+        );
+    }
+
+    private static void Story(HttpListenerResponse response, string bot)
+    {
+        if (!BotStory.Running)
+        {
+            response.StatusCode = 503;
+            Text(response, "{\"error\":\"the stories are off: bot-story.json says Running is false\"}", "application/json; charset=utf-8");
+
+            return;
+        }
+
+        var json = BotStory.Story(bot);
+
+        if (json != null)
+        {
+            Text(response, json, "application/json; charset=utf-8");
+
+            return;
+        }
+
+        // Not in the snapshot yet: the name has been posted to the loop, which builds the story within a tick if it is a bot's.
+        response.StatusCode = 404;
+        Text(
+            response,
+            BotJson.Object(
+                w =>
+                {
+                    w.WriteString("bot", bot.Trim());
+                    w.WriteBoolean("pending", true);
+                    w.WriteString("note", "no story in the snapshot yet; if this is a bot, it is built on the loop within a few seconds");
                 }
             ),
             "application/json; charset=utf-8"

@@ -120,6 +120,14 @@ public static class BotEvents
     /// </summary>
     public static Action<BotEvent> Live { get; set; }
 
+    /// <summary>
+    /// The stories' ear (PLAN-life A3, 13.10.2026): told every event on the loop, after the live window, so that a bot's book and
+    /// the island's Chronicle are written from the events as they happen rather than read back off the file. Null while the
+    /// stories are off. Kept apart from <see cref="Subscribe"/> for the reason <see cref="Live"/> is: it is not a stream a person
+    /// is reading. See BotStory.
+    /// </summary>
+    public static Action<BotEvent> Heard { get; set; }
+
     /// <summary>The newest sequence number handed out.</summary>
     public static long Seq
     {
@@ -283,6 +291,18 @@ public static class BotEvents
             catch
             {
                 // The live window answers for itself; an event is never lost to it.
+            }
+        }
+
+        if (Heard is { } heard)
+        {
+            try
+            {
+                heard(e);
+            }
+            catch
+            {
+                // The stories count and log their own faults (BotStory.Fault); a story never stops an event being posted.
             }
         }
 
