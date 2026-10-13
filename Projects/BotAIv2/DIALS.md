@@ -2870,6 +2870,36 @@ changed without a rebuild.
 | `BotHighway` | `ThrowBelow` | `40.0` | *code only* |
 | `BotHighway` | `WaitMs` | `240000` | *code only* |
 
+## `BotDay/`  —  `bot-day.json`
+
+| class | dial | default | config key |
+|---|---|---|---|
+| `BotDay` | `AfternoonAt` | `14.0` | `AfternoonAt` |
+| `BotDay` | `BedFrom` | `21.0` | `BedFrom` |
+| `BotDay` | `BedPlayedShare` | `0.5` | `BedPlayedShare` |
+| `BotDay` | `BedSpan` | `3.0` | `BedSpan` |
+| `BotDay` | `BedWindowHours` | `2.0` | `BedWindowHours` |
+| `BotDay` | `BedtimeTires` | `true` | `BedtimeTires` |
+| `BotDay` | `BrokeUnder` | `100` | `BrokeUnder` |
+| `BotDay` | `DawnAt` | `5.0` | `DawnAt` |
+| `BotDay` | `EveningAt` | `18.0` | `EveningAt` |
+| `BotDay` | `JourneyTiles` | `200` | `JourneyTiles` |
+| `BotDay` | `Least` | `0.5` | `Least` |
+| `BotDay` | `Lift` | `1.5` | `Lift` |
+| `BotDay` | `MealWindowHours` | `1.0` | `MealWindowHours` |
+| `BotDay` | `MorningAt` | `7.0` | `MorningAt` |
+| `BotDay` | `Most` | `2.0` | `Most` |
+| `BotDay` | `NightAt` | `22.0` | `NightAt` |
+| `BotDay` | `NoonAt` | `12.0` | `NoonAt` |
+| `BotDay` | `OwlBedFrom` | `4.0` | `OwlBedFrom` |
+| `BotDay` | `OwlBedSpan` | `5.0` | `OwlBedSpan` |
+| `BotDay` | `OwlShareFighters` | `0.2` | `OwlShareFighters` |
+| `BotDay` | `OwlShareOthers` | `0.05` | `OwlShareOthers` |
+| `BotDay` | `OwlShift` | `10.0` | `OwlShift` |
+| `BotDay` | `Running` | `true` | `Running` |
+| `BotDay` | `WakeWindowHours` | `3.0` | `WakeWindowHours` |
+| `BotDayModule` | `TickMs` | `2000` | *code only* |
+
 ## `BotEvents/`  —  `bot-events.json`
 
 | class | dial | default | config key |

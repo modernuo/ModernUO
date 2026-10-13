@@ -313,6 +313,9 @@ public static class BotWebSnapshot
             // The bots' own houses (BotAbode): owner, kind, place, and whether the owner is at home (07.10.2026).
             WriteAbodes(w);
 
+            // The daily cycle: the part of the day, offers taken by part, tavern guests by hour, who sleeps where (PLAN-life A1).
+            BotDay.Write(w);
+
             // The zone watch: the danger map's accuracy both ways, the keeper, the end (07.10.2026). See BotZoneWatch.
             BotZoneWatch.Web(w);
 
@@ -537,6 +540,7 @@ public static class BotWebSnapshot
 
             // Its nature, its story and its friends and enemies (07.10.2026, traits17). See BotCharacterWeb.
             BotCharacterWeb.Write(w, bot);
+            BotDay.WriteBot(w, bot);
 
             WriteSkills(w, bot);
 

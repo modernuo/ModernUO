@@ -1349,8 +1349,11 @@ public static class BotCamp
     /// <summary>
     /// A tired bot with no roof and no inn to go to is sent to the nearest open fire, or makes one where it stands, before
     /// it would leave on the open ground. From <c>BotRest.Look</c>, after the house and the inn. Returns whether it was sent.
+    /// With <paramref name="fieldFirst"/>, asked before the inn for a bot whose timetable prefers the field (<c>BotDay</c>), and a
+    /// miss then is that gate's own count (<c>BotDay.FieldFirstMissed</c>), not <see cref="NoFireToSleepBy"/>, whose meaning stays
+    /// "no inn, no fire, the open ground" (review A of 13.10.2026, §3.3).
     /// </summary>
-    public static bool ToFire(BotMobile bot)
+    public static bool ToFire(BotMobile bot, bool fieldFirst = false)
     {
         if (!Running || !SleepByFire || bot is not { Deleted: false, Alive: true } || bot.Map == null || bot.Map == Map.Internal)
         {
@@ -1388,7 +1391,14 @@ public static class BotCamp
 
         if (deed == null)
         {
-            NoFireToSleepBy++;
+            if (fieldFirst)
+            {
+                BotDay.FieldFirstMissed++;
+            }
+            else
+            {
+                NoFireToSleepBy++;
+            }
 
             return false;
         }
