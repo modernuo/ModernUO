@@ -200,11 +200,31 @@ public static class BotStory
     /// <summary>Within <see cref="SettleMs"/> of the module's start: the walk builds but notes nothing, the books note no event.</summary>
     private static bool Booting(long now) => !_started || now - _startedTick < Math.Max(0, SettleMs);
 
-    /// <summary>The module started: the boot's grace runs from here. Game loop only.</summary>
+    /// <summary>
+    /// The module started: the boot's grace runs from here, and every bot in the world without a book has one opened now, so that an
+    /// event after the grace finds a book whose first sight was taken before it rather than after (a bot found having just joined a
+    /// guild would otherwise read "was of The Anchor" and "joined The Anchor" side by side). Only the missing are opened: at an
+    /// ordinary restart that is nobody; on the first deploy it is the whole population, a few milliseconds once. Game loop only.
+    /// </summary>
     public static void Started(long now)
     {
         _startedTick = now;
         _started = true;
+
+        if (!Running)
+        {
+            return;
+        }
+
+        var bots = BotPopulation.Bots;
+
+        for (var i = 0; i < bots.Count; i++)
+        {
+            if (bots[i] is { Deleted: false } bot && !string.IsNullOrEmpty(bot.Name) && !_books.ContainsKey(bot.Name))
+            {
+                Book(bot.Name, bot);
+            }
+        }
     }
 
     /// <summary>What the dashboard reads: every story's JSON and the index, made on the loop and never changed after it is handed over.</summary>
@@ -463,10 +483,9 @@ public static class BotStory
 
         try
         {
+            // Found living (a name the characters remember): the walk opens its book once the body is in the world, where it stands.
             if (!fresh)
             {
-                Book(bot.Name, bot);
-
                 return;
             }
 
@@ -1284,15 +1303,22 @@ public static class BotStory
 
         var generation = _generation;
 
+        // Marked before the call, not after: an answering side that calls back at once (a refusal) clears the mark itself, and a
+        // mark set after it would stand for ten minutes over nothing.
+        var before = _askedTick;
+
+        _asking = true;
+        _askedTick = now;
+
         if (!ask(q, (text, waited) => Answered(generation, q, key, stage, hash, text, waited)))
         {
+            _asking = false;
+            _askedTick = before;
             VoiceBusy++;
 
             return;
         }
 
-        _asking = true;
-        _askedTick = now;
         _asks.Enqueue(now);
         VoiceAsked++;
     }

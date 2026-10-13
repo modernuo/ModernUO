@@ -366,9 +366,11 @@ public static class BotChronicle
             }
 
             day.Entries.RemoveAt(lightest);
+            day.Hashed = null;
         }
 
         day.Entries.Add(new BotChronicleEntry { At = now, Kind = kind, Text = line, Weight = weight });
+        day.Hashed = null;
         Recorded++;
         _byKind[kind] = _byKind.GetValueOrDefault(kind) + 1;
         _dirty = true;
@@ -561,7 +563,8 @@ public static class BotChronicle
         return facts;
     }
 
-    public static ulong Hash(BotChronicleDay day) => BotStoryWriter.Hash(Facts(day));
+    /// <summary>The fingerprint of a day's facts, worked out once and kept until the day takes another entry.</summary>
+    public static ulong Hash(BotChronicleDay day) => day.Hashed ??= BotStoryWriter.Hash(Facts(day));
 
     /// <summary>
     /// The closed day the model may retell next: the newest one before today with enough entries and no retelling for its present

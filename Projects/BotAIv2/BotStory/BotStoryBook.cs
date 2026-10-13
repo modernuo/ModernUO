@@ -288,4 +288,7 @@ public sealed class BotChronicleDay
 
     /// <summary>Entries that came to a full page and were too light to keep. Not saved.</summary>
     public int Dropped;
+
+    /// <summary>The hash of the facts the model would be told, kept until an entry is added. Not saved.</summary>
+    public ulong? Hashed;
 }
