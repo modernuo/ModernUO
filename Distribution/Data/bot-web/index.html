@@ -3153,7 +3153,7 @@ window.addEventListener('resize', () => { if (S.tab === 'live') { if (ISO.on) is
 (() => { let nm = null; try { nm = localStorage.getItem('botweb.live'); } catch (e) { nm = null; } if (nm) { LV.bot = nm; $('#liveName').value = nm; } })();
 
 // ================================================================ story and chronicle (PLAN-life A3)
-const ST = { bot: null, story: null, index: null, names: '' };
+const ST = { bot: null, story: null, index: null, names: '', open: null };
 function stSet(name) {
   const nm = str(name).trim();
   if (!nm) return;
@@ -3210,7 +3210,9 @@ async function stLoadChronicle() {
   if (!d) return;
   const days = d.days || [];
   $('#stDays').textContent = `(${days.length} days)`;
-  $('#stChronicle').replaceChildren(...(days.length ? days.map((day, i) => el('details', { class: 'stDay', open: i === 0 ? 'open' : null },
+  // The days a reader opened stay open across the half-minute refresh; until one is touched, the newest is open.
+  if (ST.open === null) ST.open = new Set(days.length ? [str(days[0].day)] : []);
+  $('#stChronicle').replaceChildren(...(days.length ? days.map(day => el('details', { class: 'stDay', open: ST.open.has(str(day.day)) ? 'open' : null, ontoggle: ev => { if (ev.target.open) ST.open.add(str(day.day)); else ST.open.delete(str(day.day)); } },
     el('summary', { text: `${str(day.title)} · ${fmtInt(day.count)} entries${day.voiced ? ' · in the chronicler\'s words' : ''}` }),
     day.voiced ? el('p', { text: day.voiced }) : null,
     ...(day.entries || []).map(e => el('div', { class: 'stRow' }, el('span', { class: 'muted', text: str(e.at) }), el('span', { class: 'muted', text: str(e.kind) }), el('span', { text: str(e.text) }))))) : [el('div', { class: 'muted', text: 'nothing kept yet' })]));

@@ -213,7 +213,7 @@ public static class BotStory
     /// <summary>
     /// The module started: the boot's grace runs from here, and every bot in the world without a book has one opened now, so that an
     /// event after the grace finds a book whose first sight was taken before it rather than after (a bot found having just joined a
-    /// guild would otherwise read "was of The Anchor" and "joined The Anchor" side by side). Only the missing are opened: at an
+    /// guild would otherwise read "belonged to The Anchor" and "joined The Anchor" side by side). Only the missing are opened: at an
     /// ordinary restart that is nobody; on the first deploy it is the whole population, a few milliseconds once. Game loop only.
     /// </summary>
     public static void Started(long now)
@@ -555,7 +555,7 @@ public static class BotStory
 
         if (book.SeenGuild != null)
         {
-            Write(book, BotStage.Guild, "seen", $"{book.Name} was of {book.SeenGuild}", 10.0, now);
+            Write(book, BotStage.Guild, "seen", $"{book.Name} belonged to {book.SeenGuild}", 10.0, now);
         }
 
         if (Level(book.SeenRank) >= 2)
@@ -808,7 +808,7 @@ public static class BotStory
         if (!string.Equals(guild, book.SeenGuild, StringComparison.Ordinal))
         {
             book.SeenGuild = guild;
-            Seen(book, BotStage.Guild, guild != null ? $"{book.Name} was of {guild}" : null, now);
+            Seen(book, BotStage.Guild, guild != null ? $"{book.Name} belonged to {guild}" : null, now);
         }
 
         var rank = bot.BotRank;
@@ -1037,11 +1037,11 @@ public static class BotStory
         try
         {
             var guild = (bot.Guild as Guild)?.Name;
-            var said = string.IsNullOrWhiteSpace(how) ? "" : $": {how}";
+            var said = string.IsNullOrWhiteSpace(how) ? "became" : $"{how.Trim()} and became";
 
-            BotChronicle.Record("champion", $"{bot.Name} the {BotStoryWriter.Words(bot.Class?.Name)}{(guild != null ? $" of {guild}" : "")} became the champion of the island{said}", 75.0);
+            BotChronicle.Record("champion", $"{bot.Name} the {BotStoryWriter.Words(bot.Class?.Name)}{(guild != null ? $" of {guild}" : "")} {said} the champion of the island", 75.0);
 
-            if (Note(bot.Name, BotStage.Deeds, "champion", $"{bot.Name} became the champion of the island{said}", 70.0) is { } book)
+            if (Note(bot.Name, BotStage.Deeds, "champion", $"{bot.Name} {said} the champion of the island", 70.0) is { } book)
             {
                 book.SeenChampion = true;
             }

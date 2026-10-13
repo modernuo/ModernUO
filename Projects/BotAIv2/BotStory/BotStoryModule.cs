@@ -171,6 +171,8 @@ public sealed class BotStorySettings
 
     public int? ChronicleRepeatMinutes { get; set; }
 
+    public double? ChronicleRepeatDayBelow { get; set; }
+
     public int? SayEveryMs { get; set; }
 }
 
@@ -216,6 +218,7 @@ public static class BotStoryConfig
         BotChronicle.VoiceLeast = settings.ChronicleVoiceLeast ?? BotChronicle.VoiceLeast;
         BotChronicle.VoiceMostFacts = settings.ChronicleVoiceMostFacts ?? BotChronicle.VoiceMostFacts;
         BotChronicle.RepeatMinutes = settings.ChronicleRepeatMinutes ?? BotChronicle.RepeatMinutes;
+        BotChronicle.RepeatDayBelow = settings.ChronicleRepeatDayBelow ?? BotChronicle.RepeatDayBelow;
 
         BotStoryModule.SayEveryMs = settings.SayEveryMs ?? BotStoryModule.SayEveryMs;
     }

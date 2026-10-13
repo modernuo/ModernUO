@@ -49,6 +49,14 @@ public static class BotChronicle
     /// </summary>
     public static int RepeatMinutes { get; set; } = 30;
 
+    /// <summary>
+    /// Entries lighter than this are routine and kept once a day whatever the minutes between: on 12.10.2026 the duke renewed the
+    /// same pairs' trade terms 106 times in 60 sentences ("The Hammer and The Ash over an alliance: trade terms for 12 hours" at
+    /// 03:42, 06:04, 08:10, 12:50, 15:14 and 17:24), and a quiet day's page was that one line six times. Thirty: the trade terms
+    /// (12), the charters (15, 20) and the towns' collections (20) are below it; wars, relics, elections and invasions are not.
+    /// </summary>
+    public static double RepeatDayBelow { get; set; } = 30.0;
+
     public static long Recorded { get; private set; }
 
     public static long Repeats { get; private set; }
@@ -373,7 +381,7 @@ public static class BotChronicle
         {
             var entry = day.Entries[i];
 
-            if ((now - entry.At).TotalMinutes < Math.Max(0, RepeatMinutes) && string.Equals(entry.Text, line, StringComparison.Ordinal))
+            if ((weight < RepeatDayBelow || (now - entry.At).TotalMinutes < Math.Max(0, RepeatMinutes)) && string.Equals(entry.Text, line, StringComparison.Ordinal))
             {
                 Repeats++;
 
@@ -568,7 +576,15 @@ public static class BotChronicle
                     continue;
                 }
 
-                sb.Append(first ? "\n\n" : " ");
+                if (first)
+                {
+                    sb.Append($"\n\n{Heading(kind)}. ");
+                }
+                else
+                {
+                    sb.Append(' ');
+                }
+
                 sb.Append($"At {entry.At.ToString("HH:mm", Invariant)}, {entry.Text}");
                 first = false;
             }
@@ -576,6 +592,22 @@ public static class BotChronicle
 
         return sb.ToString();
     }
+
+    /// <summary>The heading of a kind's paragraph on the page, so that a page grouped by kind does not read as one list out of time order.</summary>
+    private static string Heading(string kind) =>
+        kind switch
+        {
+            "war"       => "War",
+            "guild"     => "The guilds",
+            "champion"  => "The championship",
+            "relic"     => "Relics and banners",
+            "contest"   => "Bouts between the guilds",
+            "diplomacy" => "The duke's words",
+            "politics"  => "Offices",
+            "town"      => "The towns",
+            "crime"     => "Crime",
+            _           => "The roads"
+        };
 
     /// <summary>The facts a closed day is retold from: its heaviest entries, in the order they happened, with their times.</summary>
     public static List<string> Facts(BotChronicleDay day)

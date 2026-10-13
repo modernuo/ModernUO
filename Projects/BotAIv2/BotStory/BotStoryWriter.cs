@@ -199,9 +199,13 @@ public static class BotStoryWriter
             sb.Append($", {life.WarKills} of them in war");
         }
 
-        if (life.DuelsWon + life.DuelsLost > 0)
+        if (life.DuelsWon > 0)
         {
-            sb.Append($"; won {life.DuelsWon} {(life.DuelsWon == 1 ? "duel" : "duels")} and lost {life.DuelsLost}");
+            sb.Append($"; won {life.DuelsWon} {(life.DuelsWon == 1 ? "duel" : "duels")} and lost {(life.DuelsLost == 0 ? "none" : $"{life.DuelsLost}")}");
+        }
+        else if (life.DuelsLost > 0)
+        {
+            sb.Append($"; lost {life.DuelsLost} {(life.DuelsLost == 1 ? "duel" : "duels")} and won none");
         }
 
         if (life.SavedTimes > 0)
@@ -326,16 +330,20 @@ public static class BotStoryWriter
                     }
                 case LineKind.Tale:
                     {
+                        // Dated like any other line: a tale is the bot's own account of a day, and without the day the chapter
+                        // read "Caelith was born in Yew. Caelith would say of it: 'The first time I died…'" as if both were one day.
                         var who = named ? given : full;
+                        var when = When(line.At, last, seed + (uint)i);
                         var said = ((seed + (uint)i) % 3) switch
                         {
-                            0 => $"As {who} tells it: \"{line.Text}\"",
-                            1 => $"{who} would say of it: \"{line.Text}\"",
-                            _ => $"In {who}'s own words: \"{line.Text}\""
+                            0 => $"{when}as {who} tells it: \"{line.Text}\"",
+                            1 => $"{when}by {who}'s account: \"{line.Text}\"",
+                            _ => $"{when}in {who}'s own words: \"{line.Text}\""
                         };
 
                         sb.Append(said);
                         named = true;
+                        last = line.At.ToLocalTime().Date;
 
                         break;
                     }
@@ -347,23 +355,9 @@ public static class BotStoryWriter
                     }
                 default:
                     {
-                        var local = line.At.ToLocalTime().Date;
-
-                        if (last != DateTime.MinValue && local == last)
-                        {
-                            sb.Append("That same day, ");
-                        }
-                        else if (last != DateTime.MinValue && local == last.AddDays(1))
-                        {
-                            sb.Append("The next day, ");
-                        }
-                        else
-                        {
-                            sb.Append($"On {Day(line.At)}, ");
-                        }
-
+                        sb.Append(When(line.At, last, seed + (uint)i));
                         sb.Append(Sentence(Shorten(line.Text, full, given, ref named)));
-                        last = local;
+                        last = line.At.ToLocalTime().Date;
 
                         break;
                     }
@@ -371,6 +365,27 @@ public static class BotStoryWriter
         }
 
         return sb.ToString();
+    }
+
+    /// <summary>
+    /// "That same day, ", "The next day, " or "On 3 October, ": the day of a line against the day of the one before it. The same
+    /// day is said three ways, picked by <paramref name="pick"/>, so a busy day is not "That same day" three times running.
+    /// </summary>
+    private static string When(DateTime at, DateTime last, uint pick)
+    {
+        var local = at.ToLocalTime().Date;
+
+        if (last != DateTime.MinValue && local == last)
+        {
+            return (pick % 3) switch
+            {
+                0 => "That same day, ",
+                1 => "Later that day, ",
+                _ => "The same day, "
+            };
+        }
+
+        return last != DateTime.MinValue && local == last.AddDays(1) ? "The next day, " : $"On {Day(at)}, ";
     }
 
     /// <summary>
