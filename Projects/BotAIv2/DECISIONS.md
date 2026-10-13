@@ -631,6 +631,41 @@ first sign is a behaviour, not an error. **Remedy.** Read the fork's source firs
 
 ### 4.1 Full entries, newest first
 
+**13.10.2026 · build 437 (written by a Fable agent: w6) · A delve party keeps a third of its seats for the weak, a party that bleeds is lifted, the delve is priced by its ledger**
+- *Patrick:* dungeons are for everyone and bots must level up (25.09, 30.09: "they can be killed, but only after levelling and
+  getting better gear"); a dungeon trip is the leader's work on its company; honest counting.
+- *What there was:* the first four hours after the growth to 450 (434) the Orc Caves took 112 deaths, 26/h, 1.9 a party from 60
+  parties that were 52 % newcomers; the party's sum cleared the ask three times over and per member the death rate was flat across
+  strength. The night of 436, with no change, ran 105 descents at 0.32 a party with newcomers still a third of the pressings — the
+  spike was the burst's first hours and closed on its own; composition is not shown to be the cause. The easiest dungeon was exempt
+  from every floor. 33 of 434's 118 died on the walk out after a bleed; a settled party lifted nobody when its leader then fell. The
+  auction read the delve at 65/min (¼ of Prior 260) against 35–42 paid, the alarm standing for days.
+- *Decision:* `BotDelve.WeakFloor` 0.4 of the dungeon's worst (2 056) and `WeakShare` 0.34, one rule at three doors: at least
+  `Least − ⌊Least × share⌋` bodies over the floor (5 of the Orc Caves' 7), the leader counted, a medic never; the levy admits a weak
+  body only while the seats of the party it would make are open (`PassedWeak`), the descent counts the seats of the party that
+  stood once (`Trimmed`, `ShortOfFloor`), the mouth count turns back a party left with more (`WeakAtMouth`), the offer is withheld
+  when too few over the floor stand in reach (`BotDelver.ShortOfFloor`). Kept for the standing rule, at 436's own make-up; the quarter
+  stays at the door for the next burst. `LiftWhenBled` true (`BledLifted`); a settled party whose leader falls is lifted
+  (`LeaderlessLifted`). `Prior` 120. `UnderQuarantine` counted, not gated.
+- *Checked:* build `Ошибок: 0`; two Fable reviews ("ship after fixing"), the seven fixes made in the second commit.
+- *Status:* `783a856ce` + `d3eb22918` on `agent/w6`, not deployed. After deploy: deaths per descent ≤ 0.5 and descents/h ≥ ~20
+  and newcomers' share of pressings ≥ ~25 % and `PassedWeak` per call, together; the next burst's first four hours against 1.9.
+
+**13.10.2026 · build 437 · The wants board's ceiling, and a crafter's wares go to the ground last**
+
+- *What there was:* `BotMarket.MaxWants` 512 — "a backstop against a leak, never a shelf to run out of" — became a shelf
+  at 00:50 with 450 bots: 468–512 wants standing and 7 227 asks an hour turned away (ribs 2 980, leather 1 679,
+  feathers 847, logs 490), each an ERR line. And on 434 the stand-still pass put a Crafter's 105 fletched arrows
+  "kept to sell" on the road (Yorick, 22:14) because his bank box was full and the drop took the heaviest first.
+- *Decision:* `MaxWants` 1200 (about two and a half a bot), dialled live at 03:33 and written to `bot-market.json`;
+  refusals counted in `BoardFull` on the `Lines:` line and `/api/state`, the warning said once a minute. The pass
+  (w1's third commit, one Fable review "ship as is"): wares — anything `PlayerConstructed` or waited for by a want
+  within a carrier's reach — go to the box first, the ground drop takes raw surplus only, cheapest per stone first,
+  and wares go down only as the very last step with their own WRN; counters `StockSpared`, `StockGround`,
+  `StockGroundWorth` on `Packs:`. Follow-ups noted: exempt the class's tools in `Release`; widen regen-map's
+  `SETTABLE` to `s\.`.
+- *Status:* in force.
+
 **12.10.2026 · build 436 (written by an Opus agent: w7) · A walk after a bot about its own business keeps up; the buyer stands for its carrier, the caravan for its guards**
 - *Patrick:* W7/E8 of the week's plan — deliveries "could not get nearer to <buyer>" 585 of L2's 5 920 failures (the largest group); caravan guards 16 of 167 finished.
 - *What there was:* not geometry. Of 1 436 deliveries and 100 guards that ended "could not get nearer" on 11–12.10, over 95 % had only reached plans (review B's recount: 76 of 1 448 had an unreached search in the 40 s before); over 80 % ended within 12 s, 618 three to five tiles off; L2 buyers at ground level 373 of 585. The buyer was at work and moving (mine 27 %, its own delivery 17 %; 544 of 568 had not taken up the meeting; mounted buyers outrun carriers on foot), the guards' traders rode ahead on the road north through Britain. `BotJourney.MaxPlansWithoutCloser` with the chase slack of build 382 wants each plan two tiles nearer than the best — impossible from four tiles off with the hand-over at two — and each ending filed the buyer's square "no way" for every carrier (BotWayless: 823 answers, 3 365 looks passing a buyer over), marked the buyer beyond reach for healers and wrote a Beware.

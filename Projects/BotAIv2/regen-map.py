@@ -721,6 +721,12 @@ def dials(folders, order):
         "changed without a rebuild.",
     ]
 
+    # A dial may be set from another folder's config reader (BotHaven's steps from BotMendConfig): looked up everywhere.
+    everywhere = {}
+
+    for data in folders.values():
+        everywhere.update(data["settable"])
+
     for folder in order:
         if folder not in folders or not folders[folder]["dials"]:
             continue
@@ -733,7 +739,7 @@ def dials(folders, order):
         out.append("|---|---|---|---|")
 
         for owner, field, value in sorted(here["dials"]):
-            key, source = here["settable"].get((owner, field), (None, None))
+            key, source = here["settable"].get((owner, field)) or everywhere.get((owner, field), (None, None))
             where = " in `%s`" % source if source and source != here["config"] else ""
             out.append("| `%s` | `%s` | `%s` | %s |" % (
                 owner, field, value, "`%s`%s" % (key, where) if key else "*code only*"))
