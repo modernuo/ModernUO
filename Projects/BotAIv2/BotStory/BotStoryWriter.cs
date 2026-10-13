@@ -341,6 +341,9 @@ public static class BotStoryWriter
 
         var seed = Seed(book.Name);
         var last = DateTime.MinValue;
+        var full = book.Name;
+        var given = First(full);
+        var named = false;
 
         for (var i = 0; i < lines.Count; i++)
         {
@@ -355,27 +358,29 @@ public static class BotStoryWriter
             {
                 case LineKind.Baseline:
                     {
-                        sb.Append($"When this chronicle began on {Day(line.At)}, {Sentence(line.Text)}");
+                        sb.Append($"When this chronicle began on {Day(line.At)}, {Sentence(Shorten(line.Text, full, given, ref named))}");
                         last = line.At.ToLocalTime().Date;
 
                         break;
                     }
                 case LineKind.Tale:
                     {
+                        var who = named ? given : full;
                         var said = ((seed + (uint)i) % 3) switch
                         {
-                            0 => $"As {book.Name} tells it: \"{line.Text}\"",
-                            1 => $"{book.Name} would say of it: \"{line.Text}\"",
-                            _ => $"In {book.Name}'s own words: \"{line.Text}\""
+                            0 => $"As {who} tells it: \"{line.Text}\"",
+                            1 => $"{who} would say of it: \"{line.Text}\"",
+                            _ => $"In {who}'s own words: \"{line.Text}\""
                         };
 
                         sb.Append(said);
+                        named = true;
 
                         break;
                     }
                 case LineKind.Plain:
                     {
-                        sb.Append(Sentence(line.Text));
+                        sb.Append(Sentence(Shorten(line.Text, full, given, ref named)));
 
                         break;
                     }
@@ -396,7 +401,7 @@ public static class BotStoryWriter
                             sb.Append($"On {Day(line.At)}, ");
                         }
 
-                        sb.Append(Sentence(line.Text));
+                        sb.Append(Sentence(Shorten(line.Text, full, given, ref named)));
                         last = local;
 
                         break;
@@ -405,6 +410,38 @@ public static class BotStoryWriter
         }
 
         return sb.ToString();
+    }
+
+    /// <summary>
+    /// The full name the first time a paragraph says it, the given name after: "Brokk Ironfoot joined… Brokk was elected…". The
+    /// facts keep the full name throughout; this is the template's prose only.
+    /// </summary>
+    private static string Shorten(string text, string full, string given, ref bool named)
+    {
+        var at = text.IndexOf(full, StringComparison.Ordinal);
+
+        if (at < 0)
+        {
+            return text;
+        }
+
+        if (string.Equals(full, given, StringComparison.Ordinal))
+        {
+            named = true;
+
+            return text;
+        }
+
+        if (named)
+        {
+            return text.Replace(full, given, StringComparison.Ordinal);
+        }
+
+        named = true;
+
+        var after = at + full.Length;
+
+        return string.Concat(text.AsSpan(0, after), text[after..].Replace(full, given, StringComparison.Ordinal));
     }
 
     // ------------------------------------------------------------------ words
