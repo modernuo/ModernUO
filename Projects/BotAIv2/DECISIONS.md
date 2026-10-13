@@ -631,6 +631,24 @@ first sign is a behaviour, not an error. **Remedy.** Read the fork's source firs
 
 ### 4.1 Full entries, newest first
 
+**13.10.2026 · build 439 (written by a Fable agent: w5) · A steady cry calls its nearest neighbour, the stand is the rung's default, a failing patient presses its healer, a company spares as the free bots are sent**
+- *Patrick:* 06.10 "bots decide about fighting and helping instantly"; 08.09 "a bot being chewed on by a rat with ten others standing
+  about"; 02.10 a bot that cannot win runs to town; self-defence out of the share; nothing across hostile guilds; honest counting.
+- *What there was:* on 436 (23:18–03:48) 67 % of 2 936 open first cries never answered, 1 142 (58 %) with somebody able within 60 tiles —
+  a steady cry summoned nobody; 168 of 373 first blows before a decision fell on a lone bot the odds refused with no flight and no stand
+  offered; 140 of 902 failing crossings died with nothing decided, 414 of 1 412 patients never mended though a healer was within 20 (an
+  `Alert`, not a press); 66 of 998 companies spared (436 refused for a member under ½); the spare and the crowd note both read as "never".
+- *Decision:* the nearest free neighbour within 20 is pressed to a steady cry about a thing ≥ ½ the crier (`BotCry.NearCalls`); the stand is
+  offered wherever the odds refused the fight and no flight was offered, not ended by the odds, muster urged once, counted where taken and
+  on the death; a dire crier's crowd note no longer bars the rescuer; a failing patient presses its nearest healer on the blow's own fact
+  (`SurgeonPresses`); a company spares nearest-first to the need reckoned against the thing (allies held by their own foe left out), none when
+  short, none at war, dying gate 0.35; `bot-combat.json`; a sample line one in 25 naming the nearest's guild and hostility.
+- *Checked:* `Ошибок: 0`; reviews A (Fable) and B (Opus) "ship after fixing", fixed in `eb0270bc1` (the press was dead code, the stand's
+  death on the death, the spare's need, one bucket a near call); after deploy at one hour against 437's 04:57: never/open 69.9 % → ≤ 40 %
+  net of the spare's relabelling, never-with-earshot 46 % of open → ≤ 30 %, first blow undecided 17.6 % → ≤ 12 %, failing deaths in
+  total (99) not up beside `StoodDied`, `was killed at` per bot not up, `Resolve:` 94 % not down, `rescue` died ≤ 4 %.
+- *Status:* on `agent/w5`, commits `fa31a1e91` + `eafc1a475` + `eb0270bc1`; awaiting deploy.
+
 **12.10.2026 · build 438 (written by a Fable agent: a1) · The daily cycle: a clock of six parts, a timetable per bot, the hour as a weight in the auction, bedtime first in the rest queue**
 - *Patrick:* 08.10 and 12.10 — "develop the daily cycle, dreams and the bots' history further … what about PLAN-life?!" (A1).
 - *What there was:* no hour but the prime time's band. Over L1 (build 432) supper was taken 90–160 times an hour at 00–07h against 45–80 at 18–21h with twice the bots in the world at night — flat per bot, no evening peak and, as a share of takes, less in the evening (0.9 % at 20h) than at 03h (1.1 %); journeys set out at 02h (140) as at noon (156); fireside/camp/home 1.5–1.9 % of takes round the clock; who left at a band change was whoever was longest over its hours (77 a day tired at 08h, 46 at 16h).
