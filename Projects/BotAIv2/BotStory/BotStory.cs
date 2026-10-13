@@ -1909,7 +1909,8 @@ public static class BotStory
 
     // ------------------------------------------------------------------ keeping
 
-    private const int Shape = 1;
+    /// <summary>The layout <see cref="Save"/> writes, first in the file; <see cref="BotStoryStore"/> peeks it before the engine reads.</summary>
+    internal const int Shape = 1;
 
     public static void Save(IGenericWriter writer)
     {
@@ -1977,12 +1978,11 @@ public static class BotStory
 
         if (shape != Shape)
         {
-            // Skipped to its end rather than left half read: the engine checks that a store was read to its last byte and otherwise
-            // stops the boot on a console prompt (GenericPersistence.Deserialize), which a shard started from a script never answers.
-            // The stories are worth less than a boot. The shard runs Release, where the reader's own assertion on this seek is gone.
-            reader.Seek(0, System.IO.SeekOrigin.End);
-
-            logger.Warning("The saved stories are shape {Found} and this build reads {Wanted}; they are dropped, and every book opens again at its next look", shape, Shape);
+            // Not reached: BotStoryStore.Deserialize peeks the shape in the file and does not hand a file of another shape to the
+            // engine at all. A seek to the end cannot stand in for that: the reader's end is the memory-mapped view's length, which
+            // Windows rounds up to a page (a 100-byte file reads 4096), and the engine compares the position with the file's own
+            // length and stops the boot on its console prompt when they differ (a3 review A, F1).
+            logger.Error("The saved stories are shape {Found} and this build reads {Wanted}, past the store's own check", shape, Shape);
 
             return;
         }
@@ -2122,4 +2122,11 @@ public static class BotStory
 
     /// <summary>True between <c>do reset</c> and the next start: nothing is written. See <see cref="Wipe"/>.</summary>
     public static bool Sealed => _sealed;
+
+    /// <summary>
+    /// A world reload in the same process (<c>BotModules.Rewind</c>, <see cref="BotStoryModule.Reset"/>) ends a reset's seal too, not
+    /// only this module's start: the population starts first and raises the new world's bots, and with the seal standing their births
+    /// (<see cref="Born"/>) would be lost and every one of them opened later as "found living" (a3 review A, F2).
+    /// </summary>
+    public static void Unseal() => _sealed = false;
 }

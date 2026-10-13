@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Server.Json;
 using Server.Logging;
@@ -80,6 +81,7 @@ public sealed class BotStoryModule : BotModule
         Stop();
         BotEvents.Heard = null;
         BotStory.Forget();
+        BotStory.Unseal();
     }
 }
 
@@ -91,6 +93,8 @@ public sealed class BotStoryModule : BotModule
 /// </summary>
 public sealed class BotStoryStore : GenericPersistence
 {
+    private static readonly ILogger logger = LogFactory.GetLogger(typeof(BotStoryStore));
+
     private static BotStoryStore _store;
 
     /// <summary>Called from <see cref="BotStoryCore.Configure"/>: a persistence must exist before the world is read.</summary>
@@ -101,6 +105,72 @@ public sealed class BotStoryStore : GenericPersistence
     }
 
     public override void Serialize(IGenericWriter writer) => BotStory.Save(writer);
+
+    /// <summary>
+    /// A file of another shape is never handed to the engine. The engine reads a store through a memory-mapped view and stops the
+    /// boot on a console prompt ("Skip this file and continue?") unless the reader ends exactly at the file's length; a store left
+    /// half read, or seeked to the view's end (page-rounded on Windows: a 100-byte file reads 4096), both stop it, and a shard
+    /// started from a script never answers. So the shape, the file's first number, is read here first, and on a mismatch the
+    /// stories are dropped with a warning and the next save writes the new shape. The stories are worth less than a boot.
+    /// </summary>
+    public override void Deserialize(string savePath, Dictionary<ulong, string> typesDb)
+    {
+        var path = Path.GetFullPath(SaveFilePath, savePath);
+
+        if (Peek(path) is { } shape && shape != BotStory.Shape)
+        {
+            logger.Warning(
+                "The saved stories ({Path}) are shape {Found} and this build reads {Wanted}: not read, every book opens again at the start and the next save writes the new shape",
+                path,
+                shape,
+                BotStory.Shape
+            );
+
+            return;
+        }
+
+        base.Deserialize(savePath, typesDb);
+    }
+
+    /// <summary>The first encoded integer of the file, or null when there is no file or it cannot be read (the engine then decides).</summary>
+    private static int? Peek(string path)
+    {
+        try
+        {
+            if (!File.Exists(path))
+            {
+                return null;
+            }
+
+            using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+
+            int value = 0, shift = 0, b;
+
+            do
+            {
+                b = stream.ReadByte();
+
+                if (b < 0 || shift > 28)
+                {
+                    return null;
+                }
+
+                value |= (b & 0x7F) << shift;
+                shift += 7;
+            }
+            while (b >= 0x80);
+
+            return value;
+        }
+        catch (IOException)
+        {
+            return null;
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return null;
+        }
+    }
 
     public override void Deserialize(IGenericReader reader) => BotStory.Load(reader);
 }
