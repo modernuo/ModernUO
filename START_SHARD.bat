@@ -11,22 +11,31 @@ rem   2. Registers the scheduled task "ModernUO-shard" with NO triggers, so it
 rem      runs only when this file asks. Going through Task Scheduler is what
 rem      lets the shard outlive whatever started it: a shard started as a child
 rem      of an app's shell died together with that app twice on 05.09.2026.
-rem   3. Runs the task. The task runs this same file with --run in a hidden
-rem      window. That mode names the log at start time -
-rem      logs\session-yyyy-MM-dd_HH-mm.log, with seconds added if the name is
-rem      taken, so a restart never overwrites an old log - and runs
-rem      ModernUO.exe in the foreground, so the task reads "Running" exactly
-rem      while the shard lives.
+rem   3. Runs the task. The task runs this same file with --run in a VISIBLE
+rem      console window titled "ModernUO shard" (Patrick, 13.10.2026: "remove
+rem      headless, I want to see the process"). That mode names the log at start
+rem      time - logs\session-yyyy-MM-dd_HH-mm.log, with seconds added if the
+rem      name is taken, so a restart never overwrites an old log - and runs
+rem      ModernUO.exe in the foreground through Git's tee.exe, so every line
+rem      goes both to the window and to the log, and the task reads "Running"
+rem      exactly while the shard lives. The server's console takes commands:
+rem      "save", "shutdown", "help".
 rem   4. Waits for "Listening: 127.0.0.1:2593" in the new log (a start takes
 rem      about 15 s) and prints the address and the log; on a failure it
 rem      prints the end of the log.
 rem
-rem  The console reaches the log through cmd's own ">" redirection:
-rem  -RedirectStandardOutput lost the process after 80 s on 19.08.2026.
+rem  The console reaches the log through a pipe into tee.exe (Git for Windows),
+rem  which passes the bytes through untouched, so the log is the same UTF-8 as
+rem  before. Without tee the log gets cmd's own ">" redirection and the window
+rem  stays blank. (-RedirectStandardOutput lost the process after 80 s on
+rem  19.08.2026.) QuickEdit is switched off in that window: a stray click would
+rem  start a selection, pause the console and with it the pipe, and the shard's
+rem  log would drop lines while the selection stood.
 rem
-rem  Stopping: save first (Argus "do save", or [save in game), then
-rem  "schtasks /End /TN ModernUO-shard". /End kills the process; it does not
-rem  save, and killing inside an autosave truncates the world.
+rem  Stopping: CLOSING THE WINDOW OR CTRL+C STOPS THE SHARD WITHOUT A SAVE.
+rem  Type "save" in the window and wait for the save to finish, then
+rem  "shutdown"; or Argus "do save" and "schtasks /End /TN ModernUO-shard".
+rem  Killing inside an autosave truncates the world.
 rem ===========================================================================
 setlocal EnableExtensions EnableDelayedExpansion
 
@@ -43,6 +52,12 @@ rem its find and timeout would answer instead - "not running" while a shard
 rem runs, and the re-registration below would then kill it without a save.
 set "SYS=%SystemRoot%\System32"
 set "PS=%SYS%\WindowsPowerShell\v1.0\powershell.exe"
+set "TEE=%ProgramFiles%\Git\usr\bin\tee.exe"
+
+rem PowerShell, base64 UTF-16LE: SetConsoleMode on this console's input with
+rem ENABLE_QUICK_EDIT_MODE (0x40) cleared and ENABLE_EXTENDED_FLAGS (0x80) set.
+rem Encoded so cmd never has to parse its quotes and brackets.
+set "QUICKEDITOFF=JABzAD0AJwBbAEQAbABsAEkAbQBwAG8AcgB0ACgAIgBrAGUAcgBuAGUAbAAzADIALgBkAGwAbAAiACkAXQAgAHAAdQBiAGwAaQBjACAAcwB0AGEAdABpAGMAIABlAHgAdABlAHIAbgAgAFMAeQBzAHQAZQBtAC4ASQBuAHQAUAB0AHIAIABHAGUAdABTAHQAZABIAGEAbgBkAGwAZQAoAGkAbgB0ACAAaAApADsAIABbAEQAbABsAEkAbQBwAG8AcgB0ACgAIgBrAGUAcgBuAGUAbAAzADIALgBkAGwAbAAiACkAXQAgAHAAdQBiAGwAaQBjACAAcwB0AGEAdABpAGMAIABlAHgAdABlAHIAbgAgAGIAbwBvAGwAIABHAGUAdABDAG8AbgBzAG8AbABlAE0AbwBkAGUAKABTAHkAcwB0AGUAbQAuAEkAbgB0AFAAdAByACAAaAAsACAAbwB1AHQAIAB1AGkAbgB0ACAAbQApADsAIABbAEQAbABsAEkAbQBwAG8AcgB0ACgAIgBrAGUAcgBuAGUAbAAzADIALgBkAGwAbAAiACkAXQAgAHAAdQBiAGwAaQBjACAAcwB0AGEAdABpAGMAIABlAHgAdABlAHIAbgAgAGIAbwBvAGwAIABTAGUAdABDAG8AbgBzAG8AbABlAE0AbwBkAGUAKABTAHkAcwB0AGUAbQAuAEkAbgB0AFAAdAByACAAaAAsACAAdQBpAG4AdAAgAG0AKQA7ACcAOwAgACQAawAgAD0AIABBAGQAZAAtAFQAeQBwAGUAIAAtAE0AZQBtAGIAZQByAEQAZQBmAGkAbgBpAHQAaQBvAG4AIAAkAHMAIAAtAE4AYQBtAGUAIABRAGUAIAAtAE4AYQBtAGUAcwBwAGEAYwBlACAAUwBoAGEAcgBkACAALQBQAGEAcwBzAFQAaAByAHUAOwAgACQAaAAgAD0AIAAkAGsAOgA6AEcAZQB0AFMAdABkAEgAYQBuAGQAbABlACgALQAxADAAKQA7ACAAJABtACAAPQAgAFsAdQBpAG4AdAAzADIAXQAwADsAIABpAGYAIAAoACQAawA6ADoARwBlAHQAQwBvAG4AcwBvAGwAZQBNAG8AZABlACgAJABoACwAIABbAHIAZQBmAF0AJABtACkAKQAgAHsAIABbAHYAbwBpAGQAXQAkAGsAOgA6AFMAZQB0AEMAbwBuAHMAbwBsAGUATQBvAGQAZQAoACQAaAAsACAAKAAoACQAbQAgAC0AYgBhAG4AZAAgACgALQBiAG4AbwB0ACAAWwB1AGkAbgB0ADMAMgBdADAAeAA0ADAAKQApACAALQBiAG8AcgAgAFsAdQBpAG4AdAAzADIAXQAwAHgAOAAwACkAKQAgAH0A"
 
 rem --- Run mode: what the task executes. One parenthesised block, which cmd
 rem     reads whole before running it, so editing this file while the shard
@@ -51,8 +66,20 @@ if /i "%ARG%"=="--run" (
     if not exist "%LOGS%" mkdir "%LOGS%"
     "%SYS%\tasklist.exe" /FI "IMAGENAME eq ModernUO.exe" /NH 2>nul | "%SYS%\find.exe" /I "ModernUO.exe" >nul && exit /b 0
     for /f "usebackq delims=" %%L in (`%PS% -NoProfile -Command "$d = Get-Date; $p = Join-Path $env:LOGS ('session-{0:yyyy-MM-dd_HH-mm}.log' -f $d); if (Test-Path $p) { $p = Join-Path $env:LOGS ('session-{0:yyyy-MM-dd_HH-mm-ss}.log' -f $d) }; $p"`) do set "LOG=%%L"
+    title ModernUO shard - type save, then shutdown. Closing this window stops it without a save.
+    "%SYS%\chcp.com" 65001 >nul
+    "%PS%" -NoProfile -NonInteractive -EncodedCommand %QUICKEDITOFF% >nul 2>&1
     cd /d "%DIST%"
-    "%EXE%" > "!LOG!" 2>&1
+    rem Each side of a pipe runs in its own cmd without delayed expansion, and
+    rem that cmd does not expand a variable on its own: "call" makes it, so the
+    rem log's name set just above reaches tee (tested 13.10.2026; without the
+    rem call tee wrote to a file named %%LOG%%).
+    if exist "%TEE%" (
+        "%EXE%" 2>&1 | call "%TEE%" -a "%%LOG%%"
+    ) else (
+        echo   tee.exe not found at "%TEE%": the log gets everything, this window nothing.
+        "%EXE%" > "!LOG!" 2>&1
+    )
     exit /b !ERRORLEVEL!
 )
 
@@ -77,11 +104,12 @@ if not errorlevel 1 (
 
 if not exist "%LOGS%" mkdir "%LOGS%"
 
-rem The task runs:  powershell -WindowStyle Hidden -Command & '<this file>' --run
-rem PowerShell hands the .bat to cmd inside its own hidden console, so no window
-rem stays open for the shard's lifetime - closing such a window kills the shard
-rem (that is how it ended on 11.10.2026, exit code 0xC000013A).
-set "TASKARG=-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -Command & '%~f0' --run; exit $LASTEXITCODE"
+rem The task runs:  powershell -Command & '<this file>' --run
+rem in the user's session, so its console window is visible for the shard's
+rem lifetime. Closing it kills the shard without a save - that is how the
+rem 11.10.2026 start ended (exit code 0xC000013A), when the window was hidden
+rem for exactly that reason; since 13.10.2026 it is shown on purpose.
+set "TASKARG=-NoProfile -ExecutionPolicy Bypass -Command & '%~f0' --run; exit $LASTEXITCODE"
 "%PS%" -NoProfile -ExecutionPolicy Bypass -Command "$ErrorActionPreference = 'Stop'; $a = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument $env:TASKARG -WorkingDirectory $env:ROOT; $s = New-ScheduledTaskSettingsSet -MultipleInstances IgnoreNew -ExecutionTimeLimit ([TimeSpan]::Zero) -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -DontStopOnIdleEnd; Register-ScheduledTask -TaskName $env:TASK -Action $a -Settings $s -Description 'ModernUO shard. No triggers: only START_SHARD.bat starts it.' -Force | Out-Null"
 if errorlevel 1 (
     echo   Could not register the scheduled task "%TASK%".
@@ -127,7 +155,9 @@ echo.
 echo   Up after ~!SECS! s, listening on 127.0.0.1:2593
 "%SYS%\findstr.exe" /c:"127.0.0.1:2599" "%LOGS%\!NEWEST!" >nul && echo   Dashboard: http://127.0.0.1:2599/
 echo   Log: %LOGS%\!NEWEST!
-echo   The shard keeps running after this window closes.
+echo   The shard runs in its own window "ModernUO shard"; this one may close.
+echo   Do not close the shard's window: that stops it without a save.
+echo   To stop: type "save" there, wait for the save, then "shutdown".
 goto :done
 
 :tail

@@ -631,6 +631,21 @@ first sign is a behaviour, not an error. **Remedy.** Read the fork's source firs
 
 ### 4.1 Full entries, newest first
 
+**13.10.2026 · no build · The shard runs in a visible window**
+
+- *Patrick:* "stop the shard and remove headless — I want to see the process."
+- *What there was:* the task ran `START_SHARD.bat --run` under `powershell -WindowStyle Hidden`, the console redirected
+  to the log with cmd's `>`; hidden since 11.10, because closing a visible window had killed the shard.
+- *Decision:* the task's PowerShell runs without `-WindowStyle Hidden`, so the shard's console is a visible window
+  titled "ModernUO shard - type save, then shutdown …". The server's output goes through Git's `tee.exe` into both
+  the window and the session log (bytes untouched, UTF-8 as before; `| call tee -a "%%LOG%%"` — without the `call` the
+  pipe's cmd wrote to a file named `%LOG%`). QuickEdit is switched off in that window (a stray click would pause the
+  pipe and drop log lines). The server's console takes `save`, `shutdown`, `help`; closing the window or Ctrl+C stops
+  it **without a save**. Without tee.exe the old redirection is kept and the window stays blank.
+- *Checked:* started 18:59: window up with its title, ModernUO and tee running, the log growing in UTF-8, not headless,
+  Argus and the dashboard answering. Stopped before that at 18:57 after an Argus save.
+- *Status:* in force.
+
 **13.10.2026 · build 439 (written by an Opus agent: a3) · Each bot's story in chapters and the island's Chronicle**
 - *Patrick:* 08.10.2026, "develop … the generation of the bots' history further"; PLAN-life A3, the week's plan §5 A3.
 - *What there was:* a bot's life was only the biography's three heaviest tales (13.10 03:51–09:58: 240 kept, 1171 dropped); a
