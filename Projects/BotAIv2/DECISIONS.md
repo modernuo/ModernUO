@@ -631,6 +631,26 @@ first sign is a behaviour, not an error. **Remedy.** Read the fork's source firs
 
 ### 4.1 Full entries, newest first
 
+**13.10.2026 · build 439 (written by an Opus agent: a3) · Each bot's story in chapters and the island's Chronicle**
+- *Patrick:* 08.10.2026, "develop … the generation of the bots' history further"; PLAN-life A3, the week's plan §5 A3.
+- *What there was:* a bot's life was only the biography's three heaviest tales (13.10 03:51–09:58: 240 kept, 1171 dropped); a
+  guild, an office, a house, a rank, a relic or a crown was kept nowhere a reader could see; the island's history was a 1.5 GB
+  event file (12.10: 2 wars, 34 elections, 63 charters, 25 invasions and fairs) on no page.
+- *Decision:* new `BotStory/`. A book of notes per bot from the event stream (written into the book of the bot a line names) and a
+  5-minute walk with a settle so that standing is not news; chapters always by template (youth, apprenticeship, guild, deeds,
+  friends and foes, home, family, old age), one dated sentence a fact; the model (`BotStoryVoice`, the duke's seam) may retell a
+  chapter or closed day, ≤ 6 an hour, once per set of facts, cached by their hash in the save, thrown away if it names a name, a
+  month or a number the facts lack. The Chronicle: a page a day of wars, guilds, champions (reported by `BotTourney`, forced tests
+  left out), relics, offices, the duke's word, towns and roads; 80 entries, a repeat keyed by the raw sentence within 30 minutes.
+  `/api/story?bot=`, `/api/chronicle`, the Story tab. One `GenericPersistence` store that peeks its shape before the engine
+  reads it, emptied and sealed by `do reset`. Off the loop only the model's HTTP call; the page reads volatile snapshots.
+- *Checked:* build 0 errors; two reviews (Fable threading, Opus data) "ship after fixing", fixed in d6c767712 and f6c3ef755.
+  Offline: 16–44 µs a story; `qwen3.5:9b` 6 of 6 kept at 2–5 s warm; 12.10 gives 220 Chronicle candidates for 80 places;
+  predicted ≈45 % of 450 books with 3+ chapters of things seen to happen at start.
+- *Status:* deployed in build next. Read `Stories:` by kind (office/guild/hall/relic, not only `opened:*`), `from the walk` not
+  ≈300 at the first walk, the model's kept/asked, `0 events heard off the loop`. Follow-up: the bare-word `data` of `BotCharters`
+  and `BotStewardship.Speak` (653 invalid lines in the event file).
+
 **13.10.2026 · build 439 (written by a Fable agent: w5) · A steady cry calls its nearest neighbour, the stand is the rung's default, a failing patient presses its healer, a company spares as the free bots are sent**
 - *Patrick:* 06.10 "bots decide about fighting and helping instantly"; 08.09 "a bot being chewed on by a rat with ten others standing
   about"; 02.10 a bot that cannot win runs to town; self-defence out of the share; nothing across hostile guilds; honest counting.
