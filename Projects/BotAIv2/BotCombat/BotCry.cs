@@ -39,7 +39,8 @@ public static class BotCry
     /// <summary>How far a cry carries. Wider than a company forms across: this is the whole point of it.</summary>
     public static int Carries { get; set; } = 60;
 
-    private static readonly Dictionary<Serial, (Mobile Who, Mobile What, long Tick)> _cries = [];
+    /// <summary>Each crier's cry: about what, when last renewed, and whether the bout has turned dire (once dire, dire until it lapses).</summary>
+    private static readonly Dictionary<Serial, (Mobile Who, Mobile What, long Tick, bool Dire)> _cries = [];
 
     /// <summary>Cries raised and cries answered. Both, because neither number means anything alone.</summary>
     public static long Raised { get; private set; }
@@ -56,22 +57,44 @@ public static class BotCry
             return;
         }
 
-        if (!_cries.ContainsKey(who.Serial))
+        var stood = _cries.TryGetValue(who.Serial, out var old);
+
+        if (!stood)
         {
             Raised++;
         }
 
-        _cries[who.Serial] = (who, what, Core.TickCount);
+        // Dire by the caller's word (refused its fight for the odds) or by its health; and a bout that has turned dire stays so
+        // while the cry stands, for whoever reads it (BotRescuer passes over a steady crier's crowded thing, not a dire one's).
+        dire = dire || who is BotMobile { HitsMax: > 0 } hurt && hurt.Hits < hurt.HitsMax * DireAt
+                    || stood && old.Dire && Core.TickCount - old.Tick < HoldsMs;
+
+        _cries[who.Serial] = (who, what, Core.TickCount, dire);
 
         // The stopwatch keeps the first cry of the bout: the stamp above is rewritten by every renewal. See BotReflex.
         BotReflex.Cried(who, what);
 
-        // A cry from a bot that is losing, or has been refused its fight for the odds, is answered now. See Summon.
-        if (Summons && who is BotMobile crier && (dire || crier.HitsMax > 0 && crier.Hits < crier.HitsMax * DireAt))
+        if (!Summons || who is not BotMobile crier)
         {
-            Ask(crier);
+            return;
+        }
+
+        // A cry from a bot that is losing, or has been refused its fight for the odds, is answered now. See Summon. A steady
+        // cry — the crier whole and in a fight it judged it could win — has its nearest free neighbour sent (12.10.2026, w5). See
+        // Nearby.
+        if (dire)
+        {
+            Ask(crier, true);
+        }
+        else if (NearCalls)
+        {
+            Ask(crier, false);
         }
     }
+
+    /// <summary>Whether this bot's standing cry is dire: raised under <see cref="DireAt"/> of its health or for a fight refused on the odds.</summary>
+    public static bool IsDire(Mobile who) =>
+        who != null && _cries.TryGetValue(who.Serial, out var cry) && cry.Dire && Core.TickCount - cry.Tick < HoldsMs;
 
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(BotCry));
 
@@ -142,6 +165,9 @@ public static class BotCry
         public int Rounds;
         public int Sent;
         public bool Pending;
+
+        /// <summary>Whether this bout's callings are the dire summons or the steady near call. See <see cref="Ask"/>.</summary>
+        public bool Dire;
     }
 
     private static readonly Dictionary<Serial, Calling> _callings = [];
@@ -155,8 +181,11 @@ public static class BotCry
 
     private static readonly List<BotMobile> _chosen = [];
 
-    /// <summary>Puts a dire cry down to be answered at the clock's next look, at most <see cref="MostRounds"/> times a bout.</summary>
-    private static void Ask(BotMobile crier)
+    /// <summary>
+    /// Puts a cry down to be answered at the clock's next look, at most <see cref="MostRounds"/> times a bout. A steady bout that
+    /// turns dire is a new bout: the near call sent one neighbour at most and weighed nothing; the summons weighs the fight.
+    /// </summary>
+    private static void Ask(BotMobile crier, bool dire)
     {
         var now = Core.TickCount;
 
@@ -169,6 +198,18 @@ public static class BotCry
             // A new bout, or one that has outlasted its callings by a cry's whole span: it may call again.
             calling.Rounds = 0;
             calling.Sent = 0;
+            calling.Dire = false;
+        }
+
+        if (dire && !calling.Dire)
+        {
+            calling.Dire = true;
+
+            if (!calling.Pending)
+            {
+                calling.Rounds = 0;
+                calling.Sent = 0;
+            }
         }
 
         // A second calling only when the first sent nobody: those already on their way are not on the crier's side of the
@@ -219,7 +260,7 @@ public static class BotCry
 
             try
             {
-                calling.Sent += Summon(who, foe, calling.Rounds == 1, now);
+                calling.Sent += calling.Dire ? Summon(who, foe, calling.Rounds == 1, now) : Nearby(who, foe, calling.Rounds == 1, now);
             }
             catch (Exception e)
             {
@@ -479,20 +520,19 @@ public static class BotCry
             brought += band.Able();
         }
 
-        // Nobody free and no idle company: a company near whose fight is well in hand spares a member or two. See BotSquad.Spare.
-        if (_chosen.Count == 0 && !bring && spare != null)
+        // Nobody free, or not enough, and no idle company: a company near whose fight is well in hand spares its members nearest the
+        // thing, as many as the thing asks and none when all it could spare would be short — the rule the free bots are sent by
+        // (12.10.2026, w5; until then one or two went whatever stood round the crier, and only when no free bot at all was found).
+        // See BotSquad.Spare.
+        var spared = 0;
+
+        if (!bring && brought < need && spare != null)
         {
-            var spared = spare.Spare(who, foe, now);
-
-            if (spared > 0)
-            {
-                Callings++;
-
-                return spared;
-            }
+            spared = spare.Spare(who, foe, now, need - brought, out var sparedPower);
+            brought += sparedPower;
         }
 
-        if (_chosen.Count == 0 && !bring)
+        if (_chosen.Count == 0 && !bring && spared == 0)
         {
             Filed(first, 4);
 
@@ -506,7 +546,7 @@ public static class BotCry
             return 0;
         }
 
-        var sent = 0;
+        var sent = spared;
 
         if (bring)
         {
@@ -547,6 +587,231 @@ public static class BotCry
         }
 
         return sent;
+    }
+
+    /// <summary>
+    /// <b>A steady cry sends the nearest free neighbour (12.10.2026, w5).</b>
+    ///
+    /// <para>
+    /// A cry from a bot whole and in a fight it judged it could win was a fact on the board and nothing more: the summons is for
+    /// a dire cry, and the board is read by a free bot at its review — two seconds with nothing in hand, fifteen with work, and
+    /// then only past the dwell (half a minute to two) and only when the rescue at <c>BotRescue.Steady</c> out-prices the work.
+    /// On the night of 12.10 (23:18–03:48) 5 142 bouts of crying began, 1 857 turned dire; of the 2 936 open to anybody 1 962
+    /// were never answered and 1 142 of those had somebody of ours able within sixty tiles. Patrick's order of 08.09 ("a bot
+    /// being chewed on by a rat with ten others standing about") is about exactly the cry that is not yet dire.
+    /// </para>
+    ///
+    /// <para>
+    /// So a steady cry is an interruption too, a small one: the nearest of ours within <see cref="NearReach"/> that is free to
+    /// come by the summons' own rule (<see cref="Unfree"/>: in no company, no fight, no mending, holding nothing or work put
+    /// down and taken up again, no carrier far off, no healer, no novice, not called lately) is pressed to the rescue, at most
+    /// <see cref="MostNear"/>, nearest first, and only when what is on the crier is at least <see cref="NearOdds"/> of the
+    /// crier's own strength — a rat on a warrior calls nobody. No company is brought and nobody is spared for a steady cry;
+    /// the cry stands for the board as before, and a bout that turns dire is summoned for afresh (<see cref="Ask"/>).
+    /// </para>
+    /// </summary>
+    public static bool NearCalls { get; set; } = true;
+
+    /// <summary>How far a steady cry calls its nearest free neighbour from. Twenty tiles: in sight, a few seconds' walk.</summary>
+    public static int NearReach { get; set; } = 20;
+
+    /// <summary>The least the thing on a steady crier must come to, as a share of the crier's own strength, to call a neighbour.</summary>
+    public static double NearOdds { get; set; } = 0.5;
+
+    /// <summary>The most neighbours a steady cry sends. One: the crier is winning, the neighbour makes it quick.</summary>
+    public static int MostNear { get; set; } = 1;
+
+    /// <summary>Steady bouts of crying that called, and what came of each first calling: one bucket each.</summary>
+    public static long NearCries { get; private set; }
+
+    public static long NearCallings { get; private set; }
+
+    public static long NearCalled { get; private set; }
+
+    public static long NearNobody { get; private set; }
+
+    public static long NearTrivial { get; private set; }
+
+    public static long NearCompanied { get; private set; }
+
+    public static long NearBelow { get; private set; }
+
+    public static long NearShunned { get; private set; }
+
+    public static long NearOutlaw { get; private set; }
+
+    /// <summary>Bots within <see cref="NearReach"/> of a steady cry that were not free to come, by why. Bots, first callings only.</summary>
+    private static readonly long[] _nearWhy = new long[14];
+
+    /// <summary>The steady cry's calling. See <see cref="NearCalls"/>.</summary>
+    private static int Nearby(BotMobile who, BaseCreature foe, bool first, long now)
+    {
+        var map = who.Map;
+
+        if (map == null || map == Map.Internal || foe.Map != map)
+        {
+            return 0;
+        }
+
+        if (first)
+        {
+            NearCries++;
+        }
+
+        if (BotOutlaw.Outlaw(who) || BotOutlaw.Jailed(who) || who.Murderer)
+        {
+            if (first)
+            {
+                NearOutlaw++;
+            }
+
+            return 0;
+        }
+
+        // A member's steady cry is its company's: the company turns on what strikes it (BotSquads.Note) and its mates peel.
+        if (who.Squad != null)
+        {
+            if (first)
+            {
+                NearCompanied++;
+            }
+
+            return 0;
+        }
+
+        if (BotDungeon.Under(foe.Location))
+        {
+            if (first)
+            {
+                NearBelow++;
+            }
+
+            return 0;
+        }
+
+        if (BotQuarry.Shunned(foe))
+        {
+            if (first)
+            {
+                NearShunned++;
+            }
+
+            return 0;
+        }
+
+        var threat = BotThreat.ThreatAt(who, foe.Location, BotMobile.NoticeRange);
+        var own = BotThreat.Power(who);
+
+        if (threat < NearOdds * own)
+        {
+            if (first)
+            {
+                NearTrivial++;
+            }
+
+            return 0;
+        }
+
+        _near.Clear();
+
+        foreach (var m in map.GetMobilesInRange<BotMobile>(who.Location, NearReach))
+        {
+            if (m == who || m.Deleted || !m.Alive)
+            {
+                continue;
+            }
+
+            var why = Unfree(m, who, now, tally: false);
+
+            if (why != 0)
+            {
+                if (first)
+                {
+                    _nearWhy[why]++;
+                }
+
+                continue;
+            }
+
+            var off = Math.Max(Math.Abs(m.X - who.X), Math.Abs(m.Y - who.Y));
+            var at = _near.Count;
+
+            while (at > 0 && _near[at - 1].Off > off)
+            {
+                at--;
+            }
+
+            if (at >= MostNear)
+            {
+                continue;
+            }
+
+            _near.Insert(at, (m, off));
+
+            if (_near.Count > MostNear)
+            {
+                _near.RemoveAt(_near.Count - 1);
+            }
+        }
+
+        var sent = 0;
+
+        for (var i = 0; i < _near.Count; i++)
+        {
+            var m = _near[i].Who;
+
+            // In trouble where it stands: it is no help to anybody else.
+            if (BotThreat.Decide(m, BotMobile.NoticeRange) == BotStand.Outmatched)
+            {
+                if (first)
+                {
+                    _nearWhy[WhyFighting]++;
+                }
+
+                continue;
+            }
+
+            var trains = m.Bond?.Weapon?.Skill ?? SkillName.Wrestling;
+            var rescue = new BotRescue(new BotSlay(foe, trains), who, foe, own: false, rescuer: m);
+
+            if (BotWill.Press(m, rescue, $"called to {who.Name} near by against {foe.Name}, {_near[i].Off} tiles off, the thing {threat:F0} against the crier's {own:F0}", StackCalls))
+            {
+                _helped[m.Serial] = now;
+                NearCalled++;
+                sent++;
+
+                BotTies.Answered(m, who);
+            }
+        }
+
+        if (sent == 0)
+        {
+            if (first)
+            {
+                NearNobody++;
+            }
+
+            return 0;
+        }
+
+        NearCallings++;
+
+        return sent;
+    }
+
+    private static string DescribeNearWhy()
+    {
+        var say = "";
+
+        for (var i = 1; i < _nearWhy.Length; i++)
+        {
+            if (_nearWhy[i] > 0)
+            {
+                say += $"{(say.Length > 0 ? ", " : "")}{_nearWhy[i]} {Whys[i]}";
+            }
+        }
+
+        return say.Length == 0 ? "none" : say;
     }
 
     /// <summary>Whether a healer free to come is pressed to a hurt crier's mending. A switch, like the two below.</summary>
@@ -745,7 +1010,7 @@ public static class BotCry
     /// clause a rule that was already somebody's. A healer otherwise free answers <see cref="WhyHealer"/>: it is not sent to
     /// fight, and <see cref="Summon"/> sends the nearest of them to mend.
     /// </summary>
-    private static int Unfree(BotMobile m, BotMobile who, long now)
+    private static int Unfree(BotMobile m, BotMobile who, long now, bool tally = true)
     {
         if (m.Squad != null)
         {
@@ -781,8 +1046,12 @@ public static class BotCry
                 // <b>Which work, and whether a dire cry near still outranks it (06.10.2026, react18).</b> Committed work is work
                 // that may not be bid away: a carrier with goods, a voyage, a shopkeeper at its front, a delve underground, an
                 // outlaw's business, a company's enlistment — and a chat by a fire, an envoy's or a watchman's errand, which a
-                // bot being killed within CommittedReach outranks. Counted by kind either way.
-                _committed[deed.Kind] = _committed.GetValueOrDefault(deed.Kind) + 1;
+                // bot being killed within CommittedReach outranks. Counted by kind either way — for a dire calling; the steady
+                // near call asks the same question and keeps its own count (DescribeNearWhy).
+                if (tally)
+                {
+                    _committed[deed.Kind] = _committed.GetValueOrDefault(deed.Kind) + 1;
+                }
 
                 if (!(CommittedReach > 0 && (deed is BotChat || deed is BotEnvoy || deed is BotStandGuard) && m.InRange(who.Location, CommittedReach)))
                 {
@@ -853,7 +1122,8 @@ public static class BotCry
     public static string DescribeCalls() =>
         $"{Dire} cries turned dire (the crier under {DireAt:P0} of its health, or refused its fight for the odds): {Callings} called {Called} of ours to a rescue at once (work in hand put down, never dropped), "
         + $"{DireCompany} were a member's whose company already had the thing for its enemy, {DireNobody} had nobody free, fit and friendly within {BotRescuer.Reach} tiles (bots near a dire cry not free, by why: {DescribeWhy()}), {CompaniesBrought} had a company brought by its leader (companies near not brought, by why: {DescribeBands()}), {DireCriminal} wore the engine's criminal flag and were helped all the same, committed work near a dire cry by kind: {DescribeCommitted()}; {BotSquad.DescribeSpares()}, {HealersCalled} healers pressed to a hurt crier's mending, {DireBeyond} were beyond what those near could have brought together, "
-        + $"{DireBelow} underground, {DireShunned} about a creature no road reaches, {DireOutlaw} from a criminal or a murderer; a free bot's own look passed over {PassedHostile} criers of a guild hostile to it and {PassedOutlaw} outlaws (red, wanted or jailed), and did not pass over {PassedCriminal} wearing the engine's criminal flag";
+        + $"{DireBelow} underground, {DireShunned} about a creature no road reaches, {DireOutlaw} from a criminal or a murderer; a free bot's own look passed over {PassedHostile} criers of a guild hostile to it and {PassedOutlaw} outlaws (red, wanted or jailed), {BotRescuer.PassedCrowded} steady criers for the crowd note on the thing, and did not pass over {PassedCriminal} wearing the engine's criminal flag; "
+        + $"{NearCries} steady cries (the crier whole and able): {NearCallings} called {NearCalled} of ours within {NearReach} tiles at once, {NearNobody} had nobody free there (bots near not free, by why: {DescribeNearWhy()}), {NearTrivial} were about a thing under {NearOdds:P0} of the crier's own strength, {NearCompanied} from a member of a company, {NearBelow} underground, {NearShunned} about a creature no road reaches, {NearOutlaw} from a criminal or a murderer{(NearCalls ? "" : " (off)")}";
 
     /// <summary>Over, one way or the other. Called when the bot is clear, or dead, or has been helped.</summary>
     /// <summary>Whether this bot's cry still stands: raised and renewed within <see cref="HoldsMs"/>. For a spare's end. See <c>BotSquad.Sparing</c>.</summary>
@@ -892,7 +1162,7 @@ public static class BotCry
 
         foreach (var (serial, cry) in _cries)
         {
-            var (who, what, tick) = cry;
+            var (who, what, tick, _) = cry;
 
             if (Core.TickCount - tick >= HoldsMs
                 || who is not { Deleted: false, Alive: true }
@@ -975,7 +1245,7 @@ public static class BotCry
         Reactions++;
 
         // Re-stamped so a second helper is not counted as a second reaction to the same cry.
-        _cries[who.Serial] = (cry.Who, cry.What, long.MinValue / 2);
+        _cries[who.Serial] = (cry.Who, cry.What, long.MinValue / 2, cry.Dire);
     }
 
     public static string Describe() =>
@@ -997,7 +1267,17 @@ public static class BotCry
         _tended.Clear();
         System.Array.Clear(_why);
         System.Array.Clear(_whyBand);
+        System.Array.Clear(_nearWhy);
         _committed.Clear();
+        NearCries = 0;
+        NearCallings = 0;
+        NearCalled = 0;
+        NearNobody = 0;
+        NearTrivial = 0;
+        NearCompanied = 0;
+        NearBelow = 0;
+        NearShunned = 0;
+        NearOutlaw = 0;
         _sparesSeen.Clear();
         _bandsSeen.Clear();
         DireCriminal = 0;

@@ -41,6 +41,9 @@ public sealed class BotRescuer : IBotProposer
     /// <summary>Rescues passed over because the crowd round the foe outweighs the friend's side and this bot together.</summary>
     public static long Outmatched { get; private set; }
 
+    /// <summary>Steady criers passed over for the crowd note on the thing (<c>BotQuarry.Crowded</c>); a dire crier is not. See <see cref="Propose"/>.</summary>
+    public static long PassedCrowded { get; private set; }
+
     public string Name => "Rescuer";
 
     public BotStanding Rung => BotStanding.Free;
@@ -98,8 +101,14 @@ public sealed class BotRescuer : IBotProposer
         // again two seconds later: one creature drew 103 refusals in a single window while the hunt, which
         // does read the note, refused it 7 times. The note lapses in two minutes, so a genuine emergency is
         // only ever deferred, never abandoned.
-        if (BotQuarry.Crowded(foe))
+        // <b>Except for a crier in real trouble (12.10.2026, w5).</b> The note is written by the crier itself the moment it judges
+        // the thing beyond it (BotDefender: 462 such judgements in the night of 12.10, each shutting this door for two minutes on
+        // the one cry that needed it open), and the question the note was standing in for — can the friend and this bot take it
+        // together — is asked just below, where the bot will be standing. A steady crier's crowd is still left alone. Counted.
+        if (BotQuarry.Crowded(foe) && !BotCry.IsDire(friend))
         {
+            PassedCrowded++;
+
             return null;
         }
 
@@ -149,6 +158,8 @@ public sealed class BotRescuer : IBotProposer
     public static void Forget()
     {
         _said = false;
+        Outmatched = 0;
+        PassedCrowded = 0;
         BotDefender.Forget();
     }
 }
@@ -214,11 +225,27 @@ public sealed class BotDefender : IBotProposer
     /// So the fight is offered here under the floor too, as a fight that is not given up for the bot's own health
     /// (<c>BotSlay.ToTheEnd</c>), and it is priced as any hitting back is: a flight on the same rung outbids it whenever one
     /// is offered, so nothing changes for a bot that can run. Only with the thing on top of the bot (<see cref="StandReach"/>)
-    /// or striking from range; never when the odds where it stands are past <c>BotThreat.Tolerance</c> (walking on beats
-    /// standing, as it always has); never in the seconds after it has got clear (<c>BotFugitive.Calm</c>).
+    /// or striking from range; never in the seconds after it has got clear (<c>BotFugitive.Calm</c>).
+    /// </para>
+    ///
+    /// <para>
+    /// <b>The odds no longer refuse it, and the stand is the rung's default (12.10.2026, w5).</b> It refused a bot outmatched
+    /// where it stood — "walking on beats standing" — and so did <c>BotSlay</c> on its first beat; but the stand is only ever
+    /// asked for once the fight has been refused for the odds and no flight is offered, so a stand refused for the odds was a
+    /// bot offered nothing at all. The counters already said what that came to and named the stand as the cure without
+    /// taking it: on the night of 12.10 (23:18–03:48) 168 of 373 first blows that landed with the warning unused fell on a lone
+    /// bot "on the rung with nothing it could take", 45 lone bots with a caster on them died under the failing line "fought to
+    /// the end, by order" having never been offered the fight, 4 567 looks found a losing bot "with nowhere to run", 7 794 found
+    /// one that "had run 2 times in 2 minutes and stands instead", 25 852 one whose worst was a caster — and the reflex at the
+    /// blow keeps an outmatched bot's hands down (<c>BotBolt.HoldsSwing</c>), so such a bot walked its errand under the blows
+    /// without a swing. Walking on beats standing only where walking on gets the bot away, and from a caster, a cornered
+    /// place or a thing that has caught it twice it does not. On the rung above the floor the thing need not be on top: it has
+    /// the bot for its combatant and is coming (<see cref="Reach"/>). A thing no road reaches is still left alone unless it is
+    /// on top of the bot; on guarded ground the hands stay down and the guards are called (<c>BotHaven</c>). Nothing changes
+    /// for a member of a company, whose company is its refuge.
     /// </para>
     /// </summary>
-    private static BotDeed Stand(IBotWilful bot, Mobile body, BaseCreature foe)
+    private static BotDeed Stand(IBotWilful bot, Mobile body, BaseCreature foe, bool last)
     {
         if (!Stands || body.HitsMax <= 0 || foe == null)
         {
@@ -235,14 +262,29 @@ public sealed class BotDefender : IBotProposer
             return null;
         }
 
-        if (!body.InRange(foe.Location, StandReach) && foe.AI is not (AIType.AI_Mage or AIType.AI_Archer))
+        var onTop = body.InRange(foe.Location, StandReach);
+
+        if (last && !onTop && foe.AI is not (AIType.AI_Mage or AIType.AI_Archer))
         {
             return null;
         }
 
-        if (BotFugitive.Calm(body, bot.Resolve) || BotQuarry.Shunned(foe) || BotQuarry.Crowded(foe)
-            || BotThreat.Decide(body, BotMobile.NoticeRange) == BotStand.Outmatched)
+        if (BotFugitive.Calm(body, bot.Resolve))
         {
+            return null;
+        }
+
+        if (!onTop && BotQuarry.Shunned(foe))
+        {
+            StoodShunned++;
+
+            return null;
+        }
+
+        if (BotHaven.Guarded(body.Map, body.Location))
+        {
+            StoodTown++;
+
             return null;
         }
 
@@ -251,10 +293,48 @@ public sealed class BotDefender : IBotProposer
         return new BotRescue(new BotSlay(foe, trains) { ToTheEnd = true }, body, foe, own: true);
     }
 
+    /// <summary>
+    /// Stands taken (12.10.2026, w5): the fight carried on by a bot that was refused the fight for the odds and offered no
+    /// flight; of them, against a caster, and above the bot's own flight share (the rung above the floor); the ones the bot
+    /// died in; and stands not taken on guarded ground or for a thing beyond the roads that was not on top of the bot.
+    /// Counted where the deed is taken (<c>BotRescue.Taken</c>), never where it is offered.
+    /// </summary>
+    public static long StoodTaken { get; private set; }
+
+    public static long StoodCaster { get; private set; }
+
+    public static long StoodHealthy { get; private set; }
+
+    public static long StoodDied { get; set; }
+
+    public static long StoodTown { get; private set; }
+
+    public static long StoodShunned { get; private set; }
+
+    /// <summary>Stands the odds would have ended on the fight's own beat; the muster is urged for them instead. See <c>BotSlay</c>.</summary>
+    public static long StoodOnOdds { get; set; }
+
+    /// <summary>A stand has been taken. Called by <c>BotRescue.Taken</c>.</summary>
+    public static void Stood(Mobile body, Mobile foe)
+    {
+        StoodTaken++;
+
+        if (BotSquad.Caster(foe))
+        {
+            StoodCaster++;
+        }
+
+        if (body is { HitsMax: > 0 } && body.Hits >= body.HitsMax * BotTraits.FleeAt(body, false))
+        {
+            StoodHealthy++;
+        }
+    }
+
     /// <summary>The stand, for the <c>Reflexes:</c> line.</summary>
     public static string DescribeStands() =>
         $"{StoodOn} fights carried on under {BotSlay.FleeAt:P0} of the bot's health by a bot with what was killing it on top of it and no flight on offer, "
-        + $"{UnderOwnShare} looks at a bot struck between {BotSlay.FleeAt:P0} and its own flight share by its nature answered as under the floor rather than with a fight that gives itself up";
+        + $"{UnderOwnShare} looks at a bot struck between {BotSlay.FleeAt:P0} and its own flight share by its nature answered as under the floor rather than with a fight that gives itself up; "
+        + $"{StoodTaken} stands taken for want of a flight by a bot refused the fight for the odds ({StoodCaster} against a caster, {StoodHealthy} above the bot's own flight share, {StoodOnOdds} that the odds would have ended on the fight's first beat, {StoodDied} died in them), {StoodTown} not taken on guarded ground (the guards called instead), {StoodShunned} not taken for a thing no road reaches that was not on top of the bot{(Stands ? "" : " (off)")}";
 
     /// <summary>
     /// Blows on a bot between the standing flight share and its own, leaned by its nature, answered as under the floor (the stand
@@ -289,6 +369,14 @@ public sealed class BotDefender : IBotProposer
         Assailed = 0;
         Below = 0;
         ToTown = 0;
+        StoodOn = 0;
+        StoodTaken = 0;
+        StoodCaster = 0;
+        StoodHealthy = 0;
+        StoodDied = 0;
+        StoodTown = 0;
+        StoodShunned = 0;
+        StoodOnOdds = 0;
     }
 
     public BotDeed Propose(IBotWilful bot)
@@ -315,7 +403,7 @@ public sealed class BotDefender : IBotProposer
                 return null;
             }
 
-            return Stand(bot, body, on);
+            return Stand(bot, body, on, last: true);
         }
 
         // <b>A red of ours on this bot is answered like anything else that is killing it.</b> BotThreat counts
@@ -407,7 +495,7 @@ public sealed class BotDefender : IBotProposer
             BotCry.Raise(body, foe, dire: true);
 
             // Not nothing: the fight carried on, which a flight on this rung outbids whenever one is offered. See Stand.
-            return Stand(bot, body, foe);
+            return Stand(bot, body, foe, last: false);
         }
 
         // <b>The same note the rescuer reads, and leaving it out of here left half the loop standing.</b>
@@ -451,7 +539,10 @@ public sealed class BotDefender : IBotProposer
                 return run;
             }
 
-            return null;
+            // <b>And where no town is a realistic run, the stand (12.10.2026, w5).</b> The refusal left the bot on its errand with
+            // its hands down; the early flight on this rung outbids the stand whenever it is offered (BotBolt.Prior against
+            // BotRescue.Steady), so this changes nothing for a bot that can run. See Stand.
+            return Stand(bot, body, foe, last: false);
         }
 
         // Say so first, whatever comes of the fight. A bot that can handle this alone costs the population

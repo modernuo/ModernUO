@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
+using Server.Logging;
 using Server.Mobiles;
 using Server.Text;
 
@@ -37,8 +38,17 @@ namespace Server.BotAI.V2;
 /// </summary>
 public static class BotReflex
 {
+    private static readonly ILogger logger = LogFactory.GetLogger(typeof(BotReflex));
+
     /// <summary>Whether the stopwatch runs. Off, every hook returns at once and the line reads nought.</summary>
     public static bool On { get; set; } = true;
+
+    /// <summary>
+    /// One unanswered cry with somebody in earshot in this many is said in the log with who was in earshot at the cry: its class,
+    /// how far off, what it held and which company it was in (12.10.2026, w5). The counters said 1 142 such cries in a night
+    /// and could not say who stood by; this is the sample the next analysis reads. Twenty-five: forty-odd lines a night. Nought: none.
+    /// </summary>
+    public static int SampleEvery { get; set; } = 25;
 
     /// <summary>How long an event may stand unanswered before it is counted as never answered. Half a minute.</summary>
     public static int LapseMs { get; set; } = 30000;
@@ -67,6 +77,8 @@ public static class BotReflex
         Resumed,
         Turned,
         Cast,
+        Stood,
+        Spared,
         Count
     }
 
@@ -74,7 +86,8 @@ public static class BotReflex
     [
         "took the fight", "squared up at once", "left to a company already fighting", "ran", "took a mending",
         "drank", "fell in with a company", "took the rescue", "went for what was on it", "set out to mend it",
-        "began the heal", "took new work", "took up what it had put down", "its company turned on it", "began the cast"
+        "began the heal", "took new work", "took up what it had put down", "its company turned on it", "began the cast",
+        "took the stand", "a company spared it members"
     ];
 
     /// <summary>The upper edges of the spread's buckets, in milliseconds. The last bucket is everything past the last edge.</summary>
@@ -345,6 +358,13 @@ public static class BotReflex
     /// <summary>Unanswered cries by whether anybody was there to hear: the true failures are the first.</summary>
     private static long _cryNeverHeard;
 
+    /// <summary>
+    /// Of the unanswered, cries that lapsed with the crier alive and whole: above <c>BotCry.DireAt</c> of its health, the thing it
+    /// cried about dead or gone. A bot that won its fight inside the cry's span needed nobody; counted beside the never, never
+    /// taken out of it (12.10.2026, w5).
+    /// </summary>
+    private static long _cryWhole;
+
     /// <summary>Bots that became patients with nobody able to mend within reach: not events, a denominator.</summary>
     private static long _patientAlone;
 
@@ -386,6 +406,12 @@ public static class BotReflex
         public long CryTick;
         public long CryLastTick;
         public Serial CryWhat;
+
+        /// <summary>The nearest of ours able to fight at the first cry: who, how far, what it held, which company. For the sample.</summary>
+        public Serial CryNearest;
+        public int CryNearOff;
+        public string CryNearHeld;
+        public int CryNearSquad;
 
         public bool HurtOpen;
         public bool HurtDecided;
@@ -692,8 +718,12 @@ public static class BotReflex
                 _over.Answer(now - s.OverTick, resumed ? How.Resumed : How.Work);
             }
 
+            // The stand is its own bucket (12.10.2026, w5): a fight carried on for want of a flight by a bot the odds refused, and
+            // the one decision the failing rung can now take besides running, mending and drinking. Named apart so that the
+            // share it adds to "answered" can be read off, never folded into "took the fight".
             var how = deed is BotBolt ? How.Ran
                 : deed is BotSalve { OnSelf: true } ? How.Mended
+                : deed is BotRescue { Own: true, ToTheEnd: true } ? How.Stood
                 : deed is BotBrawl || deed.Foe != null ? How.Fought
                 : deed is BotEnlist ? How.FellIn
                 : How.Count;
@@ -706,13 +736,13 @@ public static class BotReflex
                     (s.StruckByBot ? _assailed : _struck).Answer(now - s.StruckTick, how);
                 }
 
-                if (s.MenaceOpen && how != How.Mended && (how != How.Fought || deed.Foe?.Serial == s.MenaceBy))
+                if (s.MenaceOpen && how != How.Mended && (how is not (How.Fought or How.Stood) || deed.Foe?.Serial == s.MenaceBy))
                 {
                     s.MenaceOpen = false;
                     _menaced.Answer(now - s.MenaceTick, how);
                 }
 
-                if (s.FailOpen && !s.FailAnswered && how is How.Ran or How.Mended)
+                if (s.FailOpen && !s.FailAnswered && how is How.Ran or How.Mended or How.Stood)
                 {
                     s.FailAnswered = true;
                     _failing.Answer(now - s.FailTick, how);
@@ -751,6 +781,15 @@ public static class BotReflex
         }
 
         Helped(crier, Core.TickCount, How.Turned);
+    }
+
+    /// <summary>A company has spared members to this crier (<c>BotSquad.Spare</c>): the cry is answered. Until 12.10.2026 (w5) the spare told nobody and read as never.</summary>
+    public static void Spared(Mobile crier)
+    {
+        if (On && crier != null)
+        {
+            Helped(crier.Serial, Core.TickCount, How.Spared);
+        }
     }
 
     private static void Helped(Serial crier, long now, How how)
@@ -816,7 +855,7 @@ public static class BotReflex
 
         if (s.CryOpen && now - s.CryLastTick >= BotCry.HoldsMs)
         {
-            CloseCry(s, false);
+            CloseCry(bot, s, false);
         }
 
         if (!s.CryOpen)
@@ -824,7 +863,7 @@ public static class BotReflex
             s.CryOpen = true;
             s.CryAnswered = false;
             s.CryTick = now;
-            s.CryDeaf = !Heard(bot);
+            s.CryDeaf = !Heard(bot, s);
 
             _cry.Events++;
 
@@ -859,9 +898,17 @@ public static class BotReflex
         }
     }
 
-    /// <summary>Whether anybody of ours able to fight stands within the cry's reach. One query a bout of crying.</summary>
-    private static bool Heard(BotMobile crier)
+    /// <summary>
+    /// Whether anybody of ours able to fight stands within the cry's reach, and who the nearest of them is. One query a bout of
+    /// crying; the whole reach is walked rather than stopped at the first found, for the sample's sake (12.10.2026, w5).
+    /// </summary>
+    private static bool Heard(BotMobile crier, State s)
     {
+        s.CryNearest = Serial.Zero;
+        s.CryNearOff = int.MaxValue;
+        s.CryNearHeld = null;
+        s.CryNearSquad = 0;
+
         var map = crier.Map;
 
         if (map == null || map == Map.Internal)
@@ -871,16 +918,32 @@ public static class BotReflex
 
         foreach (var mobile in map.GetMobilesInRange<Mobile>(crier.Location, BotCry.Carries))
         {
-            if (mobile != crier && mobile is IBotAlly { AbleToFight: true })
+            if (mobile == crier || mobile is not IBotAlly { AbleToFight: true })
             {
-                return true;
+                continue;
+            }
+
+            var off = Math.Max(Math.Abs(mobile.X - crier.X), Math.Abs(mobile.Y - crier.Y));
+
+            if (off >= s.CryNearOff)
+            {
+                continue;
+            }
+
+            s.CryNearest = mobile.Serial;
+            s.CryNearOff = off;
+
+            if (mobile is BotMobile near)
+            {
+                s.CryNearHeld = near.Resolve?.Deed?.Kind;
+                s.CryNearSquad = near.Squad?.Id ?? 0;
             }
         }
 
-        return false;
+        return s.CryNearOff != int.MaxValue;
     }
 
-    private static void CloseCry(State s, bool died)
+    private static void CloseCry(Mobile crier, State s, bool died)
     {
         s.CryOpen = false;
 
@@ -901,12 +964,44 @@ public static class BotReflex
         else
         {
             _cry.Never++;
+
+            // Whole, and the thing it cried about dead or gone: it needed nobody. Beside the never, not out of it.
+            if (crier is { Deleted: false, Alive: true, HitsMax: > 0 } && crier.Hits >= crier.HitsMax * BotCry.DireAt
+                && World.FindMobile(s.CryWhat) is not { Deleted: false, Alive: true })
+            {
+                _cryWhole++;
+            }
         }
 
-        if (!s.CryDeaf)
+        if (s.CryDeaf)
         {
-            _cryNeverHeard++;
+            return;
         }
+
+        _cryNeverHeard++;
+
+        if (SampleEvery <= 0 || _cryNeverHeard % SampleEvery != 1 || crier == null)
+        {
+            return;
+        }
+
+        // The sample: who was nearest and able when the cry went up, and what it holds now. See SampleEvery.
+        var near = World.FindMobile(s.CryNearest);
+        var foe = World.FindMobile(s.CryWhat);
+
+        logger.Information(
+            "A cry nobody answered: {Crier} cried about {Foe} and {Fate}; the nearest of ours able at the cry was {Near} the {Class} {Off} tiles off, holding {Held}{Company}, now holding {Now}{Squad}",
+            crier.Name,
+            foe?.Name ?? "something",
+            died ? "died" : crier.HitsMax > 0 ? $"is at {crier.Hits / (double)crier.HitsMax:P0}" : "lives",
+            near?.Name ?? "nobody found",
+            (near as BotMobile)?.Class?.Name ?? "?",
+            s.CryNearOff,
+            s.CryNearHeld ?? "nothing",
+            s.CryNearSquad > 0 ? $" in company {s.CryNearSquad}" : "",
+            (near as BotMobile)?.Resolve?.Deed?.ToString() ?? "nothing",
+            (near as BotMobile)?.Squad is { } squad ? $" in company {squad.Id}" : ""
+        );
     }
 
     /// <summary>Health has crossed the line the ladder calls failing.</summary>
@@ -1094,7 +1189,7 @@ public static class BotReflex
 
         if (s.CryOpen && now - s.CryLastTick < BotCry.HoldsMs)
         {
-            CloseCry(s, true);
+            CloseCry(bot, s, true);
         }
 
         if (s.HurtOpen)
@@ -1177,7 +1272,7 @@ public static class BotReflex
 
         if (s.CryOpen && now - s.CryLastTick >= BotCry.HoldsMs)
         {
-            CloseCry(s, false);
+            CloseCry(bot, s, false);
         }
 
         if (s.HurtOpen && now - s.HurtTick >= LapseMs)
@@ -1237,7 +1332,7 @@ public static class BotReflex
             + $"; {Line(_assailed, "struck by a bot")}"
             + $"; {Line(_menaced, $"a creature set on the bot seen coming within {Sight} tiles")}, first seen {(_menaced.Events > 0 ? _seenOff / (double)_menaced.Events : 0.0):F1} tiles off on average; its first blow landed before anything was decided {_warning.Count} times, the warning unused {_warning.Say()} (by why: {_firstCompany} on a member of a company that was not told, {_firstCompanyTold} on a member whose company was told, {_firstFar} struck from beyond the range the bot answers at, {_firstWarned} on a bot on the rung with nothing it could take, {_firstTown} in a town, {_firstInside} inside the range and never put on the rung); {_lost} lost interest or were left behind"
             + $"; {Line(_failing, "health crossing the failing line")} ({_failingNeverCompany} of the never were members of a company, {_failingNeverCaster} lone bots with a caster on them (fought to the end, by order), {_failingFoughtOn} fought on in a fight of their own, {_failingHelped} more were healed by another first)"
-            + $"; {Line(_cry, "first cries")} ({_cryDeaf} with nobody of ours able within {BotCry.Carries} tiles, {_cryCompanied} from a bot in a company, {_cryCompanyOn} of them about the company's own enemy and counted already at it; {_cryNeverHeard} of the never had somebody in earshot; {_helpers} helpers in all)"
+            + $"; {Line(_cry, "first cries")} ({_cryDeaf} with nobody of ours able within {BotCry.Carries} tiles, {_cryCompanied} from a bot in a company, {_cryCompanyOn} of them about the company's own enemy and counted already at it; {_cryNeverHeard} of the never had somebody in earshot, {_cryWhole} of the never lapsed with the crier whole and the thing dead or gone; {_helpers} helpers in all)"
             + $"; {Line(_patient, $"bots under {BotMend.Hurt:P0} with a healer within {BotSurgeon.Reach}")} ({_patientAlone} more had nobody able to mend in reach, {_patientSelf} mended themselves first); the heal itself begun {_healed.Say()}"
             + $"; {Line(_over, "fights and flights ended")} ({_overCompany} of the already were in a company, whose next move is the company's)";
     }
@@ -1291,6 +1386,7 @@ public static class BotReflex
         w.WriteNumber("fromACompany", _cryCompanied);
         w.WriteNumber("aboutTheCompanysEnemy", _cryCompanyOn);
         w.WriteNumber("neverThoughHeard", _cryNeverHeard);
+        w.WriteNumber("neverButWhole", _cryWhole);
         w.WriteNumber("helpers", _helpers);
         w.WriteEndObject();
 
@@ -1342,6 +1438,7 @@ public static class BotReflex
         _cryCompanyOn = 0;
         _helpers = 0;
         _cryNeverHeard = 0;
+        _cryWhole = 0;
         _patientAlone = 0;
         _patientSelf = 0;
         _overCompany = 0;

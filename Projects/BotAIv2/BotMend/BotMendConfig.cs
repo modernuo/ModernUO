@@ -36,6 +36,9 @@ public sealed class BotMendSettings
     /// <summary>How far a caster looks for somebody else worth healing.</summary>
     public int? Watch { get; set; }
 
+    /// <summary>Whether the nearest of ours able to mend a bot under its failing line is pressed to it rather than told to look up (12.10.2026, w5).</summary>
+    public bool? SurgeonPresses { get; set; }
+
     /// <summary>How often another attempt is made.</summary>
     public int? TryMs { get; set; }
 
@@ -121,6 +124,7 @@ public static class BotMendConfig
         BotSalve.WorkMinutes = settings.WorkMinutes ?? BotSalve.WorkMinutes;
 
         BotSurgeon.Reach = settings.Watch ?? BotSurgeon.Reach;
+        BotSurgeon.Presses = settings.SurgeonPresses ?? BotSurgeon.Presses;
 
         // The other answer this rung gives. Kept in the mending file because it is the same question —
         // a bot that is losing, and what it should do about it.

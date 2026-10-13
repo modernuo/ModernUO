@@ -447,12 +447,16 @@ public sealed class BotSlay : BotDeed
     private long _fightTick;
 
     /// <summary>
-    /// Whether this fight is not given up for the bot's own health (<see cref="FleeAt"/>): a stand, taken by a bot that is being
-    /// killed and has no flight on offer. The odds still end it. See <c>BotDefender.Stand</c>.
+    /// Whether this fight is not given up for the bot's own health (<see cref="FleeAt"/>) nor for the odds: a stand, taken by a
+    /// bot that was refused the fight for the odds and has no flight on offer (12.10.2026, w5; until then the odds ended it on
+    /// its first beat). See <c>BotDefender.Stand</c>.
     /// </summary>
     public bool ToTheEnd { get; init; }
 
     private bool _stood;
+
+    /// <summary>Whether a stand has had the muster urged for it on the odds. Once a stand. See <see cref="Advance"/>.</summary>
+    private bool _urged;
 
     /// <summary>The clocks inside the hunt are put right, or the pause itself reads as a stall and a cap. See <see cref="BotDeed.Steadfast"/>.</summary>
     public override void Resumed(IBotWilful bot)
@@ -954,7 +958,22 @@ public sealed class BotSlay : BotDeed
             _weighed = true;
             _oddsTick = Core.TickCount;
 
-            if (BotThreat.Decide(body, BotMobile.NoticeRange) == BotStand.Outmatched)
+            var outmatched = BotThreat.Decide(body, BotMobile.NoticeRange) == BotStand.Outmatched;
+
+            if (outmatched && ToTheEnd)
+            {
+                // <b>A stand is not ended by the odds (12.10.2026, w5).</b> It is taken because the fight was refused for the odds
+                // and no flight was offered (BotDefender.Stand), so ending it here on the same odds handed the bot back to that
+                // rung with nothing — which is what the stand was written to close. The muster is still urged for it, once; the
+                // crowd note is not written, because the rescuers read it and would pass the stander by (BotRescuer).
+                if (!_urged)
+                {
+                    _urged = true;
+                    BotDefender.StoodOnOdds++;
+                    BotMuster.Urge(body, _quarry);
+                }
+            }
+            else if (outmatched)
             {
                 body.Combatant = null;
                 body.Warmode = false;

@@ -209,9 +209,24 @@ public sealed class BotRescue : BotDeed
 
     private int _lowest = int.MaxValue;
 
+    /// <summary>A stand is counted where it is taken — won at auction or pressed — never where it is offered. See <c>BotDefender.Stood</c>.</summary>
+    public override void Taken(IBotWilful bot)
+    {
+        if (_own && ToTheEnd)
+        {
+            BotDefender.Stood(bot?.Self, _foe);
+        }
+    }
+
     public override void Drop(IBotWilful bot)
     {
         _fight.Drop(bot);
+
+        // The stand's honest price: the bot that died in it. Settle drops the deed of a dead bot before anything else reads it.
+        if (_own && ToTheEnd && bot?.Self is { Alive: false })
+        {
+            BotDefender.StoodDied++;
+        }
 
         // Whoever was crying has had somebody come; if they are still in trouble they will say so again on
         // their own next beat. Leaving the cry standing would send a second and a third bot at a fight that

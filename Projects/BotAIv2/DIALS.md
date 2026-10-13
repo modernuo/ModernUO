@@ -1216,7 +1216,7 @@ changed without a rebuild.
 | `BotStrike` | `Range` | `8` | *code only* |
 | `BotStrike` | `SkillMargin` | `20.0` | *code only* |
 
-## `BotCombat/`
+## `BotCombat/`  —  `bot-combat.json`
 
 | class | dial | default | config key |
 |---|---|---|---|
@@ -1244,20 +1244,24 @@ changed without a rebuild.
 | `BotBrawl` | `Restride` | `6` | *code only* |
 | `BotBrawl` | `WorkMinutes` | `3.0` | *code only* |
 | `BotCry` | `CarrierReach` | `12` | *code only* |
-| `BotCry` | `Carries` | `60` | *code only* |
+| `BotCry` | `Carries` | `60` | `Carries` |
 | `BotCry` | `CommittedReach` | `20` | *code only* |
 | `BotCry` | `Companies` | `true` | *code only* |
-| `BotCry` | `DireAt` | `0.7` | *code only* |
+| `BotCry` | `DireAt` | `0.7` | `DireAt` |
 | `BotCry` | `Healers` | `true` | *code only* |
-| `BotCry` | `HelperRestMs` | `45000` | *code only* |
-| `BotCry` | `HoldsMs` | `20000` | *code only* |
+| `BotCry` | `HelperRestMs` | `45000` | `HelperRestMs` |
+| `BotCry` | `HoldsMs` | `20000` | `CryHoldsMs` |
 | `BotCry` | `MemberReach` | `true` | *code only* |
-| `BotCry` | `MostCalled` | `3` | *code only* |
+| `BotCry` | `MostCalled` | `3` | `MostCalled` |
+| `BotCry` | `MostNear` | `1` | `MostNear` |
 | `BotCry` | `MostRounds` | `2` | *code only* |
+| `BotCry` | `NearCalls` | `true` | `NearCalls` |
+| `BotCry` | `NearOdds` | `0.5` | `NearOdds` |
+| `BotCry` | `NearReach` | `20` | `NearReach` |
 | `BotCry` | `RecallMs` | `5000` | *code only* |
 | `BotCry` | `Shortlist` | `8` | *code only* |
 | `BotCry` | `StackCalls` | `true` | *code only* |
-| `BotCry` | `Summons` | `true` | *code only* |
+| `BotCry` | `Summons` | `true` | `Summons` |
 | `BotDuel` | `CapMs` | `120000` | *code only* |
 | `BotDuel` | `YieldAt` | `0.35` | *code only* |
 | `BotFugitive` | `Bearable` | `0.5` | `FleeBearable` in `bot-mend.json` |
@@ -1299,15 +1303,16 @@ changed without a rebuild.
 | `BotPeril` | `Worrying` | `12.0` | *code only* |
 | `BotReflex` | `LapseMs` | `30000` | *code only* |
 | `BotReflex` | `LostMs` | `10000` | *code only* |
-| `BotReflex` | `On` | `true` | *code only* |
+| `BotReflex` | `On` | `true` | `ReflexOn` |
+| `BotReflex` | `SampleEvery` | `25` | `CrySampleEvery` |
 | `BotReflex` | `Sight` | `18` | *code only* |
 | `BotRescue` | `Prior` | `200.0` | *code only* |
 | `BotRescue` | `Steady` | `100.0` | *code only* |
 | `BotRescuer` | `FitAt` | `0.55` | *code only* |
 | `BotRescuer` | `Reach` | `12` | *code only* |
 | `BotRescuer` | `Reach` | `60` | *code only* |
-| `BotRescuer` | `StandReach` | `2` | *code only* |
-| `BotRescuer` | `Stands` | `true` | *code only* |
+| `BotRescuer` | `StandReach` | `2` | `StandReach` |
+| `BotRescuer` | `Stands` | `true` | `Stands` |
 | `BotThreat` | `SkillFloor` | `0.25` | *code only* |
 | `BotThreat` | `SkillWeighs` | `true` | *code only* |
 | `BotThreat` | `Tolerance` | `1.5` | *code only* |
@@ -1359,6 +1364,7 @@ changed without a rebuild.
 | `BotSalve` | `Urgency` | `3.0` | `Urgency` |
 | `BotSalve` | `WorkMinutes` | `1.0` | `WorkMinutes` |
 | `BotSurgeon` | `Calls` | `true` | *code only* |
+| `BotSurgeon` | `Presses` | `true` | `SurgeonPresses` |
 | `BotSurgeon` | `MovingMs` | `1500` | *code only* |
 | `BotSurgeon` | `Reach` | `20` | `Watch` |
 | `BotSurgeon` | `Upstairs` | `8` | *code only* |
@@ -1460,11 +1466,12 @@ changed without a rebuild.
 | `BotSquadField` | `MusterShare` | `0.75` | *code only* |
 | `BotSquadField` | `Musters` | `true` | *code only* |
 | `BotSquadField` | `Peels` | `true` | *code only* |
-| `BotSquadSpare` | `MostSpared` | `2` | *code only* |
-| `BotSquadSpare` | `SpareMs` | `30000` | *code only* |
-| `BotSquadSpare` | `SpareReach` | `24` | *code only* |
-| `BotSquadSpare` | `SpareShare` | `0.5` | *code only* |
-| `BotSquadSpare` | `Spares` | `true` | *code only* |
+| `BotSquadSpare` | `MostSpared` | `2` | `MostSpared` |
+| `BotSquadSpare` | `SpareMs` | `30000` | `SpareMs` |
+| `BotSquadSpare` | `SpareDyingShare` | `0.35` | `SpareDyingShare` |
+| `BotSquadSpare` | `SpareReach` | `24` | `SpareReach` |
+| `BotSquadSpare` | `SpareShare` | `0.5` | `SpareShare` |
+| `BotSquadSpare` | `Spares` | `true` | `Spares` |
 | `BotSquads` | `AnswersAtOnce` | `true` | *code only* |
 | `BotSquads` | `JoinReach` | `400` | *code only* |
 | `BotSquads` | `Protects` | `true` | *code only* |

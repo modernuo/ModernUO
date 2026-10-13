@@ -225,8 +225,34 @@ public sealed class BotSurgeon : IBotProposer
 
         Called++;
 
+        // <b>A failing patient is an interruption, not an offer (12.10.2026, w5).</b> The look-up above hands the healer's auction
+        // the mending, which jumps the dwell (BotSalve.Pressing) and passes the hold (Summons) and then has to out-price the work
+        // in hand plainly: a healer on a delivery at 300 a minute kept delivering. On the night of 12.10 (23:18–03:48) 1 412 bots
+        // fell under 70 % with somebody able to mend within twenty tiles, 414 were never mended and 90 of those died; of 902
+        // crossings of the failing line 140 died with nothing decided. For a patient under its failing line the nearest able is
+        // pressed to the mending as a dire crier's healer is (BotCry.Summon): its work put down and taken up again, never thrown
+        // away — a healer holding work that is not taken up again is told to look up, as before.
+        if (Presses && BotLadder.Failing(patient) && best.Resolve is { } free
+            && (free.Deed == null || free.Deed.Resumes && (free.Paused == null || BotCry.StackCalls && free.Under == null)))
+        {
+            var trains = BotMend.Spell(best, patient) >= 0 ? SkillName.Magery : SkillName.Healing;
+
+            if (BotWill.Press(best, new BotSalve(patient, map, onSelf: false, trains), $"called to {patient.Name} under its failing line as its nearest healer, {nearest} tiles off", BotCry.StackCalls))
+            {
+                Pressed++;
+
+                return;
+            }
+        }
+
         BotWill.Alert(best);
     }
+
+    /// <summary>Whether the nearest of ours able to mend a bot under its failing line is pressed to it rather than told to look up. A switch.</summary>
+    public static bool Presses { get; set; } = true;
+
+    /// <summary>Healers pressed to a failing patient's mending as an interruption. See <see cref="Call"/>.</summary>
+    public static long Pressed { get; private set; }
 
     /// <summary>Patients brought to the medics of a company near with no enemy standing. See <c>BotSquad.Nurse</c>.</summary>
     public static long CalledNurse { get; private set; }
@@ -250,7 +276,7 @@ public sealed class BotSurgeon : IBotProposer
 
     /// <summary>The healer's call, for the <c>Reflexes:</c> line.</summary>
     public static string Describe2() =>
-        $"{Called} bots that became patients had the nearest of ours able to mend within {Reach} tiles look up at once, {CalledCompany} were members whose company was asked to answer at once, {CalledNurse} were brought to the medics of a company near with no enemy, {CalledNobody} lone ones had nobody free and able there ({CalledAlone} of them nobody of ours at all; bots near passed over: {WhyCompany} in a company, {WhyFighting} in a fight, failing or leaving, {WhyBusy} mending already or on work that may not be left, {WhyApart} on another floor or hostile, {WhyNoMeans} with neither a heal nor cloth)";
+        $"{Called} bots that became patients had the nearest of ours able to mend within {Reach} tiles look up at once ({Pressed} of them under the failing line pressed to it, their work put down{(Presses ? "" : "; off")}), {CalledCompany} were members whose company was asked to answer at once, {CalledNurse} were brought to the medics of a company near with no enemy, {CalledNobody} lone ones had nobody free and able there ({CalledAlone} of them nobody of ours at all; bots near passed over: {WhyCompany} in a company, {WhyFighting} in a fight, failing or leaving, {WhyBusy} mending already or on work that may not be left, {WhyApart} on another floor or hostile, {WhyNoMeans} with neither a heal nor cloth)";
 
     public string Name => "Surgeon";
 
@@ -383,7 +409,9 @@ public sealed class BotSurgeon : IBotProposer
     {
         _said = false;
         Moving = 0;
+        Floors = 0;
         Called = 0;
+        Pressed = 0;
         CalledNobody = 0;
         CalledCompany = 0;
         CalledNurse = 0;

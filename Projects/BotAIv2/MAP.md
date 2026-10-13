@@ -600,6 +600,7 @@ The fight itself belongs to the engine — `Warmode` and `Combatant` are enough,
 | `BotArms.cs` | Whether a bot has anything in its hands, asked at the moment it matters. |
 | `BotBolt.cs` | Getting away from whatever is killing it. |
 | `BotBrawl.cs` | A fight with one of our own — a duel, a robbery, a manhunt — as a piece of work: close, hit, and stop when told. |
+| `BotCombatConfig.cs` | What Configuration/bot-combat.json is allowed to say: the cry, the stand and the stopwatch (12.10.2026, w5). |
 | `BotCry.cs` | Somebody of ours is being killed and has said so out loud. |
 | `BotDuel.cs` | Two of ours set against each other on purpose, and the rule that says when it is over. |
 | `BotFugitive.cs` | Offers a bot whose health is going the one thing that was missing from that rung: leaving. |
