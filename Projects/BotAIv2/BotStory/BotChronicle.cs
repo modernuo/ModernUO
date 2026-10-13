@@ -5,34 +5,6 @@ using Server.Text;
 
 namespace Server.BotAI.V2;
 
-/// <summary>One line of the island's Chronicle: when (local time, as the event stream dates its days), what kind, and the words.</summary>
-public sealed class BotChronicleEntry
-{
-    public DateTime At;
-
-    /// <summary>war, guild, champion, relic, contest, diplomacy, politics, town, crime, road.</summary>
-    public string Kind;
-
-    public string Text;
-
-    public double Weight;
-}
-
-/// <summary>One day's page of the Chronicle: its entries in the order they happened, and the model's retelling once the day is over.</summary>
-public sealed class BotChronicleDay
-{
-    public string Key;
-
-    public DateTime Date;
-
-    public readonly List<BotChronicleEntry> Entries = new(16);
-
-    public BotStoryProse Voiced;
-
-    /// <summary>Entries that came to a full page and were too light to keep. Not saved.</summary>
-    public int Dropped;
-}
-
 /// <summary>
 /// The island's Chronicle (PLAN-life A3): a page a day of its wars, guilds founded, closed and split, champions, relics,
 /// elections and depositions, the duke's words between guilds, invasions and fairs — taken from the event stream as it is

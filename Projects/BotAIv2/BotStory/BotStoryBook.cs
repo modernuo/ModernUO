@@ -3,84 +3,6 @@ using System.Collections.Generic;
 
 namespace Server.BotAI.V2;
 
-/// <summary>A stage of a bot's life, in the order its chapters are told. A stage with nothing in it is no chapter at all.</summary>
-public enum BotStage
-{
-    Youth,
-    Apprenticeship,
-    Guild,
-    Deeds,
-    Friends,
-    Home,
-    Family,
-    OldAge
-}
-
-/// <summary>The stages' names on the page and in the log.</summary>
-public static class BotStages
-{
-    public const int Count = 8;
-
-    public static string Key(BotStage stage) =>
-        stage switch
-        {
-            BotStage.Youth          => "youth",
-            BotStage.Apprenticeship => "apprenticeship",
-            BotStage.Guild          => "guild",
-            BotStage.Deeds          => "deeds",
-            BotStage.Friends        => "friends",
-            BotStage.Home           => "home",
-            BotStage.Family         => "family",
-            _                       => "old age"
-        };
-
-    public static string Title(BotStage stage) =>
-        stage switch
-        {
-            BotStage.Youth          => "Youth",
-            BotStage.Apprenticeship => "Apprenticeship",
-            BotStage.Guild          => "The guild",
-            BotStage.Deeds          => "Deeds",
-            BotStage.Friends        => "Friends and foes",
-            BotStage.Home           => "Home",
-            BotStage.Family         => "Family",
-            _                       => "Old age"
-        };
-}
-
-/// <summary>
-/// One thing the story keeps about a bot: a sentence in the third person with the real names, which stage of its life it
-/// belongs to, when it happened and how much it weighs when the book is full.
-/// </summary>
-public sealed class BotStoryNote
-{
-    public BotStage Stage;
-
-    /// <summary>born, seen, guild, founded, office, rank, opened, relic, champion, bout, crime, home, house, veteran…</summary>
-    public string Kind;
-
-    /// <summary>The sentence, beginning with the bot's name or the guild's, with no date: the writer adds the date.</summary>
-    public string Text;
-
-    /// <summary>When it happened, in UTC, as the biography's tales are kept.</summary>
-    public DateTime At;
-
-    public double Weight;
-
-    /// <summary>Where the bot stood when this chronicle first found it, as against a thing seen to happen to it.</summary>
-    public bool Baseline => Kind == "seen";
-}
-
-/// <summary>A chapter as the model retold it, kept for the facts it was told from (their hash) and shown only while they stand.</summary>
-public sealed class BotStoryProse
-{
-    public ulong Hash;
-
-    public string Text;
-
-    public DateTime At;
-}
-
 /// <summary>
 /// One bot's story as this chronicle keeps it: when it first saw the bot and whether it saw it born, what it was then, the notes
 /// of its life since, what the slow walk last saw of it (so a change is a note and a restart is not), and the chapters the model
@@ -193,4 +115,177 @@ public sealed class BotStoryBook
             into[j + 1] = note;
         }
     }
+}
+
+/// <summary>
+/// One thing the story keeps about a bot: a sentence in the third person with the real names, which stage of its life it
+/// belongs to, when it happened and how much it weighs when the book is full.
+/// </summary>
+public sealed class BotStoryNote
+{
+    public BotStage Stage;
+
+    /// <summary>born, seen, guild, founded, office, rank, opened, relic, champion, bout, crime, home, house, veteran…</summary>
+    public string Kind;
+
+    /// <summary>The sentence, beginning with the bot's name or the guild's, with no date: the writer adds the date.</summary>
+    public string Text;
+
+    /// <summary>When it happened, in UTC, as the biography's tales are kept.</summary>
+    public DateTime At;
+
+    public double Weight;
+
+    /// <summary>Where the bot stood when this chronicle first found it, as against a thing seen to happen to it.</summary>
+    public bool Baseline => Kind == "seen";
+}
+
+/// <summary>A chapter as the model retold it, kept for the facts it was told from (their hash) and shown only while they stand.</summary>
+public sealed class BotStoryProse
+{
+    public ulong Hash;
+
+    public string Text;
+
+    public DateTime At;
+}
+
+/// <summary>A stage of a bot's life, in the order its chapters are told. A stage with nothing in it is no chapter at all.</summary>
+public enum BotStage
+{
+    Youth,
+    Apprenticeship,
+    Guild,
+    Deeds,
+    Friends,
+    Home,
+    Family,
+    OldAge
+}
+
+/// <summary>The stages' names on the page and in the log.</summary>
+public static class BotStages
+{
+    public const int Count = 8;
+
+    public static string Key(BotStage stage) =>
+        stage switch
+        {
+            BotStage.Youth          => "youth",
+            BotStage.Apprenticeship => "apprenticeship",
+            BotStage.Guild          => "guild",
+            BotStage.Deeds          => "deeds",
+            BotStage.Friends        => "friends",
+            BotStage.Home           => "home",
+            BotStage.Family         => "family",
+            _                       => "old age"
+        };
+
+    public static string Title(BotStage stage) =>
+        stage switch
+        {
+            BotStage.Youth          => "Youth",
+            BotStage.Apprenticeship => "Apprenticeship",
+            BotStage.Guild          => "The guild",
+            BotStage.Deeds          => "Deeds",
+            BotStage.Friends        => "Friends and foes",
+            BotStage.Home           => "Home",
+            BotStage.Family         => "Family",
+            _                       => "Old age"
+        };
+}
+
+/// <summary>One chapter of a bot's story as the writer built it: its facts, the template's prose, and the model's when it is current.</summary>
+public sealed class BotStoryChapter
+{
+    public BotStage Stage;
+
+    /// <summary>The dated lines the template and the model are both told from, oldest first. Their hash keys the model's prose.</summary>
+    public readonly List<string> Facts = new(8);
+
+    /// <summary>The template's paragraph. Always there when the chapter is.</summary>
+    public string Text;
+
+    /// <summary>
+    /// A closing sentence of counts that move by the minute (kills, duels, days lived), kept out of the facts' hash so that a
+    /// chapter retold by the model is not made stale by its hundred-and-first kill; said after either prose.
+    /// </summary>
+    public string Tally;
+
+    public ulong Hash;
+
+    /// <summary>Holds something seen to happen, as against only where the bot stood when the chronicle found it.</summary>
+    public bool Lived;
+
+    /// <summary>The model's paragraph, only when it was told exactly these facts. See <see cref="BotStoryProse"/>.</summary>
+    public string Voiced;
+
+    public bool Present => Facts.Count > 0 || Tally != null;
+
+    public void Clear(BotStage stage)
+    {
+        Stage = stage;
+        Facts.Clear();
+        Text = null;
+        Tally = null;
+        Hash = 0;
+        Lived = false;
+        Voiced = null;
+    }
+}
+
+/// <summary>
+/// What the story asks of a model: one chapter of one bot's life, or one closed day of the Chronicle, as the dated facts the
+/// template was written from — strings only, made on the loop, so that whatever answers it on another thread holds nothing of
+/// the world. See <see cref="BotStory.Ask"/>.
+/// </summary>
+public sealed class BotStoryAsk
+{
+    /// <summary><c>chapter</c> or <c>day</c>.</summary>
+    public string Kind { get; init; }
+
+    /// <summary>The bot's name, or the day's title.</summary>
+    public string Subject { get; init; }
+
+    /// <summary>The chapter's title ("Deeds"), or "The Chronicle of the island".</summary>
+    public string Title { get; init; }
+
+    /// <summary>Who the chapter is about, in words: "Brokk, a dwarf warrior of The Anchor".</summary>
+    public string Who { get; init; }
+
+    /// <summary>The facts, one a line, dated: the whole of what may be said.</summary>
+    public string Facts { get; init; }
+
+    public int MostWords { get; init; }
+
+    /// <summary>The model to ask; null or empty leaves it to the answering side (the duke's).</summary>
+    public string Model { get; init; }
+}
+
+/// <summary>One line of the island's Chronicle: when (local time, as the event stream dates its days), what kind, and the words.</summary>
+public sealed class BotChronicleEntry
+{
+    public DateTime At;
+
+    /// <summary>war, guild, champion, relic, contest, diplomacy, politics, town, crime, road.</summary>
+    public string Kind;
+
+    public string Text;
+
+    public double Weight;
+}
+
+/// <summary>One day's page of the Chronicle: its entries in the order they happened, and the model's retelling once the day is over.</summary>
+public sealed class BotChronicleDay
+{
+    public string Key;
+
+    public DateTime Date;
+
+    public readonly List<BotChronicleEntry> Entries = new(16);
+
+    public BotStoryProse Voiced;
+
+    /// <summary>Entries that came to a full page and were too light to keep. Not saved.</summary>
+    public int Dropped;
 }

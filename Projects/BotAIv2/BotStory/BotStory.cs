@@ -10,34 +10,6 @@ using Server.Text;
 namespace Server.BotAI.V2;
 
 /// <summary>
-/// What the story asks of a model: one chapter of one bot's life, or one closed day of the Chronicle, as the dated facts the
-/// template was written from — strings only, made on the loop, so that whatever answers it on another thread holds nothing of
-/// the world. See <see cref="BotStory.Ask"/>.
-/// </summary>
-public sealed class BotStoryAsk
-{
-    /// <summary><c>chapter</c> or <c>day</c>.</summary>
-    public string Kind { get; init; }
-
-    /// <summary>The bot's name, or the day's title.</summary>
-    public string Subject { get; init; }
-
-    /// <summary>The chapter's title ("Deeds"), or "The Chronicle of the island".</summary>
-    public string Title { get; init; }
-
-    /// <summary>Who the chapter is about, in words: "Brokk, a dwarf warrior of The Anchor".</summary>
-    public string Who { get; init; }
-
-    /// <summary>The facts, one a line, dated: the whole of what may be said.</summary>
-    public string Facts { get; init; }
-
-    public int MostWords { get; init; }
-
-    /// <summary>The model to ask; null or empty leaves it to the answering side (the duke's).</summary>
-    public string Model { get; init; }
-}
-
-/// <summary>
 /// Each bot's life story in chapters, and the island's Chronicle (PLAN-life A3, Patrick 08.10.2026: "the generation of the
 /// bots' history"; the week's plan of 12.10.2026, §5 A3).
 ///

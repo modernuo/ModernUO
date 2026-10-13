@@ -6,45 +6,6 @@ using Server.Text;
 
 namespace Server.BotAI.V2;
 
-/// <summary>One chapter of a bot's story as the writer built it: its facts, the template's prose, and the model's when it is current.</summary>
-public sealed class BotStoryChapter
-{
-    public BotStage Stage;
-
-    /// <summary>The dated lines the template and the model are both told from, oldest first. Their hash keys the model's prose.</summary>
-    public readonly List<string> Facts = new(8);
-
-    /// <summary>The template's paragraph. Always there when the chapter is.</summary>
-    public string Text;
-
-    /// <summary>
-    /// A closing sentence of counts that move by the minute (kills, duels, days lived), kept out of the facts' hash so that a
-    /// chapter retold by the model is not made stale by its hundred-and-first kill; said after either prose.
-    /// </summary>
-    public string Tally;
-
-    public ulong Hash;
-
-    /// <summary>Holds something seen to happen, as against only where the bot stood when the chronicle found it.</summary>
-    public bool Lived;
-
-    /// <summary>The model's paragraph, only when it was told exactly these facts. See <see cref="BotStoryProse"/>.</summary>
-    public string Voiced;
-
-    public bool Present => Facts.Count > 0 || Tally != null;
-
-    public void Clear(BotStage stage)
-    {
-        Stage = stage;
-        Facts.Clear();
-        Text = null;
-        Tally = null;
-        Hash = 0;
-        Lived = false;
-        Voiced = null;
-    }
-}
-
 /// <summary>
 /// The template writer: a bot's chapters out of its book (<see cref="BotStoryBook"/>), its biography's tales and counts
 /// (<see cref="BotLife"/>) and its ties, in English, with the real names, places and numbers and nothing else; and the check

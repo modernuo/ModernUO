@@ -6,28 +6,6 @@ using Server.Logging;
 namespace Server.BotAI.V2;
 
 /// <summary>
-/// Keeps the stories across restarts (PLAN-life A3, 13.10.2026): every bot's book — when it was first seen or born, what it was
-/// then, its notes, what the walk last saw of it — the chapters the model retold with the facts' hash each was told from, and
-/// the Chronicle's days. In the world save, never a loose file under <c>Saves/</c> (that folder is moved to a backup at every
-/// save); emptied by <c>do reset</c> through <see cref="BotStory.Wipe"/>.
-/// </summary>
-public sealed class BotStoryStore : GenericPersistence
-{
-    private static BotStoryStore _store;
-
-    /// <summary>Called from <see cref="BotStoryCore.Configure"/>: a persistence must exist before the world is read.</summary>
-    public static void Open() => _store ??= new BotStoryStore();
-
-    public BotStoryStore() : base("BotStory", 25)
-    {
-    }
-
-    public override void Serialize(IGenericWriter writer) => BotStory.Save(writer);
-
-    public override void Deserialize(IGenericReader reader) => BotStory.Load(reader);
-}
-
-/// <summary>
 /// The stories as a module: reads <c>Configuration/bot-story.json</c>, hangs <see cref="BotStory.Heard"/> on the event stream,
 /// starts the story's clock and the <c>Stories:</c> line. It offers no work and asks nothing of any bot.
 /// </summary>
@@ -105,6 +83,28 @@ public sealed class BotStoryModule : BotModule
     }
 }
 
+/// <summary>
+/// Keeps the stories across restarts (PLAN-life A3, 13.10.2026): every bot's book — when it was first seen or born, what it was
+/// then, its notes, what the walk last saw of it — the chapters the model retold with the facts' hash each was told from, and
+/// the Chronicle's days. In the world save, never a loose file under <c>Saves/</c> (that folder is moved to a backup at every
+/// save); emptied by <c>do reset</c> through <see cref="BotStory.Wipe"/>.
+/// </summary>
+public sealed class BotStoryStore : GenericPersistence
+{
+    private static BotStoryStore _store;
+
+    /// <summary>Called from <see cref="BotStoryCore.Configure"/>: a persistence must exist before the world is read.</summary>
+    public static void Open() => _store ??= new BotStoryStore();
+
+    public BotStoryStore() : base("BotStory", 25)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer) => BotStory.Save(writer);
+
+    public override void Deserialize(IGenericReader reader) => BotStory.Load(reader);
+}
+
 /// <summary>The stories' way in: the store and the module registered from outside <c>BotCore</c>, after it has read its own switch.</summary>
 public static class BotStoryCore
 {
@@ -177,9 +177,9 @@ public static class BotStoryConfig
     public static void Load()
     {
         var path = Path.Combine(Core.BaseDirectory, ConfigPath);
-        var s = JsonConfig.Deserialize<BotStorySettings>(path);
+        var settings = JsonConfig.Deserialize<BotStorySettings>(path);
 
-        if (s == null)
+        if (settings == null)
         {
             JsonConfig.Serialize(path, new BotStorySettings());
 
@@ -188,28 +188,28 @@ public static class BotStoryConfig
             return;
         }
 
-        BotStory.Running = s.Running ?? BotStory.Running;
-        BotStory.TickMs = s.TickMs ?? BotStory.TickMs;
-        BotStory.EveryMs = s.EveryMs ?? BotStory.EveryMs;
-        BotStory.PublishEveryMs = s.PublishEveryMs ?? BotStory.PublishEveryMs;
-        BotStory.SettleMs = s.SettleMs ?? BotStory.SettleMs;
-        BotStory.MostNotes = s.MostNotes ?? BotStory.MostNotes;
-        BotStory.MostBooks = s.MostBooks ?? BotStory.MostBooks;
-        BotStory.OldAgeDays = s.OldAgeDays ?? BotStory.OldAgeDays;
-        BotStory.Voiced = s.Voiced ?? BotStory.Voiced;
-        BotStory.VoicePerHour = s.VoicePerHour ?? BotStory.VoicePerHour;
-        BotStory.VoiceModel = string.IsNullOrWhiteSpace(s.VoiceModel) ? BotStory.VoiceModel : s.VoiceModel.Trim();
-        BotStory.VoiceLeastFacts = s.VoiceLeastFacts ?? BotStory.VoiceLeastFacts;
-        BotStory.VoiceMostChars = s.VoiceMostChars ?? BotStory.VoiceMostChars;
-        BotStory.VoiceMostWords = s.VoiceMostWords ?? BotStory.VoiceMostWords;
-        BotStory.MostWanted = s.MostWanted ?? BotStory.MostWanted;
+        BotStory.Running = settings.Running ?? BotStory.Running;
+        BotStory.TickMs = settings.TickMs ?? BotStory.TickMs;
+        BotStory.EveryMs = settings.EveryMs ?? BotStory.EveryMs;
+        BotStory.PublishEveryMs = settings.PublishEveryMs ?? BotStory.PublishEveryMs;
+        BotStory.SettleMs = settings.SettleMs ?? BotStory.SettleMs;
+        BotStory.MostNotes = settings.MostNotes ?? BotStory.MostNotes;
+        BotStory.MostBooks = settings.MostBooks ?? BotStory.MostBooks;
+        BotStory.OldAgeDays = settings.OldAgeDays ?? BotStory.OldAgeDays;
+        BotStory.Voiced = settings.Voiced ?? BotStory.Voiced;
+        BotStory.VoicePerHour = settings.VoicePerHour ?? BotStory.VoicePerHour;
+        BotStory.VoiceModel = string.IsNullOrWhiteSpace(settings.VoiceModel) ? BotStory.VoiceModel : settings.VoiceModel.Trim();
+        BotStory.VoiceLeastFacts = settings.VoiceLeastFacts ?? BotStory.VoiceLeastFacts;
+        BotStory.VoiceMostChars = settings.VoiceMostChars ?? BotStory.VoiceMostChars;
+        BotStory.VoiceMostWords = settings.VoiceMostWords ?? BotStory.VoiceMostWords;
+        BotStory.MostWanted = settings.MostWanted ?? BotStory.MostWanted;
 
-        BotChronicle.MostDays = s.ChronicleDays ?? BotChronicle.MostDays;
-        BotChronicle.MostPerDay = s.ChroniclePerDay ?? BotChronicle.MostPerDay;
-        BotChronicle.EveryMs = s.ChronicleEveryMs ?? BotChronicle.EveryMs;
-        BotChronicle.VoiceLeast = s.ChronicleVoiceLeast ?? BotChronicle.VoiceLeast;
-        BotChronicle.VoiceMostFacts = s.ChronicleVoiceMostFacts ?? BotChronicle.VoiceMostFacts;
+        BotChronicle.MostDays = settings.ChronicleDays ?? BotChronicle.MostDays;
+        BotChronicle.MostPerDay = settings.ChroniclePerDay ?? BotChronicle.MostPerDay;
+        BotChronicle.EveryMs = settings.ChronicleEveryMs ?? BotChronicle.EveryMs;
+        BotChronicle.VoiceLeast = settings.ChronicleVoiceLeast ?? BotChronicle.VoiceLeast;
+        BotChronicle.VoiceMostFacts = settings.ChronicleVoiceMostFacts ?? BotChronicle.VoiceMostFacts;
 
-        BotStoryModule.SayEveryMs = s.SayEveryMs ?? BotStoryModule.SayEveryMs;
+        BotStoryModule.SayEveryMs = settings.SayEveryMs ?? BotStoryModule.SayEveryMs;
     }
 }

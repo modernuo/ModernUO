@@ -542,6 +542,7 @@ LINES = {
     "BotQuest": ["Quests:"],
     "BotQuad": ["The captain:"],
     "mindedBots": ["Minds:"],
+    "BotStory": ["Stories:"],
 }
 
 TYPE_SUMMARY = re.compile(
