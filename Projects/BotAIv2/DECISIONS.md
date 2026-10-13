@@ -631,6 +631,16 @@ first sign is a behaviour, not an error. **Remedy.** Read the fork's source firs
 
 ### 4.1 Full entries, newest first
 
+**12.10.2026 · build 438 (written by a Fable agent: a1) · The daily cycle: a clock of six parts, a timetable per bot, the hour as a weight in the auction, bedtime first in the rest queue**
+- *Patrick:* 08.10 and 12.10 — "develop the daily cycle, dreams and the bots' history further … what about PLAN-life?!" (A1).
+- *What there was:* no hour but the prime time's band. Over L1 (build 432) supper was taken 90–160 times an hour at 00–07h against 45–80 at 18–21h with twice the bots in the world at night — flat per bot, no evening peak and, as a share of takes, less in the evening (0.9 % at 20h) than at 03h (1.1 %); journeys set out at 02h (140) as at noon (156); fireside/camp/home 1.5–1.9 % of takes round the clock; who left at a band change was whoever was longest over its hours (77 a day tired at 08h, 46 at 16h).
+- *Decision:* new `BotDay/` — six parts from `DawnAt` 5 … `NightAt` 22 (`bot-day.json`); a timetable per bot (wake, bed, meals, evening habit, owl, bed place) drawn from name, class and nature and kept in store `BotDay`; `× day` outside the auction's root beside calling, toll and nature (`Lift` 1.5, held ×0.5–×2, `Least` floored 0.1): the evening raises leisure, the cook's full house and a prowler's prowl and lowers journeys (≥ `JourneyTiles` 200), the night lowers journeys and raises fire/home and the night trades, the dawn raises market work (the cook's keeping among it) and lowers leisure; the floor: no markdown on a broke bot's paid work (`Floored`). Rest: bands and shares untouched; the queue to tire bedtime-first, a bedtime bot may tire at half its hours, the queue back wake-hour-first, field sleepers to a fire first (`FieldFirstMissed` its own count). `do reset` wipes the store. Review A's seven findings fixed in `6ad086025` (tavern out of the leisure markdown, `HeldPastBed` once a bot, the field-first counter, enum range checks, the `Least` floor, presses counted, `JourneyTiles`).
+- *Checked:* build 0/0; `Day:` and `day` in `/api/state` — raised/lowered/floored, takes by part × group (auction and presses), tavern guests by hour, sleepers by place, `ToBedOnTime`/`ToBedEarly`/`HeldPastBed`/`WokeOnTime`/`FieldFirst`/`FieldFirstMissed`; the guards are `Resolve:`, `Lines:`, deaths per bot-hour, ms a look.
+- *Status:* on `agent/a1` at `6ad086025` (437 merged in); review B to follow; festivals and weather to Opus after.
+- *Review B (13.10):* the bands (00–08 at 100 %) wake every day bot at midnight — "most sleep at night" waits on
+  Patrick's bands, not on this code; the floor is narrow (`Floored` small, `Lowered` large); the night part leaves
+  supper as it is; guard: delve takes not under ~20/h. The evening lift and the bedtime order are what ships.
+
 **13.10.2026 · build 437 (written by a Fable agent: w6) · A delve party keeps a third of its seats for the weak, a party that bleeds is lifted, the delve is priced by its ledger**
 - *Patrick:* dungeons are for everyone and bots must level up (25.09, 30.09: "they can be killed, but only after levelling and
   getting better gear"); a dungeon trip is the leader's work on its company; honest counting.
