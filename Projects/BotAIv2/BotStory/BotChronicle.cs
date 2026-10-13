@@ -123,7 +123,7 @@ public static class BotChronicle
                 {
                     if (e.Channel == "heard" && text.Contains(" and ", StringComparison.Ordinal) && !text.Contains("town's favour", StringComparison.Ordinal))
                     {
-                        Record("diplomacy", text, 30.0);
+                        Record("diplomacy", $"The duke's word on {Meeting(text)}", 30.0);
                     }
                     else if (e.Channel == null && text.Contains(" laid claim to ", StringComparison.Ordinal))
                     {
@@ -212,6 +212,27 @@ public static class BotChronicle
         {
             Record("town", text, 20.0);
         }
+    }
+
+    /// <summary>
+    /// A meeting's line without the meeting's number and the witness: "#104 The Blade and The Crown over trade: trade terms for 12
+    /// hours (by the model, before Argus)" → "The Blade and The Crown over trade: trade terms for 12 hours".
+    /// </summary>
+    private static string Meeting(string text)
+    {
+        if (text.Length > 1 && text[0] == '#')
+        {
+            var space = text.IndexOf(' ');
+
+            if (space > 0)
+            {
+                text = text[(space + 1)..];
+            }
+        }
+
+        var by = text.LastIndexOf(" (by ", StringComparison.Ordinal);
+
+        return by > 0 && text.EndsWith(')') ? text[..by] : text;
     }
 
     /// <summary>"X of G is the steward of T now." → "X of G became the steward of T."</summary>
