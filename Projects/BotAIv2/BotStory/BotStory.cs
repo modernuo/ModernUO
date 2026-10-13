@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text.Json;
+using System.Threading;
 using Server.Guilds;
 using Server.Logging;
 using Server.Text;
@@ -165,6 +166,9 @@ public static class BotStory
 
     private static readonly Dictionary<string, long> _thrown = new(StringComparer.Ordinal);
 
+    /// <summary>Events heard on a thread not the loop's and dropped. Should stay 0; the only field touched off the loop, by Interlocked.</summary>
+    private static long _offLoop;
+
     // ------------------------------------------------------------------ state
 
     private static readonly Dictionary<string, BotStoryBook> _books = new(StringComparer.Ordinal);
@@ -306,6 +310,15 @@ public static class BotStory
     {
         if (!Running || _sealed || e?.Kind == null)
         {
+            return;
+        }
+
+        // The stream is the loop's (BotEvents.Post says so), and every book and the Chronicle's page are the loop's alone: an event
+        // posted from any other thread is dropped and counted here rather than written into them from the wrong side.
+        if (Thread.CurrentThread != Core.Thread)
+        {
+            Interlocked.Increment(ref _offLoop);
+
             return;
         }
 
@@ -1806,7 +1819,7 @@ public static class BotStory
                + $"kept {VoiceKept}, thrown away {VoiceAnswered - VoiceKept} ({(thrown.Length == 0 ? "none" : thrown)}), no answer {VoiceNone}, slot busy {VoiceBusy}, stale {VoiceStale}, lost {VoiceLost}, "
                + $"{VoiceWaitedMs / Math.Max(1, VoiceAnswered + VoiceNone)}ms a call; {voiced} chapters retold, {voiceable} waiting; read on the page {CacheHits} in the model's words and {CacheMisses} in the template's; "
                + $"the Chronicle: {BotChronicle.Days.Count} days, {BotChronicle.Today()} entries today, {BotChronicle.Recorded} recorded ({BotChronicle.Kinds()}), {BotChronicle.Repeats} repeats, "
-               + $"{BotChronicle.Dropped} past a full page, {BotChronicle.Voiced()} days retold; {Faults} faults";
+               + $"{BotChronicle.Dropped} past a full page, {BotChronicle.Voiced()} days retold; {Faults} faults, {Interlocked.Read(ref _offLoop)} events heard off the loop";
     }
 
     private static void Stages(Span<int> stages)
@@ -2079,6 +2092,7 @@ public static class BotStory
         CacheMisses = 0;
         Faults = 0;
         _publishedOnce = false;
+        _owed = false;
         _changed = true;
         BotChronicle.Forget();
     }
