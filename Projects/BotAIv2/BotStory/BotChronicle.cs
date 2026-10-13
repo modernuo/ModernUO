@@ -121,9 +121,11 @@ public static class BotChronicle
                 }
             case "parley":
                 {
+                    // The duke's word between two guilds. On 12.10.2026 106 of its 110 words were trade terms renewed every twelve hours:
+                    // kept, but lightest of all, so that a full page lets them go before a war, a peace or an alliance.
                     if (e.Channel == "heard" && text.Contains(" and ", StringComparison.Ordinal) && !text.Contains("town's favour", StringComparison.Ordinal))
                     {
-                        Record("diplomacy", $"The duke's word on {Meeting(text)}", 30.0);
+                        Record("diplomacy", $"The duke's word on {Meeting(text)}", text.Contains(": trade terms", StringComparison.Ordinal) ? 12.0 : 40.0);
                     }
                     else if (e.Channel == null && text.Contains(" laid claim to ", StringComparison.Ordinal))
                     {
@@ -143,13 +145,14 @@ public static class BotChronicle
                 }
             case "charter":
                 {
+                    // 63 charters won or taken back on 12.10.2026, every six hours across the towns and crafts: kept light.
                     if (e.Data == "won")
                     {
-                        Record("town", text, 25.0);
+                        Record("town", text, 20.0);
                     }
                     else if (e.Data == "revoked")
                     {
-                        Record("town", text, 20.0);
+                        Record("town", text, 15.0);
                     }
 
                     break;

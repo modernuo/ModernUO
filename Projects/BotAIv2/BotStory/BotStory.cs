@@ -375,15 +375,19 @@ public static class BotStory
                 }
             case "crime":
                 {
+                    // 123 such lines on 12.10.2026, a thief's every turn of the wheel: the turning points weigh more than each arrest.
                     if (text.StartsWith("stole ", StringComparison.Ordinal))
                     {
                         Note(bot, BotStage.Deeds, "crime", $"{bot} {text}", 55.0);
                     }
-                    else if (text.StartsWith("recruited by ", StringComparison.Ordinal) || text.StartsWith("caught by ", StringComparison.Ordinal)
-                             || text.StartsWith("posted as wanted ", StringComparison.Ordinal) || text.StartsWith("repentant ", StringComparison.Ordinal)
+                    else if (text.StartsWith("recruited by ", StringComparison.Ordinal) || text.StartsWith("repentant ", StringComparison.Ordinal)
                              || text.StartsWith("ransomed by ", StringComparison.Ordinal))
                     {
-                        Note(bot, BotStage.Deeds, "crime", $"{bot} was {text}", 35.0);
+                        Note(bot, BotStage.Deeds, "crime", $"{bot} was {text}", 35.0, own: true);
+                    }
+                    else if (text.StartsWith("caught by ", StringComparison.Ordinal) || text.StartsWith("posted as wanted ", StringComparison.Ordinal))
+                    {
+                        Note(bot, BotStage.Deeds, "crime", $"{bot} was {text}", 25.0, own: true);
                     }
                     else if (text.StartsWith("takes the bounty ", StringComparison.Ordinal))
                     {
@@ -400,7 +404,7 @@ public static class BotStory
                     }
                     else if (text.StartsWith("moving from ", StringComparison.Ordinal))
                     {
-                        Note(bot, BotStage.Home, "home", $"{bot} moved from {text["moving from ".Length..]}", 30.0);
+                        Note(bot, BotStage.Home, "home", $"{bot} moved from {text["moving from ".Length..]}", 30.0, own: true);
                     }
 
                     break;
@@ -440,10 +444,12 @@ public static class BotStory
 
     /// <summary>
     /// A note into a bot's book, by name — also the seam for what is to come (an apprenticeship of A5, a family of A7, a legend
-    /// slain of A8). <paramref name="once"/> keeps only the first note of its kind. Returns the book, or null when the name is no
-    /// bot's or the note was not written. Game loop only.
+    /// slain of A8). <paramref name="once"/> keeps only the first note of its kind. <paramref name="own"/>: the stream calls a bot
+    /// "it" ("on its head", "after its term", "its trade"), and in a sentence about the bot that "its" is the bot's own, so it is
+    /// said as his or her; not for sentences where "its" is a guild's ("at its herald's invitation"). Returns the book, or null
+    /// when the name is no bot's or the note was not written. Game loop only.
     /// </summary>
-    public static BotStoryBook Note(string name, BotStage stage, string kind, string text, double weight, bool once = false)
+    public static BotStoryBook Note(string name, BotStage stage, string kind, string text, double weight, bool once = false, bool own = false)
     {
         if (!Running || string.IsNullOrEmpty(name) || BotLives.Find(name) == null)
         {
@@ -462,6 +468,11 @@ public static class BotStory
             Repeats++;
 
             return null;
+        }
+
+        if (own)
+        {
+            text = text.Replace(" its ", $" {BotStoryWriter.Possessive(book)} ", StringComparison.Ordinal);
         }
 
         Write(book, stage, kind, text, weight, DateTime.UtcNow);
