@@ -473,22 +473,17 @@ public static class Core
             try
             {
                 logger.Information("Restarting");
-                if (IsWindows)
-                {
-                    using var process = Process.Start("dotnet", $"{ApplicationAssembly.Location}");
-                }
-                else
-                {
-                    using var process = new Process();
-                    process.StartInfo = new ProcessStartInfo
-                    {
-                        FileName = "dotnet",
-                        Arguments = $"{ApplicationAssembly.Location}",
-                        UseShellExecute = true
-                    };
 
-                    process.Start();
+                // Relaunch through whichever host started us: the apphost (ModernUO.exe) runs directly,
+                // `dotnet ModernUO.dll` needs the assembly path. ArgumentList quotes paths with spaces.
+                var hostPath = Environment.ProcessPath ?? "dotnet";
+                var startInfo = new ProcessStartInfo(hostPath) { UseShellExecute = false };
+                if (Path.GetFileNameWithoutExtension(hostPath).Equals("dotnet", StringComparison.OrdinalIgnoreCase))
+                {
+                    startInfo.ArgumentList.Add(ApplicationAssembly.Location);
                 }
+
+                using var process = Process.Start(startInfo);
                 logger.Information("Restart done");
             }
             catch (Exception e)
