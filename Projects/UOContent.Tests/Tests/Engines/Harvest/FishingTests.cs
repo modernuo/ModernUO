@@ -461,6 +461,95 @@ public class FishingTests
         }
     }
 
+    [Theory]
+    [InlineData(Expansion.T2A, 0.0)]
+    [InlineData(Expansion.UOR, 65.0)]
+    [InlineData(Expansion.EJ, 120.0)]
+    public void Construct_BringsUpTheSOSChestOneCatchInFour(Expansion expansion, double skill)
+    {
+        const int casts = 2_000;
+
+        var previousExpansion = Core.Expansion;
+        var previousGenerator = BuiltInRng.Generator;
+        var fisher = new PlayerMobile();
+
+        try
+        {
+            Core.Expansion = expansion;
+            BuiltInRng.Generator = new System.Random(1);
+            fisher.Skills.Fishing.Base = skill;
+            fisher.AddItem(new Backpack());
+            fisher.MoveToWorld(_deep, Map.Felucca);
+
+            var sos = AddSOS(fisher);
+            var chests = 0;
+
+            for (var i = 0; i < casts; i++)
+            {
+                var item = Fishing.System.Construct(typeof(Fish), fisher);
+
+                if (item is WoodenChest or MetalGoldenChest)
+                {
+                    chests++;
+                    Assert.True(sos.Deleted);
+                    sos = AddSOS(fisher);
+                }
+                else
+                {
+                    Assert.True(Assert.IsAssignableFrom<IShipwreckedItem>(item).IsShipwreckedItem);
+                }
+
+                item.Delete();
+            }
+
+            AssertRate(0.25, chests, casts);
+        }
+        finally
+        {
+            fisher.Delete();
+            BuiltInRng.Generator = previousGenerator;
+            Core.Expansion = previousExpansion;
+        }
+    }
+
+    [Theory]
+    [InlineData(Expansion.T2A, 0.0, true)]
+    [InlineData(Expansion.UOR, 64.9, false)]
+    [InlineData(Expansion.UOR, 65.0, true)]
+    [InlineData(Expansion.EJ, 64.9, false)]
+    public void SOS_Needs65SkillFromUOR(Expansion expansion, double skill, bool recovers)
+    {
+        var previousExpansion = Core.Expansion;
+        var definition = Fishing.System.Definitions[0];
+        var fisher = new PlayerMobile();
+        Item item = null;
+
+        try
+        {
+            Core.Expansion = expansion;
+            fisher.Skills.Fishing.Base = skill;
+            fisher.AddItem(new Backpack());
+            fisher.MoveToWorld(_deep, Map.Felucca);
+            AddSOS(fisher);
+
+            // With no fish left, only an SOS that works lets the cast go on.
+            var bank = definition.GetBank(Map.Felucca, _deep.X, _deep.Y);
+            bank.Consume(bank.Current, fisher);
+            Assert.Equal(recovers, Fishing.System.CheckResources(fisher, null, definition, Map.Felucca, _deep, false));
+
+            item = Fishing.System.Construct(typeof(Fish), fisher);
+            Assert.Equal(recovers, item is not Fish);
+        }
+        finally
+        {
+            item?.Delete();
+            fisher.Delete();
+            definition.Banks.GetValueOrDefault(Map.Felucca)
+                ?.Remove(new Point2D(_deep.X / definition.BankWidth, _deep.Y / definition.BankHeight));
+            Core.Expansion = previousExpansion;
+        }
+    }
+
     // Within five standard deviations of the expected rate; a rate of zero must never happen.
     private static void AssertRate(double expected, int count)
     {
@@ -479,5 +568,13 @@ public class FishingTests
         Core._now += time;
         Core._tickCount += (long)time.TotalMilliseconds;
         Timer.Slice(Core.TickCount);
+    }
+
+    // Map.Internal skips FindLocation's search; the wreck is then where the fisher stands.
+    private static SOS AddSOS(Mobile fisher)
+    {
+        var sos = new SOS(Map.Internal, 1) { TargetMap = fisher.Map, TargetLocation = fisher.Location };
+        fisher.Backpack.DropItem(sos);
+        return sos;
     }
 }

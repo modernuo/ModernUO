@@ -219,11 +219,14 @@ namespace Server.Engines.Harvest
             return type;
         }
 
+        // From UO:R the chest needs 65 skill, and below that an SOS changes nothing.
+        private static bool CanFishUpShipwreck(Mobile from) => !Core.UOR || from.Skills.Fishing.Base >= 65.0;
+
         public override bool CheckResources(Mobile from, Item tool, HarvestDefinition def, Map map, Point3D loc, bool timed)
         {
             var pack = from.Backpack;
 
-            if (pack != null)
+            if (pack != null && CanFishUpShipwreck(from))
             {
                 foreach (var sos in pack.FindItemsByType<SOS>())
                 {
@@ -262,7 +265,7 @@ namespace Server.Engines.Harvest
 
             var pack = from.Backpack;
 
-            if (pack != null)
+            if (pack != null && CanFishUpShipwreck(from))
             {
                 // We don't have to queue since we are returning on the first SOS.
                 foreach (var sos in pack.FindItemsByType<SOS>())
@@ -271,7 +274,8 @@ namespace Server.Engines.Harvest
                     {
                         Item preLoot = null;
 
-                        switch (Utility.Random(8))
+                        // One catch in four skips these cases and brings up the chest.
+                        switch (Utility.RandomDouble() < 0.25 ? -1 : Utility.Random(7))
                         {
                             case 0: // Body parts
                                 {
