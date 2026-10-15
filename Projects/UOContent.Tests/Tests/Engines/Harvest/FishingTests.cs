@@ -550,6 +550,45 @@ public class FishingTests
         }
     }
 
+    [Theory]
+    [InlineData(Expansion.None, false)]
+    [InlineData(Expansion.T2A, true)]
+    [InlineData(Expansion.AOS, true)]
+    [InlineData(Expansion.ML, true)]
+    public void OnHarvestStartedAndFinished_RevealAHiddenFishermanFromT2A(Expansion expansion, bool reveals)
+    {
+        Core._tickCount = 0;
+        Timer.Init(0);
+
+        var previousExpansion = Core.Expansion;
+        var previousNow = Core._now;
+        var fisher = new PlayerMobile();
+
+        try
+        {
+            Core.Expansion = expansion;
+            fisher.MoveToWorld(_deep, Map.Felucca);
+
+            var definition = Fishing.System.Definitions[0];
+            var target = new LandTarget(_deep, Map.Felucca);
+
+            fisher.Hidden = true;
+            Fishing.System.OnHarvestStarted(fisher, null, definition, target);
+            Advance(TimeSpan.FromSeconds(2.0));
+            Assert.Equal(!reveals, fisher.Hidden);
+
+            fisher.Hidden = true;
+            Fishing.System.OnHarvestFinished(fisher, null, definition, null, null, null, target);
+            Assert.Equal(!reveals, fisher.Hidden);
+        }
+        finally
+        {
+            fisher.Delete();
+            Core._now = previousNow;
+            Core.Expansion = previousExpansion;
+        }
+    }
+
     // Within five standard deviations of the expected rate; a rate of zero must never happen.
     private static void AssertRate(double expected, int count)
     {

@@ -509,7 +509,7 @@ namespace Server.Engines.Harvest
                     TimeSpan.FromSeconds(1.5),
                     () =>
                     {
-                        if (Core.ML)
+                        if (Core.T2A)
                         {
                             from.RevealingAction();
                         }
@@ -528,7 +528,7 @@ namespace Server.Engines.Harvest
         {
             base.OnHarvestFinished(from, tool, def, vein, bank, resource, harvested);
 
-            if (Core.ML)
+            if (Core.T2A)
             {
                 from.RevealingAction();
             }
