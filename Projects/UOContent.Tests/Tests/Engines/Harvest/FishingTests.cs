@@ -589,6 +589,119 @@ public class FishingTests
         }
     }
 
+    [Theory]
+    [InlineData(Expansion.UOR, true)]
+    [InlineData(Expansion.AOS, true)]
+    [InlineData(Expansion.SE, false)]
+    public void BigFish_WeighsAHundredStonesBeforeSE(Expansion expansion, bool weighsAHundred)
+    {
+        var previousExpansion = Core.Expansion;
+        var previousGenerator = BuiltInRng.Generator;
+        var weights = new HashSet<int>();
+
+        try
+        {
+            Core.Expansion = expansion;
+            BuiltInRng.Generator = new System.Random(1);
+
+            for (var i = 0; i < 100; i++)
+            {
+                var fish = new BigFish();
+                weights.Add((int)fish.Weight);
+                fish.Delete();
+            }
+        }
+        finally
+        {
+            BuiltInRng.Generator = previousGenerator;
+            Core.Expansion = previousExpansion;
+        }
+
+        Assert.All(weights, weight => Assert.InRange(weight, 3, 200));
+        Assert.Equal(weighsAHundred, weights.SetEquals([100]));
+    }
+
+    [Theory]
+    [InlineData(Expansion.AOS, 100, 25)]
+    [InlineData(Expansion.AOS, 12, 4)]
+    [InlineData(Expansion.SE, 100, 20)]
+    [InlineData(Expansion.SE, 200, 40)]
+    [InlineData(Expansion.SE, 12, 4)]
+    public void BigFish_GivesASteakPerFiveStonesFromSE(Expansion expansion, int weight, int steaks)
+    {
+        var previousExpansion = Core.Expansion;
+        var fisher = new PlayerMobile();
+
+        try
+        {
+            Core.Expansion = expansion;
+            fisher.AddItem(new Backpack());
+
+            var fish = new BigFish { Weight = weight };
+            fisher.Backpack.DropItem(fish);
+            fish.Carve(fisher, null);
+
+            Assert.True(fish.Deleted);
+            Assert.Equal(steaks, fisher.Backpack.FindItemByType<RawFishSteak>()?.Amount);
+        }
+        finally
+        {
+            fisher.Delete();
+            Core.Expansion = previousExpansion;
+        }
+    }
+
+    [Theory]
+    [InlineData(Expansion.AOS, 100.0, 0.0)]
+    [InlineData(Expansion.SE, 99.9, 0.0)]
+    [InlineData(Expansion.SE, 100.0, 0.25)]
+    public void Leviathan_GivesAGMNetThrowerAnArtifactOneTimeInFourFromSE(Expansion expansion, double skill, double rate)
+    {
+        const int leviathans = 400;
+
+        var previousExpansion = Core.Expansion;
+        var previousGenerator = BuiltInRng.Generator;
+        var fisher = new PlayerMobile();
+
+        try
+        {
+            Core.Expansion = expansion;
+            BuiltInRng.Generator = new System.Random(1);
+            fisher.Skills.Fishing.Base = skill;
+            fisher.AddItem(new Backpack());
+            fisher.MoveToWorld(_deep, Map.Felucca);
+
+            var pack = fisher.Backpack;
+            var artifacts = 0;
+
+            // Nobody damages it, so only the net thrower's own roll can give an artifact.
+            for (var i = 0; i < leviathans; i++)
+            {
+                var leviathan = new Leviathan(fisher);
+                leviathan.MoveToWorld(_deep, Map.Felucca);
+                leviathan.Kill();
+
+                artifacts += pack.Items.Count;
+
+                for (var j = pack.Items.Count - 1; j >= 0; j--)
+                {
+                    pack.Items[j].Delete();
+                }
+
+                leviathan.Corpse?.Delete();
+                leviathan.Delete();
+            }
+
+            AssertRate(rate, artifacts, leviathans);
+        }
+        finally
+        {
+            fisher.Delete();
+            BuiltInRng.Generator = previousGenerator;
+            Core.Expansion = previousExpansion;
+        }
+    }
+
     // Within five standard deviations of the expected rate; a rate of zero must never happen.
     private static void AssertRate(double expected, int count)
     {
