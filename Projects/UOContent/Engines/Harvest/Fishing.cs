@@ -355,50 +355,67 @@ namespace Server.Engines.Harvest
         {
             if (item is TreasureMap or MessageInABottle or SpecialFishingNet)
             {
-                BaseCreature serp;
-
-                if (Utility.RandomDouble() < 0.25)
-                {
-                    serp = new DeepSeaSerpent();
-                }
-                else
-                {
-                    serp = new SeaSerpent();
-                }
-
-                int x = m.X, y = m.Y;
-
-                var map = m.Map;
-
-                for (var i = 0; map != null && i < 20; ++i)
-                {
-                    var tx = m.X - 10 + Utility.Random(21);
-                    var ty = m.Y - 10 + Utility.Random(21);
-
-                    var t = map.Tiles.GetLandTile(tx, ty);
-
-                    if (t.Z == -5 && (t.ID >= 0xA8 && t.ID <= 0xAB || t.ID >= 0x136 && t.ID <= 0x137) &&
-                        !SpellHelper.CheckMulti(new Point3D(tx, ty, -5), map))
-                    {
-                        x = tx;
-                        y = ty;
-                        break;
-                    }
-                }
-
-                serp.MoveToWorld(new Point3D(x, y, -5), map);
-
-                serp.Home = serp.Location;
-                serp.RangeHome = 10;
-
-                serp.PackItem(item);
-
-                m.SendLocalizedMessage(503170); // Uh oh! That doesn't look like a fish!
+                SurfaceSerpent(m).PackItem(item);
 
                 return true; // we don't want to give the item to the player, it's on the serpent
             }
 
             return base.Give(m, item, placeAtFeet || item is BigFish or WoodenChest or MetalGoldenChest);
+        }
+
+        private static BaseCreature SurfaceSerpent(Mobile m)
+        {
+            BaseCreature serp;
+
+            if (Utility.RandomDouble() < 0.1)
+            {
+                serp = new DeepSeaSerpent();
+            }
+            else
+            {
+                serp = new SeaSerpent();
+            }
+
+            int x = m.X, y = m.Y;
+
+            var map = m.Map;
+
+            for (var i = 0; map != null && i < 20; ++i)
+            {
+                var tx = m.X - 10 + Utility.Random(21);
+                var ty = m.Y - 10 + Utility.Random(21);
+
+                var t = map.Tiles.GetLandTile(tx, ty);
+
+                if (t.Z == -5 && (t.ID >= 0xA8 && t.ID <= 0xAB || t.ID >= 0x136 && t.ID <= 0x137) &&
+                    !SpellHelper.CheckMulti(new Point3D(tx, ty, -5), map))
+                {
+                    x = tx;
+                    y = ty;
+                    break;
+                }
+            }
+
+            serp.MoveToWorld(new Point3D(x, y, -5), map);
+
+            serp.Home = serp.Location;
+            serp.RangeHome = 10;
+            serp.Combatant = m;
+
+            Timer.StartTimer(TimeSpan.FromMinutes(5.0), () => ReturnToDeepWater(serp));
+
+            m.SendLocalizedMessage(503170); // Uh oh! That doesn't look like a fish!
+
+            return serp;
+        }
+
+        // Damage entries last 2 minutes and clear at full health, so a serpent nobody is fighting goes back to deep water.
+        private static void ReturnToDeepWater(BaseCreature serpent)
+        {
+            if (!serpent.Deleted && serpent.FindMostRecentDamager(false) == null)
+            {
+                serpent.Delete();
+            }
         }
 
         public override void SendSuccessTo(Mobile from, Item item, HarvestResource resource)
@@ -510,6 +527,14 @@ namespace Server.Engines.Harvest
             if (Core.ML)
             {
                 from.RevealingAction();
+            }
+
+            // From T2A, 1% of casts in deep water at 80 skill or more bring up an empty sea serpent, whatever the catch.
+            if (Core.T2A && from.Skills.Fishing.Base >= 80.0 && Utility.RandomDouble() < 0.01 &&
+                GetHarvestDetails(from, tool, harvested, out _, out var map, out var loc, out _) &&
+                SpecialFishingNet.FullValidation(map, loc.X, loc.Y))
+            {
+                SurfaceSerpent(from);
             }
         }
 

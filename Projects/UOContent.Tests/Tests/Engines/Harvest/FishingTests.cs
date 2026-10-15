@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using Server;
 using Server.Engines.Harvest;
 using Server.Items;
 using Server.Mobiles;
 using Server.Random;
+using Server.Targeting;
 using Server.Tests;
 using Xunit;
 
@@ -307,10 +309,175 @@ public class FishingTests
         }
     }
 
+    [Fact]
+    public void Give_SurfacesASerpentThatAttacksAndIsADeepSeaSerpentOneTimeInTen()
+    {
+        const int serpents = 2_000;
+
+        var previousGenerator = BuiltInRng.Generator;
+        var fisher = new PlayerMobile();
+
+        try
+        {
+            BuiltInRng.Generator = new System.Random(1);
+            fisher.MoveToWorld(_deep, Map.Felucca);
+
+            var deepSeaSerpents = 0;
+
+            for (var i = 0; i < serpents; i++)
+            {
+                var bottle = new MessageInABottle(Map.Felucca);
+
+                Assert.True(Fishing.System.Give(fisher, bottle, false));
+
+                var serpent = Assert.IsAssignableFrom<BaseCreature>(bottle.RootParent);
+                Assert.Same(fisher, serpent.Combatant);
+
+                if (serpent is DeepSeaSerpent)
+                {
+                    deepSeaSerpents++;
+                }
+
+                serpent.Delete();
+            }
+
+            AssertRate(0.1, deepSeaSerpents, serpents);
+        }
+        finally
+        {
+            fisher.Delete();
+            BuiltInRng.Generator = previousGenerator;
+        }
+    }
+
+    [Theory]
+    [InlineData(null, false)]
+    [InlineData(2.5, false)]
+    [InlineData(4.5, true)]
+    public void Give_SerpentGoesBackAfterFiveMinutesUnlessHitInTheLastTwo(double? hitAtMinutes, bool stays)
+    {
+        Core._tickCount = 0;
+        Timer.Init(0);
+
+        var previousNow = Core._now;
+        var previousHitsRate = Mobile.DefaultHitsRate;
+        var fisher = new PlayerMobile();
+        BaseCreature serpent = null;
+
+        try
+        {
+            // The rate RegenRates sets before AOS, so the hit is not healed before the serpent's five minutes are up.
+            Mobile.DefaultHitsRate = TimeSpan.FromSeconds(11.0);
+            fisher.MoveToWorld(_deep, Map.Felucca);
+
+            var bottle = new MessageInABottle(Map.Felucca);
+            Fishing.System.Give(fisher, bottle, false);
+
+            serpent = Assert.IsAssignableFrom<BaseCreature>(bottle.RootParent);
+            serpent.AIObject?.AITimer.Stop();
+            serpent.Combatant = null;
+
+            var elapsed = TimeSpan.Zero;
+
+            if (hitAtMinutes is { } minutes)
+            {
+                elapsed = TimeSpan.FromMinutes(minutes);
+                Advance(elapsed);
+                serpent.Damage(20, fisher);
+                Assert.Same(fisher, serpent.FindMostRecentDamager(false));
+            }
+
+            Advance(TimeSpan.FromMinutes(4.9) - elapsed);
+            Assert.False(serpent.Deleted);
+
+            Advance(TimeSpan.FromMinutes(0.2));
+            Assert.Equal(!stays, serpent.Deleted);
+            Assert.Equal(!stays, bottle.Deleted);
+        }
+        finally
+        {
+            serpent?.Delete();
+            fisher.Delete();
+            Mobile.DefaultHitsRate = previousHitsRate;
+            Core._now = previousNow;
+        }
+    }
+
+    [SkippableTheory]
+    [InlineData(Expansion.None, 100.0, true, 0.0)]
+    [InlineData(Expansion.T2A, 79.9, true, 0.0)]
+    [InlineData(Expansion.T2A, 80.0, true, 0.01)]
+    [InlineData(Expansion.T2A, 100.0, false, 0.0)]
+    [InlineData(Expansion.EJ, 120.0, true, 0.01)]
+    public void OnHarvestFinished_SurfacesAnEmptySerpentOneCastInAHundred(
+        Expansion expansion, double skill, bool deep, double serpentRate
+    )
+    {
+        TileDataRequirement.SkipIfMissing();
+        Assert.True(SpecialFishingNet.FullValidation(Map.Felucca, _deep.X, _deep.Y));
+
+        var previousExpansion = Core.Expansion;
+        var previousGenerator = BuiltInRng.Generator;
+        var fisher = new PlayerMobile();
+
+        try
+        {
+            Core.Expansion = expansion;
+            BuiltInRng.Generator = new System.Random(1);
+            fisher.Skills.Fishing.Base = skill;
+            fisher.MoveToWorld(_deep, Map.Felucca);
+
+            var definition = Fishing.System.Definitions[0];
+            var target = new LandTarget(deep ? _deep : _shallow, Map.Felucca);
+            var surfaced = new List<BaseCreature>();
+            var serpents = 0;
+
+            for (var i = 0; i < Casts; i++)
+            {
+                Fishing.System.OnHarvestFinished(fisher, null, definition, null, null, null, target);
+
+                foreach (var serpent in Map.Felucca.GetMobilesInRange<BaseCreature>(fisher.Location, 10))
+                {
+                    surfaced.Add(serpent);
+                }
+
+                serpents += surfaced.Count;
+
+                foreach (var serpent in surfaced)
+                {
+                    serpent.Delete();
+                }
+
+                surfaced.Clear();
+            }
+
+            AssertRate(serpentRate, serpents);
+        }
+        finally
+        {
+            fisher.Delete();
+            BuiltInRng.Generator = previousGenerator;
+            Core.Expansion = previousExpansion;
+        }
+    }
+
     // Within five standard deviations of the expected rate; a rate of zero must never happen.
     private static void AssertRate(double expected, int count)
     {
         var tolerance = 5 * Math.Sqrt(expected * (1 - expected) / Casts);
         Assert.InRange((double)count / Casts, expected - tolerance, expected + tolerance);
+    }
+
+    private static void AssertRate(double expected, int count, int trials)
+    {
+        var tolerance = 5 * Math.Sqrt(expected * (1 - expected) / trials);
+        Assert.InRange((double)count / trials, expected - tolerance, expected + tolerance);
+    }
+
+    private static void Advance(TimeSpan time)
+    {
+        Core._now += time;
+        Core._tickCount += (long)time.TotalMilliseconds;
+        Timer.Slice(Core.TickCount);
     }
 }
