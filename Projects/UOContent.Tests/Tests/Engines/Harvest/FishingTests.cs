@@ -702,6 +702,49 @@ public class FishingTests
         }
     }
 
+    [Theory]
+    [InlineData(Expansion.AOS, 5, 60)]
+    [InlineData(Expansion.SE, 1, 12)]
+    [InlineData(Expansion.EJ, 1, 12)]
+    public void MagicFish_GiveAPointFor12SecondsFromSE(Expansion expansion, int bonus, int seconds)
+    {
+        Core._tickCount = 0;
+        Timer.Init(0);
+
+        var previousExpansion = Core.Expansion;
+        var previousNow = Core._now;
+        var fisher = new PlayerMobile();
+        BaseMagicFish[] fish = [new PrizedFish(), new WondrousFish(), new TrulyRareFish()];
+
+        try
+        {
+            Core.Expansion = expansion;
+
+            foreach (var magicFish in fish)
+            {
+                Assert.True(magicFish.Apply(fisher));
+                Assert.Equal(bonus, fisher.GetStatOffset(magicFish.Type));
+            }
+
+            Advance(TimeSpan.FromSeconds(seconds - 1));
+            Assert.All(fish, magicFish => Assert.Equal(bonus, fisher.GetStatOffset(magicFish.Type)));
+
+            Advance(TimeSpan.FromSeconds(1));
+            Assert.All(fish, magicFish => Assert.Equal(0, fisher.GetStatOffset(magicFish.Type)));
+        }
+        finally
+        {
+            foreach (var magicFish in fish)
+            {
+                magicFish.Delete();
+            }
+
+            fisher.Delete();
+            Core._now = previousNow;
+            Core.Expansion = previousExpansion;
+        }
+    }
+
     // Within five standard deviations of the expected rate; a rate of zero must never happen.
     private static void AssertRate(double expected, int count)
     {
