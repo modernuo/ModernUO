@@ -323,31 +323,15 @@ public partial class SpecialFishingNet : Item
 
     public static bool FullValidation(Map map, int x, int y)
     {
-        if (!ValidateDeepWater(map, x, y))
+        // Every tile closer than 14 must be water, so land and the edge of the map are at least 14 tiles away.
+        for (var ty = y - 13; ty <= y + 13; ++ty)
         {
-            return false;
-        }
-
-        for (int j = 1, offset = 5; j <= 5; ++j, offset += 5)
-        {
-            if (!ValidateDeepWater(map, x + offset, y + offset))
+            for (var tx = x - 13; tx <= x + 13; ++tx)
             {
-                return false;
-            }
-
-            if (!ValidateDeepWater(map, x + offset, y - offset))
-            {
-                return false;
-            }
-
-            if (!ValidateDeepWater(map, x - offset, y + offset))
-            {
-                return false;
-            }
-
-            if (!ValidateDeepWater(map, x - offset, y - offset))
-            {
-                return false;
+                if (!ValidateDeepWater(map, tx, ty))
+                {
+                    return false;
+                }
             }
         }
 

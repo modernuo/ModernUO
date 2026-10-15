@@ -267,6 +267,46 @@ public class FishingTests
         }
     }
 
+    [SkippableTheory]
+    [InlineData(1840, 1760, true)]  // land 115 tiles away
+    [InlineData(1660, 1760, true)]  // land 14 tiles away
+    [InlineData(1659, 1760, false)] // land 13 tiles away
+    [InlineData(2188, 1000, true)]  // land 23 tiles away, on a diagonal
+    [InlineData(1718, 1913, false)] // land 8 tiles away, between the diagonals
+    [InlineData(13, 200, true)]     // the edge of the map 14 tiles away
+    [InlineData(12, 200, false)]    // the edge of the map 13 tiles away
+    public void FullValidation_NeedsLandAndTheMapEdgeAtLeast14TilesAway(int x, int y, bool deep)
+    {
+        TileDataRequirement.SkipIfMissing();
+
+        Assert.Equal(deep, SpecialFishingNet.FullValidation(Map.Felucca, x, y));
+    }
+
+    [SkippableFact]
+    public void SOS_FindLocation_PicksDeepWater()
+    {
+        TileDataRequirement.SkipIfMissing();
+
+        var previousGenerator = BuiltInRng.Generator;
+
+        try
+        {
+            BuiltInRng.Generator = new System.Random(1);
+
+            for (var i = 0; i < 100; i++)
+            {
+                var location = SOS.FindLocation(Map.Felucca);
+
+                Assert.NotEqual(Point3D.Zero, location);
+                Assert.True(SpecialFishingNet.FullValidation(Map.Felucca, location.X, location.Y));
+            }
+        }
+        finally
+        {
+            BuiltInRng.Generator = previousGenerator;
+        }
+    }
+
     // Within five standard deviations of the expected rate; a rate of zero must never happen.
     private static void AssertRate(double expected, int count)
     {
