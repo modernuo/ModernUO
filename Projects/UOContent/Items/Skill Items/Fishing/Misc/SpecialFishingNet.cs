@@ -44,7 +44,8 @@ public partial class SpecialFishingNet : Item
     private bool _inUse;
 
     [Constructible]
-    public SpecialFishingNet() : base(0x0DCA) => Hue = Utility.RandomDouble() < 0.01 ? _hues.RandomElement() : 0x8A0;
+    public SpecialFishingNet() : base(0x0DCA) =>
+        Hue = Core.LBR && Utility.RandomDouble() < 0.1 ? _hues.RandomElement() : 0x8A0;
 
     public override double DefaultWeight => 1.0;
 

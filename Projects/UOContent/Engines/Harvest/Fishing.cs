@@ -21,8 +21,14 @@ namespace Server.Engines.Harvest
         {
             new(80.0, 80.0, 4080.0, true, Expansion.UOR, typeof(SpecialFishingNet)),
             new(80.0, 80.0, 4080.0, true, Expansion.UOR, typeof(BigFish)),
-            new(90.0, 80.0, 4080.0, true, Expansion.T2A, typeof(TreasureMap)),
-            new(100.0, 80.0, 4080.0, true, Expansion.T2A, typeof(MessageInABottle)),
+            // T2A-UOTD: needs 90; 0.25% at 90, 0.5% at 100.
+            // LBR onward: needs 90; 0.42% at 90, 0.83% at 100.
+            new(90.0, 80.0, 4080.0, true, Expansion.T2A, Expansion.UOTD, typeof(TreasureMap)),
+            new(90.0, 80.0, 2480.0, true, Expansion.LBR, typeof(TreasureMap)),
+            // T2A-UOTD: needs 100; 0.5% at 100.
+            // LBR onward: needs 100; 1.33% at 100.
+            new(100.0, 80.0, 4080.0, true, Expansion.T2A, Expansion.UOTD, typeof(MessageInABottle)),
+            new(100.0, 80.0, 1580.0, true, Expansion.LBR, typeof(MessageInABottle)),
             // T2A-UOTD: needs 80; 2.0% at 80, 2.5% at 100.
             // LBR-SA: no minimum; 0% at 0, 5% at 100.
             // HS onward: needs 80; 4.0% at 80, 5.0% at 100.
@@ -32,9 +38,11 @@ namespace Server.Engines.Harvest
             new(0.0, 103.5, -34.5, false, Expansion.T2A, Expansion.UOTD, _footwear),
             // From LBR the two footwear rows make one curve: 75% at 0 skill, 10% at 100 and 5% at 120.
             new(0.0, 100.0, -62.5, false, Expansion.LBR, _footwear),
-            new(0.0, 140.0, -260.0, false, Expansion.LBR, _footwear),
-            new(0.0, 200.0, -200.0, false, Expansion.None, new Type[] { null })
+            new(0.0, 140.0, -260.0, false, Expansion.LBR, _footwear)
         };
+
+        // From UO:R deep water needs 65 skill to catch anything, and a GM succeeds 70% of the time.
+        private static readonly HarvestResource _deepWaterFish = new(0.0, 65.0, 115.0, 1043297, typeof(Fish));
 
         private static readonly int[] _waterLandTiles =
         {
@@ -164,6 +172,14 @@ namespace Server.Engines.Harvest
 
             return false;
         }
+
+        public override HarvestResource MutateResource(
+            Mobile from, Item tool, HarvestDefinition def, Map map, Point3D loc,
+            HarvestVein vein, HarvestResource primary, HarvestResource fallback
+        ) =>
+            Core.UOR && SpecialFishingNet.FullValidation(map, loc.X, loc.Y)
+                ? _deepWaterFish
+                : base.MutateResource(from, tool, def, map, loc, vein, primary, fallback);
 
         public override Type MutateType(
             Type type, Mobile from, Item tool, HarvestDefinition def, Map map, Point3D loc,
