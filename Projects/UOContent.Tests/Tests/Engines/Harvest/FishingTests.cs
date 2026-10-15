@@ -550,6 +550,37 @@ public class FishingTests
         }
     }
 
+    [Fact]
+    public void Construct_KeepsTheWhitePearlAtAnSOSSpot()
+    {
+        var previousExpansion = Core.Expansion;
+        var fisher = new PlayerMobile();
+
+        try
+        {
+            Core.Expansion = Expansion.ML;
+            fisher.Skills.Fishing.Base = 100.0;
+            fisher.AddItem(new Backpack());
+            fisher.MoveToWorld(_deep, Map.Felucca);
+
+            var sos = AddSOS(fisher);
+
+            for (var i = 0; i < 100; i++)
+            {
+                var item = Fishing.System.Construct(typeof(WhitePearl), fisher);
+                Assert.IsType<WhitePearl>(item);
+                item.Delete();
+            }
+
+            Assert.False(sos.Deleted);
+        }
+        finally
+        {
+            fisher.Delete();
+            Core.Expansion = previousExpansion;
+        }
+    }
+
     [Theory]
     [InlineData(Expansion.None, false)]
     [InlineData(Expansion.T2A, true)]

@@ -263,6 +263,12 @@ namespace Server.Engines.Harvest
                 return new MessageInABottle(from.Map == Map.Felucca ? Map.Felucca : Map.Trammel);
             }
 
+            // The pearl is a bonus on top of the catch, so an SOS never takes its place.
+            if (type == typeof(WhitePearl))
+            {
+                return base.Construct(type, from);
+            }
+
             var pack = from.Backpack;
 
             if (pack != null && CanFishUpShipwreck(from))
