@@ -42,8 +42,8 @@ namespace Server.Mobiles
             Fame = 18000;
             Karma = -18000;
 
-            AddItem(new Shoes(0x537));
-            AddItem(new Robe(0x452));
+            ReplaceEquipment(new Shoes(0x537));
+            ReplaceEquipment(new Robe(0x452));
 
             for (var i = 0; i < 2; ++i)
             {

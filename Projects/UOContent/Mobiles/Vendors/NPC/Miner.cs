@@ -26,10 +26,10 @@ namespace Server.Mobiles
         {
             base.InitOutfit();
 
-            AddItem(new FancyShirt(0x3E4));
-            AddItem(new LongPants(0x192));
+            ReplaceEquipment(new FancyShirt(0x3E4));
+            ReplaceEquipment(new LongPants(0x192));
             AddItem(new Pickaxe());
-            AddItem(new ThighBoots(0x283));
+            ReplaceEquipment(new ThighBoots(0x283));
         }
     }
 }
