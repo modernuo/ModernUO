@@ -47,7 +47,8 @@ namespace Server.Mobiles
             pack.DropItem(new Bolt(Utility.RandomMinMax(10, 20)));
             pack.DropItem(new Bolt(Utility.RandomMinMax(10, 20)));
 
-            AddItem(
+            // The crossbow is wielded; the sword would share its hands, so it is carried as loot.
+            pack.DropItem(
                 Utility.Random(6) switch
                 {
                     0 => new Longsword(),

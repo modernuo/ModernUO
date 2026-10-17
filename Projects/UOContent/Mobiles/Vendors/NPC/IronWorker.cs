@@ -58,14 +58,6 @@ namespace Server.Mobiles
                 AddItem(new FullApron(Utility.RandomBrightHue()));
             }
 
-            AddItem(
-                Utility.Random(3) switch
-                {
-                    0 => new Bandana(Utility.RandomBrightHue()),
-                    _ => new JesterHat(Utility.RandomBrightHue()) // 1-2
-                }
-            );
-
             AddItem(new Bascinet());
             AddItem(new SmithHammer());
 
