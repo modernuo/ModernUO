@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using ModernUO.CodeGeneratedEvents;
 
 namespace Server.Mobiles;
@@ -9,8 +8,6 @@ namespace Server.Mobiles;
 /// </summary>
 public abstract class MonsterAbility
 {
-    private Dictionary<BaseCreature, long> _nextTriggerTicks;
-
     public virtual MonsterAbilityType AbilityType => MonsterAbilityType.Generic;
 
     public virtual MonsterAbilityTrigger AbilityTrigger => MonsterAbilityTrigger.None;
@@ -30,18 +27,9 @@ public abstract class MonsterAbility
             return false;
         }
 
-        if (_nextTriggerTicks?.TryGetValue(source, out var nextTrigger) == true)
+        if (source.IsAbilityOnCooldown(this))
         {
-            if (nextTrigger - Core.TickCount > 0)
-            {
-                return false;
-            }
-
-            _nextTriggerTicks.Remove(source);
-            if (_nextTriggerTicks.Count == 0)
-            {
-                _nextTriggerTicks = null;
-            }
+            return false;
         }
 
         var c = ChanceToTrigger;
@@ -65,10 +53,7 @@ public abstract class MonsterAbility
             ? MinTriggerCooldown
             : Utility.RandomMinMax(MinTriggerCooldown, MaxTriggerCooldown);
 
-        var nextTrigger = Core.TickCount + (long)randomAmount.TotalMilliseconds;
-
-        _nextTriggerTicks ??= new Dictionary<BaseCreature, long>();
-        _nextTriggerTicks[source] = nextTrigger;
+        source.SetAbilityCooldown(this, randomAmount);
     }
 
     public virtual void AlterMeleeDamageFrom(BaseCreature source, Mobile target, ref int damage)
@@ -100,18 +85,5 @@ public abstract class MonsterAbility
     }
 
     [OnEvent(nameof(CreatureEvents.CreatureDeathEvent))]
-    [OnEvent(nameof(CreatureEvents.CreatureDeletedEvent))]
-    public static void InvalidateNextAbilityTriggers(BaseCreature source)
-    {
-        var abilities = source.GetMonsterAbilities();
-        if (abilities == null || abilities.Length == 0)
-        {
-            return;
-        }
-
-        for (var i = 0; i < abilities.Length; i++)
-        {
-            abilities[i]._nextTriggerTicks?.Remove(source);
-        }
-    }
+    public static void ResetCooldownsOnDeath(BaseCreature source) => source.ClearAbilityCooldowns();
 }
