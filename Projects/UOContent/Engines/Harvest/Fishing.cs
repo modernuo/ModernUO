@@ -23,6 +23,9 @@ namespace Server.Engines.Harvest
             new(80.0, 80.0, 4080.0, true, Expansion.UOR, typeof(BigFish)),
             new(90.0, 80.0, 4080.0, true, Expansion.T2A, typeof(TreasureMap)),
             new(100.0, 80.0, 4080.0, true, Expansion.T2A, typeof(MessageInABottle)),
+            // T2A-UOTD: needs 80; 2.0% at 80, 2.5% at 100.
+            // LBR-SA: no minimum; 0% at 0, 5% at 100.
+            // HS onward: needs 80; 4.0% at 80, 5.0% at 100.
             new(80.0, 0.0, 4000.0, false, Expansion.T2A, Expansion.UOTD, _magicFish),
             new(0.0, 0.0, 2000.0, false, Expansion.LBR, Expansion.SA, _magicFish),
             new(80.0, 0.0, 2000.0, false, Expansion.HS, _magicFish),
