@@ -11,9 +11,10 @@ public class SummonPixiesCounter : MonsterAbility
         var amount = Utility.RandomMinMax(3, 6);
         for (var i = 0; i < amount; i++)
         {
-            var pixie = new Pixie { Team = source.Team, FightMode = FightMode.Closest };
-            pixie.MoveToWorld(source.Map.GetRandomNearbyLocation(source.Location), source.Map);
-            pixie.Combatant = target;
+            if (!source.SpawnMinion(new Pixie { FightMode = FightMode.Closest }, target))
+            {
+                break;
+            }
         }
 
         base.Trigger(trigger, source, target);

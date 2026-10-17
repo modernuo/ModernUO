@@ -131,9 +131,7 @@ public partial class Barracoon : BaseChampion
 
     public void SpawnRatmen(Mobile target)
     {
-        var map = Map;
-
-        if (map == null)
+        if (Map == null || Map == Map.Internal)
         {
             return;
         }
@@ -162,9 +160,7 @@ public partial class Barracoon : BaseChampion
                 _ => new Ratman()
             };
 
-            rat.Team = Team;
-            rat.MoveToWorld(map.GetRandomNearbyLocation(Location), map);
-            rat.Combatant = target;
+            SpawnMinion(rat, target);
         }
     }
 
