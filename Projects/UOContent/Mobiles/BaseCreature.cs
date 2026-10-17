@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using ModernUO.Serialization;
 using Server.Collections;
 using Server.ContextMenus;
+using Server.Engines.CannedEvil;
 using Server.Engines.ConPVP;
 using Server.Engines.MLQuests;
 using Server.Engines.Quests.Doom;
@@ -5764,6 +5765,33 @@ namespace Server.Mobiles
             {
                 pack.DropItem(item); // failed, drop it anyway
             }
+        }
+
+        /// <summary>
+        ///     Brings <paramref name="minion" /> into the world on this creature's side. A minion of a champion spawn's
+        ///     champion or creatures belongs to that spawn, which deletes it when it clears its creatures.
+        /// </summary>
+        /// <returns>False, and the minion is deleted, if this creature is not in the world.</returns>
+        public bool SpawnMinion(BaseCreature minion, Mobile target = null, Point3D? location = null)
+        {
+            var map = Map;
+
+            if (Deleted || map == null || map == Map.Internal)
+            {
+                minion.Delete();
+                return false;
+            }
+
+            minion.Team = Team;
+            ChampionSpawn.FindSpawnOf(this)?.AddMinion(minion);
+            minion.MoveToWorld(location ?? map.GetRandomNearbyLocation(Location), map);
+
+            if (target != null)
+            {
+                minion.Combatant = target;
+            }
+
+            return true;
         }
 
         public virtual void HealStart(Mobile patient)
