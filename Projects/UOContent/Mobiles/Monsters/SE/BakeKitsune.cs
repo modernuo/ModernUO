@@ -176,11 +176,8 @@ namespace Server.Mobiles
         {
             _disguiseTimerToken.Cancel();
 
-            if (!IsBodyMod)
-            {
-                return;
-            }
-
+            // BodyMod is not saved, so after a restart a disguised kitsune comes back without it but still
+            // wearing the disguise; strip it regardless.
             Name = null;
             Title = null;
             BodyMod = 0;

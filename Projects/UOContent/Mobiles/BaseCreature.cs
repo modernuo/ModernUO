@@ -5722,6 +5722,20 @@ namespace Server.Mobiles
             }
         }
 
+        /// <summary>
+        ///     Equips <paramref name="item" /> in place of whatever an inherited outfit put on its layer.
+        ///     AddItem would stack both on one layer, and EquipItem would refuse and orphan the item.
+        /// </summary>
+        public void ReplaceEquipment(Item item)
+        {
+            FindItemOnLayer(item.Layer)?.Delete();
+
+            if (!EquipItem(item))
+            {
+                item.Delete();
+            }
+        }
+
         public virtual void HealStart(Mobile patient)
         {
             StopHeal();

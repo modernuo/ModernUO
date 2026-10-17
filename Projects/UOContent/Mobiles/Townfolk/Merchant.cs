@@ -33,15 +33,6 @@ public partial class Merchant : BaseEscortable
 
     public override void InitOutfit()
     {
-        if (Female)
-        {
-            AddItem(new PlainDress());
-        }
-        else
-        {
-            AddItem(new Shirt(GetRandomHue()));
-        }
-
         var lowHue = GetRandomHue();
 
         AddItem(new ThighBoots());
