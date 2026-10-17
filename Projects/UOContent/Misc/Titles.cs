@@ -262,6 +262,11 @@ namespace Server.Misc
 
         private static void SendKarmaMessage(Mobile m, int offset)
         {
+            if (offset == 0)
+            {
+                return;
+            }
+
             var message = offset switch
             {
                 > 40  => 1019062, // You have gained a lot of karma.

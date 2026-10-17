@@ -10,24 +10,29 @@ namespace Server.Engines.Harvest
     {
         private static Fishing _system;
 
+        private static readonly Type[] _magicFish =
+        {
+            typeof(PrizedFish), typeof(WondrousFish), typeof(TrulyRareFish), typeof(PeculiarFish)
+        };
+
+        private static readonly Type[] _footwear = { typeof(Boots), typeof(Shoes), typeof(Sandals), typeof(ThighBoots) };
+
         private static readonly MutateEntry[] _mutateTable =
         {
             new(80.0, 80.0, 4080.0, true, Expansion.UOR, typeof(SpecialFishingNet)),
             new(80.0, 80.0, 4080.0, true, Expansion.UOR, typeof(BigFish)),
             new(90.0, 80.0, 4080.0, true, Expansion.T2A, typeof(TreasureMap)),
             new(100.0, 80.0, 4080.0, true, Expansion.T2A, typeof(MessageInABottle)),
-            new(
-                0.0,
-                125.0,
-                -2375.0,
-                false,
-                Expansion.T2A,
-                typeof(PrizedFish),
-                typeof(WondrousFish),
-                typeof(TrulyRareFish),
-                typeof(PeculiarFish)
-            ),
-            new(0.0, 105.0, -420.0, false, Expansion.T2A, typeof(Boots), typeof(Shoes), typeof(Sandals), typeof(ThighBoots)),
+            // T2A-UOTD: needs 80; 2.0% at 80, 2.5% at 100.
+            // LBR-SA: no minimum; 0% at 0, 5% at 100.
+            // HS onward: needs 80; 4.0% at 80, 5.0% at 100.
+            new(80.0, 0.0, 4000.0, false, Expansion.T2A, Expansion.UOTD, _magicFish),
+            new(0.0, 0.0, 2000.0, false, Expansion.LBR, Expansion.SA, _magicFish),
+            new(80.0, 0.0, 2000.0, false, Expansion.HS, _magicFish),
+            new(0.0, 103.5, -34.5, false, Expansion.T2A, Expansion.UOTD, _footwear),
+            // From LBR the two footwear rows make one curve: 75% at 0 skill, 10% at 100 and 5% at 120.
+            new(0.0, 100.0, -62.5, false, Expansion.LBR, _footwear),
+            new(0.0, 140.0, -260.0, false, Expansion.LBR, _footwear),
             new(0.0, 200.0, -200.0, false, Expansion.None, new Type[] { null })
         };
 
@@ -174,7 +179,7 @@ namespace Server.Engines.Harvest
             {
                 var entry = _mutateTable[i];
 
-                if (Core.Expansion < entry.m_Expansion)
+                if (Core.Expansion < entry.m_Expansion || Core.Expansion > entry.m_MaxExpansion)
                 {
                     continue;
                 }
@@ -541,6 +546,7 @@ namespace Server.Engines.Harvest
         {
             public readonly bool m_DeepWater;
             public readonly Expansion m_Expansion;
+            public readonly Expansion? m_MaxExpansion;
             public readonly double m_MaxSkill;
             public readonly double m_MinSkill;
             public readonly double m_ReqSkill;
@@ -548,6 +554,13 @@ namespace Server.Engines.Harvest
 
             public MutateEntry(
                 double reqSkill, double minSkill, double maxSkill, bool deepWater, Expansion expansion, params Type[] types
+            ) : this(reqSkill, minSkill, maxSkill, deepWater, expansion, null, types)
+            {
+            }
+
+            public MutateEntry(
+                double reqSkill, double minSkill, double maxSkill, bool deepWater, Expansion expansion,
+                Expansion? maxExpansion, params Type[] types
             )
             {
                 m_ReqSkill = reqSkill;
@@ -555,6 +568,7 @@ namespace Server.Engines.Harvest
                 m_MaxSkill = maxSkill;
                 m_DeepWater = deepWater;
                 m_Expansion = expansion;
+                m_MaxExpansion = maxExpansion;
                 m_Types = types;
             }
         }
