@@ -43,7 +43,6 @@ public partial class HireRanger : BaseHire
         {
             Body = 0x190;
             Name = NameList.RandomName("male");
-            EquipItem(new ShortPants(Utility.RandomNeutralHue()));
         }
 
         EquipItem(new Shoes(Utility.RandomNeutralHue()));

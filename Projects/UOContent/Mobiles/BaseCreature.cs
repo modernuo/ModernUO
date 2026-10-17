@@ -1310,6 +1310,8 @@ namespace Server.Mobiles
 
         public virtual int TreasureMapLevel => -1;
 
+        public virtual double TreasureMapChance => TreasureMap.LootChance;
+
         public virtual bool IgnoreYoungProtection => false;
 
         public bool NoKillAwards { get; set; }
@@ -3246,7 +3248,7 @@ namespace Server.Mobiles
                     {
                         PackItem(new ParagonChest(Name, treasureLevel));
                     }
-                    else if ((Map == Map.Felucca || Map == Map.Trammel) && Utility.RandomDouble() < TreasureMap.LootChance)
+                    else if ((Map == Map.Felucca || Map == Map.Trammel) && Utility.RandomDouble() < TreasureMapChance)
                     {
                         PackItem(new TreasureMap(treasureLevel, Map));
                     }
