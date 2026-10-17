@@ -190,9 +190,11 @@ public static class T2ACraftSystem
     /// Checks if a player can craft a specific item, accounting for sub-resource types.
     /// When <paramref name="selectedResourceType"/> is non-null, checks against that specific sub-resource.
     /// When null, checks against ANY available sub-resource the player has sufficient skill and materials for.
+    /// A non-negative <paramref name="hue"/> counts only same-hue stock for the primary resource, exactly as
+    /// the hue-aware craft path consumes it.
     /// </summary>
     public static bool CanCraftItem(
-        Mobile from, CraftItem itemDef, CraftSystem system, Type selectedResourceType = null
+        Mobile from, CraftItem itemDef, CraftSystem system, Type selectedResourceType = null, int hue = -1
     )
     {
         var pack = from.Backpack;
@@ -213,6 +215,27 @@ public static class T2ACraftSystem
         {
             var res = itemDef.Resources[i];
             var resType = res.ItemType;
+
+            if (hue >= 0 && i == 0)
+            {
+                if (resCol.Init && resType == resCol.ResType && selectedResourceType != null)
+                {
+                    var subRes = resCol.SearchFor(selectedResourceType);
+                    if (subRes != null && from.Skills[system.MainSkill].Value < subRes.RequiredSkill)
+                    {
+                        return false;
+                    }
+
+                    resType = selectedResourceType;
+                }
+
+                if (CraftItem.GetHuedAmount(pack, resType, hue) < res.Amount)
+                {
+                    return false;
+                }
+
+                continue;
+            }
 
             // If this resource is the base sub-resource type (e.g. IronIngot for blacksmithing),
             // handle sub-resource substitution
@@ -250,17 +273,20 @@ public static class T2ACraftSystem
     /// <summary>
     /// Convenience overload that resolves a Type to a CraftItem first.
     /// </summary>
-    public static bool CanCraftItem(Mobile from, Type itemType, CraftSystem system, Type selectedResourceType = null)
+    public static bool CanCraftItem(
+        Mobile from, Type itemType, CraftSystem system, Type selectedResourceType = null, int hue = -1
+    )
     {
         var itemDef = system.CraftItems.SearchFor(itemType);
-        return itemDef != null && CanCraftItem(from, itemDef, system, selectedResourceType);
+        return itemDef != null && CanCraftItem(from, itemDef, system, selectedResourceType, hue);
     }
 
     /// <summary>
     /// Filters static template entries to only those the player can craft.
     /// </summary>
     public static ItemListEntry[] FilterEntries(
-        Mobile from, ItemListEntry[] staticEntries, Type[] types, CraftSystem system, Type selectedResourceType = null
+        Mobile from, ItemListEntry[] staticEntries, Type[] types, CraftSystem system,
+        Type selectedResourceType = null, int hue = -1
     )
     {
         var filtered = new ItemListEntry[staticEntries.Length];
@@ -271,7 +297,7 @@ public static class T2ACraftSystem
             var entry = staticEntries[i];
             var typeIndex = entry.CraftIndex;
             if (typeIndex >= 0 && typeIndex < types.Length &&
-                CanCraftItem(from, types[typeIndex], system, selectedResourceType))
+                CanCraftItem(from, types[typeIndex], system, selectedResourceType, hue))
             {
                 filtered[count++] = entry;
             }
@@ -294,12 +320,12 @@ public static class T2ACraftSystem
     /// Returns true if at least one item in the type array is craftable.
     /// </summary>
     public static bool AnyCraftableInCategory(
-        Mobile from, Type[] types, CraftSystem system, Type selectedResourceType = null
+        Mobile from, Type[] types, CraftSystem system, Type selectedResourceType = null, int hue = -1
     )
     {
         for (var i = 0; i < types.Length; i++)
         {
-            if (CanCraftItem(from, types[i], system, selectedResourceType))
+            if (CanCraftItem(from, types[i], system, selectedResourceType, hue))
             {
                 return true;
             }
@@ -308,28 +334,11 @@ public static class T2ACraftSystem
         return false;
     }
 
-    /// <summary>
-    /// Equivalent type pairs mirroring CraftItem.m_TypesTable — used so that menu filtering
-    /// counts boards when checking for logs, hides when checking for leather, etc.
-    /// </summary>
-    private static readonly Type[][] _equivalentTypes =
-    [
-        [typeof(Log), typeof(Board)],
-        [typeof(Cloth), typeof(UncutCloth)],
-        [typeof(Items.Leather), typeof(Hides)]
-    ];
-
+    // Shares CraftItem's equivalence table so the menu counts exactly what the craft will consume
     private static int GetResourceAmount(Container pack, Type type)
     {
-        for (var i = 0; i < _equivalentTypes.Length; i++)
-        {
-            if (_equivalentTypes[i][0] == type)
-            {
-                return pack.GetAmount(_equivalentTypes[i]);
-            }
-        }
-
-        return pack.GetAmount(type);
+        var equivalents = CraftItem.GetEquivalentTypes(type);
+        return equivalents != null ? pack.GetAmount(equivalents) : pack.GetAmount(type);
     }
 
     private static bool HasAnySufficientSubResource(
