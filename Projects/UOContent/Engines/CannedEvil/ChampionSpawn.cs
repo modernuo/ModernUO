@@ -28,7 +28,7 @@ using Server.Logging;
 
 namespace Server.Engines.CannedEvil;
 
-[SerializationGenerator(11, false)]
+[SerializationGenerator(12, false)]
 public partial class ChampionSpawn : Item
 {
     private void MigrateFrom(V10Content content)
@@ -57,6 +57,35 @@ public partial class ChampionSpawn : Item
         _champion = content.Champion;
         _restartDelay = content.RestartDelay;
         _restartTime = content.RestartTime;
+    }
+
+    private void MigrateFrom(V11Content content)
+    {
+        _level = content.Level;
+        _activatedByProximity = content.ActivatedByProximity;
+        _nextProximityTime = content.NextProximityTime;
+        _maxLevel = content.MaxLevel;
+        _activatedByValor = content.ActivatedByValor;
+        _damageEntries = content.DamageEntries;
+        _confinedRoaming = content.ConfinedRoaming;
+        _idol = content.Idol;
+        _hasBeenAdvanced = content.HasBeenAdvanced;
+        _spawnArea = content.SpawnArea;
+        _randomizeType = content.RandomizeType;
+        _kills = content.Kills;
+        _active = content.Active;
+        _type = content.Type;
+        _creatures = content.Creatures;
+        _redSkulls = content.RedSkulls;
+        _whiteSkulls = content.WhiteSkulls;
+        _platform = content.Platform;
+        _altar = content.Altar;
+        _expireDelay = content.ExpireDelay;
+        _expireTime = content.ExpireTime;
+        _champion = content.Champion;
+        _restartDelay = content.RestartDelay;
+        _restartTime = content.RestartTime;
+        _minions = [];
     }
 
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(ChampionSpawn));
@@ -143,6 +172,12 @@ public partial class ChampionSpawn : Item
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private DateTime _restartTime;
 
+    // Mobiles summoned by the champion or the spawn's creatures. Deleted with the creatures, never counted as kills.
+    [Tidy]
+    [SerializableField(24)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private List<Mobile> _minions;
+
     private ChampionSpawnRegion m_Region;
 
     //Goes back each level, below level 0 and it goes off!
@@ -173,6 +208,7 @@ public partial class ChampionSpawn : Item
         Visible = false;
 
         _creatures = new List<Mobile>();
+        _minions = [];
         _redSkulls = new List<Item>();
         _whiteSkulls = new List<Item>();
 
@@ -293,6 +329,21 @@ public partial class ChampionSpawn : Item
     public bool ReadyToActivate { get; set; }
 
     public bool IsChampionSpawn(Mobile m) => _creatures.Contains(m);
+
+    /// <summary>
+    ///     The spawn <paramref name="creature" /> fights for: as its champion, one of its creatures, or a minion of either.
+    /// </summary>
+    public static ChampionSpawn FindSpawnOf(BaseCreature creature)
+    {
+        var spawn = Region.Find(creature.Location, creature.Map).GetRegion<ChampionSpawnRegion>()?.Spawn;
+
+        return spawn?.Deleted == false &&
+               (spawn.Champion == creature || spawn._minions.Contains(creature) || spawn._creatures.Contains(creature))
+            ? spawn
+            : null;
+    }
+
+    public void AddMinion(Mobile minion) => AddToMinions(minion);
 
     [CommandProperty(AccessLevel.GameMaster)]
     public virtual int MaxKills
@@ -1171,6 +1222,13 @@ public partial class ChampionSpawn : Item
 
             ClearCreatures();
         }
+
+        for (var i = 0; i < _minions.Count; ++i)
+        {
+            _minions[i].Delete();
+        }
+
+        ClearMinions();
     }
 
     public virtual void RegisterDamageTo(Mobile m)
@@ -1321,6 +1379,7 @@ public partial class ChampionSpawn : Item
         _active = reader.ReadBool();
         _type = (ChampionSpawnType)reader.ReadInt();
         _creatures = reader.ReadEntityList<Mobile>();
+        _minions = [];
         _redSkulls = reader.ReadEntityList<Item>();
         _whiteSkulls = reader.ReadEntityList<Item>();
         _platform = reader.ReadEntity<ChampionPlatform>();

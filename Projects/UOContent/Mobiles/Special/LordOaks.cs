@@ -133,9 +133,10 @@ public partial class LordOaks : BaseChampion
 
         Say(1042153); // Come forth my queen!
 
-        Queen = new Silvani { Team = Team };
-        Queen.MoveToWorld(Location, Map);
+        var queen = new Silvani();
+        SpawnMinion(queen, location: Location);
 
+        Queen = queen;
         SpawnedQueen = true;
     }
 
