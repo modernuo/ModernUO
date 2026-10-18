@@ -11,14 +11,14 @@ namespace Server.Engines.Harvest
         private static Fishing _system;
 
         private static readonly Type[] _magicFish =
-        {
+        [
             typeof(PrizedFish), typeof(WondrousFish), typeof(TrulyRareFish), typeof(PeculiarFish)
-        };
+        ];
 
-        private static readonly Type[] _footwear = { typeof(Boots), typeof(Shoes), typeof(Sandals), typeof(ThighBoots) };
+        private static readonly Type[] _footwear = [typeof(Boots), typeof(Shoes), typeof(Sandals), typeof(ThighBoots)];
 
         private static readonly MutateEntry[] _mutateTable =
-        {
+        [
             new(80.0, 80.0, 4080.0, true, Expansion.UOR, typeof(SpecialFishingNet)),
             new(80.0, 80.0, 4080.0, true, Expansion.UOR, typeof(BigFish)),
             // T2A-UOTD: needs 90; 0.25% at 90, 0.5% at 100.
@@ -39,45 +39,48 @@ namespace Server.Engines.Harvest
             // From LBR the two footwear rows make one curve: 75% at 0 skill, 10% at 100 and 5% at 120.
             new(0.0, 100.0, -62.5, false, Expansion.LBR, _footwear),
             new(0.0, 140.0, -260.0, false, Expansion.LBR, _footwear)
-        };
+        ];
 
         // From UO:R deep water needs 65 skill to catch anything, and a GM succeeds 70% of the time.
         private static readonly HarvestResource _deepWaterFish = new(0.0, 65.0, 115.0, 1043297, typeof(Fish));
 
         private static readonly int[] _waterLandTiles =
-        {
+        [
             0x00A8, 0x00AB,
             0x0136, 0x0137
-        };
+        ];
 
         private static readonly int[] waterStaticTiles =
-        {
+        [
             0x1797, 0x179C,
             0x346E, 0x3485,
             0x3490, 0x34AB,
             0x34B5, 0x35D5
-        };
+        ];
 
-        private static readonly int[] bodyParts = {
+        private static readonly int[] bodyParts =
+        [
             0x1CDD, 0x1CE5, // arm
             0x1CE0, 0x1CE8, // torso
             0x1CE1, 0x1CE9, // head
             0x1CE2, 0x1CEC  // leg
-        };
+        ];
 
-        private static readonly int[] boneParts = {
+        private static readonly int[] boneParts =
+        [
             0x1AE0, 0x1AE1, 0x1AE2, 0x1AE3, 0x1AE4,                         // skulls
             0x1B09, 0x1B0A, 0x1B0B, 0x1B0C, 0x1B0D, 0x1B0E, 0x1B0F, 0x1B10, // bone piles
             0x1B15, 0x1B16                                                  // pelvis bones
-        };
+        ];
 
-        private static readonly int[] miscItems = {
+        private static readonly int[] miscItems =
+        [
             0x1EB5,                        // unfinished barrel
             0xA2A,                         // stool
             0xC1F,                         // broken clock
             0x1047, 0x1048,                // globe
             0x1EB1, 0x1EB2, 0x1EB3, 0x1EB4 // barrel staves
-        };
+        ];
 
         private Fishing()
         {
@@ -96,9 +99,9 @@ namespace Server.Engines.Harvest
                 MaxRange = 4,
                 ConsumedPerHarvest = 1,
                 ConsumedPerFeluccaHarvest = 1,
-                EffectActions = new[] { 12 },
-                EffectSounds = Array.Empty<int>(),
-                EffectCounts = new[] { 1 },
+                EffectActions = [12],
+                EffectSounds = [],
+                EffectCounts = [1],
                 EffectDelay = TimeSpan.Zero,
                 EffectSoundDelay = TimeSpan.FromSeconds(8.0),
                 NoResourcesMessage = 503172,     // The fish don't seem to be biting here.
@@ -109,29 +112,23 @@ namespace Server.Engines.Harvest
                 ToolBrokeMessage = 503174        // You broke your fishing pole.
             };
 
-            HarvestResource[] res =
-            {
-                new(00.0, 00.0, 100.0, 1043297, typeof(Fish))
-            };
+            HarvestResource[] res = [new(00.0, 00.0, 100.0, 1043297, typeof(Fish))];
 
-            HarvestVein[] veins =
-            {
-                new(1000, 0.0, res[0], null)
-            };
+            HarvestVein[] veins = [new(1000, 0.0, res[0], null)];
 
             fish.Resources = res;
             fish.Veins = veins;
 
             if (Core.ML)
             {
-                fish.BonusResources = new[]
-                {
+                fish.BonusResources =
+                [
                     new BonusHarvestResource(0, 99.4, null, null), // set to same chance as mining ml gems
                     new BonusHarvestResource(80.0, .6, 1072597, typeof(WhitePearl))
-                };
+                ];
             }
 
-            Definitions = new[] { fish };
+            Definitions = [fish];
         }
 
         public static Fishing System => _system ??= new Fishing();
@@ -176,10 +173,9 @@ namespace Server.Engines.Harvest
         public override HarvestResource MutateResource(
             Mobile from, Item tool, HarvestDefinition def, Map map, Point3D loc,
             HarvestVein vein, HarvestResource primary, HarvestResource fallback
-        ) =>
-            Core.UOR && SpecialFishingNet.FullValidation(map, loc.X, loc.Y)
-                ? _deepWaterFish
-                : base.MutateResource(from, tool, def, map, loc, vein, primary, fallback);
+        ) => Core.UOR && SpecialFishingNet.FullValidation(map, loc.X, loc.Y)
+            ? _deepWaterFish
+            : base.MutateResource(from, tool, def, map, loc, vein, primary, fallback);
 
         public override Type MutateType(
             Type type, Mobile from, Item tool, HarvestDefinition def, Map map, Point3D loc,
@@ -276,85 +272,54 @@ namespace Server.Engines.Harvest
                 // We don't have to queue since we are returning on the first SOS.
                 foreach (var sos in pack.FindItemsByType<SOS>())
                 {
-                    if (from.Map == sos.TargetMap && from.InRange(sos.TargetLocation, 60))
+                    if (from.Map != sos.TargetMap || !from.InRange(sos.TargetLocation, 60))
                     {
-                        Item preLoot = null;
-
-                        // One catch in four skips these cases and brings up the chest.
-                        switch (Utility.RandomDouble() < 0.25 ? -1 : Utility.Random(7))
-                        {
-                            case 0: // Body parts
-                                {
-                                    preLoot = new ShipwreckedItem(bodyParts.RandomElement());
-                                    break;
-                                }
-                            case 1: // Bone parts
-                                {
-                                    preLoot = new ShipwreckedItem(boneParts.RandomElement());
-                                    break;
-                                }
-                            case 2: // Paintings and portraits
-                                {
-                                    preLoot = new ShipwreckedItem(Utility.Random(0xE9F, 10));
-                                    break;
-                                }
-                            case 3: // Pillows
-                                {
-                                    preLoot = new ShipwreckedItem(Utility.Random(0x13A4, 11));
-                                    break;
-                                }
-                            case 4: // Shells
-                                {
-                                    preLoot = new ShipwreckedItem(Utility.Random(0xFC4, 9));
-                                    break;
-                                }
-                            case 5: // Hats
-                                {
-                                    preLoot = Utility.RandomBool() ? new SkullCap() : new TricorneHat();
-                                    break;
-                                }
-                            case 6: // Misc
-                                {
-                                    var rand = Utility.Random(miscItems.Length + 1);
-
-                                    preLoot = rand == miscItems.Length
-                                        ? new Candelabra()
-                                        : new ShipwreckedItem(miscItems[rand]);
-
-                                    break;
-                                }
-                        }
-
-                        if (preLoot != null)
-                        {
-                            ((IShipwreckedItem)preLoot).IsShipwreckedItem = true;
-                            return preLoot;
-                        }
-
-                        LockableContainer chest = Utility.RandomBool() ? new MetalGoldenChest() : new WoodenChest();
-
-                        if (sos.IsAncient && Core.SE)
-                        {
-                            chest.Hue = 0x481;
-                        }
-
-                        TreasureMapChest.Fill(chest, Math.Max(1, Math.Min(4, sos.Level)));
-
-                        if (Core.UOR)
-                        {
-                            chest.DropItem(sos.IsAncient ? new FabledFishingNet() : new SpecialFishingNet());
-                        }
-
-                        chest.Movable = true;
-                        chest.Locked = false;
-                        chest.TrapType = TrapType.None;
-                        chest.TrapPower = 0;
-                        chest.TrapLevel = 0;
-
-                        sos.Delete();
-
-                        return chest;
+                        continue;
                     }
+
+                    if (Utility.Random(4) != 0)
+                    {
+                        return Utility.Random(7) switch
+                        {
+                            0 => new ShipwreckedItem(bodyParts.RandomElement()),  // Body Parts
+                            1 => new ShipwreckedItem(boneParts.RandomElement()),  // Bone Parts
+                            2 => new ShipwreckedItem(Utility.Random(0xE9F, 10)),  // Paintings and portraits
+                            3 => new ShipwreckedItem(Utility.Random(0x13A4, 11)), // Pillows
+                            4 => new ShipwreckedItem(Utility.Random(0xFC4, 9)),   // Shells
+                            5 => Utility.RandomBool()                             // Hats
+                                ? new SkullCap { IsShipwreckedItem = true }
+                                : new TricorneHat { IsShipwreckedItem = true },
+                            6 => Utility.Random(miscItems.Length + 1) switch // Misc
+                            {
+                                var r when r < miscItems.Length => new ShipwreckedItem(miscItems[r]),
+                                _                               => new Candelabra { IsShipwreckedItem = true },
+                            }
+                        };
+                    }
+
+                    LockableContainer chest = Utility.RandomBool() ? new MetalGoldenChest() : new WoodenChest();
+
+                    if (sos.IsAncient && Core.SE)
+                    {
+                        chest.Hue = 0x481;
+                    }
+
+                    TreasureMapChest.Fill(chest, Math.Max(1, Math.Min(4, sos.Level)));
+
+                    if (Core.UOR)
+                    {
+                        chest.DropItem(sos.IsAncient ? new FabledFishingNet() : new SpecialFishingNet());
+                    }
+
+                    chest.Movable = true;
+                    chest.Locked = false;
+                    chest.TrapType = TrapType.None;
+                    chest.TrapPower = 0;
+                    chest.TrapLevel = 0;
+
+                    sos.Delete();
+
+                    return chest;
                 }
             }
 
@@ -375,16 +340,7 @@ namespace Server.Engines.Harvest
 
         private static BaseCreature SurfaceSerpent(Mobile m)
         {
-            BaseCreature serp;
-
-            if (Utility.RandomDouble() < 0.1)
-            {
-                serp = new DeepSeaSerpent();
-            }
-            else
-            {
-                serp = new SeaSerpent();
-            }
+            BaseCreature serp = Utility.RandomDouble() < 0.1 ? new DeepSeaSerpent() : new SeaSerpent();
 
             int x = m.X, y = m.Y;
 
@@ -449,12 +405,7 @@ namespace Server.Engines.Harvest
                     number = 1008124;
                     name = "a mess of small fish";
                 }
-                else if (item is Fish)
-                {
-                    number = 1008124;
-                    name = item.ItemData.Name;
-                }
-                else if (item is BaseShoes)
+                else if (item is Fish or BaseShoes)
                 {
                     number = 1008124;
                     name = item.ItemData.Name;
