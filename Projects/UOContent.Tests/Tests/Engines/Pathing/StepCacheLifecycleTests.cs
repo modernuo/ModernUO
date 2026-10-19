@@ -17,11 +17,9 @@ namespace Server.Tests.Pathfinding;
 [Collection("Sequential Pathfinding Tests")]
 public class StepCacheLifecycleTests : IDisposable
 {
-    // The window is a knob on the singleton and Clear() leaves it alone, so a test that narrows
-    // it would otherwise leak the narrow window into every later test in the collection.
-    private readonly uint _savedWindowMs = StepCache.Instance.MissPromotionWindowMs;
+    private readonly StepCacheStateScope _cacheState = new();
 
-    public void Dispose() => StepCache.Instance.MissPromotionWindowMs = _savedWindowMs;
+    public void Dispose() => _cacheState.Dispose();
 
     /// <summary>Resets to a known state and returns the singleton.</summary>
     private static StepCache FreshCache(int promotionThreshold)
@@ -396,26 +394,19 @@ public class StepCacheLifecycleTests : IDisposable
         var cache = FreshCache(promotionThreshold: 1);
         cache.MaxResidentChunks = 4;
 
-        try
+        var map = TestMap;
+
+        // Five chunks into a cache that holds four. Which one goes doesn't matter here, only that
+        // the count comes down and the key list stays in step, so equal touch ticks are fine.
+        for (var i = 0; i < 5; i++)
         {
-            var map = TestMap;
-
-            // Five chunks into a cache that holds four.
-            for (var i = 0; i < 5; i++)
-            {
-                cache.TryGetMask(map, PlainX + i * 16, PlainY, sourceZ: 10);
-                Thread.Sleep(2); // separate their LastTouchedTicks so LRU has something to order by
-            }
-
-            cache.EnforceLruCap();
-
-            Assert.Equal(4, cache.GetStats().ResidentChunks);
-            Assert.True(cache.GetStats().EvictionsByLruCap >= 1L);
-            Assert.True(cache.ResidentIndexInSync(), "eviction desynced the key list from the resident set");
+            cache.TryGetMask(map, PlainX + i * 16, PlainY, sourceZ: 10);
         }
-        finally
-        {
-            cache.MaxResidentChunks = 8192;
-        }
+
+        cache.EnforceLruCap();
+
+        Assert.Equal(4, cache.GetStats().ResidentChunks);
+        Assert.True(cache.GetStats().EvictionsByLruCap >= 1L);
+        Assert.True(cache.ResidentIndexInSync(), "eviction desynced the key list from the resident set");
     }
 }

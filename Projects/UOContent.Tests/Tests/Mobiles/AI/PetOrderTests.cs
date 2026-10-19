@@ -210,10 +210,10 @@ public class PetOrderTests : IDisposable
         Assert.Equal(post, pet.Home);        // anchor still the original post, not the corpse
     }
 
-    // NOTE: the test fixture does not load tile data, so Mobile.Move is blocked and Location
-    // never changes here. DoMoveImpl still sets Mobile.Direction before the (blocked) move,
-    // so an *attempted* wander is observable via Direction. The subjective wander cadence is
-    // covered by manual QA; these tests verify the gate/frozen wiring deterministically.
+    // A step may be blocked by whatever terrain (1000, 1000) holds, but DoMoveImpl sets
+    // Mobile.Direction before attempting the move, so an *attempted* wander is observable via
+    // Direction either way. The subjective wander cadence is covered by manual QA; these tests
+    // verify the gate/frozen wiring deterministically.
     [Fact]
     public void IdlePet_DoesNotAttemptToMove_WhileResting()
     {
@@ -224,12 +224,18 @@ public class PetOrderTests : IDisposable
 
         pet.ForceIdle = true; // CheckIdle() reports resting -> idle wander must be skipped
         pet.Direction = Direction.North;
+        var start = pet.Location;
+        var ai = pet.AIObject;
         for (var i = 0; i < 40; i++)
         {
-            pet.AIObject.DoOrderNone();
+            // Reopen the move clock every pass, so CheckIdle is the only gate left standing.
+            ai.NextMove = Core.TickCount;
+            Assert.True(ai.CanMoveNow(out _));
+            ai.DoOrderNone();
         }
 
         Assert.Equal(Direction.North, pet.Direction); // gated by CheckIdle -> never attempts a step
+        Assert.Equal(start, pet.Location);
     }
 
     [Fact]

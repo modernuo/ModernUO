@@ -1,3 +1,4 @@
+using System;
 using Server.Engines.Pathing.Cache;
 using Server.Items;
 using Server.Mobiles;
@@ -9,25 +10,22 @@ using CalcMoves = Server.Movement.Movement;
 namespace Server.Tests.Pathfinding;
 
 [Collection("Sequential Pathfinding Tests")]
-public class HousePathRoutingTests
+public class HousePathRoutingTests : IDisposable
 {
     private readonly ITestOutputHelper _output;
+    private readonly StepCacheStateScope _cacheState = new();
 
     public HousePathRoutingTests(ITestOutputHelper output) => _output = output;
 
-    private const int MapId = 1;
+    public void Dispose() => _cacheState.Dispose();
 
-    private sealed class WalkerStub : Mobile
-    {
-        public WalkerStub() => Body = 0xC9;
-    }
+    private const int MapId = 1;
 
     [SkippableFact]
     public void PathAround_NeverTraversesAWallCell()
     {
         TileDataRequirement.SkipIfMissing();
         StepCache.Instance.Clear();
-        var prevThreshold = StepCache.Instance.MissPromotionThreshold;
         StepCache.Instance.MissPromotionThreshold = 1;
         var map = Map.Maps[MapId];
         Assert.NotNull(map);
@@ -69,7 +67,6 @@ public class HousePathRoutingTests
         }
         finally
         {
-            StepCache.Instance.MissPromotionThreshold = prevThreshold;
             walker.Delete();
             multi.Delete();
         }

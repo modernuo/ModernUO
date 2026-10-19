@@ -49,17 +49,21 @@ public class PetTestStub : BaseCreature
 
 public static class PetTestSetup
 {
-    // Places a player master and a controlled pet on Felucca and returns both.
+    // Places a player master and a controlled pet (on Felucca unless a map is given) and returns both.
     public static (PlayerMobile master, PetTestStub pet) SpawnControlledPet(
-        Point3D masterLoc, Point3D petLoc)
+        Point3D masterLoc, Point3D petLoc, Map map = null) =>
+        SpawnControlledPet<PetTestStub>(masterLoc, petLoc, map);
+
+    public static (PlayerMobile master, T pet) SpawnControlledPet<T>(
+        Point3D masterLoc, Point3D petLoc, Map map = null) where T : BaseCreature, new()
     {
-        var map = Map.Felucca;
+        map ??= Map.Felucca;
 
         var master = new PlayerMobile(World.NewMobile);
         master.DefaultMobileInit();
         master.MoveToWorld(masterLoc, map);
 
-        var pet = new PetTestStub();
+        var pet = new T();
         pet.MoveToWorld(petLoc, map);
         pet.SetControlMaster(master); // sets Controlled, Home=Zero, ControlOrder=Come
 

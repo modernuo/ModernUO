@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Server.Engines.Pathing.Cache;
 using Server.Mobiles;
@@ -9,27 +10,43 @@ namespace Server.Tests.Mobiles.AI;
 // pathfinder uses non-reentrant static buffers, so we share the pathfinding sequential
 // collection to avoid parallel interference.
 [Collection("Sequential Pathfinding Tests")]
-public class ApproachTargetTests
+public class ApproachTargetTests : IDisposable
 {
-    private sealed class FollowerStub : BaseCreature
+    private readonly List<IEntity> _created = [];
+
+    public void Dispose()
     {
-        // Serial ctor + DefaultMobileInit bypasses NPCSpeeds JSON (absent in tests).
-        public FollowerStub(Serial serial) : base(serial) => Body = 0xC9;
+        for (var i = _created.Count - 1; i >= 0; i--)
+        {
+            _created[i].Delete();
+        }
+
+        _created.Clear();
     }
 
-    private sealed class TargetStub : Mobile
+    private (BareCreatureStub bc, BaseAI ai) NewFollower(Map map, Point3D loc)
     {
-        public TargetStub() => Body = 0xC9;
-    }
-
-    private static (FollowerStub bc, BaseAI ai) NewFollower(Map map, Point3D loc)
-    {
-        var bc = new FollowerStub(World.NewMobile);
+        var bc = new BareCreatureStub(World.NewMobile);
         bc.DefaultMobileInit();
         bc.MoveToWorld(loc, map);
+        _created.Add(bc);
         BaseAI ai = new AnimalAI(bc);
         ai.AITimer?.Stop(); // we drive movement manually; no background timer
         return (bc, ai);
+    }
+
+    private WalkerStub NewTarget(Map map, Point3D loc)
+    {
+        var target = new WalkerStub();
+        target.MoveToWorld(loc, map);
+        _created.Add(target);
+        return target;
+    }
+
+    private void PlaceBlocker(Map map, ushort itemId, int x, int y)
+    {
+        map.GetAverageZ(x, y, out _, out var z, out _);
+        _created.Add(new Item(World.NewItem) { ItemID = itemId, Map = map, Location = new Point3D(x, y, (sbyte)z) });
     }
 
     // Drives the pet follow primitive once per tick; returns true once it reaches within
@@ -49,18 +66,6 @@ public class ApproachTargetTests
         return false;
     }
 
-    internal static ushort FirstImpassableItemId()
-    {
-        for (ushort id = 1; id < TileData.MaxItemValue; id++)
-        {
-            if (TileData.ItemTable[id].ImpassableSurface)
-            {
-                return id;
-            }
-        }
-        return 0;
-    }
-
     [Fact]
     public void OpenTerrain_ReachesTarget_WithoutPathfinding()
     {
@@ -69,8 +74,7 @@ public class ApproachTargetTests
         map.GetAverageZ(1500, 1600, out _, out var z, out _);
 
         var (bc, ai) = NewFollower(map, new Point3D(1500, 1600, (sbyte)z));
-        var target = new TargetStub();
-        target.MoveToWorld(new Point3D(1495, 1600, (sbyte)z), map); // 5 tiles west, open
+        var target = NewTarget(map, new Point3D(1495, 1600, (sbyte)z)); // 5 tiles west, open
 
         StepCache.Instance.Clear();
         var buildsBefore = StepCache.Instance.GetStats().BuildsTotal;
@@ -78,44 +82,40 @@ public class ApproachTargetTests
         var arrived = DriveFollow(ai, bc, target, 2, 40);
 
         var buildsAfter = StepCache.Instance.GetStats().BuildsTotal;
-        bc.Delete();
-        target.Delete();
 
         Assert.True(arrived, "creature should reach an open-terrain target by stepping");
         Assert.Equal(buildsBefore, buildsAfter); // greedy fast path: no chunk builds
     }
 
-    [Fact]
+    // The desk is a Britain inn static; on a blank map the detour is a straight walk.
+    [SkippableFact]
     public void BritainInnDesk_PetReachesMaster()
     {
+        TileDataRequirement.SkipIfMissing();
         var map = Map.Maps[1];
         Assert.NotNull(map);
 
         // Exact in-game repro: pet south of the L-desk, master north of it.
         var (bc, ai) = NewFollower(map, new Point3D(1493, 1614, 20));
-        var target = new TargetStub();
-        target.MoveToWorld(new Point3D(1494, 1605, 21), map);
+        var target = NewTarget(map, new Point3D(1494, 1605, 21));
 
         StepCache.Instance.Clear();
 
         // 200 ticks is generous for the ~17-step detour at one step per tick.
         var arrived = DriveFollow(ai, bc, target, 2, 200);
 
-        bc.Delete();
-        target.Delete();
-
         Assert.True(arrived, "pet must navigate around the L-desk to reach the master");
     }
 
-    [Fact]
+    [SkippableFact]
     public void MoveTo_ReachesTargetAroundDesk()
     {
+        TileDataRequirement.SkipIfMissing();
         var map = Map.Maps[1];
         Assert.NotNull(map);
 
         var (bc, ai) = NewFollower(map, new Point3D(1493, 1614, 20));
-        var target = new TargetStub();
-        target.MoveToWorld(new Point3D(1494, 1605, 21), map);
+        var target = NewTarget(map, new Point3D(1494, 1605, 21));
 
         StepCache.Instance.Clear();
 
@@ -131,9 +131,6 @@ public class ApproachTargetTests
             }
         }
 
-        bc.Delete();
-        target.Delete();
-
         Assert.True(arrived, "MoveTo chaser must reach the target around the desk");
     }
 
@@ -145,8 +142,7 @@ public class ApproachTargetTests
         map.GetAverageZ(1500, 1600, out _, out var z, out _);
 
         var (bc, ai) = NewFollower(map, new Point3D(1500, 1600, (sbyte)z));
-        var target = new TargetStub();
-        target.MoveToWorld(new Point3D(1498, 1600, (sbyte)z), map);
+        var target = NewTarget(map, new Point3D(1498, 1600, (sbyte)z));
 
         StepCache.Instance.Clear();
 
@@ -170,9 +166,6 @@ public class ApproachTargetTests
             }
         }
 
-        bc.Delete();
-        target.Delete();
-
         Assert.True(caught, "chaser must catch a target that walks away then stops");
     }
 
@@ -185,13 +178,11 @@ public class ApproachTargetTests
         map.GetAverageZ(1500, 1601, out _, out var z, out _);
 
         var (bc, ai) = NewFollower(map, new Point3D(1500, 1601, (sbyte)z));
-        var target = new TargetStub();
-        target.MoveToWorld(new Point3D(1500, 1596, (sbyte)z), map);
+        var target = NewTarget(map, new Point3D(1500, 1596, (sbyte)z));
 
         // Full impassable ring around the target cell -> no path to within range 1.
-        var id = FirstImpassableItemId();
+        var id = TestTiles.FirstImpassableItemId();
         Assert.NotEqual<ushort>(0, id);
-        var ring = new List<Item>();
         for (var x = 1499; x <= 1501; x++)
         {
             for (var y = 1595; y <= 1597; y++)
@@ -200,11 +191,8 @@ public class ApproachTargetTests
                 {
                     continue; // leave the target's own cell
                 }
-                map.GetAverageZ(x, y, out _, out var rz, out _);
-                ring.Add(new Item(World.NewItem)
-                {
-                    ItemID = id, Map = map, Location = new Point3D(x, y, (sbyte)rz)
-                });
+
+                PlaceBlocker(map, id, x, y);
             }
         }
 
@@ -231,16 +219,7 @@ public class ApproachTargetTests
             }
         }
 
-        var reached = bc.InRange(target, 1);
-
-        bc.Delete();
-        target.Delete();
-        foreach (var it in ring)
-        {
-            it.Delete();
-        }
-
-        Assert.False(reached, "walled-off target must not be reached");
+        Assert.False(bc.InRange(target, 1), "walled-off target must not be reached");
         Assert.True(stayedIdle, "after giving up, the creature must idle, not shuffle");
     }
 
@@ -253,32 +232,19 @@ public class ApproachTargetTests
         map.GetAverageZ(1500, 1600, out _, out var z, out _);
 
         var (bc, ai) = NewFollower(map, new Point3D(1500, 1600, (sbyte)z));
-        var target = new TargetStub();
-        target.MoveToWorld(new Point3D(1500, 1595, (sbyte)z), map); // 5 tiles north
+        var target = NewTarget(map, new Point3D(1500, 1595, (sbyte)z)); // 5 tiles north
 
         // Impassable wall on Y=1598 from X=1497..1503: blocks the straight line; ends open.
-        var id = FirstImpassableItemId();
+        var id = TestTiles.FirstImpassableItemId();
         Assert.NotEqual<ushort>(0, id);
-        var wall = new List<Item>();
         for (var x = 1497; x <= 1503; x++)
         {
-            map.GetAverageZ(x, 1598, out _, out var wz, out _);
-            wall.Add(new Item(World.NewItem)
-            {
-                ItemID = id, Map = map, Location = new Point3D(x, 1598, (sbyte)wz)
-            });
+            PlaceBlocker(map, id, x, 1598);
         }
 
         StepCache.Instance.Clear();
 
         var arrived = DriveFollow(ai, bc, target, 2, 200);
-
-        bc.Delete();
-        target.Delete();
-        foreach (var it in wall)
-        {
-            it.Delete();
-        }
 
         Assert.True(arrived, "creature must route around the wall to reach the target");
     }

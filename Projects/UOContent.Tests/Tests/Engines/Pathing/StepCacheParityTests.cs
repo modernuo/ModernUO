@@ -20,11 +20,14 @@ namespace Server.Tests.Pathfinding;
 /// falls through on everything agrees with the slow path perfectly and is worthless.
 /// </summary>
 [Collection("Sequential Pathfinding Tests")]
-public class StepCacheParityTests
+public class StepCacheParityTests : IDisposable
 {
     private readonly ITestOutputHelper _output;
+    private readonly StepCacheStateScope _cacheState = new();
 
     public StepCacheParityTests(ITestOutputHelper output) => _output = output;
+
+    public void Dispose() => _cacheState.Dispose();
 
     // ---- layer 1: the bake agrees with MovementImpl ----
 
@@ -43,7 +46,7 @@ public class StepCacheParityTests
         var map = TestMap;
         Assert.NotNull(map);
 
-        var walker = new StaticWalker();
+        var walker = new WalkerStub();
         walker.MoveToWorld(new Point3D(xStart, yStart, 0), map);
 
         var disagreements = 0;
@@ -154,12 +157,16 @@ public class StepCacheParityTests
     /// the land average instead would trip the source-Z guard on raised terrain (a causeway, a
     /// walkway) and report a fallthrough that is correct behaviour rather than a fault.
     /// </summary>
-    [Theory]
+    [SkippableTheory]
     [InlineData("britain_inn_dense", 1480, 1610, 32)]
     [InlineData("trammel_open_plain", 1500, 1600, 32)]
     [InlineData("britain_causeway", 1475, 1641, 32)]
     public void CacheMatchesProbe(string label, int xStart, int yStart, int size)
     {
+        // A storage fault (crossed cell index, swapped Z array) only shows against varied terrain;
+        // on a blank map every cell bakes the same answer.
+        TileDataRequirement.SkipIfMissing();
+
         var cache = StepCache.Instance;
         cache.Clear();
         cache.MissPromotionThreshold = 1; // build on first touch: every cell should get a real answer
@@ -253,7 +260,7 @@ public class StepCacheParityTests
     /// Cardinals only: the cache stores raw masks and applies the corner-cut at query time, so a
     /// raw diagonal bit legitimately differs from MovementImpl's diagonal answer.
     /// </summary>
-    [Theory]
+    [SkippableTheory]
     // Seeds chosen for the terrain classes the standable-surface bake has to get right. Each one
     // floods across a wide local area, so a handful covers thousands of states without a map walk.
     [InlineData("brit_sewer_walkway", 6034, 1476, 5, 2500)]      // static walkway over impassable land
@@ -262,6 +269,8 @@ public class StepCacheParityTests
     [InlineData("trammel_open_plain", 1500, 1600, 10, 2500)]     // flat ground: catches clearance false-positives
     public void CacheServesReachableWalkStates(string label, int sx, int sy, int sz, int maxStates)
     {
+        TileDataRequirement.SkipIfMissing();
+
         var cache = StepCache.Instance;
         cache.Clear();
         cache.MissPromotionThreshold = 1; // build on first touch: every reached state should be answered
@@ -269,7 +278,7 @@ public class StepCacheParityTests
         var map = TestMap;
         Assert.NotNull(map);
 
-        var walker = new StaticWalker();
+        var walker = new WalkerStub();
         walker.MoveToWorld(new Point3D(sx, sy, sz), map);
 
         var startIsWalkable = false;

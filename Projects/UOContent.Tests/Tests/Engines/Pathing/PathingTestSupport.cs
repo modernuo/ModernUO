@@ -4,8 +4,8 @@ using Server.Engines.Pathing.Cache;
 namespace Server.Tests.Pathfinding;
 
 /// <summary>
-/// Shared fixtures for the step-cache tests: the walker the parity tests measure against, the
-/// cell-index arithmetic, and builders for the chunk state several tests inject by hand.
+/// Shared fixtures for the step-cache tests: the test map, the cell-index arithmetic, and builders
+/// for the chunk state several tests inject by hand.
 /// </summary>
 internal static class PathingTestSupport
 {
@@ -52,18 +52,5 @@ internal static class PathingTestSupport
         }
 
         return data;
-    }
-
-    /// <summary>
-    /// The default static walker. Deriving straight from <see cref="Mobile"/> rather than
-    /// BaseCreature is the point: MovementImpl then sees no creature capabilities (no swim, no fly,
-    /// no door-opening), which is exactly the walker the cache bakes for.
-    /// </summary>
-    public sealed class StaticWalker : Mobile
-    {
-        public StaticWalker()
-        {
-            Body = 0xC9;
-        }
     }
 }

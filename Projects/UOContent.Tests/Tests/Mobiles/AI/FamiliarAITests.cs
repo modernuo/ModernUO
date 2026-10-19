@@ -4,8 +4,8 @@ using Server;
 using Server.Items;
 using Server.Mobiles;
 using Server.Tests;
-using Server.Tests.Mobiles.AI;
 using Xunit;
+using static Server.Tests.TimerWheelScope;
 
 namespace UOContent.Tests.Mobiles.AI;
 
@@ -50,12 +50,12 @@ public class FamiliarAITests : IDisposable
 
     private static readonly Map _map = Map.Maps[1];
     private readonly List<IEntity> _created = new();
+    private readonly TimerWheelScope _clock;
 
     public FamiliarAITests()
     {
         TileDataRequirement.SkipIfMissing();
-        Core._tickCount = 0;
-        Timer.Init(0);
+        _clock = new TimerWheelScope();
     }
 
     public void Dispose()
@@ -64,6 +64,8 @@ public class FamiliarAITests : IDisposable
         {
             _created[i].Delete();
         }
+
+        _clock.Dispose();
     }
 
     private static Point3D At(int x, int y)
@@ -107,36 +109,6 @@ public class FamiliarAITests : IDisposable
         e.MoveToWorld(At(x, y), _map);
         _created.Add(e);
         return e;
-    }
-
-    // 8ms lockstep keeps the wheel and Core.TickCount in sync.
-    private static void RunFor(long ms)
-    {
-        var deadline = Core._tickCount + ms;
-
-        while (Core._tickCount - deadline < 0)
-        {
-            Core._tickCount += 8;
-            Timer.Slice(Core._tickCount);
-        }
-    }
-
-    private static bool RunUntil(Func<bool> condition, long maxMs)
-    {
-        var deadline = Core._tickCount + maxMs;
-
-        while (Core._tickCount - deadline < 0)
-        {
-            if (condition())
-            {
-                return true;
-            }
-
-            Core._tickCount += 8;
-            Timer.Slice(Core._tickCount);
-        }
-
-        return condition();
     }
 
     [SkippableFact]
@@ -323,7 +295,7 @@ public class FamiliarAITests : IDisposable
         var f = Familiar(0, p, 1500, 1602);
 
         // 5x5 ring, open 3x3 interior: a landing tile exists, no route reaches it.
-        var id = ApproachTargetTests.FirstImpassableItemId();
+        var id = TestTiles.FirstImpassableItemId();
         Assert.NotEqual<ushort>(0, id);
 
         for (var x = 1498; x <= 1502; x++)

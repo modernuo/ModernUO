@@ -1,3 +1,4 @@
+using System;
 using Server.Engines.Pathing.Cache;
 using Server.Mobiles;
 using Server.PathAlgorithms;
@@ -14,14 +15,17 @@ namespace Server.Tests.Pathfinding;
 /// to "no path found" on reachable goals.
 /// </summary>
 [Collection("Sequential Pathfinding Tests")]
-public class BitmapAStarAlgorithmTests
+public class BitmapAStarAlgorithmTests : IDisposable
 {
     private readonly ITestOutputHelper _output;
+    private readonly StepCacheStateScope _cacheState = new();
 
     public BitmapAStarAlgorithmTests(ITestOutputHelper output)
     {
         _output = output;
     }
+
+    public void Dispose() => _cacheState.Dispose();
 
     [Theory]
     // Pinned cell (1500, 1600, z=10): mask=0xC1 → N, W, NW walkable.
@@ -33,22 +37,27 @@ public class BitmapAStarAlgorithmTests
     public void DefaultWalker_FindsPath_ViaCacheFastPath(int sx, int sy, int gx, int gy)
     {
         StepCache.Instance.Clear();
+        StepCache.Instance.MissPromotionThreshold = 1;
         var map = Map.Maps[1];
         Assert.NotNull(map);
 
-        var stub = new DefaultWalkerStub();
+        var stub = new WalkerStub();
         map.GetAverageZ(sx, sy, out _, out var startZ, out _);
         var start = new Point3D(sx, sy, (sbyte)startZ);
         var goal = new Point3D(gx, gy, (sbyte)startZ);
 
         stub.MoveToWorld(start, map);
 
+        var statsBefore = StepCache.Instance.GetStats();
         var result = BitmapAStarAlgorithm.Instance.Find(stub, map, start, goal);
+        var statsAfter = StepCache.Instance.GetStats();
 
         stub.Delete();
 
         Assert.NotNull(result);
         Assert.NotEmpty(result);
+        Assert.True(statsAfter.BuildsTotal > statsBefore.BuildsTotal,
+            "a default walker should expand through the cache, not the slow path");
         _output.WriteLine($"default-walker ({sx},{sy})->({gx},{gy}): {result.Length} steps");
     }
 
@@ -62,7 +71,7 @@ public class BitmapAStarAlgorithmTests
         var map = Map.Maps[1];
         Assert.NotNull(map);
 
-        var stub = new SwimmingStub(World.NewMobile);
+        var stub = new BareCreatureStub(World.NewMobile);
         stub.DefaultMobileInit();
         stub.CanSwim = true; // overlay route — cache + (walkMask | wetMask&canSwim)
         map.GetAverageZ(sx, sy, out _, out var startZ, out _);
@@ -104,13 +113,13 @@ public class BitmapAStarAlgorithmTests
         var start = new Point3D(sx, sy, (sbyte)startZ);
         var goal = new Point3D(gx, gy, (sbyte)startZ);
 
-        var walker = new DefaultWalkerStub();
+        var walker = new WalkerStub();
         walker.MoveToWorld(start, map);
 
         // Living blocker on the only direct-line cell. CanMoveOver returns false for an
         // alive non-staff mobile, so the dynamic-obstacle pass must reject this cell.
         map.GetAverageZ(blockX, blockY, out _, out var blockZ, out _);
-        var blocker = new DefaultWalkerStub();
+        var blocker = new WalkerStub();
         blocker.MoveToWorld(new Point3D(blockX, blockY, (sbyte)blockZ), map);
 
         var result = BitmapAStarAlgorithm.Instance.Find(walker, map, start, goal);
@@ -146,24 +155,14 @@ public class BitmapAStarAlgorithmTests
         var blockX = 1499;
         var blockY = 1599;
 
-        // Find any ItemID whose TileData has ImpassableSurface so the dynamic pass
-        // rejects the cell. Pinning to a specific ID would couple the test to UO art data.
-        ushort blockerItemId = 0;
-        for (ushort id = 1; id < TileData.MaxItemValue; id++)
-        {
-            if (TileData.ItemTable[id].ImpassableSurface)
-            {
-                blockerItemId = id;
-                break;
-            }
-        }
+        var blockerItemId = TestTiles.FirstImpassableItemId();
         Assert.NotEqual<ushort>(0, blockerItemId);
 
         map.GetAverageZ(sx, sy, out _, out var startZ, out _);
         var start = new Point3D(sx, sy, (sbyte)startZ);
         var goal = new Point3D(gx, gy, (sbyte)startZ);
 
-        var walker = new DefaultWalkerStub();
+        var walker = new WalkerStub();
         walker.MoveToWorld(start, map);
 
         map.GetAverageZ(blockX, blockY, out _, out var blockZ, out _);
@@ -197,28 +196,20 @@ public class BitmapAStarAlgorithmTests
         var map = Map.Maps[1];
         Assert.NotNull(map);
 
-        var stub = new DefaultWalkerStub();
+        var stub = new WalkerStub();
         map.GetAverageZ(1500, 1600, out _, out var startZ, out _);
         var start = new Point3D(1500, 1600, (sbyte)startZ);
         var goal = new Point3D(1498, 1598, (sbyte)startZ);
         stub.MoveToWorld(start, map);
 
         var statsBefore = StepCache.Instance.GetStats();
-        var prevFlag = ContentFeatureFlags.BitmapPathfindingCache;
-        try
-        {
-            ContentFeatureFlags.BitmapPathfindingCache = false;
-            var result = BitmapAStarAlgorithm.Instance.Find(stub, map, start, goal);
-            Assert.NotNull(result);
-            Assert.NotEmpty(result);
-        }
-        finally
-        {
-            ContentFeatureFlags.BitmapPathfindingCache = prevFlag;
-        }
+        ContentFeatureFlags.BitmapPathfindingCache = false;
+        var result = BitmapAStarAlgorithm.Instance.Find(stub, map, start, goal);
         var statsAfter = StepCache.Instance.GetStats();
 
         stub.Delete();
+        Assert.NotNull(result);
+        Assert.NotEmpty(result);
         Assert.Equal(statsBefore.BuildsTotal, statsAfter.BuildsTotal);
     }
 
@@ -346,7 +337,7 @@ public class BitmapAStarAlgorithmTests
         StepCache.Instance.MissPromotionThreshold = 2;
 
         var map = Map.Maps[1];
-        var stub = new DefaultWalkerStub();
+        var stub = new WalkerStub();
         map.GetAverageZ(1500, 1600, out _, out var startZ, out _);
         var start = new Point3D(1500, 1600, (sbyte)startZ);
         var goal = new Point3D(1498, 1598, (sbyte)startZ);
@@ -376,7 +367,7 @@ public class BitmapAStarAlgorithmTests
         StepCache.Instance.MissPromotionWindowMs = 30_000;
 
         var map = Map.Maps[1];
-        var stub = new DefaultWalkerStub();
+        var stub = new WalkerStub();
         map.GetAverageZ(1500, 1600, out _, out var startZ, out _);
         var start = new Point3D(1500, 1600, (sbyte)startZ);
         var goal = new Point3D(1498, 1598, (sbyte)startZ);
@@ -402,18 +393,6 @@ public class BitmapAStarAlgorithmTests
     }
 
     /// <summary>
-    /// Plain Mobile — RequiresSlowPath returns false, the bitmap algorithm uses the cache
-    /// fast path on every expansion.
-    /// </summary>
-    private sealed class DefaultWalkerStub : Mobile
-    {
-        public DefaultWalkerStub()
-        {
-            Body = 0xC9;
-        }
-    }
-
-    /// <summary>
     /// Mobile with Player=true and default AccessLevel (Player). Triggers the strict
     /// AND-rule for diagonal corner-cut while still using the cache.
     /// </summary>
@@ -423,20 +402,6 @@ public class BitmapAStarAlgorithmTests
         {
             Body = 0xC9;
             Player = true;
-        }
-    }
-
-    /// <summary>
-    /// BaseCreature with CanSwim=true — uses the cache via capability overlay (walk OR
-    /// (wet AND canSwim)). Use the Serial constructor (deserialization path) to bypass
-    /// NPCSpeeds init, which requires the npc-speeds.json table loaded — not available
-    /// in tests.
-    /// </summary>
-    private sealed class SwimmingStub : BaseCreature
-    {
-        public SwimmingStub(Serial serial) : base(serial)
-        {
-            Body = 0xC9;
         }
     }
 
