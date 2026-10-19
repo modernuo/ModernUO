@@ -7,18 +7,13 @@ namespace Server.Tests.Network;
 [Collection("Sequential Server Tests")]
 public class EffectPackets
 {
-    [Theory, InlineData(10, 1000, 10, 5)]
-    public void TestSoundEffect(ushort soundID, int x, int y, int z)
+    [Fact]
+    public void TestSoundEffect()
     {
-        var p = new Point3D(x, y, z);
+        const ushort soundID = 10;
+        var p = new Point3D(1000, 10, 5);
 
-        var expected = new PlaySound(soundID, p).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendSoundEffect(soundID, p);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new PlaySound(soundID, p), ns => ns.SendSoundEffect(soundID, p));
     }
 
     [Fact]
@@ -94,13 +89,7 @@ public class EffectPackets
     [Theory, InlineData(ScreenEffectType.DarkFlash), InlineData(ScreenEffectType.FadeInOut)]
     public void TestScreenEffect(ScreenEffectType screenType)
     {
-        var expected = new ScreenEffect(screenType).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendScreenEffect(screenType);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new ScreenEffect(screenType), ns => ns.SendScreenEffect(screenType));
     }
 
     [Fact]

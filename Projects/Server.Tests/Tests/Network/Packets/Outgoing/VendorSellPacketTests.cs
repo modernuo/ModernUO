@@ -25,13 +25,10 @@ public class VendorSellPacketTests
             new(item3, 1, "Item 3")
         };
 
-        var expected = new VendorSellList(vendor, sellStates.ToList()).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendVendorSellList(vendor.Serial, sellStates);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(
+            new VendorSellList(vendor, sellStates.ToList()),
+            ns => ns.SendVendorSellList(vendor.Serial, sellStates)
+        );
     }
 
     [Fact]
@@ -40,12 +37,6 @@ public class VendorSellPacketTests
         var vendor = new Mobile((Serial)0x1024u);
         vendor.DefaultMobileInit();
 
-        var expected = new EndVendorBuy(vendor.Serial).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendEndVendorSell(vendor.Serial);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new EndVendorSell(vendor), ns => ns.SendEndVendorSell(vendor.Serial));
     }
 }

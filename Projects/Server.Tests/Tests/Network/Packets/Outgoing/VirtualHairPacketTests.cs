@@ -15,13 +15,10 @@ public class VirtualHairPacketTests
         m.HairHue = 0x1000;
         m.HairItemID = 0x2000;
 
-        var expected = new HairEquipUpdate(m).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendHairEquipUpdatePacket(m, (uint)m.HairSerial, m.HairItemID, m.HairHue, Layer.Hair);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(
+            new HairEquipUpdate(m),
+            ns => ns.SendHairEquipUpdatePacket(m, (uint)m.HairSerial, m.HairItemID, m.HairHue, Layer.Hair)
+        );
     }
 
     [Fact]
@@ -30,13 +27,7 @@ public class VirtualHairPacketTests
         var m = new Mobile((Serial)0x1024u);
         m.DefaultMobileInit();
 
-        var expected = new RemoveHair(m).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendRemoveHairPacket((uint)m.HairSerial);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new RemoveHair(m), ns => ns.SendRemoveHairPacket((uint)m.HairSerial));
     }
 
     [Fact]

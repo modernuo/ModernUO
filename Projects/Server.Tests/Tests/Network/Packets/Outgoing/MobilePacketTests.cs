@@ -6,19 +6,38 @@ namespace Server.Tests.Network;
 [Collection("Sequential Server Tests")]
 public class MobilePacketTests
 {
+    private static Mobile CreateMobileWithStats(uint serial = 0x1, string name = null)
+    {
+        var m = new Mobile((Serial)serial) { Name = name };
+        m.DefaultMobileInit();
+        m.Str = 50;
+        m.Hits = 100;
+        m.Int = 75;
+        m.Mana = 100;
+        m.Dex = 25;
+        m.Stam = 100;
+
+        return m;
+    }
+
+    private sealed class TestPoison : Poison
+    {
+        public TestPoison(int level) : base(level) => Level = level;
+
+        public override string Name => $"Test Poison {Level}";
+        public override int Level { get; }
+        public override PoisonFamily Family => PoisonFamily.Standard;
+
+        public override Timer ConstructTimer(Mobile m) => null;
+    }
+
     [Fact]
     public void TestDeathAnimation()
     {
         var killed = (Serial)0x1;
         var corpse = (Serial)0x1000;
 
-        var expected = new DeathAnimation(killed, corpse).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendDeathAnimation(killed, corpse);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new DeathAnimation(killed, corpse), ns => ns.SendDeathAnimation(killed, corpse));
     }
 
     [Fact]
@@ -27,13 +46,7 @@ public class MobilePacketTests
         var petSerial = (Serial)0x1;
         const bool bonded = true;
 
-        var expected = new BondedStatus(petSerial, bonded).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendBondedStatus(petSerial, bonded);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new BondedStatus(petSerial, bonded), ns => ns.SendBondedStatus(petSerial, bonded));
     }
 
     [Theory]
@@ -46,14 +59,11 @@ public class MobilePacketTests
 
         var noto = 10;
 
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.ProtocolChanges = protocolChanges;
-        var expected = new MobileMoving(m, noto, ns.StygianAbyss).Compile();
-
-        ns.SendMobileMoving(m, noto);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(
+            ns => new MobileMoving(m, noto, ns.StygianAbyss),
+            ns => ns.SendMobileMoving(m, noto),
+            protocolChanges
+        );
     }
 
     [Theory]
@@ -65,13 +75,7 @@ public class MobilePacketTests
         var m = new Mobile((Serial)0x1) { Name = name };
         m.DefaultMobileInit();
 
-        var expected = new MobileName(m).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendMobileName(m);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new MobileName(m), ns => ns.SendMobileName(m));
     }
 
     [Theory]
@@ -81,29 +85,10 @@ public class MobilePacketTests
     {
         var mobile = (Serial)0x1;
 
-        var expected = new MobileAnimation(
-            mobile,
-            action,
-            frameCount,
-            repeatCount,
-            !reverse,
-            repeat,
-            delay
-        ).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendMobileAnimation(
-            mobile,
-            action,
-            frameCount,
-            repeatCount,
-            !reverse,
-            repeat,
-            delay
+        PacketAssert.Sends(
+            new MobileAnimation(mobile, action, frameCount, repeatCount, !reverse, repeat, delay),
+            ns => ns.SendMobileAnimation(mobile, action, frameCount, repeatCount, !reverse, repeat, delay)
         );
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
     }
 
     [Theory]
@@ -113,43 +98,24 @@ public class MobilePacketTests
     {
         var mobile = (Serial)0x1;
 
-        var expected = new NewMobileAnimation(
-            mobile,
-            action,
-            frameCount,
-            delay
-        ).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendNewMobileAnimation(
-            mobile,
-            action,
-            frameCount,
-            delay
+        PacketAssert.Sends(
+            new NewMobileAnimation(mobile, action, frameCount, delay),
+            ns => ns.SendNewMobileAnimation(mobile, action, frameCount, delay)
         );
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
     }
 
+    // Level -1 means not poisoned. Constructed directly: the poison registry is filled by UOContent.
     [Theory]
-    [InlineData("None")]
-    [InlineData("Lesser")]
-    [InlineData("Lethal")]
-    public void TestHealthbarPoison(string pName)
+    [InlineData(-1)]
+    [InlineData(0)]
+    [InlineData(4)]
+    public void TestHealthbarPoison(int level)
     {
-        var p = Poison.GetPoison(pName);
         var m = new Mobile((Serial)0x1);
         m.DefaultMobileInit();
-        m.Poison = p;
+        m.Poison = level < 0 ? null : new TestPoison(level);
 
-        var expected = new HealthbarPoison(m).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendMobileHealthbar(m, Healthbar.Poison);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new HealthbarPoison(m), ns => ns.SendMobileHealthbar(m, Healthbar.Poison));
     }
 
     [Theory]
@@ -164,13 +130,7 @@ public class MobilePacketTests
         m.Blessed = isBlessed;
         m.YellowHealthbar = isYellowHealth;
 
-        var expected = new HealthbarYellow(m).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendMobileHealthbar(m, Healthbar.Yellow);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new HealthbarYellow(m), ns => ns.SendMobileHealthbar(m, Healthbar.Yellow));
     }
 
     [Theory]
@@ -178,22 +138,9 @@ public class MobilePacketTests
     [InlineData(false)]
     public void TestMobileStatusCompact(bool canBeRenamed)
     {
-        var m = new Mobile((Serial)0x1) { Name = "Random Mobile 1" };
-        m.DefaultMobileInit();
-        m.Str = 50;
-        m.Hits = 100;
-        m.Int = 75;
-        m.Mana = 100;
-        m.Dex = 25;
-        m.Stam = 100;
+        var m = CreateMobileWithStats(name: "Random Mobile 1");
 
-        var expected = new MobileStatusCompact(canBeRenamed, m).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendMobileStatusCompact(m, canBeRenamed);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new MobileStatusCompact(canBeRenamed, m), ns => ns.SendMobileStatusCompact(m, canBeRenamed));
     }
 
     [Theory]
@@ -201,32 +148,14 @@ public class MobilePacketTests
     [InlineData(ProtocolChanges.Version502b)]
     public void TestMobileStatus(ProtocolChanges changes)
     {
-        var beholder = new Mobile((Serial)0x1) { Name = "Random Mobile 1" };
-        beholder.DefaultMobileInit();
-        beholder.Str = 50;
-        beholder.Hits = 100;
-        beholder.Int = 75;
-        beholder.Mana = 100;
-        beholder.Dex = 25;
-        beholder.Stam = 100;
+        var beholder = CreateMobileWithStats(0x1, "Random Mobile 1");
+        var beheld = CreateMobileWithStats(0x2, "Random Mobile 2");
 
-        var beheld = new Mobile((Serial)0x2) { Name = "Random Mobile 2" };
-        beheld.DefaultMobileInit();
-        beheld.Str = 50;
-        beheld.Hits = 100;
-        beheld.Int = 75;
-        beheld.Mana = 100;
-        beheld.Dex = 25;
-        beheld.Stam = 100;
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.ProtocolChanges = changes;
-
-        var expected = new MobileStatus(beholder, beheld, ns).Compile();
-        ns.SendMobileStatus(beholder, beheld);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(
+            ns => new MobileStatus(beholder, beheld, ns),
+            ns => ns.SendMobileStatus(beholder, beheld),
+            changes
+        );
     }
 
     [Theory]
@@ -240,33 +169,32 @@ public class MobilePacketTests
         int mobileStatusVersion
     )
     {
-        var expansionInfo = ExpansionInfo.CoreExpansion;
         var oldExpansion = Core.Expansion;
+        var expansionInfo = ExpansionInfo.GetInfo(expansion);
         var oldVersion = expansionInfo.MobileStatusVersion;
-        Core.Expansion = expansion;
-        ExpansionInfo.CoreExpansion.MobileStatusVersion = mobileStatusVersion;
 
-        var m = new Mobile((Serial)0x1) { Name = "Random Mobile 1" };
-        m.DefaultMobileInit();
-        m.Str = 50;
-        m.Hits = 100;
-        m.Int = 75;
-        m.Mana = 100;
-        m.Dex = 25;
-        m.Stam = 100;
+        try
+        {
+            Core.Expansion = expansion;
+            expansionInfo.MobileStatusVersion = mobileStatusVersion;
 
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.ProtocolChanges = changes;
-        ns.Version = new ClientVersion(version);
-        ns.Flags = clientFlags;
+            var m = CreateMobileWithStats(name: "Random Mobile 1");
 
-        var expected = new MobileStatusExtended(m, ns).Compile();
-        ns.SendMobileStatus(m, m);
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.ProtocolChanges = changes;
+            ns.Version = new ClientVersion(version);
+            ns.Flags = clientFlags;
 
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
-        Core.Expansion = oldExpansion;
-        expansionInfo.MobileStatusVersion = oldVersion;
+            var expected = new MobileStatusExtended(m, ns).Compile();
+            ns.SendMobileStatus(m, m);
+
+            AssertThat.Equal(ns.SendBuffer.GetReadSpan(), expected);
+        }
+        finally
+        {
+            Core.Expansion = oldExpansion;
+            expansionInfo.MobileStatusVersion = oldVersion;
+        }
     }
 
     [Theory]
@@ -278,14 +206,7 @@ public class MobilePacketTests
         m.DefaultMobileInit();
         m.SolidHueOverride = solidHueOverride;
 
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.ProtocolChanges = changes;
-
-        var expected = new MobileUpdate(m, ns.StygianAbyss).Compile();
-        ns.SendMobileUpdate(m);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(ns => new MobileUpdate(m, ns.StygianAbyss), ns => ns.SendMobileUpdate(m), changes);
     }
 
     [Theory]
@@ -333,170 +254,82 @@ public class MobilePacketTests
         beheld.FacialHairItemID = facialHairItemId;
         beheld.FacialHairHue = facialHairHue;
 
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.ProtocolChanges = changes;
-
-        var expected = new MobileIncoming(ns, beholder, beheld).Compile();
-        ns.SendMobileIncoming(beholder, beheld);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(
+            ns => new MobileIncoming(ns, beholder, beheld),
+            ns => ns.SendMobileIncoming(beholder, beheld),
+            changes
+        );
     }
 
     [Fact]
     public void TestMobileHits()
     {
-        var m = new Mobile((Serial)0x1);
-        m.DefaultMobileInit();
-        m.Str = 100;
-        m.Hits = 100;
+        var m = CreateMobileWithStats();
 
-        var expected = new MobileHits(m).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendMobileHits(m);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new MobileHits(m), ns => ns.SendMobileHits(m));
     }
 
     [Fact]
     public void TestMobileHitsN()
     {
-        var m = new Mobile((Serial)0x1);
-        m.DefaultMobileInit();
-        m.Str = 100;
-        m.Hits = 100;
+        var m = CreateMobileWithStats();
 
-        var expected = new MobileHitsN(m).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendMobileHits(m, true);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new MobileHitsN(m), ns => ns.SendMobileHits(m, true));
     }
 
     [Fact]
     public void TestMobileMana()
     {
-        var m = new Mobile((Serial)0x1);
-        m.DefaultMobileInit();
-        m.Int = 75;
-        m.Mana = 100;
+        var m = CreateMobileWithStats();
 
-        var expected = new MobileMana(m).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendMobileMana(m);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new MobileMana(m), ns => ns.SendMobileMana(m));
     }
 
     [Fact]
     public void TestMobileManaN()
     {
-        var m = new Mobile((Serial)0x1);
-        m.DefaultMobileInit();
-        m.Int = 75;
-        m.Mana = 100;
+        var m = CreateMobileWithStats();
 
-        var expected = new MobileManaN(m).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendMobileMana(m, true);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new MobileManaN(m), ns => ns.SendMobileMana(m, true));
     }
 
     [Fact]
     public void TestMobileStam()
     {
-        var m = new Mobile((Serial)0x1);
-        m.DefaultMobileInit();
-        m.Dex = 75;
-        m.Stam = 100;
+        var m = CreateMobileWithStats();
 
-        var expected = new MobileStam(m).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendMobileStam(m);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new MobileStam(m), ns => ns.SendMobileStam(m));
     }
 
     [Fact]
     public void TestMobileStamN()
     {
-        var m = new Mobile((Serial)0x1);
-        m.DefaultMobileInit();
-        m.Dex = 75;
-        m.Stam = 100;
+        var m = CreateMobileWithStats();
 
-        var expected = new MobileStamN(m).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendMobileStam(m, true);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new MobileStamN(m), ns => ns.SendMobileStam(m, true));
     }
 
     [Fact]
     public void TestMobileAttributes()
     {
-        var m = new Mobile((Serial)0x1);
-        m.DefaultMobileInit();
-        m.Str = 50;
-        m.Hits = 100;
-        m.Int = 75;
-        m.Mana = 100;
-        m.Dex = 25;
-        m.Stam = 100;
+        var m = CreateMobileWithStats();
 
-        var expected = new MobileAttributes(m).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendMobileAttributes(m);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new MobileAttributes(m), ns => ns.SendMobileAttributes(m));
     }
 
     [Fact]
     public void TestMobileAttributesN()
     {
-        var m = new Mobile((Serial)0x1);
-        m.DefaultMobileInit();
-        m.Str = 50;
-        m.Hits = 100;
-        m.Int = 75;
-        m.Mana = 100;
-        m.Dex = 25;
-        m.Stam = 100;
+        var m = CreateMobileWithStats();
 
-        var expected = new MobileAttributesN(m).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendMobileAttributes(m, true);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new MobileAttributesN(m), ns => ns.SendMobileAttributes(m, true));
     }
 
     [Fact]
     public void TestRemoveEntity()
     {
         var e = (Serial)0x1000;
-        var expected = new RemoveEntity(e).Compile();
 
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendRemoveEntity(e);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new RemoveEntity(e), ns => ns.SendRemoveEntity(e));
     }
 }
