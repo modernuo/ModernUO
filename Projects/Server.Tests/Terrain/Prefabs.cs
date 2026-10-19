@@ -43,9 +43,9 @@ public sealed class Prefab
 }
 
 /// <summary>
-/// The shared scenes. Each lives in its own part of the region (256, 256)-(1280, 1280), which no test
-/// uses for bespoke terrain, and they never overlap. <see cref="MapEdgeSea"/> is the exception: it has to
-/// touch the map edge.
+/// The shared scenes. Each lives in its own part of the region (256, 256)-(1280, 1280), and they never
+/// overlap. <see cref="MapEdgeSea"/> is the exception: it has to touch the map edge. Bespoke terrain belongs
+/// outside that region; only tests about prefabs themselves stamp over one.
 /// </summary>
 public static class Prefabs
 {

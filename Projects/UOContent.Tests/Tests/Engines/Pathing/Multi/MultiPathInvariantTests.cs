@@ -36,7 +36,6 @@ public class MultiPathInvariantTests : IDisposable
     [InlineData(1494, 1606, 1512, 1606)] // E-W across the footprint
     public void Find_CacheOn_EqualsCacheOff_WithHousePresent(int sx, int sy, int gx, int gy)
     {
-        // Without the client's multi data the house has no footprint and nothing stands in the way.
         var map = Map.Maps[MapId];
         Assert.NotNull(map);
 
@@ -111,9 +110,8 @@ public class MultiPathInvariantTests : IDisposable
         var map = Map.Maps[MapId];
         Assert.NotNull(map);
 
-        // Open area at (1480,1620,z=20): paths exist in all 8 directions (probe confirmed).
-        // N-S route: start=(1480,1630) goal=(1480,1610). House at (1480,1620) on direct line.
-        // Detour exists E (~1488+) and W (~1472-). Both cache-on and cache-off must agree.
+        // Flat default ground. N-S route: start=(1480,1630) goal=(1480,1610), house at (1480,1620) on
+        // the direct line; the detour runs round its east or west wall. Cache-on and cache-off must agree.
         const int hx = 1480, hy = 1620;
         const int sx = 1480, sy = 1630;
         const int gx = 1480, gy = 1610;

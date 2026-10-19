@@ -14,7 +14,7 @@ namespace UOContent.Tests;
 public class FishingTests
 {
     [Theory]
-    [InlineData(32, 32, true)]  // the middle of the sea: land 33 tiles away
+    [InlineData(32, 32, true)]  // the middle of the sea: land 32 tiles away
     [InlineData(13, 32, true)]  // land 14 tiles west
     [InlineData(12, 32, false)] // land 13 tiles west
     [InlineData(50, 32, true)]  // land 14 tiles east

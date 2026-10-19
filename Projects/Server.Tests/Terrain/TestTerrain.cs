@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.CompilerServices;
 using Server.Engines.Pathing.Cache;
 
 namespace Server.Tests.Terrain;
@@ -20,16 +22,20 @@ public static class TestTerrain
 
     internal static bool Sealed { get; set; }
 
-    public static TerrainScope Scope()
+    /// <param name="caller">Filled in by the compiler; names the opener if the scope is left open.</param>
+    /// <param name="callerFile">Filled in by the compiler.</param>
+    public static TerrainScope Scope([CallerMemberName] string caller = null, [CallerFilePath] string callerFile = null)
     {
         if (_scope != null)
         {
-            throw new InvalidOperationException("A terrain scope is already open; dispose it first.");
+            throw new InvalidOperationException(
+                $"A terrain scope opened by {_scope.Opener} is still open; dispose it (a using) first."
+            );
         }
 
         // Cached step masks describe the terrain as it was; drop them so nothing serves the old cells.
         StepCache.Instance.Clear();
-        return _scope = new TerrainScope();
+        return _scope = new TerrainScope($"{Path.GetFileNameWithoutExtension(callerFile)}.{caller}");
     }
 
     public static void SetLand(int x, int y, short id, sbyte z)
@@ -191,9 +197,10 @@ public sealed class TerrainScope : IDisposable
 
     private bool _disposed;
 
-    internal TerrainScope()
-    {
-    }
+    internal TerrainScope(string opener) => Opener = opener;
+
+    /// <summary>The test that opened this scope, as Class.Method.</summary>
+    public string Opener { get; }
 
     public void Dispose()
     {

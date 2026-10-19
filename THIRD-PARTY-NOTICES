@@ -15,12 +15,14 @@ with or endorsed by Electronic Arts.
 
 ModernUO's test suites generate their own tile data, map terrain and multi
 footprints so they can test ModernUO's code without any game client installed.
-To do that, the tests reproduce the layout of some Ultima Online client file
-formats and reuse a small number of tile and multi identifiers that ModernUO's
-game logic refers to. The values attached to those identifiers are invented for
-testing. No client files are distributed with ModernUO, and none are required to
-build ModernUO or run its tests. We believe this limited use, solely for
-interoperability and testing, is fair use.
+To do that, the tests reproduce the layout of the client's tile data file
+(tiledata.mul) and reuse a small number of tile and multi identifiers that
+ModernUO's game logic refers to. The entries for those identifiers are written
+for the tests and carry only the properties that logic checks, such as a water
+tile being wet; the terrain and multi shapes are invented. No client files are
+distributed with ModernUO, and none are required to build ModernUO or run its
+tests. We believe this limited use, solely for interoperability and testing, is
+fair use.
 
 License notice for dotnet
 ---------------------------

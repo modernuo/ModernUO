@@ -20,7 +20,6 @@ public class MultiCacheUsedTests : IDisposable
     [Fact]
     public void PathNearMulti_IncrementsMultiLocalHits()
     {
-        // Without the client's multi data the house has no footprint for the path to skirt.
         var map = Map.Maps[MapId];
         map.GetAverageZ(1480, 1620, out _, out var z, out _);
         var houseLoc = new Point3D(1480, 1620, (sbyte)z);

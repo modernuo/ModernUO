@@ -6,9 +6,9 @@ namespace Server.Tests.Terrain;
 [Collection("Sequential Server Tests")]
 public class TestTerrainTests
 {
-    // Inside the prefab region but clear of every prefab Prefabs.All defines.
-    private const int X = 1200;
-    private const int Y = 1200;
+    // Default ground outside the prefab region.
+    private const int X = 1400;
+    private const int Y = 1400;
 
     [Fact]
     public void StampingOneTile_KeepsTheRestOfTheBlock()
@@ -88,7 +88,8 @@ public class TestTerrainTests
     {
         using var scope = TestTerrain.Scope();
 
-        Assert.Throws<InvalidOperationException>(() => TestTerrain.Scope());
+        var error = Assert.Throws<InvalidOperationException>(() => TestTerrain.Scope());
+        Assert.Contains($"{nameof(TestTerrainTests)}.{nameof(NestedScopes_Throw)}", error.Message);
     }
 
     [Fact]

@@ -58,7 +58,6 @@ public class CanFitItemTests
     [Fact]
     public void CanFitItem_SurfaceImpassableMultiIsValidSurface()
     {
-
         var map = Map.Felucca;
         const int x = 1700;
         const int y = 1700;
@@ -89,7 +88,6 @@ public class CanFitItemTests
     [Fact]
     public void CanFitItem_CanFitDoesNotAllowSurfaceImpassable()
     {
-
         var map = Map.Felucca;
         const int x = 1750;
         const int y = 1750;

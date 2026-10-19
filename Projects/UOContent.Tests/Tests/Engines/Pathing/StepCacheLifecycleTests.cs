@@ -290,7 +290,7 @@ public class StepCacheLifecycleTests : IDisposable
         offsets[CellIndex(PlainX, PlainY)] = 0;
         chunk.SetStrata(offsets, OneStratum(zCenter: 42));
 
-        // 10 is more than StepHeight from the only stratum, so nothing can answer.
+        // The plain is more than StepHeight below the only stratum (Z 42), so nothing can answer.
         var lookup = cache.TryGetMask(map, PlainX, PlainY, sourceZ: PlainZ);
 
         Assert.False(lookup.IsHit);

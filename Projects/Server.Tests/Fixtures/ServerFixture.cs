@@ -1,4 +1,4 @@
-﻿using Server.Tests.Terrain;
+using Server.Tests.Terrain;
 using Xunit;
 
 namespace Server.Tests;

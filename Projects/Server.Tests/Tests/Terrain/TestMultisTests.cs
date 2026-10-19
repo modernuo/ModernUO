@@ -11,16 +11,12 @@ public class TestMultisTests
     [InlineData(TestMultis.SmallBoatNorth)]
     public void Seed_RegistersFootprint(int multiID)
     {
-        TestMultis.Seed();
-
         Assert.NotEmpty(MultiData.GetComponents(multiID).List);
     }
 
     [Fact]
     public void Footprints_DifferBetweenGuildHouseAndTower()
     {
-        TestMultis.Seed();
-
         var house = MultiData.GetComponents(TestMultis.GuildHouse);
         var tower = MultiData.GetComponents(TestMultis.Tower);
         Assert.NotEqual(house.Width, tower.Width);
@@ -29,8 +25,6 @@ public class TestMultisTests
     [Fact]
     public void GuildHouse_HasAnOpenDoorway()
     {
-        TestMultis.Seed();
-
         var house = MultiData.GetComponents(TestMultis.GuildHouse);
         var doorway = house.Tiles[house.Center.X][house.Height - 1];
         Assert.Single(doorway);

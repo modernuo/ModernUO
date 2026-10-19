@@ -93,25 +93,22 @@ public class MultiMaskCacheTests : IDisposable
     [Fact]
     public void PathThroughHouseInterior_IncrementsMultiMaskCacheHits()
     {
-        // A flat, clear spot, so a house there is footprint-clean and its interior cells serve from the cache.
-        const int CleanX = 1560;
-        const int CleanY = 1616;
-
+        // On flat default ground the house is footprint-clean, so its interior cells serve from the cache.
         var map = Map.Maps[MapId];
-        map.GetAverageZ(CleanX, CleanY, out _, out var z, out _);
-        var houseLoc = new Point3D(CleanX, CleanY, (sbyte)z);
+        map.GetAverageZ(PlaceX, PlaceY, out _, out var z, out _);
+        var houseLoc = new Point3D(PlaceX, PlaceY, (sbyte)z);
         var multi = new TestMulti(GuildHouseId);
         Server.Systems.FeatureFlags.ContentFeatureFlags.BitmapPathfindingCache = true;
-        var mover = MultiTestSupport.GetWalkerOracle(map, new Point3D(CleanX, CleanY + 10, (sbyte)z));
+        var mover = MultiTestSupport.GetWalkerOracle(map, new Point3D(PlaceX, PlaceY + 10, (sbyte)z));
         try
         {
             multi.MoveToWorld(houseLoc, map);
             Assert.True(MultiMaskCache.ComputeFootprintClean(map, multi),
-                "precondition: (1560,1616) must be footprint-clean for the cache to serve");
+                "precondition: the house must be footprint-clean for the cache to serve");
             StepCache.Instance.Clear();
 
-            var start = new Point3D(CleanX, CleanY + 10, (sbyte)z);
-            var goal = new Point3D(CleanX, CleanY - 10, (sbyte)z);
+            var start = new Point3D(PlaceX, PlaceY + 10, (sbyte)z);
+            var goal = new Point3D(PlaceX, PlaceY - 10, (sbyte)z);
             // First pass builds the interior cache (live synth); second pass should hit it.
             Server.PathAlgorithms.BitmapAStarAlgorithm.Instance.Find(mover, map, start, goal);
 
@@ -145,7 +142,7 @@ public class MultiMaskCacheTests : IDisposable
             // The rock pokes through the floor → footprint dirty → cache must NOT serve.
             multi.MoveToWorld(new Point3D(PlaceX, PlaceY, (sbyte)z), map);
             Assert.False(MultiMaskCache.ComputeFootprintClean(map, multi),
-                "precondition: (1480,1620) must be footprint-dirty for this test to be meaningful");
+                "precondition: the rock must make the house footprint-dirty for this test to be meaningful");
             StepCache.Instance.Clear();
 
             var start = new Point3D(PlaceX, PlaceY + 10, (sbyte)z);
@@ -211,22 +208,18 @@ public class MultiMaskCacheTests : IDisposable
     [Fact]
     public void ComputeFootprintClean_TrueAtNormalPlacement_FalseWhenSunk()
     {
-        // A flat, clear spot for the clean assertion.
-        const int CleanX = 1560;
-        const int CleanY = 1616;
-
         StepCache.Instance.Clear();
         var map = Map.Maps[MapId];
-        map.GetAverageZ(CleanX, CleanY, out _, out var ground, out _);
+        map.GetAverageZ(PlaceX, PlaceY, out _, out var ground, out _);
 
         var normal = new TestMulti(GuildHouseId);
         var sunk = new TestMulti(GuildHouseId);
         try
         {
-            normal.MoveToWorld(new Point3D(CleanX, CleanY, (sbyte)ground), map);
+            normal.MoveToWorld(new Point3D(PlaceX, PlaceY, (sbyte)ground), map);
             Assert.True(MultiMaskCache.ComputeFootprintClean(map, normal));
 
-            sunk.MoveToWorld(new Point3D(CleanX + 60, CleanY, (sbyte)(ground - 40)), map);
+            sunk.MoveToWorld(new Point3D(PlaceX + 60, PlaceY, (sbyte)(ground - 40)), map);
             Assert.False(MultiMaskCache.ComputeFootprintClean(map, sunk));
         }
         finally
