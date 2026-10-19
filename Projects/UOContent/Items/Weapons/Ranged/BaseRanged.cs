@@ -206,7 +206,7 @@ namespace Server.Items
             var result = base.OnCraft(quality, makersMark, from, craftSystem, typeRes, tool, craftItem, resHue);
             if (Core.ML)
             {
-                ApplyWoodBonuses(typeRes);
+                ApplyWoodBonuses(typeRes ?? craftItem.Resources[0].ItemType);
             }
 
             return result;
