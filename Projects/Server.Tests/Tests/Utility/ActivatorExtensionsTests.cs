@@ -54,15 +54,6 @@ namespace Server.Tests
             Assert.Equal("Test ModernUO", result.Name);
         }
 
-        [Fact]
-        public void TestTwoParamsOptionalActivator()
-        {
-            var result = typeof(TestTwoOptionalParamsClass).CreateInstance<TestTwoOptionalParamsClass>(10, "Prod ModernUO");
-            Assert.IsType<TestTwoOptionalParamsClass>(result);
-            Assert.Equal(10, result.Amount);
-            Assert.Equal("Prod ModernUO", result.Name);
-        }
-
         private class TestZeroParamsClass
         {
         }

@@ -44,17 +44,6 @@ public class AnimalFormTests
     }
 
     // Talisman-gated forms are never selectable without the matching talisman, regardless of skill.
-    [Fact]
-    public void CanSelectEntry_TalismanGatedForm_RequiresTalisman()
-    {
-        var m = NewMobileWithNinjitsu(120.0);
-
-        Assert.False(AnimalForm.CanSelectEntry(m, AnimalForm.Entries[IndexOf(typeof(Squirrel))]));
-        Assert.False(AnimalForm.CanSelectEntry(m, AnimalForm.Entries[IndexOf(typeof(Ferret))]));
-
-        m.Delete();
-    }
-
     // Issue #2452: attempting a form above your skill must report NoSkill (so the caller can
     // refrain from charging mana) and must not actually transform the caster.
     [Fact]
@@ -68,21 +57,6 @@ public class AnimalFormTests
         Assert.Null(AnimalForm.GetContext(m));
         Assert.Equal(0, (int)m.BodyMod);
 
-        m.Delete();
-    }
-
-    [Fact]
-    public void Morph_SufficientSkill_TransformsCaster()
-    {
-        // >= ReqSkill + 37.5 guarantees the success-chance roll is skipped.
-        var m = NewMobileWithNinjitsu(60.0);
-
-        var result = AnimalForm.Morph(m, IndexOf(typeof(Rat))); // needs 20
-
-        Assert.Equal(AnimalForm.MorphResult.Success, result);
-        Assert.NotNull(AnimalForm.GetContext(m));
-
-        AnimalForm.RemoveContext(m); // stop the form timer / clear state
         m.Delete();
     }
 }

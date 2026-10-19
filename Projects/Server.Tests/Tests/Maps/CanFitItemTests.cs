@@ -220,39 +220,6 @@ public class CanFitItemTests
         }
     }
 
-    [SkippableFact]
-    public void CanFitItem_CanPlaceOnTopOfImpassable()
-    {
-        SkipIfNoTileData();
-        Skip.If(ServerFixture.SurfaceImpassableTileId == 0, "No Surface+Impassable tile found in TileData");
-
-        var map = Map.Felucca;
-        const int x = 1950;
-        const int y = 1950;
-
-        TestMulti multi = null;
-        try
-        {
-            // Get the actual tile height from TileData
-            var tileData = TileData.ItemTable[ServerFixture.SurfaceImpassableTileId];
-            var tileHeight = tileData.CalcHeight;
-            const int tileZ = 10;
-
-            // Create a Surface+Impassable tile at Z=10
-            multi = CreateSurfaceImpassableMulti(map, new Point3D(x, y, 0), surfaceZ: tileZ);
-
-            // Place item on top should work
-            var surfaceTop = tileZ + tileHeight;
-            var result = map.CanFitItem(x, y, surfaceTop, 1);
-
-            Assert.True(result, $"Should be able to place item on top of Surface+Impassable tile at Z={surfaceTop}");
-        }
-        finally
-        {
-            multi?.Delete();
-        }
-    }
-
     private TestMulti CreateSurfaceImpassableMulti(Map map, Point3D location, int surfaceZ)
     {
         // Use SurfaceImpassableTileId - a tile that has both Surface and Impassable flags

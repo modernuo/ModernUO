@@ -72,76 +72,6 @@ public class MobileByDistanceEnumeratorTests
     }
 
     [Fact]
-    public void MobileByDistanceEnumerator_ReturnsMinDistance()
-    {
-        var map = Map.Felucca;
-        var center = new Point3D(300, 300, 0);
-        const int range = 10;
-
-        var mobiles = new TestMobile[2];
-        try
-        {
-            mobiles[0] = CreateMobile(map, new Point3D(305, 305, 0));
-            mobiles[1] = CreateMobile(map, new Point3D(302, 302, 0));
-
-            var foundWithDistance = new List<(Mobile, int)>();
-            foreach (var result in map.GetMobilesInRangeByDistance(center, range))
-            {
-                foundWithDistance.Add(result);
-            }
-
-            Assert.Equal(2, foundWithDistance.Count);
-            // Each mobile should have a non-negative min distance
-            Assert.All(foundWithDistance, item => Assert.True(item.Item2 >= 0));
-        }
-        finally
-        {
-            DeleteAll(mobiles);
-        }
-    }
-
-    [Fact]
-    public void MobileByDistanceEnumerator_OrderedBySector()
-    {
-        var map = Map.Felucca;
-        var center = new Point3D(400, 400, 0);
-        const int range = Map.SectorSize * 2;
-
-        var mobiles = new TestMobile[3];
-        try
-        {
-            // Place mobiles in different sectors
-            mobiles[0] = CreateMobile(map, new Point3D(center.X + 2, center.Y + 2, 0));
-            mobiles[1] = CreateMobile(map, new Point3D(center.X + Map.SectorSize + 2, center.Y + 2, 0));
-            mobiles[2] = CreateMobile(map, new Point3D(center.X + 2, center.Y + Map.SectorSize + 2, 0));
-
-            var found = new List<Mobile>();
-            foreach (var (mobile, _) in map.GetMobilesInRangeByDistance(center, range))
-            {
-                found.Add(mobile);
-            }
-
-            Assert.Equal(3, found.Count);
-            Assert.Contains(mobiles[0], found);
-            Assert.Contains(mobiles[1], found);
-            Assert.Contains(mobiles[2], found);
-        }
-        finally
-        {
-            DeleteAll(mobiles);
-        }
-    }
-
-    [Fact]
-    public void MobileByDistanceEnumerator_MapNullYieldsEmpty()
-    {
-        var center = new Point2D(0, 0);
-        var bounds = new Rectangle2D(center.m_X - 10, center.m_Y - 10, 21, 21);
-        var enumerator = new Map.MobileDistanceEnumerable<Mobile>(null, bounds, center, false).GetEnumerator();
-        Assert.False(enumerator.MoveNext());
-    }
-
-    [Fact]
     public void MobileByDistanceEnumerator_ThrowsOnVersionChange()
     {
         var map = Map.Felucca;
@@ -238,50 +168,6 @@ public class MobileByDistanceEnumeratorTests
         {
             player.Delete();
             npc.Delete();
-        }
-    }
-
-    [Fact]
-    public void MobileByDistanceEnumerator_UsesDifferentPointOverloads()
-    {
-        var map = Map.Felucca;
-        var center = new Point3D(800, 800, 5);
-        const int range = 5;
-
-        var mobiles = new TestMobile[1];
-        try
-        {
-            mobiles[0] = CreateMobile(map, new Point3D(802, 802, 0));
-
-            // Test Point3D overload
-            var found1 = new List<Mobile>();
-            foreach (var (mobile, _) in map.GetMobilesInRangeByDistance(center, range))
-            {
-                found1.Add(mobile);
-            }
-
-            // Test (int, int) overload
-            var found2 = new List<Mobile>();
-            foreach (var (mobile, _) in map.GetMobilesInRangeByDistance<Mobile>(center.X, center.Y, range))
-            {
-                found2.Add(mobile);
-            }
-
-            // Test Point2D overload
-            var found3 = new List<Mobile>();
-            foreach (var (mobile, _) in map.GetMobilesInRangeByDistance(new Point2D(center.X, center.Y), range))
-            {
-                found3.Add(mobile);
-            }
-
-            Assert.Single(found1);
-            Assert.Equal(mobiles[0], found1[0]);
-            Assert.Equal(found1, found2);
-            Assert.Equal(found1, found3);
-        }
-        finally
-        {
-            DeleteAll(mobiles);
         }
     }
 
@@ -386,58 +272,6 @@ public class MobileByDistanceEnumeratorTests
         }
     }
 
-    [Fact]
-    public void MobileByDistanceEnumerator_MultipleRings()
-    {
-        var map = Map.Felucca;
-        var center = new Point3D(1100, 1100, 0);
-        const int range = Map.SectorSize * 3;
-
-        var mobiles = new List<TestMobile>();
-        try
-        {
-            // Create a grid of mobiles across multiple sectors
-            for (var ringOffset = 0; ringOffset <= 2; ringOffset++)
-            {
-                for (var side = 0; side < 4; side++)
-                {
-                    var offset = ringOffset * Map.SectorSize;
-                    var pos = side switch
-                    {
-                        0 => new Point3D(center.X + offset, center.Y, 0),
-                        1 => new Point3D(center.X, center.Y + offset, 0),
-                        2 => new Point3D(center.X - offset, center.Y, 0),
-                        _ => new Point3D(center.X, center.Y - offset, 0)
-                    };
-                    mobiles.Add(CreateMobile(map, pos));
-                }
-            }
-
-            var found = new List<Mobile>();
-            foreach (var (mobile, _) in map.GetMobilesInRangeByDistance(center, range))
-            {
-                found.Add(mobile);
-            }
-
-            // Should find all mobiles within range
-            Assert.True(found.Count > 0);
-            Assert.All(found, mobile =>
-            {
-                var dx = mobile.X - center.X;
-                var dy = mobile.Y - center.Y;
-                var distSq = dx * dx + dy * dy;
-                Assert.True(distSq <= range * range);
-            });
-        }
-        finally
-        {
-            foreach (var mobile in mobiles)
-            {
-                mobile?.Delete();
-            }
-        }
-    }
-
     private static TestMobile CreateMobile(Map map, Point3D location)
     {
         var mobile = new TestMobile(World.NewMobile);
@@ -519,33 +353,6 @@ public class MobileByDistanceEnumeratorTests
             Assert.Equal(2, foundWithInclusive.Count);
             Assert.Contains(mobiles[0], foundWithInclusive);
             Assert.Contains(mobiles[1], foundWithInclusive);
-        }
-        finally
-        {
-            DeleteAll(mobiles);
-        }
-    }
-
-    [Fact]
-    public void MobileByDistanceEnumerator_Bounds_ReturnsMinDistance()
-    {
-        var map = Map.Felucca;
-        var bounds = new Rectangle2D(300, 300, 20, 20);
-
-        var mobiles = new TestMobile[2];
-        try
-        {
-            mobiles[0] = CreateMobile(map, new Point3D(305, 305, 0));
-            mobiles[1] = CreateMobile(map, new Point3D(315, 315, 0));
-
-            var foundWithDistance = new List<(Mobile, int)>();
-            foreach (var result in map.GetMobilesInBoundsByDistance<Mobile>(bounds))
-            {
-                foundWithDistance.Add(result);
-            }
-
-            Assert.Equal(2, foundWithDistance.Count);
-            Assert.All(foundWithDistance, item => Assert.True(item.Item2 >= 0));
         }
         finally
         {

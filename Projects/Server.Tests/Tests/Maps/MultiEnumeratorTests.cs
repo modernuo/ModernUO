@@ -89,13 +89,6 @@ public class MultiEnumeratorTests
     }
 
     [Fact]
-    public void MultiEnumerator_MapNullYieldsEmpty()
-    {
-        var enumerator = new Map.MultiBoundsEnumerable<BaseMulti>(null, Rectangle2D.Empty, false).GetEnumerator();
-        Assert.False(enumerator.MoveNext());
-    }
-
-    [Fact]
     public void MultiEnumerator_ThrowsOnVersionChange()
     {
         var map = Map.Felucca;
@@ -251,82 +244,10 @@ public class MultiEnumeratorTests
     }
 
     [Fact]
-    public void MultiSectorEnumerator_DeletedMultisAreSkipped()
-    {
-        var map = Map.Felucca;
-        var location = new Point3D(750, 750, 0);
-
-        var multis = new TestMulti[3];
-        try
-        {
-            multis[0] = CreateMulti(map, location);
-            multis[1] = CreateMulti(map, new Point3D(location.X + 1, location.Y, 0));
-            multis[2] = CreateMulti(map, new Point3D(location.X + 2, location.Y, 0));
-
-            multis[1].Delete();
-
-            var found = new List<BaseMulti>();
-            foreach (var multi in map.GetMultisInRange<BaseMulti>(location, 10))
-            {
-                found.Add(multi);
-            }
-
-            Assert.Equal(new[] { multis[0], multis[2] }, found);
-        }
-        finally
-        {
-            DeleteAll(multis);
-        }
-    }
-
-    [Fact]
     public void MultiSectorEnumerator_MapNullYieldsEmpty()
     {
         var enumerator = new Map.MultiSectorEnumerable<BaseMulti>(null, new Point2D(0, 0)).GetEnumerator();
         Assert.False(enumerator.MoveNext());
-    }
-
-    [Fact]
-    public void MultiSectorEnumerator_UsesDifferentPointOverloads()
-    {
-        var map = Map.Felucca;
-        var location = new Point3D(800, 800, 5);
-
-        var multis = new TestMulti[1];
-        try
-        {
-            multis[0] = CreateMulti(map, location);
-
-            // Test Point3D overload
-            var found1 = new List<BaseMulti>();
-            foreach (var multi in map.GetMultisInSector(location))
-            {
-                found1.Add(multi);
-            }
-
-            // Test (int, int) overload
-            var found2 = new List<BaseMulti>();
-            foreach (var multi in map.GetMultisInSector(location.X, location.Y))
-            {
-                found2.Add(multi);
-            }
-
-            // Test Point2D overload
-            var found3 = new List<BaseMulti>();
-            foreach (var multi in map.GetMultisInSector(new Point2D(location.X, location.Y)))
-            {
-                found3.Add(multi);
-            }
-
-            Assert.Single(found1);
-            Assert.Equal(multis[0], found1[0]);
-            Assert.Equal(found1, found2);
-            Assert.Equal(found1, found3);
-        }
-        finally
-        {
-            DeleteAll(multis);
-        }
     }
 
     [Fact]

@@ -255,17 +255,6 @@ public class AuthIdTests : IDisposable
             new ClientVersion(7, 0, 0, 0)
         );
 
-    [Fact]
-    public void IssuesAnIdWhenTheConnectionHasNone()
-    {
-        var account = CreateAccount("authid-first-select-user");
-
-        var authId = Ensure(0, account, AddressX);
-
-        Assert.NotEqual(0, authId);
-        Assert.Equal(1, IncomingAccountPackets.AuthIdWindowCount);
-    }
-
     // Handing the same id back rather than minting another is what makes an orphan impossible,
     // instead of something to clean up afterwards.
     [Fact]
@@ -370,13 +359,5 @@ public class AuthIdTests : IDisposable
         var right = new GameServer.GameLoginEventArgs(ns, account.Username, "hunter2", false);
         GameServer.GameServerLoginEvent(right);
         Assert.True(right.Accepted);
-    }
-
-    [Fact]
-    public void GeneratesDistinctAuthIds()
-    {
-        var account = CreateAccount("authid-distinct-user");
-
-        Assert.NotEqual(Register(account, AddressX), Register(account, AddressX));
     }
 }

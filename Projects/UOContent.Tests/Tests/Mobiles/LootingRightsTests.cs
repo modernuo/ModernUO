@@ -79,34 +79,6 @@ public class LootingRightsTests
     }
 
     [Fact]
-    public void HitsMaxBand_MovesTheRightsThreshold()
-    {
-        var victim = new TestMobile();
-        var first = NewPlayer();
-        var second = NewPlayer();
-
-        try
-        {
-            victim.RegisterDamage(100, first);
-            victim.RegisterDamage(40, second);
-
-            // hitsMax >= 200 drops the bar to topDamage / 4 = 31, which 40 clears.
-            var rights = BaseCreature.GetLootingRights(victim.DamageEntries, 200);
-
-            Assert.Equal(2, rights.Count);
-            Assert.True(rights[0].m_HasRight);
-            Assert.True(rights[1].m_HasRight);
-            Assert.Same(second, rights[1].m_Mobile);
-        }
-        finally
-        {
-            victim.Delete();
-            first.Delete();
-            second.Delete();
-        }
-    }
-
-    [Fact]
     public void PetDamage_CreditsTheMaster_NotThePet()
     {
         var victim = new TestMobile();

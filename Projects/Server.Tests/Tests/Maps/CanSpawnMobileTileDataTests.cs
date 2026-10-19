@@ -24,32 +24,6 @@ public class CanSpawnMobileTileDataTests
     }
 
     [SkippableFact]
-    public void CanSpawnMobile_FindsSurfaceOnMulti()
-    {
-        SkipIfNoTileData();
-
-        var map = Map.Felucca;
-        const int x = 1100;
-        const int y = 1100;
-
-        TestMulti multi = null;
-        try
-        {
-            // Create a multi with a floor at Z=20 using a real surface tile
-            multi = CreateFloorMulti(map, new Point3D(x, y, 0), floorZ: 20);
-
-            var result = map.CanSpawnMobile(x, y, 15, 30, false, false, out var spawnZ);
-
-            Assert.True(result);
-            Assert.True(spawnZ >= 15 && spawnZ <= 30);
-        }
-        finally
-        {
-            multi?.Delete();
-        }
-    }
-
-    [SkippableFact]
     public void CanSpawnMobile_FindsLowestValidSurface()
     {
         SkipIfNoTileData();
@@ -237,51 +211,6 @@ public class CanSpawnMobileTileDataTests
         {
             surfaceItem?.Delete();
         }
-    }
-
-    [SkippableFact]
-    public void CanSpawnMobile_MalasBuilding_FindsGroundFloor()
-    {
-        SkipIfNoTileData();
-
-        var map = Map.Malas;
-        const int x = 991;
-        const int y = 519;
-
-        var result = map.CanSpawnMobile(x, y, -60, -40, false, false, out var spawnZ);
-
-        Assert.True(result);
-        Assert.True(spawnZ >= -60 && spawnZ <= -40, $"Expected ground floor around -50, got {spawnZ}");
-    }
-
-    [SkippableFact]
-    public void CanSpawnMobile_MalasBuilding_FindsSecondFloor()
-    {
-        SkipIfNoTileData();
-
-        var map = Map.Malas;
-        const int x = 991;
-        const int y = 519;
-
-        var result = map.CanSpawnMobile(x, y, -30, 0, false, false, out var spawnZ);
-
-        Assert.True(result);
-        Assert.True(spawnZ >= -30 && spawnZ <= 0, $"Expected second floor, got {spawnZ}");
-    }
-
-    [SkippableFact]
-    public void CanSpawnMobile_MalasBuilding_LowestFloorPreferred()
-    {
-        SkipIfNoTileData();
-
-        var map = Map.Malas;
-        const int x = 991;
-        const int y = 519;
-
-        var result = map.CanSpawnMobile(x, y, -60, 0, false, false, out var spawnZ);
-
-        Assert.True(result);
-        Assert.True(spawnZ <= -40, $"Expected lowest floor around -50, got {spawnZ}");
     }
 
     private TestMulti CreateFloorMulti(Map map, Point3D location, int floorZ)

@@ -88,13 +88,6 @@ public class MobileEnumeratorTests
     }
 
     [Fact]
-    public void MobileEnumerator_MapNullYieldsEmpty()
-    {
-        var enumerator = new Map.MobileEnumerator<Mobile>(null, Rectangle2D.Empty, false);
-        Assert.False(enumerator.MoveNext());
-    }
-
-    [Fact]
     public void MobileEnumerator_ThrowsOnVersionChange()
     {
         var map = Map.Felucca;

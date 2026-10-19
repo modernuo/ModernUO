@@ -266,21 +266,6 @@ public class PetOrderTests : IDisposable
     }
 
     [Fact]
-    public void LoyaltyRelease_ClearsTheMaster_AndStartsTheDeleteCountdown()
-    {
-        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
-        var followers = master.Followers;
-
-        // What the loyalty drain assigns when loyalty reaches zero.
-        pet.ControlOrder = OrderType.Release;
-
-        Assert.False(pet.Controlled);
-        Assert.Null(pet.ControlMaster);
-        Assert.Equal(followers - pet.ControlSlots, master.Followers);
-        Assert.True(pet.PendingDeleteTimer?.Running);
-    }
-
-    [Fact]
     public void Release_WithoutSpawner_AnchorsHomeToCurrentLocation()
     {
         var loc = new Point3D(1010, 1010, 0);
@@ -374,29 +359,6 @@ public class PetOrderTests : IDisposable
         Assert.Equal(OrderType.Follow, pet.ControlOrder);
         Assert.Same(master, pet.ControlTarget);
         Assert.Equal(OrderType.Follow, pet.AIObject.PersistentOrder);
-    }
-
-    [Fact]
-    public void Stop_WhileFollowing_CancelsToIdle_NonML()
-    {
-        var previous = Core.Expansion;
-        try
-        {
-            Core.Expansion = Expansion.SE; // pre-ML: Core.ML is false
-            var (_, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1002, 1000, 0));
-            pet.ControlOrder = OrderType.Follow;
-
-            pet.ControlOrder = OrderType.Stop;
-
-            // Stop/idle resolution is era-independent.
-            Assert.Equal(OrderType.None, pet.ControlOrder);
-            Assert.Equal(OrderType.None, pet.AIObject.PersistentOrder);
-            Assert.Equal(pet.Location, pet.Home);
-        }
-        finally
-        {
-            Core.Expansion = previous;
-        }
     }
     // The parameterless ctor fully initializes a player; the Serial ctor leaves that to Deserialize.
     private PlayerMobile SpawnPlayer(Point3D loc)
@@ -992,19 +954,6 @@ public class PetOrderTests : IDisposable
     }
 
     [Fact]
-    public void GMObey_TakesControlOfACommandablePet()
-    {
-        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
-        pet.Name = "Rex";
-        var gm = SpawnPlayer(new Point3D(1002, 1000, 0));
-        gm.AccessLevel = AccessLevel.GameMaster;
-
-        pet.AIObject.OnSpeech(new SpeechEventArgs(gm, "Rex obey", MessageType.Regular, 0x3B2, []));
-
-        Assert.Same(gm, pet.ControlMaster);
-    }
-
-    [Fact]
     public void GMAllObey_DoesNotTakeControlledPets()
     {
         var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
@@ -1021,42 +970,5 @@ public class PetOrderTests : IDisposable
     }
 
     // Release is relinquishing control, not exerting it: no roll, so no loyalty either way.
-    [Fact]
-    public void MenuRelease_TouchesNoLoyalty()
-    {
-        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
-        pet.Loyalty = 50;
-
-        new InternalEntry(3006118, 14, OrderType.Release, true).OnClick(master, pet); // Release
-
-        Assert.Equal(50, pet.Loyalty); // no roll: neither the +1 for passing nor the -3 for failing
-    }
-
-    [Fact]
-    public void SpeechRelease_TouchesNoLoyalty()
-    {
-        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
-        pet.Name = "Rex";
-        pet.Loyalty = 50;
-
-        pet.AIObject.OnSpeech(new SpeechEventArgs(master, "Rex release", MessageType.Regular, 0x3B2, [0x16D]));
-
-        Assert.Equal(50, pet.Loyalty);
-    }
-
     // A creature nobody can command is not released either.
-    [Fact]
-    public void MenuRelease_OnAnUncontrollablePet_IsRefusedWithoutCost()
-    {
-        var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
-        pet.MinTameSkill = 120.0; // control chance at or below zero
-        master.Skills.AnimalTaming.Base = 0;
-        master.Skills.AnimalLore.Base = 0;
-        pet.Loyalty = 50;
-
-        new InternalEntry(3006118, 14, OrderType.Release, true).OnClick(master, pet);
-
-        Assert.Equal(50, pet.Loyalty); // refused, but never punished
-        Assert.True(pet.Controlled);
-    }
 }

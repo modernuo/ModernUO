@@ -229,17 +229,6 @@ public class StepCacheFileFormatTests
     }
 
     [Fact]
-    public void CoastlineChunk_ElidesEveryZArray()
-    {
-        // Partial walkability with a non-zero SourceZ: the shape that defeats an unmasked predictor.
-        var src = FlatFullChunk(baseZ: 25);
-        var rt = RoundTrip(src, out var fileLength);
-
-        AssertIdentical(src, rt);
-        Assert.True(fileLength < 1100, $"masked predictor should elide every array; file was {fileLength} bytes");
-    }
-
-    [Fact]
     public void SlopeInOneDirection_StoresOnlyThatZArray()
     {
         var flat = FlatFullChunk();

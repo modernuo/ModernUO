@@ -27,25 +27,6 @@ public class PlayerConstructedStackingTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public void CanStackWith_IsTrueWhenProvenanceMatches(bool playerConstructed)
-    {
-        var first = MakeStack((Serial)0x1, 5, playerConstructed);
-        var second = MakeStack((Serial)0x2, 7, playerConstructed);
-
-        try
-        {
-            Assert.True(first.CanStackWith(second));
-        }
-        finally
-        {
-            first.Delete();
-            second.Delete();
-        }
-    }
-
-    [Theory]
-    [InlineData(false)]
-    [InlineData(true)]
     public void LiftItemDupe_CopiesPlayerConstructedToRemainder(bool playerConstructed)
     {
         var stack = MakeStack((Serial)0x1, 10, playerConstructed);

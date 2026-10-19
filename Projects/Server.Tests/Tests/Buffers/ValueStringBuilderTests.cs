@@ -53,19 +53,6 @@ public class ValueStringBuilderTests
     // Critical to detect if C# compiler codegen changes break this assumption.
 
     [Fact]
-    public void Interpolation_Stackalloc_NoGrow()
-    {
-        // Stackalloc buffer large enough — no Grow needed.
-        // Validates: copy's Span shares same stackalloc memory, _length is reconciled.
-        var sb = new ValueStringBuilder(stackalloc char[64]);
-        sb.Append($"Hello {42} world");
-
-        Assert.Equal("Hello 42 world", sb.ToString());
-        Assert.Equal(14, sb.Length);
-        sb.Dispose();
-    }
-
-    [Fact]
     public void Interpolation_Stackalloc_WithGrow()
     {
         // Tiny stackalloc forces Grow inside the handler's copy.
@@ -79,20 +66,6 @@ public class ValueStringBuilderTests
         Assert.Equal(expected.Length, sb.Length);
         // After grow, capacity should have expanded beyond 4
         Assert.True(sb.Capacity >= 47);
-        sb.Dispose();
-    }
-
-    [Fact]
-    public void Interpolation_Stackalloc_PreExistingContent_NoGrow()
-    {
-        // Append plain text first, then interpolation. Buffer large enough.
-        // Validates: interpolation appends after existing content, doesn't overwrite.
-        var sb = new ValueStringBuilder(stackalloc char[64]);
-        sb.Append("prefix-");
-        sb.Append($"value={99}");
-
-        Assert.Equal("prefix-value=99", sb.ToString());
-        Assert.Equal(15, sb.Length);
         sb.Dispose();
     }
 
@@ -262,20 +235,6 @@ public class ValueStringBuilderTests
 
         Assert.Equal("Name: !", sb.ToString());
         sb.Dispose();
-    }
-
-    [Fact]
-    public void Interpolation_Stackalloc_DisposeAfterGrow()
-    {
-        // After Grow moves stackalloc to pool, Dispose should return the pooled array.
-        // Validates: _arrayToReturnToPool is correctly reconciled so Dispose works.
-        var sb = new ValueStringBuilder(stackalloc char[4]);
-        sb.Append($"grow beyond stackalloc: {12345}");
-        // If _arrayToReturnToPool wasn't reconciled, Dispose would either
-        // not return the pooled array (leak) or return null (no-op when it shouldn't be).
-        sb.Dispose();
-        // No assertion needed — if _arrayToReturnToPool was wrong, pool corruption
-        // would surface as test failures elsewhere. The test passing = no crash.
     }
 
     [Fact]

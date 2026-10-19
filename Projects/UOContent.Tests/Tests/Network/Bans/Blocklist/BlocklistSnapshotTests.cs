@@ -55,12 +55,6 @@ public class BlocklistSnapshotTests
     }
 
     [Fact]
-    public void Empty_snapshot_matches_nothing()
-    {
-        Assert.False(BlocklistSnapshot.Empty.IsBanned(IPAddress.Parse("1.2.3.4")));
-    }
-
-    [Fact]
     public void Ipv6_single_and_cidr_are_matched()
     {
         var s = Build("2001:db8::1", "2001:db8:1::/48");

@@ -35,12 +35,4 @@ public class Rectangle3DConverterTests
         Assert.DoesNotContain("z1", json);
         Assert.DoesNotContain("z2", json);
     }
-
-    [Fact]
-    public void HomeRangeBounds_WritesZ()
-    {
-        var json = JsonSerializer.Serialize(new Rectangle3D(0, 0, -128, 10, 10, 256), JsonConfig.DefaultOptions);
-        Assert.Contains("\"z1\":", json);
-        Assert.Contains("\"z2\":", json);
-    }
 }

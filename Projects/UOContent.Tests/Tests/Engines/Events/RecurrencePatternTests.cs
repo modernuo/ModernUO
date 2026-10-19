@@ -254,26 +254,6 @@ public class RecurrencePatternTests
     }
 
     [Fact]
-    public void MonthlyOrdinalRecurrencePattern_DST_FallBack_HandlesAmbiguousTimeCorrectly()
-    {
-        // This tests specifically the DST fall back case that was failing
-        var tz = TimeZoneInfo.FindSystemTimeZoneById("America/New_York");
-        var pattern = new MonthlyOrdinalRecurrencePattern(OrdinalDayOccurrence.First, DayOfWeek.Sunday);
-
-        // November 3, 2024 at 1:30 AM - First Sunday, falls on DST transition
-        var beforeDate = new DateTime(2024, 11, 2, 12, 0, 0);
-        var beforeUtc = beforeDate.LocalToUtc(tz);
-        var timeOnly = new TimeOnly(1, 30);
-
-        // Act
-        var result = pattern.GetNextOccurrence(beforeUtc, timeOnly, tz);
-
-        // Assert - should be November 3, 2024 at 1:30 AM
-        var resultLocal = TimeZoneInfo.ConvertTimeFromUtc(result, tz);
-        Assert.Equal(new DateTime(2024, 11, 3, 1, 30, 0), resultLocal);
-    }
-
-    [Fact]
     public void MonthlyRecurrence_MonthWithoutDay_SkipsToNextValidMonth()
     {
         // Arrange

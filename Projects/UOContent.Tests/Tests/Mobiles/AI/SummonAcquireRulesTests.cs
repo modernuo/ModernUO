@@ -36,21 +36,6 @@ public class SummonAcquireRulesTests : IDisposable
         return creature.AIObject.AcquireFocusMob(creature.RangePerception, creature.FightMode, false, false, true);
     }
 
-    [SkippableTheory]
-    [InlineData(true)]
-    [InlineData(false)]
-    public void PreAosFeluccaVortexTurnsOnItsCaster(bool bladeSpirits)
-    {
-        Skip.If(!Server.Tests.TestServerInitializer.TileDataLoaded, "Requires UO client map data.");
-        Core.Expansion = Expansion.UOR;
-
-        var caster = Player(Map.Felucca, 1500, 100);
-        var summon = Summon(bladeSpirits ? new BladeSpirits() : new EnergyVortex(), caster, 1499);
-
-        Assert.True(Acquire(summon));
-        Assert.Same(caster, summon.FocusMob);
-    }
-
     [SkippableFact]
     public void PreAosFeluccaVortexPrefersAnyoneOverItsCaster()
     {

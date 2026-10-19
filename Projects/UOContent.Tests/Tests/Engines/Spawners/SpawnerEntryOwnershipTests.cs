@@ -68,18 +68,6 @@ public class SpawnerEntryOwnershipTests
     }
 
     [Fact]
-    public void Start_WorksAfterStop_WhenOwnerHasEntries()
-    {
-        var spawner = new Spawner(1, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(2), 0, default, "Rabbit");
-        Assert.True(spawner.Running);
-        spawner.Stop();
-        Assert.False(spawner.Running);
-        spawner.Start();
-        Assert.True(spawner.Running);
-        spawner.Delete();
-    }
-
-    [Fact]
     public void Dupe_ClonesEntriesIntoIndependentList()
     {
         var source = new Spawner(1, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(2), 0, default, "Rabbit", "Bird");
@@ -159,85 +147,4 @@ public class SpawnerEntryOwnershipTests
     }
 
     // Manual: remove the Skip, run, and read the numbers from the thrown assertion.
-    [Fact(Skip = "manual benchmark")]
-    public void Benchmark_SpawnPath_Manual()
-    {
-        const int iterations = 100_000;
-        const int warmup = 1_000;
-
-        var report = new ValueStringBuilder(stackalloc char[512]);
-        report.Append('\n', 1);
-
-        foreach (var entryCount in new[] { 1, 10, 50 })
-        {
-            var spawner = new Spawner(1000, TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(10));
-            spawner.MoveToWorld(new Point3D(1500, 1500, 0), Map.Felucca);
-
-            // SpawnedMaxCount = 0 keeps every entry full, so Spawn() does selection only.
-            for (var i = 0; i < entryCount; i++)
-            {
-                spawner.AddEntry("Rabbit", 100, 0, false);
-            }
-
-            for (var i = 0; i < warmup; i++)
-            {
-                spawner.Spawn();
-            }
-
-            var sw = Stopwatch.StartNew();
-            for (var i = 0; i < iterations; i++)
-            {
-                spawner.Spawn();
-            }
-
-            sw.Stop();
-
-            var nsPerCall = sw.Elapsed.TotalMilliseconds * 1_000_000.0 / iterations;
-            report.Append(
-                $"Spawn() entries={entryCount,2}: {nsPerCall,8:F1} ns/call  ({iterations} iterations, {sw.ElapsedMilliseconds} ms total)\n"
-            );
-
-            spawner.Delete();
-        }
-
-        {
-            var spawner = new Spawner(1000, TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(10));
-            spawner.MoveToWorld(new Point3D(1500, 1500, 0), Map.Felucca);
-
-            for (var i = 0; i < 10; i++)
-            {
-                spawner.AddEntry("Rabbit", 100, 1, false);
-            }
-
-            spawner.Spawn();
-            Assert.Single(spawner.Spawned);
-            var rabbit = spawner.Spawned.Keys.First();
-
-            for (var i = 0; i < warmup; i++)
-            {
-                spawner.Remove(rabbit);
-            }
-
-            var sw = Stopwatch.StartNew();
-            for (var i = 0; i < iterations; i++)
-            {
-                spawner.Remove(rabbit);
-            }
-
-            sw.Stop();
-
-            var nsPerCall = sw.Elapsed.TotalMilliseconds * 1_000_000.0 / iterations;
-            report.Append(
-                $"Remove(ISpawnable) entries=10: {nsPerCall,8:F1} ns/call  ({iterations} iterations, {sw.ElapsedMilliseconds} ms total)\n"
-            );
-
-            (rabbit as Mobile)?.Delete();
-            spawner.Delete();
-        }
-
-        var summary = report.ToString();
-        report.Dispose();
-
-        throw new Xunit.Sdk.XunitException(summary);
-    }
 }

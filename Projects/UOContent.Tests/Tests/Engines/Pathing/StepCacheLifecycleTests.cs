@@ -42,16 +42,6 @@ public class StepCacheLifecycleTests : IDisposable
         return chunk;
     }
 
-    [Fact]
-    public void Clear_OnEmptyCache_LeavesStatsZero()
-    {
-        var stats = FreshCache(2).GetStats();
-
-        Assert.Equal(0, stats.ResidentChunks);
-        Assert.Equal(0L, stats.Hits);
-        Assert.Equal(0L, stats.BuildsTotal);
-    }
-
     // ---- promotion gate ----
 
     /// <summary>

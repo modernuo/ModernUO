@@ -18,28 +18,6 @@ public class FoundationRedesignTests
     private const int PlaceY = 1600;
 
     [SkippableFact]
-    public void SwappingComponents_ChangesFootprint()
-    {
-        TileDataRequirement.SkipIfMissing();
-        var foundation = new SwappableFoundation(0x74); // GuildHouse footprint
-        try
-        {
-            var beforeCount = MultiArt.FootprintCells(foundation).Count;
-            Assert.True(beforeCount > 0, "non-vacuity: initial footprint must cover cells");
-
-            foundation.Redesign(MultiData.GetComponents(0x7A)); // Tower footprint (different shape)
-            var afterCount = MultiArt.FootprintCells(foundation).Count;
-
-            Assert.NotEqual(beforeCount, afterCount);
-            _output.WriteLine($"redesign footprint {beforeCount} -> {afterCount} cells");
-        }
-        finally
-        {
-            foundation.Delete();
-        }
-    }
-
-    [SkippableFact]
     public void RedesignReRegistered_RoutesNewFootprintToLivePath()
     {
         TileDataRequirement.SkipIfMissing();

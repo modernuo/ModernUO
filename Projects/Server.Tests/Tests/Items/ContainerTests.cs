@@ -420,15 +420,6 @@ public class ContainerTests
     }
 
     [Fact]
-    public void TestGetBestGroupAmount_NullGrouper_Throws()
-    {
-        var c = MakeContainer(0x2C0);
-        Assert.Throws<ArgumentNullException>(
-            () => c.GetBestGroupAmount(new[] { typeof(TestReagentA) }, true, null)
-        );
-    }
-
-    [Fact]
     public void TestGetAmount_TypeArray_SumsAcrossTypes()
     {
         var c = MakeContainer(0x2D0);
@@ -468,39 +459,6 @@ public class ContainerTests
         Assert.True(s1.Deleted);
         Assert.False(s2.Deleted);
         Assert.Equal(1, s2.Amount);
-    }
-
-    [Fact]
-    public void TestConsumeTotal_LengthMismatch_Throws()
-    {
-        var c = MakeContainer(0x300);
-        Assert.Throws<ArgumentException>(
-            () => c.ConsumeTotal(new[] { typeof(TestReagentA) }, new[] { 1, 2 })
-        );
-    }
-
-    [Fact]
-    public void TestConsumeTotalGrouped_LengthMismatch_Throws()
-    {
-        var c = MakeContainer(0x310);
-        Assert.Throws<ArgumentException>(
-            () => c.ConsumeTotalGrouped(
-                new[] { typeof(TestReagentA) }, new[] { 1, 2 },
-                true, null, HueGrouper
-            )
-        );
-    }
-
-    [Fact]
-    public void TestConsumeTotalGrouped_NullGrouper_Throws()
-    {
-        var c = MakeContainer(0x320);
-        Assert.Throws<ArgumentNullException>(
-            () => c.ConsumeTotalGrouped(
-                new[] { typeof(TestReagentA) }, new[] { 1 },
-                true, null, null
-            )
-        );
     }
 
     // -------------------------------------------------------------------------

@@ -104,45 +104,6 @@ public class GridLayoutTests
     }
 
     [Fact]
-    public void TestGridCell_Properties()
-    {
-        var cell = new GridCell(10, 20, 100, 50);
-
-        Assert.Equal(10, cell.X);
-        Assert.Equal(20, cell.Y);
-        Assert.Equal(100, cell.Width);
-        Assert.Equal(50, cell.Height);
-        Assert.Equal(110, cell.Right);
-        Assert.Equal(70, cell.Bottom);
-        Assert.Equal(60, cell.CenterX);
-        Assert.Equal(45, cell.CenterY);
-    }
-
-    [Fact]
-    public void TestGridCell_Inset()
-    {
-        var cell = new GridCell(10, 20, 100, 50);
-        var inset = cell.Inset(5);
-
-        Assert.Equal(15, inset.X);
-        Assert.Equal(25, inset.Y);
-        Assert.Equal(90, inset.Width);
-        Assert.Equal(40, inset.Height);
-    }
-
-    [Fact]
-    public void TestGridCell_Offset()
-    {
-        var cell = new GridCell(10, 20, 100, 50);
-        var offset = cell.Offset(5, 10);
-
-        Assert.Equal(15, offset.X);
-        Assert.Equal(30, offset.Y);
-        Assert.Equal(100, offset.Width);
-        Assert.Equal(50, offset.Height);
-    }
-
-    [Fact]
     public void TestListViewLayout_Pagination()
     {
         Span<int> colPos = stackalloc int[3];

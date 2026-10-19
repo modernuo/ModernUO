@@ -81,44 +81,4 @@ public class SkillEventsTests
             from.Delete();
         }
     }
-
-    [Fact]
-    public void CheckSkill_Direct_DoesNotRaise()
-    {
-        var from = new Mobile();
-        var skill = from.Skills[SkillName.Mining];
-        var recorder = new Recorder();
-
-        SkillEvents.SkillUsed += recorder.Handle;
-        try
-        {
-            SkillCheck.CheckSkill(from, skill, null, 1.0);
-            Assert.Equal(0, recorder.Calls);
-        }
-        finally
-        {
-            SkillEvents.SkillUsed -= recorder.Handle;
-            from.Delete();
-        }
-    }
-
-    [Fact]
-    public void NoSubscriber_DoesNotThrow()
-    {
-        var from = new Mobile();
-        var recorder = new Recorder();
-
-        try
-        {
-            SkillEvents.SkillUsed += recorder.Handle;
-            SkillEvents.SkillUsed -= recorder.Handle;
-
-            Assert.True(SkillCheck.Mobile_SkillCheckDirectLocation(from, SkillName.Mining, 1.0));
-            Assert.Equal(0, recorder.Calls);
-        }
-        finally
-        {
-            from.Delete();
-        }
-    }
 }

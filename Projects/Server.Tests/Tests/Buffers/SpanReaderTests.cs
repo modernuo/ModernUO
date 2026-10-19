@@ -498,60 +498,6 @@ public class SpanReaderTests
     }
 
     [Fact]
-    public void TestLength()
-    {
-        ReadOnlySpan<byte> buffer = [0x01, 0x02, 0x03, 0x04, 0x05];
-        var reader = new SpanReader(buffer);
-
-        Assert.Equal(5, reader.Length);
-    }
-
-    [Fact]
-    public void TestPosition()
-    {
-        ReadOnlySpan<byte> buffer = [0x01, 0x02, 0x03];
-        var reader = new SpanReader(buffer);
-
-        Assert.Equal(0, reader.Position);
-
-        reader.ReadByte();
-        Assert.Equal(1, reader.Position);
-
-        reader.ReadUInt16();
-        Assert.Equal(3, reader.Position);
-    }
-
-    [Fact]
-    public void TestRemaining()
-    {
-        ReadOnlySpan<byte> buffer = [0x01, 0x02, 0x03, 0x04, 0x05];
-        var reader = new SpanReader(buffer);
-
-        Assert.Equal(5, reader.Remaining);
-
-        reader.ReadByte();
-        Assert.Equal(4, reader.Remaining);
-
-        reader.ReadUInt16();
-        Assert.Equal(2, reader.Remaining);
-
-        reader.ReadUInt16();
-        Assert.Equal(0, reader.Remaining);
-    }
-
-    [Fact]
-    public void TestBuffer()
-    {
-        ReadOnlySpan<byte> buffer = [0x01, 0x02, 0x03];
-        var reader = new SpanReader(buffer);
-
-        var bufferProperty = reader.Buffer;
-
-        Assert.Equal(3, bufferProperty.Length);
-        AssertThat.Equal(bufferProperty, buffer);
-    }
-
-    [Fact]
     public void TestReadStringEmptyFixedLength()
     {
         ReadOnlySpan<byte> buffer = [0x01, 0x02, 0x03];

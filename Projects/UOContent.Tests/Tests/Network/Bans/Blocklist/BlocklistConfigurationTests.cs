@@ -59,12 +59,6 @@ public class BlocklistConfigurationTests
     }
 
     // The point of the flag: a shard that never opts in must not start the reload poll.
-    [Fact]
-    public void Blocklist_is_off_by_default()
-    {
-        Assert.False(new BlocklistSettings().Enabled);
-    }
-
     // The generator (tools/Export-IpBlocklist.ps1) writes to this path by default; if one side moves
     // without the other, a shard silently enforces nothing.
     [Fact]

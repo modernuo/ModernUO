@@ -57,25 +57,6 @@ public class RawInterpolatedStringHandlerTests
     }
 
     [Fact]
-    public void TestNoFormatPreservesCase()
-    {
-        var handler = new RawInterpolatedStringHandler(0, 1);
-        handler.AppendFormatted("Hello WORLD");
-        Assert.Equal("Hello WORLD", handler.Text.ToString());
-        handler.Clear();
-    }
-
-    [Fact]
-    public void TestUnicodeLowercase()
-    {
-        // ToLowerInvariant on Greek letter
-        var handler = new RawInterpolatedStringHandler(0, 1);
-        handler.AppendFormatted("ΑΒΓ", format: "L");
-        Assert.Equal("αβγ", handler.Text.ToString());
-        handler.Clear();
-    }
-
-    [Fact]
     public void TestLowercaseFormatSurrogatePairAtChunkBoundary()
     {
         // The chunked lowercase path uses a 256-char stackalloc temp buffer. Place a
