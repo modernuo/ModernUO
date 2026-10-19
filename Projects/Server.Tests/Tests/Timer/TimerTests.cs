@@ -85,6 +85,30 @@ public class TimerTests
         Assert.Equal(2, timerTicks.ExecutedCount);
     }
 
+    [Fact]
+    public void ClearAllTimers_StopsEveryTimerInASlot()
+    {
+        Timer.Init(0);
+
+        var timers = new Timer[3];
+        for (var i = 0; i < timers.Length; i++)
+        {
+            timers[i] = Timer.DelayCall(TimeSpan.FromMilliseconds(80), () => Assert.Fail("cleared timer fired"));
+        }
+
+        Timer.ClearAllTimers(0);
+
+        for (var i = 0; i < timers.Length; i++)
+        {
+            Assert.False(timers[i].Running);
+        }
+
+        for (var tick = 8; tick <= 160; tick += 8)
+        {
+            Timer.Slice(tick);
+        }
+    }
+
     private class TimerTicks
     {
         public long ExpectedTicks;

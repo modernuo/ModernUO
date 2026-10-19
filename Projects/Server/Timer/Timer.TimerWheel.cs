@@ -321,13 +321,14 @@ public partial class Timer
             for (var i = 0; i < _ringSize; i++)
             {
                 var node = t[i];
-                Timer next;
 
-                do
+                while (node != null)
                 {
-                    next = node?._nextTimer;
-                    node?.Stop();
-                } while (next != null);
+                    // Stop() unlinks the node, so read its successor first.
+                    var next = node._nextTimer;
+                    node.Stop();
+                    node = next;
+                }
             }
         }
     }
