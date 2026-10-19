@@ -153,6 +153,7 @@ public class PasswordWorkerTests : IDisposable
         var outcome = PasswordWorker.ComputeInline(JobFor(account, Password));
 
         Assert.True(outcome.Verified);
+        Assert.StartsWith("$argon2id$v=19$", outcome.Hash);
         Assert.StartsWith(Argon2TestParameters.CurrentPrefix, outcome.Hash);
     }
 
