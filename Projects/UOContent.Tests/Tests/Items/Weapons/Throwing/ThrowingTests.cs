@@ -10,12 +10,18 @@ namespace UOContent.Tests;
 [Collection("Sequential UOContent Tests")]
 public class ThrowingTests
 {
-    // Exposes protected ModifyHitChance so the math can be verified directly.
+    // Exposes protected ModifyHitChance so the math can be verified directly. The requirement and
+    // throw band are pinned here so retuning a shipped weapon cannot move these expectations.
     private class TestThrown : BaseThrown
     {
-        public TestThrown() : base(0x8FF) { }
+        // Weapons take their layer from tiledata, which CI doesn't load; without it AddItem is refused.
+        public TestThrown() : base(0x8FF) => Layer = Layer.OneHanded;
+
+        public override int AosStrengthReq => 60;
 
         public override int MinThrowRange => 4;
+
+        public override int MaxThrowRange => 7;
 
         public double TestModifyHitChance(Mobile attacker, Mobile defender, double chance) =>
             ModifyHitChance(attacker, defender, chance);
@@ -220,18 +226,19 @@ public class ThrowingTests
         }
     }
 
-    // DefMaxRange STR scaling (uses SoulGlaive: StrReq 60, Min 8, Max 11)
+    // DefMaxRange STR scaling (TestThrown: StrReq 60, Min 4, Max 7, so one tile per 26 Str)
 
     [Fact]
     public void DefMaxRange_AtStrReq_EqualsMinThrowRange()
     {
-        var weapon = new SoulGlaive();
+        var weapon = new TestThrown();
         var attacker = CreateMobile(Map.Felucca, new Point3D(5800, 500, 0));
         try
         {
             attacker.RawStr = 60; // == AosStrengthReq
             attacker.AddItem(weapon);
-            Assert.Equal(weapon.MinThrowRange, weapon.DefMaxRange); // 8
+            Assert.Same(attacker, weapon.Parent);
+            Assert.Equal(weapon.MinThrowRange, weapon.DefMaxRange); // 4
         }
         finally
         {
@@ -243,13 +250,14 @@ public class ThrowingTests
     [Fact]
     public void DefMaxRange_At140Str_EqualsMaxThrowRange()
     {
-        var weapon = new SoulGlaive();
+        var weapon = new TestThrown();
         var attacker = CreateMobile(Map.Felucca, new Point3D(5810, 500, 0));
         try
         {
             attacker.RawStr = 140;
             attacker.AddItem(weapon);
-            Assert.Equal(weapon.MaxThrowRange, weapon.DefMaxRange); // 11
+            Assert.Same(attacker, weapon.Parent);
+            Assert.Equal(weapon.MaxThrowRange, weapon.DefMaxRange); // 7
         }
         finally
         {
@@ -261,13 +269,14 @@ public class ThrowingTests
     [Fact]
     public void DefMaxRange_AboveMaxStr_IsCappedAtMaxThrowRange()
     {
-        var weapon = new SoulGlaive();
+        var weapon = new TestThrown();
         var attacker = CreateMobile(Map.Felucca, new Point3D(5820, 500, 0));
         try
         {
-            attacker.RawStr = 200; // uncapped formula would give 13
+            attacker.RawStr = 200; // uncapped formula would give 9
             attacker.AddItem(weapon);
-            Assert.Equal(weapon.MaxThrowRange, weapon.DefMaxRange); // 11, not 13
+            Assert.Same(attacker, weapon.Parent);
+            Assert.Equal(weapon.MaxThrowRange, weapon.DefMaxRange); // 7, not 9
         }
         finally
         {
@@ -279,13 +288,14 @@ public class ThrowingTests
     [Fact]
     public void DefMaxRange_BelowStrReq_FlooredAtMinThrowRange()
     {
-        var weapon = new SoulGlaive();
+        var weapon = new TestThrown();
         var attacker = CreateMobile(Map.Felucca, new Point3D(5830, 500, 0));
         try
         {
             attacker.RawStr = 10; // below StrReq 60
             attacker.AddItem(weapon);
-            Assert.Equal(weapon.MinThrowRange, weapon.DefMaxRange); // 8, not 6
+            Assert.Same(attacker, weapon.Parent);
+            Assert.Equal(weapon.MinThrowRange, weapon.DefMaxRange); // 4, not 3
         }
         finally
         {
@@ -305,6 +315,7 @@ public class ThrowingTests
         {
             attacker.RawStr = 140;            // MaxRange == MaxThrowRange == 7
             attacker.AddItem(weapon);
+            Assert.Same(attacker, weapon.Parent);
             var defender = CreateMobile(map, new Point3D(5907, 500, 0)); // distance 7 == MaxRange
             try
             {
@@ -333,6 +344,7 @@ public class ThrowingTests
         {
             attacker.RawStr = 140; // MaxRange 7
             attacker.AddItem(weapon);
+            Assert.Same(attacker, weapon.Parent);
             var defender = CreateMobile(map, new Point3D(5925, 500, 0)); // distance 5 < 7
             try
             {

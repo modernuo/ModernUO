@@ -90,16 +90,16 @@ public sealed class WorldLocationTests
         Assert.Equal(new WorldLocation(101, 23, 55, null), WorldLocation.Parse(" (101,23 ,55)  [(-null-)]", null));
 
         // No Brackets
-        Assert.False(WorldLocation.TryParse("(101, 23 55) Felucca]", null, out p));
+        Assert.False(WorldLocation.TryParse("(101, 23, 55) Felucca]", null, out p));
         Assert.Equal(default, p);
         Assert.Throws<FormatException>(() => WorldLocation.Parse("(101, 23, 55) Felucca]", null));
 
-        Assert.False(WorldLocation.TryParse("(101, 23 55) [Felucca", null, out p));
+        Assert.False(WorldLocation.TryParse("(101, 23, 55) [Felucca", null, out p));
         Assert.Equal(default, p);
         Assert.Throws<FormatException>(() => WorldLocation.Parse("(101, 23, 55) [Felucca", null));
 
         // No parenthesis
-        Assert.False(WorldLocation.TryParse("101, 23 55) [Felucca]", null, out p));
+        Assert.False(WorldLocation.TryParse("101, 23, 55) [Felucca]", null, out p));
         Assert.Equal(default, p);
         Assert.Throws<FormatException>(() => WorldLocation.Parse("101, 23, 55) [Felucca]", null));
 

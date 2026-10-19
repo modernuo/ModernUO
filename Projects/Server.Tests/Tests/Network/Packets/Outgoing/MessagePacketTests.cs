@@ -19,31 +19,10 @@ public class MessageTests
         var name = "Stuff";
         var args = "Arguments";
 
-        var expected = new MessageLocalized(
-            serial,
-            graphic,
-            messageType,
-            hue,
-            font,
-            number,
-            name,
-            args
-        ).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendMessageLocalized(
-            serial,
-            graphic,
-            messageType,
-            hue,
-            font,
-            number,
-            name,
-            args
+        PacketAssert.Sends(
+            new MessageLocalized(serial, graphic, messageType, hue, font, number, name, args),
+            ns => ns.SendMessageLocalized(serial, graphic, messageType, hue, font, number, name, args)
         );
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
     }
 
     [Fact]
@@ -58,15 +37,10 @@ public class MessageTests
         var name = "Stuff";
         var argValue = 42;
 
-        var expected = new MessageLocalized(
-            serial, graphic, messageType, hue, font, number, name, $"value: {argValue}"
-        ).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendMessageLocalized(serial, graphic, messageType, hue, font, number, name, $"value: {argValue}");
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(
+            new MessageLocalized(serial, graphic, messageType, hue, font, number, name, $"value: {argValue}"),
+            ns => ns.SendMessageLocalized(serial, graphic, messageType, hue, font, number, name, $"value: {argValue}")
+        );
     }
 
     [Fact]
@@ -83,35 +57,12 @@ public class MessageTests
         var affixType = AffixType.System;
         var affix = "Affix";
 
-        var expected = new MessageLocalizedAffix(
-            serial,
-            graphic,
-            messageType,
-            hue,
-            font,
-            number,
-            name,
-            affixType,
-            affix,
-            args
-        ).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendMessageLocalizedAffix(
-            serial,
-            graphic,
-            messageType,
-            hue,
-            font,
-            number,
-            name,
-            affixType,
-            affix,
-            args
+        PacketAssert.Sends(
+            new MessageLocalizedAffix(serial, graphic, messageType, hue, font, number, name, affixType, affix, args),
+            ns => ns.SendMessageLocalizedAffix(
+                serial, graphic, messageType, hue, font, number, name, affixType, affix, args
+            )
         );
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
     }
 
     [Fact]
@@ -128,18 +79,14 @@ public class MessageTests
         var affix = "Affix";
         var argValue = 42;
 
-        var expected = new MessageLocalizedAffix(
-            serial, graphic, messageType, hue, font, number, name, affixType, affix, $"value: {argValue}"
-        ).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendMessageLocalizedAffix(
-            serial, graphic, messageType, hue, font, number, name, affixType, affix,
-            $"value: {argValue}"
+        PacketAssert.Sends(
+            new MessageLocalizedAffix(
+                serial, graphic, messageType, hue, font, number, name, affixType, affix, $"value: {argValue}"
+            ),
+            ns => ns.SendMessageLocalizedAffix(
+                serial, graphic, messageType, hue, font, number, name, affixType, affix, $"value: {argValue}"
+            )
         );
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
     }
 
     [Fact]
@@ -154,17 +101,10 @@ public class MessageTests
         var name = "Stuff";
         var who = "Alice";
 
-        var expected = new UnicodeMessage(
-            serial, graphic, messageType, hue, font, lang, name, $"hello, {who}"
-        ).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendMessage(
-            serial, graphic, messageType, hue, font, false, lang, name, $"hello, {who}"
+        PacketAssert.Sends(
+            new UnicodeMessage(serial, graphic, messageType, hue, font, lang, name, $"hello, {who}"),
+            ns => ns.SendMessage(serial, graphic, messageType, hue, font, false, lang, name, $"hello, {who}")
         );
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
     }
 
     [Fact]
@@ -178,31 +118,10 @@ public class MessageTests
         var name = "Stuff";
         var text = "Some Text";
 
-        var expected = new AsciiMessage(
-            serial,
-            graphic,
-            messageType,
-            hue,
-            font,
-            name,
-            text
-        ).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendMessage(
-            serial,
-            graphic,
-            messageType,
-            hue,
-            font,
-            true,
-            null,
-            name,
-            text
+        PacketAssert.Sends(
+            new AsciiMessage(serial, graphic, messageType, hue, font, name, text),
+            ns => ns.SendMessage(serial, graphic, messageType, hue, font, true, null, name, text)
         );
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
     }
 
     [Fact]
@@ -217,32 +136,10 @@ public class MessageTests
         var name = "Stuff";
         var text = "Some Text";
 
-        var expected = new UnicodeMessage(
-            serial,
-            graphic,
-            messageType,
-            hue,
-            font,
-            lang,
-            name,
-            text
-        ).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendMessage(
-            serial,
-            graphic,
-            messageType,
-            hue,
-            font,
-            false,
-            lang,
-            name,
-            text
+        PacketAssert.Sends(
+            new UnicodeMessage(serial, graphic, messageType, hue, font, lang, name, text),
+            ns => ns.SendMessage(serial, graphic, messageType, hue, font, false, lang, name, text)
         );
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
     }
 
     [Fact]
@@ -251,13 +148,7 @@ public class MessageTests
         var serial = (Serial)0x1024;
         var serial2 = (Serial)0x2;
 
-        var expected = new FollowMessage(serial, serial2).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendFollowMessage(serial, serial2);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new FollowMessage(serial, serial2), ns => ns.SendFollowMessage(serial, serial2));
     }
 
     [Fact]
@@ -266,33 +157,18 @@ public class MessageTests
         var s = (Serial)0x100;
         var text = "This is some testing text";
 
-        var expected = new ObjectHelpResponse(s, text).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendHelpResponse(s, text);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new ObjectHelpResponse(s, text), ns => ns.SendHelpResponse(s, text));
     }
 
-    internal class TestPrompt : Prompt
+    [Fact]
+    public void TestUnicodePrompt()
     {
+        var prompt = new TestPrompt();
+
+        PacketAssert.Sends(new UnicodePrompt(prompt), ns => ns.SendPrompt(prompt));
     }
 
-    [Collection("Sequential Server Tests")]
-    public class UnicodePromptTests
+    private class TestPrompt : Prompt
     {
-        [Fact]
-        public void TestUnicodePrompt()
-        {
-            var prompt = new TestPrompt();
-            var expected = new UnicodePrompt(prompt).Compile();
-
-            using var ns = PacketTestUtilities.CreateTestNetState();
-            ns.SendPrompt(prompt);
-
-            var result = ns.SendBuffer.GetReadSpan();
-            AssertThat.Equal(result, expected);
-        }
     }
 }

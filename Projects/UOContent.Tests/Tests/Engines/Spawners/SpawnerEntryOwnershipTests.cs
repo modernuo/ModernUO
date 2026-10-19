@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.Json;
@@ -11,26 +12,43 @@ using Xunit;
 namespace UOContent.Tests.Engines.Spawners;
 
 [Collection("Sequential UOContent Tests")]
-public class SpawnerEntryOwnershipTests
+public class SpawnerEntryOwnershipTests : IDisposable
 {
+    // Deleted in Dispose so a failed assertion cannot leave spawners registered in the world.
+    private readonly List<Item> _created = [];
+
+    public void Dispose()
+    {
+        for (var i = 0; i < _created.Count; i++)
+        {
+            _created[i].Delete();
+        }
+    }
+
+    private T Track<T>(T item) where T : Item
+    {
+        _created.Add(item);
+        return item;
+    }
+
+    private Spawner NewSpawner(params string[] names) =>
+        Track(new Spawner(1, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(2), 0, default, names));
+
     [Fact]
     public void Disabled_DefaultsFalse_AndRoundTripsBinary()
     {
-        var spawner = new Spawner(1, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(2), 0, default, "Rabbit", "Bird");
+        var spawner = NewSpawner("Rabbit", "Bird");
         Assert.False(spawner.Entries[0].Disabled);
         Assert.True(spawner.Entries[0].Enabled);
 
         spawner.Entries[1].Disabled = true;
 
         var bytes = SpawnerBlob.Write(spawner);
-        var loaded = SpawnerBlob.Read<Spawner>(bytes, (Serial)0x40001234);
+        var loaded = Track(SpawnerBlob.Read<Spawner>(bytes, (Serial)0x40001234));
 
         Assert.Equal(2, loaded.Entries.Count);
         Assert.False(loaded.Entries[0].Disabled);
         Assert.True(loaded.Entries[1].Disabled);
-
-        spawner.Delete();
-        loaded.Delete();
     }
 
     [Fact]
@@ -48,7 +66,7 @@ public class SpawnerEntryOwnershipTests
     [Fact]
     public void AddRemoveClear_OperateOnOwnerList()
     {
-        var spawner = new Spawner();
+        var spawner = Track(new Spawner());
         Assert.Empty(spawner.Entries);
 
         var a = spawner.AddEntry("Rabbit", 100, 2, false);
@@ -63,17 +81,15 @@ public class SpawnerEntryOwnershipTests
 
         spawner.RemoveAllEntries();
         Assert.Empty(spawner.Entries);
-
-        spawner.Delete();
     }
 
     [Fact]
     public void Dupe_ClonesEntriesIntoIndependentList()
     {
-        var source = new Spawner(1, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(2), 0, default, "Rabbit", "Bird");
+        var source = NewSpawner("Rabbit", "Bird");
         source.Entries[1].Disabled = true;
 
-        var copy = new Spawner();
+        var copy = Track(new Spawner());
         source.Dupe(copy);
 
         Assert.Equal(2, copy.Entries.Count);
@@ -84,31 +100,25 @@ public class SpawnerEntryOwnershipTests
 
         source.AddEntry("Orc", 100, 1, false);
         Assert.Equal(2, copy.Entries.Count);
-
-        source.Delete();
-        copy.Delete();
     }
 
     [Fact]
     public void CopyEntriesTo_ReplacesTargetEntries()
     {
-        var source = new Spawner(1, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(2), 0, default, "Rabbit");
-        var target = new Spawner(1, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(2), 0, default, "Orc", "Troll");
+        var source = NewSpawner("Rabbit");
+        var target = NewSpawner("Orc", "Troll");
 
         source.CopyEntriesTo(target);
 
         Assert.Single(target.Entries);
         Assert.Equal("Rabbit", target.Entries[0].SpawnedName);
         Assert.NotSame(source.Entries[0], target.Entries[0]);
-
-        source.Delete();
-        target.Delete();
     }
 
     [Fact]
     public void CopyEntriesTo_Self_IsNoOp()
     {
-        var spawner = new Spawner(1, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(2), 0, default, "Rabbit", "Bird");
+        var spawner = NewSpawner("Rabbit", "Bird");
         var first = spawner.Entries[0];
         var second = spawner.Entries[1];
 
@@ -117,18 +127,16 @@ public class SpawnerEntryOwnershipTests
         Assert.Equal(2, spawner.Entries.Count);
         Assert.Same(first, spawner.Entries[0]);
         Assert.Same(second, spawner.Entries[1]);
-
-        spawner.Delete();
     }
 
     [Fact]
     public void RemoveEntry_ForeignEntry_IsIgnored()
     {
-        var a = new Spawner(1, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(2), 0, default, "Rabbit");
-        var b = new Spawner(1, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(2), 0, default, "Bird");
+        var a = NewSpawner("Rabbit");
+        var b = NewSpawner("Bird");
 
         var foreign = b.Entries[0];
-        var spawned = new Item(0x1f13);
+        var spawned = Track(new Item(0x1f13));
         foreign.AddToSpawned(spawned);
 
         a.RemoveEntry(foreign);
@@ -140,10 +148,6 @@ public class SpawnerEntryOwnershipTests
 
         Assert.False(spawned.Deleted);
         Assert.Single(foreign.Spawned);
-
-        spawned.Delete();
-        a.Delete();
-        b.Delete();
     }
 
     // Manual: remove the Skip, run, and read the numbers from the thrown assertion.

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using Server.Saves;
 using Xunit;
 
@@ -9,16 +10,32 @@ namespace Server.Tests;
 [Collection("Sequential UOContent Tests")]
 public class ArchiveJournalTests : IDisposable
 {
+    private static readonly FieldInfo _dataField =
+        typeof(ArchiveJournal).GetField("_data", BindingFlags.Static | BindingFlags.NonPublic);
+
+    private static readonly FieldInfo _journalPathField =
+        typeof(ArchiveJournal).GetField("_journalPath", BindingFlags.Static | BindingFlags.NonPublic);
+
+    private readonly object _savedData;
+    private readonly object _savedJournalPath;
     private readonly string _testDir;
 
     public ArchiveJournalTests()
     {
+        // Configure() repoints the process-wide journal at the temp dir; restore it so no later
+        // caller writes into a deleted directory.
+        _savedData = _dataField.GetValue(null);
+        _savedJournalPath = _journalPathField.GetValue(null);
+
         _testDir = Path.Combine(Path.GetTempPath(), $"modernuo-journal-test-{Guid.NewGuid():N}");
         Directory.CreateDirectory(_testDir);
     }
 
     public void Dispose()
     {
+        _dataField.SetValue(null, _savedData);
+        _journalPathField.SetValue(null, _savedJournalPath);
+
         if (Directory.Exists(_testDir))
         {
             Directory.Delete(_testDir, true);

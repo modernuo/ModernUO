@@ -260,14 +260,8 @@ public class SectorSpawnCacheManagerTests
     }
 }
 
-[Collection("SectorSpawnCache")]
 public class SpiralScanTests
 {
-    public SpiralScanTests()
-    {
-        SectorSpawnCacheManager.ClearAll();
-    }
-
     [Theory]
     [InlineData(1, 0, -1, -1)] // Ring 1, position 0: top-left
     [InlineData(1, 1, 0, -1)]  // Ring 1, position 1: top

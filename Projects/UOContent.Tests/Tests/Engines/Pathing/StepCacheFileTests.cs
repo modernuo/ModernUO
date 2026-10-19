@@ -6,8 +6,12 @@ using Xunit;
 namespace Server.Tests.Pathfinding;
 
 [Collection("Sequential Pathfinding Tests")]
-public class StepCacheFileTests
+public class StepCacheFileTests : IDisposable
 {
+    private readonly StepCacheStateScope _cacheState = new();
+
+    public void Dispose() => _cacheState.Dispose();
+
     /// <summary>
     /// Round-trip a populated cache through a .swb file under lazy loading: build chunks,
     /// save, clear (closes lazy readers + drops residents), open as lazy backing store,
@@ -363,23 +367,16 @@ public class StepCacheFileTests
 
             cache.Clear();
             cache.PreloadOnLazyOpen = true;
-            try
-            {
-                Assert.True(cache.TryOpenLazyReader(path, map.MapID));
+            Assert.True(cache.TryOpenLazyReader(path, map.MapID));
 
-                // Every chunk should be resident — no further queries needed.
-                Assert.Equal(coords.Length, cache.GetStats().ResidentChunks);
-                Assert.Equal(0L, cache.GetStats().BuildsTotal); // came from file, not baker
+            // Every chunk should be resident — no further queries needed.
+            Assert.Equal(coords.Length, cache.GetStats().ResidentChunks);
+            Assert.Equal(0L, cache.GetStats().BuildsTotal); // came from file, not baker
 
-                // Subsequent query is a clean Hit, not a Miss_NotBuilt.
-                var lookup = cache.TryGetMask(map, coords[0].Item1, coords[0].Item2, sourceZ: 10);
-                Assert.Equal(CacheHitKind.Hit, lookup.HitKind);
-                Assert.Equal(coords.Length, cache.GetStats().ResidentChunks);
-            }
-            finally
-            {
-                cache.PreloadOnLazyOpen = false;
-            }
+            // Subsequent query is a clean Hit, not a Miss_NotBuilt.
+            var lookup = cache.TryGetMask(map, coords[0].Item1, coords[0].Item2, sourceZ: 10);
+            Assert.Equal(CacheHitKind.Hit, lookup.HitKind);
+            Assert.Equal(coords.Length, cache.GetStats().ResidentChunks);
         }
         finally
         {

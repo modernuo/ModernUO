@@ -1,15 +1,24 @@
 using System;
-using System.Buffers;
 using Server.Items;
 using Server.Network;
-using Server.Tests.Network;
 using Xunit;
+using static Server.Tests.TestClientHarness;
 
 namespace Server.Tests;
 
 [Collection("Sequential Server Tests")]
-public class PrivateChildPropertiesTests
+public class PrivateChildPropertiesTests : IDisposable
 {
+    private readonly bool _oplWasEnabled;
+
+    public PrivateChildPropertiesTests()
+    {
+        _oplWasEnabled = ObjectPropertyList.Enabled;
+        ObjectPropertyList.Enabled = true;
+    }
+
+    public void Dispose() => ObjectPropertyList.Enabled = _oplWasEnabled;
+
     private class PublicContainer : Container
     {
         public PublicContainer() : base(0xE75)
@@ -20,35 +29,6 @@ public class PrivateChildPropertiesTests
     }
 
     private static readonly Point3D _ownerLoc = new(1600, 1600, 0);
-
-    private static (NetState, Mobile) CreateClient(Point3D location)
-    {
-        var ns = PacketTestUtilities.CreateTestNetState();
-        ns.Account = new MockAccount();
-
-        var mobile = new Mobile(World.NewMobile);
-        mobile.DefaultMobileInit();
-        ns.Mobile = mobile;
-        mobile.NetState = ns;
-        mobile.MoveToWorld(location, Map.Felucca);
-        return (ns, mobile);
-    }
-
-    private static void DisposeClient(NetState ns, Mobile mobile)
-    {
-        ns.Mobile = null;
-        ns.Dispose();
-        mobile.Delete();
-    }
-
-    private static bool ReceivedOplInfo(NetState ns, Serial serial)
-    {
-        Span<byte> expected = stackalloc byte[5];
-        var writer = new SpanWriter(expected);
-        writer.Write((byte)0xDC); // OPL info packet ID
-        writer.Write(serial);
-        return ns.SendBuffer.GetReadSpan().IndexOf(expected) >= 0;
-    }
 
     // AddItem/MoveToWorld already queue their own Update (+Properties) delta as a side effect of the
     // Map setter. Draining it first isolates the properties-only delta the test actually exercises;
@@ -68,9 +48,6 @@ public class PrivateChildPropertiesTests
     [Fact]
     public void PrivateChildInOwnerBackpack_PropertiesOnlyUpdate_ReachesOwnerNotBystander()
     {
-        var wasEnabled = ObjectPropertyList.Enabled;
-        ObjectPropertyList.Enabled = true;
-
         var (ownerNs, owner) = CreateClient(_ownerLoc);
         var (bystanderNs, bystander) = CreateClient(new Point3D(_ownerLoc.X + 1, _ownerLoc.Y, 0));
 
@@ -93,16 +70,12 @@ public class PrivateChildPropertiesTests
             child.Delete();
             DisposeClient(ownerNs, owner);
             DisposeClient(bystanderNs, bystander);
-            ObjectPropertyList.Enabled = wasEnabled;
         }
     }
 
     [Fact]
     public void PrivateGroundContainer_PropertiesOnlyUpdate_ReachesOpenerNotNonOpener()
     {
-        var wasEnabled = ObjectPropertyList.Enabled;
-        ObjectPropertyList.Enabled = true;
-
         var (openerNs, opener) = CreateClient(_ownerLoc);
         var (bystanderNs, bystander) = CreateClient(new Point3D(_ownerLoc.X + 2, _ownerLoc.Y, 0));
 
@@ -126,16 +99,12 @@ public class PrivateChildPropertiesTests
             container.Delete();
             DisposeClient(openerNs, opener);
             DisposeClient(bystanderNs, bystander);
-            ObjectPropertyList.Enabled = wasEnabled;
         }
     }
 
     [Fact]
     public void PublicContainerChild_PropertiesOnlyUpdate_StillReachesBystander()
     {
-        var wasEnabled = ObjectPropertyList.Enabled;
-        ObjectPropertyList.Enabled = true;
-
         var (bystanderNs, bystander) = CreateClient(_ownerLoc);
 
         var pack = new PublicContainer();
@@ -155,16 +124,12 @@ public class PrivateChildPropertiesTests
         {
             pack.Delete();
             DisposeClient(bystanderNs, bystander);
-            ObjectPropertyList.Enabled = wasEnabled;
         }
     }
 
     [Fact]
     public void GroundItem_PropertiesOnlyUpdate_StillReachesBystander()
     {
-        var wasEnabled = ObjectPropertyList.Enabled;
-        ObjectPropertyList.Enabled = true;
-
         var (bystanderNs, bystander) = CreateClient(_ownerLoc);
 
         var item = new Item(0x1234);
@@ -181,7 +146,6 @@ public class PrivateChildPropertiesTests
         {
             item.Delete();
             DisposeClient(bystanderNs, bystander);
-            ObjectPropertyList.Enabled = wasEnabled;
         }
     }
 }

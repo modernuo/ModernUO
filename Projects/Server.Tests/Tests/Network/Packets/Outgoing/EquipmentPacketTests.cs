@@ -31,19 +31,16 @@ public class EquipmentPacketTests
             }
         );
 
-        var expected = new DisplayEquipmentInfo(item, info).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendDisplayEquipmentInfo(
-            item.Serial,
-            info.Number,
-            info.Crafter?.RawName,
-            info.Unidentified,
-            new List<EquipInfoAttribute>(info.Attributes)
+        PacketAssert.Sends(
+            new DisplayEquipmentInfo(item, info),
+            ns => ns.SendDisplayEquipmentInfo(
+                item.Serial,
+                info.Number,
+                info.Crafter?.RawName,
+                info.Unidentified,
+                new List<EquipInfoAttribute>(info.Attributes)
+            )
         );
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
     }
 
     [Fact]
@@ -54,12 +51,6 @@ public class EquipmentPacketTests
 
         var item = new Item(World.NewItem) { Parent = m };
 
-        var expected = new EquipUpdate(item).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendEquipUpdate(item);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new EquipUpdate(item), ns => ns.SendEquipUpdate(item));
     }
 }

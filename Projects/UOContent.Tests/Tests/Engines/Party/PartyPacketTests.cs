@@ -9,8 +9,9 @@ namespace UOContent.Tests;
 [Collection("Sequential UOContent Tests")]
 public class PartyPacketTests
 {
+    // Without a party, the remove-member packet tells the removed member their list is now empty.
     [Fact]
-    public void TestPartyEmptyList()
+    public void TestPartyRemoveMember_WithoutParty_SendsEmptyList()
     {
         var m = (Serial)0x1024u;
 
@@ -26,43 +27,61 @@ public class PartyPacketTests
     [Fact]
     public void TestPartyRemoveMember()
     {
-        var leader = new Mobile((Serial)0x1024u);
-        leader.DefaultMobileInit();
+        // Fresh serials: Delete removes by serial, and a fixed one could belong to a live entity.
+        var leader = new Mobile(World.NewMobile);
+        var member = new Mobile(World.NewMobile);
 
-        var member = new Mobile((Serial)0x2048u);
-        member.DefaultMobileInit();
+        try
+        {
+            leader.DefaultMobileInit();
+            member.DefaultMobileInit();
 
-        var p = new Party(leader);
-        p.Add(member);
+            var p = new Party(leader);
+            p.Add(member);
 
-        var expected = new PartyRemoveMember(member.Serial, p).Compile();
+            var expected = new PartyRemoveMember(member.Serial, p).Compile();
 
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendPartyRemoveMember(member.Serial, p);
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendPartyRemoveMember(member.Serial, p);
 
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+            var result = ns.SendBuffer.GetReadSpan();
+            AssertThat.Equal(result, expected);
+        }
+        finally
+        {
+            member.Delete();
+            leader.Delete();
+        }
     }
 
     [Fact]
     public void TestPartyMemberList()
     {
-        var leader = new Mobile((Serial)0x1024u);
-        leader.DefaultMobileInit();
+        // Fresh serials: Delete removes by serial, and a fixed one could belong to a live entity.
+        var leader = new Mobile(World.NewMobile);
+        var member = new Mobile(World.NewMobile);
 
-        var member = new Mobile((Serial)0x2048u);
-        member.DefaultMobileInit();
+        try
+        {
+            leader.DefaultMobileInit();
+            member.DefaultMobileInit();
 
-        var p = new Party(leader);
-        p.Add(member);
+            var p = new Party(leader);
+            p.Add(member);
 
-        var expected = new PartyMemberList(p).Compile();
+            var expected = new PartyMemberList(p).Compile();
 
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendPartyMemberList(p);
+            using var ns = PacketTestUtilities.CreateTestNetState();
+            ns.SendPartyMemberList(p);
 
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+            var result = ns.SendBuffer.GetReadSpan();
+            AssertThat.Equal(result, expected);
+        }
+        finally
+        {
+            member.Delete();
+            leader.Delete();
+        }
     }
 
     [Theory]

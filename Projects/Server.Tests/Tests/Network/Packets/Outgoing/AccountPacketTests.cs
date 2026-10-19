@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Net;
-using Server.Accounting;
 using Server.Network;
 using Xunit;
 
@@ -10,60 +8,6 @@ namespace Server.Tests.Network;
 [Collection("Sequential Server Tests")]
 public class AccountPacketTests
 {
-    private class MockedAccount : IAccount
-    {
-        public int TotalGold { get; }
-        public int TotalPlat { get; }
-        public bool DepositGold(int amount) => throw new NotImplementedException();
-
-        public bool DepositPlat(int amount) => throw new NotImplementedException();
-
-        public bool WithdrawGold(int amount) => throw new NotImplementedException();
-
-        public bool WithdrawPlat(int amount) => throw new NotImplementedException();
-
-        public long GetTotalGold() => throw new NotImplementedException();
-
-        public int CompareTo(IAccount other) => throw new NotImplementedException();
-
-        public string Username { get; }
-        public string Email { get; set; }
-        public AccessLevel AccessLevel { get; set; }
-        public int Length { get; }
-        public int Limit { get; }
-        public int Count { get; }
-
-        private Dictionary<int, Mobile> _mobiles = new();
-
-        public Mobile this[int index]
-        {
-            get => _mobiles[index];
-            set
-            {
-                _mobiles[index] = value;
-                if (value != null)
-                {
-                    value.Account = this;
-                }
-            }
-        }
-
-        public DateTime Created { get; set; }
-        public Serial Serial { get; }
-        public void Deserialize(IGenericReader reader) => throw new NotImplementedException();
-
-        public void Serialize(IGenericWriter writer) => throw new NotImplementedException();
-
-        public bool Deleted { get; }
-
-        public void Delete() => throw new NotImplementedException();
-        public bool TrySetUsername(string username) => throw new NotImplementedException();
-
-        public void SetPassword(string password) => throw new NotImplementedException();
-
-        public bool CheckPassword(string password) => throw new NotImplementedException();
-    }
-
     [Fact]
     public void TestChangeCharacter()
     {
@@ -75,58 +19,38 @@ public class AccountPacketTests
         secondMobile.DefaultMobileInit();
         secondMobile.RawName = null;
 
-        var account = new MockedAccount
+        var account = new MockAccount
         {
             [0] = firstMobile,
             [1] = null,
             [2] = secondMobile
         };
 
-        // var account = new MockAccount(new[] { firstMobile, null, secondMobile });
-        var expected = new ChangeCharacter(account).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendChangeCharacter(account);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new ChangeCharacter(account), ns => ns.SendChangeCharacter(account));
     }
 
     [Fact]
     public void TestClientVersionReq()
     {
-        var expected = new ClientVersionReq().Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-
-        ns.SendClientVersionRequest();
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new ClientVersionReq(), ns => ns.SendClientVersionRequest());
     }
 
     [Fact]
     public void TestDeleteResult()
     {
-        var expected = new DeleteResult(DeleteResultType.BadRequest).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendCharacterDeleteResult(DeleteResultType.BadRequest);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(
+            new DeleteResult(DeleteResultType.BadRequest),
+            ns => ns.SendCharacterDeleteResult(DeleteResultType.BadRequest)
+        );
     }
 
     [Fact]
     public void TestPopupMessage()
     {
-        var expected = new PopupMessage(PMMessage.LoginSyncError).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendPopupMessage(PMMessage.LoginSyncError);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(
+            new PopupMessage(PMMessage.LoginSyncError),
+            ns => ns.SendPopupMessage(PMMessage.LoginSyncError)
+        );
     }
 
     [Theory, InlineData(ProtocolChanges.Version70610), InlineData(ProtocolChanges.Version6000)]
@@ -136,7 +60,7 @@ public class AccountPacketTests
         firstMobile.DefaultMobileInit();
         firstMobile.Name = "Test Mobile";
 
-        var account = new MockedAccount
+        var account = new MockAccount
         {
             [0] = firstMobile,
             [1] = null,
@@ -168,25 +92,13 @@ public class AccountPacketTests
         m.Direction = Direction.Down;
         m.LogoutMap = Map.Felucca;
 
-        var expected = new LoginConfirm(m).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendLoginConfirmation(m);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new LoginConfirm(m), ns => ns.SendLoginConfirmation(m));
     }
 
     [Fact]
     public void TestLoginComplete()
     {
-        var expected = new LoginComplete().Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendLoginComplete();
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new LoginComplete(), ns => ns.SendLoginComplete());
     }
 
     [Fact]
@@ -196,7 +108,7 @@ public class AccountPacketTests
         firstMobile.DefaultMobileInit();
         firstMobile.RawName = "Test Mobile";
 
-        var account = new MockedAccount
+        var account = new MockAccount
         {
             [0] = null,
             [1] = firstMobile,
@@ -205,13 +117,7 @@ public class AccountPacketTests
             [4] = null
         };
 
-        var expected = new CharacterListUpdate(account).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendCharacterListUpdate(account);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new CharacterListUpdate(account), ns => ns.SendCharacterListUpdate(account));
     }
 
     [Fact]
@@ -221,7 +127,7 @@ public class AccountPacketTests
         firstMobile.DefaultMobileInit();
         firstMobile.Name = "Test Mobile";
 
-        var account = new MockedAccount
+        var account = new MockAccount
         {
             [0] = null,
             [1] = firstMobile,
@@ -235,17 +141,16 @@ public class AccountPacketTests
             new CityInfo("Test City", "Test Building", 50, 100, 10, -10)
         };
 
-        var expected = new CharacterList(account, info).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.CityInfo = info;
-        ns.Account = account;
-        ns.ProtocolChanges = ProtocolChanges.Version70130;
-
-        ns.SendCharacterList();
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(
+            new CharacterList(account, info),
+            ns =>
+            {
+                ns.CityInfo = info;
+                ns.Account = account;
+                ns.SendCharacterList();
+            },
+            ProtocolChanges.Version70130
+        );
     }
 
     [Fact]
@@ -255,7 +160,7 @@ public class AccountPacketTests
         firstMobile.DefaultMobileInit();
         firstMobile.Name = "Test Mobile";
 
-        var account = new MockedAccount
+        var account = new MockAccount
         {
             [0] = null,
             [1] = firstMobile,
@@ -269,29 +174,23 @@ public class AccountPacketTests
             new CityInfo("Test City", "Test Building", 50, 100, 10, -10)
         };
 
-        var expected = new CharacterListOld(account, info).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.CityInfo = info;
-        ns.Account = account;
-
-        ns.SendCharacterList();
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(
+            new CharacterListOld(account, info),
+            ns =>
+            {
+                ns.CityInfo = info;
+                ns.Account = account;
+                ns.SendCharacterList();
+            }
+        );
     }
 
     [Fact]
     public void TestAccountLoginRej()
     {
         var reason = ALRReason.BadComm;
-        var expected = new AccountLoginRej(reason).Compile();
 
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendAccountLoginRejected(reason);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new AccountLoginRej(reason), ns => ns.SendAccountLoginRejected(reason));
     }
 
     [Fact]
@@ -302,15 +201,14 @@ public class AccountPacketTests
             new ServerInfo("Test Server", 0, TimeZoneInfo.Local, IPEndPoint.Parse("127.0.0.1"))
         };
 
-        var expected = new AccountLoginAck(info).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.ServerInfo = info;
-
-        ns.SendAccountLoginAck();
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(
+            new AccountLoginAck(info),
+            ns =>
+            {
+                ns.ServerInfo = info;
+                ns.SendAccountLoginAck();
+            }
+        );
     }
 
     [Fact]
@@ -319,13 +217,6 @@ public class AccountPacketTests
         var si = new ServerInfo("Test Server", 0, TimeZoneInfo.Local, IPEndPoint.Parse("127.0.0.1"));
         const int authId = 0x123456;
 
-        var expected = new PlayServerAck(si, authId).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-
-        ns.SendPlayServerAck(si, authId);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new PlayServerAck(si, authId), ns => ns.SendPlayServerAck(si, authId));
     }
 }

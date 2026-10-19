@@ -187,21 +187,3 @@ public sealed class WorldItemHS : Packet
         Stream.Write((short)0x00); // ??
     }
 }
-
-public sealed class OPLInfo : Packet
-{
-    /*public OPLInfo( ObjectPropertyList list ) : base( 0xBF )
-    {
-      EnsureCapacity( 13 );
-
-      m_Stream.Write( (short) 0x10 );
-      m_Stream.Write( (int) list.Entity.Serial );
-      m_Stream.Write( (int) list.Hash );
-    }*/
-
-    public OPLInfo(Serial serial, int hash) : base(0xDC, 9)
-    {
-        Stream.Write(serial);
-        Stream.Write(hash);
-    }
-}

@@ -38,7 +38,7 @@ public class NameVerificationTests
     [InlineData("Blacksmith 123")]
     [InlineData("Baker-Smith")]
     [InlineData("*Innkeeper*")]
-    public void ValidateVendorName_ValidNames_ReturnsFalse(string name)
+    public void ValidateVendorName_DisallowedCharacters_ReturnsFalse(string name)
     {
         Assert.False(NameVerification.ValidateVendorName(name));
     }

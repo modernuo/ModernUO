@@ -5,8 +5,10 @@ using Xunit;
 namespace Server.Tests;
 
 [Collection("Sequential Server Tests")]
-public class LockedDownContainerDecayTests
+public class LockedDownContainerDecayTests : IDisposable
 {
+    private readonly EntityCleanup _cleanup = new();
+
     public LockedDownContainerDecayTests()
     {
         DecayScheduler.ResetForTests();
@@ -18,6 +20,8 @@ public class LockedDownContainerDecayTests
             Item.SecureFlag = 2;
         }
     }
+
+    public void Dispose() => _cleanup.Dispose();
 
     private class TestChest : Container
     {
@@ -35,11 +39,11 @@ public class LockedDownContainerDecayTests
         public override bool ContentsDecay => false;
     }
 
-    private static Item NewLoot() => new Item(0x1F03) { Movable = true, Visible = true };
+    private Item NewLoot() => _cleanup.Track(new Item(0x1F03) { Movable = true, Visible = true });
 
-    private static TestChest PlaceLockedDownChest(int x)
+    private TestChest PlaceLockedDownChest(int x)
     {
-        var chest = new TestChest { Movable = false };
+        var chest = _cleanup.Track(new TestChest { Movable = false });
         chest.MoveToWorld(new Point3D(x, 100, 0), Map.Felucca);
         chest.IsLockedDown = true;
         return chest;
@@ -62,7 +66,7 @@ public class LockedDownContainerDecayTests
     [Fact]
     public void ItemInOrdinaryContainer_IsNotTracked()
     {
-        var chest = new TestChest();
+        var chest = _cleanup.Track(new TestChest());
         chest.MoveToWorld(new Point3D(121, 100, 0), Map.Felucca);
         var loot = NewLoot();
 
@@ -77,7 +81,7 @@ public class LockedDownContainerDecayTests
     [Fact]
     public void LockingAndReleasingContainer_RegistersAndUnregistersContents()
     {
-        var chest = new TestChest { Movable = false };
+        var chest = _cleanup.Track(new TestChest { Movable = false });
         chest.MoveToWorld(new Point3D(122, 100, 0), Map.Felucca);
         var loot = NewLoot();
         chest.AddItem(loot);
@@ -102,7 +106,7 @@ public class LockedDownContainerDecayTests
     [Fact]
     public void ContainerThatKeepsContents_DoesNotTrackThem()
     {
-        var board = new KeepsContentsChest { Movable = false };
+        var board = _cleanup.Track(new KeepsContentsChest { Movable = false });
         board.MoveToWorld(new Point3D(123, 100, 0), Map.Felucca);
         board.IsLockedDown = true;
         var piece = NewLoot();
@@ -118,7 +122,7 @@ public class LockedDownContainerDecayTests
     public void NestedContainerContents_AreNotTracked()
     {
         var chest = PlaceLockedDownChest(124);
-        var bag = new TestChest();
+        var bag = _cleanup.Track(new TestChest());
         chest.AddItem(bag);
         var loot = NewLoot();
         bag.AddItem(loot);
@@ -145,29 +149,17 @@ public class LockedDownContainerDecayTests
     [Fact]
     public void TrackedContents_DecayOnSchedule()
     {
-        var start = Core._now;
+        using var clock = new SimulatedClockScope();
 
-        try
-        {
-            var chest = PlaceLockedDownChest(126);
-            var loot = NewLoot();
-            chest.AddItem(loot);
+        var chest = PlaceLockedDownChest(126);
+        var loot = NewLoot();
+        chest.AddItem(loot);
 
-            var deadline = start + loot.DecayTime + TimeSpan.FromMinutes(2);
-            for (var now = start; now <= deadline && !loot.Deleted; now += TimeSpan.FromMilliseconds(256))
-            {
-                Core._now = now;
-                DecayScheduler.ProcessTick(now);
-            }
+        clock.AdvanceDecay(loot.DecayTime + TimeSpan.FromMinutes(2), loot);
 
-            Assert.True(loot.Deleted, "Contents of a locked-down container must decay.");
-            Assert.False(chest.Deleted, "The locked-down container itself must not decay.");
+        Assert.True(loot.Deleted, "Contents of a locked-down container must decay.");
+        Assert.False(chest.Deleted, "The locked-down container itself must not decay.");
 
-            chest.Delete();
-        }
-        finally
-        {
-            Core._now = start;
-        }
+        chest.Delete();
     }
 }

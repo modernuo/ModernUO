@@ -18,11 +18,6 @@ public class MultiWalkabilityTests
     private const int PlaceX = 1500;
     private const int PlaceY = 1600;
 
-    private sealed class WalkerStub : Mobile
-    {
-        public WalkerStub() => Body = 0xC9;
-    }
-
     [SkippableFact]
     public void WallCell_CannotBeEnteredFromAnyAdjacentCell()
     {

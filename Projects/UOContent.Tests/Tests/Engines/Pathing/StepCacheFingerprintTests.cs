@@ -15,9 +15,12 @@ public class StepCacheFingerprintTests
     /// different one, marking the bake stale and re-baking on every boot. Hashing the file makes
     /// the fingerprint a pure function of the client's tile data, immune to those mutations.
     /// </summary>
-    [Fact]
+    [SkippableFact]
     public void Fingerprint_IgnoresRuntimeTileDataMutation()
     {
+        // Without tiledata.mul there is no file to hash, so the fingerprint is constant either way.
+        TileDataRequirement.SkipIfMissing();
+
         const int mapId = 1; // Trammel — loaded by the test bootstrap.
 
         var before = StepCacheFile.ComputeFingerprint(mapId);

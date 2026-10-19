@@ -10,11 +10,6 @@ namespace UOContent.Tests.Mobiles.AI;
 [Collection("Sequential Pathfinding Tests")]
 public class HerdingTests
 {
-    private sealed class Stub : BaseCreature
-    {
-        public Stub(Serial serial) : base(serial) => Body = 0xC9;
-    }
-
     [SkippableFact]
     public void HerdedCreature_ReachesTheTile_AndClearsTargetLocation()
     {
@@ -22,7 +17,7 @@ public class HerdingTests
         var map = Map.Maps[1];
         map.GetAverageZ(1500, 1600, out _, out var z, out _);
 
-        var bc = new Stub(World.NewMobile);
+        var bc = new BareCreatureStub(World.NewMobile);
         bc.DefaultMobileInit();
         bc.MoveToWorld(new Point3D(1500, 1600, (sbyte)z), map);
         BaseAI ai = new AnimalAI(bc);

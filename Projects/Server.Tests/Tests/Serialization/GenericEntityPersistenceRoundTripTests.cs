@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
 using Xunit;
 
 namespace Server.Tests;
@@ -72,103 +70,68 @@ public class GenericEntityPersistenceRoundTripTests
     [Fact]
     public void SnapshotRoundTripsThroughWorkersAndSegmentLogs()
     {
-        // The loader resolves types by hash through AssemblyHandler; make this test
-        // assembly visible for the duration of the test.
-        var previousAssemblies = AssemblyHandler.Assemblies;
-        AssemblyHandler.Assemblies = [.. previousAssemblies ?? [], typeof(RoundTripEntity).Assembly];
+        // The loader resolves types by hash through AssemblyHandler, so this test assembly must be visible.
+        using var pipeline = new PersistencePipelineScope(
+            3,
+            installWorkers: true,
+            visibleAssembly: typeof(RoundTripEntity).Assembly,
+            directoryPrefix: "muo-roundtrip"
+        );
+        var source = pipeline.Source;
+        var dir = pipeline.Directory;
 
-        var source = new SerializationChunkSource();
-        var workers = new SerializationThreadWorker[3];
-        for (var i = 0; i < workers.Length; i++)
+        var persistence = pipeline.Track(new RoundTripPersistence(2000));
+
+        const int entityCount = 25_000;
+        var rng = new System.Random(0x5EED);
+
+        for (var i = 1; i <= entityCount; i++)
         {
-            workers[i] = new SerializationThreadWorker(i, source);
-            workers[i].AllocateHeap();
+            var serial = (Serial)(uint)i;
+            persistence.EntitiesBySerial[serial] = new RoundTripEntity(serial)
+            {
+                Value = rng.Next(),
+                Name = i % 5 == 0 ? null : $"entity-{i}"
+            };
         }
 
-        var previousWorkers = World._threadWorkers;
-        World._threadWorkers = workers;
+        persistence.RegisterType(typeof(RoundTripEntity));
 
-        var persistence = new RoundTripPersistence(2000);
-        RoundTripPersistence loaded = null;
+        // Freeze: what Persistence.SerializeAll + GenericEntityPersistence.Serialize do,
+        // against this test's chunk source instead of the world's.
+        pipeline.WakeWorkers();
 
-        var dir = Path.Combine(Path.GetTempPath(), $"muo-roundtrip-{Guid.NewGuid():N}");
-        Directory.CreateDirectory(dir);
+        source.SetOwner(persistence);
+        source.PushSingle(persistence);
+        Assert.True(persistence.TrySnapshotEntries(out var slotCount));
+        source.PushSlotRanges(persistence, slotCount);
 
-        try
+        pipeline.FlushAndSleepWorkers();
+
+        // Background write phase: snapshot from the segment logs. v4 embeds the type
+        // table in the idx, so no SerializedTypes.db is produced or needed.
+        persistence.WriteSnapshot(dir);
+
+        persistence.PostWorldSave(); // releases the entries snapshot
+
+        // Load into a fresh persistence, like a server boot would.
+        var loaded = pipeline.Track(new RoundTripPersistence(2001));
+        loaded.DeserializeIndexes(dir, null);
+        loaded.Deserialize(dir, null);
+
+        Assert.True(loaded.SelfPayloadDeserialized);
+        Assert.Equal(persistence.EntitiesBySerial.Count, loaded.EntitiesBySerial.Count);
+
+        foreach (var (serial, original) in persistence.EntitiesBySerial)
         {
-            const int entityCount = 25_000;
-            var rng = new System.Random(0x5EED);
-
-            for (var i = 1; i <= entityCount; i++)
-            {
-                var serial = (Serial)(uint)i;
-                persistence.EntitiesBySerial[serial] = new RoundTripEntity(serial)
-                {
-                    Value = rng.Next(),
-                    Name = i % 5 == 0 ? null : $"entity-{i}"
-                };
-            }
-
-            persistence.RegisterType(typeof(RoundTripEntity));
-
-            // Freeze: what Persistence.SerializeAll + GenericEntityPersistence.Serialize do,
-            // against this test's chunk source instead of the world's.
-            foreach (var worker in workers)
-            {
-                worker.Wake();
-            }
-
-            source.SetOwner(persistence);
-            source.PushSingle(persistence);
-            Assert.True(persistence.TrySnapshotEntries(out var slotCount));
-            source.PushSlotRanges(persistence, slotCount);
-
-            // Mirrors World.PauseSerializationThreads
-            source.Flush();
-            foreach (var worker in workers)
-            {
-                worker.Sleep();
-            }
-
-            // Background write phase: snapshot from the segment logs. v4 embeds the type
-            // table in the idx, so no SerializedTypes.db is produced or needed.
-            persistence.WriteSnapshot(dir);
-
-            persistence.PostWorldSave(); // releases the entries snapshot
-
-            // Load into a fresh persistence, like a server boot would.
-            loaded = new RoundTripPersistence(2001);
-            loaded.DeserializeIndexes(dir, null);
-            loaded.Deserialize(dir, null);
-
-            Assert.True(loaded.SelfPayloadDeserialized);
-            Assert.Equal(persistence.EntitiesBySerial.Count, loaded.EntitiesBySerial.Count);
-
-            foreach (var (serial, original) in persistence.EntitiesBySerial)
-            {
-                var entity = loaded.EntitiesBySerial[serial];
-                Assert.Equal(original.Value, entity.Value);
-                Assert.Equal(original.Name, entity.Name);
-                Assert.Equal(original.Created.Ticks, entity.Created.Ticks);
-            }
-
-            // Loading must hydrate the type table so the next save can write indexes.
-            Assert.True(loaded.TryGetTypeIndex(typeof(RoundTripEntity), out _));
+            var entity = loaded.EntitiesBySerial[serial];
+            Assert.Equal(original.Value, entity.Value);
+            Assert.Equal(original.Name, entity.Name);
+            Assert.Equal(original.Created.Ticks, entity.Created.Ticks);
         }
-        finally
-        {
-            persistence.Unregister();
-            loaded?.Unregister();
 
-            foreach (var worker in workers)
-            {
-                worker.Exit();
-            }
-
-            World._threadWorkers = previousWorkers;
-            AssemblyHandler.Assemblies = previousAssemblies;
-            Directory.Delete(dir, true);
-        }
+        // Loading must hydrate the type table so the next save can write indexes.
+        Assert.True(loaded.TryGetTypeIndex(typeof(RoundTripEntity), out _));
     }
 
     /// <summary>
@@ -179,70 +142,44 @@ public class GenericEntityPersistenceRoundTripTests
     [Fact]
     public void SerializerException_IsRecordedOnTheWorker_AndTheDrainCompletes()
     {
-        var source = new SerializationChunkSource();
-        var workers = new SerializationThreadWorker[2];
-        for (var i = 0; i < workers.Length; i++)
+        using var pipeline = new PersistencePipelineScope(2);
+        var source = pipeline.Source;
+        var workers = pipeline.Workers;
+
+        var persistence = pipeline.Track(new RoundTripPersistence(2002));
+
+        for (var i = 1; i <= 100; i++)
         {
-            workers[i] = new SerializationThreadWorker(i, source);
-            workers[i].AllocateHeap();
+            var serial = (Serial)(uint)i;
+            persistence.EntitiesBySerial[serial] = i == 50
+                ? new ThrowingRoundTripEntity(serial)
+                : new RoundTripEntity(serial) { Value = i, Name = $"entity-{i}" };
         }
 
-        var persistence = new RoundTripPersistence(2002);
+        pipeline.WakeWorkers();
 
-        try
+        source.SetOwner(persistence);
+        Assert.True(persistence.TrySnapshotEntries(out var slotCount));
+        source.PushSlotRanges(persistence, slotCount);
+
+        pipeline.FlushAndSleepWorkers();
+
+        Exception error = null;
+        foreach (var worker in workers)
         {
-            for (var i = 1; i <= 100; i++)
-            {
-                var serial = (Serial)(uint)i;
-                persistence.EntitiesBySerial[serial] = i == 50
-                    ? new ThrowingRoundTripEntity(serial)
-                    : new RoundTripEntity(serial) { Value = i, Name = $"entity-{i}" };
-            }
-
-            foreach (var worker in workers)
-            {
-                worker.Wake();
-            }
-
-            source.SetOwner(persistence);
-            Assert.True(persistence.TrySnapshotEntries(out var slotCount));
-            source.PushSlotRanges(persistence, slotCount);
-            source.Flush();
-
-            foreach (var worker in workers)
-            {
-                worker.Sleep();
-            }
-
-            Exception error = null;
-            foreach (var worker in workers)
-            {
-                error ??= worker.Error;
-            }
-
-            Assert.IsType<InvalidOperationException>(error);
-            persistence.PostWorldSave();
-
-            // The next drain starts clean.
-            foreach (var worker in workers)
-            {
-                worker.Wake();
-            }
-
-            foreach (var worker in workers)
-            {
-                worker.Sleep();
-                Assert.Null(worker.Error);
-            }
+            error ??= worker.Error;
         }
-        finally
-        {
-            persistence.Unregister();
 
-            foreach (var worker in workers)
-            {
-                worker.Exit();
-            }
+        Assert.IsType<InvalidOperationException>(error);
+        persistence.PostWorldSave();
+
+        // The next drain starts clean.
+        pipeline.WakeWorkers();
+
+        foreach (var worker in workers)
+        {
+            worker.Sleep();
+            Assert.Null(worker.Error);
         }
     }
 
@@ -253,60 +190,28 @@ public class GenericEntityPersistenceRoundTripTests
     [Fact]
     public void WriteSnapshot_FailsTheSave_InsteadOfDroppingASegment()
     {
-        var source = new SerializationChunkSource();
-        var workers = new SerializationThreadWorker[2];
-        for (var i = 0; i < workers.Length; i++)
+        using var pipeline = new PersistencePipelineScope(2, installWorkers: true, directoryPrefix: "muo-segmentfail");
+        var source = pipeline.Source;
+
+        var persistence = pipeline.Track(new RoundTripPersistence(2003));
+
+        for (var i = 1; i <= 100; i++)
         {
-            workers[i] = new SerializationThreadWorker(i, source);
-            workers[i].AllocateHeap();
+            var serial = (Serial)(uint)i;
+            persistence.EntitiesBySerial[serial] = new RoundTripEntity(serial) { Value = i, Name = $"entity-{i}" };
         }
 
-        var previousWorkers = World._threadWorkers;
-        World._threadWorkers = workers;
+        // Deliberately not registered: the writer cannot index the type.
 
-        var persistence = new RoundTripPersistence(2003);
-        var dir = Path.Combine(Path.GetTempPath(), $"muo-segmentfail-{Guid.NewGuid():N}");
-        Directory.CreateDirectory(dir);
+        pipeline.WakeWorkers();
 
-        try
-        {
-            for (var i = 1; i <= 100; i++)
-            {
-                var serial = (Serial)(uint)i;
-                persistence.EntitiesBySerial[serial] = new RoundTripEntity(serial) { Value = i, Name = $"entity-{i}" };
-            }
+        source.SetOwner(persistence);
+        Assert.True(persistence.TrySnapshotEntries(out var slotCount));
+        source.PushSlotRanges(persistence, slotCount);
 
-            // Deliberately not registered: the writer cannot index the type.
+        pipeline.FlushAndSleepWorkers();
 
-            foreach (var worker in workers)
-            {
-                worker.Wake();
-            }
-
-            source.SetOwner(persistence);
-            Assert.True(persistence.TrySnapshotEntries(out var slotCount));
-            source.PushSlotRanges(persistence, slotCount);
-            source.Flush();
-
-            foreach (var worker in workers)
-            {
-                worker.Sleep();
-            }
-
-            Assert.Throws<InvalidOperationException>(() => persistence.WriteSnapshot(dir));
-            persistence.PostWorldSave();
-        }
-        finally
-        {
-            persistence.Unregister();
-
-            foreach (var worker in workers)
-            {
-                worker.Exit();
-            }
-
-            World._threadWorkers = previousWorkers;
-            Directory.Delete(dir, true);
-        }
+        Assert.Throws<InvalidOperationException>(() => persistence.WriteSnapshot(pipeline.Directory));
+        persistence.PostWorldSave();
     }
 }

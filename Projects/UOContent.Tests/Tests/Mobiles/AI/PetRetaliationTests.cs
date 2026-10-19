@@ -35,16 +35,10 @@ public class PetRetaliationTests : IDisposable
 
     private (PlayerMobile master, T pet) Spawn<T>() where T : BaseCreature, new()
     {
-        var master = new PlayerMobile(World.NewMobile);
-        master.DefaultMobileInit();
-        master.MoveToWorld(new Point3D(1000, 1000, 0), Map.Felucca);
+        var (master, pet) = PetTestSetup.SpawnControlledPet<T>(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
         _created.Add(master);
-
-        var pet = new T();
-        pet.MoveToWorld(new Point3D(1001, 1000, 0), Map.Felucca);
-        pet.SetControlMaster(master);
-        pet.AIObject.AITimer?.Stop();
         _created.Add(pet);
+        pet.AIObject.AITimer?.Stop();
 
         return (master, pet);
     }

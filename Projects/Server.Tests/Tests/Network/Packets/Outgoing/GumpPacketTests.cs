@@ -6,17 +6,13 @@ namespace Server.Tests.Network;
 [Collection("Sequential Server Tests")]
 public class GumpPacketTests
 {
-    [Theory]
-    [InlineData(100, 10)]
-    public void TestCloseGump(int typeId, int buttonId)
+    [Fact]
+    public void TestCloseGump()
     {
-        var expected = new CloseGump(typeId, buttonId).Compile();
+        const int typeId = 100;
+        const int buttonId = 10;
 
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendCloseGump(typeId, buttonId);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new CloseGump(typeId, buttonId), ns => ns.SendCloseGump(typeId, buttonId));
     }
 
     [Fact]
@@ -27,13 +23,10 @@ public class GumpPacketTests
         const string unknownString = "This is an unknown string";
         const string caption = "This is a caption";
 
-        var expected = new DisplaySignGump(gumpSerial, gumpId, unknownString, caption).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendDisplaySignGump(gumpSerial, gumpId, unknownString, caption);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(
+            new DisplaySignGump(gumpSerial, gumpId, unknownString, caption),
+            ns => ns.SendDisplaySignGump(gumpSerial, gumpId, unknownString, caption)
+        );
     }
 
     [Fact]
@@ -41,13 +34,7 @@ public class GumpPacketTests
     {
         var gump = new NameChangeDeedGump();
 
-        using var ns = PacketTestUtilities.CreateTestNetState();
-
-        var expected = gump.Compile(ns).Compile();
-        ns.SendGump(gump);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(ns => gump.Compile(ns), ns => ns.SendGump(gump));
     }
 
     [Fact]
@@ -60,13 +47,7 @@ public class GumpPacketTests
 
         var gump = new AdminGump(m, AdminGumpPage.Clients);
 
-        using var ns = PacketTestUtilities.CreateTestNetState();
-
-        var expected = gump.Compile(ns).Compile();
-        ns.SendGump(gump);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(ns => gump.Compile(ns), ns => ns.SendGump(gump));
     }
 }
 

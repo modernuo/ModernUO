@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Server;
 using Server.Items;
 using Server.Mobiles;
+using Server.Tests;
 using Xunit;
 
 namespace UOContent.Tests.Mobiles;
@@ -15,60 +16,14 @@ namespace UOContent.Tests.Mobiles;
 [Collection("Sequential UOContent Tests")]
 public class BaseCreatureSerializationTests : IDisposable
 {
-    private readonly List<Mobile> _created = new();
-    private readonly List<Item> _createdItems = new();
+    private readonly MobileTestHarness _harness = new();
 
-    public void Dispose()
-    {
-        for (var i = 0; i < _created.Count; i++)
-        {
-            _created[i].Delete();
-        }
+    public void Dispose() => _harness.Dispose();
 
-        for (var i = 0; i < _createdItems.Count; i++)
-        {
-            _createdItems[i].Delete();
-        }
-    }
-
-    private class CreatureStub : BaseCreature
-    {
-        public CreatureStub() : base(AIType.AI_Melee) => Body = 0xC9;
-
-        public CreatureStub(Serial serial) : base(serial) => Body = 0xC9;
-
-        public DateTime SummonEndValue => SummonEnd;
-
-        // Stands in for the npc-speeds table (unconfigured in the test fixture).
-        public override void GetSpeeds(out double activeSpeed, out double passiveSpeed)
-        {
-            activeSpeed = 0.3;
-            passiveSpeed = 0.6;
-        }
-
-        public override void GetMoveSpeeds(out double activeMoveSpeed, out double passiveMoveSpeed)
-        {
-            activeMoveSpeed = 0.6;
-            passiveMoveSpeed = 1.2;
-        }
-    }
-
-    private CreatureStub NewCreature()
-    {
-        var bc = new CreatureStub();
-        _created.Add(bc);
-        return bc;
-    }
+    private TestCreature NewCreature() => _harness.NewCreature();
 
     // ReadEntity resolves references through the world table, so the master must be registered.
-    private PlayerMobile NewMaster()
-    {
-        var master = new PlayerMobile(World.NewMobile);
-        master.DefaultMobileInit();
-        World.AddEntity(master);
-        _created.Add(master);
-        return master;
-    }
+    private PlayerMobile NewMaster() => _harness.NewPlayer();
 
     private static byte[] Snapshot(Mobile m)
     {
@@ -80,10 +35,10 @@ public class BaseCreatureSerializationTests : IDisposable
         return buffer;
     }
 
-    private CreatureStub Load(byte[] buffer)
+    private TestCreature Load(byte[] buffer)
     {
-        var copy = new CreatureStub(World.NewMobile);
-        _created.Add(copy);
+        var copy = new TestCreature(World.NewMobile);
+        _harness.Track(copy);
         var reader = new BufferReader(buffer);
         copy.Deserialize(reader);
 
@@ -219,7 +174,7 @@ public class BaseCreatureSerializationTests : IDisposable
         var bc = NewCreature();
         var friend = NewMaster();
         var wayPoint = new WayPoint();
-        _createdItems.Add(wayPoint);
+        _harness.TrackItem(wayPoint);
 
         bc.AddPetFriend(friend);
         bc.CurrentWayPoint = wayPoint;
@@ -245,49 +200,20 @@ public class BaseCreatureSerializationTests : IDisposable
         Assert.InRange(copy.DeleteTimeLeft, TimeSpan.FromDays(3.0) - TimeSpan.FromSeconds(5), TimeSpan.FromDays(3.0));
     }
 
-    private sealed class VendorStub : BaseVendor
-    {
-        private static readonly List<SBInfo> _sbInfos = [];
-
-        public VendorStub() : base("the stub")
-        {
-        }
-
-        public VendorStub(Serial serial) : base(serial)
-        {
-        }
-
-        protected override List<SBInfo> SBInfos => _sbInfos;
-
-        public override void InitSBInfo()
-        {
-        }
-
-        public override void InitOutfit()
-        {
-        }
-
-        public override void GetSpeeds(out double activeSpeed, out double passiveSpeed)
-        {
-            activeSpeed = 0.3;
-            passiveSpeed = 0.6;
-        }
-    }
-
     // BaseVendor is generated on top of the generated BaseCreature; the chain must write
     // and read both sections in order with exact consumption.
     [Fact]
     public void GeneratedVendorChain_RoundTrips()
     {
-        var vendor = new VendorStub();
-        _created.Add(vendor);
+        var vendor = new TestVendor();
+        _harness.Track(vendor);
         vendor.Home = new Point3D(1500, 1600, 0);
         vendor.RangeHome = 2;
 
         var buffer = Snapshot(vendor);
 
-        var copy = new VendorStub(World.NewMobile);
-        _created.Add(copy);
+        var copy = new TestVendor(World.NewMobile);
+        _harness.Track(copy);
         var reader = new BufferReader(buffer);
         copy.Deserialize(reader);
 
@@ -378,7 +304,7 @@ public class BaseCreatureSerializationTests : IDisposable
         writer.Write(0.0);                     // passive move speed (v22)
     }
 
-    private CreatureStub LoadLegacyV22(
+    private TestCreature LoadLegacyV22(
         bool controlled = false,
         Mobile controlMaster = null,
         bool summoned = false,
@@ -390,7 +316,7 @@ public class BaseCreatureSerializationTests : IDisposable
         // Mobile donor produces a byte-authentic one.
         var donor = new MobileStub();
         donor.DefaultMobileInit();
-        _created.Add(donor);
+        _harness.Track(donor);
 
         var writer = new BufferWriter(true);
         donor.Serialize(writer);
@@ -399,8 +325,8 @@ public class BaseCreatureSerializationTests : IDisposable
         var buffer = new byte[writer.Position];
         writer.Buffer.AsSpan(0, (int)writer.Position).CopyTo(buffer);
 
-        var copy = new CreatureStub(World.NewMobile);
-        _created.Add(copy);
+        var copy = new TestCreature(World.NewMobile);
+        _harness.Track(copy);
         var reader = new BufferReader(buffer);
         copy.Deserialize(reader);
 
@@ -499,7 +425,7 @@ public class BaseCreatureSerializationTests : IDisposable
 
         var donor = new MobileStub();
         donor.DefaultMobileInit();
-        _created.Add(donor);
+        _harness.Track(donor);
 
         var writer = new BufferWriter(true);
         donor.Serialize(writer);

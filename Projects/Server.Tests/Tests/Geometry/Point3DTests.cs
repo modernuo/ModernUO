@@ -68,7 +68,7 @@ public class Point3DTests
         Assert.Equal(new Point3D(101, 23, 55), Point3D.Parse(" (101,23 ,55)  ", null));
 
         // No parenthesis
-        Assert.False(Point3D.TryParse("101, 23 55)", null, out p));
+        Assert.False(Point3D.TryParse("101, 23, 55)", null, out p));
         Assert.Equal(default, p);
         Assert.Throws<FormatException>(() => Point3D.Parse("101, 23, 55)", null));
 

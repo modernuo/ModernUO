@@ -36,10 +36,8 @@ public class FishingTests
     [InlineData(4.5, true)]
     public void Give_SerpentGoesBackAfterFiveMinutesUnlessHitInTheLastTwo(double? hitAtMinutes, bool stays)
     {
-        Core._tickCount = 0;
-        Timer.Init(0);
+        using var clock = new TimerWheelScope();
 
-        var previousNow = Core._now;
         var previousHitsRate = Mobile.DefaultHitsRate;
         var fisher = new PlayerMobile();
         BaseCreature serpent = null;
@@ -62,15 +60,15 @@ public class FishingTests
             if (hitAtMinutes is { } minutes)
             {
                 elapsed = TimeSpan.FromMinutes(minutes);
-                Advance(elapsed);
+                TimerWheelScope.Advance(elapsed);
                 serpent.Damage(20, fisher);
                 Assert.Same(fisher, serpent.FindMostRecentDamager(false));
             }
 
-            Advance(TimeSpan.FromMinutes(4.9) - elapsed);
+            TimerWheelScope.Advance(TimeSpan.FromMinutes(4.9) - elapsed);
             Assert.False(serpent.Deleted);
 
-            Advance(TimeSpan.FromMinutes(0.2));
+            TimerWheelScope.Advance(TimeSpan.FromMinutes(0.2));
             Assert.Equal(!stays, serpent.Deleted);
             Assert.Equal(!stays, bottle.Deleted);
         }
@@ -79,7 +77,6 @@ public class FishingTests
             serpent?.Delete();
             fisher.Delete();
             Mobile.DefaultHitsRate = previousHitsRate;
-            Core._now = previousNow;
         }
     }
 
@@ -123,13 +120,6 @@ public class FishingTests
             BuiltInRng.Generator = previousGenerator;
             Core.Expansion = previousExpansion;
         }
-    }
-
-    private static void Advance(TimeSpan time)
-    {
-        Core._now += time;
-        Core._tickCount += (long)time.TotalMilliseconds;
-        Timer.Slice(Core.TickCount);
     }
 
     // Map.Internal skips FindLocation's search; the wreck is then where the fisher stands.

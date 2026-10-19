@@ -38,14 +38,7 @@ public class TargetPacketsTests
         var p = new Point3D(1000, 100, 10);
         MultiTarget t = new TestMultiTarget(multiID, p);
 
-        var expected = new MultiTargetReqHS(t).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.ProtocolChanges |= ProtocolChanges.HighSeas;
-        ns.SendMultiTargetReq(t);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new MultiTargetReqHS(t), ns => ns.SendMultiTargetReq(t), ProtocolChanges.HighSeas);
     }
 
     [Fact]
@@ -55,36 +48,20 @@ public class TargetPacketsTests
         var p = new Point3D(1000, 100, 10);
         MultiTarget t = new TestMultiTarget(multiID, p);
 
-        var expected = new MultiTargetReq(t).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendMultiTargetReq(t);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new MultiTargetReq(t), ns => ns.SendMultiTargetReq(t));
     }
 
     [Fact]
     public void TestCancelTarget()
     {
-        var expected = new CancelTarget().Compile();
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendCancelTarget();
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new CancelTarget(), ns => ns.SendCancelTarget());
     }
 
     [Fact]
     public void TestTargetReq()
     {
         var t = new TestTarget(10, true, TargetFlags.Beneficial);
-        var expected = new TargetReq(t).Compile();
 
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendTargetReq(t);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new TargetReq(t), ns => ns.SendTargetReq(t));
     }
 }

@@ -6,10 +6,8 @@ using Xunit;
 
 namespace UOContent.Tests.Commands;
 
-// The conditional compiler emits into a fresh dynamic assembly for every command invocation --
-// there is no per-type cache, so `Run` (which can never be unloaded) grows the process by one
-// assembly per `[global where`. And PropertyValue could only load a handful of primitive constant
-// types, so a comparison against anything narrower or unsigned than int threw instead of running.
+// A comparison constant is converted to the property's own type, however narrow or unsigned, so
+// conditions on byte, sbyte, short, ushort, uint and ulong properties run and compare correctly.
 public class EmitterRobustnessTests
 {
     public class Subject

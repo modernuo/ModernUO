@@ -70,10 +70,11 @@ public class ConsoleInputPumpTests
             cmd => cmd == "ping" ? onPing : null
         );
 
-        Task.Run(pump.Run);
+        var run = Task.Run(pump.Run);
 
         Assert.True(invokedWith.Task.Wait(Timeout), "command not dispatched");
         Assert.Equal("hello", invokedWith.Task.Result);
+        Assert.True(run.Wait(Timeout), "Run() did not return on EOF");
     }
 
     [Fact]
@@ -81,7 +82,7 @@ public class ConsoleInputPumpTests
     {
         var reader = new BlockingTextReader();
         var pump = new ConsoleInputPump(reader, _ => null);
-        Task.Run(pump.Run);
+        var run = Task.Run(pump.Run);
 
         // Register the prompt, then wait until it is actually pending before feeding a
         // line — otherwise the line could be consumed as a command before registration.
@@ -93,6 +94,7 @@ public class ConsoleInputPumpTests
         Assert.Equal("the answer", prompt.Result);
 
         reader.Complete();
+        Assert.True(run.Wait(Timeout), "Run() did not return on EOF");
     }
 
     [Fact]
@@ -100,7 +102,7 @@ public class ConsoleInputPumpTests
     {
         var reader = new BlockingTextReader();
         var pump = new ConsoleInputPump(reader, _ => null);
-        Task.Run(pump.Run);
+        var run = Task.Run(pump.Run);
 
         var prompt = Task.Run(pump.ReadLine);
         WaitUntil(() => pump.HasPendingPrompt, "prompt did not register");
@@ -108,6 +110,7 @@ public class ConsoleInputPumpTests
 
         Assert.True(prompt.Wait(Timeout), "prompt hung on EOF");
         Assert.Null(prompt.Result);
+        Assert.True(run.Wait(Timeout), "Run() did not return on EOF");
         Assert.False(pump.Running);
     }
 
@@ -116,7 +119,7 @@ public class ConsoleInputPumpTests
     {
         var reader = new BlockingTextReader();
         var pump = new ConsoleInputPump(reader, _ => throw new InvalidOperationException("boom"));
-        Task.Run(pump.Run);
+        var run = Task.Run(pump.Run);
 
         // Wait until the reader loop is blocked on its first read, then feed a bad command.
         WaitUntil(() => reader.ReadCallCount >= 1, "reader did not start");
@@ -133,6 +136,7 @@ public class ConsoleInputPumpTests
 
         Assert.True(prompt.Wait(Timeout), "prompt hung after throwing lookup");
         Assert.Null(prompt.Result);
+        Assert.True(run.Wait(Timeout), "Run() did not return on EOF");
         Assert.False(pump.Running);
     }
 }

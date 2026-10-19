@@ -104,7 +104,7 @@ public class Rectangle3DTests
 
         Assert.False(Rectangle3D.TryParse("(101,,10)+(55, 89 1)", null, out p));
         Assert.Equal(default, p);
-        Assert.Throws<FormatException>(() => Rectangle3D.Parse("(,23,)+(,89)", null));
+        Assert.Throws<FormatException>(() => Rectangle3D.Parse("(101,,10)+(55, 89 1)", null));
 
         Assert.False(Rectangle3D.TryParse("(,,)+(55,89, 1)", null, out p));
         Assert.Equal(default, p);

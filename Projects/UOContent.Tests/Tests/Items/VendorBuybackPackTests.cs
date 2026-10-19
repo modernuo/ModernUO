@@ -87,14 +87,14 @@ public class VendorBuybackPackTests
         var pack = new VendorBuybackPack();
         var items = new Item[10];
 
-        for (var i = 0; i < items.Length; i++)
-        {
-            items[i] = new Item(0x1234);
-            pack.AddBuyback(items[i], 250);
-        }
-
         try
         {
+            for (var i = 0; i < items.Length; i++)
+            {
+                items[i] = new Item(0x1234);
+                pack.AddBuyback(items[i], 250);
+            }
+
             pack.Purge();
 
             Assert.Empty(pack.Items);

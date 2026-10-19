@@ -13,17 +13,74 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Net;
+using System.Reflection;
 using Server.Network;
 using Server.Network.Bans;
 using Xunit;
 
 namespace Server.Tests.Network.LoginAllowlists;
 
-// The list is static, so every test resets it first. Addresses come from TEST-NET-3 (203.0.113.0/24) so they
-// cannot collide with the blocklist tests if xUnit runs the two classes at the same time.
-public class LoginAllowlistTests
+// The list is static and the login path and BlocklistFilter both read it, so every test resets it first,
+// the class runs in the sequential collection, and Dispose puts the original state back. Addresses come
+// from TEST-NET-3 (203.0.113.0/24).
+[Collection("Sequential UOContent Tests")]
+public class LoginAllowlistTests : IDisposable
 {
+    private readonly List<(FieldInfo Field, object Value, DictionaryEntry[] Entries)> _saved = [];
+
+    public LoginAllowlistTests()
+    {
+        var fields = typeof(LoginAllowlist).GetFields(BindingFlags.Static | BindingFlags.NonPublic);
+        for (var i = 0; i < fields.Length; i++)
+        {
+            var field = fields[i];
+            if (field.IsLiteral)
+            {
+                continue;
+            }
+
+            var value = field.GetValue(null);
+
+            // Readonly tables cannot be reassigned, so their contents are copied and refilled instead.
+            DictionaryEntry[] entries = null;
+            if (field.IsInitOnly && value is IDictionary table)
+            {
+                entries = new DictionaryEntry[table.Count];
+                table.CopyTo(entries, 0);
+            }
+            else if (field.IsInitOnly)
+            {
+                continue;
+            }
+
+            _saved.Add((field, value, entries));
+        }
+    }
+
+    public void Dispose()
+    {
+        for (var i = 0; i < _saved.Count; i++)
+        {
+            var (field, value, entries) = _saved[i];
+            if (entries == null)
+            {
+                field.SetValue(null, value);
+                continue;
+            }
+
+            var table = (IDictionary)value;
+            table.Clear();
+            for (var j = 0; j < entries.Length; j++)
+            {
+                table.Add(entries[j].Key, entries[j].Value);
+            }
+        }
+    }
+
     private const long Ttl = 90 * 24 * 60 * 60; // 90 days, the shipped default
     private const long Window = 3600;
     private const long Now = 1_800_000_000;

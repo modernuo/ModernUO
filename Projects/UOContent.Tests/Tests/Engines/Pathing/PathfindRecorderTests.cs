@@ -19,7 +19,7 @@ public class PathfindRecorderTests
 
         try
         {
-            var stub = new RecorderStub(World.NewMobile);
+            var stub = new BareCreatureStub(World.NewMobile);
             stub.DefaultMobileInit();
             stub.MoveToWorld(new Point3D(1500, 1600, 0), Map.Maps[1]);
 
@@ -48,7 +48,7 @@ public class PathfindRecorderTests
         {
             Assert.True(PathfindRecorder.Enabled);
 
-            var stub = new RecorderStub(World.NewMobile);
+            var stub = new BareCreatureStub(World.NewMobile);
             stub.DefaultMobileInit();
             stub.MoveToWorld(new Point3D(1500, 1600, 0), Map.Maps[1]);
 
@@ -89,7 +89,7 @@ public class PathfindRecorderTests
 
         try
         {
-            var stub = new RecorderStub(World.NewMobile);
+            var stub = new BareCreatureStub(World.NewMobile);
             stub.DefaultMobileInit();
             stub.MoveToWorld(new Point3D(1500, 1600, 0), Map.Maps[1]);
             stub.CanSwim = true;
@@ -100,13 +100,17 @@ public class PathfindRecorderTests
             );
 
             PathfindRecorder.SetEnabled(false);
+
+            // BaseCreature's own defaults for these two; the recording must carry whatever they are.
+            var canOpenDoors = JsonBool(stub.CanOpenDoors);
+            var canMoveOverObstacles = JsonBool(stub.CanMoveOverObstacles);
             stub.Delete();
 
             var content = File.ReadAllText(path);
             Assert.Contains("\"CanSwim\":true", content);
             Assert.Contains("\"CanFly\":false", content);
-            Assert.Contains("\"CanOpenDoors\":", content);            // value depends on BaseCreature defaults
-            Assert.Contains("\"CanMoveOverObstacles\":", content);    // — same.
+            Assert.Contains($"\"CanOpenDoors\":{canOpenDoors}", content);
+            Assert.Contains($"\"CanMoveOverObstacles\":{canMoveOverObstacles}", content);
         }
         finally
         {
@@ -142,8 +146,5 @@ public class PathfindRecorderTests
         }
     }
 
-    private sealed class RecorderStub : Server.Mobiles.BaseCreature
-    {
-        public RecorderStub(Serial serial) : base(serial) => Body = 0xC9;
-    }
+    private static string JsonBool(bool value) => value ? "true" : "false";
 }

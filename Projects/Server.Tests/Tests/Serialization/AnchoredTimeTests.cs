@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
 using Xunit;
 
 namespace Server.Tests;
@@ -107,83 +105,48 @@ public class AnchoredTimePersistenceTests
     [Fact]
     public void SaveStartAnchor_RebasesAnchoredTimestampsAtLoad()
     {
-        var previousAssemblies = AssemblyHandler.Assemblies;
-        AssemblyHandler.Assemblies = [.. previousAssemblies ?? [], typeof(AnchoredEntity).Assembly];
+        // The scope also restores World.SaveStartTime, which this test backdates.
+        using var pipeline = new PersistencePipelineScope(
+            2,
+            installWorkers: true,
+            visibleAssembly: typeof(AnchoredEntity).Assembly,
+            directoryPrefix: "muo-anchored"
+        );
+        var source = pipeline.Source;
+        var dir = pipeline.Directory;
 
-        var source = new SerializationChunkSource();
-        var workers = new SerializationThreadWorker[2];
-        for (var i = 0; i < workers.Length; i++)
-        {
-            workers[i] = new SerializationThreadWorker(i, source);
-            workers[i].AllocateHeap();
-        }
+        var persistence = pipeline.Track(new AnchoredPersistence(2100));
 
-        var previousWorkers = World._threadWorkers;
-        World._threadWorkers = workers;
+        var lastRested = Core.Now - TimeSpan.FromMinutes(10);
+        var serial = (Serial)1u;
+        persistence.EntitiesBySerial[serial] = new AnchoredEntity(serial) { LastRested = lastRested };
+        persistence.RegisterType(typeof(AnchoredEntity));
 
-        var previousSaveStart = World.SaveStartTime;
+        // Pretend the save started two hours ago, as if the server had been down since.
+        var downtime = TimeSpan.FromHours(2);
+        World.SaveStartTime = Core.Now - downtime;
 
-        var persistence = new AnchoredPersistence(2100);
-        AnchoredPersistence loaded = null;
+        pipeline.WakeWorkers();
 
-        var dir = Path.Combine(Path.GetTempPath(), $"muo-anchored-{Guid.NewGuid():N}");
-        Directory.CreateDirectory(dir);
+        source.SetOwner(persistence);
+        Assert.True(persistence.TrySnapshotEntries(out var slotCount));
+        source.PushSlotRanges(persistence, slotCount);
 
-        try
-        {
-            var lastRested = Core.Now - TimeSpan.FromMinutes(10);
-            var serial = (Serial)1u;
-            persistence.EntitiesBySerial[serial] = new AnchoredEntity(serial) { LastRested = lastRested };
-            persistence.RegisterType(typeof(AnchoredEntity));
+        pipeline.FlushAndSleepWorkers();
 
-            // Pretend the save started two hours ago, as if the server had been down since.
-            var downtime = TimeSpan.FromHours(2);
-            World.SaveStartTime = Core.Now - downtime;
+        persistence.WriteSnapshot(dir);
+        persistence.PostWorldSave();
 
-            foreach (var worker in workers)
-            {
-                worker.Wake();
-            }
+        var loaded = pipeline.Track(new AnchoredPersistence(2101));
+        loaded.DeserializeIndexes(dir, null);
+        loaded.Deserialize(dir, null);
 
-            source.SetOwner(persistence);
-            Assert.True(persistence.TrySnapshotEntries(out var slotCount));
-            source.PushSlotRanges(persistence, slotCount);
+        var entity = loaded.EntitiesBySerial[serial];
+        var expected = lastRested + downtime;
 
-            source.Flush();
-            foreach (var worker in workers)
-            {
-                worker.Sleep();
-            }
-
-            persistence.WriteSnapshot(dir);
-            persistence.PostWorldSave();
-
-            loaded = new AnchoredPersistence(2101);
-            loaded.DeserializeIndexes(dir, null);
-            loaded.Deserialize(dir, null);
-
-            var entity = loaded.EntitiesBySerial[serial];
-            var expected = lastRested + downtime;
-
-            Assert.True(
-                (entity.LastRested - expected).Duration() <= TimeSpan.FromSeconds(30),
-                $"Anchored timestamp must re-base by the downtime; expected ~{expected}, got {entity.LastRested}."
-            );
-        }
-        finally
-        {
-            World.SaveStartTime = previousSaveStart;
-            persistence.Unregister();
-            loaded?.Unregister();
-
-            foreach (var worker in workers)
-            {
-                worker.Exit();
-            }
-
-            World._threadWorkers = previousWorkers;
-            AssemblyHandler.Assemblies = previousAssemblies;
-            Directory.Delete(dir, true);
-        }
+        Assert.True(
+            (entity.LastRested - expected).Duration() <= TimeSpan.FromSeconds(30),
+            $"Anchored timestamp must re-base by the downtime; expected ~{expected}, got {entity.LastRested}."
+        );
     }
 }

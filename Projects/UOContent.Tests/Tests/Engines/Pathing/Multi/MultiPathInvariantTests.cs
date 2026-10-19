@@ -1,3 +1,4 @@
+using System;
 using Server.Engines.Pathing.Cache;
 using Server.Items;
 using Server.Mobiles;
@@ -9,41 +10,33 @@ using Xunit.Abstractions;
 namespace Server.Tests.Pathfinding;
 
 [Collection("Sequential Pathfinding Tests")]
-public class MultiPathInvariantTests
+public class MultiPathInvariantTests : IDisposable
 {
     private readonly ITestOutputHelper _output;
+    private readonly StepCacheStateScope _cacheState = new();
 
     public MultiPathInvariantTests(ITestOutputHelper output) => _output = output;
 
-    private const int MapId = 1;
+    public void Dispose() => _cacheState.Dispose();
 
-    private sealed class WalkerStub : Mobile
-    {
-        public WalkerStub() => Body = 0xC9;
-    }
+    private const int MapId = 1;
 
     private static Direction[] FindWithFlag(Mobile m, Map map, Point3D start, Point3D goal, bool cacheOn)
     {
-        var prev = ContentFeatureFlags.BitmapPathfindingCache;
-        try
-        {
-            ContentFeatureFlags.BitmapPathfindingCache = cacheOn;
-            StepCache.Instance.Clear();
-            StepCache.Instance.MissPromotionThreshold = 1;
-            return BitmapAStarAlgorithm.Instance.Find(m, map, start, goal);
-        }
-        finally
-        {
-            ContentFeatureFlags.BitmapPathfindingCache = prev;
-        }
+        ContentFeatureFlags.BitmapPathfindingCache = cacheOn;
+        StepCache.Instance.Clear();
+        StepCache.Instance.MissPromotionThreshold = 1;
+        return BitmapAStarAlgorithm.Instance.Find(m, map, start, goal);
     }
 
-    [Theory]
+    [SkippableTheory]
     // start, goal: straddle a house placed between them (house at ~ midpoint).
     [InlineData(1500, 1600, 1500, 1612)] // N-S across the footprint
     [InlineData(1494, 1606, 1512, 1606)] // E-W across the footprint
     public void Find_CacheOn_EqualsCacheOff_WithHousePresent(int sx, int sy, int gx, int gy)
     {
+        // Without the client's multi data the house has no footprint and nothing stands in the way.
+        TileDataRequirement.SkipIfMissing();
         var map = Map.Maps[MapId];
         Assert.NotNull(map);
 
@@ -100,11 +93,11 @@ public class MultiPathInvariantTests
         {
             var on = FindWithFlag(walker, map, start, goal, cacheOn: true);
             var off = FindWithFlag(walker, map, start, goal, cacheOn: false);
-            Assert.Equal(off == null, on == null);
-            if (on != null)
-            {
-                Assert.Equal(off, on);
-            }
+
+            // Two nulls would agree about nothing: the control route must exist.
+            Assert.NotNull(off);
+            Assert.NotNull(on);
+            Assert.Equal(off, on);
         }
         finally
         {
@@ -112,9 +105,10 @@ public class MultiPathInvariantTests
         }
     }
 
-    [Fact]
+    [SkippableFact]
     public void Find_CacheOn_EqualsCacheOff_RoutesAroundHouse()
     {
+        TileDataRequirement.SkipIfMissing();
         var map = Map.Maps[MapId];
         Assert.NotNull(map);
 

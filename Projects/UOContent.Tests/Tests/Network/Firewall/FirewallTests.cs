@@ -21,8 +21,11 @@ using Xunit;
 namespace Server.Tests.Network.Firewall;
 
 [Collection("Sequential UOContent Tests")]
-public class FirewallTests
+public class FirewallTests : IDisposable
 {
+    // The test host never configures the firewall, so empty is the state every other test expects.
+    public void Dispose() => Server.Network.Firewall.ResetForTesting();
+
     private static IPAddress Ip(string s) => IPAddress.Parse(s);
 
     [Fact]

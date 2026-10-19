@@ -1,3 +1,4 @@
+using System;
 using Server.Engines.Pathing.Cache;
 using Server.Items;
 using Xunit;
@@ -5,12 +6,16 @@ using Xunit;
 namespace Server.Tests.Pathfinding;
 
 [Collection("Sequential Pathfinding Tests")]
-public class MultiMaskCacheTests
+public class MultiMaskCacheTests : IDisposable
 {
     private const int MapId = 1;
     private const int GuildHouseId = 0x74;
     private const int PlaceX = 1480;
     private const int PlaceY = 1620;
+
+    private readonly StepCacheStateScope _cacheState = new();
+
+    public void Dispose() => _cacheState.Dispose();
 
     [SkippableFact]
     public void TryResolveCoveringMulti_FindsPlacedMulti_AndLocalIndices()
@@ -99,7 +104,6 @@ public class MultiMaskCacheTests
         map.GetAverageZ(CleanX, CleanY, out _, out var z, out _);
         var houseLoc = new Point3D(CleanX, CleanY, (sbyte)z);
         var multi = new TestMulti(GuildHouseId);
-        var cacheWas = Server.Systems.FeatureFlags.ContentFeatureFlags.BitmapPathfindingCache;
         Server.Systems.FeatureFlags.ContentFeatureFlags.BitmapPathfindingCache = true;
         var mover = MultiTestSupport.GetWalkerOracle(map, new Point3D(CleanX, CleanY + 10, (sbyte)z));
         try
@@ -124,17 +128,17 @@ public class MultiMaskCacheTests
         {
             mover.Delete();
             multi.Delete();
-            Server.Systems.FeatureFlags.ContentFeatureFlags.BitmapPathfindingCache = cacheWas;
         }
     }
 
-    [Fact]
+    [SkippableFact]
     public void ClutteredHouse_DoesNotServeCache_ButStillPaths()
     {
+        // The clutter is Britain's statics; on a blank map the house has no footprint to dirty.
+        TileDataRequirement.SkipIfMissing();
         var map = Map.Maps[MapId];
         map.GetAverageZ(PlaceX, PlaceY, out _, out var z, out _);
         var multi = new TestMulti(GuildHouseId);
-        var cacheWas = Server.Systems.FeatureFlags.ContentFeatureFlags.BitmapPathfindingCache;
         Server.Systems.FeatureFlags.ContentFeatureFlags.BitmapPathfindingCache = true;
         var mover = MultiTestSupport.GetWalkerOracle(map, new Point3D(PlaceX, PlaceY + 10, (sbyte)z));
         try
@@ -159,7 +163,6 @@ public class MultiMaskCacheTests
         {
             mover.Delete();
             multi.Delete();
-            Server.Systems.FeatureFlags.ContentFeatureFlags.BitmapPathfindingCache = cacheWas;
         }
     }
 

@@ -9,15 +9,9 @@ namespace Server.Tests.Mobiles;
 [Collection("Sequential UOContent Tests")]
 public class VendorBuybackTests : IDisposable
 {
-    private readonly List<Mobile> _created = [];
+    private readonly MobileTestHarness _harness = new();
 
-    public void Dispose()
-    {
-        for (var i = 0; i < _created.Count; i++)
-        {
-            _created[i].Delete();
-        }
-    }
+    public void Dispose() => _harness.Dispose();
 
     private sealed class BandageSB : SBInfo
     {
@@ -30,34 +24,9 @@ public class VendorBuybackTests : IDisposable
         public override List<GenericBuyInfo> BuyInfo { get; } = [];
     }
 
-    private sealed class VendorStub : BaseVendor
+    private sealed class BandageVendor : TestVendor
     {
-        private readonly List<SBInfo> _sbInfos = [];
-
-        public VendorStub() : base("the stub")
-        {
-        }
-
-        public VendorStub(Serial serial) : base(serial)
-        {
-        }
-
-        protected override List<SBInfo> SBInfos => _sbInfos;
-
-        public override void InitSBInfo()
-        {
-            _sbInfos.Add(new BandageSB());
-        }
-
-        public override void InitOutfit()
-        {
-        }
-
-        public override void GetSpeeds(out double activeSpeed, out double passiveSpeed)
-        {
-            activeSpeed = 0.3;
-            passiveSpeed = 0.6;
-        }
+        protected override void AddSBInfos(List<SBInfo> sbInfos) => sbInfos.Add(new BandageSB());
     }
 
     // Same sell price as BandageSB, but a buy list at the 250-entry limit so buyback capacity is 0.
@@ -81,54 +50,35 @@ public class VendorBuybackTests : IDisposable
         public override List<GenericBuyInfo> BuyInfo => _buyInfo;
     }
 
-    private sealed class FullStockVendorStub : BaseVendor
+    private sealed class FullStockVendor : TestVendor
     {
-        private readonly List<SBInfo> _sbInfos = [];
-
-        public FullStockVendorStub() : base("the stub")
-        {
-        }
-
-        protected override List<SBInfo> SBInfos => _sbInfos;
-
-        public override void InitSBInfo()
-        {
-            _sbInfos.Add(new FullStockSB());
-        }
-
-        public override void InitOutfit()
-        {
-        }
-
-        public override void GetSpeeds(out double activeSpeed, out double passiveSpeed)
-        {
-            activeSpeed = 0.3;
-            passiveSpeed = 0.6;
-        }
+        protected override void AddSBInfos(List<SBInfo> sbInfos) => sbInfos.Add(new FullStockSB());
     }
 
-    private VendorStub NewVendor()
-    {
-        var vendor = new VendorStub();
-        _created.Add(vendor);
-        return vendor;
-    }
+    private BandageVendor NewVendor() => _harness.Track(new BandageVendor());
 
-    private FullStockVendorStub NewFullStockVendor()
-    {
-        var vendor = new FullStockVendorStub();
-        _created.Add(vendor);
-        return vendor;
-    }
+    private FullStockVendor NewFullStockVendor() => _harness.Track(new FullStockVendor());
 
     private Mobile NewSeller()
     {
-        var seller = new Mobile(World.NewMobile);
+        var seller = _harness.Track(new Mobile(World.NewMobile));
         seller.DefaultMobileInit();
         seller.AddItem(new Backpack());
-        _created.Add(seller);
         return seller;
     }
+
+    // A fresh seller offers a stack of 10 bandages and sells <paramref name="amount"/> of them.
+    private Bandage SellBandages(BaseVendor vendor, int amount, out Mobile seller)
+    {
+        seller = NewSeller();
+        var bandages = new Bandage(10);
+        seller.Backpack.DropItem(bandages);
+
+        Assert.True(vendor.OnSellItems(seller, [new SellItemResponse(bandages, amount)]));
+        return bandages;
+    }
+
+    private Bandage SellBandages(BaseVendor vendor, int amount) => SellBandages(vendor, amount, out _);
 
     [Theory]
     [InlineData(0.25, 1.0)] // restocked 15m ago: next boundary is the regular one
@@ -160,11 +110,7 @@ public class VendorBuybackTests : IDisposable
     public void PartialStackSale_SplitGoesToBuyback_SellerKeepsRemainder()
     {
         var vendor = NewVendor();
-        var seller = NewSeller();
-        var bandages = new Bandage(10);
-        seller.Backpack.DropItem(bandages);
-
-        Assert.True(vendor.OnSellItems(seller, [new SellItemResponse(bandages, 4)]));
+        var bandages = SellBandages(vendor, 4, out var seller);
 
         Assert.Equal(6, bandages.Amount);
         Assert.Same(seller.Backpack, bandages.Parent);
@@ -181,10 +127,7 @@ public class VendorBuybackTests : IDisposable
     public void Restock_PurgesBuyback()
     {
         var vendor = NewVendor();
-        var seller = NewSeller();
-        var bandages = new Bandage(10);
-        seller.Backpack.DropItem(bandages);
-        vendor.OnSellItems(seller, [new SellItemResponse(bandages, 10)]);
+        var bandages = SellBandages(vendor, 10);
         Assert.Single(vendor.BuyPack.Items);
 
         vendor.Restock();
@@ -197,20 +140,14 @@ public class VendorBuybackTests : IDisposable
     public void Restock_ClearsPurgeSchedule_AndASubsequentSaleRearmsIt()
     {
         var vendor = NewVendor();
-        var seller = NewSeller();
-        var bandages = new Bandage(10);
-        seller.Backpack.DropItem(bandages);
-        vendor.OnSellItems(seller, [new SellItemResponse(bandages, 10)]);
+        SellBandages(vendor, 10);
         Assert.True(vendor.BuybackPurgeScheduled);
 
         vendor.Restock();
 
         Assert.False(vendor.BuybackPurgeScheduled);
 
-        var seller2 = NewSeller();
-        var moreBandages = new Bandage(10);
-        seller2.Backpack.DropItem(moreBandages);
-        vendor.OnSellItems(seller2, [new SellItemResponse(moreBandages, 10)]);
+        SellBandages(vendor, 10);
 
         Assert.True(vendor.BuybackPurgeScheduled);
     }
@@ -219,10 +156,7 @@ public class VendorBuybackTests : IDisposable
     public void Delete_CancelsBuybackPurgeTimer()
     {
         var vendor = NewVendor();
-        var seller = NewSeller();
-        var bandages = new Bandage(10);
-        seller.Backpack.DropItem(bandages);
-        vendor.OnSellItems(seller, [new SellItemResponse(bandages, 10)]);
+        SellBandages(vendor, 10);
         Assert.True(vendor.BuybackPurgeScheduled);
 
         vendor.Delete();
@@ -239,7 +173,8 @@ public class VendorBuybackTests : IDisposable
         var legacy = new Backpack { Layer = Layer.ShopBuy, Movable = false, Visible = false };
         vendor.AddItem(legacy);
 
-        var children = new Item[20_000];
+        // Several children, so a delete loop that skips entries as the list shrinks would show.
+        var children = new Item[3];
         for (var i = 0; i < children.Length; i++)
         {
             children[i] = new Item(0x1234);
@@ -261,11 +196,7 @@ public class VendorBuybackTests : IDisposable
     public void SaleWithNoBuybackCapacity_ConsumesItem_AndStillPays()
     {
         var vendor = NewFullStockVendor();
-        var seller = NewSeller();
-        var bandages = new Bandage(10);
-        seller.Backpack.DropItem(bandages);
-
-        Assert.True(vendor.OnSellItems(seller, [new SellItemResponse(bandages, 10)]));
+        var bandages = SellBandages(vendor, 10, out var seller);
 
         Assert.True(bandages.Deleted);
         Assert.Empty(vendor.BuyPack.Items);

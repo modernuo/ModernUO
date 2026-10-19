@@ -20,15 +20,27 @@ public class MockAccount : IAccount
     public string Username { get; }
     public string Email { get; set; }
     public AccessLevel AccessLevel { get; set; }
-    public int Length { get; }
+    public int Length { get; private set; }
     public int Limit { get; set; } = 6; // Default to 6 character slots
-    public int Count { get; }
+    public int Count { get; private set; }
 
     private readonly Dictionary<int, Mobile> _mobiles = new();
     public Mobile this[int index]
     {
         get => _mobiles.GetValueOrDefault(index);
-        set => _mobiles[index] = value;
+        set
+        {
+            var old = _mobiles.GetValueOrDefault(index);
+            _mobiles[index] = value;
+
+            Length = Math.Max(Length, index + 1);
+            Count += (value != null ? 1 : 0) - (old != null ? 1 : 0);
+
+            if (value != null)
+            {
+                value.Account = this;
+            }
+        }
     }
 
     public DateTime Created { get; set; }

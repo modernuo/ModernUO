@@ -60,8 +60,13 @@ public class AcquisitionTests : IDisposable
         bc.NextReacquireTime = Core.TickCount;
 
         Assert.False(bc.AIObject.AcquireFocusMob(bc.RangePerception, FightMode.Closest, false, false, true));
-        Assert.InRange(bc.NextReacquireTime - Core.TickCount, 5000, 10000);
+        Assert.Equal(ReacquireDelayMs(bc), bc.NextReacquireTime - Core.TickCount);
     }
+
+    private static long ReacquireDelayMs(BaseCreature bc) => (long)bc.ReacquireDelay.TotalMilliseconds;
+
+    // A legal, fully armed deadline: as far out as a scan ever sets it. Movement can only pull it in.
+    private static void ArmFullDelay(BaseCreature bc) => bc.NextReacquireTime = Core.TickCount + ReacquireDelayMs(bc);
 
     [Fact]
     public void WedgedGate_SelfHeals()
@@ -78,7 +83,7 @@ public class AcquisitionTests : IDisposable
         _created.Add(target);
 
         // Illegal deadline (beyond ReacquireDelay): must read as open, not block forever.
-        bc.NextReacquireTime = Core.TickCount + 60000;
+        bc.NextReacquireTime = Core.TickCount + ReacquireDelayMs(bc) * 6;
 
         Assert.True(bc.AIObject.AcquireFocusMob(bc.RangePerception, FightMode.Closest, false, false, true));
         Assert.Equal(target, bc.FocusMob);
@@ -96,7 +101,8 @@ public class AcquisitionTests : IDisposable
         map.GetAverageZ(1500, 1600, out _, out var z, out _);
 
         var bc = Spawn(map, new Point3D(1500, 1600, (sbyte)z));
-        bc.NextReacquireTime = Core.TickCount + 8000;
+        ArmFullDelay(bc);
+        var armed = bc.NextReacquireTime;
 
         Mobile mover;
         if (wildMover)
@@ -117,12 +123,12 @@ public class AcquisitionTests : IDisposable
 
         if (notices)
         {
-            // Clamped to the approach delay (2s), never opened outright.
+            // Clamped to the approach delay, never opened outright.
             Assert.InRange(remaining, 1, (long)bc.AcquireOnApproachDelay.TotalMilliseconds);
         }
         else
         {
-            Assert.True(remaining > 5000);
+            Assert.Equal(armed, bc.NextReacquireTime);
         }
     }
 
@@ -150,7 +156,7 @@ public class AcquisitionTests : IDisposable
         bc.MoveToWorld(new Point3D(1500, 1600, (sbyte)z), map);
         bc.AIObject.AITimer?.Stop();
         _created.Add(bc);
-        bc.NextReacquireTime = Core.TickCount + 8000;
+        ArmFullDelay(bc);
 
         var mover = new TargetStub { Player = true };
         mover.DefaultMobileInit();
@@ -173,7 +179,7 @@ public class AcquisitionTests : IDisposable
         map.GetAverageZ(1500, 1600, out _, out var z, out _);
 
         var bc = Spawn(map, new Point3D(1500, 1600, (sbyte)z));
-        bc.NextReacquireTime = Core.TickCount + 8000;
+        ArmFullDelay(bc);
 
         var mover = new TargetStub { Player = true };
         mover.DefaultMobileInit();
@@ -206,6 +212,6 @@ public class AcquisitionTests : IDisposable
 
         Assert.True(bc.AIObject.AcquireFocusMob(bc.RangePerception, FightMode.Closest, false, false, true));
         Assert.Equal(target, bc.FocusMob);
-        Assert.True(bc.NextReacquireTime - Core.TickCount > 5000);
+        Assert.Equal(ReacquireDelayMs(bc), bc.NextReacquireTime - Core.TickCount);
     }
 }

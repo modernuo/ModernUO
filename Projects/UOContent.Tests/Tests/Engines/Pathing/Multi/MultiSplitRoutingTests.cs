@@ -1,3 +1,4 @@
+using System;
 using Server.Engines.Pathing.Cache;
 using Server.Items;
 using Xunit;
@@ -6,11 +7,14 @@ using Xunit.Abstractions;
 namespace Server.Tests.Pathfinding;
 
 [Collection("Sequential Pathfinding Tests")]
-public class MultiSplitRoutingTests
+public class MultiSplitRoutingTests : IDisposable
 {
     private readonly ITestOutputHelper _output;
+    private readonly StepCacheStateScope _cacheState = new();
 
     public MultiSplitRoutingTests(ITestOutputHelper output) => _output = output;
+
+    public void Dispose() => _cacheState.Dispose();
 
     // Open plain on Trammel used by existing pathfinding tests; room for a 7x7 house.
     private const int MapId = 1;
@@ -60,7 +64,6 @@ public class MultiSplitRoutingTests
     public void CleanMap_AfterMultiRemoved_ServesStaticHitAgain()
     {
         StepCache.Instance.Clear();
-        var prevThreshold = StepCache.Instance.MissPromotionThreshold;
         StepCache.Instance.MissPromotionThreshold = 1; // build on first touch
         var map = Map.Maps[MapId];
         Assert.NotNull(map);
@@ -72,20 +75,13 @@ public class MultiSplitRoutingTests
         var sector = map.GetRealSector(PlaceX >> 4, PlaceY >> 4);
         Assert.True(sector.HasMultis, "placing a multi must set Sector.HasMultis");
 
-        try
-        {
-            multi.Delete();
-            Assert.False(sector.HasMultis, "removing the only multi must clear HasMultis");
+        multi.Delete();
+        Assert.False(sector.HasMultis, "removing the only multi must clear HasMultis");
 
-            // A cell that is NOT a static-fallthrough kind (e.g. off-map / multi) should now be
-            // eligible for a real static answer. Use the placement center, which is open plain.
-            var mask = StepCache.Instance.TryGetMask(map, PlaceX, PlaceY, (sbyte)z);
-            Assert.True(mask.IsHit, $"expected a real static answer after removal, got {mask.HitKind}");
-            _output.WriteLine($"post-removal hitKind at center: {mask.HitKind}");
-        }
-        finally
-        {
-            StepCache.Instance.MissPromotionThreshold = prevThreshold;
-        }
+        // A cell that is NOT a static-fallthrough kind (e.g. off-map / multi) should now be
+        // eligible for a real static answer. Use the placement center, which is open plain.
+        var mask = StepCache.Instance.TryGetMask(map, PlaceX, PlaceY, (sbyte)z);
+        Assert.True(mask.IsHit, $"expected a real static answer after removal, got {mask.HitKind}");
+        _output.WriteLine($"post-removal hitKind at center: {mask.HitKind}");
     }
 }

@@ -12,26 +12,18 @@ public class MovementPacketTests
     [InlineData(2)]
     public void TestSpeedControl(byte speedControl)
     {
-        var expected = new SpeedControl(speedControl).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendSpeedControl((SpeedControlSetting)speedControl);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(
+            new SpeedControl(speedControl),
+            ns => ns.SendSpeedControl((SpeedControlSetting)speedControl)
+        );
     }
 
     [Fact]
     public void TestMovePlayer()
     {
         const Direction d = Direction.Left;
-        var expected = new MovePlayer(d).Compile();
 
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendMovePlayer(d);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new MovePlayer(d), ns => ns.SendMovePlayer(d));
     }
 
     [Fact]
@@ -42,13 +34,7 @@ public class MovementPacketTests
 
         const byte seq = 100;
 
-        var expected = new MovementRej(seq, m).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendMovementRej(seq, m);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new MovementRej(seq, m), ns => ns.SendMovementRej(seq, m));
     }
 
     [Fact]
@@ -59,12 +45,6 @@ public class MovementPacketTests
 
         const byte seq = 100;
 
-        var expected = MovementAck.Instantiate(seq, m).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendMovementAck(seq, m);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(MovementAck.Instantiate(seq, m), ns => ns.SendMovementAck(seq, m));
     }
 }

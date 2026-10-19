@@ -225,10 +225,13 @@ public class RecurrencePatternTests
     }
 
     [Theory]
-    [InlineData("America/New_York", 2024, 3, 10, 2, 30)] // Spring forward - 2:30 AM doesn't exist
-    [InlineData("America/New_York", 2024, 11, 3, 1, 30)] // Fall back - 1:30 AM happens twice
+    // 2:30 AM does not exist on the spring-forward day, so the occurrence moves to the next month.
+    [InlineData("America/New_York", 2024, 3, 10, 2, 30, 2024, 4, 10, 6, 30)]
+    // 1:30 AM happens twice on the fall-back day; LocalToUtc resolves it to the first (EDT) pass.
+    [InlineData("America/New_York", 2024, 11, 3, 1, 30, 2024, 11, 3, 5, 30)]
     public void MonthlyRecurrencePattern_DSTTransitions_HandlesCorrectly(
-        string tzId, int year, int month, int day, int hour, int minute)
+        string tzId, int year, int month, int day, int hour, int minute,
+        int expectedYear, int expectedMonth, int expectedDay, int expectedHour, int expectedMinute)
     {
         // Arrange
         var tz = TimeZoneInfo.FindSystemTimeZoneById(tzId);
@@ -238,19 +241,14 @@ public class RecurrencePatternTests
         var beforeUtc = localDateBefore.LocalToUtc(tz);
         var timeOnly = new TimeOnly(hour, minute);
 
-        // Act - shouldn't throw exceptions
+        // Act
         var result = pattern.GetNextOccurrence(beforeUtc, timeOnly, tz);
 
-        // Assert - just make sure we got a valid result
-        Assert.NotEqual(DateTime.MaxValue, result);
-
-        // For invalid times (spring forward), should skip to next valid time
-        var resultLocal = TimeZoneInfo.ConvertTimeFromUtc(result, tz);
-        if (month == 3) // Spring forward
-        {
-            // Should skip the invalid 2:30 AM time
-            Assert.True(resultLocal.Hour >= 3 || resultLocal > new DateTime(year, month, day));
-        }
+        // Assert
+        var expectedUtc = new DateTime(
+            expectedYear, expectedMonth, expectedDay, expectedHour, expectedMinute, 0, DateTimeKind.Utc
+        );
+        Assert.Equal(expectedUtc, result);
     }
 
     [Fact]

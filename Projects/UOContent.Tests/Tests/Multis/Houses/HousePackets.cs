@@ -216,7 +216,8 @@ public sealed class DesignStateDetailed : Packet
 
             if (deflatedLength == 0)
             {
-                Console.WriteLine("Compression error");
+                // An oracle that silently emits a truncated plane would make the comparison meaningless.
+                throw new InvalidOperationException("Compression error");
             }
 
             Write((byte)(0x20 | i));
@@ -248,7 +249,8 @@ public sealed class DesignStateDetailed : Packet
 
             if (deflatedLength == 0)
             {
-                Console.WriteLine("Compression error");
+                // An oracle that silently emits a truncated plane would make the comparison meaningless.
+                throw new InvalidOperationException("Compression error");
             }
 
             Write((byte)(9 + i));

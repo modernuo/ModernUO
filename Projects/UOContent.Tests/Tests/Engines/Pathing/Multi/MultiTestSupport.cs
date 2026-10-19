@@ -20,12 +20,6 @@ public sealed class TestMulti : BaseMulti
     }
 }
 
-/// <summary>Default walker body, shared across pathfinding test fixtures.</summary>
-public sealed class WalkerStub : Mobile
-{
-    public WalkerStub() => Body = 0xC9;
-}
-
 /// <summary>
 /// Stand-in for a customizable foundation: Components is a swappable MCL, exactly the
 /// runtime-mutation shape HouseFoundation uses (it replaces its MCL wholesale on redesign
