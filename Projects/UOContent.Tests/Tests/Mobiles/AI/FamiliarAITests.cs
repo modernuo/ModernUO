@@ -1,3 +1,4 @@
+using Server.Tests.Terrain;
 using System;
 using System.Collections.Generic;
 using Server;
@@ -54,7 +55,6 @@ public class FamiliarAITests : IDisposable
 
     public FamiliarAITests()
     {
-        TileDataRequirement.SkipIfMissing();
         _clock = new TimerWheelScope();
     }
 
@@ -111,7 +111,7 @@ public class FamiliarAITests : IDisposable
         return e;
     }
 
-    [SkippableFact]
+    [Fact]
     public void Follows_WithoutBacktracking()
     {
         var p = Master(1500, 1600);
@@ -143,7 +143,7 @@ public class FamiliarAITests : IDisposable
         Assert.Equal(Point3D.Zero, f.Home);
     }
 
-    [SkippableFact]
+    [Fact]
     public void Orders_AreInert()
     {
         var p = Master(1500, 1600);
@@ -159,7 +159,7 @@ public class FamiliarAITests : IDisposable
         Assert.True(RunUntil(() => f.InRange(p, 1), 3000), "a familiar under a Stay order still follows");
     }
 
-    [SkippableTheory]
+    [Theory]
     [InlineData(0, true)]  // dark wolf
     [InlineData(1, true)]  // vampire bat
     [InlineData(2, false)] // shadow wisp
@@ -193,7 +193,7 @@ public class FamiliarAITests : IDisposable
         }
     }
 
-    [SkippableFact]
+    [Fact]
     public void DropsTarget_WhenMasterHides()
     {
         var p = Master(1500, 1600);
@@ -208,7 +208,7 @@ public class FamiliarAITests : IDisposable
         Assert.True(RunUntil(() => f.Combatant == null && f.Hidden, 1000));
     }
 
-    [SkippableFact]
+    [Fact]
     public void Leash_NeverEngagesATargetFarFromTheMaster()
     {
         var p = Master(1500, 1600);
@@ -223,7 +223,7 @@ public class FamiliarAITests : IDisposable
         Assert.True(f.InRange(p, 1), "assist must not carry the familiar past the leash");
     }
 
-    [SkippableFact]
+    [Fact]
     public void Retaliates_IfCombatCapable_AndStaysOnComeOrder()
     {
         var p = Master(1500, 1600);
@@ -244,7 +244,7 @@ public class FamiliarAITests : IDisposable
         Assert.False(wisp.Warmode);
     }
 
-    [SkippableFact]
+    [Fact]
     public void KeepUp_SnapsWhenFarOnOpenGround()
     {
         var p = Master(1500, 1600);
@@ -257,14 +257,16 @@ public class FamiliarAITests : IDisposable
         Assert.True(f.InRange(p, 1), "familiar must snap adjacent to a master 12 tiles away on open ground");
     }
 
-    [SkippableFact]
+    [Fact]
     public void KeepUp_DoesNotSnapWhileRouting()
     {
-        // Britain inn L-desk: master north, familiar south; ~17-step detour.
-        var p = Master(1494, 1605);
-        var f = Familiar(0, p, 1493, 1614);
-        p.MoveToWorld(new Point3D(1494, 1605, 21), _map);
-        f.MoveToWorld(new Point3D(1493, 1614, 20), _map);
+        // An upstairs room with an L-shaped counter: master north, familiar south; ~20-step detour.
+        var inn = Prefabs.InnUpstairs;
+        inn.AssertPresent();
+        var p = Master(inn.Target.X, inn.Target.Y);
+        var f = Familiar(0, p, inn.Anchor.X, inn.Anchor.Y);
+        p.MoveToWorld(inn.Target, _map);
+        f.MoveToWorld(inn.Anchor, _map);
         Server.Engines.Pathing.Cache.StepCache.Instance.Clear();
 
         // Observed from the first tick so an early snap cannot hide behind "arrived".
@@ -288,15 +290,14 @@ public class FamiliarAITests : IDisposable
         Assert.False(teleported, "a working detour must not be short-circuited by a snap");
     }
 
-    [SkippableFact]
+    [Fact]
     public void KeepUp_SnapsAfterGiveUp()
     {
         var p = Master(1500, 1596);
         var f = Familiar(0, p, 1500, 1602);
 
         // 5x5 ring, open 3x3 interior: a landing tile exists, no route reaches it.
-        var id = TestTiles.FirstImpassableItemId();
-        Assert.NotEqual<ushort>(0, id);
+        const ushort id = TestTiles.Counter;
 
         for (var x = 1498; x <= 1502; x++)
         {
@@ -321,7 +322,7 @@ public class FamiliarAITests : IDisposable
         );
     }
 
-    [SkippableFact]
+    [Fact]
     public void MirrorsHidden_EvenWhileWalking()
     {
         var p = Master(1500, 1600);
@@ -349,7 +350,7 @@ public class FamiliarAITests : IDisposable
         Assert.True(RunUntil(() => !f.Hidden, 500));
     }
 
-    [SkippableFact]
+    [Fact]
     public void Herding_TargetLocation_WinsAndClears()
     {
         var p = Master(1500, 1600);
@@ -363,7 +364,7 @@ public class FamiliarAITests : IDisposable
         Assert.True(f.InRange(goal, 1));
     }
 
-    [SkippableFact]
+    [Fact]
     public void NonCombatFamiliar_RefusesAnyCombatant()
     {
         var p = Master(1500, 1600);
@@ -374,7 +375,7 @@ public class FamiliarAITests : IDisposable
         Assert.Null(wisp.Combatant);
     }
 
-    [SkippableFact]
+    [Fact]
     public void HiddenCaster_FamiliarRefusesRetaliation()
     {
         var p = Master(1500, 1600);
@@ -394,7 +395,7 @@ public class FamiliarAITests : IDisposable
         Assert.True(wolf.Hidden);
     }
 
-    [SkippableFact]
+    [Fact]
     public void LeftBehind_StandsDown()
     {
         var p = Master(1500, 1600);
@@ -409,7 +410,7 @@ public class FamiliarAITests : IDisposable
         Assert.True(RunUntil(() => wolf.Combatant == null && !wolf.Warmode, 500));
     }
 
-    [SkippableFact]
+    [Fact]
     public void Herding_OutranksCombat_AndStandsDown()
     {
         var p = Master(1500, 1600);
@@ -433,7 +434,7 @@ public class FamiliarAITests : IDisposable
         Assert.Same(e, p.Combatant);
     }
 
-    [SkippableFact]
+    [Fact]
     public void AssistsAgainstWhatTheCastersPetIsFighting()
     {
         var p = Master(1500, 1600);
@@ -457,7 +458,7 @@ public class FamiliarAITests : IDisposable
         );
     }
 
-    [SkippableFact]
+    [Fact]
     public void DefendsAnAttackedCaster_WhoseOwnCombatantExpired()
     {
         var p = Master(1500, 1600);
@@ -475,7 +476,7 @@ public class FamiliarAITests : IDisposable
         );
     }
 
-    [SkippableFact]
+    [Fact]
     public void DropsATarget_ThatNoLongerFightsAnyone()
     {
         var p = Master(1500, 1600);
@@ -494,7 +495,7 @@ public class FamiliarAITests : IDisposable
         Assert.True(RunUntil(() => f.Combatant == null && f.InRange(p, 1), 4000), "familiar disengages and returns");
     }
 
-    [SkippableFact]
+    [Fact]
     public void AssistEnd_LeavesNoStaleMoveIntent()
     {
         var p = Master(1500, 1600);

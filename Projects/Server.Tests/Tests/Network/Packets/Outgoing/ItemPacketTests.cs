@@ -9,7 +9,7 @@ public class ItemPacketTests : IDisposable
 {
     private const int TestItemId = 1;
 
-    // TileData is global and holds real client data when client files are loaded, so each test restores it.
+    // TileData is global, so each test restores it.
     private readonly ItemData _originalItemData;
 
     public ItemPacketTests()

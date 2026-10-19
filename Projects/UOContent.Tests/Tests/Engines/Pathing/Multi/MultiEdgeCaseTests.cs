@@ -1,5 +1,6 @@
 using Server.Engines.Pathing.Cache;
 using Server.Items;
+using Server.Tests.Terrain;
 using Xunit;
 
 namespace Server.Tests.Pathfinding;
@@ -8,16 +9,16 @@ namespace Server.Tests.Pathfinding;
 public class MultiEdgeCaseTests
 {
     private const int MapId = 1; // Trammel
-    private const int GuildHouseId = 0x74;
+    private const int GuildHouseId = TestMultis.GuildHouse;
 
-    // GuildHouse placement (mirrors MultiMaskSynthesisTests) — open Trammel ground.
+    // GuildHouse placement (mirrors MultiMaskSynthesisTests) — open ground.
     private const int HouseX = 1480;
     private const int HouseY = 1620;
 
-    // Open water in the south-Britain bay (mirrors BoatPathTests).
-    private const int BoatMultiId = 0x0; // SmallBoat North heading
-    private const int WaterX = 1450;
-    private const int WaterY = 1770;
+    // Open water: the middle of the DeepSea prefab.
+    private const int BoatMultiId = TestMultis.SmallBoatNorth;
+    private static int WaterX => Prefabs.DeepSea.Anchor.X;
+    private static int WaterY => Prefabs.DeepSea.Anchor.Y;
     private const sbyte DeckZ = 0; // boat deck floor tiles stand at world Z 0 (not the water avgZ)
 
     /// <summary>
@@ -25,10 +26,9 @@ public class MultiEdgeCaseTests
     /// <c>GetStaticAndMultiTiles</c> yields tiles from BOTH multis; the synthesizer must still
     /// agree with CheckMovement everywhere over the union footprint + halo.
     /// </summary>
-    [SkippableFact]
+    [Fact]
     public void OverlappingMultis_SynthesizerMatchesCheckMovement()
     {
-        TileDataRequirement.SkipIfMissing();
         StepCache.Instance.Clear();
         var map = Map.Maps[MapId];
 
@@ -76,10 +76,10 @@ public class MultiEdgeCaseTests
     /// blocks the rest — that vacuity is a fixture concern, not a synthesizer divergence (the
     /// synthesizer agrees with the oracle at every direction either way).
     /// </remarks>
-    [SkippableFact]
+    [Fact]
     public void BoatOverWater_SynthesizerMatchesCheckMovement()
     {
-        TileDataRequirement.SkipIfMissing();
+        Prefabs.DeepSea.AssertPresent();
         StepCache.Instance.Clear();
         var map = Map.Maps[MapId];
 
@@ -100,10 +100,9 @@ public class MultiEdgeCaseTests
     /// re-registration pattern HouseFoundation uses on commit) and assert the synthesizer reads
     /// the LIVE, post-redesign <c>Components</c> — i.e. it matches CheckMovement on the NEW shape.
     /// </summary>
-    [SkippableFact]
+    [Fact]
     public void RedesignedFoundation_SynthesizerMatchesNewFootprint()
     {
-        TileDataRequirement.SkipIfMissing();
         StepCache.Instance.Clear();
         var map = Map.Maps[MapId];
 
@@ -117,7 +116,7 @@ public class MultiEdgeCaseTests
             // Internalize() fires Map.OnLeave (removes the OLD footprint's registration); we swap
             // the MCL and MoveToWorld back, firing Map.OnEnter -> AddMulti against the new shape.
             foundation.Internalize();
-            foundation.Redesign(MultiData.GetComponents(0x7A)); // Tower footprint (different shape)
+            foundation.Redesign(MultiData.GetComponents(TestMultis.Tower)); // Tower footprint (different shape)
             foundation.MoveToWorld(loc, map);
 
             MultiTestSupport.AssertSynthesizerMatchesCheckMovement(foundation, map);

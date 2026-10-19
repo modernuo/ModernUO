@@ -25,7 +25,6 @@ public class GuardFriendlyFireTests : IDisposable
 
     private (PlayerMobile owner, PetTestStub pet) Spawn()
     {
-        Skip.If(!Server.Tests.TestServerInitializer.TileDataLoaded, "Requires UO client map data.");
         var z = Map.Felucca.GetAverageZ(1500, 1600);
         // The constructed PlayerMobile, not PetTestSetup's deserialization-shaped one: the harmful
         // checks read PermaFlags, which only the full constructor allocates.
@@ -48,7 +47,7 @@ public class GuardFriendlyFireTests : IDisposable
         return pet;
     }
 
-    [SkippableFact]
+    [Fact]
     public void GuardFallbackDoesNotAcquireItsOwner()
     {
         var (owner, pet) = Spawn();
@@ -61,7 +60,7 @@ public class GuardFriendlyFireTests : IDisposable
         Assert.Null(pet.Combatant);
     }
 
-    [SkippableFact]
+    [Fact]
     public void GuardDropsStaleCombatAgainstAnotherPetOfItsOwner()
     {
         var (owner, pet) = Spawn();
@@ -75,7 +74,7 @@ public class GuardFriendlyFireTests : IDisposable
         Assert.Equal(OrderType.Guard, pet.ControlOrder);
     }
 
-    [SkippableFact]
+    [Fact]
     public void GuardDoesNotRetaliateAgainstOwnerFriendlyDamage()
     {
         var (owner, pet) = Spawn();
@@ -84,7 +83,7 @@ public class GuardFriendlyFireTests : IDisposable
         Assert.Equal(OrderType.Guard, pet.ControlOrder);
     }
 
-    [SkippableFact]
+    [Fact]
     public void GuardDoesNotRetaliateAgainstSiblingFriendlyDamage()
     {
         var (owner, pet) = Spawn();
@@ -93,7 +92,7 @@ public class GuardFriendlyFireTests : IDisposable
         Assert.Null(pet.Combatant);
     }
 
-    [SkippableFact]
+    [Fact]
     public void GuardReacquiresAnEnemyAttackingItsOwner()
     {
         var (owner, pet) = Spawn();
@@ -107,7 +106,7 @@ public class GuardFriendlyFireTests : IDisposable
         Assert.Same(enemy, pet.FocusMob);
     }
 
-    [SkippableFact]
+    [Fact]
     public void GuardStillDefendsAgainstAnotherPlayersPet()
     {
         var (owner, pet) = Spawn();
@@ -120,7 +119,7 @@ public class GuardFriendlyFireTests : IDisposable
         Assert.Same(enemy, pet.FocusMob);
     }
 
-    [SkippableFact]
+    [Fact]
     public void GuardIgnoresSiblingInOwnersAggressorHistory()
     {
         var (owner, pet) = Spawn();
@@ -131,7 +130,7 @@ public class GuardFriendlyFireTests : IDisposable
         Assert.Null(pet.FocusMob);
     }
 
-    [SkippableFact]
+    [Fact]
     public void GuardIgnoresOwnControlledSummonAttackingOwner()
     {
         var (owner, pet) = Spawn();
@@ -146,7 +145,7 @@ public class GuardFriendlyFireTests : IDisposable
         Assert.Null(pet.FocusMob);
     }
 
-    [SkippableFact]
+    [Fact]
     public void GuardDefendsAgainstOwnUncontrolledSummonAttackingOwner()
     {
         var (owner, pet) = Spawn();
@@ -160,7 +159,7 @@ public class GuardFriendlyFireTests : IDisposable
         Assert.Same(vortex, pet.FocusMob);
     }
 
-    [SkippableFact]
+    [Fact]
     public void FriendlyDamageDoesNotInterruptGuardCombat()
     {
         var (owner, pet) = Spawn();
@@ -173,7 +172,7 @@ public class GuardFriendlyFireTests : IDisposable
         Assert.Same(enemy, pet.Combatant);
     }
 
-    [SkippableFact]
+    [Fact]
     public void ExplicitAttackStillAcquiresTheCommandedTarget()
     {
         var (owner, pet) = Spawn();
@@ -183,7 +182,7 @@ public class GuardFriendlyFireTests : IDisposable
         Assert.Same(sibling, pet.FocusMob);
     }
 
-    [SkippableFact]
+    [Fact]
     public void BardProvocationStillOverridesGuard()
     {
         var (owner, pet) = Spawn();
@@ -193,7 +192,7 @@ public class GuardFriendlyFireTests : IDisposable
         Assert.Same(owner, pet.FocusMob);
     }
 
-    [SkippableTheory]
+    [Theory]
     [InlineData(OrderType.Follow)]
     [InlineData(OrderType.Come)]
     [InlineData(OrderType.Stay)]
@@ -205,7 +204,7 @@ public class GuardFriendlyFireTests : IDisposable
         Assert.Null(pet.FocusMob);
     }
 
-    [SkippableFact]
+    [Fact]
     public void GuardingMageDoesNotTurnOnOwnerWhenEnemyDisappears()
     {
         var (owner, _) = Spawn();

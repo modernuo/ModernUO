@@ -13,7 +13,7 @@ public class StaticTileEnumeratorTests
         var map = Map.Felucca;
         var location = new Point2D(200, 200);
 
-        // Real map files may have statics here; without them there are none. Either way the multi adds nothing.
+        // The synthetic map has no statics here; the multi must add nothing to the statics-only walk.
         var mapStatics = CollectTiles(map, location, includeStatics: true, includeMultis: false);
 
         TestMulti multi = null;

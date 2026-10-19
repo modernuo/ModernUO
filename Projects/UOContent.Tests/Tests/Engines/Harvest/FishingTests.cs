@@ -5,6 +5,7 @@ using Server.Items;
 using Server.Mobiles;
 using Server.Random;
 using Server.Tests;
+using Server.Tests.Terrain;
 using Xunit;
 
 namespace UOContent.Tests;
@@ -12,22 +13,31 @@ namespace UOContent.Tests;
 [Collection("Sequential UOContent Tests")]
 public class FishingTests
 {
-    // Open sea with no land within 30 tiles: deep water once the client's map is loaded.
-    private static readonly Point3D _deep = new(1840, 1760, -5);
-
-    [SkippableTheory]
-    [InlineData(1840, 1760, true)]  // land 115 tiles away
-    [InlineData(1660, 1760, true)]  // land 14 tiles away
-    [InlineData(1659, 1760, false)] // land 13 tiles away
-    [InlineData(2188, 1000, true)]  // land 23 tiles away, on a diagonal
-    [InlineData(1718, 1913, false)] // land 8 tiles away, between the diagonals
-    [InlineData(13, 200, true)]     // the edge of the map 14 tiles away
-    [InlineData(12, 200, false)]    // the edge of the map 13 tiles away
-    public void FullValidation_NeedsLandAndTheMapEdgeAtLeast14TilesAway(int x, int y, bool deep)
+    [Theory]
+    [InlineData(32, 32, true)]  // the middle of the sea: land 32 tiles away
+    [InlineData(13, 32, true)]  // land 14 tiles west
+    [InlineData(12, 32, false)] // land 13 tiles west
+    [InlineData(50, 32, true)]  // land 14 tiles east
+    [InlineData(51, 32, false)] // land 13 tiles east
+    [InlineData(13, 13, true)]  // land 14 tiles away on the diagonal
+    [InlineData(13, 12, false)] // land 13 tiles north
+    public void FullValidation_NeedsLandAtLeast14TilesAway(int dx, int dy, bool deep)
     {
-        TileDataRequirement.SkipIfMissing();
+        var sea = Prefabs.DeepSea;
+        sea.AssertPresent();
 
-        Assert.Equal(deep, SpecialFishingNet.FullValidation(Map.Felucca, x, y));
+        Assert.Equal(deep, SpecialFishingNet.FullValidation(Map.Felucca, sea.Bounds.X + dx, sea.Bounds.Y + dy));
+    }
+
+    [Theory]
+    [InlineData(13, true)]  // the edge of the map 14 tiles away
+    [InlineData(12, false)] // the edge of the map 13 tiles away
+    public void FullValidation_TreatsTheMapEdgeAsLand(int x, bool deep)
+    {
+        var sea = Prefabs.MapEdgeSea;
+        sea.AssertPresent();
+
+        Assert.Equal(deep, SpecialFishingNet.FullValidation(Map.Felucca, x, sea.Anchor.Y));
     }
 
     [Theory]
@@ -46,7 +56,8 @@ public class FishingTests
         {
             // The rate RegenRates sets before AOS, so the hit is not healed before the serpent's five minutes are up.
             Mobile.DefaultHitsRate = TimeSpan.FromSeconds(11.0);
-            fisher.MoveToWorld(_deep, Map.Felucca);
+            Prefabs.DeepSea.AssertPresent();
+            fisher.MoveToWorld(Prefabs.DeepSea.Anchor, Map.Felucca);
 
             var bottle = new MessageInABottle(Map.Felucca);
             Fishing.System.Give(fisher, bottle, false);
@@ -93,7 +104,8 @@ public class FishingTests
             BuiltInRng.Generator = new System.Random(1);
             fisher.Skills.Fishing.Base = 65.0;
             fisher.AddItem(new Backpack());
-            fisher.MoveToWorld(_deep, Map.Felucca);
+            Prefabs.DeepSea.AssertPresent();
+            fisher.MoveToWorld(Prefabs.DeepSea.Anchor, Map.Felucca);
 
             var sos = AddSOS(fisher);
 

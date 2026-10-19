@@ -9,11 +9,6 @@ namespace Server.Tests.Maps;
 [Collection("Sequential Server Tests")]
 public class CanFitItemTests
 {
-    private void SkipIfNoTileData()
-    {
-        Skip.If(!ServerFixture.TileDataLoaded, "TileData not loaded - client files required");
-    }
-
     [Fact]
     public void CanFitItem_InternalMapReturnsFalse()
     {
@@ -33,8 +28,7 @@ public class CanFitItemTests
         Assert.False(map.CanFitItem(100, map.Height + 1, 0, 1));
     }
 
-    // Plain walkable land in the real Felucca map. Without map files every cell is the default land
-    // tile at Z 0 with no flags, which these tests treat the same way: a surface with nothing above it.
+    // The synthetic map's default ground: land ID 0 at Z 0 with no flags, a surface with nothing above it.
     private const int TestLandX = 1500;
     private const int TestLandY = 1600;
 
@@ -61,12 +55,9 @@ public class CanFitItemTests
         Assert.False(result, "No surface 50 units above land");
     }
 
-    [SkippableFact]
+    [Fact]
     public void CanFitItem_SurfaceImpassableMultiIsValidSurface()
     {
-        SkipIfNoTileData();
-        Skip.If(ServerFixture.SurfaceImpassableTileId == 0, "No Surface+Impassable tile found in TileData");
-
         var map = Map.Felucca;
         const int x = 1700;
         const int y = 1700;
@@ -94,12 +85,9 @@ public class CanFitItemTests
         }
     }
 
-    [SkippableFact]
+    [Fact]
     public void CanFitItem_CanFitDoesNotAllowSurfaceImpassable()
     {
-        SkipIfNoTileData();
-        Skip.If(ServerFixture.SurfaceImpassableTileId == 0, "No Surface+Impassable tile found in TileData");
-
         var map = Map.Felucca;
         const int x = 1750;
         const int y = 1750;
@@ -130,11 +118,9 @@ public class CanFitItemTests
         }
     }
 
-    [SkippableFact]
+    [Fact]
     public void CanFitItem_NonMovableWorldItemSurfaceWorks()
     {
-        SkipIfNoTileData();
-
         var map = Map.Felucca;
         const int x = 1800;
         const int y = 1800;
@@ -160,11 +146,9 @@ public class CanFitItemTests
         }
     }
 
-    [SkippableFact]
+    [Fact]
     public void CanFitItem_MovableWorldItemNotValidSurface()
     {
-        SkipIfNoTileData();
-
         var map = Map.Felucca;
         const int x = 1850;
         const int y = 1850;
@@ -192,11 +176,9 @@ public class CanFitItemTests
         }
     }
 
-    [SkippableFact]
+    [Fact]
     public void CanFitItem_ImpassableTileBlocksPlacement()
     {
-        SkipIfNoTileData();
-
         var map = Map.Felucca;
         const int x = 1900;
         const int y = 1900;

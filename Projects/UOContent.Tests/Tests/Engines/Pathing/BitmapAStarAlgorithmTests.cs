@@ -1,3 +1,4 @@
+using Server.Tests.Terrain;
 using System;
 using Server.Engines.Pathing.Cache;
 using Server.Mobiles;
@@ -139,10 +140,9 @@ public class BitmapAStarAlgorithmTests : IDisposable
         blocker.Delete();
     }
 
-    [SkippableFact]
+    [Fact]
     public void DynamicObstaclePass_RejectsCellOccupiedByImpassableItem()
     {
-        TileDataRequirement.SkipIfMissing();
         StepCache.Instance.Clear();
         var map = Map.Maps[1];
         Assert.NotNull(map);
@@ -155,8 +155,7 @@ public class BitmapAStarAlgorithmTests : IDisposable
         var blockX = 1499;
         var blockY = 1599;
 
-        var blockerItemId = TestTiles.FirstImpassableItemId();
-        Assert.NotEqual<ushort>(0, blockerItemId);
+        const ushort blockerItemId = TestTiles.Counter;
 
         map.GetAverageZ(sx, sy, out _, out var startZ, out _);
         var start = new Point3D(sx, sy, (sbyte)startZ);

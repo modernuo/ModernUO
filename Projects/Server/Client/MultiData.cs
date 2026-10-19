@@ -52,6 +52,12 @@ public static class MultiData
     public static MultiComponentList GetComponents(int multiID) =>
         _components.TryGetValue(multiID & 0x3FFF, out var mcl) ? mcl : MultiComponentList.Empty;
 
+    /// <summary>
+    /// Registers a footprint without multi files, for hosts that generate their own (tests).
+    /// </summary>
+    internal static void SetComponents(int multiID, MultiComponentList components) =>
+        _components[multiID & 0x3FFF] = components;
+
     private static void LoadUOP(string path)
     {
         using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);

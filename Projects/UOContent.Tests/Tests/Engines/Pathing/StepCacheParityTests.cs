@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Server.Engines.Pathing.Cache;
+using Server.Tests.Terrain;
 using Xunit;
 using Xunit.Abstractions;
 using static Server.Tests.Pathfinding.PathingTestSupport;
@@ -29,6 +30,22 @@ public class StepCacheParityTests : IDisposable
 
     public void Dispose() => _cacheState.Dispose();
 
+    // "Plain" is the synthetic map's default ground (flat, no statics); every other name is a prefab.
+    private static Rectangle2D Region(string scene)
+    {
+        if (scene == "Plain")
+        {
+            return new Rectangle2D(PlainX, PlainY, 32, 32);
+        }
+
+        var prefab = Prefabs.Named(scene);
+        prefab.AssertPresent();
+        return prefab.Bounds;
+    }
+
+    private static Point3D Seed(string scene) =>
+        scene == "Plain" ? new Point3D(PlainX, PlainY, PlainZ) : Prefabs.Named(scene).Anchor;
+
     // ---- layer 1: the bake agrees with MovementImpl ----
 
     /// <summary>
@@ -36,12 +53,13 @@ public class StepCacheParityTests : IDisposable
     /// The probe stores raw masks and leaves the diagonal corner-cut to the caller, so the rule has
     /// to be applied here before the two are comparable.
     /// </summary>
-    [SkippableTheory]
-    [InlineData("britain_inn_dense", 1480, 1610, 32)]
-    [InlineData("trammel_open_plain", 1500, 1600, 32)]
-    public void ProbeMatchesSlowPath(string label, int xStart, int yStart, int size)
+    [Theory]
+    [InlineData("Town")]
+    [InlineData("Plain")]
+    public void ProbeMatchesSlowPath(string label)
     {
-        TileDataRequirement.SkipIfMissing();
+        var region = Region(label);
+        int xStart = region.X, yStart = region.Y, size = region.Width;
 
         var map = TestMap;
         Assert.NotNull(map);
@@ -101,7 +119,7 @@ public class StepCacheParityTests : IDisposable
 
         // The dense region must contain a mix. All-walkable or all-blocked would mean the sweep
         // agreed about nothing interesting.
-        if (label == "britain_inn_dense")
+        if (label == "Town")
         {
             Assert.NotEqual(0, walkable);
             Assert.NotEqual(samples, walkable);
@@ -115,18 +133,15 @@ public class StepCacheParityTests : IDisposable
     /// WetMask everywhere would pass every parity test above — walkers would still agree — while
     /// leaving every swimming creature unable to move.
     /// </summary>
-    [SkippableFact]
-    public void ProbeBakesWetCells_OnAKnownCoastline()
+    [Fact]
+    public void ProbeBakesWetCells_OnACoastline()
     {
-        TileDataRequirement.SkipIfMissing();
-
         var map = TestMap;
         Assert.NotNull(map);
 
-        // South Britain into Britain bay: 64x64 straddling the Atlantic shoreline.
-        const int xStart = 1430;
-        const int yStart = 1740;
-        const int size = 64;
+        var coast = Prefabs.Coastline;
+        coast.AssertPresent();
+        int xStart = coast.Bounds.X, yStart = coast.Bounds.Y, size = coast.Bounds.Width;
 
         var wetCells = 0;
         for (var x = xStart; x < xStart + size; x++)
@@ -142,7 +157,7 @@ public class StepCacheParityTests : IDisposable
             }
         }
 
-        _output.WriteLine($"south-britain coastline: wetCells={wetCells} of {size * size}");
+        _output.WriteLine($"coastline: wetCells={wetCells} of {size * size}");
         Assert.True(wetCells > 0, $"swim bake produced zero wet cells across a {size}x{size} coastal region");
     }
 
@@ -157,15 +172,16 @@ public class StepCacheParityTests : IDisposable
     /// the land average instead would trip the source-Z guard on raised terrain (a causeway, a
     /// walkway) and report a fallthrough that is correct behaviour rather than a fault.
     /// </summary>
-    [SkippableTheory]
-    [InlineData("britain_inn_dense", 1480, 1610, 32)]
-    [InlineData("trammel_open_plain", 1500, 1600, 32)]
-    [InlineData("britain_causeway", 1475, 1641, 32)]
-    public void CacheMatchesProbe(string label, int xStart, int yStart, int size)
+    [Theory]
+    [InlineData("Town")]
+    [InlineData("Plain")]
+    [InlineData("Causeway")]
+    public void CacheMatchesProbe(string label)
     {
         // A storage fault (crossed cell index, swapped Z array) only shows against varied terrain;
-        // on a blank map every cell bakes the same answer.
-        TileDataRequirement.SkipIfMissing();
+        // on flat ground every cell bakes the same answer, so the plain alone proves nothing.
+        var region = Region(label);
+        int xStart = region.X, yStart = region.Y, size = region.Width;
 
         var cache = StepCache.Instance;
         cache.Clear();
@@ -235,7 +251,7 @@ public class StepCacheParityTests : IDisposable
 
         // Guard the sweep itself: if every cell fell through as multi-Z, the comparison above never
         // actually ran and a zero disagreement count would mean nothing.
-        if (label == "britain_inn_dense")
+        if (label == "Town")
         {
             Assert.True(samples - multiZ > 0, "no cell produced a real cache answer — the sweep proved nothing");
         }
@@ -260,16 +276,18 @@ public class StepCacheParityTests : IDisposable
     /// Cardinals only: the cache stores raw masks and applies the corner-cut at query time, so a
     /// raw diagonal bit legitimately differs from MovementImpl's diagonal answer.
     /// </summary>
-    [SkippableTheory]
-    // Seeds chosen for the terrain classes the standable-surface bake has to get right. Each one
+    [Theory]
+    // Scenes chosen for the terrain classes the standable-surface bake has to get right. Each seed
     // floods across a wide local area, so a handful covers thousands of states without a map walk.
-    [InlineData("brit_sewer_walkway", 6034, 1476, 5, 2500)]      // static walkway over impassable land
-    [InlineData("brit_inn_stairs_to_floors", 1495, 1628, 10, 2500)] // stairs up to multi-Z upper floors
-    [InlineData("brit_town_cobblestones", 1494, 1626, 10, 2500)] // mixed buildings, stairs, raised floors
-    [InlineData("trammel_open_plain", 1500, 1600, 10, 2500)]     // flat ground: catches clearance false-positives
-    public void CacheServesReachableWalkStates(string label, int sx, int sy, int sz, int maxStates)
+    [InlineData("SewerWalkway", 2500)] // static walkway over impassable land
+    [InlineData("Town", 2500)]         // buildings, and a ramp up to a deck over open ground (two Zs per cell)
+    [InlineData("Causeway", 2500)]     // bridge over impassable land
+    [InlineData("Plain", 2500)]        // flat ground: catches clearance false-positives
+    public void CacheServesReachableWalkStates(string label, int maxStates)
     {
-        TileDataRequirement.SkipIfMissing();
+        Region(label);
+        var seed = Seed(label);
+        int sx = seed.X, sy = seed.Y, sz = seed.Z;
 
         var cache = StepCache.Instance;
         cache.Clear();

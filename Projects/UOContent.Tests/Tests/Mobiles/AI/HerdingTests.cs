@@ -10,10 +10,9 @@ namespace UOContent.Tests.Mobiles.AI;
 [Collection("Sequential Pathfinding Tests")]
 public class HerdingTests
 {
-    [SkippableFact]
+    [Fact]
     public void HerdedCreature_ReachesTheTile_AndClearsTargetLocation()
     {
-        TileDataRequirement.SkipIfMissing();
         var map = Map.Maps[1];
         map.GetAverageZ(1500, 1600, out _, out var z, out _);
 

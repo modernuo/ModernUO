@@ -4,23 +4,14 @@ using Xunit;
 namespace Server.Tests.Maps;
 
 /// <summary>
-/// Tests for CanSpawnMobile that require TileData (client files) to be loaded.
-/// These tests will be skipped if client files are not available.
-/// Configure client path via MODERNUO_CLIENT_PATH environment variable or place files at C:\Ultima Online Classic.
+/// Tests for CanSpawnMobile over tile flags, using tiles from the generated test kit.
 /// </summary>
 [Collection("Sequential Server Tests")]
 public class CanSpawnMobileTileDataTests
 {
-    private void SkipIfNoTileData()
-    {
-        Skip.If(!ServerFixture.TileDataLoaded, "TileData not loaded - client files required");
-    }
-
-    [SkippableFact]
+    [Fact]
     public void CanSpawnMobile_FindsLowestValidSurface()
     {
-        SkipIfNoTileData();
-
         var map = Map.Felucca;
         const int x = 1200;
         const int y = 1200;
@@ -44,11 +35,9 @@ public class CanSpawnMobileTileDataTests
         }
     }
 
-    [SkippableFact]
+    [Fact]
     public void CanSpawnMobile_ZRangeSelectsCorrectFloor()
     {
-        SkipIfNoTileData();
-
         var map = Map.Felucca;
         const int x = 1300;
         const int y = 1300;
@@ -72,11 +61,9 @@ public class CanSpawnMobileTileDataTests
         }
     }
 
-    [SkippableFact]
+    [Fact]
     public void CanSpawnMobile_LowCeilingBlocksSpawn()
     {
-        SkipIfNoTileData();
-
         var map = Map.Felucca;
         const int x = 1400;
         const int y = 1400;
@@ -99,11 +86,9 @@ public class CanSpawnMobileTileDataTests
         }
     }
 
-    [SkippableFact]
+    [Fact]
     public void CanSpawnMobile_HighCeilingAllowsSpawn()
     {
-        SkipIfNoTileData();
-
         var map = Map.Felucca;
         const int x = 1450;
         const int y = 1450;
@@ -124,11 +109,9 @@ public class CanSpawnMobileTileDataTests
         }
     }
 
-    [SkippableFact]
+    [Fact]
     public void CanSpawnMobile_BlockerOutsideZRangeIgnored()
     {
-        SkipIfNoTileData();
-
         var map = Map.Felucca;
         const int x = 1475;
         const int y = 1475;
@@ -150,11 +133,9 @@ public class CanSpawnMobileTileDataTests
         }
     }
 
-    [SkippableFact]
+    [Fact]
     public void CanSpawnMobile_WaterSurfaceForSwimmingMob()
     {
-        SkipIfNoTileData();
-
         var map = Map.Felucca;
         const int x = 1550;
         const int y = 1550;
@@ -176,11 +157,9 @@ public class CanSpawnMobileTileDataTests
         }
     }
 
-    [SkippableFact]
+    [Fact]
     public void CanSpawnMobile_WorldItemSurfaceWorks()
     {
-        SkipIfNoTileData();
-
         var map = Map.Felucca;
         const int x = 1650;
         const int y = 1650;
