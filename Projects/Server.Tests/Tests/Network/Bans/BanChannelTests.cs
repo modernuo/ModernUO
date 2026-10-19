@@ -7,8 +7,18 @@ using Xunit;
 
 namespace Server.Tests.Network.Bans;
 
-public class BanChannelTests
+[Collection("Sequential Server Tests")]
+public class BanChannelTests : IDisposable
 {
+    private readonly IBanReporter[] _previousReporters = [..BanChannel.Reporters];
+    private readonly Func<IPAddress, string, bool> _previousIsExempt = BanChannel.IsExempt;
+
+    public void Dispose()
+    {
+        BanChannel.ConfigureForTesting(_previousReporters);
+        BanChannel.IsExempt = _previousIsExempt;
+    }
+
     private sealed class FakeReporter : IBanReporter
     {
         public readonly List<(IPAddress ip, TimeSpan ttl, string reason)> Reports = [];
@@ -69,18 +79,11 @@ public class BanChannelTests
         var exempt = IPAddress.Parse("203.0.113.7");
         BanChannel.IsExempt = (ip, _) => ip.Equals(exempt);
 
-        try
-        {
-            BanChannel.Report(exempt, TimeSpan.FromHours(1), "rate-limit");
-            Assert.Empty(reporter.Reports); // escalation suppressed; the local gate already acted
+        BanChannel.Report(exempt, TimeSpan.FromHours(1), "rate-limit");
+        Assert.Empty(reporter.Reports); // escalation suppressed; the local gate already acted
 
-            BanChannel.Report(IPAddress.Parse("203.0.113.8"), TimeSpan.FromHours(1), "rate-limit");
-            Assert.Single(reporter.Reports); // everyone else is still contributed
-        }
-        finally
-        {
-            BanChannel.IsExempt = null;
-        }
+        BanChannel.Report(IPAddress.Parse("203.0.113.8"), TimeSpan.FromHours(1), "rate-limit");
+        Assert.Single(reporter.Reports); // everyone else is still contributed
     }
 
     [Fact]

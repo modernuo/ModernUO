@@ -57,7 +57,7 @@ jobs:
       # blame-hang kills a stuck test host after 10 minutes and reports the in-flight
       # tests plus a process dump instead of hanging until the job timeout.
       run: |
-        dotnet test --logger trx --results-directory ./TestResults --blame-hang --blame-hang-timeout 10m --blame-hang-dump-type full
+        dotnet test --filter "Category!=Manual" --logger trx --results-directory ./TestResults --blame-hang --blame-hang-timeout 10m --blame-hang-dump-type full
         if [ -z "$(find ./TestResults -name '*.trx' 2>/dev/null)" ]; then
           echo "::error::No test result files were produced - no test projects ran. Failing to avoid masking failures."
           exit 1
@@ -167,7 +167,7 @@ jobs:
         # blame-hang kills a stuck test host after 10 minutes and reports the in-flight
         # tests plus a process dump instead of hanging until the job timeout.
         run: |
-          dotnet test --logger trx --results-directory ./TestResults --blame-hang --blame-hang-timeout 10m --blame-hang-dump-type full
+          dotnet test --filter "Category!=Manual" --logger trx --results-directory ./TestResults --blame-hang --blame-hang-timeout 10m --blame-hang-dump-type full
           if [ -z "$(find ./TestResults -name '*.trx' 2>/dev/null)" ]; then
             echo "::error::No test result files were produced - no test projects ran. Failing to avoid masking failures."
             exit 1
