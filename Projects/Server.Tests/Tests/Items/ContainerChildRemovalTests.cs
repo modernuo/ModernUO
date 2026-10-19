@@ -1,8 +1,7 @@
-using System;
 using Server.Items;
 using Server.Network;
-using Server.Tests.Network;
 using Xunit;
+using static Server.Tests.TestClientHarness;
 
 namespace Server.Tests;
 
@@ -44,19 +43,6 @@ public class ContainerChildRemovalTests
 
     private static readonly Point3D _ownerLoc = new(1500, 1500, 0);
 
-    private static (NetState, Mobile) CreateClient(Point3D location)
-    {
-        var ns = PacketTestUtilities.CreateTestNetState();
-        ns.Account = new MockAccount();
-
-        var mobile = new Mobile(World.NewMobile);
-        mobile.DefaultMobileInit();
-        ns.Mobile = mobile;
-        mobile.NetState = ns;
-        mobile.MoveToWorld(location, Map.Felucca);
-        return (ns, mobile);
-    }
-
     private static Mobile CreateOwnerWith(Container pack)
     {
         var owner = new Mobile(World.NewMobile);
@@ -66,44 +52,6 @@ public class ContainerChildRemovalTests
         pack.Visible = false;
         owner.AddItem(pack);
         return owner;
-    }
-
-    private static bool ReceivedRemove(NetState ns, Serial serial)
-    {
-        Span<byte> expected = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength];
-        OutgoingEntityPackets.CreateRemoveEntity(expected, serial);
-        return ns.SendBuffer.GetReadSpan().IndexOf(expected) >= 0;
-    }
-
-    private static int CountRemoves(NetState ns, Serial serial)
-    {
-        Span<byte> expected = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength];
-        OutgoingEntityPackets.CreateRemoveEntity(expected, serial);
-
-        var span = ns.SendBuffer.GetReadSpan();
-        var count = 0;
-
-        while (true)
-        {
-            var index = span.IndexOf(expected);
-
-            if (index < 0)
-            {
-                break;
-            }
-
-            count++;
-            span = span[(index + expected.Length)..];
-        }
-
-        return count;
-    }
-
-    private static void DisposeClient(NetState ns, Mobile mobile)
-    {
-        ns.Mobile = null;
-        ns.Dispose();
-        mobile.Delete();
     }
 
     private static void Cleanup(NetState ns, Mobile client, Mobile owner)

@@ -313,7 +313,7 @@ public class MultiEnumeratorTests
         var map = Map.Felucca;
 
         // Components reach two tiles either side, so at x = 1024 the multi spans sectors 63 and 64
-        var spanning = new SpanningMulti();
+        var spanning = new TestMulti(SpanningComponents);
         try
         {
             spanning.MoveToWorld(new Point3D(1024, 1000, 0), map);
@@ -351,29 +351,11 @@ public class MultiEnumeratorTests
         }
     }
 
-    // Test implementation of BaseMulti
-    private class TestMulti : BaseMulti
-    {
-        public TestMulti() : base(0x1)
-        {
-        }
-    }
-
-    private class SpanningMulti : BaseMulti
-    {
-        // Entries after the first need non-zero flags or MultiComponentList drops them
-        private static readonly MultiComponentList _components = new(
-            [
-                new MultiTileEntry(0x1, -2, 0, 0, TileFlag.Background),
-                new MultiTileEntry(0x1, 2, 0, 0, TileFlag.Background)
-            ]
-        );
-
-        public SpanningMulti() : base(0x1)
-        {
-        }
-
-        public override MultiComponentList Components => _components;
-    }
+    // Entries after the first need non-zero flags or MultiComponentList drops them
+    private static readonly MultiComponentList SpanningComponents = new(
+        [
+            new MultiTileEntry(0x1, -2, 0, 0, TileFlag.Background),
+            new MultiTileEntry(0x1, 2, 0, 0, TileFlag.Background)
+        ]
+    );
 }
-

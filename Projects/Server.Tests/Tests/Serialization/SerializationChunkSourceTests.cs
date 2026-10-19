@@ -199,114 +199,91 @@ public class SerializationChunkSourceTests
     [Fact]
     public void WorkersDrainAllEntitiesAndLogSegments()
     {
-        var source = new SerializationChunkSource();
-        var owner = new TestPersistence { PayloadSize = 512 * 1024 };
-        var workers = new SerializationThreadWorker[2];
-        for (var i = 0; i < workers.Length; i++)
+        using var pipeline = new PersistencePipelineScope(2);
+        var source = pipeline.Source;
+        var workers = pipeline.Workers;
+        var owner = pipeline.Track(new TestPersistence { PayloadSize = 512 * 1024 });
+
+        var entities = new List<TestEntity>();
+        for (var i = 0; i < 10_000; i++)
         {
-            workers[i] = new SerializationThreadWorker(i, source);
-            workers[i].AllocateHeap();
+            entities.Add(new TestEntity { PayloadSize = 16 + i % 64 });
         }
 
-        try
+        pipeline.WakeWorkers();
+
+        // A large payload published as a dedicated single chunk (a persistence
+        // self-payload), interleaved with the bare entity stream.
+        source.SetOwner(owner);
+        for (var i = 0; i < entities.Count; i++)
         {
-            var entities = new List<TestEntity>();
-            for (var i = 0; i < 10_000; i++)
+            if (i == 5000)
             {
-                entities.Add(new TestEntity { PayloadSize = 16 + i % 64 });
+                source.PushSingle(owner);
             }
 
-            foreach (var worker in workers)
-            {
-                worker.Wake();
-            }
+            source.Push(entities[i]);
+        }
 
-            // A large payload published as a dedicated single chunk (a persistence
-            // self-payload), interleaved with the bare entity stream.
-            source.SetOwner(owner);
-            for (var i = 0; i < entities.Count; i++)
+        pipeline.FlushAndSleepWorkers();
+
+        long totalEntities = 0;
+        long totalBytes = 0;
+        foreach (var worker in workers)
+        {
+            totalEntities += worker.EntitiesSerialized;
+            totalBytes += worker.BytesSerialized;
+        }
+
+        Assert.Equal(entities.Count + 1, totalEntities);
+
+        // The self-payload recorded its placement on the persistence itself.
+        var (selfThread, selfPosition, selfLength) = owner.Placement;
+        Assert.Equal(owner.PayloadSize, selfLength);
+        Assert.InRange(selfThread, (byte)0, (byte)(workers.Length - 1));
+        var selfHeap = workers[selfThread].GetHeap(selfPosition, selfLength);
+        Assert.Equal(0, selfHeap[0]);
+        Assert.Equal((selfLength - 1) & 0xFF, selfHeap[^1]);
+
+        // Every entity appears exactly once in the worker segment logs, with a
+        // consistent span on that worker's heap: positions are implicit (contiguous
+        // writes), identity comes from the buffer-entities log.
+        var seen = new HashSet<TestEntity>();
+        long expectedBytes = owner.PayloadSize;
+        foreach (var e in entities)
+        {
+            expectedBytes += e.PayloadSize;
+        }
+
+        foreach (var worker in workers)
+        {
+            var lengths = worker.Lengths;
+            var bufferEntities = worker.BufferEntities;
+
+            foreach (var segment in worker.Segments)
             {
-                if (i == 5000)
+                Assert.Same(owner, segment.Owner);
+                Assert.Equal(-1, segment.SlotOffset);
+
+                var heapPos = (int)segment.HeapStart;
+                for (var i = 0; i < segment.RecordCount; i++)
                 {
-                    source.PushSingle(owner);
-                }
+                    var entity = (TestEntity)bufferEntities[segment.EntitiesStart + i];
+                    var length = lengths[segment.LengthsStart + i];
 
-                source.Push(entities[i]);
-            }
+                    Assert.True(seen.Add(entity));
+                    Assert.Equal(entity.PayloadSize, length);
 
-            // Mirrors World.PauseSerializationThreads
-            source.Flush();
-            foreach (var worker in workers)
-            {
-                worker.Sleep();
-            }
+                    var heap = workers[Array.IndexOf(workers, worker)].GetHeap(heapPos, length);
+                    Assert.Equal(0, heap[0]);
+                    Assert.Equal((length - 1) & 0xFF, heap[^1]);
 
-            long totalEntities = 0;
-            long totalBytes = 0;
-            foreach (var worker in workers)
-            {
-                totalEntities += worker.EntitiesSerialized;
-                totalBytes += worker.BytesSerialized;
-            }
-
-            Assert.Equal(entities.Count + 1, totalEntities);
-
-            // The self-payload recorded its placement on the persistence itself.
-            var (selfThread, selfPosition, selfLength) = owner.Placement;
-            Assert.Equal(owner.PayloadSize, selfLength);
-            Assert.InRange(selfThread, (byte)0, (byte)(workers.Length - 1));
-            var selfHeap = workers[selfThread].GetHeap(selfPosition, selfLength);
-            Assert.Equal(0, selfHeap[0]);
-            Assert.Equal((selfLength - 1) & 0xFF, selfHeap[^1]);
-
-            // Every entity appears exactly once in the worker segment logs, with a
-            // consistent span on that worker's heap: positions are implicit (contiguous
-            // writes), identity comes from the buffer-entities log.
-            var seen = new HashSet<TestEntity>();
-            long expectedBytes = owner.PayloadSize;
-            foreach (var e in entities)
-            {
-                expectedBytes += e.PayloadSize;
-            }
-
-            foreach (var worker in workers)
-            {
-                var lengths = worker.Lengths;
-                var bufferEntities = worker.BufferEntities;
-
-                foreach (var segment in worker.Segments)
-                {
-                    Assert.Same(owner, segment.Owner);
-                    Assert.Equal(-1, segment.SlotOffset);
-
-                    var heapPos = (int)segment.HeapStart;
-                    for (var i = 0; i < segment.RecordCount; i++)
-                    {
-                        var entity = (TestEntity)bufferEntities[segment.EntitiesStart + i];
-                        var length = lengths[segment.LengthsStart + i];
-
-                        Assert.True(seen.Add(entity));
-                        Assert.Equal(entity.PayloadSize, length);
-
-                        var heap = workers[Array.IndexOf(workers, worker)].GetHeap(heapPos, length);
-                        Assert.Equal(0, heap[0]);
-                        Assert.Equal((length - 1) & 0xFF, heap[^1]);
-
-                        heapPos += length;
-                    }
+                    heapPos += length;
                 }
             }
+        }
 
-            Assert.Equal(entities.Count, seen.Count);
-            Assert.Equal(expectedBytes, totalBytes);
-        }
-        finally
-        {
-            owner.Unregister();
-            foreach (var worker in workers)
-            {
-                worker.Exit();
-            }
-        }
+        Assert.Equal(entities.Count, seen.Count);
+        Assert.Equal(expectedBytes, totalBytes);
     }
 }

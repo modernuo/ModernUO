@@ -11,13 +11,6 @@ namespace Server.Tests.Maps;
 [Collection("Sequential Server Tests")]
 public class CanSpawnMobileTileDataTests
 {
-    private readonly ServerFixture _fixture;
-
-    public CanSpawnMobileTileDataTests(ServerFixture fixture)
-    {
-        _fixture = fixture;
-    }
-
     private void SkipIfNoTileData()
     {
         Skip.If(!ServerFixture.TileDataLoaded, "TileData not loaded - client files required");
@@ -96,7 +89,7 @@ public class CanSpawnMobileTileDataTests
             multi = CreateFloorWithCeilingMulti(map, new Point3D(x, y, 0), floorZ: 20, ceilingZ: 28);
 
             // The low ceiling should block spawning (need 16 units clearance for mobiles)
-            var result = map.CanSpawnMobile(x, y, 15, 35, false, false, out var spawnZ);
+            var result = map.CanSpawnMobile(x, y, 15, 35, false, false, out _);
 
             Assert.False(result);
         }
@@ -121,7 +114,7 @@ public class CanSpawnMobileTileDataTests
             // Create a multi with floor at Z=20 and ceiling at Z=50 (30 units clearance)
             multi = CreateFloorWithCeilingMulti(map, new Point3D(x, y, 0), floorZ: 20, ceilingZ: 50);
 
-            var result = map.CanSpawnMobile(x, y, 15, 35, false, false, out var spawnZ);
+            var result = map.CanSpawnMobile(x, y, 15, 35, false, false, out _);
 
             Assert.True(result);
         }
@@ -147,7 +140,7 @@ public class CanSpawnMobileTileDataTests
             multi = CreateFloorWithCeilingMulti(map, new Point3D(x, y, 0), floorZ: 20, ceilingZ: 100);
 
             // The blocker at Z=100 shouldn't affect spawning in range 15-35
-            var result = map.CanSpawnMobile(x, y, 15, 35, false, false, out var spawnZ);
+            var result = map.CanSpawnMobile(x, y, 15, 35, false, false, out _);
 
             Assert.True(result);
         }
@@ -173,7 +166,7 @@ public class CanSpawnMobileTileDataTests
             multi = CreateWaterMulti(map, new Point3D(x, y, 0), waterZ: 0);
 
             // canSwim=true should find the water surface
-            var result = map.CanSpawnMobile(x, y, -10, 10, true, false, out var spawnZ);
+            var result = map.CanSpawnMobile(x, y, -10, 10, true, false, out _);
 
             Assert.True(result);
         }
@@ -202,7 +195,7 @@ public class CanSpawnMobileTileDataTests
             };
             surfaceItem.MoveToWorld(new Point3D(x, y, 10), map);
 
-            var result = map.CanSpawnMobile(x, y, 5, 30, false, false, out var spawnZ);
+            var result = map.CanSpawnMobile(x, y, 5, 30, false, false, out _);
 
             // Should find either land at Z=0 or the item surface, whichever is lowest
             Assert.True(result);
@@ -273,17 +266,5 @@ public class CanSpawnMobileTileDataTests
         [
             new MultiTileEntry(ServerFixture.WetTileId, 0, 0, (short)waterZ, TileFlag.Wet)
         ]);
-    }
-
-    private class TestMulti : BaseMulti
-    {
-        private readonly MultiComponentList _components;
-
-        public TestMulti(MultiComponentList components) : base(0x1)
-        {
-            _components = components ?? MultiComponentList.Empty;
-        }
-
-        public override MultiComponentList Components => _components;
     }
 }

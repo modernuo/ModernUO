@@ -33,6 +33,8 @@ public class CanFitItemTests
         Assert.False(map.CanFitItem(100, map.Height + 1, 0, 1));
     }
 
+    // Plain walkable land in the real Felucca map. Without map files every cell is the default land
+    // tile at Z 0 with no flags, which these tests treat the same way: a surface with nothing above it.
     private const int TestLandX = 1500;
     private const int TestLandY = 1600;
 
@@ -170,23 +172,19 @@ public class CanFitItemTests
         Item movableItem = null;
         try
         {
-            // Create a movable surface item
+            // Raised well clear of the land so the movable item's top is the only candidate surface there
+            var itemZ = map.GetAverageZ(x, y) + 20;
+
             movableItem = new Item(ServerFixture.SurfaceTileId)
             {
                 Movable = true
             };
-            movableItem.MoveToWorld(new Point3D(x, y, 10), map);
+            movableItem.MoveToWorld(new Point3D(x, y, itemZ), map);
 
-            var itemTop = 10 + movableItem.ItemData.CalcHeight;
-            // Try placing at item top - should fail unless there's land there too
-            var avgZ = map.GetAverageZ(x, y);
+            var itemTop = itemZ + movableItem.ItemData.CalcHeight;
+            var result = map.CanFitItem(x, y, itemTop, 1);
 
-            // If avgZ != itemTop, there's no other surface, so it should fail
-            if (avgZ != itemTop)
-            {
-                var result = map.CanFitItem(x, y, itemTop, 1);
-                Assert.False(result, "Movable item should not count as valid surface");
-            }
+            Assert.False(result, "Movable item should not count as valid surface");
         }
         finally
         {
@@ -247,17 +245,5 @@ public class CanFitItemTests
         ]));
         multi.MoveToWorld(location, map);
         return multi;
-    }
-
-    private class TestMulti : BaseMulti
-    {
-        private readonly MultiComponentList _components;
-
-        public TestMulti(MultiComponentList components) : base(0x1)
-        {
-            _components = components ?? MultiComponentList.Empty;
-        }
-
-        public override MultiComponentList Components => _components;
     }
 }

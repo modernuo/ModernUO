@@ -29,7 +29,8 @@ public class CanSpawnMobileTests
         Assert.False(map.CanSpawnMobile(100, map.Height + 1, -128, 127, false, false, out _));
     }
 
-    // Use coordinates near Britain which should be walkable land in both test and real data
+    // Plain walkable land near Britain in the real Felucca map. Without map files every cell is the
+    // default land tile at Z 0 with no flags, which CanSpawnMobile treats the same way: walkable, not water.
     private const int TestLandX = 1500;
     private const int TestLandY = 1600;
 
@@ -37,10 +38,9 @@ public class CanSpawnMobileTests
     public void CanSpawnMobile_EmptyLocationWithLandReturnsTrue()
     {
         var map = Map.Felucca;
-        map.GetAverageZ(TestLandX, TestLandY, out _, out var landZ, out _);
 
         // Test with full Z range to find land
-        var result = map.CanSpawnMobile(TestLandX, TestLandY, -128, 127, false, false, out var spawnZ);
+        var result = map.CanSpawnMobile(TestLandX, TestLandY, -128, 127, false, false, out _);
 
         // Should find a valid spawn point (land surface)
         Assert.True(result, $"Expected to find valid spawn point on land at ({TestLandX}, {TestLandY})");
@@ -53,7 +53,7 @@ public class CanSpawnMobileTests
         map.GetAverageZ(TestLandX, TestLandY, out _, out var avgZ, out _);
 
         // Use a Z range that excludes the land surface (50+ units above land)
-        var result = map.CanSpawnMobile(TestLandX, TestLandY, avgZ + 50, avgZ + 100, false, false, out var spawnZ);
+        var result = map.CanSpawnMobile(TestLandX, TestLandY, avgZ + 50, avgZ + 100, false, false, out _);
 
         Assert.False(result, $"Expected no spawn point above land at Z={avgZ}");
     }
@@ -63,7 +63,7 @@ public class CanSpawnMobileTests
     {
         var map = Map.Felucca;
         // cantWalk=true means the mob can only swim, so land shouldn't be valid
-        var result = map.CanSpawnMobile(TestLandX, TestLandY, -128, 127, false, true, out var spawnZ);
+        var result = map.CanSpawnMobile(TestLandX, TestLandY, -128, 127, false, true, out _);
 
         Assert.False(result, "cantWalk=true should not find land as valid surface");
     }
@@ -83,7 +83,7 @@ public class CanSpawnMobileTests
             blockingMobile.MoveToWorld(new Point3D(TestLandX, TestLandY, landZ), map);
 
             // The mobile should block spawning at its location and Z
-            var result = map.CanSpawnMobile(TestLandX, TestLandY, landZ - 16, landZ + 16, false, false, out var spawnZ);
+            var result = map.CanSpawnMobile(TestLandX, TestLandY, landZ - 16, landZ + 16, false, false, out _);
 
             // Land surface is blocked by mobile at the same Z
             Assert.False(result, "Mobile should block spawn at same location");
@@ -115,7 +115,7 @@ public class CanSpawnMobileTests
             gm.MoveToWorld(new Point3D(x, y, landZ), map);
 
             // Hidden GM should not block spawning
-            var result = map.CanSpawnMobile(x, y, landZ - 16, landZ + 16, false, false, out var spawnZ);
+            var result = map.CanSpawnMobile(x, y, landZ - 16, landZ + 16, false, false, out _);
 
             Assert.True(result, "Hidden GM should not block spawn");
         }
@@ -142,7 +142,7 @@ public class CanSpawnMobileTests
             blockingMobile.MoveToWorld(new Point3D(x, y, landZ + 50), map);
 
             // Land should still be valid (mobile above doesn't block ground level)
-            var result = map.CanSpawnMobile(x, y, landZ - 16, landZ + 16, false, false, out var spawnZ);
+            var result = map.CanSpawnMobile(x, y, landZ - 16, landZ + 16, false, false, out _);
 
             Assert.True(result, "Mobile at different Z should not block");
         }

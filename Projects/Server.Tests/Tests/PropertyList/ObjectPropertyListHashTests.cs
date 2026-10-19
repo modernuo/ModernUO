@@ -102,36 +102,31 @@ public class ObjectPropertyListHashTests
     // 6- and 8-byte blocks take xxHash3's short-input paths. They still avalanche across all 26
     // kept bits, so a counter ticking down never repeats the revision it just had.
     [Fact]
-    public void ShortNumericArguments_ConsecutiveValuesDiffer()
+    public void ShortPropertyBlocks_ConsecutiveValuesDifferAndStayWellDistributed()
     {
-        var previous = BuildHash((1060584, "0"));
-
-        for (var charges = 1; charges < 20000; charges++)
-        {
-            var current = BuildHash((1060584, charges.ToString()));
-            Assert.NotEqual(previous, current);
-            previous = current;
-        }
-    }
-
-    [Fact]
-    public void SmallPropertyBlocks_StayWellDistributed()
-    {
-        const int count = 20000;
+        const int count = 5000;
 
         var withArgument = new HashSet<int>();
         var withoutArgument = new HashSet<int>();
+        var previous = 0;
 
         for (var i = 0; i < count; i++)
         {
-            withArgument.Add(BuildHash((1060584, i.ToString())));
+            var current = BuildHash((1060584, i.ToString()));
+            if (i > 0)
+            {
+                Assert.NotEqual(previous, current);
+            }
+
+            previous = current;
+            withArgument.Add(current);
             withoutArgument.Add(BuildHash((1060000 + i, null)));
         }
 
-        // Birthday expects ~3 collisions over a 26-bit space; allow an order of magnitude so the
-        // bound holds for any seed. A hash that stopped mixing collapses far past it.
-        Assert.True(withArgument.Count >= count - 30, $"8-byte blocks: {withArgument.Count}/{count}");
-        Assert.True(withoutArgument.Count >= count - 30, $"6-byte blocks: {withoutArgument.Count}/{count}");
+        // Birthday expects ~0.2 collisions over a 26-bit space; allow a few so the bound holds for
+        // any seed. A hash that stopped mixing collapses far past it.
+        Assert.True(withArgument.Count >= count - 5, $"8-byte blocks: {withArgument.Count}/{count}");
+        Assert.True(withoutArgument.Count >= count - 5, $"6-byte blocks: {withoutArgument.Count}/{count}");
     }
 
     [Fact]

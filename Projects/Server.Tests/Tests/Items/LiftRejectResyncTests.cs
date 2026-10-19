@@ -1,9 +1,7 @@
-using System;
-using System.Buffers;
 using Server.Items;
 using Server.Network;
-using Server.Tests.Network;
 using Xunit;
+using static Server.Tests.TestClientHarness;
 
 namespace Server.Tests;
 
@@ -11,51 +9,6 @@ namespace Server.Tests;
 public class LiftRejectResyncTests
 {
     private static readonly Point3D _baseLoc = new(2200, 2200, 0);
-
-    private static (NetState, Mobile) CreateClient(Point3D location)
-    {
-        var ns = PacketTestUtilities.CreateTestNetState();
-        ns.Account = new MockAccount();
-
-        var mobile = new Mobile(World.NewMobile);
-        mobile.DefaultMobileInit();
-        ns.Mobile = mobile;
-        mobile.NetState = ns;
-        mobile.MoveToWorld(location, Map.Felucca);
-        return (ns, mobile);
-    }
-
-    private static void DisposeClient(NetState ns, Mobile mobile)
-    {
-        ns.Mobile = null;
-        ns.Dispose();
-        mobile.Delete();
-    }
-
-    private static bool ReceivedContentUpdate(NetState ns, Serial serial)
-    {
-        Span<byte> expected = stackalloc byte[5];
-        var writer = new SpanWriter(expected);
-        writer.Write((byte)0x25); // ContainerContentUpdate packet ID
-        writer.Write(serial);
-        return ns.SendBuffer.GetReadSpan().IndexOf(expected) >= 0;
-    }
-
-    private static bool ReceivedWorldItem(NetState ns, Item item)
-    {
-        Span<byte> expected = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength];
-        var length = OutgoingItemPackets.CreateWorldItem(expected, item);
-        return ns.SendBuffer.GetReadSpan().IndexOf(expected[..length]) >= 0;
-    }
-
-    private static bool ReceivedEquipUpdate(NetState ns, Serial serial)
-    {
-        Span<byte> expected = stackalloc byte[5];
-        var writer = new SpanWriter(expected);
-        writer.Write((byte)0x2E); // EquipUpdate packet ID
-        writer.Write(serial);
-        return ns.SendBuffer.GetReadSpan().IndexOf(expected) >= 0;
-    }
 
     [Fact]
     public void PrivateNestedItem_RejectedLift_DoesNotResyncBystander()
