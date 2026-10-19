@@ -21,14 +21,13 @@ using Xunit;
 
 namespace Server.Tests.Network.Bans.Blocklist;
 
-public class BlocklistFileTests
+public class BlocklistFileTests : IDisposable
 {
-    private static string WriteTemp(string content)
-    {
-        var p = Path.Combine(Path.GetTempPath(), "bl-" + Guid.NewGuid().ToString("N") + ".txt");
-        File.WriteAllText(p, content);
-        return p;
-    }
+    private readonly TempDirectory _temp = new("bl");
+
+    public void Dispose() => _temp.Dispose();
+
+    private string WriteTemp(string content) => _temp.WriteFile("blocklist.txt", content);
 
     [Fact]
     public void Reads_header_generated_and_count()
@@ -38,13 +37,12 @@ public class BlocklistFileTests
         Assert.True(h.Present);
         Assert.Equal("2026-07-21T09:24:23Z", h.Generated);
         Assert.Equal(2, h.Count);
-        File.Delete(p);
     }
 
     [Fact]
     public void Missing_file_reports_absent_and_loads_empty()
     {
-        var p = Path.Combine(Path.GetTempPath(), "does-not-exist-" + Guid.NewGuid().ToString("N"));
+        var p = _temp.Combine("does-not-exist.txt");
         Assert.False(BlocklistFile.TryReadHeader(p, out var h));
         Assert.False(h.Present);
         var snap = BlocklistFile.Load(p, out _, out _);
@@ -70,6 +68,5 @@ public class BlocklistFileTests
         Assert.Equal(0, skipped);
         Assert.True(snap.IsBanned(IPAddress.Parse("2.181.183.77")));
         Assert.True(snap.IsBanned(IPAddress.Parse("223.169.4.9")));
-        File.Delete(p);
     }
 }

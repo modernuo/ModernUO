@@ -17,30 +17,42 @@ public class CorpseChildPublicTests
     private static VikingSword EquipSword(Mobile owner)
     {
         var sword = new VikingSword { Layer = Layer.OneHanded };
-        Assert.True(owner.EquipItem(sword));
+        var equipped = owner.EquipItem(sword);
+        if (!equipped)
+        {
+            sword.Delete();
+        }
+
+        Assert.True(equipped);
         return sword;
+    }
+
+    private static Mobile NewOwner(int body)
+    {
+        var owner = new Mobile(World.NewMobile);
+        owner.DefaultMobileInit();
+        owner.Body = body;
+        return owner;
     }
 
     [Fact]
     public void IsChildPublic_HumanCorpseWithWornGear_ReturnsTrue()
     {
-        var owner = new Mobile((Serial)0x1);
-        owner.DefaultMobileInit();
-        owner.Body = 0x190;
-
-        var wornItem = EquipSword(owner);
-
-        var corpse = new Corpse(owner, owner.Items);
+        var owner = NewOwner(0x190);
+        Corpse corpse = null;
 
         try
         {
+            var wornItem = EquipSword(owner);
+            corpse = new Corpse(owner, owner.Items);
+
             Assert.Equal(0x2006, corpse.ItemID);
             Assert.True(((Body)corpse.Amount).IsHuman);
             Assert.True(corpse.IsChildPublic(wornItem));
         }
         finally
         {
-            corpse.Delete();
+            corpse?.Delete();
             owner.Delete();
         }
     }
@@ -48,26 +60,24 @@ public class CorpseChildPublicTests
     [Fact]
     public void IsChildPublic_HumanCorpseWithLootItem_ReturnsFalse()
     {
-        var owner = new Mobile((Serial)0x1);
-        owner.DefaultMobileInit();
-        owner.Body = 0x190;
-
-        var wornItem = EquipSword(owner);
-
-        var corpse = new Corpse(owner, owner.Items);
-
-        var lootItem = new Gold(100);
-        corpse.DropItem(lootItem);
+        var owner = NewOwner(0x190);
+        Corpse corpse = null;
 
         try
         {
+            EquipSword(owner);
+            corpse = new Corpse(owner, owner.Items);
+
+            var lootItem = new Gold(100);
+            corpse.DropItem(lootItem);
+
             Assert.Equal(0x2006, corpse.ItemID);
             Assert.True(((Body)corpse.Amount).IsHuman);
             Assert.False(corpse.IsChildPublic(lootItem));
         }
         finally
         {
-            corpse.Delete();
+            corpse?.Delete();
             owner.Delete();
         }
     }
@@ -75,16 +85,14 @@ public class CorpseChildPublicTests
     [Fact]
     public void IsChildPublic_BoneCorpse_ReturnsFalse()
     {
-        var owner = new Mobile((Serial)0x1);
-        owner.DefaultMobileInit();
-        owner.Body = 0x190;
-
-        var wornItem = EquipSword(owner);
-
-        var corpse = new Corpse(owner, owner.Items);
+        var owner = NewOwner(0x190);
+        Corpse corpse = null;
 
         try
         {
+            var wornItem = EquipSword(owner);
+            corpse = new Corpse(owner, owner.Items);
+
             corpse.ItemID = 0xECA;
 
             Assert.True(((Body)corpse.Amount).IsHuman);
@@ -93,7 +101,7 @@ public class CorpseChildPublicTests
         }
         finally
         {
-            corpse.Delete();
+            corpse?.Delete();
             owner.Delete();
         }
     }
@@ -101,23 +109,21 @@ public class CorpseChildPublicTests
     [Fact]
     public void IsChildPublic_NonHumanCorpse_ReturnsFalse()
     {
-        var owner = new Mobile((Serial)0x1);
-        owner.DefaultMobileInit();
-        owner.Body = 0xC9;
-
-        var wornItem = EquipSword(owner);
-
-        var corpse = new Corpse(owner, owner.Items);
+        var owner = NewOwner(0xC9);
+        Corpse corpse = null;
 
         try
         {
+            var wornItem = EquipSword(owner);
+            corpse = new Corpse(owner, owner.Items);
+
             Assert.Equal(0x2006, corpse.ItemID);
             Assert.False(((Body)corpse.Amount).IsHuman);
             Assert.False(corpse.IsChildPublic(wornItem));
         }
         finally
         {
-            corpse.Delete();
+            corpse?.Delete();
             owner.Delete();
         }
     }
@@ -129,36 +135,48 @@ public class CorpseChildPublicTests
         return ns.SendBuffer.GetReadSpan().IndexOf(expected) >= 0;
     }
 
+    private static Mobile NewBystander(NetState ns, Point3D location)
+    {
+        ns.Account = new MockAccount();
+        var bystander = new Mobile(World.NewMobile);
+        bystander.DefaultMobileInit();
+        ns.Mobile = bystander;
+        bystander.NetState = ns;
+        bystander.MoveToWorld(location, Map.Felucca);
+        return bystander;
+    }
+
+    private static void DeleteBystander(NetState ns, Mobile bystander)
+    {
+        ns.Mobile = null;
+        ns.Dispose();
+        bystander?.Delete();
+    }
+
     [Fact]
     public void HumanCorpse_WornGearRemovalBroadcasts_LootRemovalDoesNot()
     {
         var corpseLoc = new Point3D(1500, 1500, 0);
 
         var bystanderNs = PacketTestUtilities.CreateTestNetState();
-        bystanderNs.Account = new MockAccount();
-        var bystander = new Mobile(World.NewMobile);
-        bystander.DefaultMobileInit();
-        bystanderNs.Mobile = bystander;
-        bystander.NetState = bystanderNs;
-        bystander.MoveToWorld(new Point3D(corpseLoc.X + 1, corpseLoc.Y, corpseLoc.Z), Map.Felucca);
-
-        var owner = new Mobile((Serial)0x1);
-        owner.DefaultMobileInit();
-        owner.Body = 0x190;
-
-        var sword = new VikingSword();
-        var corpse = new Corpse(owner, [sword]);
-        corpse.AddItem(sword);
-
-        var lootItem = new Gold(100);
-        corpse.DropItem(lootItem);
-
-        corpse.MoveToWorld(corpseLoc, Map.Felucca);
-
+        Mobile bystander = null;
+        var owner = NewOwner(0x190);
+        Corpse corpse = null;
         Container pouch = null;
 
         try
         {
+            bystander = NewBystander(bystanderNs, new Point3D(corpseLoc.X + 1, corpseLoc.Y, corpseLoc.Z));
+
+            var sword = new VikingSword();
+            corpse = new Corpse(owner, [sword]);
+            corpse.AddItem(sword);
+
+            var lootItem = new Gold(100);
+            corpse.DropItem(lootItem);
+
+            corpse.MoveToWorld(corpseLoc, Map.Felucca);
+
             // A container not in the world is a valid destination; only the removal from the corpse matters here.
             pouch = new Container(0xE75);
             pouch.AddItem(sword);
@@ -171,11 +189,9 @@ public class CorpseChildPublicTests
         finally
         {
             pouch?.Delete();
-            corpse.Delete();
+            corpse?.Delete();
             owner.Delete();
-            bystanderNs.Mobile = null;
-            bystanderNs.Dispose();
-            bystander.Delete();
+            DeleteBystander(bystanderNs, bystander);
         }
     }
 
@@ -185,25 +201,20 @@ public class CorpseChildPublicTests
         var corpseLoc = new Point3D(1500, 1500, 0);
 
         var bystanderNs = PacketTestUtilities.CreateTestNetState();
-        bystanderNs.Account = new MockAccount();
-        var bystander = new Mobile(World.NewMobile);
-        bystander.DefaultMobileInit();
-        bystanderNs.Mobile = bystander;
-        bystander.NetState = bystanderNs;
-        bystander.MoveToWorld(new Point3D(corpseLoc.X + 1, corpseLoc.Y, corpseLoc.Z), Map.Felucca);
-
-        var owner = new Mobile(World.NewMobile);
-        owner.DefaultMobileInit();
-        owner.Body = 0x190;
-        owner.MoveToWorld(new Point3D(corpseLoc.X - 1, corpseLoc.Y, corpseLoc.Z), Map.Felucca);
-
+        Mobile bystander = null;
+        var owner = NewOwner(0x190);
         var sword = new VikingSword { Layer = Layer.OneHanded };
-        var corpse = new Corpse(owner, [sword]);
-        corpse.AddItem(sword);
-        corpse.MoveToWorld(corpseLoc, Map.Felucca);
+        Corpse corpse = null;
 
         try
         {
+            bystander = NewBystander(bystanderNs, new Point3D(corpseLoc.X + 1, corpseLoc.Y, corpseLoc.Z));
+            owner.MoveToWorld(new Point3D(corpseLoc.X - 1, corpseLoc.Y, corpseLoc.Z), Map.Felucca);
+
+            corpse = new Corpse(owner, [sword]);
+            corpse.AddItem(sword);
+            corpse.MoveToWorld(corpseLoc, Map.Felucca);
+
             // Lifting takes the piece off the worn list before the remove is sent; the remove must
             // still reach everyone who was shown it worn.
             owner.Lift(sword, sword.Amount, out var rejected, out _);
@@ -216,11 +227,9 @@ public class CorpseChildPublicTests
         {
             owner.Holding = null;
             sword.Delete();
-            corpse.Delete();
+            corpse?.Delete();
             owner.Delete();
-            bystanderNs.Mobile = null;
-            bystanderNs.Dispose();
-            bystander.Delete();
+            DeleteBystander(bystanderNs, bystander);
         }
     }
 }

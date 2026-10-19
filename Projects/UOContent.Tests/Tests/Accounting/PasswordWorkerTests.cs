@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using Server.Accounting;
 using Server.Accounting.Security;
+using Server.Tests.Accounting.Security;
 using Xunit;
 
 namespace Server.Tests.Accounting;
@@ -13,12 +15,27 @@ public class PasswordWorkerTests : IDisposable
 
     private readonly PasswordProtectionAlgorithm _originalAlgorithm = AccountSecurity.CurrentAlgorithm;
 
+    // The constructor registers each account in the process-wide Accounts table.
+    private readonly List<Account> _created = [];
+
     public PasswordWorkerTests() => AccountSecurity.CurrentAlgorithm = PasswordProtectionAlgorithm.Argon2;
 
-    public void Dispose() => AccountSecurity.CurrentAlgorithm = _originalAlgorithm;
+    public void Dispose()
+    {
+        for (var i = 0; i < _created.Count; i++)
+        {
+            _created[i].Delete();
+        }
 
-    private static Account CreateAccount(string username) =>
-        Accounts.GetAccount(username) as Account ?? new Account(username, Password);
+        AccountSecurity.CurrentAlgorithm = _originalAlgorithm;
+    }
+
+    private Account CreateAccount(string username)
+    {
+        var account = new Account(username, Password);
+        _created.Add(account);
+        return account;
+    }
 
     /// <summary>
     /// Enqueues work, then pumps the loop context until <paramref name="complete"/> or the deadline.
@@ -136,7 +153,7 @@ public class PasswordWorkerTests : IDisposable
         var outcome = PasswordWorker.ComputeInline(JobFor(account, Password));
 
         Assert.True(outcome.Verified);
-        Assert.StartsWith("$argon2id$v=19$m=16384,t=1,p=1$", outcome.Hash);
+        Assert.StartsWith(Argon2TestParameters.CurrentPrefix, outcome.Hash);
     }
 
     [Fact]

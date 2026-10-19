@@ -10,19 +10,34 @@ namespace UOContent.Tests;
 [Collection("Sequential UOContent Tests")]
 public class CorpsePacketTests
 {
+    // Weapons take their layer from tiledata, which CI doesn't load; without an explicit layer the
+    // equip is refused and the packets would only cover an empty item list.
+    private static VikingSword EquipSword(Mobile m)
+    {
+        var sword = new VikingSword { Layer = Layer.OneHanded };
+        var equipped = m.EquipItem(sword);
+        if (!equipped)
+        {
+            sword.Delete();
+        }
+
+        Assert.True(equipped);
+        return sword;
+    }
+
     [Fact]
     public void TestCorpseEquipPacket()
     {
-        var m = new Mobile((Serial)0x1);
-        m.DefaultMobileInit();
-
-        var weapon = new VikingSword();
-        m.EquipItem(weapon);
-
-        var c = new Corpse(m, m.Items);
+        var m = new Mobile(World.NewMobile);
+        VikingSword weapon = null;
+        Corpse c = null;
 
         try
         {
+            m.DefaultMobileInit();
+            weapon = EquipSword(m);
+            c = new Corpse(m, m.Items);
+
             var expected = new CorpseEquip(m, c).Compile();
 
             using var ns = PacketTestUtilities.CreateTestNetState();
@@ -33,8 +48,9 @@ public class CorpsePacketTests
         }
         finally
         {
-            c.Delete();
-            weapon.Delete();
+            c?.Delete();
+            weapon?.Delete();
+            m.Delete();
         }
     }
 
@@ -43,16 +59,16 @@ public class CorpsePacketTests
     [InlineData(ProtocolChanges.ContainerGridLines)]
     public void TestCorpseContainerPacket(ProtocolChanges changes)
     {
-        var m = new Mobile((Serial)0x1);
-        m.DefaultMobileInit();
-
-        var weapon = new VikingSword();
-        m.EquipItem(weapon);
-
-        var c = new Corpse(m, m.Items);
+        var m = new Mobile(World.NewMobile);
+        VikingSword weapon = null;
+        Corpse c = null;
 
         try
         {
+            m.DefaultMobileInit();
+            weapon = EquipSword(m);
+            c = new Corpse(m, m.Items);
+
             using var ns = PacketTestUtilities.CreateTestNetState();
             ns.ProtocolChanges = changes;
 
@@ -65,8 +81,9 @@ public class CorpsePacketTests
         }
         finally
         {
-            c.Delete();
-            weapon.Delete();
+            c?.Delete();
+            weapon?.Delete();
+            m.Delete();
         }
     }
 }

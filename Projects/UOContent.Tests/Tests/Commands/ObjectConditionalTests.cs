@@ -3,37 +3,27 @@ using System.Collections.Generic;
 using Server;
 using Server.Commands.Generic;
 using Server.Items;
+using Server.Tests;
 using Xunit;
 
 namespace UOContent.Tests.Commands;
 
-// `where` compiles conditions to IL. Two shapes were broken there: a property type with value
-// equality but no IComparable fell through to a raw Ceq (reference equality, so never true), and
-// a chained binding dereferenced every link with no null guard (so the first object with a null
-// intermediate took the whole sweep down with an NRE).
+// `where` compiles conditions into a delegate. A property type with value equality but no
+// IComparable compares by value, not reference identity, and a chained binding with a null
+// intermediate makes the condition false rather than throwing and ending the whole sweep.
 [Collection("Sequential UOContent Tests")]
 public class ObjectConditionalTests : IDisposable
 {
-    private readonly List<Item> _items = [];
+    private readonly CommandTestHarness _harness = new();
     private readonly Mobile _from = new() { AccessLevel = AccessLevel.Developer };
 
     public void Dispose()
     {
-        for (var i = 0; i < _items.Count; i++)
-        {
-            _items[i].Delete();
-        }
-
-        _items.Clear();
+        _harness.Dispose();
         _from.Delete();
     }
 
-    private SkillTeleporter Teleporter(TextDefinition message)
-    {
-        var tp = new SkillTeleporter { Message = message };
-        _items.Add(tp);
-        return tp;
-    }
+    private SkillTeleporter Teleporter(TextDefinition message) => _harness.Teleporter(message);
 
     private bool Check(object target, params string[] condition)
     {

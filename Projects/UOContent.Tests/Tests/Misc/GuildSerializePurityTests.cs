@@ -22,40 +22,55 @@ public class GuildSerializePurityTests
     public void SerializeDoesNotRecalculateFealtyOrMutateState()
     {
         var leader = CreatePlayer();
-        var guild = new Guild(leader, "Purity Test Guild", "PTG");
-        var staleFealty = Core.Now - TimeSpan.FromDays(3);
-        guild.LastFealty = staleFealty;
+        Guild guild = null;
 
-        var writer = new BufferWriter(true);
-        guild.Serialize(writer);
+        try
+        {
+            guild = new Guild(leader, "Purity Test Guild", "PTG");
+            var staleFealty = Core.Now - TimeSpan.FromDays(3);
+            guild.LastFealty = staleFealty;
 
-        Assert.Equal(staleFealty, guild.LastFealty);
-        Assert.Same(leader, guild.Leader);
+            var writer = new BufferWriter(true);
+            guild.Serialize(writer);
 
-        var first = writer.Buffer.AsSpan(0, (int)writer.Position).ToArray();
-        writer.Seek(0, SeekOrigin.Begin);
-        guild.Serialize(writer);
-        var second = writer.Buffer.AsSpan(0, (int)writer.Position).ToArray();
+            Assert.Equal(staleFealty, guild.LastFealty);
+            Assert.Same(leader, guild.Leader);
 
-        Assert.Equal(first, second);
+            var first = writer.Buffer.AsSpan(0, (int)writer.Position).ToArray();
+            writer.Seek(0, SeekOrigin.Begin);
+            guild.Serialize(writer);
+            var second = writer.Buffer.AsSpan(0, (int)writer.Position).ToArray();
 
-        writer.Close();
-        guild.Disband();
-        leader.Delete();
+            Assert.Equal(first, second);
+
+            writer.Close();
+        }
+        finally
+        {
+            guild?.Disband();
+            leader.Delete();
+        }
     }
 
     [Fact]
     public void RunMaintenanceRecalculatesStaleFealty()
     {
         var leader = CreatePlayer();
-        var guild = new Guild(leader, "Maintenance Test Guild", "MTG");
-        guild.LastFealty = Core.Now - TimeSpan.FromDays(3);
+        Guild guild = null;
 
-        guild.RunMaintenance();
+        try
+        {
+            guild = new Guild(leader, "Maintenance Test Guild", "MTG");
+            guild.LastFealty = Core.Now - TimeSpan.FromDays(3);
 
-        Assert.True(Core.Now - guild.LastFealty < TimeSpan.FromMinutes(1));
+            guild.RunMaintenance();
 
-        guild.Disband();
-        leader.Delete();
+            Assert.True(Core.Now - guild.LastFealty < TimeSpan.FromMinutes(1));
+        }
+        finally
+        {
+            guild?.Disband();
+            leader.Delete();
+        }
     }
 }

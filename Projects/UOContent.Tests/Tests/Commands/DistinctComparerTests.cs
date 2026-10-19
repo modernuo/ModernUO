@@ -4,6 +4,7 @@ using Server;
 using Server.Commands;
 using Server.Commands.Generic;
 using Server.Items;
+using Server.Tests;
 using Xunit;
 
 namespace UOContent.Tests.Commands;
@@ -14,23 +15,14 @@ namespace UOContent.Tests.Commands;
 [Collection("Sequential UOContent Tests")]
 public class DistinctComparerTests : IDisposable
 {
-    private readonly List<Item> _items = [];
+    private readonly CommandTestHarness _harness = new();
 
-    public void Dispose()
-    {
-        for (var i = 0; i < _items.Count; i++)
-        {
-            _items[i].Delete();
-        }
-
-        _items.Clear();
-    }
+    public void Dispose() => _harness.Dispose();
 
     private SkillTeleporter Teleporter(Action<SkillTeleporter> setup = null)
     {
-        var tp = new SkillTeleporter();
+        var tp = _harness.Track(new SkillTeleporter());
         setup?.Invoke(tp);
-        _items.Add(tp);
         return tp;
     }
 
@@ -40,8 +32,7 @@ public class DistinctComparerTests : IDisposable
 
         for (var i = 0; i < bindings.Length; i++)
         {
-            props[i] = new Property(bindings[i]);
-            props[i].BindTo(typeof(SkillTeleporter), PropertyAccess.Read);
+            props[i] = CommandTestHarness.Bind(typeof(SkillTeleporter), bindings[i]);
         }
 
         return (IEqualityComparer<object>)DistinctCompiler.Compile<object>(typeof(SkillTeleporter), props);

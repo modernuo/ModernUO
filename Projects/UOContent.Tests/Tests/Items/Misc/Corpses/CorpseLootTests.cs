@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Server;
 using Server.Items;
 using Xunit;
@@ -11,19 +10,22 @@ public class CorpseLootTests
     [Fact]
     public void LiftedWornGear_PutBack_StaysLoot()
     {
-        var owner = new Mobile((Serial)0x1);
-        owner.DefaultMobileInit();
-        owner.Body = 0x190;
-
-        // Weapons take their layer from tiledata, which CI doesn't load.
-        var sword = new VikingSword { Layer = Layer.OneHanded };
-        Assert.True(owner.EquipItem(sword));
-
-        var corpse = new Corpse(owner, new List<Item> { sword });
-        corpse.DropItem(sword);
+        var owner = new Mobile(World.NewMobile);
+        VikingSword sword = null;
+        Corpse corpse = null;
 
         try
         {
+            owner.DefaultMobileInit();
+            owner.Body = 0x190;
+
+            // Weapons take their layer from tiledata, which CI doesn't load.
+            sword = new VikingSword { Layer = Layer.OneHanded };
+            Assert.True(owner.EquipItem(sword));
+
+            corpse = new Corpse(owner, [sword]);
+            corpse.DropItem(sword);
+
             Assert.Contains(sword, corpse.EquipItems);
 
             corpse.OnItemLifted(owner, sword);
@@ -35,7 +37,8 @@ public class CorpseLootTests
         }
         finally
         {
-            corpse.Delete();
+            corpse?.Delete();
+            sword?.Delete();
             owner.Delete();
         }
     }

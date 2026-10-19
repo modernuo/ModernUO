@@ -21,8 +21,11 @@ using Xunit;
 namespace Server.Tests.Network.Firewall;
 
 [Collection("Sequential UOContent Tests")]
-public class FirewallPersistenceTests
+public class FirewallPersistenceTests : IDisposable
 {
+    // The test host never configures the firewall, so empty is the state every other test expects.
+    public void Dispose() => Server.Network.Firewall.ResetForTesting();
+
     [Fact]
     public void ToSettings_RoundTrips_PermanentAndTtl()
     {
