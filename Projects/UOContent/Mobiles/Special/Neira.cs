@@ -163,13 +163,13 @@ public partial class Neira : BaseChampion
         }
     }
 
-    public override void AlterDamageScalarFrom(Mobile caster, ref double scalar)
+    public override void OnDamagedBySpell(Mobile from, int damage)
     {
-        base.AlterDamageScalarFrom(caster, ref scalar);
+        base.OnDamagedBySpell(from, damage);
 
         if (Utility.RandomDouble() < 0.1) // 10% chance to throw an unholy bone
         {
-            AddUnholyBone(caster, 1.0);
+            AddUnholyBone(from, 1.0);
         }
     }
 

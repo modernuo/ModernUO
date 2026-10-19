@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using ModernUO.Serialization;
@@ -1500,9 +1500,46 @@ namespace Server.Mobiles
         public List<MLQuest> MLQuests =>
             (m_MLQuests ??= StaticMLQuester ? MLQuestSystem.FindQuestList(GetType()) : ConstructQuestList()) ?? MLQuestSystem.EmptyList;
 
+        /// <summary>
+        ///     The abilities this creature has. Must be a pure, stable query: it is called from lookups, damage
+        ///     calculations and cleanup, so it must not spawn, mutate state, or change with the creature's state.
+        ///     Gate abilities that should only work some of the time with <see cref="CanUseAbility" />.
+        /// </summary>
         public virtual MonsterAbility[] GetMonsterAbilities() => null;
 
+        /// <summary>
+        ///     Whether <paramref name="ability" /> may trigger or be looked up right now. Must be a pure read.
+        /// </summary>
+        public virtual bool CanUseAbility(MonsterAbility ability) => true;
+
         private MonsterAbilityTrigger _activeTriggers;
+
+        // Deadlines in Core.TickCount, keyed by ability. Lives on the creature so it is collected with it.
+        private Dictionary<MonsterAbility, long> _abilityCooldowns;
+
+        public bool IsAbilityOnCooldown(MonsterAbility ability)
+        {
+            if (_abilityCooldowns?.TryGetValue(ability, out var nextTrigger) != true)
+            {
+                return false;
+            }
+
+            if (nextTrigger - Core.TickCount > 0)
+            {
+                return true;
+            }
+
+            _abilityCooldowns.Remove(ability);
+            return false;
+        }
+
+        public void SetAbilityCooldown(MonsterAbility ability, TimeSpan cooldown)
+        {
+            _abilityCooldowns ??= new Dictionary<MonsterAbility, long>();
+            _abilityCooldowns[ability] = Core.TickCount + (long)cooldown.TotalMilliseconds;
+        }
+
+        public void ClearAbilityCooldowns() => _abilityCooldowns = null;
 
         public virtual MonsterAbility GetAbility(MonsterAbilityType type)
         {
@@ -1516,6 +1553,11 @@ namespace Server.Mobiles
             for (var i = 0; i < abilities.Length; i++)
             {
                 var ability = abilities[i];
+                if (!CanUseAbility(ability))
+                {
+                    continue;
+                }
+
                 if (ability is MonsterAbilityGroup group)
                 {
                     ability = group.GetAbilityWithType(type);
@@ -1579,7 +1621,7 @@ namespace Server.Mobiles
                 for (var i = 0; i < abilities.Length; i++)
                 {
                     var ability = abilities[i];
-                    if (ability.CanTrigger(this, trigger))
+                    if (CanUseAbility(ability) && ability.CanTrigger(this, trigger))
                     {
                         ability.Trigger(trigger, this, defender);
                         triggered = true;
@@ -1606,7 +1648,7 @@ namespace Server.Mobiles
             for (var i = 0; i < abilities.Length; i++)
             {
                 var ability = abilities[i];
-                if (ability.CanTrigger(this, trigger))
+                if (CanUseAbility(ability) && ability.CanTrigger(this, trigger))
                 {
                     ability.Move(this, d);
                 }
@@ -1625,7 +1667,7 @@ namespace Server.Mobiles
             for (var i = 0; i < abilities.Length; i++)
             {
                 var ability = abilities[i];
-                if (ability.CanTrigger(this, trigger))
+                if (CanUseAbility(ability) && ability.CanTrigger(this, trigger))
                 {
                     if ((trigger & MonsterAbilityTrigger.GiveMeleeDamage) != 0)
                     {
@@ -1666,7 +1708,7 @@ namespace Server.Mobiles
             for (var i = 0; i < abilities.Length; i++)
             {
                 var ability = abilities[i];
-                if (ability.CanTrigger(this, trigger))
+                if (CanUseAbility(ability) && ability.CanTrigger(this, trigger))
                 {
                     if ((trigger & MonsterAbilityTrigger.GiveSpellDamage) != 0)
                     {
