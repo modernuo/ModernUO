@@ -16,7 +16,8 @@ public abstract partial class BaseMagicFish : Item
 
     public virtual bool Apply(Mobile from)
     {
-        var applied = SpellHelper.AddStatOffset(from, Type, Bonus, TimeSpan.FromMinutes(1.0));
+        var duration = Core.SE ? TimeSpan.FromSeconds(12.0) : TimeSpan.FromMinutes(1.0);
+        var applied = SpellHelper.AddStatOffset(from, Type, Bonus, duration);
 
         if (!applied)
         {
@@ -50,7 +51,7 @@ public partial class PrizedFish : BaseMagicFish
     {
     }
 
-    public override int Bonus => 5;
+    public override int Bonus => Core.SE ? 1 : 5;
     public override StatType Type => StatType.Int;
 
     public override int LabelNumber => 1041073; // prized fish
@@ -64,7 +65,7 @@ public partial class WondrousFish : BaseMagicFish
     {
     }
 
-    public override int Bonus => 5;
+    public override int Bonus => Core.SE ? 1 : 5;
     public override StatType Type => StatType.Dex;
 
     public override int LabelNumber => 1041074; // wondrous fish
@@ -78,7 +79,7 @@ public partial class TrulyRareFish : BaseMagicFish
     {
     }
 
-    public override int Bonus => 5;
+    public override int Bonus => Core.SE ? 1 : 5;
     public override StatType Type => StatType.Str;
 
     public override int LabelNumber => 1041075; // truly rare fish

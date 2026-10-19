@@ -149,7 +149,7 @@ namespace Server.Mobiles
         {
             base.OnDeath(c);
 
-            if (Fisher != null && Utility.Random(100) < 25)
+            if (Core.SE && Fisher?.Skills.Fishing.Base >= 100.0 && Utility.Random(100) < 25)
             {
                 GiveArtifactTo(Fisher);
             }
