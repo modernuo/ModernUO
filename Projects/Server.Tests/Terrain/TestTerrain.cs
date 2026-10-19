@@ -112,6 +112,12 @@ public static class TestTerrain
             throw new InvalidOperationException("Stamp terrain inside TestTerrain.Scope() so it is put back afterwards.");
         }
 
+        // A test may query the cache and then stamp more; masks built before the stamp must not survive it.
+        if (_scope != null)
+        {
+            StepCache.Instance.Clear();
+        }
+
         return [Map.Felucca, Map.Trammel];
     }
 

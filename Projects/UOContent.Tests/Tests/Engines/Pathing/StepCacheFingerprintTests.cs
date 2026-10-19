@@ -51,14 +51,21 @@ public class StepCacheFingerprintTests
     public void TileDataFileHash_ChangesWhenOneFlagChanges()
     {
         var directory = Directory.CreateTempSubdirectory("modernuo-fingerprint-").FullName;
-        var original = SyntheticTileData.WriteTo(Directory.CreateDirectory(Path.Combine(directory, "a")).FullName);
-        var rewritten = SyntheticTileData.WriteTo(Directory.CreateDirectory(Path.Combine(directory, "b")).FullName);
-        var patched = SyntheticTileData.WriteTo(
-            Directory.CreateDirectory(Path.Combine(directory, "c")).FullName,
-            flags => flags[TestTiles.Wall] ^= TileFlag.NoShoot
-        );
+        try
+        {
+            var original = SyntheticTileData.WriteTo(Directory.CreateDirectory(Path.Combine(directory, "a")).FullName);
+            var rewritten = SyntheticTileData.WriteTo(Directory.CreateDirectory(Path.Combine(directory, "b")).FullName);
+            var patched = SyntheticTileData.WriteTo(
+                Directory.CreateDirectory(Path.Combine(directory, "c")).FullName,
+                flags => flags[TestTiles.Wall] ^= TileFlag.NoShoot
+            );
 
-        Assert.Equal(StepCacheFile.HashTileDataFile(original), StepCacheFile.HashTileDataFile(rewritten));
-        Assert.NotEqual(StepCacheFile.HashTileDataFile(original), StepCacheFile.HashTileDataFile(patched));
+            Assert.Equal(StepCacheFile.HashTileDataFile(original), StepCacheFile.HashTileDataFile(rewritten));
+            Assert.NotEqual(StepCacheFile.HashTileDataFile(original), StepCacheFile.HashTileDataFile(patched));
+        }
+        finally
+        {
+            Directory.Delete(directory, true);
+        }
     }
 }

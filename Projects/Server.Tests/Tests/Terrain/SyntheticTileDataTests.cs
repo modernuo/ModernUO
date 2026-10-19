@@ -12,6 +12,14 @@ public class SyntheticTileDataTests
         Assert.Equal(1_036_288, SyntheticTileData.Build().Length);
     }
 
+    // Inside the test host's output, rewritten every run, so runs leave nothing behind in the temp directory.
+    [Fact]
+    public void DataDirectory_IsTheOnlyDataDirectory_AndLivesInTheTestHost()
+    {
+        Assert.Equal(Path.Combine(Core.BaseDirectory, "SyntheticData"), SyntheticWorld.DataDirectory);
+        Assert.Equal([SyntheticWorld.DataDirectory], ServerConfiguration.DataDirectories);
+    }
+
     [Fact]
     public void KitIds_FitThePreHsTable()
     {
@@ -29,9 +37,7 @@ public class SyntheticTileDataTests
     [Fact]
     public void GeneratedFile_RoundTripsKitThroughLoad()
     {
-        var directory = Directory.CreateTempSubdirectory("modernuo-synth-").FullName;
-        SyntheticTileData.WriteTo(directory);
-        SyntheticTileData.LoadInto(directory);
+        SyntheticTileData.LoadInto(SyntheticWorld.DataDirectory);
 
         for (var i = 0; i < TestTiles.Items.Count; i++)
         {

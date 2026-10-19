@@ -7,15 +7,18 @@ namespace Server.Tests.Terrain;
 /// </summary>
 public static class SyntheticWorld
 {
+    /// <summary>Where the generated data files are written: the test host's output, overwritten every run.</summary>
+    public static string DataDirectory => Path.Combine(Core.BaseDirectory, "SyntheticData");
+
     /// <summary>
-    /// Writes and loads the generated tiledata.mul from a fresh temp directory, which becomes the only data
+    /// Writes and loads the generated tiledata.mul from <see cref="DataDirectory"/>, which becomes the only data
     /// directory, and seeds the multi footprints. Run before anything reads <see cref="TileData"/>.
     /// </summary>
     public static void LoadData()
     {
-        var directory = Directory.CreateTempSubdirectory("modernuo-synth-").FullName;
-        SyntheticTileData.WriteTo(directory);
-        SyntheticTileData.LoadInto(directory);
+        Directory.CreateDirectory(DataDirectory);
+        SyntheticTileData.WriteTo(DataDirectory);
+        SyntheticTileData.LoadInto(DataDirectory);
         TestMultis.Seed();
     }
 

@@ -36,4 +36,19 @@ public class TerrainScopeCacheTests : IDisposable
 
         Assert.True(cache.TryGetMask(map, X, Y, sourceZ: 0).IsWalkable(Direction.North));
     }
+
+    [Fact]
+    public void TerrainStampedAfterAQueryInsideAScope_IsNotServedStale()
+    {
+        var cache = StepCache.Instance;
+        cache.MissPromotionThreshold = 1;
+        var map = Map.Trammel;
+
+        using var scope = TestTerrain.Scope();
+        Assert.True(cache.TryGetMask(map, X, Y, sourceZ: 0).IsWalkable(Direction.North));
+
+        TestTerrain.AddStatic(X, Y - 1, TestTiles.Wall, 0);
+
+        Assert.False(cache.TryGetMask(map, X, Y, sourceZ: 0).IsWalkable(Direction.North));
+    }
 }
