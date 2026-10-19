@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Reflection;
 using System.Threading;
 using Server.Items;
@@ -7,6 +6,7 @@ using Server.Misc;
 using Server.Movement;
 using Server.PathAlgorithms;
 using Server.Tests.Maps;
+using Server.Tests.Terrain;
 
 namespace Server.Tests;
 
@@ -24,6 +24,9 @@ namespace Server.Tests;
 /// single time regardless of how many collection fixtures are constructed. The two stateful
 /// collections use <c>[CollectionDefinition(DisableParallelization = true)]</c> so they never
 /// overlap; pure tests still run in parallel.
+///
+/// The host runs on generated tile data, terrain and multi footprints (see <see cref="SyntheticWorld"/>),
+/// never on client files, so every machine and CI run the same world.
 /// </summary>
 internal static class TestServerInitializer
 {
@@ -31,11 +34,9 @@ internal static class TestServerInitializer
     private static readonly Lock _lock = new();
 
     /// <summary>
-    /// True if the UO client tile data was found and loaded. When false (e.g. CI, where the
-    /// copyrighted client files are absent), tile/map/multi-dependent tests must skip rather than
-    /// fail. Guard such tests with <c>Skip.If(!TestServerInitializer.TileDataLoaded, ...)</c>.
+    /// Always true: the host loads generated tile data. Kept until every guard that reads it is gone.
     /// </summary>
-    public static bool TileDataLoaded { get; private set; }
+    public static bool TileDataLoaded => true;
 
     public static void Initialize()
     {
@@ -53,10 +54,9 @@ internal static class TestServerInitializer
             ServerConfiguration.Load(true);
             ServerConfiguration.AssemblyDirectories.Add(Core.BaseDirectory);
 
-            // Required for the pathfinding tests (real .mul tile data). Harmless for the rest.
-            var clientFiles = Environment.GetEnvironmentVariable("MODERNUO_TEST_DATA_DIR")
-                              ?? @"C:\Ultima Online Classic";
-            ServerConfiguration.DataDirectories.Add(clientFiles);
+            // TileData's static cctor short-circuits under xUnit, so the generated tiledata.mul must load
+            // before anything reads LandTable/ItemTable (the multi footprints, MovementImpl, CheckMovement).
+            SyntheticWorld.LoadData();
 
             AssemblyHandler.LoadAssemblies(["Server.dll", "UOContent.dll"]);
 
@@ -72,32 +72,13 @@ internal static class TestServerInitializer
             Timer.Init(0);
             Server.Network.NetState.Configure();
             TestMapDefinitions.ConfigureTestMapDefinitions();
-
-            // TileData's static cctor short-circuits when running under xUnit
-            // (see Server/TileData.cs:295). Force-load via reflection so LandTable/ItemTable
-            // flags are populated before anything that reads TileData (MultiData, MovementImpl,
-            // CheckMovement). Without this, TileData.MaxItemValue is 0 at MultiData.Configure()
-            // time, causing every MCL tile ID to be masked to 0 and stored as ID=0 in Tiles[x][y].
-            // The copyrighted client files are absent on CI; when tiledata.mul is missing we skip
-            // the tile/map/multi-dependent bootstrap and leave TileDataLoaded false so those tests
-            // skip instead of failing the whole collection from the fixture constructor.
-            TileDataLoaded = TryForceLoadTileData();
+            SyntheticWorld.StampTerrain();
 
             // Production runs every static Configure() via AssemblyHandler.Invoke("Configure");
             // the fixture calls a curated subset, so configure the pathfinding singleton here so
             // BitmapAStarAlgorithm.Instance carries its configured MaxSearchNodes before any test
             // calls Find. ServerConfiguration is already loaded above, so the setting resolves.
             BitmapAStarAlgorithm.Configure();
-
-            if (TileDataLoaded)
-            {
-                // Multi component lists (multi.mul / MultiCollection.uop). Production invokes this via
-                // AssemblyHandler.Invoke("Configure"); the curated fixture subset must call it so that
-                // BaseMulti.Components (MultiData.GetComponents) returns real footprints instead of
-                // MultiComponentList.Empty. Required by the Multi pathfinding tests. Depends on the
-                // client files, so it only runs when tile data loaded.
-                MultiData.Configure();
-            }
 
             World.Configure();
             // Registers the Accounts entity persistence; without it no test can construct an Account.
@@ -113,55 +94,7 @@ internal static class TestServerInitializer
             Server.Mobiles.NPCSpeeds.Configure();
             Server.Engines.Spawners.SpawnerJsonSerializer.Configure();
 
-            if (TileDataLoaded)
-            {
-                VerifyTrammelTileDataLoaded();
-            }
-
             _initialized = true;
-        }
-    }
-
-    private static bool TryForceLoadTileData()
-    {
-        var tileDataPath = Core.FindDataFile("tiledata.mul", false);
-        if (string.IsNullOrEmpty(tileDataPath) || !File.Exists(tileDataPath))
-        {
-            return false;
-        }
-
-        var loadMethod = typeof(TileData).GetMethod(
-            "Load",
-            BindingFlags.Static | BindingFlags.NonPublic
-        );
-        if (loadMethod == null)
-        {
-            throw new InvalidOperationException(
-                "TileData.Load not found via reflection — engine may have refactored."
-            );
-        }
-        loadMethod.Invoke(null, null);
-        return true;
-    }
-
-    private static void VerifyTrammelTileDataLoaded()
-    {
-        var trammel = Map.Maps[1];
-        if (trammel == null)
-        {
-            throw new InvalidOperationException(
-                "Trammel (mapId=1) was not registered. Check TestMapDefinitions."
-            );
-        }
-
-        var tile = trammel.Tiles.GetLandTile(1500, 1600);
-        if (tile.ID == 0)
-        {
-            throw new InvalidOperationException(
-                $"Trammel tile data did not load — GetLandTile(1500,1600) returned ID 0. " +
-                $"Verify Distribution/Data/map1*.mul (or map1LegacyMUL.uop) is present at " +
-                $"{Path.Combine(Core.BaseDirectory, "Data")}."
-            );
         }
     }
 }
