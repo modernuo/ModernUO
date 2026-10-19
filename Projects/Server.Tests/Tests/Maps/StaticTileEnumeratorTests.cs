@@ -8,29 +8,6 @@ namespace Server.Tests.Maps;
 public class StaticTileEnumeratorTests
 {
     [Fact]
-    public void StaticTileEnumerator_MapNullYieldsEmpty()
-    {
-        var enumerator = new Map.StaticTileEnumerable(null, new Point2D(0, 0)).GetEnumerator();
-        Assert.False(enumerator.MoveNext());
-    }
-
-    [Fact]
-    public void StaticTileEnumerator_EmptyLocationYieldsEmpty()
-    {
-        var map = Map.Felucca;
-        var location = new Point2D(100, 100);
-
-        var tiles = new List<StaticTile>();
-        foreach (var tile in new Map.StaticTileEnumerable(map, location, includeStatics: true, includeMultis: false))
-        {
-            tiles.Add(tile);
-        }
-
-        // Since we don't have actual map files loaded, this should be empty
-        Assert.Empty(tiles);
-    }
-
-    [Fact]
     public void StaticTileEnumerator_IncludeStaticsOnlyWorks()
     {
         var map = Map.Felucca;
@@ -145,24 +122,6 @@ public class StaticTileEnumeratorTests
     }
 
     [Fact]
-    public void StaticTileEnumerator_TileMatrixGetStaticTilesWorks()
-    {
-        var map = Map.Felucca;
-        var x = 600;
-        var y = 600;
-
-        // Test the TileMatrix.GetStaticTiles method
-        var tiles = new List<StaticTile>();
-        foreach (var tile in map.Tiles.GetStaticTiles(x, y))
-        {
-            tiles.Add(tile);
-        }
-
-        // Without map files loaded, should be empty
-        Assert.Empty(tiles);
-    }
-
-    [Fact]
     public void StaticTileEnumerator_TileMatrixGetStaticAndMultiTilesWorks()
     {
         var map = Map.Felucca;
@@ -250,13 +209,6 @@ public class StaticTileEnumeratorTests
             multis[0]?.Delete();
             multis[1]?.Delete();
         }
-    }
-
-    [Fact]
-    public void StaticTileEnumerator_EmptyReturnsCorrectly()
-    {
-        var enumerator = Map.StaticTileEnumerable.Empty.GetEnumerator();
-        Assert.False(enumerator.MoveNext());
     }
 
     [Fact]

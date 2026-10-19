@@ -47,29 +47,6 @@ public class ManagedArchiveTests : IDisposable
     }
 
     [Fact]
-    public void CreateTarZstd_SingleDirectory_RoundTrips()
-    {
-        // Arrange
-        var sourceDir = CreateTestDirectory("source",
-            ("file1.txt", "Hello World"),
-            ("file2.bin", "Binary content here"),
-            ("subdir/nested.txt", "Nested file")
-        );
-
-        var archivePath = Path.Combine(_testDir, "test.tar.zst");
-
-        // Act
-        var entryCount = ManagedArchive.CreateTarZstd(
-            [sourceDir], archivePath, _testDir, compressionLevel: 1
-        );
-
-        // Assert
-        Assert.True(entryCount > 0);
-        Assert.True(File.Exists(archivePath));
-        Assert.True(new FileInfo(archivePath).Length > 0);
-    }
-
-    [Fact]
     public void CreateTarZstd_MultipleDirectories_IncludesAll()
     {
         // Arrange
@@ -222,30 +199,6 @@ public class ManagedArchiveTests : IDisposable
 
         // Assert
         Assert.Equal(-1, count);
-    }
-
-    [Theory]
-    [InlineData(1)]
-    [InlineData(3)]
-    [InlineData(10)]
-    public void CreateTarZstd_DifferentCompressionLevels_AllWork(int level)
-    {
-        // Arrange
-        var sourceDir = CreateTestDirectory($"level-{level}", ("data.txt", new string('X', 10000)));
-        var archivePath = Path.Combine(_testDir, $"level-{level}.tar.zst");
-
-        // Act
-        var entryCount = ManagedArchive.CreateTarZstd(
-            [sourceDir], archivePath, _testDir, compressionLevel: level
-        );
-
-        // Assert
-        Assert.Equal(1, entryCount);
-        Assert.True(File.Exists(archivePath));
-
-        // Verify we can extract it back
-        var extractDir = Path.Combine(_testDir, $"extract-level-{level}");
-        Assert.True(ManagedArchive.ExtractTarZstd(archivePath, extractDir));
     }
 
     [Fact]

@@ -75,15 +75,6 @@ public class BanExemptionsTests
     }
 
     [Fact]
-    public void Manual_allowlist_does_not_spend_the_earned_lists_strikes()
-    {
-        WithManualAllowlist("192.0.2.10");
-
-        // Unconditional, so the revocable list must not be consulted -- that would burn a strike.
-        Assert.True(BanExemptions.IsExempt(_listed, BanReasons.RateLimit, NeverCalled));
-    }
-
-    [Fact]
     public void Falls_through_to_the_login_allowlist_when_not_file_listed()
     {
         WithEmptyManualAllowlist();

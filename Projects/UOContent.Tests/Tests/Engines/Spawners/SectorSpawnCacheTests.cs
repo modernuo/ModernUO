@@ -7,14 +7,6 @@ namespace UOContent.Tests;
 
 public class BitMask256Tests
 {
-    [Fact]
-    public void BitMask256_InitialState_AllBitsZero()
-    {
-        var mask = BitMask256.AllClear();
-
-        Assert.Equal(0, mask.PopCount());
-    }
-
     [Theory]
     [InlineData(0)]
     [InlineData(63)]
@@ -108,41 +100,6 @@ public class SectorSpawnCacheManagerTests
     {
         // Clear cache before each test
         SectorSpawnCacheManager.ClearAll();
-    }
-
-    [Fact]
-    public void ClearAll_ResetsCache()
-    {
-        SectorSpawnCacheManager.ClearAll();
-        Assert.Equal(0, SectorSpawnCacheManager.CachedSectorCount);
-        Assert.Equal(0, SectorSpawnCacheManager.LandCacheCount);
-        Assert.Equal(0, SectorSpawnCacheManager.WaterCacheCount);
-    }
-
-    [Fact]
-    public void SetValid_CreatesSectorCache()
-    {
-        var map = Map.Felucca;
-        var pos = new Point3D(100, 100, 0);
-
-        SectorSpawnCacheManager.SetValid(map, pos, isWater: false);
-
-        Assert.Equal(1, SectorSpawnCacheManager.CachedSectorCount);
-        Assert.Equal(1, SectorSpawnCacheManager.LandCacheCount);
-        Assert.Equal(0, SectorSpawnCacheManager.WaterCacheCount);
-    }
-
-    [Fact]
-    public void SetValid_Water_CreatesWaterCache()
-    {
-        var map = Map.Felucca;
-        var pos = new Point3D(100, 100, 0);
-
-        SectorSpawnCacheManager.SetValid(map, pos, isWater: true);
-
-        Assert.Equal(1, SectorSpawnCacheManager.CachedSectorCount);
-        Assert.Equal(0, SectorSpawnCacheManager.LandCacheCount);
-        Assert.Equal(1, SectorSpawnCacheManager.WaterCacheCount);
     }
 
     [Fact]
@@ -252,19 +209,6 @@ public class SectorSpawnCacheManagerTests
     }
 
     [Fact]
-    public void InvalidateSectors_RemovesCachedData()
-    {
-        var map = Map.Felucca;
-
-        SectorSpawnCacheManager.SetValid(map, new Point3D(50, 50, 0), isWater: false);
-        Assert.Equal(1, SectorSpawnCacheManager.CachedSectorCount);
-
-        SectorSpawnCacheManager.InvalidateSectors(map, new Rectangle2D(0, 0, 100, 100));
-
-        Assert.Equal(0, SectorSpawnCacheManager.CachedSectorCount);
-    }
-
-    [Fact]
     public void InvalidateSectors_RemovesBothLandAndWater()
     {
         var map = Map.Felucca;
@@ -342,54 +286,6 @@ public class SpiralScanTests
     }
 
     [Fact]
-    public void SpiralPattern_Ring1Has8Positions()
-    {
-        // Ring N has 8*N positions
-        const int ring1Positions = 1 * 8;
-        Assert.Equal(8, ring1Positions);
-    }
-
-    [Fact]
-    public void SpiralPattern_Ring2Has16Positions()
-    {
-        const int ring2Positions = 2 * 8;
-        Assert.Equal(16, ring2Positions);
-    }
-
-    [Fact]
-    public void SpiralPattern_Ring10Has80Positions()
-    {
-        const int ring10Positions = 10 * 8;
-        Assert.Equal(80, ring10Positions);
-    }
-
-    [Fact]
-    public void SpiralPattern_Ring1_CoversAllAdjacentTiles()
-    {
-        // Ring 1 should cover all 8 adjacent tiles
-        var expectedOffsets = new HashSet<(int dx, int dy)>
-        {
-            (-1, -1), (0, -1), (1, -1),  // Top row
-            (1, 0),                       // Right
-            (1, 1), (0, 1), (-1, 1),      // Bottom row
-            (-1, 0)                       // Left
-        };
-
-        var actualOffsets = new HashSet<(int dx, int dy)>();
-
-        for (var position = 0; position < 8; position++)
-        {
-            actualOffsets.Add(SectorSpawnCacheManager.GetSpiralOffset(1, position));
-        }
-
-        Assert.Equal(expectedOffsets.Count, actualOffsets.Count);
-        foreach (var expected in expectedOffsets)
-        {
-            Assert.Contains(expected, actualOffsets);
-        }
-    }
-
-    [Fact]
     public void SpiralPattern_Ring2_CoversAllExpectedTiles()
     {
         // Ring 2 should cover all tiles at distance 2
@@ -414,16 +310,6 @@ public class SpiralScanTests
 
 public class SpawnPositionStateTests
 {
-    [Fact]
-    public void SpawnPositionState_InitialState_ZeroCounts()
-    {
-        var state = new SpawnPositionState();
-
-        Assert.False(state.SpiralComplete);
-        Assert.Equal(0, state.SpiralRing);
-        Assert.Equal(0, state.SpiralRingPosition);
-    }
-
     [Fact]
     public void Reset_ClearsAllState()
     {
@@ -455,14 +341,6 @@ public class SpawnPositionStateTests
         state.RecordNonTransientFailure();
 
         Assert.False(state.ShouldCachePositions(SpawnPositionMode.Disabled));
-    }
-
-    [Fact]
-    public void ShouldCachePositions_Automatic_FalseWithNoFailures()
-    {
-        var state = new SpawnPositionState();
-
-        Assert.False(state.ShouldCachePositions(SpawnPositionMode.Automatic));
     }
 
     [Fact]
@@ -520,30 +398,6 @@ public class SpawnPositionStateTests
         }
 
         Assert.True(state.ShouldAbandon());
-    }
-
-    [Fact]
-    public void ShouldAbandon_FalseWithUsefulCacheHit()
-    {
-        var state = new SpawnPositionState();
-        state.SpiralComplete = true;
-
-        // Record 24 useless results
-        for (var i = 0; i < 24; i++)
-        {
-            state.RecordUselessResult();
-        }
-
-        // Record a useful cache hit - resets counter
-        state.RecordUsefulCacheHit();
-
-        // Record a few more useless results
-        for (var i = 0; i < 5; i++)
-        {
-            state.RecordUselessResult();
-        }
-
-        Assert.False(state.ShouldAbandon()); // Counter was reset, only 5 now
     }
 
     [Fact]

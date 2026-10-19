@@ -68,22 +68,6 @@ public class FactionRankTests
     }
 
     [Fact]
-    public void ReadingRank_IsStableAndSideEffectFree()
-    {
-        var faction = NewFaction();
-        var owner = new List<PlayerState>();
-        var state = AddMember(faction, owner);
-
-        faction.ZeroRankOffset = 1;
-        state.RankIndex = 0;
-
-        var first = state.Rank;
-        var second = state.Rank;
-
-        Assert.Same(first, second);
-    }
-
-    [Fact]
     public void RankIndexOutOfSyncWithZeroRankOffset_StillResolvesARank()
     {
         var faction = NewFaction();

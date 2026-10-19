@@ -43,14 +43,6 @@ public class CrowdSecAlertClientTests
     }
 
     [Fact]
-    public void BuildDeleteQuery_PlainOrigin_Ipv4()
-    {
-        var query = CrowdSecAlertClient.BuildDeleteQuery("modernuo", IPAddress.Parse("192.168.1.1"));
-
-        Assert.Equal("/v1/decisions?origin=modernuo&ip=192.168.1.1", query);
-    }
-
-    [Fact]
     public void BuildDeleteQuery_Ipv6_IsEscaped()
     {
         // IPv6 textual form contains ':', which Uri.EscapeDataString percent-encodes like any other

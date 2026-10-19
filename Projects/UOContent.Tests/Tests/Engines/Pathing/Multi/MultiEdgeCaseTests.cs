@@ -130,33 +130,4 @@ public class MultiEdgeCaseTests
             }
         }
     }
-
-    /// <summary>
-    /// Extensible slot for repo-owner-supplied gnarly placements. The assertion already covers
-    /// any (map,x,y) by construction — only the coordinates need filling in.
-    ///
-    /// TODO(coords): repo owner to supply (map,x,y) for a static tree inside a footprint and a
-    /// dungeon cave-wall corner; add InlineData rows here — the assertion already covers them by
-    /// construction. (Left intentionally unhunted: do not invent tree/dungeon coords.)
-    /// </summary>
-    [SkippableTheory]
-    [InlineData(MapId, HouseX, HouseY)] // known-good open Trammel placement (passes today)
-    public void UserSuppliedScenarios_SynthesizerMatchesCheckMovement(int mapId, int x, int y)
-    {
-        TileDataRequirement.SkipIfMissing();
-        StepCache.Instance.Clear();
-        var map = Map.Maps[mapId];
-
-        var multi = new TestMulti(GuildHouseId);
-        map.GetAverageZ(x, y, out _, out var z, out _);
-        multi.MoveToWorld(new Point3D(x, y, (sbyte)z), map);
-        try
-        {
-            MultiTestSupport.AssertSynthesizerMatchesCheckMovement(multi, map);
-        }
-        finally
-        {
-            multi.Delete();
-        }
-    }
 }

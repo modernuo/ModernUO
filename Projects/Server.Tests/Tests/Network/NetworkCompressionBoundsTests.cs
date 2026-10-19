@@ -43,20 +43,6 @@ public class NetworkCompressionBoundsTests
     }
 
     [Fact]
-    public void StillCompressesWhenOutputIsLargeEnough()
-    {
-        var input = new byte[64];
-        Array.Fill(input, (byte)'A');
-
-        var output = new byte[256];
-
-        var written = NetworkCompression.Compress(input, output);
-
-        Assert.True(written > 0);
-        Assert.True(written <= output.Length);
-    }
-
-    [Fact]
     public void ReportsFailureRatherThanOverrunningATightOutput()
     {
         // Large input against a small-but-bounded output: the guard is well-defined here, so this

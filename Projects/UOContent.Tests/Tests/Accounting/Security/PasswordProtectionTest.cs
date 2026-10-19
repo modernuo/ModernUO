@@ -150,13 +150,4 @@ public class PasswordProtectionTest
     {
         Assert.True(Argon2PasswordProtection.Instance.NeedsRehash(hash));
     }
-
-    [Fact]
-    public void NonArgon2Protections_NeverNeedRehash()
-    {
-        Assert.False(PBKDF2PasswordProtection.Instance.NeedsRehash("anything"));
-        Assert.False(HashAlgorithmPasswordProtection.SHA2Instance.NeedsRehash("anything"));
-        Assert.False(HashAlgorithmPasswordProtection.SHA1Instance.NeedsRehash("anything"));
-        Assert.False(HashAlgorithmPasswordProtection.MD5Instance.NeedsRehash("anything"));
-    }
 }

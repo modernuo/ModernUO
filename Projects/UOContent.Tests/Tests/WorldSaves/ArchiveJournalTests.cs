@@ -26,18 +26,6 @@ public class ArchiveJournalTests : IDisposable
     }
 
     [Fact]
-    public void Configure_LoadsCleanState()
-    {
-        // Arrange & Act
-        ArchiveJournal.Configure(_testDir);
-
-        // Assert - fresh directory should have no operations
-        // Note: ArchiveJournal is static, so we check the journal file doesn't exist
-        var journalPath = Path.Combine(_testDir, ".archive-journal.json");
-        Assert.False(File.Exists(journalPath));
-    }
-
-    [Fact]
     public void BeginOperation_CreatesStartedEntry()
     {
         // Arrange

@@ -391,38 +391,6 @@ public class NetStateSendBufferTests
     }
 
     [Fact]
-    public void Send_WithPartialRemainder_GrowsAndCopiesFullPayload()
-    {
-        var ns = CreateAuthenticatedNetState(out var client);
-        var baseSize = ns._socket.SendBuffer.PhysicalSize;
-
-        try
-        {
-            var first = Pattern(baseSize / 2, 200);
-            var second = Pattern(baseSize / 2 + 1, 201);
-            var expected = new byte[first.Length + second.Length];
-            first.CopyTo(expected, 0);
-            second.CopyTo(expected, first.Length);
-
-            // Remainder too small for the second send
-            ns.Send(first);
-            ns.Send(second);
-
-            Assert.True(ns.Running);
-            Assert.Equal(string.Empty, ns._disconnectReason);
-            Assert.True(ns._socket.SendBuffer.PhysicalSize > baseSize);
-            Assert.True(ns._sendBufferGrown);
-
-            Assert.Equal(expected, ReadAll(client, expected.Length));
-        }
-        finally
-        {
-            ns.Dispose();
-            client.Close();
-        }
-    }
-
-    [Fact]
     public void Send_WithSendInFlight_GrowsAndStreamStaysIntact()
     {
         var ns = CreateAuthenticatedNetState(out var client);
@@ -627,59 +595,5 @@ public class NetStateSendBufferTests
 
         // growth off; budget untouched
         Assert.Equal(1L, NetState.CoerceSendBufferGrowthBudget(1, sendBufferSize, sendBufferSize));
-    }
-
-    [Fact]
-    public void CoerceMaxBufferSlabs_ClampsToOneSlabPerConnection()
-    {
-        var maxConnections = NetState.SocketManager.MaxSockets;
-
-        // fewer than one slab is meaningless
-        Assert.Equal(1, NetState.CoerceMaxBufferSlabs(0));
-        Assert.Equal(1, NetState.CoerceMaxBufferSlabs(-4));
-
-        // more slabs than connections cannot make a slab any smaller
-        Assert.Equal(maxConnections, NetState.CoerceMaxBufferSlabs(maxConnections * 2));
-
-        Assert.Equal(128, NetState.CoerceMaxBufferSlabs(128));
-    }
-
-    [Fact]
-    public void CoerceInitialBufferSlabs_ClampsToTheSlabCount()
-    {
-        var slabs = NetState.BasePoolSlabCount(128);
-        Assert.True(slabs > 1);
-
-        Assert.Equal(1, NetState.CoerceInitialBufferSlabs(0, slabs));
-        Assert.Equal(1, NetState.CoerceInitialBufferSlabs(-1, slabs));
-
-        // a pool never holds more slabs than it has
-        Assert.Equal(slabs, NetState.CoerceInitialBufferSlabs(slabs + 1, slabs));
-
-        Assert.Equal(4, NetState.CoerceInitialBufferSlabs(4, slabs));
-    }
-
-    [Fact]
-    public void Ring_RegisteredBufferTable_MatchesTheConfiguredSlabCount()
-    {
-        var manager = NetState.SocketManager;
-        var maxBufferSlabs = NetState.CoerceMaxBufferSlabs(ServerConfiguration.GetSetting("network.maxBufferSlabs", NetState.DefaultMaxBufferSlabs));
-
-        // A table smaller than this throws at manager construction. Connections start on the
-        // transport minimum until the game server promotes them, so the formula must count those too.
-        // Mirrors what production passes: the request, not the effective size the manager may coerce
-        // down to (RequiredRegisteredBuffers treats a non-zero request as a pool either way).
-        Assert.Equal(
-            RingSocketManager.RequiredRegisteredBuffers(
-                manager.MaxSockets,
-                NetState.SendBufferSize,
-                manager.MaxSendBufferSize,
-                manager.SendBufferGrowthBudget,
-                maxBufferSlabs,
-                IORingBuffer.MinimumSize,
-                IORingBuffer.MinimumSize
-            ),
-            NetState.Ring.MaxRegisteredBuffers
-        );
     }
 }

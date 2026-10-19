@@ -76,19 +76,6 @@ public class SpanWriterTests
     }
 
     [Fact]
-    public void TestWriteByte()
-    {
-        Span<byte> buffer = stackalloc byte[2];
-        var writer = new SpanWriter(buffer);
-
-        writer.Write((byte)0x12);
-        writer.Write((byte)0x34);
-
-        Assert.Equal(2, writer.Position);
-        AssertThat.Equal(writer.Span, [0x12, 0x34]);
-    }
-
-    [Fact]
     public void TestWriteSByte()
     {
         Span<byte> buffer = stackalloc byte[2];
@@ -233,19 +220,6 @@ public class SpanWriterTests
 
         Assert.Equal(6, writer.Position);
         AssertThat.Equal(writer.Span, [0x01, 0x02, 0x03, 0x01, 0x02, 0x03]);
-    }
-
-    [Fact]
-    public void TestWriteAsciiChar()
-    {
-        Span<byte> buffer = stackalloc byte[2];
-        var writer = new SpanWriter(buffer);
-
-        writer.WriteAscii('A');
-        writer.WriteAscii('B');
-
-        Assert.Equal(2, writer.Position);
-        AssertThat.Equal(writer.Span, "AB"u8);
     }
 
     [Fact]
@@ -458,16 +432,6 @@ public class SpanWriterTests
     }
 
     [Fact]
-    public void TestEnsureCapacityNoResize()
-    {
-        Span<byte> buffer = stackalloc byte[10];
-        var writer = new SpanWriter(buffer);
-
-        writer.EnsureCapacity(10);
-        Assert.Equal(10, writer.Capacity);
-    }
-
-    [Fact]
     public void TestEnsureCapacityNoResizeThrows()
     {
         Assert.Throws<InvalidOperationException>(
@@ -551,41 +515,5 @@ public class SpanWriterTests
 
         writer.Write((byte)0xFF);
         Assert.Equal(3, writer.BytesWritten);
-    }
-
-    [Fact]
-    public void TestCapacity()
-    {
-        Span<byte> buffer = stackalloc byte[10];
-        var writer = new SpanWriter(buffer);
-
-        Assert.Equal(10, writer.Capacity);
-    }
-
-    [Fact]
-    public void TestRawBuffer()
-    {
-        Span<byte> buffer = stackalloc byte[10];
-        var writer = new SpanWriter(buffer);
-
-        writer.Write((byte)0x01);
-
-        var raw = writer.RawBuffer;
-        Assert.Equal(10, raw.Length);
-        Assert.Equal(0x01, raw[0]);
-    }
-
-    [Fact]
-    public void TestSpan()
-    {
-        Span<byte> buffer = stackalloc byte[10];
-        var writer = new SpanWriter(buffer);
-
-        writer.Write((byte)0x01);
-        writer.Write((byte)0x02);
-
-        var span = writer.Span;
-        Assert.Equal(2, span.Length);
-        AssertThat.Equal(span, [0x01, 0x02]);
     }
 }

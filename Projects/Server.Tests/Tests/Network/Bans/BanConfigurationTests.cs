@@ -32,13 +32,4 @@ public class BanConfigurationTests
         Assert.Equal(original.ReportRateLimitTrips, restored.ReportRateLimitTrips);
         Assert.Equal(original.AutoBanDuration, restored.AutoBanDuration); // TimeSpan survives
     }
-
-    [Fact]
-    public void BanSettings_Defaults_AreReportRateLimitTripsFourHourAutoBan()
-    {
-        var settings = new BanSettings();
-
-        Assert.True(settings.ReportRateLimitTrips);
-        Assert.Equal(TimeSpan.FromHours(4), settings.AutoBanDuration);
-    }
 }

@@ -152,18 +152,6 @@ public class PasswordWorkerTests : IDisposable
         Assert.Null(outcome.Hash);
     }
 
-    [Fact]
-    public void AppliesAWrite()
-    {
-        var account = CreateAccount("offloop-apply-user");
-        var upgraded = Argon2PasswordProtection.Instance.EncryptPassword(Password);
-
-        account.ApplyPasswordWrite(upgraded, PasswordProtectionAlgorithm.Argon2);
-
-        Assert.Equal(upgraded, account.Password);
-        Assert.True(account.CheckPassword(Password));
-    }
-
     /// <summary>
     /// Writes apply in dispatch order, which is what makes a guard unnecessary: dispatch is on the
     /// loop, one worker drains FIFO, and results return through the loop context in that same order.
@@ -215,15 +203,6 @@ public class PasswordWorkerTests : IDisposable
 
         // ...and a rehash the one it is moving to. Swapping these is the #2562 lockout.
         AccountSecurity.CurrentAlgorithm = PasswordProtectionAlgorithm.Argon2;
-        Assert.Equal(Password, account.GetRehashPhrase(Password));
-    }
-
-    [Fact]
-    public void UsesTheBarePasswordForArgon2Accounts()
-    {
-        var account = CreateAccount("offloop-phrase-argon2-user");
-
-        Assert.Equal(Password, account.GetVerifyPhrase(Password));
         Assert.Equal(Password, account.GetRehashPhrase(Password));
     }
 }

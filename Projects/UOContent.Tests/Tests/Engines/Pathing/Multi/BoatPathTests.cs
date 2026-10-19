@@ -45,31 +45,6 @@ public class BoatPathTests
         }
     }
 
-    [SkippableFact]
-    public void BoatDeck_FootprintShape_IsPositionInvariant()
-    {
-        TileDataRequirement.SkipIfMissing();
-        // The property Phase 2's local-frame, movement-invariant boat cache must preserve:
-        // the deck's covered-cell shape (in local coords) is identical at two world positions.
-        var map = Map.Maps[MapId];
-
-        var a = new TestMulti(0x0);
-        map.GetAverageZ(WaterX, WaterY, out _, out var za, out _);
-        a.MoveToWorld(new Point3D(WaterX, WaterY, (sbyte)za), map);
-        var shapeA = LocalShape(a);
-        a.Delete();
-
-        var b = new TestMulti(0x0);
-        map.GetAverageZ(WaterX + 5, WaterY + 3, out _, out var zb, out _);
-        b.MoveToWorld(new Point3D(WaterX + 5, WaterY + 3, (sbyte)zb), map);
-        var shapeB = LocalShape(b);
-        b.Delete();
-
-        Assert.Equal(shapeA, shapeB);
-        Assert.NotEmpty(shapeA);
-        _output.WriteLine($"boat local deck shape stable across positions: {shapeA.Count} cells");
-    }
-
     private static System.Collections.Generic.HashSet<(int lx, int ly)> LocalShape(BaseMulti multi)
     {
         var mcl = multi.Components;

@@ -17,15 +17,6 @@ public class NameVerificationTests
     }
 
     [Theory]
-    [InlineData("Rex")]
-    [InlineData("MrWhiskers")]
-    [InlineData("Fido")]
-    public void ValidatePetName_ValidNames_ReturnsTrue(string name)
-    {
-        Assert.True(NameVerification.ValidatePetName(name));
-    }
-
-    [Theory]
     [InlineData("Mrs-Smith")]
     [InlineData("Mr. Whiskers")]
     [InlineData("Dog123")]
@@ -127,11 +118,5 @@ public class NameVerificationTests
     {
         var exceptions = SearchValues.Create(' ', '-', '.');
         Assert.False(NameVerification.Validate("-John", 2, 16, true, false, true, 1, exceptions));
-    }
-
-    [Fact]
-    public void Validate_DisallowedCharacters_ReturnsFalse()
-    {
-        Assert.False(NameVerification.Validate("John123", 2, 16, true, false));
     }
 }

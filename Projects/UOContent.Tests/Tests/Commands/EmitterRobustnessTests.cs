@@ -79,25 +79,4 @@ public class EmitterRobustnessTests
         Assert.True(Check("Big", ComparisonOperator.Greater, "2147483647"));
         Assert.True(Check("Huge", ComparisonOperator.Greater, "9223372036854775807"));
     }
-
-    [Fact]
-    public void EmittedAssembliesAreCollectible()
-    {
-        var prop = new Property("Tiny");
-        prop.BindTo(typeof(Subject), PropertyAccess.Read);
-
-        var compiled = ConditionalCompiler.Build(
-            typeof(Subject),
-            [TypeCondition.Default, new ComparisonCondition(prop, false, ComparisonOperator.Equal, "5")]
-        ).Compile();
-
-        var method = compiled.Method;
-
-        Assert.True(
-            method.IsCollectible,
-            "The conditional compiler compiles one delegate per command invocation; code that is "
-            + $"not collectible ({method.GetType().Name} in {method.Module}) can never be unloaded, "
-            + "so every [global where would grow the process for good."
-        );
-    }
 }

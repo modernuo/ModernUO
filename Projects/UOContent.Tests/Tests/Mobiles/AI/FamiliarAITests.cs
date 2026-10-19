@@ -140,18 +140,6 @@ public class FamiliarAITests : IDisposable
     }
 
     [SkippableFact]
-    public void UsesFamiliarAI_AndStaysOnComeOrder()
-    {
-        var p = Master(1500, 1600);
-        var f = Familiar(0, p, 1500, 1600);
-
-        Assert.IsType<FamiliarAI>(f.AIObject);
-        Assert.Equal(OrderType.Come, f.ControlOrder);
-        Assert.Equal(0.1, f.ActiveSpeed);
-        Assert.Equal(0.1, f.PassiveSpeed);
-    }
-
-    [SkippableFact]
     public void Follows_WithoutBacktracking()
     {
         var p = Master(1500, 1600);

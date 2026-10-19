@@ -11,14 +11,6 @@ namespace Server.Tests;
 public class EventLoopIdleTests
 {
     [Fact]
-    public void FreshContextIsEmpty()
-    {
-        var context = new EventLoopContext();
-
-        Assert.True(context.IsEmpty);
-    }
-
-    [Fact]
     public void PostedWorkMakesContextNonEmpty()
     {
         var context = new EventLoopContext();

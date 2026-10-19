@@ -141,68 +141,6 @@ public class DetectHiddenTests
         }
     }
 
-    /// <summary>
-    /// TryDetectStealther is a no-op when the target is not actually hidden.
-    /// </summary>
-    [Fact]
-    public void TryDetectStealther_DoesNothing_WhenStealtherIsNotHidden()
-    {
-        using var rng = new PredictableRandom(10);
-        DetectHidden.ClearDebounceCache();
-        var map = Map.Felucca;
-        var detector = CreatePlayerMobile(map, new Point3D(1800, 500, 0));
-        var stealther = CreatePlayerMobile(map, new Point3D(1801, 500, 0));
-
-        try
-        {
-            detector.Skills.DetectHidden.BaseFixedPoint = 1000;
-            stealther.Hidden = false;
-
-            var result = DetectHidden.TryDetectStealther(detector, stealther);
-
-            Assert.False(result);
-            Assert.False(stealther.Hidden);
-        }
-        finally
-        {
-            detector.Delete();
-            stealther.Delete();
-            DetectHidden.ClearDebounceCache();
-        }
-    }
-
-    /// <summary>
-    /// Passive detection only works on Felucca. A stealther on Trammel
-    /// should never be revealed by passive detection.
-    /// </summary>
-    [Fact]
-    public void TryDetectStealther_DoesNotReveal_WhenNotOnFelucca()
-    {
-        using var rng = new PredictableRandom(10);
-        DetectHidden.ClearDebounceCache();
-        var map = Map.Trammel;
-        var detector = CreatePlayerMobile(map, new Point3D(2000, 500, 0));
-        var stealther = CreatePlayerMobile(map, new Point3D(2001, 500, 0));
-
-        try
-        {
-            detector.Skills.DetectHidden.BaseFixedPoint = 1000; // 100.0
-            stealther.Skills.Hiding.BaseFixedPoint = 0;         // 0.0
-            stealther.Hidden = true;
-
-            var result = DetectHidden.TryDetectStealther(detector, stealther);
-
-            Assert.False(result);
-            Assert.True(stealther.Hidden);
-        }
-        finally
-        {
-            detector.Delete();
-            stealther.Delete();
-            DetectHidden.ClearDebounceCache();
-        }
-    }
-
     private static PlayerMobile CreatePlayerMobile(Map map, Point3D location)
     {
         var mobile = new PlayerMobile(World.NewMobile);

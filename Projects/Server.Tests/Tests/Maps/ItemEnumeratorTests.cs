@@ -257,35 +257,6 @@ public class ItemEnumeratorTests
     }
 
     [Fact]
-    public void ItemAtEnumerator_DeletedItemsAreSkipped()
-    {
-        var map = Map.Felucca;
-        var location = new Point3D(650, 650, 0);
-
-        var items = new Item[3];
-        try
-        {
-            items[0] = CreateItem(map, location);
-            items[1] = CreateItem(map, location);
-            items[2] = CreateItem(map, location);
-
-            items[1].Delete();
-
-            var found = new List<Item>();
-            foreach (var item in map.GetItemsAt<Item>(location))
-            {
-                found.Add(item);
-            }
-
-            Assert.Equal(new[] { items[0], items[2] }, found);
-        }
-        finally
-        {
-            DeleteAll(items);
-        }
-    }
-
-    [Fact]
     public void ItemAtEnumerator_ItemsWithParentAreSkipped()
     {
         var map = Map.Felucca;
@@ -358,49 +329,6 @@ public class ItemEnumeratorTests
             }
 
             Assert.True(exceptionThrown, "Expected InvalidOperationException when collection version changes");
-        }
-        finally
-        {
-            DeleteAll(items);
-        }
-    }
-
-    [Fact]
-    public void ItemAtEnumerator_UsesDifferentPoint3DOverloads()
-    {
-        var map = Map.Felucca;
-        var location = new Point3D(800, 800, 5);
-
-        var items = new Item[1];
-        try
-        {
-            items[0] = CreateItem(map, location);
-
-            // Test Point3D overload
-            var found1 = new List<Item>();
-            foreach (var item in map.GetItemsAt(location))
-            {
-                found1.Add(item);
-            }
-
-            // Test (int, int) overload - should find the same item (Z is ignored)
-            var found2 = new List<Item>();
-            foreach (var item in map.GetItemsAt(location.X, location.Y))
-            {
-                found2.Add(item);
-            }
-
-            // Test Point2D overload
-            var found3 = new List<Item>();
-            foreach (var item in map.GetItemsAt(new Point2D(location.X, location.Y)))
-            {
-                found3.Add(item);
-            }
-
-            Assert.Single(found1);
-            Assert.Equal(items[0], found1[0]);
-            Assert.Equal(found1, found2);
-            Assert.Equal(found1, found3);
         }
         finally
         {

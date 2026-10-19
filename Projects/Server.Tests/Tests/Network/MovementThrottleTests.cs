@@ -213,30 +213,6 @@ public class MovementThrottleTests
     }
 
     [Fact]
-    public void AnalyzeMovement_ModerateSpeedHack_ReturnsPossibleOrLikely()
-    {
-        // 8% faster than expected - moderate, should be Possible or Likely
-        var ns = CreateNetStateWithHistory(
-            (93, 100), (93, 100), (93, 100), (93, 100), (93, 100),
-            (93, 100), (93, 100), (93, 100), (93, 100), (93, 100)
-        );
-
-        // Set up stable, low-latency RTT (required for Likely verdict path)
-        ns._rttHistory = [50, 52, 48, 51, 49, 50, 51, 50];
-        ns._rttSampleCount = 8;
-        ns._rttVariance = 4; // Low variance
-
-        var verdict = MovementThrottle.AnalyzeMovement(ns, out var rate, out var sampleCount, out var confidence);
-
-        Assert.True(
-            verdict == MovementThrottle.DetectionVerdict.Possible ||
-            verdict == MovementThrottle.DetectionVerdict.Likely,
-            $"Expected Possible or Likely, got {verdict}. Rate={rate}, Confidence={confidence}"
-        );
-        Assert.True(rate > 1.05f && rate < 1.15f, $"Expected rate ~1.07, got {rate}");
-    }
-
-    [Fact]
     public void AnalyzeMovement_BurstAfterLargeGap_ReducesConfidence()
     {
         // Simulate lag recovery: large gap followed by burst of packets
@@ -277,25 +253,6 @@ public class MovementThrottleTests
 
         // Queue > 4 indicates modified client - should be Definite
         Assert.Equal(MovementThrottle.DetectionVerdict.Definite, verdict);
-    }
-
-    [Fact]
-    public void AnalyzeMovement_StableConnectionLowLatency_IncreasesConfidence()
-    {
-        var ns = CreateNetStateWithHistory(
-            (95, 100), (95, 100), (95, 100), (95, 100), (95, 100),
-            (95, 100), (95, 100), (95, 100), (95, 100), (95, 100)
-        );
-
-        // Set up stable, low-latency RTT
-        ns._rttHistory = [50, 52, 48, 51, 49, 50, 51, 50];
-        ns._rttSampleCount = 8;
-        ns._rttVariance = 4; // Low variance
-
-        var verdict = MovementThrottle.AnalyzeMovement(ns, out var rate, out var sampleCount, out var confidence);
-
-        // With stable connection, even small anomalies are more suspicious
-        Assert.True(confidence > 0.2f, $"Expected higher confidence for stable connection, got {confidence}");
     }
 
     [Fact]

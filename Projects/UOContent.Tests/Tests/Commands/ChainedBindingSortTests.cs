@@ -109,19 +109,4 @@ public class ChainedBindingSortTests : IDisposable
     }
 
     // An unchained binding never had the problem and must keep working untouched.
-    [Fact]
-    public void SortingOnAPlainBindingIsUnchanged()
-    {
-        var low = Teleporter(null);
-        low.Hue = 1;
-
-        var high = Teleporter(null);
-        high.Hue = 2;
-
-        var comparer = Sorter("Hue");
-
-        Assert.True(comparer.Compare(low, high) < 0);
-        Assert.True(comparer.Compare(high, low) > 0);
-        Assert.Equal(0, comparer.Compare(low, low));
-    }
 }

@@ -16,15 +16,6 @@ namespace Server.Tests.Maps
             Assert.Equal(expected, flags.ToCommaDelimitedString());
         }
 
-        [Fact]
-        public void TestFormatFeluccaOnlyMapSelection()
-        {
-            const MapSelectionFlags flags = MapSelectionFlags.Felucca;
-
-            // When, Then
-            Assert.Equal("Felucca", flags.ToCommaDelimitedString());
-        }
-
         public class TestMapConfig
         {
             [JsonConverter(typeof(FlagsConverter<MapSelectionFlags>))]

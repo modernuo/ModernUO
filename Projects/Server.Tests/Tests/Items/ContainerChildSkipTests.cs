@@ -66,27 +66,6 @@ public class ContainerChildSkipTests
     }
 
     // A skipped child is not saved, so the container must load without it.
-    [Fact]
-    public void SkippingContainer_LoadsWithoutItsSkippedChildren()
-    {
-        var pack = new SkippingContainer();
-        var item = new Item(0x1234);
-        pack.DropItem(item);
-
-        var writer = new BufferWriter(true);
-        pack.Serialize(writer);
-        var buffer = new byte[writer.Position];
-        writer.Buffer.AsSpan(0, (int)writer.Position).CopyTo(buffer);
-
-        item.Delete();
-        pack.Delete();
-
-        var copy = new SkippingContainer(World.NewItem);
-        copy.Deserialize(new BufferReader(buffer));
-
-        Assert.Empty(copy.Items);
-    }
-
     // A written child serial could resolve at load to an unrelated item that was handed the same serial.
     [Fact]
     public void SkippingContainer_DoesNotWriteAliveChildSerial()

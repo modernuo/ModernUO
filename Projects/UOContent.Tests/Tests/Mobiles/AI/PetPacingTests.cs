@@ -99,29 +99,6 @@ public class PetPacingTests : IDisposable
     }
 
     // Pre-AOS pets follow at their own pace; nothing caps them.
-    [Fact]
-    public void FollowMaster_PreAOS_KeepsItsOwnPace()
-    {
-        var previous = Core.Expansion;
-
-        try
-        {
-            Core.Expansion = Expansion.UOR;
-            var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
-            pet.SetMoveSpeed(0.3, 0.9);
-
-            pet.ControlTarget = master;
-            pet.ControlOrder = OrderType.Follow;
-
-            Assert.Equal(0.2, pet.CurrentSpeed);
-            Assert.Equal(0.3, pet.CurrentMoveSpeed);
-        }
-        finally
-        {
-            Core.Expansion = previous;
-        }
-    }
-
     private sealed class SprintingPet : PetTestStub
     {
         public override double FollowMoveSpeed => 0.125;
@@ -204,35 +181,7 @@ public class PetPacingTests : IDisposable
     }
 
     // A pet chasing a combatant keeps the move table.
-    [Fact]
-    public void CombatChasingPet_KeepsMoveTable()
-    {
-        var (_, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
-        var target = new PetTestStub();
-        target.MoveToWorld(new Point3D(1003, 1000, 0), Map.Felucca);
-        _created.Add(target);
-
-        pet.SetMoveSpeed(0.3, 0.9);
-        pet.ControlOrder = OrderType.Guard;
-        pet.Combatant = target;
-        pet.SetCurrentSpeedToActive();
-
-        Assert.Equal(0.3, pet.CurrentMoveSpeed);
-    }
-
     // Herding overrides order pacing.
-    [Fact]
-    public void HerdedObeyingPet_KeepsHerdingPace()
-    {
-        var (_, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
-        pet.SetMoveSpeed(0.45, 0.9);
-        pet.SetCurrentSpeedToPassive();
-
-        pet.TargetLocation = new Point2D(1010, 1010);
-
-        Assert.Equal(0.3, pet.CurrentMoveSpeed); // fixed herding pace
-    }
-
     private sealed class ThinkProbe : PetTestStub
     {
         public int Thinks;

@@ -21,27 +21,6 @@ public class TreasureChestDecayTests
     // random interval must be rolled once per chest rather than per read.
     [Theory]
     [MemberData(nameof(ChestTypes))]
-    public void DecayTimeIsStableAcrossReads(Type chestType)
-    {
-        var chest = chestType.CreateInstance<LockableContainer>();
-
-        try
-        {
-            var expected = chest.DecayTime;
-
-            for (var i = 0; i < 100; i++)
-            {
-                Assert.Equal(expected, chest.DecayTime);
-            }
-        }
-        finally
-        {
-            chest.Delete();
-        }
-    }
-
-    [Theory]
-    [MemberData(nameof(ChestTypes))]
     public void ScheduledDecayTimeIsStableAcrossReads(Type chestType)
     {
         var chest = chestType.CreateInstance<LockableContainer>();

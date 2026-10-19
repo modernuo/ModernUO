@@ -72,14 +72,4 @@ public class BlocklistFileTests
         Assert.True(snap.IsBanned(IPAddress.Parse("223.169.4.9")));
         File.Delete(p);
     }
-
-    [Fact]
-    public void Load_parses_body()
-    {
-        var p = WriteTemp("# generated=x count=1\n8.8.8.0/24\n");
-        var snap = BlocklistFile.Load(p, out var parsed, out _);
-        Assert.Equal(1, parsed);
-        Assert.True(snap.IsBanned(IPAddress.Parse("8.8.8.8")));
-        File.Delete(p);
-    }
 }

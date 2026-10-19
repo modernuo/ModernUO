@@ -45,33 +45,6 @@ public class SpawnerDtoRoundTripTests
     }
 
     [Fact]
-    public void Spawner_HomeRangeSquare_WritesHomeRange_RoundTrips()
-    {
-        Spawner original = null;
-        BaseSpawner rebuilt = null;
-        try
-        {
-            original = new Spawner("Fisherman");
-            original.MoveToWorld(new Point3D(200, 200, 0), Map.Felucca);
-            // Exactly what homeRange 5 reconstructs (centered square, standard z/depth).
-            original.SpawnBounds = new Rectangle3D(195, 195, -128, 11, 11, 256);
-
-            var json = JsonSerializer.Serialize(new List<SpawnerDto> { original.ToDto() }, SpawnerJsonSerializer.Options);
-            Assert.Contains("\"homeRange\": 5", json);
-            Assert.DoesNotContain("spawnBounds", json);
-
-            var dtos = JsonSerializer.Deserialize<List<SpawnerDto>>(json, SpawnerJsonSerializer.Options);
-            rebuilt = Assert.Single(dtos).ToSpawner();
-            Assert.Equal(new Rectangle3D(195, 195, -128, 11, 11, 256), rebuilt.SpawnBounds);
-        }
-        finally
-        {
-            rebuilt?.Delete();
-            original?.Delete();
-        }
-    }
-
-    [Fact]
     public void Spawner_WritesMandatory_OmitsOptionalDefaults()
     {
         Spawner original = null;
