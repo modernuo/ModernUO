@@ -311,6 +311,50 @@ public class ManagedArchiveTests : IDisposable
         Assert.Equal("Plain tar test data", File.ReadAllText(Path.Combine(extractDir, "plain.txt")));
     }
 
+    [Theory]
+    [InlineData("../escaped.txt")]
+    [InlineData("sub/../../escaped.txt")]
+    public void ExtractTar_EntryOutsideOutputDirectory_IsRejected(string entryName)
+    {
+        var archivePath = Path.Combine(_testDir, "traversal.tar");
+
+        using (var fileStream = new FileStream(archivePath, FileMode.Create))
+        using (var tarWriter = new TarWriter(fileStream, TarEntryFormat.Pax, leaveOpen: true))
+        {
+            var entry = new PaxTarEntry(TarEntryType.RegularFile, entryName)
+            {
+                DataStream = new MemoryStream("escaped"u8.ToArray())
+            };
+            tarWriter.WriteEntry(entry);
+        }
+
+        var extractDir = Path.Combine(_testDir, "out", "extract");
+
+        Assert.False(ManagedArchive.ExtractTar(archivePath, extractDir));
+        Assert.False(File.Exists(Path.Combine(_testDir, "out", "escaped.txt")));
+        Assert.False(File.Exists(Path.Combine(_testDir, "escaped.txt")));
+    }
+
+    [Fact]
+    public void ExtractTar_RootedEntry_IsRejected()
+    {
+        var archivePath = Path.Combine(_testDir, "rooted.tar");
+        var target = Path.Combine(_testDir, "rooted-escaped.txt");
+
+        using (var fileStream = new FileStream(archivePath, FileMode.Create))
+        using (var tarWriter = new TarWriter(fileStream, TarEntryFormat.Pax, leaveOpen: true))
+        {
+            var entry = new PaxTarEntry(TarEntryType.RegularFile, target)
+            {
+                DataStream = new MemoryStream("escaped"u8.ToArray())
+            };
+            tarWriter.WriteEntry(entry);
+        }
+
+        Assert.False(ManagedArchive.ExtractTar(archivePath, Path.Combine(_testDir, "rooted-extract")));
+        Assert.False(File.Exists(target));
+    }
+
     [Fact]
     public void ExtractTarGz_InvalidFile_ReturnsFalse()
     {
