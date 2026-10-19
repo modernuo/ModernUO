@@ -93,9 +93,7 @@ public class MultiMaskCacheTests : IDisposable
     [Fact]
     public void PathThroughHouseInterior_IncrementsMultiMaskCacheHits()
     {
-        // (PlaceX,PlaceY)=(1480,1620) is cluttered (footprint overlaps tall map statics → dirty), so it
-        // would never serve the interior cache under the footprint-clean gate. Use a known flat/clear
-        // spot so a house there is footprint-clean and its interior cells serve from the cache.
+        // A flat, clear spot, so a house there is footprint-clean and its interior cells serve from the cache.
         const int CleanX = 1560;
         const int CleanY = 1616;
 
@@ -213,8 +211,7 @@ public class MultiMaskCacheTests : IDisposable
     [Fact]
     public void ComputeFootprintClean_TrueAtNormalPlacement_FalseWhenSunk()
     {
-        // (PlaceX,PlaceY) is a cluttered spot whose footprint overlaps tall map statics, so a guild
-        // house there is never footprint-clean. Use a known flat/clear spot for the clean assertion.
+        // A flat, clear spot for the clean assertion.
         const int CleanX = 1560;
         const int CleanY = 1616;
 

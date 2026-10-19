@@ -28,8 +28,7 @@ public class CanFitItemTests
         Assert.False(map.CanFitItem(100, map.Height + 1, 0, 1));
     }
 
-    // Plain walkable land in the real Felucca map. Without map files every cell is the default land
-    // tile at Z 0 with no flags, which these tests treat the same way: a surface with nothing above it.
+    // The synthetic map's default ground: land ID 0 at Z 0 with no flags, a surface with nothing above it.
     private const int TestLandX = 1500;
     private const int TestLandY = 1600;
 

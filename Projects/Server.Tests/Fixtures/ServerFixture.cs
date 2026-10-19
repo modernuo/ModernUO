@@ -9,11 +9,6 @@ namespace Server.Tests;
 [CollectionDefinition("Sequential Server Tests", DisableParallelization = true)]
 public class ServerFixture : ICollectionFixture<ServerFixture>
 {
-    /// <summary>
-    /// Always true: the host loads generated tile data.
-    /// </summary>
-    public static bool TileDataLoaded => TestServerInitializer.TileDataLoaded;
-
     /// <summary>A tile with the Surface flag.</summary>
     public static ushort SurfaceTileId => TestTiles.Floor;
 

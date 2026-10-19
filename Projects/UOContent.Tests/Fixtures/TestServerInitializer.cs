@@ -33,11 +33,6 @@ internal static class TestServerInitializer
     private static bool _initialized;
     private static readonly Lock _lock = new();
 
-    /// <summary>
-    /// Always true: the host loads generated tile data. Kept until every guard that reads it is gone.
-    /// </summary>
-    public static bool TileDataLoaded => true;
-
     public static void Initialize()
     {
         lock (_lock)

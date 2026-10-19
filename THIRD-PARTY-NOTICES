@@ -8,6 +8,20 @@ bring it to our attention. Post an issue or email us:
 
 The attached notices are provided for informational purposes only.
 
+Ultima Online client data formats
+---------------------------------
+Ultima Online is a trademark of Electronic Arts Inc. ModernUO is not affiliated
+with or endorsed by Electronic Arts.
+
+ModernUO's test suites generate their own tile data, map terrain and multi
+footprints so they can test ModernUO's code without any game client installed.
+To do that, the tests reproduce the layout of some Ultima Online client file
+formats and reuse a small number of tile and multi identifiers that ModernUO's
+game logic refers to. The values attached to those identifiers are invented for
+testing. No client files are distributed with ModernUO, and none are required to
+build ModernUO or run its tests. We believe this limited use, solely for
+interoperability and testing, is fair use.
+
 License notice for dotnet
 ---------------------------
 The MIT License (MIT)

@@ -260,11 +260,13 @@ public class FamiliarAITests : IDisposable
     [Fact]
     public void KeepUp_DoesNotSnapWhileRouting()
     {
-        // Britain inn L-desk: master north, familiar south; ~17-step detour.
-        var p = Master(1494, 1605);
-        var f = Familiar(0, p, 1493, 1614);
-        p.MoveToWorld(new Point3D(1494, 1605, 21), _map);
-        f.MoveToWorld(new Point3D(1493, 1614, 20), _map);
+        // An upstairs room with an L-shaped counter: master north, familiar south; ~20-step detour.
+        var inn = Prefabs.InnUpstairs;
+        inn.AssertPresent();
+        var p = Master(inn.Target.X, inn.Target.Y);
+        var f = Familiar(0, p, inn.Anchor.X, inn.Anchor.Y);
+        p.MoveToWorld(inn.Target, _map);
+        f.MoveToWorld(inn.Anchor, _map);
         Server.Engines.Pathing.Cache.StepCache.Instance.Clear();
 
         // Observed from the first tick so an early snap cannot hide behind "arrived".

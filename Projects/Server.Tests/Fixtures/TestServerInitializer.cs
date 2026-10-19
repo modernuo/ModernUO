@@ -17,11 +17,6 @@ internal static class TestServerInitializer
     private static readonly Lock _lock = new();
 
     /// <summary>
-    /// Always true: the host loads generated tile data. Kept until every guard that reads it is gone.
-    /// </summary>
-    public static bool TileDataLoaded => true;
-
-    /// <summary>
     /// Initializes the test server. Safe to call multiple times - only initializes once.
     /// </summary>
     public static void Initialize()

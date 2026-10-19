@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using Xunit;
 
@@ -30,8 +29,6 @@ public class SyntheticTileDataTests
     [Fact]
     public void GeneratedFile_RoundTripsKitThroughLoad()
     {
-        using var restore = new TileDataRestore();
-
         var directory = Directory.CreateTempSubdirectory("modernuo-synth-").FullName;
         SyntheticTileData.WriteTo(directory);
         SyntheticTileData.LoadInto(directory);
@@ -52,24 +49,5 @@ public class SyntheticTileDataTests
 
         Assert.Equal(TileFlag.None, TileData.ItemTable[0x2A0].Flags);
         Assert.Equal(TileFlag.None, TileData.LandTable[3].Flags);
-    }
-
-    // The fixtures may have loaded other tile data; put it back so later tests in this host see what they expect.
-    private sealed class TileDataRestore : IDisposable
-    {
-        private readonly LandData[] _land = (LandData[])TileData.LandTable.Clone();
-        private readonly ItemData[] _items = (ItemData[])TileData.ItemTable.Clone();
-        private readonly string[] _directories = [..ServerConfiguration.DataDirectories];
-
-        public void Dispose()
-        {
-            Array.Copy(_land, TileData.LandTable, _land.Length);
-            Array.Copy(_items, TileData.ItemTable, _items.Length);
-            ServerConfiguration.DataDirectories.Clear();
-            for (var i = 0; i < _directories.Length; i++)
-            {
-                ServerConfiguration.DataDirectories.Add(_directories[i]);
-            }
-        }
     }
 }

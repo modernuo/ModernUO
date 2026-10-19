@@ -4,9 +4,7 @@ using Xunit;
 namespace Server.Tests.Maps;
 
 /// <summary>
-/// Tests for CanSpawnMobile that require TileData (client files) to be loaded.
-/// These tests will be skipped if client files are not available.
-/// Configure client path via MODERNUO_CLIENT_PATH environment variable or place files at C:\Ultima Online Classic.
+/// Tests for CanSpawnMobile over tile flags, using tiles from the generated test kit.
 /// </summary>
 [Collection("Sequential Server Tests")]
 public class CanSpawnMobileTileDataTests

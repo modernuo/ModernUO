@@ -3,8 +3,8 @@ using Xunit;
 namespace Server.Tests.Maps;
 
 /// <summary>
-/// Tests for CanSpawnMobile that don't require TileData (client files).
-/// For tests that require client files, see CanSpawnMobileTileDataTests.
+/// Tests for CanSpawnMobile on the default ground.
+/// For tests over tile flags, see CanSpawnMobileTileDataTests.
 /// </summary>
 [Collection("Sequential Server Tests")]
 public class CanSpawnMobileTests
@@ -29,8 +29,8 @@ public class CanSpawnMobileTests
         Assert.False(map.CanSpawnMobile(100, map.Height + 1, -128, 127, false, false, out _));
     }
 
-    // Plain walkable land near Britain in the real Felucca map. Without map files every cell is the
-    // default land tile at Z 0 with no flags, which CanSpawnMobile treats the same way: walkable, not water.
+    // The synthetic map's default ground: land ID 0 at Z 0 with no flags, which CanSpawnMobile treats as
+    // walkable, not water.
     private const int TestLandX = 1500;
     private const int TestLandY = 1600;
 
