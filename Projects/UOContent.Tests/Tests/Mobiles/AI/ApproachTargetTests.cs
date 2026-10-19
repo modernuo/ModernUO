@@ -1,3 +1,4 @@
+using Server.Tests.Terrain;
 using System;
 using System.Collections.Generic;
 using Server.Engines.Pathing.Cache;
@@ -181,8 +182,7 @@ public class ApproachTargetTests : IDisposable
         var target = NewTarget(map, new Point3D(1500, 1596, (sbyte)z));
 
         // Full impassable ring around the target cell -> no path to within range 1.
-        var id = TestTiles.FirstImpassableItemId();
-        Assert.NotEqual<ushort>(0, id);
+        const ushort id = TestTiles.Counter;
         for (var x = 1499; x <= 1501; x++)
         {
             for (var y = 1595; y <= 1597; y++)
@@ -235,8 +235,7 @@ public class ApproachTargetTests : IDisposable
         var target = NewTarget(map, new Point3D(1500, 1595, (sbyte)z)); // 5 tiles north
 
         // Impassable wall on Y=1598 from X=1497..1503: blocks the straight line; ends open.
-        var id = TestTiles.FirstImpassableItemId();
-        Assert.NotEqual<ushort>(0, id);
+        const ushort id = TestTiles.Counter;
         for (var x = 1497; x <= 1503; x++)
         {
             PlaceBlocker(map, id, x, 1598);

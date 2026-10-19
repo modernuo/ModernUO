@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using Server.Engines.Pathing.Cache;
 using Xunit;
+using static Server.Tests.Pathfinding.PathingTestSupport;
 
 namespace Server.Tests.Pathfinding;
 
@@ -195,7 +196,7 @@ public class StepCacheFileTests : IDisposable
         cache.Clear();
 
         var map = Map.Maps[1];
-        cache.TryGetMask(map, 1500, 1600, sourceZ: 10);
+        cache.TryGetMask(map, 1500, 1600, sourceZ: PlainZ);
 
         var path = Path.Combine(Path.GetTempPath(), $"step-cache-stalehash-{Guid.NewGuid():N}.swb");
         try
@@ -246,7 +247,7 @@ public class StepCacheFileTests : IDisposable
         };
         foreach (var (x, y) in coords)
         {
-            cache.TryGetMask(map, x, y, sourceZ: 10);
+            cache.TryGetMask(map, x, y, sourceZ: PlainZ);
         }
 
         var path = Path.Combine(Path.GetTempPath(), $"step-cache-lazy-{Guid.NewGuid():N}.swb");
@@ -261,7 +262,7 @@ public class StepCacheFileTests : IDisposable
             Assert.Equal(0, cache.GetStats().ResidentChunks);
 
             // Query one specific chunk: only that chunk lands in the resident set.
-            cache.TryGetMask(map, coords[0].Item1, coords[0].Item2, sourceZ: 10);
+            cache.TryGetMask(map, coords[0].Item1, coords[0].Item2, sourceZ: PlainZ);
             Assert.Equal(1, cache.GetStats().ResidentChunks);
             Assert.Equal(0L, cache.GetStats().BuildsTotal); // resolved from file, not baker
         }
@@ -291,7 +292,7 @@ public class StepCacheFileTests : IDisposable
         Assert.NotNull(map);
 
         // Build a chunk and inject a synthetic swim layer onto one cell.
-        cache.TryGetMask(map, 1500, 1600, sourceZ: 10);
+        cache.TryGetMask(map, 1500, 1600, sourceZ: PlainZ);
 
         var chunk = cache.GetResidentChunk(map.MapID, 1500 >> 4, 1600 >> 4);
         Assert.NotNull(chunk);
@@ -340,10 +341,9 @@ public class StepCacheFileTests : IDisposable
     /// to <see cref="LazyReader_DoesNotMaterializeUntilQueried"/> which proves the
     /// default lazy behavior.
     /// </summary>
-    [SkippableFact]
+    [Fact]
     public void TryOpenLazyReader_WithPreloadFlag_MaterializesAllChunksImmediately()
     {
-        TileDataRequirement.SkipIfMissing();
         var cache = StepCache.Instance;
         cache.Clear();
         cache.MissPromotionThreshold = 1;
@@ -357,7 +357,7 @@ public class StepCacheFileTests : IDisposable
         };
         foreach (var (x, y) in coords)
         {
-            cache.TryGetMask(map, x, y, sourceZ: 10);
+            cache.TryGetMask(map, x, y, sourceZ: PlainZ);
         }
 
         var path = Path.Combine(Path.GetTempPath(), $"step-cache-preload-{Guid.NewGuid():N}.swb");
@@ -374,7 +374,7 @@ public class StepCacheFileTests : IDisposable
             Assert.Equal(0L, cache.GetStats().BuildsTotal); // came from file, not baker
 
             // Subsequent query is a clean Hit, not a Miss_NotBuilt.
-            var lookup = cache.TryGetMask(map, coords[0].Item1, coords[0].Item2, sourceZ: 10);
+            var lookup = cache.TryGetMask(map, coords[0].Item1, coords[0].Item2, sourceZ: PlainZ);
             Assert.Equal(CacheHitKind.Hit, lookup.HitKind);
             Assert.Equal(coords.Length, cache.GetStats().ResidentChunks);
         }
@@ -394,10 +394,9 @@ public class StepCacheFileTests : IDisposable
     /// first pathfind through a region to use the cache rather than the slow path — the gate would
     /// otherwise defer that first touch and defeat the whole point of shipping the bake.
     /// </summary>
-    [SkippableFact]
+    [Fact]
     public void LazyReaderHit_BypassesMissTrackerOnFirstTouch()
     {
-        TileDataRequirement.SkipIfMissing();
         var cache = StepCache.Instance;
         cache.Clear();
         cache.MissPromotionThreshold = 1; // eager build for save phase
@@ -405,7 +404,7 @@ public class StepCacheFileTests : IDisposable
         var map = Map.Maps[1];
 
         // Build + save one chunk.
-        cache.TryGetMask(map, 1500, 1600, sourceZ: 10);
+        cache.TryGetMask(map, 1500, 1600, sourceZ: PlainZ);
         var path = Path.Combine(Path.GetTempPath(), $"step-cache-bypass-{Guid.NewGuid():N}.swb");
         try
         {
@@ -419,7 +418,7 @@ public class StepCacheFileTests : IDisposable
 
             // First touch must NOT return Fallthrough_NotBuilt — the lazy reader has the
             // chunk and serves it before the miss tracker is consulted.
-            var lookup = cache.TryGetMask(map, 1500, 1600, sourceZ: 10);
+            var lookup = cache.TryGetMask(map, 1500, 1600, sourceZ: PlainZ);
             Assert.True(lookup.IsHit);
             Assert.Equal(CacheHitKind.Miss_NotBuilt, lookup.HitKind);
             Assert.Equal(1, cache.GetStats().ResidentChunks);

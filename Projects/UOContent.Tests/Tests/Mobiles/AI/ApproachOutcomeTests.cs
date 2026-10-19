@@ -1,3 +1,4 @@
+using Server.Tests.Terrain;
 using System;
 using System.Collections.Generic;
 using Server;
@@ -45,10 +46,9 @@ public class ApproachOutcomeTests : IDisposable
         return t;
     }
 
-    [SkippableFact]
+    [Fact]
     public void OpenGround_ReportsDirectProgress_ThenArrived()
     {
-        TileDataRequirement.SkipIfMissing();
         var map = Map.Maps[1];
         var (_, ai) = NewFollower(map, 1500, 1600);
         var target = NewTarget(map, 1497, 1600);
@@ -70,15 +70,13 @@ public class ApproachOutcomeTests : IDisposable
         Assert.Equal(ApproachOutcome.Arrived, ai.LastApproach);
     }
 
-    [SkippableFact]
+    [Fact]
     public void WalledTarget_ReportsGaveUp()
     {
-        TileDataRequirement.SkipIfMissing();
         var map = Map.Maps[1];
         var (_, ai) = NewFollower(map, 1500, 1601);
         var target = NewTarget(map, 1500, 1596);
-        var id = TestTiles.FirstImpassableItemId();
-        Assert.NotEqual<ushort>(0, id);
+        const ushort id = TestTiles.Counter;
 
         // Impassable ring around the target: unreachable.
         for (var x = 1499; x <= 1501; x++)

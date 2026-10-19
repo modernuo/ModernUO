@@ -9,11 +9,6 @@ namespace Server.Tests.Maps;
 [Collection("Sequential Server Tests")]
 public class CanFitItemTests
 {
-    private void SkipIfNoTileData()
-    {
-        Skip.If(!ServerFixture.TileDataLoaded, "TileData not loaded - client files required");
-    }
-
     [Fact]
     public void CanFitItem_InternalMapReturnsFalse()
     {
@@ -61,11 +56,9 @@ public class CanFitItemTests
         Assert.False(result, "No surface 50 units above land");
     }
 
-    [SkippableFact]
+    [Fact]
     public void CanFitItem_SurfaceImpassableMultiIsValidSurface()
     {
-        SkipIfNoTileData();
-        Skip.If(ServerFixture.SurfaceImpassableTileId == 0, "No Surface+Impassable tile found in TileData");
 
         var map = Map.Felucca;
         const int x = 1700;
@@ -94,11 +87,9 @@ public class CanFitItemTests
         }
     }
 
-    [SkippableFact]
+    [Fact]
     public void CanFitItem_CanFitDoesNotAllowSurfaceImpassable()
     {
-        SkipIfNoTileData();
-        Skip.If(ServerFixture.SurfaceImpassableTileId == 0, "No Surface+Impassable tile found in TileData");
 
         var map = Map.Felucca;
         const int x = 1750;
@@ -130,11 +121,9 @@ public class CanFitItemTests
         }
     }
 
-    [SkippableFact]
+    [Fact]
     public void CanFitItem_NonMovableWorldItemSurfaceWorks()
     {
-        SkipIfNoTileData();
-
         var map = Map.Felucca;
         const int x = 1800;
         const int y = 1800;
@@ -160,11 +149,9 @@ public class CanFitItemTests
         }
     }
 
-    [SkippableFact]
+    [Fact]
     public void CanFitItem_MovableWorldItemNotValidSurface()
     {
-        SkipIfNoTileData();
-
         var map = Map.Felucca;
         const int x = 1850;
         const int y = 1850;
@@ -192,11 +179,9 @@ public class CanFitItemTests
         }
     }
 
-    [SkippableFact]
+    [Fact]
     public void CanFitItem_ImpassableTileBlocksPlacement()
     {
-        SkipIfNoTileData();
-
         var map = Map.Felucca;
         const int x = 1900;
         const int y = 1900;

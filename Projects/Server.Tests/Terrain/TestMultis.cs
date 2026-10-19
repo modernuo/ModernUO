@@ -16,6 +16,8 @@ public static class TestMultis
     // MultiComponentList drops every entry after the first whose flags are 0.
     private const TileFlag Visible = TileFlag.Background;
 
+    private const short HouseFloorZ = 1;
+
     public static void Seed()
     {
         MultiData.SetComponents(GuildHouse, WalledHouse(3, doorwayOnSouth: true));
@@ -24,7 +26,8 @@ public static class TestMultis
     }
 
     // A square of Floor ringed by Wall, (2 * radius + 1) tiles a side, with a one-tile doorway of Floor
-    // in the middle of the south wall, or of the east wall.
+    // in the middle of the south wall, or of the east wall. The floor sits one Z above the multi so it is
+    // clear of flat ground (MultiMaskCache.ComputeFootprintClean) yet still one step up from it.
     private static MultiComponentList WalledHouse(int radius, bool doorwayOnSouth)
     {
         var entries = new List<MultiTileEntry>();
@@ -35,7 +38,7 @@ public static class TestMultis
                 var edge = x == -radius || x == radius || y == -radius || y == radius;
                 var doorway = doorwayOnSouth ? x == 0 && y == radius : x == radius && y == 0;
                 var id = edge && !doorway ? TestTiles.Wall : TestTiles.Floor;
-                entries.Add(new MultiTileEntry(id, (short)x, (short)y, 0, Visible));
+                entries.Add(new MultiTileEntry(id, (short)x, (short)y, HouseFloorZ, Visible));
             }
         }
 

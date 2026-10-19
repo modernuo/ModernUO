@@ -16,11 +16,14 @@ internal static class PathingTestSupport
     public static Map TestMap => Map.Maps[1];
 
     /// <summary>
-    /// A cell in open Britain countryside — flat, walkable in all directions, no statics. The
+    /// A cell of the synthetic map's default ground — flat, walkable in all directions, no statics. The
     /// default subject when a test needs a chunk to exist and doesn't care what's in it.
     /// </summary>
     public const int PlainX = 1500;
     public const int PlainY = 1600;
+
+    /// <summary>The height of the default ground at every cell nothing was stamped on.</summary>
+    public const sbyte PlainZ = 0;
 
     /// <summary>Index of world cell (x, y) within its own chunk.</summary>
     public static int CellIndex(int x, int y) => ((y & 15) << 4) | (x & 15);

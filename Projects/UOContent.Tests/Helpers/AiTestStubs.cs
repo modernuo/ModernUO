@@ -20,23 +20,3 @@ public sealed class BareCreatureStub : BaseCreature
 {
     public BareCreatureStub(Serial serial) : base(serial) => Body = 0xC9;
 }
-
-public static class TestTiles
-{
-    /// <summary>
-    /// The first item ID whose tile data is an impassable surface, so a test can wall a cell off
-    /// without pinning a specific graphic. 0 when tile data is not loaded.
-    /// </summary>
-    public static ushort FirstImpassableItemId()
-    {
-        for (ushort id = 1; id < TileData.MaxItemValue; id++)
-        {
-            if (TileData.ItemTable[id].ImpassableSurface)
-            {
-                return id;
-            }
-        }
-
-        return 0;
-    }
-}

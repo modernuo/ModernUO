@@ -27,7 +27,7 @@ public class DetectHiddenTimerTests
         public override void DetectHidden() => Detections++;
     }
 
-    [SkippableTheory]
+    [Theory]
     [InlineData(0, 108000, 132000)]
     [InlineData(1, 108000, 132000)]
     [InlineData(100, 108000, 132000)]
@@ -38,7 +38,6 @@ public class DetectHiddenTimerTests
     public void DetectHidden_SchedulesBoundedCooldown_AndWaitsBeforeRetry(
         int intelligence, long minDelay, long maxDelay)
     {
-        Skip.If(!TestServerInitializer.TileDataLoaded, "Requires UO client map data.");
         using var clock = new TimerWheelScope();
         var creature = new DetectingCreature();
         DetectingAI ai = null;
