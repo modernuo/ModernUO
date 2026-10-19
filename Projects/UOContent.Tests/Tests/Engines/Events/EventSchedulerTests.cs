@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Server;
 using Server.Engines.Events;
+using Server.Tests;
 using Xunit;
 
 namespace UOContent.Tests;
@@ -9,10 +10,10 @@ namespace UOContent.Tests;
 [Collection("Sequential UOContent Tests")]
 public class EventSchedulerTests : IDisposable
 {
-    // Init() pins the process-wide loop clock; every other test in the host reads Core.Now.
-    private readonly DateTime _savedNow = Core._now;
+    // Init() pins the process-wide loop clock and timer wheel; every other test in the host reads them.
+    private readonly TimerWheelScope _clock = new();
 
-    public void Dispose() => Core._now = _savedNow;
+    public void Dispose() => _clock.Dispose();
 
     // Test implementations for controlled testing
     private class TestRecurrencePattern : IRecurrencePattern
@@ -63,7 +64,6 @@ public class EventSchedulerTests : IDisposable
     private static void Init()
     {
         Core._now = new DateTime(2024, 1, 1, 12, 0, 0, DateTimeKind.Utc);
-        Timer.Init(0);
         EventScheduler.Configure();
     }
 
