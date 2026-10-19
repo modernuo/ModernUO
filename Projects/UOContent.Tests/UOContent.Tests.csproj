@@ -24,4 +24,8 @@
     <Target Name="CopyData" AfterTargets="AfterBuild">
         <Copy SourceFiles="@(DataFiles)" DestinationFolder="$(OutDir)\Data\%(RecursiveDir)" />
     </Target>
+    <!-- The test host writes its generated tile data here at runtime (SyntheticWorld), so Clean does not track it. -->
+    <Target Name="CleanSyntheticData" AfterTargets="Clean">
+        <RemoveDir Directories="$(OutDir)\SyntheticData" />
+    </Target>
 </Project>
