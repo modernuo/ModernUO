@@ -1,3 +1,4 @@
+using Server.Tests.Terrain;
 using System;
 using Server.Engines.Pathing.Cache;
 using Server.Items;
@@ -21,16 +22,15 @@ public class MultiSplitRoutingTests : IDisposable
     private const int PlaceX = 1500;
     private const int PlaceY = 1600;
 
-    [SkippableFact]
+    [Fact]
     public void PlacedMulti_RoutesFootprintAndHalo_ToFallthroughMulti()
     {
-        TileDataRequirement.SkipIfMissing();
         StepCache.Instance.Clear();
         var map = Map.Maps[MapId];
         Assert.NotNull(map);
 
         map.GetAverageZ(PlaceX, PlaceY, out _, out var z, out _);
-        var multi = new TestMulti(0x74); // GuildHouse footprint
+        var multi = new TestMulti(TestMultis.GuildHouse); // GuildHouse footprint
         multi.MoveToWorld(new Point3D(PlaceX, PlaceY, (sbyte)z), map);
 
         try
@@ -70,7 +70,7 @@ public class MultiSplitRoutingTests : IDisposable
 
         map.GetAverageZ(PlaceX, PlaceY, out _, out var z, out _);
 
-        var multi = new TestMulti(0x74);
+        var multi = new TestMulti(TestMultis.GuildHouse);
         multi.MoveToWorld(new Point3D(PlaceX, PlaceY, (sbyte)z), map);
         var sector = map.GetRealSector(PlaceX >> 4, PlaceY >> 4);
         Assert.True(sector.HasMultis, "placing a multi must set Sector.HasMultis");

@@ -1,3 +1,4 @@
+using Server.Tests.Terrain;
 using System;
 using Server.Engines.Pathing.Cache;
 using Server.PathAlgorithms;
@@ -10,17 +11,16 @@ namespace Server.Tests.Pathfinding;
 public class MultiCacheUsedTests : IDisposable
 {
     private const int MapId = 1;            // Trammel
-    private const int GuildHouseId = 0x74;
+    private const int GuildHouseId = TestMultis.GuildHouse;
 
     private readonly StepCacheStateScope _cacheState = new();
 
     public void Dispose() => _cacheState.Dispose();
 
-    [SkippableFact]
+    [Fact]
     public void PathNearMulti_IncrementsMultiLocalHits()
     {
         // Without the client's multi data the house has no footprint for the path to skirt.
-        TileDataRequirement.SkipIfMissing();
         var map = Map.Maps[MapId];
         map.GetAverageZ(1480, 1620, out _, out var z, out _);
         var houseLoc = new Point3D(1480, 1620, (sbyte)z);

@@ -1,3 +1,4 @@
+using Server.Tests.Terrain;
 using System;
 using Server.Engines.Pathing.Cache;
 using Server.Items;
@@ -29,14 +30,13 @@ public class MultiPathInvariantTests : IDisposable
         return BitmapAStarAlgorithm.Instance.Find(m, map, start, goal);
     }
 
-    [SkippableTheory]
+    [Theory]
     // start, goal: straddle a house placed between them (house at ~ midpoint).
     [InlineData(1500, 1600, 1500, 1612)] // N-S across the footprint
     [InlineData(1494, 1606, 1512, 1606)] // E-W across the footprint
     public void Find_CacheOn_EqualsCacheOff_WithHousePresent(int sx, int sy, int gx, int gy)
     {
         // Without the client's multi data the house has no footprint and nothing stands in the way.
-        TileDataRequirement.SkipIfMissing();
         var map = Map.Maps[MapId];
         Assert.NotNull(map);
 
@@ -44,7 +44,7 @@ public class MultiPathInvariantTests : IDisposable
         var hx = (sx + gx) / 2;
         var hy = (sy + gy) / 2;
         map.GetAverageZ(hx, hy, out _, out var hz, out _);
-        var multi = new TestMulti(0x74);
+        var multi = new TestMulti(TestMultis.GuildHouse);
         multi.MoveToWorld(new Point3D(hx, hy, (sbyte)hz), map);
 
         var walker = new WalkerStub();
@@ -105,10 +105,9 @@ public class MultiPathInvariantTests : IDisposable
         }
     }
 
-    [SkippableFact]
+    [Fact]
     public void Find_CacheOn_EqualsCacheOff_RoutesAroundHouse()
     {
-        TileDataRequirement.SkipIfMissing();
         var map = Map.Maps[MapId];
         Assert.NotNull(map);
 
@@ -120,7 +119,7 @@ public class MultiPathInvariantTests : IDisposable
         const int gx = 1480, gy = 1610;
 
         map.GetAverageZ(hx, hy, out _, out var hz, out _);
-        var multi = new TestMulti(0x74);
+        var multi = new TestMulti(TestMultis.GuildHouse);
         multi.MoveToWorld(new Point3D(hx, hy, (sbyte)hz), map);
 
         var walker = new WalkerStub();

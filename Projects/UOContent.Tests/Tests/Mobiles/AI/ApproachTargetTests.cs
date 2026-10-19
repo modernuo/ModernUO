@@ -88,35 +88,40 @@ public class ApproachTargetTests : IDisposable
         Assert.Equal(buildsBefore, buildsAfter); // greedy fast path: no chunk builds
     }
 
-    // The desk is a Britain inn static; on a blank map the detour is a straight walk.
-    [SkippableFact]
-    public void BritainInnDesk_PetReachesMaster()
+    // An upstairs room with an L-shaped counter: the pet is south of it, the master north.
+    [Fact]
+    public void InnCounter_PetReachesMaster()
     {
-        TileDataRequirement.SkipIfMissing();
+        var inn = Prefabs.InnUpstairs;
+        inn.AssertPresent();
         var map = Map.Maps[1];
         Assert.NotNull(map);
 
-        // Exact in-game repro: pet south of the L-desk, master north of it.
-        var (bc, ai) = NewFollower(map, new Point3D(1493, 1614, 20));
-        var target = NewTarget(map, new Point3D(1494, 1605, 21));
+        var (bc, ai) = NewFollower(map, inn.Anchor);
+        var target = NewTarget(map, inn.Target);
+
+        // The straight line north runs into the counter, so arriving means the pet went round it.
+        var belowCounter = new Point3D(inn.Anchor.X, inn.Target.Y + 6, inn.Anchor.Z);
+        Assert.False(Server.Movement.Movement.CheckMovement(bc, map, belowCounter, Direction.North, out _));
 
         StepCache.Instance.Clear();
 
-        // 200 ticks is generous for the ~17-step detour at one step per tick.
+        // 200 ticks is generous for the ~20-step detour at one step per tick.
         var arrived = DriveFollow(ai, bc, target, 2, 200);
 
-        Assert.True(arrived, "pet must navigate around the L-desk to reach the master");
+        Assert.True(arrived, "pet must navigate around the L-shaped counter to reach the master");
     }
 
-    [SkippableFact]
-    public void MoveTo_ReachesTargetAroundDesk()
+    [Fact]
+    public void MoveTo_ReachesTargetAroundCounter()
     {
-        TileDataRequirement.SkipIfMissing();
+        var inn = Prefabs.InnUpstairs;
+        inn.AssertPresent();
         var map = Map.Maps[1];
         Assert.NotNull(map);
 
-        var (bc, ai) = NewFollower(map, new Point3D(1493, 1614, 20));
-        var target = NewTarget(map, new Point3D(1494, 1605, 21));
+        var (bc, ai) = NewFollower(map, inn.Anchor);
+        var target = NewTarget(map, inn.Target);
 
         StepCache.Instance.Clear();
 
@@ -132,7 +137,7 @@ public class ApproachTargetTests : IDisposable
             }
         }
 
-        Assert.True(arrived, "MoveTo chaser must reach the target around the desk");
+        Assert.True(arrived, "MoveTo chaser must reach the target around the counter");
     }
 
     [Fact]
@@ -170,10 +175,9 @@ public class ApproachTargetTests : IDisposable
         Assert.True(caught, "chaser must catch a target that walks away then stops");
     }
 
-    [SkippableFact]
+    [Fact]
     public void UnreachableTarget_GivesUp_AndIdles()
     {
-        TileDataRequirement.SkipIfMissing();
         var map = Map.Maps[1];
         Assert.NotNull(map);
         map.GetAverageZ(1500, 1601, out _, out var z, out _);
@@ -223,10 +227,9 @@ public class ApproachTargetTests : IDisposable
         Assert.True(stayedIdle, "after giving up, the creature must idle, not shuffle");
     }
 
-    [SkippableFact]
+    [Fact]
     public void WallBetween_RoutesAround_ReachesTarget()
     {
-        TileDataRequirement.SkipIfMissing();
         var map = Map.Maps[1];
         Assert.NotNull(map);
         map.GetAverageZ(1500, 1600, out _, out var z, out _);

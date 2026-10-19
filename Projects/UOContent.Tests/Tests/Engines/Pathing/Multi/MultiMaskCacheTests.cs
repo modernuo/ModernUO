@@ -1,6 +1,7 @@
 using System;
 using Server.Engines.Pathing.Cache;
 using Server.Items;
+using Server.Tests.Terrain;
 using Xunit;
 
 namespace Server.Tests.Pathfinding;
@@ -9,7 +10,7 @@ namespace Server.Tests.Pathfinding;
 public class MultiMaskCacheTests : IDisposable
 {
     private const int MapId = 1;
-    private const int GuildHouseId = 0x74;
+    private const int GuildHouseId = TestMultis.GuildHouse;
     private const int PlaceX = 1480;
     private const int PlaceY = 1620;
 
@@ -17,10 +18,9 @@ public class MultiMaskCacheTests : IDisposable
 
     public void Dispose() => _cacheState.Dispose();
 
-    [SkippableFact]
+    [Fact]
     public void TryResolveCoveringMulti_FindsPlacedMulti_AndLocalIndices()
     {
-        TileDataRequirement.SkipIfMissing();
         StepCache.Instance.Clear();
         var map = Map.Maps[MapId];
         map.GetAverageZ(PlaceX, PlaceY, out _, out var z, out _);
@@ -90,10 +90,9 @@ public class MultiMaskCacheTests : IDisposable
         Assert.False(MultiMaskCache.TerrainTopBelow(map, PlaceX, PlaceY, (sbyte)(ground - 50)));
     }
 
-    [SkippableFact]
+    [Fact]
     public void PathThroughHouseInterior_IncrementsMultiMaskCacheHits()
     {
-        TileDataRequirement.SkipIfMissing();
         // (PlaceX,PlaceY)=(1480,1620) is cluttered (footprint overlaps tall map statics → dirty), so it
         // would never serve the interior cache under the footprint-clean gate. Use a known flat/clear
         // spot so a house there is footprint-clean and its interior cells serve from the cache.
@@ -131,11 +130,13 @@ public class MultiMaskCacheTests : IDisposable
         }
     }
 
-    [SkippableFact]
+    [Fact]
     public void ClutteredHouse_DoesNotServeCache_ButStillPaths()
     {
-        // The clutter is Britain's statics; on a blank map the house has no footprint to dirty.
-        TileDataRequirement.SkipIfMissing();
+        // A rock taller than the house floor, inside the footprint, dirties it.
+        using var terrain = TestTerrain.Scope();
+        TestTerrain.AddStatic(PlaceX + 1, PlaceY + 1, TestTiles.Rock, 0);
+
         var map = Map.Maps[MapId];
         map.GetAverageZ(PlaceX, PlaceY, out _, out var z, out _);
         var multi = new TestMulti(GuildHouseId);
@@ -143,7 +144,7 @@ public class MultiMaskCacheTests : IDisposable
         var mover = MultiTestSupport.GetWalkerOracle(map, new Point3D(PlaceX, PlaceY + 10, (sbyte)z));
         try
         {
-            // (1480,1620) overlaps tall map statics → footprint dirty → cache must NOT serve.
+            // The rock pokes through the floor → footprint dirty → cache must NOT serve.
             multi.MoveToWorld(new Point3D(PlaceX, PlaceY, (sbyte)z), map);
             Assert.False(MultiMaskCache.ComputeFootprintClean(map, multi),
                 "precondition: (1480,1620) must be footprint-dirty for this test to be meaningful");
@@ -200,7 +201,7 @@ public class MultiMaskCacheTests : IDisposable
 
             // Changing ItemID swaps the footprint (e.g. a boat changing heading), so the gate must
             // reset to recompute cleanliness for the new shape.
-            multi.ItemID = 0x7A; // Tower
+            multi.ItemID = TestMultis.Tower;
             Assert.Equal(MultiInteriorCacheState.Unknown, multi.PathInteriorCacheState);
         }
         finally
@@ -209,10 +210,9 @@ public class MultiMaskCacheTests : IDisposable
         }
     }
 
-    [SkippableFact]
+    [Fact]
     public void ComputeFootprintClean_TrueAtNormalPlacement_FalseWhenSunk()
     {
-        TileDataRequirement.SkipIfMissing();
         // (PlaceX,PlaceY) is a cluttered spot whose footprint overlaps tall map statics, so a guild
         // house there is never footprint-clean. Use a known flat/clear spot for the clean assertion.
         const int CleanX = 1560;

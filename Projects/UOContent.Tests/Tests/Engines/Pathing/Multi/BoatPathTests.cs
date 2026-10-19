@@ -1,5 +1,6 @@
 using Server.Engines.Pathing.Cache;
 using Server.Items;
+using Server.Tests.Terrain;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -12,20 +13,20 @@ public class BoatPathTests
 
     public BoatPathTests(ITestOutputHelper output) => _output = output;
 
-    // Open water in the south-Britain bay (Trammel), used by the existing swim-bake test.
+    // Open water: the middle of the DeepSea prefab.
     private const int MapId = 1;
-    private const int WaterX = 1450;
-    private const int WaterY = 1770;
+    private static int WaterX => Prefabs.DeepSea.Anchor.X;
+    private static int WaterY => Prefabs.DeepSea.Anchor.Y;
 
-    [SkippableFact]
+    [Fact]
     public void BoatDeck_HasWalkableSurfaceCells()
     {
-        TileDataRequirement.SkipIfMissing();
+        Prefabs.DeepSea.AssertPresent();
         StepCache.Instance.Clear();
         var map = Map.Maps[MapId];
 
         // SmallBoat North heading = multiID 0x0. A deck is made of surface tiles.
-        var boat = new TestMulti(0x0);
+        var boat = new TestMulti(TestMultis.SmallBoatNorth);
         map.GetAverageZ(WaterX, WaterY, out _, out var z, out _);
         boat.MoveToWorld(new Point3D(WaterX, WaterY, (sbyte)z), map);
 
