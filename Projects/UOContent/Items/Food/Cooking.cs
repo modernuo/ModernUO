@@ -183,33 +183,24 @@ public partial class JarHoney : Item, IT2ACombinable
 
     public bool TryCombine(Mobile from, object target)
     {
-        switch (target)
+        return target switch
         {
-            case Dough dough:
-                {
-                    return T2ACooking.ValidateInPack(from, dough) && T2ACooking.Combine(
-                        from,
-                        this,
-                        dough,
-                        new SweetDough(),
-                        "You mix the dough with honey to make sweet dough."
-                    );
-                }
-            case SweetDough sweetDough:
-                {
-                    return T2ACooking.ValidateInPack(from, sweetDough) && T2ACooking.Combine(
-                        from,
-                        this,
-                        sweetDough,
-                        new CookieMix(),
-                        "You mix the sweet dough with honey to make cookie mix."
-                    );
-                }
-            default:
-                {
-                    return T2ACooking.CannotCombine(from);
-                }
-        }
+            Dough dough => T2ACooking.ValidateInPack(from, dough) && T2ACooking.Combine(
+                from,
+                this,
+                dough,
+                new SweetDough(),
+                "You mix the dough with honey to make sweet dough."
+            ),
+            SweetDough sweetDough => T2ACooking.ValidateInPack(from, sweetDough) && T2ACooking.Combine(
+                from,
+                this,
+                sweetDough,
+                new CookieMix(),
+                "You mix the sweet dough with honey to make cookie mix."
+            ),
+            _ => T2ACooking.CannotCombine(from)
+        };
     }
 }
 
@@ -237,33 +228,25 @@ public partial class BowlFlour : Item, IT2ACombinable
 
     public bool TryCombine(Mobile from, object target)
     {
-        switch (target)
+        return target switch
         {
-            case SweetDough sweetDough:
-                {
-                    return T2ACooking.ValidateInPack(from, sweetDough) && T2ACooking.Combine(
-                        from,
-                        this,
-                        sweetDough,
-                        new CakeMix(),
-                        "You mix the flour with sweet dough to make cake mix."
-                    );
-                }
-            case Item item when T2ACooking.GetWaterSource(item) is { } water:
-                {
-                    return T2ACooking.CanReachWater(from, item) && T2ACooking.Combine(
-                        from,
-                        this,
-                        water,
-                        new Dough(),
-                        "You mix the flour with water to make dough."
-                    );
-                }
-            default:
-                {
-                    return T2ACooking.CannotCombine(from);
-                }
-        }
+            SweetDough sweetDough => T2ACooking.ValidateInPack(from, sweetDough) && T2ACooking.Combine(
+                from,
+                this,
+                sweetDough,
+                new CakeMix(),
+                "You mix the flour with sweet dough to make cake mix."
+            ),
+            Item item when T2ACooking.GetWaterSource(item) is { } water =>
+                T2ACooking.CanReachWater(from, item) && T2ACooking.Combine(
+                    from,
+                    this,
+                    water,
+                    new Dough(),
+                    "You mix the flour with water to make dough."
+                ),
+            _ => T2ACooking.CannotCombine(from)
+        };
     }
 }
 
@@ -342,33 +325,25 @@ public partial class SackFlour : Item, IHasQuantity, IT2ACombinable
             return false;
         }
 
-        switch (target)
+        return target switch
         {
-            case SweetDough sweetDough:
-                {
-                    return T2ACooking.ValidateInPack(from, sweetDough) && T2ACooking.Combine(
-                        from,
-                        this,
-                        sweetDough,
-                        new CakeMix(),
-                        "You mix the flour with sweet dough to make cake mix."
-                    );
-                }
-            case Item item when T2ACooking.GetWaterSource(item) is { } water:
-                {
-                    return T2ACooking.CanReachWater(from, item) && T2ACooking.Combine(
-                        from,
-                        this,
-                        water,
-                        new Dough(),
-                        "You mix the flour with water to make dough."
-                    );
-                }
-            default:
-                {
-                    return T2ACooking.CannotCombine(from);
-                }
-        }
+            SweetDough sweetDough => T2ACooking.ValidateInPack(from, sweetDough) && T2ACooking.Combine(
+                from,
+                this,
+                sweetDough,
+                new CakeMix(),
+                "You mix the flour with sweet dough to make cake mix."
+            ),
+            Item item when T2ACooking.GetWaterSource(item) is { } water =>
+                T2ACooking.CanReachWater(from, item) && T2ACooking.Combine(
+                    from,
+                    this,
+                    water,
+                    new Dough(),
+                    "You mix the flour with water to make dough."
+                ),
+            _ => T2ACooking.CannotCombine(from)
+        };
     }
 
     public bool IsOpen => ItemID is not (0x1039 or 0x1045);

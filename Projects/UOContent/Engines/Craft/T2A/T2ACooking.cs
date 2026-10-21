@@ -84,36 +84,38 @@ public sealed class T2ACooking
         ConsumeOne(source);
         ConsumeOne(target);
 
-        from.AddToBackpack(result);
+        if (!GiveResult(from, result))
+        {
+            return false;
+        }
+
         from.SendAsciiMessage(message);
         return true;
     }
 
+    // AddToBackpack drops a result that does not fit at the mobile's feet (or logout location),
+    // but with no valid map either it would be left on the internal map forever.
+    private static bool GiveResult(Mobile from, Item result)
+    {
+        if (from.AddToBackpack(result) || result.Map != null && result.Map != Map.Internal)
+        {
+            return true;
+        }
+
+        result.Delete();
+        return false;
+    }
+
+    //TODO Confirm whether an empty bowl is returned when a BowlFlour is used up
     private static void ConsumeOne(object o)
     {
-        switch (o)
+        if (o is IHasQuantity container)
         {
-            case SackFlour sack:
-                {
-                    sack.Quantity--;
-                    break;
-                }
-            case BowlFlour bowl:
-                {
-                    //TODO Confirm whether an empty bowl is returned
-                    bowl.Delete();
-                    break;
-                }
-            case IHasQuantity container:
-                {
-                    container.Quantity--;
-                    break;
-                }
-            case Item item:
-                {
-                    item.Consume();
-                    break;
-                }
+            container.Quantity--;
+        }
+        else if (o is Item item)
+        {
+            item.Consume();
         }
     }
 
@@ -178,9 +180,8 @@ public sealed class T2ACooking
             _                 => null
         };
 
-        if (result != null)
+        if (result != null && GiveResult(from, result))
         {
-            from.AddToBackpack(result);
             from.PlaySound(0x57);
         }
     }
