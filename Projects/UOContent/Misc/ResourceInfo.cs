@@ -736,7 +736,7 @@ namespace Server.Items
         /// </summary>
         public static CraftResource GetFromType(Type resourceType)
         {
-            if (m_TypeTable == null)
+            if (resourceType == null || m_TypeTable == null)
             {
                 return CraftResource.None;
             }

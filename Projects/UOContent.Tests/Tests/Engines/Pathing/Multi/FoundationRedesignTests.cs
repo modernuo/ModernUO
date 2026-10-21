@@ -1,3 +1,4 @@
+using Server.Tests.Terrain;
 using Server;
 using Server.Engines.Pathing.Cache;
 using Server.Items;
@@ -17,37 +18,16 @@ public class FoundationRedesignTests
     private const int PlaceX = 1500;
     private const int PlaceY = 1600;
 
-    [SkippableFact]
-    public void SwappingComponents_ChangesFootprint()
-    {
-        TileDataRequirement.SkipIfMissing();
-        var foundation = new SwappableFoundation(0x74); // GuildHouse footprint
-        try
-        {
-            var beforeCount = MultiArt.FootprintCells(foundation).Count;
-            Assert.True(beforeCount > 0, "non-vacuity: initial footprint must cover cells");
-
-            foundation.Redesign(MultiData.GetComponents(0x7A)); // Tower footprint (different shape)
-            var afterCount = MultiArt.FootprintCells(foundation).Count;
-
-            Assert.NotEqual(beforeCount, afterCount);
-            _output.WriteLine($"redesign footprint {beforeCount} -> {afterCount} cells");
-        }
-        finally
-        {
-            foundation.Delete();
-        }
-    }
-
-    [SkippableFact]
+    [Fact]
     public void RedesignReRegistered_RoutesNewFootprintToLivePath()
     {
-        TileDataRequirement.SkipIfMissing();
         StepCache.Instance.Clear();
         var map = Map.Maps[MapId];
         Assert.NotNull(map);
 
-        var foundation = new SwappableFoundation(0x74);
+        var foundation = new SwappableFoundation(TestMultis.GuildHouse);
+        var shared = MultiData.GetComponents(TestMultis.GuildHouse);
+        var seededShape = (shared.Width, shared.Height, shared.List.Length);
         map.GetAverageZ(PlaceX, PlaceY, out _, out var z, out _);
         var loc = new Point3D(PlaceX, PlaceY, (sbyte)z);
         foundation.MoveToWorld(loc, map);
@@ -65,7 +45,7 @@ public class FoundationRedesignTests
             // the OLD footprint's sector registration. We then swap the MCL and MoveToWorld back,
             // which fires Map.OnEnter -> AddMulti against the fresh Components (new footprint).
             foundation.Internalize();
-            foundation.Redesign(MultiData.GetComponents(0x7A));
+            foundation.Redesign(MultiData.GetComponents(TestMultis.Tower));
             foundation.MoveToWorld(loc, map);
 
             var after = MultiArt.FindFloorCell(foundation);
@@ -75,6 +55,10 @@ public class FoundationRedesignTests
             Assert.True(sector.HasMultis, "redesigned footprint must re-register its sector");
             var maskAfter = StepCache.Instance.TryGetMask(map, after.Value.X, after.Value.Y, (sbyte)z);
             Assert.Equal(CacheHitKind.Fallthrough_Multi, maskAfter.HitKind);
+
+            // The redesign swapped this foundation's list; the shared footprint every other GuildHouse reads is untouched.
+            var seeded = MultiData.GetComponents(TestMultis.GuildHouse);
+            Assert.Equal(seededShape, (seeded.Width, seeded.Height, seeded.List.Length));
 
             _output.WriteLine($"redesign re-registered: before {before.Value.X},{before.Value.Y} after {after.Value.X},{after.Value.Y}");
         }

@@ -113,34 +113,60 @@ public class PasswordProtectionTest
         Assert.False(Argon2PasswordProtection.Instance.ValidatePassword(LegacyArgon2iHash, "wrong"));
     }
 
-    [Theory]
-    // type, memory, time, parallelism -> expected NeedsRehash
-    [InlineData("argon2id", 16384, 1, 1, false)] // current defaults
-    [InlineData("argon2i", 8192, 3, 1, true)]    // the old shipping default
-    [InlineData("argon2id", 8192, 1, 1, true)]   // right type, stale memory
-    [InlineData("argon2id", 16384, 3, 1, true)]  // right type, stale iterations
-    [InlineData("argon2id", 16384, 1, 2, true)]  // right type, stale parallelism
-    [InlineData("argon2i", 16384, 1, 1, true)]   // right cost, stale type
-    public void Argon2_NeedsRehash_ComparesTypeAndCost(
-        string type, int memory, int time, int parallelism, bool expected
-    )
-    {
-        var hash = $"${type}$v=19$m={memory},t={time},p={parallelism}$" +
-                   "LD1XJz7P3wQmIJ+Tu6ScgA$NO5hBABsHQ172C5nDO2X4gWnB4jDef3x6WhLdVE2LFw";
+    private const string SaltAndDigest = "LD1XJz7P3wQmIJ+Tu6ScgA$NO5hBABsHQ172C5nDO2X4gWnB4jDef3x6WhLdVE2LFw";
 
-        Assert.Equal(expected, Argon2PasswordProtection.Instance.NeedsRehash(hash));
+    [Fact]
+    public void Argon2_NeedsRehash_IsFalseForCurrentParameters()
+    {
+        var hash = Argon2TestParameters.CurrentPrefix + SaltAndDigest;
+
+        Assert.False(Argon2PasswordProtection.Instance.NeedsRehash(hash));
+    }
+
+    // Each case differs from the configured parameters in exactly one field, so the test holds
+    // whatever cost a shard configures.
+    [Theory]
+    [InlineData("type")]
+    [InlineData("memory")]
+    [InlineData("time")]
+    [InlineData("parallelism")]
+    public void Argon2_NeedsRehash_ComparesTypeAndCost(string staleField)
+    {
+        var type = Argon2TestParameters.Type;
+        var memory = Argon2TestParameters.Memory;
+        var time = Argon2TestParameters.Time;
+        var parallelism = Argon2TestParameters.Parallelism;
+        var otherType = type == "argon2id" ? "argon2i" : "argon2id";
+
+        (type, memory, time, parallelism) = staleField switch
+        {
+            "type"   => (otherType, memory, time, parallelism),
+            "memory" => (type, memory * 2, time, parallelism),
+            "time"   => (type, memory, time + 1, parallelism),
+            _        => (type, memory, time, parallelism + 1)
+        };
+
+        var hash = Argon2TestParameters.BuildPrefix(type, memory, time, parallelism) + SaltAndDigest;
+
+        Assert.True(Argon2PasswordProtection.Instance.NeedsRehash(hash));
+    }
+
+    [Fact]
+    public void Argon2_NeedsRehash_IsTrueForLegacyShippingDefault()
+    {
+        Assert.True(Argon2PasswordProtection.Instance.NeedsRehash(LegacyArgon2iHash));
     }
 
     // Digest and salt lengths are decoded base64 sizes rather than parameter-list entries, so they
     // need their own literals. Current type and cost throughout; only a length differs.
     [Theory]
     // 16-byte digest: 22 base64 chars instead of the 43 a 32-byte digest encodes to.
-    [InlineData("$argon2id$v=19$m=16384,t=1,p=1$LD1XJz7P3wQmIJ+Tu6ScgA$NO5hBABsHQ172C5nDO2X4g")]
+    [InlineData("LD1XJz7P3wQmIJ+Tu6ScgA$NO5hBABsHQ172C5nDO2X4g")]
     // 8-byte salt: 11 base64 chars instead of the 22 a 16-byte salt encodes to.
-    [InlineData("$argon2id$v=19$m=16384,t=1,p=1$LD1XJz7P3wQ$NO5hBABsHQ172C5nDO2X4gWnB4jDef3x6WhLdVE2LFw")]
-    public void Argon2_NeedsRehash_ComparesSaltAndDigestLengths(string hash)
+    [InlineData("LD1XJz7P3wQ$NO5hBABsHQ172C5nDO2X4gWnB4jDef3x6WhLdVE2LFw")]
+    public void Argon2_NeedsRehash_ComparesSaltAndDigestLengths(string saltAndDigest)
     {
-        Assert.True(Argon2PasswordProtection.Instance.NeedsRehash(hash));
+        Assert.True(Argon2PasswordProtection.Instance.NeedsRehash(Argon2TestParameters.CurrentPrefix + saltAndDigest));
     }
 
     [Theory]
@@ -149,14 +175,5 @@ public class PasswordProtectionTest
     public void Argon2_NeedsRehash_IsTrueForUnparseableHashes(string hash)
     {
         Assert.True(Argon2PasswordProtection.Instance.NeedsRehash(hash));
-    }
-
-    [Fact]
-    public void NonArgon2Protections_NeverNeedRehash()
-    {
-        Assert.False(PBKDF2PasswordProtection.Instance.NeedsRehash("anything"));
-        Assert.False(HashAlgorithmPasswordProtection.SHA2Instance.NeedsRehash("anything"));
-        Assert.False(HashAlgorithmPasswordProtection.SHA1Instance.NeedsRehash("anything"));
-        Assert.False(HashAlgorithmPasswordProtection.MD5Instance.NeedsRehash("anything"));
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using Server;
 using Server.Mobiles;
+using Server.Tests;
 using Xunit;
 
 namespace UOContent.Tests.Mobiles.AI;
@@ -26,7 +27,7 @@ public class DetectHiddenTimerTests
         public override void DetectHidden() => Detections++;
     }
 
-    [SkippableTheory]
+    [Theory]
     [InlineData(0, 108000, 132000)]
     [InlineData(1, 108000, 132000)]
     [InlineData(100, 108000, 132000)]
@@ -37,9 +38,7 @@ public class DetectHiddenTimerTests
     public void DetectHidden_SchedulesBoundedCooldown_AndWaitsBeforeRetry(
         int intelligence, long minDelay, long maxDelay)
     {
-        Skip.If(!Server.Tests.TestServerInitializer.TileDataLoaded, "Requires UO client map data.");
-        Core._tickCount = 0;
-        Timer.Init(0);
+        using var clock = new TimerWheelScope();
         var creature = new DetectingCreature();
         DetectingAI ai = null;
 
@@ -63,12 +62,8 @@ public class DetectHiddenTimerTests
             Assert.InRange(ai._nextDetectHidden - Core.TickCount, minDelay, maxDelay);
             Assert.True(ai.AITimer.Running);
 
-            var deadline = ai._nextDetectHidden;
-            while (Core.TickCount + 8 < deadline)
-            {
-                Core._tickCount += 8;
-                Timer.Slice(Core.TickCount);
-            }
+            // Stop one wheel step short of the cooldown: no retry may have fired yet.
+            TimerWheelScope.RunFor(ai._nextDetectHidden - TimerWheelScope.Step - Core.TickCount);
 
             Assert.Equal(1, ai.Detections);
             AdvanceUntil(() => ai.Detections > 1, 1024);
@@ -82,14 +77,9 @@ public class DetectHiddenTimerTests
         }
     }
 
-    private static void AdvanceUntil(Func<bool> condition, int milliseconds)
-    {
-        for (var elapsed = 0; !condition() && elapsed < milliseconds; elapsed += 8)
-        {
-            Core._tickCount += 8;
-            Timer.Slice(Core.TickCount);
-        }
-
-        Assert.True(condition(), "The AI timer did not reach the expected detection.");
-    }
+    private static void AdvanceUntil(Func<bool> condition, int milliseconds) =>
+        Assert.True(
+            TimerWheelScope.RunUntil(condition, milliseconds),
+            "The AI timer did not reach the expected detection."
+        );
 }

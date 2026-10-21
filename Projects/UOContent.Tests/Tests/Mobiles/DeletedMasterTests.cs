@@ -1,8 +1,8 @@
 using System;
-using System.Collections.Generic;
 using Server;
 using Server.Mobiles;
 using Server.Spells.Necromancy;
+using Server.Tests;
 using Xunit;
 
 namespace UOContent.Tests.Mobiles;
@@ -11,40 +11,13 @@ namespace UOContent.Tests.Mobiles;
 [Collection("Sequential UOContent Tests")]
 public class DeletedMasterTests : IDisposable
 {
-    private readonly List<Mobile> _created = [];
+    private readonly MobileTestHarness _harness = new();
 
-    public void Dispose()
-    {
-        for (var i = 0; i < _created.Count; i++)
-        {
-            _created[i].Delete();
-        }
-    }
+    public void Dispose() => _harness.Dispose();
 
-    private sealed class Stub : BaseCreature
-    {
-        public Stub() : base(AIType.AI_Melee) => Body = 0xC9;
+    private TestCreature NewCreature() => _harness.NewCreature();
 
-        public Stub(Serial serial) : base(serial)
-        {
-        }
-    }
-
-    private Stub NewCreature()
-    {
-        var bc = new Stub();
-        _created.Add(bc);
-        return bc;
-    }
-
-    private PlayerMobile NewPlayer()
-    {
-        var pm = new PlayerMobile(World.NewMobile);
-        pm.DefaultMobileInit();
-        World.AddEntity(pm);
-        _created.Add(pm);
-        return pm;
-    }
+    private PlayerMobile NewPlayer() => _harness.NewPlayer();
 
     [Fact]
     public void DeletingAPlayer_ReleasesAnUnbondedPet()

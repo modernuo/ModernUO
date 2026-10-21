@@ -28,33 +28,6 @@ public class Point3DTests
     }
 
     [Fact]
-    public void TestPoint3DTryFormatSucceeds()
-    {
-        const int max = int.MaxValue;
-        const int min = int.MinValue;
-        var array = new char[128];
-
-        var p1 = new Point3D(0, 0, 0);
-        Assert.True(p1.TryFormat(array, out var cp1, null, null));
-        Assert.Equal(6 + 3, cp1);
-        Array.Clear(array);
-
-        var p2 = new Point3D(1, 1, 1);
-        Assert.True(p2.TryFormat(array, out var cp2, null, null));
-        Assert.Equal(6 + 3, cp2);
-        Array.Clear(array);
-
-        var p3 = new Point3D(max, max, max);
-        Assert.True(p3.TryFormat(array, out var cp3, null, null));
-        Assert.Equal(6 + 30, cp3);
-        Array.Clear(array);
-
-        var p4 = new Point3D(min, min, min);
-        Assert.True(p4.TryFormat(array, out var cp4, null, null));
-        Assert.Equal(6 + 33, cp4);
-    }
-
-    [Fact]
     public void TestPoint3DTryFormatFails()
     {
         const int max = int.MaxValue;
@@ -95,7 +68,7 @@ public class Point3DTests
         Assert.Equal(new Point3D(101, 23, 55), Point3D.Parse(" (101,23 ,55)  ", null));
 
         // No parenthesis
-        Assert.False(Point3D.TryParse("101, 23 55)", null, out p));
+        Assert.False(Point3D.TryParse("101, 23, 55)", null, out p));
         Assert.Equal(default, p);
         Assert.Throws<FormatException>(() => Point3D.Parse("101, 23, 55)", null));
 

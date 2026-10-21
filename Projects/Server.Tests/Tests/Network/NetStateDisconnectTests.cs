@@ -1,6 +1,4 @@
 using System;
-using System.Diagnostics;
-using System.Net.Sockets;
 using Server.Network;
 using Xunit;
 
@@ -96,35 +94,10 @@ public class NetStateDisconnectTests
 
             Assert.True(ns._socket.DisconnectPending);
 
-            var received = new byte[payload.Length];
-            var total = 0;
-            var deadline = Stopwatch.StartNew();
-
-            while (total < payload.Length && deadline.ElapsedMilliseconds < 5000)
-            {
-                NetState.Slice();
-                if (client.Poll(1000, SelectMode.SelectRead))
-                {
-                    var read = client.Receive(received, total, payload.Length - total, SocketFlags.None);
-                    Assert.NotEqual(0, read);
-                    total += read;
-                }
-            }
-
-            Assert.Equal(payload, received);
+            Assert.Equal(payload, NetTestHelpers.ReadAll(client, payload.Length, 5000));
 
             // FIN follows once the send completes
-            var eof = -1;
-            while (eof != 0 && deadline.ElapsedMilliseconds < 5000)
-            {
-                NetState.Slice();
-                if (client.Poll(1000, SelectMode.SelectRead))
-                {
-                    eof = client.Receive(received);
-                }
-            }
-
-            Assert.Equal(0, eof);
+            NetTestHelpers.WaitForEof(client, 5000);
         }
         finally
         {
@@ -156,35 +129,8 @@ public class NetStateDisconnectTests
 
             Assert.True(ns._socket.DisconnectPending);
 
-            var received = new byte[payload.Length];
-            var total = 0;
-            var deadline = Stopwatch.StartNew();
-
-            while (total < payload.Length && deadline.ElapsedMilliseconds < 10000)
-            {
-                NetState.Slice();
-                if (client.Poll(1000, SelectMode.SelectRead))
-                {
-                    var read = client.Receive(received, total, payload.Length - total, SocketFlags.None);
-                    Assert.NotEqual(0, read);
-                    total += read;
-                }
-            }
-
-            Assert.Equal(payload.Length, total);
-            Assert.Equal(payload, received);
-
-            var eof = -1;
-            while (eof != 0 && deadline.ElapsedMilliseconds < 10000)
-            {
-                NetState.Slice();
-                if (client.Poll(1000, SelectMode.SelectRead))
-                {
-                    eof = client.Receive(received);
-                }
-            }
-
-            Assert.Equal(0, eof);
+            Assert.Equal(payload, NetTestHelpers.ReadAll(client, payload.Length));
+            NetTestHelpers.WaitForEof(client);
         }
         finally
         {

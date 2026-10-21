@@ -86,7 +86,11 @@ public partial class LordOaks : BaseChampion
     public override Poison PoisonImmune => Poison.Deadly;
 
     private static MonsterAbility[] _abilities = { MonsterAbilities.SummonPixiesCounter };
-    public override MonsterAbility[] GetMonsterAbilities() => CheckQueen() ? _abilities : MonsterAbilities.Empty;
+    public override MonsterAbility[] GetMonsterAbilities() => _abilities;
+
+    public override bool CanUseAbility(MonsterAbility ability) => IsQueenAlive;
+
+    private bool IsQueenAlive => _queen?.Deleted == false;
 
     public override void GenerateLoot()
     {
@@ -103,36 +107,42 @@ public partial class LordOaks : BaseChampion
 
     public override int GetDeathSound() => 0x2F7;
 
-    public bool CheckQueen()
+    // Aggression lands before the damage it causes, so the queen is up before the first hit is scaled.
+    public override void AggressiveAction(Mobile aggressor, bool criminal)
     {
-        if (Map == null)
+        base.AggressiveAction(aggressor, criminal);
+        SpawnQueen();
+    }
+
+    public override void OnCombatantChange()
+    {
+        base.OnCombatantChange();
+
+        if (Combatant != null)
         {
-            return false;
+            SpawnQueen();
+        }
+    }
+
+    private void SpawnQueen()
+    {
+        if (_spawnedQueen || Deleted || Map == null || Map == Map.Internal)
+        {
+            return;
         }
 
-        if (!_spawnedQueen)
-        {
-            Say(1042153); // Come forth my queen!
+        Say(1042153); // Come forth my queen!
 
-            _queen = new Silvani { Team = Team };
-            _queen.MoveToWorld(Location, Map);
+        var queen = new Silvani();
+        SpawnMinion(queen, location: Location);
 
-            _spawnedQueen = true;
-            return true;
-        }
-
-        if (_queen?.Deleted != false)
-        {
-            _queen = null;
-            return false;
-        }
-
-        return true;
+        Queen = queen;
+        SpawnedQueen = true;
     }
 
     public override void AlterDamageScalarFrom(Mobile caster, ref double scalar)
     {
-        if (CheckQueen())
+        if (IsQueenAlive)
         {
             scalar *= 0.1;
         }

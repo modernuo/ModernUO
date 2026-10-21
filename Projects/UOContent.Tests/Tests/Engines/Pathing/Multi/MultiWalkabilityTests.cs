@@ -1,6 +1,7 @@
 using Server.Engines.Pathing.Cache;
 using Server.Items;
 using Server.Mobiles;
+using Server.Tests.Terrain;
 using Xunit;
 using Xunit.Abstractions;
 using CalcMoves = Server.Movement.Movement;
@@ -18,20 +19,14 @@ public class MultiWalkabilityTests
     private const int PlaceX = 1500;
     private const int PlaceY = 1600;
 
-    private sealed class WalkerStub : Mobile
-    {
-        public WalkerStub() => Body = 0xC9;
-    }
-
-    [SkippableFact]
+    [Fact]
     public void WallCell_CannotBeEnteredFromAnyAdjacentCell()
     {
-        TileDataRequirement.SkipIfMissing();
         StepCache.Instance.Clear();
         var map = Map.Maps[MapId];
         map.GetAverageZ(PlaceX, PlaceY, out _, out var z, out _);
 
-        var multi = new TestMulti(0x74);
+        var multi = new TestMulti(TestMultis.GuildHouse);
         multi.MoveToWorld(new Point3D(PlaceX, PlaceY, (sbyte)z), map);
 
         var walker = new WalkerStub();
@@ -87,15 +82,14 @@ public class MultiWalkabilityTests
         }
     }
 
-    [SkippableFact]
+    [Fact]
     public void FloorCell_IsStandable()
     {
-        TileDataRequirement.SkipIfMissing();
         StepCache.Instance.Clear();
         var map = Map.Maps[MapId];
         map.GetAverageZ(PlaceX, PlaceY, out _, out var z, out _);
 
-        var multi = new TestMulti(0x74);
+        var multi = new TestMulti(TestMultis.GuildHouse);
         multi.MoveToWorld(new Point3D(PlaceX, PlaceY, (sbyte)z), map);
 
         var walker = new WalkerStub();

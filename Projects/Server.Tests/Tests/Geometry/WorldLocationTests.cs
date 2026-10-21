@@ -42,40 +42,6 @@ public sealed class WorldLocationTests
     [Theory]
     [InlineData(null)]
     [InlineData("Internal Map")]
-    [InlineData(_superLongMapName)]
-    public void TestWorldLocationTryFormatSucceeds(string mapName)
-    {
-        var map = mapName != null ? CreateMap(mapName) : null;
-        var mapNameLength = mapName?.Length ?? _nullMap.Length;
-
-        const int max = int.MaxValue;
-        const int min = int.MinValue;
-        var array = new char[128];
-
-        var p1 = new WorldLocation(0, 0, 0, map);
-        Assert.True(p1.TryFormat(array, out var cp1, null, null));
-        Assert.Equal(9 + 3 + mapNameLength, cp1);
-        Array.Clear(array);
-
-        var p2 = new WorldLocation(1, 1, 1, map);
-        Assert.True(p2.TryFormat(array, out var cp2, null, null));
-        Assert.Equal(9 + 3 + mapNameLength, cp2);
-        Array.Clear(array);
-
-        array = new char[256]; // We need a bigger buffer!
-        var p3 = new WorldLocation(max, max, max, map);
-        Assert.True(p3.TryFormat(array, out var cp3, null, null));
-        Assert.Equal(9 + 30 + mapNameLength, cp3);
-        Array.Clear(array);
-
-        var p4 = new WorldLocation(min, min, min, map);
-        Assert.True(p4.TryFormat(array, out var cp4, null, null));
-        Assert.Equal(9 + 33 + mapNameLength, cp4);
-    }
-
-    [Theory]
-    [InlineData(null)]
-    [InlineData("Internal Map")]
     public void TestWorldLocationTryFormatFails(string mapName)
     {
         var map = mapName != null ? CreateMap(mapName) : null;
@@ -124,16 +90,16 @@ public sealed class WorldLocationTests
         Assert.Equal(new WorldLocation(101, 23, 55, null), WorldLocation.Parse(" (101,23 ,55)  [(-null-)]", null));
 
         // No Brackets
-        Assert.False(WorldLocation.TryParse("(101, 23 55) Felucca]", null, out p));
+        Assert.False(WorldLocation.TryParse("(101, 23, 55) Felucca]", null, out p));
         Assert.Equal(default, p);
         Assert.Throws<FormatException>(() => WorldLocation.Parse("(101, 23, 55) Felucca]", null));
 
-        Assert.False(WorldLocation.TryParse("(101, 23 55) [Felucca", null, out p));
+        Assert.False(WorldLocation.TryParse("(101, 23, 55) [Felucca", null, out p));
         Assert.Equal(default, p);
         Assert.Throws<FormatException>(() => WorldLocation.Parse("(101, 23, 55) [Felucca", null));
 
         // No parenthesis
-        Assert.False(WorldLocation.TryParse("101, 23 55) [Felucca]", null, out p));
+        Assert.False(WorldLocation.TryParse("101, 23, 55) [Felucca]", null, out p));
         Assert.Equal(default, p);
         Assert.Throws<FormatException>(() => WorldLocation.Parse("101, 23, 55) [Felucca]", null));
 

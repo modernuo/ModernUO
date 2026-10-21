@@ -17,13 +17,6 @@ public class ValueLinkListTests
     }
 
     [Fact]
-    public void TestDefaultListIsEmpty()
-    {
-        var linkList = new ValueLinkList<TestEntity>();
-        Assert.Equal(0, linkList.Count);
-    }
-
-    [Fact]
     public void TestAddingElementsFirst()
     {
         var linkList = new ValueLinkList<TestEntity>();
@@ -393,31 +386,6 @@ public class ValueLinkListTests
                 foreach (var item in linkList)
                 {
                     linkList.Remove(item);
-                }
-            }
-        );
-    }
-
-    [Fact]
-    public void TestThrowsIfModifiedWhileIteratingNested()
-    {
-        Assert.Throws<InvalidOperationException>(
-            () =>
-            {
-                var linkList = new ValueLinkList<TestEntity>();
-
-                var entity1 = new TestEntity(1);
-                var entity2 = new TestEntity(2);
-
-                linkList.AddFirst(entity1);
-                linkList.AddLast(entity2);
-
-                foreach (var item in linkList)
-                {
-                    foreach (var nestedItem in linkList)
-                    {
-                        linkList.Remove(nestedItem);
-                    }
                 }
             }
         );

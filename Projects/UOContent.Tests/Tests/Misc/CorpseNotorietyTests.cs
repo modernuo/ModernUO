@@ -17,22 +17,23 @@ public class CorpseNotorietyTests
     public void PlayerCorpseNotorietyIgnoresTransformedBody(int bodyMod, int expected, int kills = 0)
     {
         var victim = new PlayerMobile(World.NewMobile);
-        victim.DefaultMobileInit();
-        victim.Kills = kills;
-        victim.BodyMod = bodyMod;
-
         var looter = new PlayerMobile(World.NewMobile);
-        looter.DefaultMobileInit();
-
-        var corpse = new Corpse(victim, []);
+        Corpse corpse = null;
 
         try
         {
+            victim.DefaultMobileInit();
+            victim.Kills = kills;
+            victim.BodyMod = bodyMod;
+            looter.DefaultMobileInit();
+
+            corpse = new Corpse(victim, []);
+
             Assert.Equal(expected, NotorietyHandlers.CorpseNotoriety(looter, corpse));
         }
         finally
         {
-            corpse.Delete();
+            corpse?.Delete();
             victim.Delete();
             looter.Delete();
         }

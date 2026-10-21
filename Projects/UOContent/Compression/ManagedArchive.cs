@@ -224,9 +224,17 @@ public static class ManagedArchive
     {
         using var tarReader = new TarReader(stream);
 
+        var root = Path.TrimEndingDirectorySeparator(Path.GetFullPath(outputDirectory)) + Path.DirectorySeparatorChar;
+        var comparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+
         while (tarReader.GetNextEntry() is { } entry)
         {
-            var destPath = Path.Combine(outputDirectory, entry.Name);
+            // Rooted names and ".." segments would otherwise let the archive write anywhere the process can.
+            var destPath = Path.GetFullPath(Path.Combine(root, entry.Name));
+            if (!destPath.StartsWith(root, comparison))
+            {
+                throw new InvalidDataException($"Archive entry '{entry.Name}' resolves outside '{root}'");
+            }
 
             var destDir = Path.GetDirectoryName(destPath);
             if (destDir != null)

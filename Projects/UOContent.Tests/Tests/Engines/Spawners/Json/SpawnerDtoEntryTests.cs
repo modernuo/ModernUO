@@ -15,15 +15,21 @@ public class SpawnerDtoEntryTests
     public void Export_WritesEntriesAtSameJsonPosition_WithDisabledOnlyWhenSet()
     {
         var spawner = new Spawner(1, TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(10), 0, default, "Rabbit", "Bird");
-        spawner.Entries[1].Disabled = true;
 
-        var json = SpawnerJsonSerializer.SerializeCompact(new List<SpawnerDto> { spawner.ToDto() });
+        try
+        {
+            spawner.Entries[1].Disabled = true;
 
-        Assert.Contains("\"entries\": [\n      { \"name\": \"Rabbit\"", json);
-        Assert.Contains("{ \"name\": \"Bird\"", json);
-        Assert.Equal(1, CountOccurrences(json, "\"disabled\": true"));
+            var json = SpawnerJsonSerializer.SerializeCompact(new List<SpawnerDto> { spawner.ToDto() });
 
-        spawner.Delete();
+            Assert.Contains("\"entries\": [\n      { \"name\": \"Rabbit\"", json);
+            Assert.Contains("{ \"name\": \"Bird\"", json);
+            Assert.Equal(1, CountOccurrences(json, "\"disabled\": true"));
+        }
+        finally
+        {
+            spawner.Delete();
+        }
     }
 
     [Fact]
@@ -35,11 +41,16 @@ public class SpawnerDtoEntryTests
         var dtos = JsonSerializer.Deserialize<List<SpawnerDto>>(json, SpawnerJsonSerializer.Options);
         var spawner = dtos![0].ToSpawner();
 
-        Assert.Single(spawner.Entries);
-        Assert.True(spawner.Entries[0].Disabled);
-        Assert.Same(dtos[0].EntryView[0], spawner.Entries[0]);
-
-        spawner.Delete();
+        try
+        {
+            Assert.Single(spawner.Entries);
+            Assert.True(spawner.Entries[0].Disabled);
+            Assert.Same(dtos[0].EntryView[0], spawner.Entries[0]);
+        }
+        finally
+        {
+            spawner.Delete();
+        }
     }
 
     private static int CountOccurrences(string source, string value)

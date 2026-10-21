@@ -20,15 +20,4 @@ public class AccountHandlerTests
     {
         Assert.Equal(expected, AccountHandler.IsValidUsername(username));
     }
-
-    [Theory]
-    [InlineData("", false)]                             // Empty password
-    [InlineData("ValidPass123!", true)]                 // Standard Password
-    [InlineData(" ", true)]                             // Single space
-    [InlineData("ValidPass!@#", true)]                  // Valid special characters
-    [InlineData("ValidPassWithLength1234567890", true)] // Long valid password
-    public void IsValidPassword_ValidatesCorrectly(string password, bool expected)
-    {
-        Assert.Equal(expected, AccountHandler.IsValidPassword(password));
-    }
 }

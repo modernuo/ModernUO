@@ -20,10 +20,9 @@ public class AllSpawnFilesLoadTests
     public void EverySpawnFile_DeserializesAndBuildsSpawners()
     {
         var root = Path.Combine(Core.BaseDirectory, "Data", "Spawns");
-        if (!Directory.Exists(root))
-        {
-            return; // distribution data not present in this checkout
-        }
+        // Data/ is copied into the test output by the build; a missing folder means the build was run
+        // without SolutionDir, and passing would hide that nothing was checked.
+        Assert.True(Directory.Exists(root), $"Spawn data not found at {root}");
 
         var failures = new List<string>();
         var fileCount = 0;
@@ -64,6 +63,7 @@ public class AllSpawnFilesLoadTests
             }
         }
 
+        Assert.NotEqual(0, fileCount);
         Assert.True(
             failures.Count == 0,
             $"Loaded {fileCount} files, built {spawnerCount} spawners. Failures:\n{string.Join("\n", failures)}"

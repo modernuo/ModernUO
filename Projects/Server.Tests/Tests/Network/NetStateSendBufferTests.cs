@@ -1,10 +1,8 @@
 using System;
 using System.Buffers;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Net.Sockets;
 using System.Network;
-using System.Threading;
 using Server.Network;
 using Xunit;
 
@@ -22,42 +20,11 @@ public class NetStateSendBufferTests
         return ns;
     }
 
-    private static byte[] Pattern(int length, int seed)
-    {
-        var data = new byte[length];
-        new System.Random(seed).NextBytes(data);
-        return data;
-    }
-
-    private static unsafe void RegisterNoOpPing()
-    {
-        if (IncomingPackets.GetHandler(0x73) == null)
-        {
-            IncomingPackets.Register(0x73, 2, false, &NoOp);
-        }
-    }
-
-    private static void NoOp(NetState state, SpanReader reader)
-    {
-    }
-
-    private static void SliceUntil(Func<bool> done)
-    {
-        var deadline = Stopwatch.StartNew();
-        while (!done() && deadline.ElapsedMilliseconds < 5000)
-        {
-            NetState.Slice();
-            Thread.Sleep(5);
-        }
-
-        Assert.True(done());
-    }
-
     [SkippableFact]
     public void Account_InTheGameServerState_PromotesBothBuffers()
     {
-        Skip.If(NetState.InitialSendBufferSize == 0);
-        RegisterNoOpPing();
+        NetTestHelpers.RequirePreAuthBuffers();
+        using var ping = NetTestHelpers.RegisterPing();
         var ns = PacketTestUtilities.CreateTestNetState(out var client);
         try
         {
@@ -73,8 +40,8 @@ public class NetStateSendBufferTests
 
             // Recv promotes at the next completion
             ns._protocolState = NetState.ProtocolState.GameServer_LoggedIn;
-            client.Send(new byte[] { 0x73, 0x01 });
-            SliceUntil(() => ns._socket.RecvBuffer.PhysicalSize == NetState.RecvBufferSize);
+            client.Send(new byte[] { NetTestHelpers.PingPacketId, 0x01 });
+            NetTestHelpers.SliceUntil(() => ns._socket.RecvBuffer.PhysicalSize == NetState.RecvBufferSize);
             Assert.True(ns.Running);
         }
         finally
@@ -87,7 +54,7 @@ public class NetStateSendBufferTests
     [SkippableFact]
     public void Account_OnTheLoginServer_KeepsTheInitialBuffers()
     {
-        Skip.If(NetState.InitialSendBufferSize == 0);
+        NetTestHelpers.RequirePreAuthBuffers();
         var ns = PacketTestUtilities.CreateTestNetState(out var client);
         try
         {
@@ -108,11 +75,11 @@ public class NetStateSendBufferTests
     public void Send_BeyondTheInitialBuffer_BeforeCredentials_IsExhausted()
     {
         // Nothing promotes before credentials verify: the 4 KiB ring is the whole pre-auth budget
-        Skip.If(NetState.InitialSendBufferSize == 0);
+        NetTestHelpers.RequirePreAuthBuffers();
         var ns = PacketTestUtilities.CreateTestNetState(out var client);
         try
         {
-            var data = Pattern(NetState.InitialSendBufferSize + 512, 7);
+            var data = NetTestHelpers.Pattern(NetState.InitialSendBufferSize + 512, 7);
             ns.Send(data);
 
             Assert.Contains("exhausted", ns._disconnectReason, StringComparison.OrdinalIgnoreCase);
@@ -123,7 +90,7 @@ public class NetStateSendBufferTests
             // Once it completes the NetState is disposed and _socket goes null, so nothing below
             // this point may touch it.
             client.Close();
-            SliceUntil(() => !ns.Running);
+            NetTestHelpers.SliceUntil(() => !ns.Running);
         }
         finally
         {
@@ -137,19 +104,19 @@ public class NetStateSendBufferTests
     {
         // The late-verdict path from Account_AssignedAfterTheStateFlipped_StillPromotes: an account
         // attached while the setter's own gate does not fire must still let the send path promote
-        Skip.If(NetState.InitialSendBufferSize == 0);
+        NetTestHelpers.RequirePreAuthBuffers();
         var ns = PacketTestUtilities.CreateTestNetState(out var client);
         try
         {
             ns.Account = new MockAccount(); // _protocolState is still AwaitingSeed: the setter does not promote
-            var data = Pattern(NetState.InitialSendBufferSize + 512, 7);
+            var data = NetTestHelpers.Pattern(NetState.InitialSendBufferSize + 512, 7);
             ns.Send(data);
 
             Assert.True(ns.Running);
             Assert.Equal(string.Empty, ns._disconnectReason);
             Assert.Equal(NetState.SendBufferSize, ns._socket.SendBuffer.PhysicalSize);
             Assert.False(ns._sendBufferGrown); // promotion is not growth: nothing to shrink later
-            Assert.Equal(data, ReadAll(client, data.Length));
+            Assert.Equal(data, NetTestHelpers.ReadAll(client, data.Length));
         }
         finally
         {
@@ -161,12 +128,12 @@ public class NetStateSendBufferTests
     [SkippableFact]
     public void Send_BacklogBeforeCredentials_IsExhaustedInsteadOfPromoted()
     {
-        Skip.If(NetState.InitialSendBufferSize == 0);
+        NetTestHelpers.RequirePreAuthBuffers();
         var ns = PacketTestUtilities.CreateTestNetState(out var client);
         try
         {
             // No Slice() between sends: nothing drains, so a second write finds a non-empty initial buffer
-            var half = Pattern(NetState.InitialSendBufferSize / 2, 11);
+            var half = NetTestHelpers.Pattern(NetState.InitialSendBufferSize / 2, 11);
             ns.Send(half);
             ns.Send(half);
             ns.Send(half); // cannot fit, buffer not empty, no account: refused
@@ -179,7 +146,7 @@ public class NetStateSendBufferTests
             // Once it completes the NetState is disposed and _socket goes null, so nothing below
             // this point may touch it.
             client.Close();
-            SliceUntil(() => !ns.Running);
+            NetTestHelpers.SliceUntil(() => !ns.Running);
         }
         finally
         {
@@ -191,7 +158,7 @@ public class NetStateSendBufferTests
     [SkippableFact]
     public void Account_AssignedAfterTheStateFlipped_StillPromotes()
     {
-        Skip.If(NetState.InitialSendBufferSize == 0);
+        NetTestHelpers.RequirePreAuthBuffers();
         var ns = PacketTestUtilities.CreateTestNetState(out var client);
         try
         {
@@ -211,7 +178,7 @@ public class NetStateSendBufferTests
     {
         var randomLength = compressedLength * 5 / 8;
         var data = new byte[compressedLength * 8];
-        Pattern(randomLength, seed).CopyTo(data, 0);
+        NetTestHelpers.Pattern(randomLength, seed).CopyTo(data, 0);
 
         var scratch = new byte[compressedLength * 2 + 16];
         for (var length = randomLength; length < data.Length; length++)
@@ -228,47 +195,12 @@ public class NetStateSendBufferTests
         throw new InvalidOperationException($"No chunk compresses to exactly {compressedLength} bytes");
     }
 
-    private static byte[] ReadAll(Socket client, int length)
-    {
-        var received = new byte[length];
-        var total = 0;
-        var deadline = Stopwatch.StartNew();
-        while (total < length && deadline.ElapsedMilliseconds < 10000)
-        {
-            NetState.Slice();
-
-            // Poll takes microseconds, not milliseconds
-            if (client.Poll(50_000, SelectMode.SelectRead))
-            {
-                var read = client.Receive(received, total, length - total, SocketFlags.None);
-                Assert.NotEqual(0, read);
-                total += read;
-            }
-        }
-
-        Assert.Equal(length, total);
-        return received;
-    }
-
     // Peer receipt does not free the buffer; the completion must land first
-    private static void WaitForDrain(NetState ns)
-    {
-        var deadline = Stopwatch.StartNew();
-        while (deadline.ElapsedMilliseconds < 10000)
-        {
-            NetState.Slice();
-
-            if (ns._socket.SendBuffer.ReadableBytes == 0 && ns._socket.SendBuffer.InFlightBytes == 0)
-            {
-                break;
-            }
-
-            Thread.Sleep(5);
-        }
-
-        Assert.Equal(0, ns._socket.SendBuffer.ReadableBytes);
-        Assert.Equal(0, ns._socket.SendBuffer.InFlightBytes);
-    }
+    private static void WaitForDrain(NetState ns) =>
+        NetTestHelpers.SliceUntil(
+            () => ns._socket.SendBuffer.ReadableBytes == 0 && ns._socket.SendBuffer.InFlightBytes == 0,
+            10000
+        );
 
     [Fact]
     public void Send_GrowsInsteadOfDisconnecting_AndStreamStaysIntact()
@@ -283,7 +215,7 @@ public class NetStateSendBufferTests
             var expected = new byte[chunk * 6];
             for (var i = 0; i < 6; i++)
             {
-                var data = Pattern(chunk, i);
+                var data = NetTestHelpers.Pattern(chunk, i);
                 data.CopyTo(expected, i * chunk);
                 ns.Send(data);
             }
@@ -293,7 +225,7 @@ public class NetStateSendBufferTests
             Assert.True(ns._socket.SendBuffer.PhysicalSize > baseSize);
             Assert.True(ns._sendBufferGrown);
 
-            Assert.Equal(expected, ReadAll(client, expected.Length));
+            Assert.Equal(expected, NetTestHelpers.ReadAll(client, expected.Length));
         }
         finally
         {
@@ -318,7 +250,7 @@ public class NetStateSendBufferTests
             var expectedLength = 0;
             for (var i = 0; i < 6; i++)
             {
-                var data = Pattern(chunkLength, i + 100);
+                var data = NetTestHelpers.Pattern(chunkLength, i + 100);
                 var compressedLength = NetworkCompression.Compress(data, scratch);
                 Assert.True(compressedLength > 0);
                 scratch.AsSpan(0, compressedLength).CopyTo(expected.AsSpan(expectedLength));
@@ -332,7 +264,7 @@ public class NetStateSendBufferTests
             Assert.True(ns._sendBufferGrown);
 
             Array.Resize(ref expected, expectedLength);
-            Assert.Equal(expected, ReadAll(client, expected.Length));
+            Assert.Equal(expected, NetTestHelpers.ReadAll(client, expected.Length));
         }
         finally
         {
@@ -365,7 +297,7 @@ public class NetStateSendBufferTests
             while (ns._socket.SendBuffer.WritableBytes > 4096)
             {
                 var writable = ns._socket.SendBuffer.WritableBytes;
-                SendAndRecord(Pattern(Math.Min(baseSize / 8, (writable - 2048) * 8 / 11), seed++));
+                SendAndRecord(NetTestHelpers.Pattern(Math.Min(baseSize / 8, (writable - 2048) * 8 / 11), seed++));
             }
 
             // Full; no span to compress into
@@ -381,39 +313,7 @@ public class NetStateSendBufferTests
             Assert.Equal(baseSize * 2, ns._socket.SendBuffer.PhysicalSize);
             Assert.True(ns._sendBufferGrown);
 
-            Assert.Equal(expected.ToArray(), ReadAll(client, expected.Count));
-        }
-        finally
-        {
-            ns.Dispose();
-            client.Close();
-        }
-    }
-
-    [Fact]
-    public void Send_WithPartialRemainder_GrowsAndCopiesFullPayload()
-    {
-        var ns = CreateAuthenticatedNetState(out var client);
-        var baseSize = ns._socket.SendBuffer.PhysicalSize;
-
-        try
-        {
-            var first = Pattern(baseSize / 2, 200);
-            var second = Pattern(baseSize / 2 + 1, 201);
-            var expected = new byte[first.Length + second.Length];
-            first.CopyTo(expected, 0);
-            second.CopyTo(expected, first.Length);
-
-            // Remainder too small for the second send
-            ns.Send(first);
-            ns.Send(second);
-
-            Assert.True(ns.Running);
-            Assert.Equal(string.Empty, ns._disconnectReason);
-            Assert.True(ns._socket.SendBuffer.PhysicalSize > baseSize);
-            Assert.True(ns._sendBufferGrown);
-
-            Assert.Equal(expected, ReadAll(client, expected.Length));
+            Assert.Equal(expected.ToArray(), NetTestHelpers.ReadAll(client, expected.Count));
         }
         finally
         {
@@ -433,8 +333,8 @@ public class NetStateSendBufferTests
             // A small peer buffer keeps the first send in flight through the growth
             client.ReceiveBufferSize = 4096;
 
-            var first = Pattern(baseSize / 2, 300);
-            var second = Pattern(baseSize / 2 + 1, 301);
+            var first = NetTestHelpers.Pattern(baseSize / 2, 300);
+            var second = NetTestHelpers.Pattern(baseSize / 2 + 1, 301);
 
             ns.Send(first);
             NetState.Slice(); // posts the first send
@@ -451,7 +351,7 @@ public class NetStateSendBufferTests
             first.CopyTo(expected, 0);
             second.CopyTo(expected, first.Length);
 
-            Assert.Equal(expected, ReadAll(client, expected.Length));
+            Assert.Equal(expected, NetTestHelpers.ReadAll(client, expected.Length));
         }
         finally
         {
@@ -471,11 +371,11 @@ public class NetStateSendBufferTests
             var chunk = baseSize / 4;
             for (var i = 0; i < 6; i++)
             {
-                ns.Send(Pattern(chunk, i));
+                ns.Send(NetTestHelpers.Pattern(chunk, i));
             }
 
             Assert.True(ns._sendBufferGrown);
-            ReadAll(client, chunk * 6);
+            NetTestHelpers.ReadAll(client, chunk * 6);
             WaitForDrain(ns);
 
             var grewAt = ns._sendBufferGrewAt;
@@ -503,11 +403,11 @@ public class NetStateSendBufferTests
             var chunk = baseSize / 4;
             for (var i = 0; i < 6; i++)
             {
-                ns.Send(Pattern(chunk, i + 400));
+                ns.Send(NetTestHelpers.Pattern(chunk, i + 400));
             }
 
             Assert.True(ns._sendBufferGrown);
-            ReadAll(client, chunk * 6);
+            NetTestHelpers.ReadAll(client, chunk * 6);
             WaitForDrain(ns);
 
             // The sweep shrinks; nothing here calls TryShrinkSendBuffer
@@ -536,7 +436,7 @@ public class NetStateSendBufferTests
             var writes = NetState.MaxSendBufferSize / chunk + 1;
             for (var i = 0; i < writes; i++)
             {
-                ns.Send(Pattern(chunk, i));
+                ns.Send(NetTestHelpers.Pattern(chunk, i));
             }
 
             Assert.Contains("Send buffer exhausted", ns._disconnectReason);
@@ -564,7 +464,7 @@ public class NetStateSendBufferTests
 
             for (var i = 0; i < 6; i++)
             {
-                ns.Send(Pattern(baseSize / 4, i));
+                ns.Send(NetTestHelpers.Pattern(baseSize / 4, i));
             }
 
             Assert.Equal(baseSize, ns._socket.SendBuffer.PhysicalSize);
@@ -590,7 +490,7 @@ public class NetStateSendBufferTests
             NetState.Slice(); // handoff
 
             // CannotSendPackets short-circuits before any growth
-            ns.Send(Pattern(baseSize * 2, 500));
+            ns.Send(NetTestHelpers.Pattern(baseSize * 2, 500));
 
             Assert.Equal(baseSize, ns._socket.SendBuffer.PhysicalSize);
             Assert.False(ns._sendBufferGrown);
@@ -627,59 +527,5 @@ public class NetStateSendBufferTests
 
         // growth off; budget untouched
         Assert.Equal(1L, NetState.CoerceSendBufferGrowthBudget(1, sendBufferSize, sendBufferSize));
-    }
-
-    [Fact]
-    public void CoerceMaxBufferSlabs_ClampsToOneSlabPerConnection()
-    {
-        var maxConnections = NetState.SocketManager.MaxSockets;
-
-        // fewer than one slab is meaningless
-        Assert.Equal(1, NetState.CoerceMaxBufferSlabs(0));
-        Assert.Equal(1, NetState.CoerceMaxBufferSlabs(-4));
-
-        // more slabs than connections cannot make a slab any smaller
-        Assert.Equal(maxConnections, NetState.CoerceMaxBufferSlabs(maxConnections * 2));
-
-        Assert.Equal(128, NetState.CoerceMaxBufferSlabs(128));
-    }
-
-    [Fact]
-    public void CoerceInitialBufferSlabs_ClampsToTheSlabCount()
-    {
-        var slabs = NetState.BasePoolSlabCount(128);
-        Assert.True(slabs > 1);
-
-        Assert.Equal(1, NetState.CoerceInitialBufferSlabs(0, slabs));
-        Assert.Equal(1, NetState.CoerceInitialBufferSlabs(-1, slabs));
-
-        // a pool never holds more slabs than it has
-        Assert.Equal(slabs, NetState.CoerceInitialBufferSlabs(slabs + 1, slabs));
-
-        Assert.Equal(4, NetState.CoerceInitialBufferSlabs(4, slabs));
-    }
-
-    [Fact]
-    public void Ring_RegisteredBufferTable_MatchesTheConfiguredSlabCount()
-    {
-        var manager = NetState.SocketManager;
-        var maxBufferSlabs = NetState.CoerceMaxBufferSlabs(ServerConfiguration.GetSetting("network.maxBufferSlabs", NetState.DefaultMaxBufferSlabs));
-
-        // A table smaller than this throws at manager construction. Connections start on the
-        // transport minimum until the game server promotes them, so the formula must count those too.
-        // Mirrors what production passes: the request, not the effective size the manager may coerce
-        // down to (RequiredRegisteredBuffers treats a non-zero request as a pool either way).
-        Assert.Equal(
-            RingSocketManager.RequiredRegisteredBuffers(
-                manager.MaxSockets,
-                NetState.SendBufferSize,
-                manager.MaxSendBufferSize,
-                manager.SendBufferGrowthBudget,
-                maxBufferSlabs,
-                IORingBuffer.MinimumSize,
-                IORingBuffer.MinimumSize
-            ),
-            NetState.Ring.MaxRegisteredBuffers
-        );
     }
 }

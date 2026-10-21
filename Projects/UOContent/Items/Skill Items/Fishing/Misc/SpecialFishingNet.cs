@@ -10,8 +10,8 @@ namespace Server.Items;
 [SerializationGenerator(0, false)]
 public partial class SpecialFishingNet : Item
 {
-    private static int[] _hues =
-    {
+    private static readonly int[] _hues =
+    [
         0x09B,
         0x0CD,
         0x0D3,
@@ -26,25 +26,19 @@ public partial class SpecialFishingNet : Item
         0x492,
         0x4B5,
         0x8AA
-    };
+    ];
 
-    private static int[] _waterTiles =
-    {
-        0x00A8, 0x00AB,
-        0x0136, 0x0137
-    };
+    private static readonly int[] _waterTiles = [0x00A8, 0x00AB, 0x0136, 0x0137 ];
 
-    private static int[] _shallowWaterTiles =
-    {
-        0x1797, 0x179C
-    };
+    private static readonly int[] _shallowWaterTiles = [0x1797, 0x179C];
 
     [SerializableField(0)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private bool _inUse;
 
     [Constructible]
-    public SpecialFishingNet() : base(0x0DCA) => Hue = Utility.RandomDouble() < 0.01 ? _hues.RandomElement() : 0x8A0;
+    public SpecialFishingNet() : base(0x0DCA) =>
+        Hue = Core.LBR && Utility.RandomDouble() < 0.1 ? _hues.RandomElement() : 0x8A0;
 
     public override double DefaultWeight => 1.0;
 
@@ -322,31 +316,15 @@ public partial class SpecialFishingNet : Item
 
     public static bool FullValidation(Map map, int x, int y)
     {
-        if (!ValidateDeepWater(map, x, y))
+        // Every tile closer than 14 must be water, so land and the edge of the map are at least 14 tiles away.
+        for (var ty = y - 13; ty <= y + 13; ++ty)
         {
-            return false;
-        }
-
-        for (int j = 1, offset = 5; j <= 5; ++j, offset += 5)
-        {
-            if (!ValidateDeepWater(map, x + offset, y + offset))
+            for (var tx = x - 13; tx <= x + 13; ++tx)
             {
-                return false;
-            }
-
-            if (!ValidateDeepWater(map, x + offset, y - offset))
-            {
-                return false;
-            }
-
-            if (!ValidateDeepWater(map, x - offset, y + offset))
-            {
-                return false;
-            }
-
-            if (!ValidateDeepWater(map, x - offset, y - offset))
-            {
-                return false;
+                if (!ValidateDeepWater(map, tx, ty))
+                {
+                    return false;
+                }
             }
         }
 

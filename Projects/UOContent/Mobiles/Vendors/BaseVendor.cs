@@ -31,7 +31,10 @@ namespace Server.Mobiles
         private static readonly ILogger logger = LogFactory.GetLogger(typeof(BaseVendor));
         private const int MaxSell = 500;
 
-        private static readonly TimeSpan InventoryDecayTime = TimeSpan.FromHours(1.0);
+        // One (not all) of the buy packets counts entries in a byte.
+        private const int BuyListLimit = 250;
+
+        private TimerExecutionToken _buybackPurgeToken;
 
         private readonly List<IBuyItemInfo> _buyInfo = new();
         private readonly List<IShopSellInfo> _sellInfo = new();
@@ -71,11 +74,8 @@ namespace Server.Mobiles
             SetSpeed(0.5, 2.0);
 
             // these packs MUST exist, or the client will crash when the packets are sent
-            Container pack = new Backpack { Layer = Layer.ShopBuy, Movable = false, Visible = false };
-            AddItem(pack);
-
-            pack = new Backpack { Layer = Layer.ShopResale, Movable = false, Visible = false };
-            AddItem(pack);
+            AddItem(new VendorBuybackPack());
+            AddItem(new Backpack { Layer = Layer.ShopResale, Movable = false, Visible = false });
 
             LastRestock = Core.Now;
         }
@@ -105,18 +105,77 @@ namespace Server.Mobiles
 
         public override bool ShowFameTitle => false;
 
-        public Container BuyPack
+        public VendorBuybackPack BuyPack
         {
             get
             {
-                if (FindItemOnLayer(Layer.ShopBuy) is not Container pack)
+                var existing = FindItemOnLayer(Layer.ShopBuy);
+
+                if (existing is VendorBuybackPack pack)
                 {
-                    pack = new Backpack { Layer = Layer.ShopBuy, Visible = false };
-                    AddItem(pack);
+                    return pack;
                 }
 
+                // Legacy pack; deleting it stays linear even with a huge backlog.
+                existing?.Delete();
+
+                pack = new VendorBuybackPack();
+                AddItem(pack);
                 return pack;
             }
+        }
+
+        internal bool BuybackPurgeScheduled => _buybackPurgeToken.Running;
+
+        internal static DateTime GetNextBuybackPurge(DateTime lastRestock, TimeSpan restockDelay, DateTime now)
+        {
+            if (restockDelay <= TimeSpan.Zero)
+            {
+                return now;
+            }
+
+            // A backwards clock adjustment can future-date the anchor past RestockDelay.
+            if (lastRestock > now)
+            {
+                lastRestock = now;
+            }
+
+            var next = lastRestock + restockDelay;
+
+            if (next > now)
+            {
+                return next;
+            }
+
+            // Restock is lazy and may be hours overdue; stay on its grid.
+            var periods = (now - lastRestock).Ticks / restockDelay.Ticks + 1;
+            return lastRestock + TimeSpan.FromTicks(restockDelay.Ticks * periods);
+        }
+
+        private void AddToBuyback(Item item, int capacity)
+        {
+            BuyPack.AddBuyback(item, capacity);
+
+            if (!item.Deleted && !_buybackPurgeToken.Running)
+            {
+                var delay = GetNextBuybackPurge(LastRestock, RestockDelay, Core.Now) - Core.Now;
+                Timer.StartTimer(delay, CancelAndPurgeBuyback, out _buybackPurgeToken);
+            }
+        }
+
+        private void PurgeBuyback() => (FindItemOnLayer(Layer.ShopBuy) as VendorBuybackPack)?.Purge();
+
+        // A fired token-bearing timer isn't returned to its pool until its token is cancelled.
+        private void CancelAndPurgeBuyback()
+        {
+            _buybackPurgeToken.Cancel();
+            PurgeBuyback();
+        }
+
+        public override void OnDelete()
+        {
+            _buybackPurgeToken.Cancel();
+            base.OnDelete();
         }
 
         public virtual bool IsTokunoVendor => Map == Map.Tokuno;
@@ -132,6 +191,7 @@ namespace Server.Mobiles
         public virtual void Restock()
         {
             LastRestock = Core.Now;
+            CancelAndPurgeBuyback();
 
             var buyInfo = GetBuyInfo();
 
@@ -427,6 +487,7 @@ namespace Server.Mobiles
 
             var info = GetSellInfo();
             var buyInfo = GetBuyInfo();
+            var buybackCapacity = Math.Max(0, BuyListLimit - buyInfo.Length);
             var GiveGold = 0;
             var Sold = 0;
 
@@ -498,28 +559,14 @@ namespace Server.Mobiles
 
                         if (!found)
                         {
-                            var cont = BuyPack;
+                            var sold = resp.Item;
 
                             if (amount < resp.Item.Amount)
                             {
-                                var item = LiftItemDupe(resp.Item, resp.Item.Amount - amount);
+                                sold = LiftItemDupe(resp.Item, resp.Item.Amount - amount) ?? resp.Item;
+                            }
 
-                                if (item != null)
-                                {
-                                    item.SetLastMoved();
-                                    cont.DropItem(item);
-                                }
-                                else
-                                {
-                                    resp.Item.SetLastMoved();
-                                    cont.DropItem(resp.Item);
-                                }
-                            }
-                            else
-                            {
-                                resp.Item.SetLastMoved();
-                                cont.DropItem(resp.Item);
-                            }
+                            AddToBuyback(sold, buybackCapacity);
                         }
                     }
                     else
@@ -738,6 +785,9 @@ namespace Server.Mobiles
             CheckMorph();
 
             LoadSBInfo();
+
+            // LoadSBInfo re-anchored the restock grid. Not done there since it also runs on deserialize.
+            CancelAndPurgeBuyback();
         }
 
         public virtual int GetRandomNecromancerHue()
@@ -882,7 +932,7 @@ namespace Server.Mobiles
             {
                 var buyItem = buyInfo[idx];
 
-                if (buyItem.Amount <= 0 || list.Count >= 250)
+                if (buyItem.Amount <= 0 || list.Count >= BuyListLimit)
                 {
                     continue;
                 }
@@ -914,21 +964,6 @@ namespace Server.Mobiles
 
             var playerItems = cont.Items;
 
-            for (var i = playerItems.Count - 1; i >= 0; --i)
-            {
-                if (i >= playerItems.Count)
-                {
-                    continue;
-                }
-
-                var item = playerItems[i];
-
-                if (item.LastMoved + InventoryDecayTime <= Core.Now)
-                {
-                    item.Delete();
-                }
-            }
-
             for (var i = 0; i < playerItems.Count; ++i)
             {
                 var item = playerItems[i];
@@ -946,16 +981,12 @@ namespace Server.Mobiles
                     }
                 }
 
-                if (name != null && list.Count < 250)
+                if (name != null && list.Count < BuyListLimit)
                 {
                     list.Add(new BuyItemState(name, cont.Serial, item.Serial, price, item.Amount, item.ItemID, item.Hue));
                     opls.Enqueue(item.PropertyList);
                 }
             }
-
-            // one (not all) of the packets uses a byte to describe number of items in the list.  Osi = dumb.
-            // if (list.Count > 255)
-            // Console.WriteLine( "Vendor Warning: Vendor {0} has more than 255 buy items, may cause client errors!", this );
 
             if (list.Count <= 0)
             {
@@ -988,17 +1019,9 @@ namespace Server.Mobiles
 
         public virtual void SendPacksTo(Mobile from)
         {
-            var pack = FindItemOnLayer(Layer.ShopBuy);
+            from.NetState.SendEquipUpdate(BuyPack);
 
-            if (pack == null)
-            {
-                pack = new Backpack { Layer = Layer.ShopBuy, Movable = false, Visible = false };
-                AddItem(pack);
-            }
-
-            from.NetState.SendEquipUpdate(pack);
-
-            pack = FindItemOnLayer(Layer.ShopSell);
+            var pack = FindItemOnLayer(Layer.ShopSell);
 
             if (pack != null)
             {
@@ -1305,6 +1328,20 @@ namespace Server.Mobiles
         private void AfterDeserialization()
         {
             LoadSBInfo();
+
+            if (FindItemOnLayer(Layer.ShopBuy) is not VendorBuybackPack)
+            {
+                // Deleting during deserialization is unsafe; replace on the first tick.
+                Timer.StartTimer(
+                    () =>
+                    {
+                        if (!Deleted)
+                        {
+                            _ = BuyPack;
+                        }
+                    }
+                );
+            }
 
             if (IsParagon)
             {

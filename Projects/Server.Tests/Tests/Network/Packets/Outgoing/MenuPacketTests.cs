@@ -42,13 +42,7 @@ public class MenuPacketTests
             ]
         );
 
-        var expected = new DisplayItemListMenu(menu).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendDisplayItemListMenu(menu);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new DisplayItemListMenu(menu), ns => ns.SendDisplayItemListMenu(menu));
     }
 
     [Fact]
@@ -63,12 +57,7 @@ public class MenuPacketTests
             ]
         );
 
-        var expected = new DisplayQuestionMenu(menu).Compile();
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendDisplayQuestionMenu(menu);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new DisplayQuestionMenu(menu), ns => ns.SendDisplayQuestionMenu(menu));
     }
 
     [Theory]
@@ -84,18 +73,12 @@ public class MenuPacketTests
         var item = new ContextMenuItem(World.NewItem, newPacket);
         var menu = ContextMenuSystem.CreateContextMenu(m, item);
 
-        var packet = newHaven && newPacket ? (Packet)new DisplayContextMenu(menu) : new DisplayContextMenuOld(menu);
-        var expected = packet.Compile();
+        var expected = newHaven && newPacket ? (Packet)new DisplayContextMenu(menu) : new DisplayContextMenuOld(menu);
 
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        if (newHaven)
-        {
-            ns.ProtocolChanges |= ProtocolChanges.NewHaven;
-        }
-
-        ns.SendDisplayContextMenu(menu);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(
+            expected,
+            ns => ns.SendDisplayContextMenu(menu),
+            newHaven ? ProtocolChanges.NewHaven : ProtocolChanges.None
+        );
     }
 }

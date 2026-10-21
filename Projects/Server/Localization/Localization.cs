@@ -68,7 +68,9 @@ public static class Localization
             return false;
         }
 
-        if (entries.Count == 0)
+        // The fallback table stays registered even when empty: _fallbackEntries points at it, and a
+        // replacement created by a later Add would be invisible to fallback lookups.
+        if (entries.Count == 0 && entries != _fallbackEntries)
         {
             _localizations.Remove(lang);
         }

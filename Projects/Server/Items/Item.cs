@@ -922,7 +922,10 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         }
 
         var info = LookupCompactInfo();
-        var items = LookupItems();
+        // Skipping containers never write their child serials: those children are not saved as
+        // top-level records (see SkipSerialization), so a written serial can be handed to an
+        // unrelated new item during the next load's synchronous deserialize loop.
+        var items = this is Container { SkipsChildSerialization: true } ? EmptyItems : LookupItems();
 
         if (m_Direction != Direction.North)
         {
@@ -1185,6 +1188,11 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         // are final yet.
         LastMoved = Core.Now;
 
+        // A parented item's removal already reached every client that was sent it (root, trade
+        // parties, openers) via RemoveItem below; sending another remove at oldLocation would
+        // broadcast it to bystanders who never knew about it.
+        var wasContained = Parent != null;
+
         if (Parent is Mobile mobile)
         {
             mobile.RemoveItem(this);
@@ -1202,7 +1210,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
             {
                 m_Map.OnLeave(this);
 
-                if (oldLocation.m_X != 0)
+                if (!wasContained && oldLocation.m_X != 0)
                 {
                     SendRemovePacket(oldLocation);
                 }
@@ -1278,7 +1286,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         }
         else if (m_Map != null)
         {
-            if (oldLocation.m_X != 0)
+            if (!wasContained && oldLocation.m_X != 0)
             {
                 var removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
 
@@ -1344,7 +1352,12 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
                         m_Map.OnLeave(this);
                     }
 
-                    SendRemovePacket();
+                    if (m_Parent is not Container)
+                    {
+                        // A contained item only changes map along with its parent or root; their own
+                        // removal already clears this subtree for every client that knew about it.
+                        SendRemovePacket();
+                    }
                 }
 
                 var items = LookupItems();
@@ -1479,6 +1492,43 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
             return;
         }
 
+        // A properties-only invalidation (no Update) on a private child must stay as scoped as every
+        // other private-child send, otherwise a bystander who was never sent the item learns its OPL hash.
+        if (!update && ObjectPropertyList.Enabled && (flags & ItemDelta.Properties) != 0 &&
+            TryGetPrivateParent(out var cont))
+        {
+            GetPrivateChildRecipients(cont, out var root, out var tradeFrom, out var tradeTo);
+
+            SendPrivateOplTo(root, worldLoc);
+
+            if (tradeFrom != root)
+            {
+                SendPrivateOplTo(tradeFrom, worldLoc);
+            }
+
+            if (tradeTo != root && tradeTo != tradeFrom)
+            {
+                SendPrivateOplTo(tradeTo, worldLoc);
+            }
+
+            var privateOpeners = cont.Openers;
+
+            if (privateOpeners != null)
+            {
+                for (var i = 0; i < privateOpeners.Count; ++i)
+                {
+                    var mob = privateOpeners[i];
+
+                    if (mob != root && mob != tradeFrom && mob != tradeTo)
+                    {
+                        SendPrivateOplTo(mob, worldLoc);
+                    }
+                }
+            }
+
+            return;
+        }
+
         // A second item sharing an equipment layer is omitted by SendMobileIncoming (0x78);
         // sending it on its own via EquipUpdate/OPL would leave the client with two items on
         // one slot. Skip the per-client sends entirely for the dupe.
@@ -1581,7 +1631,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         ClearProperties();
     }
 
-    public virtual bool SkipSerialization => false;
+    public virtual bool SkipSerialization => m_Parent is Container { SkipsChildSerialization: true };
 
     [IgnoreDupe]
     public ISpawner Spawner
@@ -2926,6 +2976,13 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
                             m_Parent = null;
                         }
 
+                        // A skipping container never wrote its children's serials (see Serialize), so this
+                        // item's frozen parent reference is stale/unreachable: treat it as a missing parent.
+                        if (m_Parent is Container { SkipsChildSerialization: true })
+                        {
+                            m_Parent = null;
+                        }
+
                         if (m_Parent == null && (parent.IsMobile || parent.IsItem))
                         {
                             Timer.DelayCall(Delete);
@@ -3085,6 +3142,13 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
                             m_Parent = World.FindItem(parent);
                         }
                         else
+                        {
+                            m_Parent = null;
+                        }
+
+                        // A skipping container never wrote its children's serials (see Serialize), so this
+                        // item's frozen parent reference is stale/unreachable: treat it as a missing parent.
+                        if (m_Parent is Container { SkipsChildSerialization: true })
                         {
                             m_Parent = null;
                         }
@@ -3552,8 +3616,19 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
     {
         var items = LookupItems();
 
-        if (items.Remove(item))
+        // Bulk removal (Delete, purges) walks children back to front; finding the tail in O(1) keeps
+        // deleting a large container linear instead of quadratic.
+        var index = items.Count - 1;
+
+        if (index < 0 || !ReferenceEquals(items[index], item))
         {
+            index = items.IndexOf(item);
+        }
+
+        if (index >= 0)
+        {
+            items.RemoveAt(index);
+
             if (this is not Container)
             {
                 AcquireCompactInfo().Version++;
@@ -4018,6 +4093,43 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
         var removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
 
+        if (TryGetPrivateParent(out var cont))
+        {
+            // Private children are only ever sent to these recipients (see ProcessDelta); nobody else knows them.
+            OutgoingEntityPackets.CreateRemoveEntity(removeEntity, Serial);
+
+            GetPrivateChildRecipients(cont, out var root, out var tradeFrom, out var tradeTo);
+
+            SendRemoveTo(root, worldLoc, removeEntity);
+
+            if (tradeFrom != root)
+            {
+                SendRemoveTo(tradeFrom, worldLoc, removeEntity);
+            }
+
+            if (tradeTo != root && tradeTo != tradeFrom)
+            {
+                SendRemoveTo(tradeTo, worldLoc, removeEntity);
+            }
+
+            var openers = cont.Openers;
+
+            if (openers != null)
+            {
+                for (var i = 0; i < openers.Count; ++i)
+                {
+                    var mob = openers[i];
+
+                    if (mob != root && mob != tradeFrom && mob != tradeTo)
+                    {
+                        SendRemoveTo(mob, worldLoc, removeEntity);
+                    }
+                }
+            }
+
+            return;
+        }
+
         foreach (var state in m_Map.GetClientsInRange(worldLoc, GetMaxUpdateRange()))
         {
             var m = state.Mobile;
@@ -4028,6 +4140,78 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
                 state.Send(removeEntity);
             }
         }
+    }
+
+    private void SendRemoveTo(Mobile m, Point3D worldLoc, ReadOnlySpan<byte> removeEntity)
+    {
+        if (m?.NetState != null && m.Map == m_Map && m.InRange(worldLoc, GetUpdateRange(m)))
+        {
+            m.NetState.Send(removeEntity);
+        }
+    }
+
+    // Same recipient gate as SendRemoveTo, plus CanSee: this is an informational OPL push, not
+    // cleanup of a reference the client may already hold regardless of visibility.
+    private void SendPrivateOplTo(Mobile m, Point3D worldLoc)
+    {
+        var ns = m?.NetState;
+
+        if (ns != null && m.CanSee(this) && m.Map == m_Map && m.InRange(worldLoc, GetUpdateRange(m)))
+        {
+            SendOPLPacketTo(ns);
+        }
+    }
+
+    // Shared with IsSentTo so the private-child guard and recipient set (root/trade/openers) each live
+    // in one place.
+    private bool TryGetPrivateParent(out Container cont)
+    {
+        cont = m_Parent as Container;
+        return cont != null && !cont.IsPublicContainer && !cont.IsChildPublic(this);
+    }
+
+    private void GetPrivateChildRecipients(Container cont, out Mobile root, out Mobile tradeFrom, out Mobile tradeTo)
+    {
+        root = cont.RootParent as Mobile;
+
+        var trade = GetSecureTradeCont()?.Trade;
+        // Trade.From/To are unassigned while SecureTrade's own constructor is still adding the
+        // VirtualCheck to each side's container, so both must stay null-conditional.
+        tradeFrom = trade?.From?.Mobile;
+        tradeTo = trade?.To?.Mobile;
+    }
+
+    /// <summary>
+    /// Whether <paramref name="m"/>'s client is expected to hold this item; gates resends keyed by a
+    /// client-supplied serial.
+    /// </summary>
+    public bool IsSentTo(Mobile m)
+    {
+        if (m == null || Deleted)
+        {
+            return false;
+        }
+
+        if (TryGetPrivateParent(out var cont))
+        {
+            GetPrivateChildRecipients(cont, out var root, out var tradeFrom, out var tradeTo);
+
+            if (m == root)
+            {
+                // Mirrors ProcessDelta's own root gate: CanSee and in range.
+                return m.CanSee(this) && m.InRange(GetWorldLocation(), GetUpdateRange(m));
+            }
+
+            var isTradeOrOpener = m == tradeFrom || m == tradeTo || cont.Openers?.Contains(m) == true;
+
+            // Trade parties and openers are re-validated against ProcessDelta's own gate (CanSee,
+            // current map, update range), so an invisible item or a stale Openers entry that hasn't
+            // been pruned yet never resyncs to them.
+            return isTradeOrOpener && m.CanSee(this) && m.Map == m_Map &&
+                   m.InRange(GetWorldLocation(), GetUpdateRange(m));
+        }
+
+        return m.CanSee(this) && m.InRange(GetWorldLocation(), GetUpdateRange(m));
     }
 
     public virtual int GetDropSound() => -1;

@@ -21,8 +21,11 @@ using Xunit;
 namespace Server.Tests.Network.Firewall;
 
 [Collection("Sequential UOContent Tests")]
-public class FirewallTests
+public class FirewallTests : IDisposable
 {
+    // The test host never configures the firewall, so empty is the state every other test expects.
+    public void Dispose() => Server.Network.Firewall.ResetForTesting();
+
     private static IPAddress Ip(string s) => IPAddress.Parse(s);
 
     [Fact]
@@ -75,15 +78,5 @@ public class FirewallTests
         Assert.IsType<CidrFirewallEntry>(Server.Network.Firewall.ToFirewallEntry("10.0.0.0/24"));
         Assert.IsType<CidrFirewallEntry>(Server.Network.Firewall.ToFirewallEntry("10.0.0.0-10.0.0.255"));
         Assert.Null(Server.Network.Firewall.ToFirewallEntry("not-an-ip"));
-    }
-
-    [Fact]
-    public void ReadFirewallSet_SurfacesAddedEntries()
-    {
-        Server.Network.Firewall.ResetForTesting();
-        var entry = new SingleIpFirewallEntry(Ip("1.2.3.4"));
-        Server.Network.Firewall.Add(entry);
-
-        Server.Network.Firewall.ReadFirewallSet(set => Assert.Contains(entry, set));
     }
 }

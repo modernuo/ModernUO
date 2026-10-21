@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Reflection;
 using Server.Configurations;
 using Server.Misc;
 using Xunit;
@@ -7,13 +8,22 @@ using Xunit;
 namespace UOContent.Tests;
 
 [Collection("Sequential UOContent Tests")]
-public class EmailTests
+public class EmailTests : IDisposable
 {
+    private static readonly PropertyInfo _emailEnabled =
+        typeof(EmailConfiguration).GetProperty(nameof(EmailConfiguration.EmailEnabled));
+
+    private readonly bool _savedEmailEnabled = EmailConfiguration.EmailEnabled;
+
+    // Pinned off rather than read from the host's email.json, so a developer config with email
+    // enabled cannot turn these into real sends.
+    public EmailTests() => _emailEnabled.SetValue(null, false);
+
+    public void Dispose() => _emailEnabled.SetValue(null, _savedEmailEnabled);
+
     [Fact]
     public void SendCrashEmailDoesNothingWhileEmailIsDisabled()
     {
-        Assert.False(EmailConfiguration.EmailEnabled, "The test host never enables email");
-
         // Missing input must be ignored while email is disabled.
         var report = Path.Combine(Path.GetTempPath(), $"crash-email-test-{Guid.NewGuid():N}", "Crash.log");
 
@@ -23,8 +33,7 @@ public class EmailTests
     [Fact]
     public void SendQueueEmailDoesNothingWhileEmailIsDisabled()
     {
-        Assert.False(EmailConfiguration.EmailEnabled, "The test host never enables email");
-
+        // A null entry would throw on the enabled path, so returning cleanly shows the guard held.
         Email.SendQueueEmail(null, "Other");
     }
 

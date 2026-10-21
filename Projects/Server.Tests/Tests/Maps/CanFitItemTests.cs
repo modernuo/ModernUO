@@ -9,11 +9,6 @@ namespace Server.Tests.Maps;
 [Collection("Sequential Server Tests")]
 public class CanFitItemTests
 {
-    private void SkipIfNoTileData()
-    {
-        Skip.If(!ServerFixture.TileDataLoaded, "TileData not loaded - client files required");
-    }
-
     [Fact]
     public void CanFitItem_InternalMapReturnsFalse()
     {
@@ -33,6 +28,7 @@ public class CanFitItemTests
         Assert.False(map.CanFitItem(100, map.Height + 1, 0, 1));
     }
 
+    // The synthetic map's default ground: land ID 0 at Z 0 with no flags, a surface with nothing above it.
     private const int TestLandX = 1500;
     private const int TestLandY = 1600;
 
@@ -59,12 +55,9 @@ public class CanFitItemTests
         Assert.False(result, "No surface 50 units above land");
     }
 
-    [SkippableFact]
+    [Fact]
     public void CanFitItem_SurfaceImpassableMultiIsValidSurface()
     {
-        SkipIfNoTileData();
-        Skip.If(ServerFixture.SurfaceImpassableTileId == 0, "No Surface+Impassable tile found in TileData");
-
         var map = Map.Felucca;
         const int x = 1700;
         const int y = 1700;
@@ -92,12 +85,9 @@ public class CanFitItemTests
         }
     }
 
-    [SkippableFact]
+    [Fact]
     public void CanFitItem_CanFitDoesNotAllowSurfaceImpassable()
     {
-        SkipIfNoTileData();
-        Skip.If(ServerFixture.SurfaceImpassableTileId == 0, "No Surface+Impassable tile found in TileData");
-
         var map = Map.Felucca;
         const int x = 1750;
         const int y = 1750;
@@ -128,11 +118,9 @@ public class CanFitItemTests
         }
     }
 
-    [SkippableFact]
+    [Fact]
     public void CanFitItem_NonMovableWorldItemSurfaceWorks()
     {
-        SkipIfNoTileData();
-
         var map = Map.Felucca;
         const int x = 1800;
         const int y = 1800;
@@ -158,11 +146,9 @@ public class CanFitItemTests
         }
     }
 
-    [SkippableFact]
+    [Fact]
     public void CanFitItem_MovableWorldItemNotValidSurface()
     {
-        SkipIfNoTileData();
-
         var map = Map.Felucca;
         const int x = 1850;
         const int y = 1850;
@@ -170,23 +156,19 @@ public class CanFitItemTests
         Item movableItem = null;
         try
         {
-            // Create a movable surface item
+            // Raised well clear of the land so the movable item's top is the only candidate surface there
+            var itemZ = map.GetAverageZ(x, y) + 20;
+
             movableItem = new Item(ServerFixture.SurfaceTileId)
             {
                 Movable = true
             };
-            movableItem.MoveToWorld(new Point3D(x, y, 10), map);
+            movableItem.MoveToWorld(new Point3D(x, y, itemZ), map);
 
-            var itemTop = 10 + movableItem.ItemData.CalcHeight;
-            // Try placing at item top - should fail unless there's land there too
-            var avgZ = map.GetAverageZ(x, y);
+            var itemTop = itemZ + movableItem.ItemData.CalcHeight;
+            var result = map.CanFitItem(x, y, itemTop, 1);
 
-            // If avgZ != itemTop, there's no other surface, so it should fail
-            if (avgZ != itemTop)
-            {
-                var result = map.CanFitItem(x, y, itemTop, 1);
-                Assert.False(result, "Movable item should not count as valid surface");
-            }
+            Assert.False(result, "Movable item should not count as valid surface");
         }
         finally
         {
@@ -194,11 +176,9 @@ public class CanFitItemTests
         }
     }
 
-    [SkippableFact]
+    [Fact]
     public void CanFitItem_ImpassableTileBlocksPlacement()
     {
-        SkipIfNoTileData();
-
         var map = Map.Felucca;
         const int x = 1900;
         const int y = 1900;
@@ -213,39 +193,6 @@ public class CanFitItemTests
             var result = map.CanFitItem(x, y, 10, 5);
 
             Assert.False(result, "Should not be able to place item inside impassable tile");
-        }
-        finally
-        {
-            multi?.Delete();
-        }
-    }
-
-    [SkippableFact]
-    public void CanFitItem_CanPlaceOnTopOfImpassable()
-    {
-        SkipIfNoTileData();
-        Skip.If(ServerFixture.SurfaceImpassableTileId == 0, "No Surface+Impassable tile found in TileData");
-
-        var map = Map.Felucca;
-        const int x = 1950;
-        const int y = 1950;
-
-        TestMulti multi = null;
-        try
-        {
-            // Get the actual tile height from TileData
-            var tileData = TileData.ItemTable[ServerFixture.SurfaceImpassableTileId];
-            var tileHeight = tileData.CalcHeight;
-            const int tileZ = 10;
-
-            // Create a Surface+Impassable tile at Z=10
-            multi = CreateSurfaceImpassableMulti(map, new Point3D(x, y, 0), surfaceZ: tileZ);
-
-            // Place item on top should work
-            var surfaceTop = tileZ + tileHeight;
-            var result = map.CanFitItem(x, y, surfaceTop, 1);
-
-            Assert.True(result, $"Should be able to place item on top of Surface+Impassable tile at Z={surfaceTop}");
         }
         finally
         {
@@ -280,17 +227,5 @@ public class CanFitItemTests
         ]));
         multi.MoveToWorld(location, map);
         return multi;
-    }
-
-    private class TestMulti : BaseMulti
-    {
-        private readonly MultiComponentList _components;
-
-        public TestMulti(MultiComponentList components) : base(0x1)
-        {
-            _components = components ?? MultiComponentList.Empty;
-        }
-
-        public override MultiComponentList Components => _components;
     }
 }

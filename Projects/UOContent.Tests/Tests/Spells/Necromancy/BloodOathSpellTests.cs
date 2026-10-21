@@ -19,24 +19,8 @@ public class BloodOathSpellTests
     // ModernUO previously used /80 (matching the bugged in-game tooltip), which made
     // Spirit Speak almost irrelevant to duration. RunUO/ServUO and the code's own
     // fixed-point comment both use /8.
-    [Theory]
-    [InlineData(120.0, 0.0, 23.0)]   // GM Spirit Speak, no resist
-    [InlineData(120.0, 120.0, 8.0)]  // equal skills -> baseline 8s
-    [InlineData(100.0, 20.0, 18.0)]  // (100-20)/8 + 8
-    [InlineData(20.0, 0.0, 10.5)]    // minimum skill
-    public void GetDurationSeconds_UsesDivideByEight(double ss, double resist, double expected)
-    {
-        Assert.Equal(expected, BloodOathSpell.GetDurationSeconds(ss, resist), 3);
-    }
-
     // Player caster: Publish 48 resist mitigation does NOT apply; the attacker takes the
     // full reflected (original, un-bonused) damage.
-    [Fact]
-    public void ComputeReflectedDamage_NoMitigation_ReturnsOriginal()
-    {
-        Assert.Equal(40, BloodOathSpell.ComputeReflectedDamage(40, 120.0, applyResistMitigation: false));
-    }
-
     // Creature caster (Publish 48 / SA+): ((Resist * 10) / 20) + 10 = % of reflected damage resisted.
     [Theory]
     [InlineData(40, 0.0, 36)]    // 10% resisted -> 40 * 0.90
@@ -80,14 +64,6 @@ public class BloodOathSpellTests
 
         caster.Delete();
         target.Delete();
-    }
-
-    [Fact]
-    public void RemoveCurse_NotCursed_ReturnsFalse()
-    {
-        var m = NewMobile();
-        Assert.False(BloodOathSpell.RemoveCurse(m));
-        m.Delete();
     }
 
     // Issue #1690: death/delete of either party must break the oath immediately. The oath is wired

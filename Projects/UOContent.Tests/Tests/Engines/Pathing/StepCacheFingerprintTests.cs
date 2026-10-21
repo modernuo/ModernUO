@@ -1,4 +1,6 @@
+using System.IO;
 using Server.Engines.Pathing.Cache;
+using Server.Tests.Terrain;
 using Xunit;
 
 namespace Server.Tests.Pathfinding;
@@ -22,7 +24,7 @@ public class StepCacheFingerprintTests
 
         var before = StepCacheFile.ComputeFingerprint(mapId);
 
-        const int probeId = 0x2A0;
+        const int probeId = TestTiles.Wall;
         var original = TileData.ItemTable[probeId].Flags;
         try
         {
@@ -38,6 +40,32 @@ public class StepCacheFingerprintTests
         finally
         {
             TileData.ItemTable[probeId].Flags = original;
+        }
+    }
+
+    /// <summary>
+    /// The other half of the contract: the fingerprint does change when the file does, so a client patch
+    /// that shifts one tile flag invalidates a bake made against the old file.
+    /// </summary>
+    [Fact]
+    public void TileDataFileHash_ChangesWhenOneFlagChanges()
+    {
+        var directory = Directory.CreateTempSubdirectory("modernuo-fingerprint-").FullName;
+        try
+        {
+            var original = SyntheticTileData.WriteTo(Directory.CreateDirectory(Path.Combine(directory, "a")).FullName);
+            var rewritten = SyntheticTileData.WriteTo(Directory.CreateDirectory(Path.Combine(directory, "b")).FullName);
+            var patched = SyntheticTileData.WriteTo(
+                Directory.CreateDirectory(Path.Combine(directory, "c")).FullName,
+                flags => flags[TestTiles.Wall] ^= TileFlag.NoShoot
+            );
+
+            Assert.Equal(StepCacheFile.HashTileDataFile(original), StepCacheFile.HashTileDataFile(rewritten));
+            Assert.NotEqual(StepCacheFile.HashTileDataFile(original), StepCacheFile.HashTileDataFile(patched));
+        }
+        finally
+        {
+            Directory.Delete(directory, true);
         }
     }
 }

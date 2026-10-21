@@ -12,25 +12,13 @@ public class CombatPacketTests
         var attacker = (Serial)0x1024;
         var defender = (Serial)0x2048;
 
-        var expected = new Swing(attacker, defender).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendSwing(attacker, defender);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new Swing(attacker, defender), ns => ns.SendSwing(attacker, defender));
     }
 
     [Theory, InlineData(true), InlineData(false)]
     public void TestSetWarMode(bool warmode)
     {
-        var expected = new SetWarMode(warmode).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendSetWarMode(warmode);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new SetWarMode(warmode), ns => ns.SendSetWarMode(warmode));
     }
 
     [Fact]
@@ -38,12 +26,6 @@ public class CombatPacketTests
     {
         var serial = (Serial)0x1024;
 
-        var expected = new ChangeCombatant(serial).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendChangeCombatant(serial);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new ChangeCombatant(serial), ns => ns.SendChangeCombatant(serial));
     }
 }

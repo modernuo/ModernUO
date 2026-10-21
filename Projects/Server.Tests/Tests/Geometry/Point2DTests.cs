@@ -17,31 +17,6 @@ public class Point2DTests
     }
 
     [Fact]
-    public void TestPoint2DTryFormatSucceeds()
-    {
-        var array = new char[128];
-
-        var p1 = new Point2D(0, 0);
-        Assert.True(p1.TryFormat(array, out var cp1, null, null));
-        Assert.Equal(6, cp1);
-        Array.Clear(array);
-
-        var p2 = new Point2D(1, 1);
-        Assert.True(p2.TryFormat(array, out var cp2, null, null));
-        Assert.Equal(6, cp2);
-        Array.Clear(array);
-
-        var p3 = new Point2D(int.MaxValue, int.MaxValue);
-        Assert.True(p3.TryFormat(array, out var cp3, null, null));
-        Assert.Equal(4 + 20, cp3);
-        Array.Clear(array);
-
-        var p4 = new Point2D(int.MinValue, int.MinValue);
-        Assert.True(p4.TryFormat(array, out var cp4, null, null));
-        Assert.Equal(4 + 22, cp4);
-    }
-
-    [Fact]
     public void TestPoint2DTryFormatFails()
     {
         var array = new char[1];

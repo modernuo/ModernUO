@@ -216,14 +216,20 @@ internal static class StepCacheFile
         var path = Core.FindDataFile("tiledata.mul", false);
         if (path != null)
         {
-            using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-            var hasher = HashUtility.CreateXxHash3();
-            hasher.Append(fs);
-            _tileDataFileFingerprint = hasher.GetCurrentHashAsUInt64();
+            _tileDataFileFingerprint = HashTileDataFile(path);
         }
 
         _tileDataFileFingerprintComputed = true;
         return _tileDataFileFingerprint;
+    }
+
+    /// <summary>XxHash3 of the bytes of the tiledata file at <paramref name="path"/>.</summary>
+    internal static ulong HashTileDataFile(string path)
+    {
+        using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+        var hasher = HashUtility.CreateXxHash3();
+        hasher.Append(fs);
+        return hasher.GetCurrentHashAsUInt64();
     }
 
     /// <summary>

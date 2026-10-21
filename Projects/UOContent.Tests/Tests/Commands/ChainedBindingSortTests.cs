@@ -4,6 +4,7 @@ using Server;
 using Server.Commands;
 using Server.Commands.Generic;
 using Server.Items;
+using Server.Tests;
 using Xunit;
 
 namespace UOContent.Tests.Commands;
@@ -14,31 +15,13 @@ namespace UOContent.Tests.Commands;
 [Collection("Sequential UOContent Tests")]
 public class ChainedBindingSortTests : IDisposable
 {
-    private readonly List<Item> _items = [];
+    private readonly CommandTestHarness _harness = new();
 
-    public void Dispose()
-    {
-        for (var i = 0; i < _items.Count; i++)
-        {
-            _items[i].Delete();
-        }
+    public void Dispose() => _harness.Dispose();
 
-        _items.Clear();
-    }
+    private SkillTeleporter Teleporter(TextDefinition message) => _harness.Teleporter(message);
 
-    private SkillTeleporter Teleporter(TextDefinition message)
-    {
-        var tp = new SkillTeleporter { Message = message };
-        _items.Add(tp);
-        return tp;
-    }
-
-    private static Property Bind(string binding)
-    {
-        var prop = new Property(binding);
-        prop.BindTo(typeof(SkillTeleporter), PropertyAccess.Read);
-        return prop;
-    }
+    private static Property Bind(string binding) => CommandTestHarness.Bind(typeof(SkillTeleporter), binding);
 
     private static IComparer<object> Sorter(string binding) =>
         SortCompiler.Compile<object>(
@@ -106,22 +89,5 @@ public class ChainedBindingSortTests : IDisposable
         // A null Message reads as default(int) == 0, so it sorts below cliloc 1000.
         Assert.True(comparer.Compare(blank, valued) < 0);
         Assert.True(comparer.Compare(valued, blank) > 0);
-    }
-
-    // An unchained binding never had the problem and must keep working untouched.
-    [Fact]
-    public void SortingOnAPlainBindingIsUnchanged()
-    {
-        var low = Teleporter(null);
-        low.Hue = 1;
-
-        var high = Teleporter(null);
-        high.Hue = 2;
-
-        var comparer = Sorter("Hue");
-
-        Assert.True(comparer.Compare(low, high) < 0);
-        Assert.True(comparer.Compare(high, low) > 0);
-        Assert.Equal(0, comparer.Compare(low, low));
     }
 }

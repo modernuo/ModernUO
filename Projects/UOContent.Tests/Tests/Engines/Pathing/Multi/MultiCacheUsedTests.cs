@@ -1,3 +1,5 @@
+using Server.Tests.Terrain;
+using System;
 using Server.Engines.Pathing.Cache;
 using Server.PathAlgorithms;
 using Server.Systems.FeatureFlags;
@@ -6,10 +8,14 @@ using Xunit;
 namespace Server.Tests.Pathfinding;
 
 [Collection("Sequential Pathfinding Tests")]
-public class MultiCacheUsedTests
+public class MultiCacheUsedTests : IDisposable
 {
     private const int MapId = 1;            // Trammel
-    private const int GuildHouseId = 0x74;
+    private const int GuildHouseId = TestMultis.GuildHouse;
+
+    private readonly StepCacheStateScope _cacheState = new();
+
+    public void Dispose() => _cacheState.Dispose();
 
     [Fact]
     public void PathNearMulti_IncrementsMultiLocalHits()
@@ -19,7 +25,6 @@ public class MultiCacheUsedTests
         var houseLoc = new Point3D(1480, 1620, (sbyte)z);
         var multi = new TestMulti(GuildHouseId);
 
-        var cacheWas = ContentFeatureFlags.BitmapPathfindingCache;
         ContentFeatureFlags.BitmapPathfindingCache = true;
 
         var mover = MultiTestSupport.GetWalkerOracle(map, new Point3D(1480, 1630, (sbyte)z));
@@ -44,7 +49,6 @@ public class MultiCacheUsedTests
         {
             mover.Delete();
             multi.Delete();
-            ContentFeatureFlags.BitmapPathfindingCache = cacheWas;
         }
     }
 }

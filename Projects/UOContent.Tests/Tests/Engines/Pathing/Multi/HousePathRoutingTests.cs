@@ -1,3 +1,5 @@
+using Server.Tests.Terrain;
+using System;
 using Server.Engines.Pathing.Cache;
 using Server.Items;
 using Server.Mobiles;
@@ -9,25 +11,21 @@ using CalcMoves = Server.Movement.Movement;
 namespace Server.Tests.Pathfinding;
 
 [Collection("Sequential Pathfinding Tests")]
-public class HousePathRoutingTests
+public class HousePathRoutingTests : IDisposable
 {
     private readonly ITestOutputHelper _output;
+    private readonly StepCacheStateScope _cacheState = new();
 
     public HousePathRoutingTests(ITestOutputHelper output) => _output = output;
 
+    public void Dispose() => _cacheState.Dispose();
+
     private const int MapId = 1;
 
-    private sealed class WalkerStub : Mobile
-    {
-        public WalkerStub() => Body = 0xC9;
-    }
-
-    [SkippableFact]
+    [Fact]
     public void PathAround_NeverTraversesAWallCell()
     {
-        TileDataRequirement.SkipIfMissing();
         StepCache.Instance.Clear();
-        var prevThreshold = StepCache.Instance.MissPromotionThreshold;
         StepCache.Instance.MissPromotionThreshold = 1;
         var map = Map.Maps[MapId];
         Assert.NotNull(map);
@@ -38,7 +36,7 @@ public class HousePathRoutingTests
         const int gx = 1480, gy = 1610;
 
         map.GetAverageZ(hx, hy, out _, out var hz, out _);
-        var multi = new TestMulti(0x74);
+        var multi = new TestMulti(TestMultis.GuildHouse);
         multi.MoveToWorld(new Point3D(hx, hy, (sbyte)hz), map);
 
         var wall = MultiArt.FindWallCell(multi);
@@ -69,23 +67,21 @@ public class HousePathRoutingTests
         }
         finally
         {
-            StepCache.Instance.MissPromotionThreshold = prevThreshold;
             walker.Delete();
             multi.Delete();
         }
     }
 
-    [SkippableFact]
+    [Fact]
     public void Demolish_ReopensCoveredCells()
     {
-        TileDataRequirement.SkipIfMissing();
         StepCache.Instance.Clear();
         var map = Map.Maps[MapId];
         Assert.NotNull(map);
 
         const int hx = 1480, hy = 1620;
         map.GetAverageZ(hx, hy, out _, out var hz, out _);
-        var multi = new TestMulti(0x74);
+        var multi = new TestMulti(TestMultis.GuildHouse);
         multi.MoveToWorld(new Point3D(hx, hy, (sbyte)hz), map);
 
         // Find a wall cell that is blocked purely by the multi — not by underlying static/land

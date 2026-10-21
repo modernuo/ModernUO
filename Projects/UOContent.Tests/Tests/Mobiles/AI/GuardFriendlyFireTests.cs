@@ -11,10 +11,23 @@ public class GuardFriendlyFireTests : IDisposable
 {
     private readonly List<Mobile> _created = [];
 
+    // AI_Mage stands in for a shipped caster: MageAI's combat loop has its own reacquire path.
+    private sealed class MagePet : BaseCreature
+    {
+        public MagePet() : base(AIType.AI_Mage, FightMode.Closest, 10, 1) => Body = 0xC8;
+
+        public override void GetSpeeds(out double activeSpeed, out double passiveSpeed)
+        {
+            activeSpeed = 0.2;
+            passiveSpeed = 0.4;
+        }
+    }
+
     private (PlayerMobile owner, PetTestStub pet) Spawn()
     {
-        Skip.If(!Server.Tests.TestServerInitializer.TileDataLoaded, "Requires UO client map data.");
         var z = Map.Felucca.GetAverageZ(1500, 1600);
+        // The constructed PlayerMobile, not PetTestSetup's deserialization-shaped one: the harmful
+        // checks read PermaFlags, which only the full constructor allocates.
         var owner = new PlayerMobile();
         owner.MoveToWorld(new Point3D(1500, 1600, z), Map.Felucca);
         _created.Add(owner);
@@ -34,7 +47,7 @@ public class GuardFriendlyFireTests : IDisposable
         return pet;
     }
 
-    [SkippableFact]
+    [Fact]
     public void GuardFallbackDoesNotAcquireItsOwner()
     {
         var (owner, pet) = Spawn();
@@ -47,7 +60,7 @@ public class GuardFriendlyFireTests : IDisposable
         Assert.Null(pet.Combatant);
     }
 
-    [SkippableFact]
+    [Fact]
     public void GuardDropsStaleCombatAgainstAnotherPetOfItsOwner()
     {
         var (owner, pet) = Spawn();
@@ -61,7 +74,7 @@ public class GuardFriendlyFireTests : IDisposable
         Assert.Equal(OrderType.Guard, pet.ControlOrder);
     }
 
-    [SkippableFact]
+    [Fact]
     public void GuardDoesNotRetaliateAgainstOwnerFriendlyDamage()
     {
         var (owner, pet) = Spawn();
@@ -70,7 +83,7 @@ public class GuardFriendlyFireTests : IDisposable
         Assert.Equal(OrderType.Guard, pet.ControlOrder);
     }
 
-    [SkippableFact]
+    [Fact]
     public void GuardDoesNotRetaliateAgainstSiblingFriendlyDamage()
     {
         var (owner, pet) = Spawn();
@@ -79,7 +92,7 @@ public class GuardFriendlyFireTests : IDisposable
         Assert.Null(pet.Combatant);
     }
 
-    [SkippableFact]
+    [Fact]
     public void GuardReacquiresAnEnemyAttackingItsOwner()
     {
         var (owner, pet) = Spawn();
@@ -93,7 +106,7 @@ public class GuardFriendlyFireTests : IDisposable
         Assert.Same(enemy, pet.FocusMob);
     }
 
-    [SkippableFact]
+    [Fact]
     public void GuardStillDefendsAgainstAnotherPlayersPet()
     {
         var (owner, pet) = Spawn();
@@ -106,7 +119,7 @@ public class GuardFriendlyFireTests : IDisposable
         Assert.Same(enemy, pet.FocusMob);
     }
 
-    [SkippableFact]
+    [Fact]
     public void GuardIgnoresSiblingInOwnersAggressorHistory()
     {
         var (owner, pet) = Spawn();
@@ -117,7 +130,7 @@ public class GuardFriendlyFireTests : IDisposable
         Assert.Null(pet.FocusMob);
     }
 
-    [SkippableFact]
+    [Fact]
     public void GuardIgnoresOwnControlledSummonAttackingOwner()
     {
         var (owner, pet) = Spawn();
@@ -132,7 +145,7 @@ public class GuardFriendlyFireTests : IDisposable
         Assert.Null(pet.FocusMob);
     }
 
-    [SkippableFact]
+    [Fact]
     public void GuardDefendsAgainstOwnUncontrolledSummonAttackingOwner()
     {
         var (owner, pet) = Spawn();
@@ -146,7 +159,7 @@ public class GuardFriendlyFireTests : IDisposable
         Assert.Same(vortex, pet.FocusMob);
     }
 
-    [SkippableFact]
+    [Fact]
     public void FriendlyDamageDoesNotInterruptGuardCombat()
     {
         var (owner, pet) = Spawn();
@@ -159,7 +172,7 @@ public class GuardFriendlyFireTests : IDisposable
         Assert.Same(enemy, pet.Combatant);
     }
 
-    [SkippableFact]
+    [Fact]
     public void ExplicitAttackStillAcquiresTheCommandedTarget()
     {
         var (owner, pet) = Spawn();
@@ -169,7 +182,7 @@ public class GuardFriendlyFireTests : IDisposable
         Assert.Same(sibling, pet.FocusMob);
     }
 
-    [SkippableFact]
+    [Fact]
     public void BardProvocationStillOverridesGuard()
     {
         var (owner, pet) = Spawn();
@@ -179,7 +192,7 @@ public class GuardFriendlyFireTests : IDisposable
         Assert.Same(owner, pet.FocusMob);
     }
 
-    [SkippableTheory]
+    [Theory]
     [InlineData(OrderType.Follow)]
     [InlineData(OrderType.Come)]
     [InlineData(OrderType.Stay)]
@@ -191,29 +204,29 @@ public class GuardFriendlyFireTests : IDisposable
         Assert.Null(pet.FocusMob);
     }
 
-    [SkippableFact]
-    public void ActualWhiteWyrmDoesNotTurnOnOwnerWhenEnemyDisappears()
+    [Fact]
+    public void GuardingMageDoesNotTurnOnOwnerWhenEnemyDisappears()
     {
         var (owner, _) = Spawn();
-        var wyrm = new WhiteWyrm();
-        _created.Add(wyrm);
-        wyrm.MoveToWorld(new Point3D(1498, 1600, owner.Z), owner.Map);
-        wyrm.SetControlMaster(owner);
-        wyrm.IssueOrder(OrderType.Guard, owner);
-        wyrm.AIObject.AITimer.Stop();
+        var mage = new MagePet();
+        _created.Add(mage);
+        mage.MoveToWorld(new Point3D(1498, 1600, owner.Z), owner.Map);
+        mage.SetControlMaster(owner);
+        mage.IssueOrder(OrderType.Guard, owner);
+        mage.AIObject.AITimer.Stop();
         var enemy = new PetTestStub();
         _created.Add(enemy);
         enemy.MoveToWorld(new Point3D(1497, 1600, owner.Z), owner.Map);
         enemy.AIObject.AITimer.Stop();
-        wyrm.Combatant = enemy;
+        mage.Combatant = enemy;
         enemy.Hidden = true;
-        wyrm.NextReacquireTime = Core.TickCount - 1;
-        Assert.IsType<MageAI>(wyrm.AIObject);
-        wyrm.AIObject.DoActionCombat();
-        Assert.NotSame(owner, wyrm.Combatant);
-        Assert.Null(wyrm.FocusMob);
-        wyrm.AIObject.DoOrderGuard();
-        Assert.Null(wyrm.Combatant);
+        mage.NextReacquireTime = Core.TickCount - 1;
+        Assert.IsType<MageAI>(mage.AIObject);
+        mage.AIObject.DoActionCombat();
+        Assert.NotSame(owner, mage.Combatant);
+        Assert.Null(mage.FocusMob);
+        mage.AIObject.DoOrderGuard();
+        Assert.Null(mage.Combatant);
     }
 
     public void Dispose()

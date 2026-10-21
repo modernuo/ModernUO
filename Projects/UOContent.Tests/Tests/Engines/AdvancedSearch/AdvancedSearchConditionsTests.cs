@@ -58,8 +58,7 @@ public class AdvancedSearchConditionsTests
     [InlineData("Hue")]             // no operator
     public void UnusableLeafIsNoMatchAndDoesNotThrow(string test)
     {
-        var ex = Record.Exception(() => Assert.False(Check(test)));
-        Assert.Null(ex);
+        Assert.False(Check(test));
     }
 
     // The old evaluator negated a failed comparison, so `~Hue=abc` matched every entity.
@@ -195,8 +194,7 @@ public class AdvancedSearchConditionsTests
     [Fact]
     public void ReferenceTypeOrderingIsNoMatchAndDoesNotThrow()
     {
-        var ex = Record.Exception(() => Assert.False(Check("Reference>whatever")));
-        Assert.Null(ex);
+        Assert.False(Check("Reference>whatever"));
     }
 
     [Fact]

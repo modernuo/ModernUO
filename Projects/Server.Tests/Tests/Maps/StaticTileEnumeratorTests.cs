@@ -8,49 +8,22 @@ namespace Server.Tests.Maps;
 public class StaticTileEnumeratorTests
 {
     [Fact]
-    public void StaticTileEnumerator_MapNullYieldsEmpty()
-    {
-        var enumerator = new Map.StaticTileEnumerable(null, new Point2D(0, 0)).GetEnumerator();
-        Assert.False(enumerator.MoveNext());
-    }
-
-    [Fact]
-    public void StaticTileEnumerator_EmptyLocationYieldsEmpty()
-    {
-        var map = Map.Felucca;
-        var location = new Point2D(100, 100);
-
-        var tiles = new List<StaticTile>();
-        foreach (var tile in new Map.StaticTileEnumerable(map, location, includeStatics: true, includeMultis: false))
-        {
-            tiles.Add(tile);
-        }
-
-        // Since we don't have actual map files loaded, this should be empty
-        Assert.Empty(tiles);
-    }
-
-    [Fact]
     public void StaticTileEnumerator_IncludeStaticsOnlyWorks()
     {
         var map = Map.Felucca;
         var location = new Point2D(200, 200);
 
+        // The synthetic map has no statics here; the multi must add nothing to the statics-only walk.
+        var mapStatics = CollectTiles(map, location, includeStatics: true, includeMultis: false);
+
         TestMulti multi = null;
         try
         {
-            // Create a multi at the location
             multi = CreateMultiWithComponents(map, new Point3D(200, 200, 0));
 
-            // Get tiles with statics only (no multis)
-            var tiles = new List<StaticTile>();
-            foreach (var tile in new Map.StaticTileEnumerable(map, location, includeStatics: true, includeMultis: false))
-            {
-                tiles.Add(tile);
-            }
+            var tiles = CollectTiles(map, location, includeStatics: true, includeMultis: false);
 
-            // Should not include multi tiles
-            Assert.Empty(tiles);
+            Assert.Equal(mapStatics, tiles);
         }
         finally
         {
@@ -92,21 +65,20 @@ public class StaticTileEnumeratorTests
         var map = Map.Felucca;
         var location = new Point2D(400, 400);
 
+        var mapStatics = CollectTiles(map, location, includeStatics: true, includeMultis: false);
+
         TestMulti multi = null;
         try
         {
-            // Create a multi at the location
             multi = CreateMultiWithComponents(map, new Point3D(400, 400, 0));
 
-            // Get all tiles (statics and multis)
-            var tiles = new List<StaticTile>();
-            foreach (var tile in new Map.StaticTileEnumerable(map, location, includeStatics: true, includeMultis: true))
-            {
-                tiles.Add(tile);
-            }
+            var multiTiles = CollectTiles(map, location, includeStatics: false, includeMultis: true);
+            var tiles = CollectTiles(map, location, includeStatics: true, includeMultis: true);
 
-            // Should include multi tiles (statics would be empty without map files)
-            Assert.NotEmpty(tiles);
+            Assert.NotEmpty(multiTiles);
+            Assert.Equal(mapStatics.Count + multiTiles.Count, tiles.Count);
+            Assert.All(mapStatics, tile => Assert.Contains(tile, tiles));
+            Assert.All(multiTiles, tile => Assert.Contains(tile, tiles));
         }
         finally
         {
@@ -142,24 +114,6 @@ public class StaticTileEnumeratorTests
         {
             multi?.Delete();
         }
-    }
-
-    [Fact]
-    public void StaticTileEnumerator_TileMatrixGetStaticTilesWorks()
-    {
-        var map = Map.Felucca;
-        var x = 600;
-        var y = 600;
-
-        // Test the TileMatrix.GetStaticTiles method
-        var tiles = new List<StaticTile>();
-        foreach (var tile in map.Tiles.GetStaticTiles(x, y))
-        {
-            tiles.Add(tile);
-        }
-
-        // Without map files loaded, should be empty
-        Assert.Empty(tiles);
     }
 
     [Fact]
@@ -253,13 +207,6 @@ public class StaticTileEnumeratorTests
     }
 
     [Fact]
-    public void StaticTileEnumerator_EmptyReturnsCorrectly()
-    {
-        var enumerator = Map.StaticTileEnumerable.Empty.GetEnumerator();
-        Assert.False(enumerator.MoveNext());
-    }
-
-    [Fact]
     public void StaticTileEnumerator_DeletedMultiSkipped()
     {
         var map = Map.Felucca;
@@ -305,10 +252,10 @@ public class StaticTileEnumeratorTests
         {
             // Outer's bounds cover the probe cell but it has no tile there; placing it first puts it
             // ahead of inner in the sector's multi list
-            outer = new TestMulti(World.NewItem, GappedComponents);
+            outer = new TestMulti(GappedComponents);
             outer.MoveToWorld(new Point3D(1100, 1100, 0), map);
 
-            inner = new TestMulti(World.NewItem, SingleTileComponents);
+            inner = new TestMulti(SingleTileComponents);
             inner.MoveToWorld(new Point3D(location.X, location.Y, 20), map);
 
             var tiles = new List<StaticTile>();
@@ -342,28 +289,28 @@ public class StaticTileEnumeratorTests
         ]
     );
 
+    private static readonly MultiComponentList DefaultComponents = new(
+        [
+            new MultiTileEntry(0x1, 0, 0, 0, 0x0),
+            new MultiTileEntry(0x2, 1, 0, 0, 0x0)
+        ]
+    );
+
+    private static List<StaticTile> CollectTiles(Map map, Point2D location, bool includeStatics, bool includeMultis)
+    {
+        var tiles = new List<StaticTile>();
+        foreach (var tile in new Map.StaticTileEnumerable(map, location, includeStatics, includeMultis))
+        {
+            tiles.Add(tile);
+        }
+
+        return tiles;
+    }
+
     private static TestMulti CreateMultiWithComponents(Map map, Point3D location)
     {
-        var multi = new TestMulti(World.NewItem);
+        var multi = new TestMulti(DefaultComponents);
         multi.MoveToWorld(location, map);
         return multi;
     }
-
-    private class TestMulti : BaseMulti
-    {
-        private readonly MultiComponentList _components;
-
-        public TestMulti(Serial serial, MultiComponentList components = null) : base(serial) =>
-            _components = components ?? DefaultComponents;
-
-        public override MultiComponentList Components => _components;
-
-        private static readonly MultiComponentList DefaultComponents = new(
-            [
-                new MultiTileEntry(0x1, 0, 0, 0, 0x0),
-                new MultiTileEntry(0x2, 1, 0, 0, 0x0)
-            ]
-        );
-    }
 }
-

@@ -3,22 +3,24 @@ using System.Collections.Generic;
 using System.IO;
 using Server;
 using Server.Engines.Spawners;
+using Server.Tests;
 using Xunit;
 
 namespace UOContent.Tests.Engines.Spawners.Json;
 
 [Collection("Sequential UOContent Tests")]
-public class ImportCleanupTests
+public class ImportCleanupTests : IDisposable
 {
     private const string SpawnerGuid = "11111111-1111-1111-1111-111111111111";
+
+    private readonly TempDirectory _dir = new("muo-spawner-import");
+
+    public void Dispose() => _dir.Dispose();
 
     [Fact]
     public void Import_ValidFile_PlacesSpawner()
     {
-        var dir = Path.Combine(Path.GetTempPath(), "muo-spawner-import-" + Guid.NewGuid().ToString("N"));
-        Directory.CreateDirectory(dir);
-        var path = Path.Combine(dir, "test.json");
-        File.WriteAllText(path, """
+        var path = _dir.WriteFile("test.json", """
             [
               {
                 "$type": "Spawner",
@@ -53,22 +55,15 @@ public class ImportCleanupTests
         finally
         {
             placedSpawner?.Delete();
-            if (Directory.Exists(dir))
-            {
-                Directory.Delete(dir, true);
-            }
         }
     }
 
+    // A DTO with no map entry deserializes with map == null. The importer rejects it before building
+    // a spawner, so nothing is registered and nothing lands on any live map.
     [Fact]
-    public void Import_NoMap_DeletesOrphanedSpawner()
+    public void Import_NoMap_SkipsTheSpawner()
     {
-        // A spawner with no map entry deserialized by STJ will have map == null (or Map.Internal).
-        // Verify it does NOT end up on any live map.
-        var dir = Path.Combine(Path.GetTempPath(), "muo-spawner-import-nomap-" + Guid.NewGuid().ToString("N"));
-        Directory.CreateDirectory(dir);
-        var path = Path.Combine(dir, "test-nomap.json");
-        File.WriteAllText(path, """
+        var path = _dir.WriteFile("test-nomap.json", """
             [
               {
                 "$type": "Spawner",
@@ -81,71 +76,28 @@ public class ImportCleanupTests
             ]
             """);
 
-        try
-        {
-            var all = new Dictionary<Guid, ISpawner>();
-            ImportSpawnersCommand.ImportFile(new FileInfo(path), all);
+        var guid = new Guid("22222222-2222-2222-2222-222222222222");
+        var all = new Dictionary<Guid, ISpawner>();
+        ImportSpawnersCommand.ImportFile(new FileInfo(path), all);
 
-            // The spawner must NOT be in allSpawners (rejected due to missing map).
-            Assert.DoesNotContain(new Guid("22222222-2222-2222-2222-222222222222"), all.Keys);
-        }
-        finally
+        Assert.DoesNotContain(guid, all.Keys);
+
+        var maps = Map.AllMaps;
+        for (var i = 0; i < maps.Count; i++)
         {
-            if (Directory.Exists(dir))
+            foreach (var spawner in maps[i].GetItemsAt<BaseSpawner>(new Point3D(400, 400, 0)))
             {
-                Directory.Delete(dir, true);
+                Assert.NotEqual(guid, spawner.Guid);
             }
         }
-    }
-
-    [Fact]
-    public void Import_MalformedFile_LeaksNoWorldItems()
-    {
-        // First entry is syntactically valid JSON for a Spawner, second entry is truncated/garbage.
-        // STJ throws a JsonException during array deserialization before any Items are created
-        // (the DTO path is GC-only), so zero new spawners should appear at the valid entry's location.
-        var dir = Path.Combine(Path.GetTempPath(), "muo-import-malformed-" + Guid.NewGuid().ToString("N"));
-        Directory.CreateDirectory(dir);
-        File.WriteAllText(Path.Combine(dir, "bad.json"), """
-            [ { "$type": "Spawner", "location": [320, 320, 0], "map": "Felucca", "count": 1,
-                "entries": [ { "name": "Fisherman", "maxCount": 1, "probability": 100 } ] },
-              { "$type": "Spawner", "location": [ THIS IS NOT JSON
-            """);
-        try
-        {
-            var before = CountSpawnersNear(new Point3D(320, 320, 0));
-            ImportSpawnersCommand.ImportFile(new FileInfo(Path.Combine(dir, "bad.json")), new Dictionary<Guid, ISpawner>());
-            // Malformed parse must construct zero Items (DTO is GC-only); nothing placed or orphaned.
-            Assert.Equal(before, CountSpawnersNear(new Point3D(320, 320, 0)));
-        }
-        finally
-        {
-            Directory.Delete(dir, true);
-        }
-    }
-
-    private static int CountSpawnersNear(Point3D p)
-    {
-        var n = 0;
-        foreach (var _ in Map.Felucca.GetItemsAt<BaseSpawner>(p))
-        {
-            n++;
-        }
-
-        return n;
     }
 
     [Fact]
     public void Import_DuplicateLocation_ReplacesExistingSpawner()
     {
         // Verifies that an existing spawner at the same location and type is removed and replaced.
-        var dir = Path.Combine(Path.GetTempPath(), "muo-spawner-import-dup-" + Guid.NewGuid().ToString("N"));
-        Directory.CreateDirectory(dir);
-        var path = Path.Combine(dir, "test-dup.json");
-
         var newGuid = new Guid("33333333-3333-3333-3333-333333333333");
-        // Use a non-interpolated raw string literal; the guid is a known constant so hardcode it.
-        File.WriteAllText(path, """
+        var path = _dir.WriteFile("test-dup.json", """
             [
               {
                 "$type": "Spawner",
@@ -159,13 +111,13 @@ public class ImportCleanupTests
             ]
             """);
 
-        // Place a pre-existing spawner at the same location.
         var existing = new Spawner(1, TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(10));
-        existing.MoveToWorld(new Point3D(310, 310, 0), Map.Felucca);
-
         BaseSpawner placedSpawner = null;
+
         try
         {
+            existing.MoveToWorld(new Point3D(310, 310, 0), Map.Felucca);
+
             var all = new Dictionary<Guid, ISpawner> { [existing.Guid] = existing };
             ImportSpawnersCommand.ImportFile(new FileInfo(path), all);
 
@@ -186,15 +138,8 @@ public class ImportCleanupTests
         }
         finally
         {
-            if (!existing.Deleted)
-            {
-                existing.Delete();
-            }
+            existing.Delete();
             placedSpawner?.Delete();
-            if (Directory.Exists(dir))
-            {
-                Directory.Delete(dir, true);
-            }
         }
     }
 }

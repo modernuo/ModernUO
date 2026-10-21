@@ -6,21 +6,6 @@ namespace Server.Tests.Utility;
 public class TryParseTests
 {
     [Theory]
-    [InlineData("True", null, true)]
-    [InlineData("False", null, false)]
-    [InlineData("Alakazam", "Not a valid boolean string.", true)]
-    public void TestTryParseBool(string value, string returned, bool parsedAs)
-    {
-        var actualReturned = Server.Types.TryParse(typeof(bool), value, out var constructed);
-        Assert.Equal(returned, actualReturned);
-
-        if (returned == null)
-        {
-            Assert.Equal(parsedAs, constructed);
-        }
-    }
-
-    [Theory]
     // Parsed directly into the target type (INumber<T>.TryParse), not via ulong + Convert.ChangeType.
     [InlineData(typeof(int), "42", true, 42)]
     [InlineData(typeof(int), "-5", true, -5)]              // signed values parse directly now

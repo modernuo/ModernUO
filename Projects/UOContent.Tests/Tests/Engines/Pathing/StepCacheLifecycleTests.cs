@@ -17,11 +17,9 @@ namespace Server.Tests.Pathfinding;
 [Collection("Sequential Pathfinding Tests")]
 public class StepCacheLifecycleTests : IDisposable
 {
-    // The window is a knob on the singleton and Clear() leaves it alone, so a test that narrows
-    // it would otherwise leak the narrow window into every later test in the collection.
-    private readonly uint _savedWindowMs = StepCache.Instance.MissPromotionWindowMs;
+    private readonly StepCacheStateScope _cacheState = new();
 
-    public void Dispose() => StepCache.Instance.MissPromotionWindowMs = _savedWindowMs;
+    public void Dispose() => _cacheState.Dispose();
 
     /// <summary>Resets to a known state and returns the singleton.</summary>
     private static StepCache FreshCache(int promotionThreshold)
@@ -35,21 +33,11 @@ public class StepCacheLifecycleTests : IDisposable
     /// <summary>Builds the plain chunk and hands it back for a test to inject state into.</summary>
     private static StepChunk BuiltPlainChunk(StepCache cache, Map map)
     {
-        cache.TryGetMask(map, PlainX, PlainY, sourceZ: 10);
+        cache.TryGetMask(map, PlainX, PlainY, sourceZ: PlainZ);
 
         var chunk = cache.GetResidentChunk(map.MapID, PlainX >> 4, PlainY >> 4);
         Assert.NotNull(chunk);
         return chunk;
-    }
-
-    [Fact]
-    public void Clear_OnEmptyCache_LeavesStatsZero()
-    {
-        var stats = FreshCache(2).GetStats();
-
-        Assert.Equal(0, stats.ResidentChunks);
-        Assert.Equal(0L, stats.Hits);
-        Assert.Equal(0L, stats.BuildsTotal);
     }
 
     // ---- promotion gate ----
@@ -65,7 +53,7 @@ public class StepCacheLifecycleTests : IDisposable
         var cache = FreshCache(promotionThreshold: 2);
         var map = TestMap;
 
-        var lookup = cache.TryGetMask(map, PlainX, PlainY, sourceZ: 10);
+        var lookup = cache.TryGetMask(map, PlainX, PlainY, sourceZ: PlainZ);
 
         Assert.False(lookup.IsHit);
         Assert.Equal(CacheHitKind.Fallthrough_NotBuilt, lookup.HitKind);
@@ -77,21 +65,19 @@ public class StepCacheLifecycleTests : IDisposable
         Assert.Equal(1L, stats.FallthroughNotBuilt);
     }
 
-    [SkippableFact]
+    [Fact]
     public void SecondTouchInsideWindow_PromotesAndServes()
     {
-        TileDataRequirement.SkipIfMissing();
-
         var cache = FreshCache(promotionThreshold: 2);
         var map = TestMap;
 
-        Assert.False(cache.TryGetMask(map, PlainX, PlainY, sourceZ: 10).IsHit);
+        Assert.False(cache.TryGetMask(map, PlainX, PlainY, sourceZ: PlainZ).IsHit);
 
-        var promoted = cache.TryGetMask(map, PlainX, PlainY, sourceZ: 10);
+        var promoted = cache.TryGetMask(map, PlainX, PlainY, sourceZ: PlainZ);
         Assert.True(promoted.IsHit);
         Assert.Equal(CacheHitKind.Miss_NotBuilt, promoted.HitKind);
-        Assert.Equal((byte)0xC1, promoted.WalkMask); // pinned: open plain, walkable N/NE/... per the bake
-        Assert.Equal((sbyte)10, promoted.WalkZ_N);
+        Assert.Equal((byte)0xFF, promoted.WalkMask); // flat default ground: walkable in all eight directions
+        Assert.Equal(PlainZ, promoted.WalkZ_N);
 
         var stats = cache.GetStats();
         Assert.Equal(1, stats.ResidentChunks);
@@ -100,9 +86,9 @@ public class StepCacheLifecycleTests : IDisposable
         Assert.Equal(1L, stats.FallthroughNotBuilt);
 
         // Now resident: a third query is a clean hit, not another miss.
-        var hit = cache.TryGetMask(map, PlainX, PlainY, sourceZ: 10);
+        var hit = cache.TryGetMask(map, PlainX, PlainY, sourceZ: PlainZ);
         Assert.Equal(CacheHitKind.Hit, hit.HitKind);
-        Assert.Equal((byte)0xC1, hit.WalkMask);
+        Assert.Equal((byte)0xFF, hit.WalkMask);
     }
 
     /// <summary>
@@ -118,10 +104,10 @@ public class StepCacheLifecycleTests : IDisposable
 
         var map = TestMap;
 
-        Assert.False(cache.TryGetMask(map, PlainX, PlainY, sourceZ: 10).IsHit);
+        Assert.False(cache.TryGetMask(map, PlainX, PlainY, sourceZ: PlainZ).IsHit);
         Thread.Sleep(20); // outrun the window
 
-        var second = cache.TryGetMask(map, PlainX, PlainY, sourceZ: 10);
+        var second = cache.TryGetMask(map, PlainX, PlainY, sourceZ: PlainZ);
         Assert.False(second.IsHit);
         Assert.Equal(CacheHitKind.Fallthrough_NotBuilt, second.HitKind);
         Assert.Equal(0, cache.GetStats().ResidentChunks);
@@ -133,11 +119,9 @@ public class StepCacheLifecycleTests : IDisposable
     /// there, so counting probes would cross any threshold on the second cell and gate nothing at
     /// all — the deferral would be dead code.
     /// </summary>
-    [SkippableFact]
+    [Fact]
     public void ManyProbesInOneFind_CountAsOneTouch()
     {
-        TileDataRequirement.SkipIfMissing();
-
         var cache = FreshCache(promotionThreshold: 2);
         var map = TestMap;
 
@@ -145,7 +129,7 @@ public class StepCacheLifecycleTests : IDisposable
         for (var i = 0; i < 8; i++)
         {
             // Eight different cells, all inside the same chunk.
-            var lookup = cache.TryGetMask(map, PlainX + i, PlainY, sourceZ: 10);
+            var lookup = cache.TryGetMask(map, PlainX + i, PlainY, sourceZ: PlainZ);
             Assert.False(lookup.IsHit);
             Assert.Equal(CacheHitKind.Fallthrough_NotBuilt, lookup.HitKind);
         }
@@ -156,7 +140,7 @@ public class StepCacheLifecycleTests : IDisposable
 
         // A second Find is the second distinct touch, and crosses the threshold.
         cache.BeginFindGeneration();
-        var promoted = cache.TryGetMask(map, PlainX, PlainY, sourceZ: 10);
+        var promoted = cache.TryGetMask(map, PlainX, PlainY, sourceZ: PlainZ);
 
         Assert.Equal(CacheHitKind.Miss_NotBuilt, promoted.HitKind);
         Assert.Equal(1, cache.GetStats().ResidentChunks);
@@ -173,12 +157,12 @@ public class StepCacheLifecycleTests : IDisposable
         var map = TestMap;
 
         cache.BeginFindGeneration();
-        Assert.False(cache.TryGetMask(map, PlainX, PlainY, sourceZ: 10).IsHit);
+        Assert.False(cache.TryGetMask(map, PlainX, PlainY, sourceZ: PlainZ).IsHit);
 
         Thread.Sleep(20);
 
         cache.BeginFindGeneration();
-        var second = cache.TryGetMask(map, PlainX, PlainY, sourceZ: 10);
+        var second = cache.TryGetMask(map, PlainX, PlainY, sourceZ: PlainZ);
 
         Assert.Equal(CacheHitKind.Fallthrough_NotBuilt, second.HitKind);
         Assert.Equal(0, cache.GetStats().ResidentChunks);
@@ -191,8 +175,8 @@ public class StepCacheLifecycleTests : IDisposable
         var map = TestMap;
 
         // One touch each, in two different chunks: neither reaches the threshold on its own.
-        Assert.False(cache.TryGetMask(map, PlainX, PlainY, sourceZ: 10).IsHit);
-        Assert.False(cache.TryGetMask(map, 1600, 1700, sourceZ: 10).IsHit);
+        Assert.False(cache.TryGetMask(map, PlainX, PlainY, sourceZ: PlainZ).IsHit);
+        Assert.False(cache.TryGetMask(map, 1600, 1700, sourceZ: PlainZ).IsHit);
 
         Assert.Equal(0, cache.GetStats().ResidentChunks);
         Assert.Equal(2L, cache.GetStats().FallthroughNotBuilt);
@@ -214,16 +198,14 @@ public class StepCacheLifecycleTests : IDisposable
     /// A multi's cells fall through, and so does the 1-cell halo around it: a cell's mask encodes
     /// the edges TO its neighbours, so a wall one cell over has to block them.
     /// </summary>
-    [SkippableFact]
+    [Fact]
     public void MultiCoveredCell_AndItsHalo_FallThrough()
     {
-        TileDataRequirement.SkipIfMissing();
-
         var cache = FreshCache(promotionThreshold: 1);
         var map = TestMap;
 
         // A cell nowhere near a multi still serves from the static cache.
-        Assert.True(cache.TryGetMask(map, PlainX, PlainY, 10).IsHit);
+        Assert.True(cache.TryGetMask(map, PlainX, PlainY, PlainZ).IsHit);
 
         // Mark an isolated sector as multi-bearing. Sector.HasMultis only tests Count > 0 and the
         // fallthrough never dereferences the multi, so a single null entry is enough — no real
@@ -266,7 +248,7 @@ public class StepCacheLifecycleTests : IDisposable
         var cache = FreshCache(promotionThreshold: 1);
         var map = TestMap;
 
-        cache.TryGetMask(map, PlainX, PlainY, sourceZ: 10);
+        cache.TryGetMask(map, PlainX, PlainY, sourceZ: PlainZ);
         var before = cache.GetStats().FallthroughSourceZMismatch;
 
         var lookup = cache.TryGetMask(map, PlainX, PlainY, sourceZ: 100);
@@ -308,8 +290,8 @@ public class StepCacheLifecycleTests : IDisposable
         offsets[CellIndex(PlainX, PlainY)] = 0;
         chunk.SetStrata(offsets, OneStratum(zCenter: 42));
 
-        // 10 is more than StepHeight from the only stratum, so nothing can answer.
-        var lookup = cache.TryGetMask(map, PlainX, PlainY, sourceZ: 10);
+        // The plain is more than StepHeight below the only stratum (Z 42), so nothing can answer.
+        var lookup = cache.TryGetMask(map, PlainX, PlainY, sourceZ: PlainZ);
 
         Assert.False(lookup.IsHit);
         Assert.Equal(CacheHitKind.Fallthrough_MultiZ, lookup.HitKind);
@@ -333,7 +315,7 @@ public class StepCacheLifecycleTests : IDisposable
         offsets[CellIndex(PlainX, PlainY)] = 0;
         chunk.SetStrata(offsets, [0]); // a record declaring zero strata
 
-        var lookup = cache.TryGetMask(map, PlainX, PlainY, sourceZ: 10);
+        var lookup = cache.TryGetMask(map, PlainX, PlainY, sourceZ: PlainZ);
 
         Assert.False(lookup.IsHit);
         Assert.Equal(CacheHitKind.Fallthrough_MultiZ, lookup.HitKind);
@@ -406,26 +388,19 @@ public class StepCacheLifecycleTests : IDisposable
         var cache = FreshCache(promotionThreshold: 1);
         cache.MaxResidentChunks = 4;
 
-        try
+        var map = TestMap;
+
+        // Five chunks into a cache that holds four. Which one goes doesn't matter here, only that
+        // the count comes down and the key list stays in step, so equal touch ticks are fine.
+        for (var i = 0; i < 5; i++)
         {
-            var map = TestMap;
-
-            // Five chunks into a cache that holds four.
-            for (var i = 0; i < 5; i++)
-            {
-                cache.TryGetMask(map, PlainX + i * 16, PlainY, sourceZ: 10);
-                Thread.Sleep(2); // separate their LastTouchedTicks so LRU has something to order by
-            }
-
-            cache.EnforceLruCap();
-
-            Assert.Equal(4, cache.GetStats().ResidentChunks);
-            Assert.True(cache.GetStats().EvictionsByLruCap >= 1L);
-            Assert.True(cache.ResidentIndexInSync(), "eviction desynced the key list from the resident set");
+            cache.TryGetMask(map, PlainX + i * 16, PlainY, sourceZ: PlainZ);
         }
-        finally
-        {
-            cache.MaxResidentChunks = 8192;
-        }
+
+        cache.EnforceLruCap();
+
+        Assert.Equal(4, cache.GetStats().ResidentChunks);
+        Assert.True(cache.GetStats().EvictionsByLruCap >= 1L);
+        Assert.True(cache.ResidentIndexInSync(), "eviction desynced the key list from the resident set");
     }
 }

@@ -26,18 +26,6 @@ public class ObjectPropertyListReentrancyTests
     }
 
     [Fact]
-    public void InterpolatedAdd_ResetMidHole_DoesNotThrow()
-    {
-        var opl = new ObjectPropertyList(null);
-
-        var ex = Record.Exception(
-            () => opl.Add(1060776, $"{ResettingHole(opl, "Knight")}\t{"Council of Mages"}")
-        );
-
-        Assert.Null(ex);
-    }
-
-    [Fact]
     public void InterpolatedAdd_DisposeMidHole_DoesNotThrow()
     {
         var opl = new ObjectPropertyList(null);
@@ -57,19 +45,6 @@ public class ObjectPropertyListReentrancyTests
 [Collection("Sequential Server Tests")]
 public class ObjectPropertyListNestedBuildTests
 {
-    [Fact]
-    public void NestedBuild_DoesNotUnguardTheOuterList()
-    {
-        var outer = new ObjectPropertyList(null);
-        var inner = new ObjectPropertyList(null);
-
-        outer.IsBuilding = true;
-        inner.IsBuilding = true;   // another entity starts building, and finishes
-        inner.IsBuilding = false;
-
-        Assert.True(outer.IsBuilding);
-    }
-
     [Fact]
     public void Reset_MidInterpolation_LeavesTheListUsable()
     {

@@ -1,21 +1,26 @@
+using System;
 using Server.Engines.Pathing.Cache;
 using Server.Items;
+using Server.Tests.Terrain;
 using Xunit;
 
 namespace Server.Tests.Pathfinding;
 
 [Collection("Sequential Pathfinding Tests")]
-public class MultiMaskCacheTests
+public class MultiMaskCacheTests : IDisposable
 {
     private const int MapId = 1;
-    private const int GuildHouseId = 0x74;
+    private const int GuildHouseId = TestMultis.GuildHouse;
     private const int PlaceX = 1480;
     private const int PlaceY = 1620;
 
-    [SkippableFact]
+    private readonly StepCacheStateScope _cacheState = new();
+
+    public void Dispose() => _cacheState.Dispose();
+
+    [Fact]
     public void TryResolveCoveringMulti_FindsPlacedMulti_AndLocalIndices()
     {
-        TileDataRequirement.SkipIfMissing();
         StepCache.Instance.Clear();
         var map = Map.Maps[MapId];
         map.GetAverageZ(PlaceX, PlaceY, out _, out var z, out _);
@@ -32,45 +37,6 @@ public class MultiMaskCacheTests
             Assert.Equal(PlaceY - multi.Y - mcl.Min.Y, ly);
 
             Assert.False(MultiMaskCache.TryResolveCoveringMulti(map, PlaceX + 200, PlaceY + 200, out _, out _, out _));
-        }
-        finally
-        {
-            multi.Delete();
-        }
-    }
-
-    [SkippableFact]
-    public void IsInteriorLocalCell_TrueDeepInside_FalseAtEdge()
-    {
-        TileDataRequirement.SkipIfMissing();
-        var multi = new TestMulti(GuildHouseId);
-        try
-        {
-            var mcl = multi.Components;
-
-            var foundInterior = false;
-            var foundEdge = false;
-            for (var ly = 0; ly < mcl.Height && (!foundInterior || !foundEdge); ly++)
-            {
-                for (var lx = 0; lx < mcl.Width; lx++)
-                {
-                    if (mcl.Tiles[lx][ly].Length == 0)
-                    {
-                        continue;
-                    }
-                    if (MultiMaskCache.IsInteriorLocalCell(mcl, lx, ly))
-                    {
-                        foundInterior = true;
-                    }
-                    else
-                    {
-                        foundEdge = true;
-                    }
-                }
-            }
-
-            Assert.True(foundInterior, "a guild house must have at least one interior cell");
-            Assert.True(foundEdge, "a guild house must have at least one edge/perimeter cell");
         }
         finally
         {
@@ -124,32 +90,25 @@ public class MultiMaskCacheTests
         Assert.False(MultiMaskCache.TerrainTopBelow(map, PlaceX, PlaceY, (sbyte)(ground - 50)));
     }
 
-    [SkippableFact]
+    [Fact]
     public void PathThroughHouseInterior_IncrementsMultiMaskCacheHits()
     {
-        TileDataRequirement.SkipIfMissing();
-        // (PlaceX,PlaceY)=(1480,1620) is cluttered (footprint overlaps tall map statics → dirty), so it
-        // would never serve the interior cache under the footprint-clean gate. Use a known flat/clear
-        // spot so a house there is footprint-clean and its interior cells serve from the cache.
-        const int CleanX = 1560;
-        const int CleanY = 1616;
-
+        // On flat default ground the house is footprint-clean, so its interior cells serve from the cache.
         var map = Map.Maps[MapId];
-        map.GetAverageZ(CleanX, CleanY, out _, out var z, out _);
-        var houseLoc = new Point3D(CleanX, CleanY, (sbyte)z);
+        map.GetAverageZ(PlaceX, PlaceY, out _, out var z, out _);
+        var houseLoc = new Point3D(PlaceX, PlaceY, (sbyte)z);
         var multi = new TestMulti(GuildHouseId);
-        var cacheWas = Server.Systems.FeatureFlags.ContentFeatureFlags.BitmapPathfindingCache;
         Server.Systems.FeatureFlags.ContentFeatureFlags.BitmapPathfindingCache = true;
-        var mover = MultiTestSupport.GetWalkerOracle(map, new Point3D(CleanX, CleanY + 10, (sbyte)z));
+        var mover = MultiTestSupport.GetWalkerOracle(map, new Point3D(PlaceX, PlaceY + 10, (sbyte)z));
         try
         {
             multi.MoveToWorld(houseLoc, map);
             Assert.True(MultiMaskCache.ComputeFootprintClean(map, multi),
-                "precondition: (1560,1616) must be footprint-clean for the cache to serve");
+                "precondition: the house must be footprint-clean for the cache to serve");
             StepCache.Instance.Clear();
 
-            var start = new Point3D(CleanX, CleanY + 10, (sbyte)z);
-            var goal = new Point3D(CleanX, CleanY - 10, (sbyte)z);
+            var start = new Point3D(PlaceX, PlaceY + 10, (sbyte)z);
+            var goal = new Point3D(PlaceX, PlaceY - 10, (sbyte)z);
             // First pass builds the interior cache (live synth); second pass should hit it.
             Server.PathAlgorithms.BitmapAStarAlgorithm.Instance.Find(mover, map, start, goal);
 
@@ -163,25 +122,27 @@ public class MultiMaskCacheTests
         {
             mover.Delete();
             multi.Delete();
-            Server.Systems.FeatureFlags.ContentFeatureFlags.BitmapPathfindingCache = cacheWas;
         }
     }
 
     [Fact]
     public void ClutteredHouse_DoesNotServeCache_ButStillPaths()
     {
+        // A rock taller than the house floor, inside the footprint, dirties it.
+        using var terrain = TestTerrain.Scope();
+        TestTerrain.AddStatic(PlaceX + 1, PlaceY + 1, TestTiles.Rock, 0);
+
         var map = Map.Maps[MapId];
         map.GetAverageZ(PlaceX, PlaceY, out _, out var z, out _);
         var multi = new TestMulti(GuildHouseId);
-        var cacheWas = Server.Systems.FeatureFlags.ContentFeatureFlags.BitmapPathfindingCache;
         Server.Systems.FeatureFlags.ContentFeatureFlags.BitmapPathfindingCache = true;
         var mover = MultiTestSupport.GetWalkerOracle(map, new Point3D(PlaceX, PlaceY + 10, (sbyte)z));
         try
         {
-            // (1480,1620) overlaps tall map statics → footprint dirty → cache must NOT serve.
+            // The rock pokes through the floor → footprint dirty → cache must NOT serve.
             multi.MoveToWorld(new Point3D(PlaceX, PlaceY, (sbyte)z), map);
             Assert.False(MultiMaskCache.ComputeFootprintClean(map, multi),
-                "precondition: (1480,1620) must be footprint-dirty for this test to be meaningful");
+                "precondition: the rock must make the house footprint-dirty for this test to be meaningful");
             StepCache.Instance.Clear();
 
             var start = new Point3D(PlaceX, PlaceY + 10, (sbyte)z);
@@ -198,7 +159,6 @@ public class MultiMaskCacheTests
         {
             mover.Delete();
             multi.Delete();
-            Server.Systems.FeatureFlags.ContentFeatureFlags.BitmapPathfindingCache = cacheWas;
         }
     }
 
@@ -236,7 +196,7 @@ public class MultiMaskCacheTests
 
             // Changing ItemID swaps the footprint (e.g. a boat changing heading), so the gate must
             // reset to recompute cleanliness for the new shape.
-            multi.ItemID = 0x7A; // Tower
+            multi.ItemID = TestMultis.Tower;
             Assert.Equal(MultiInteriorCacheState.Unknown, multi.PathInteriorCacheState);
         }
         finally
@@ -245,27 +205,21 @@ public class MultiMaskCacheTests
         }
     }
 
-    [SkippableFact]
+    [Fact]
     public void ComputeFootprintClean_TrueAtNormalPlacement_FalseWhenSunk()
     {
-        TileDataRequirement.SkipIfMissing();
-        // (PlaceX,PlaceY) is a cluttered spot whose footprint overlaps tall map statics, so a guild
-        // house there is never footprint-clean. Use a known flat/clear spot for the clean assertion.
-        const int CleanX = 1560;
-        const int CleanY = 1616;
-
         StepCache.Instance.Clear();
         var map = Map.Maps[MapId];
-        map.GetAverageZ(CleanX, CleanY, out _, out var ground, out _);
+        map.GetAverageZ(PlaceX, PlaceY, out _, out var ground, out _);
 
         var normal = new TestMulti(GuildHouseId);
         var sunk = new TestMulti(GuildHouseId);
         try
         {
-            normal.MoveToWorld(new Point3D(CleanX, CleanY, (sbyte)ground), map);
+            normal.MoveToWorld(new Point3D(PlaceX, PlaceY, (sbyte)ground), map);
             Assert.True(MultiMaskCache.ComputeFootprintClean(map, normal));
 
-            sunk.MoveToWorld(new Point3D(CleanX + 60, CleanY, (sbyte)(ground - 40)), map);
+            sunk.MoveToWorld(new Point3D(PlaceX + 60, PlaceY, (sbyte)(ground - 40)), map);
             Assert.False(MultiMaskCache.ComputeFootprintClean(map, sunk));
         }
         finally

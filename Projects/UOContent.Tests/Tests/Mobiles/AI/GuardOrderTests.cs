@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Server;
 using Server.Mobiles;
+using Server.Tests;
 using Xunit;
 
 namespace UOContent.Tests.Mobiles.AI;
@@ -13,11 +14,6 @@ namespace UOContent.Tests.Mobiles.AI;
 public class GuardOrderTests : IDisposable
 {
     private readonly List<Mobile> _created = new();
-
-    private sealed class AggressorStub : Mobile
-    {
-        public AggressorStub() => Body = 0xC9;
-    }
 
     public void Dispose()
     {
@@ -35,14 +31,12 @@ public class GuardOrderTests : IDisposable
         Assert.NotNull(map);
         map.GetAverageZ(1500, 1600, out _, out z, out _);
 
-        var master = new PlayerMobile(World.NewMobile);
-        master.DefaultMobileInit();
-        master.MoveToWorld(new Point3D(1500, 1600, (sbyte)z), map);
+        var (master, pet) = PetTestSetup.SpawnControlledPet(
+            new Point3D(1500, 1600, (sbyte)z),
+            new Point3D(1499, 1600, (sbyte)z),
+            map
+        );
         _created.Add(master);
-
-        var pet = new PetTestStub();
-        pet.MoveToWorld(new Point3D(1499, 1600, (sbyte)z), map);
-        pet.SetControlMaster(master);
         _created.Add(pet);
 
         pet.AIObject.AITimer?.Stop(); // drive manually
@@ -52,9 +46,9 @@ public class GuardOrderTests : IDisposable
         return (master, pet);
     }
 
-    private AggressorStub SpawnAggressor(PetTestStub pet, Point3D loc, Mobile attacking)
+    private WalkerStub SpawnAggressor(PetTestStub pet, Point3D loc, Mobile attacking)
     {
-        var aggr = new AggressorStub();
+        var aggr = new WalkerStub();
         aggr.MoveToWorld(loc, pet.Map);
         _created.Add(aggr);
 

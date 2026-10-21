@@ -12,12 +12,6 @@ public partial class SOS : Item
     // By default let's use the old gump, because we can.
     private static bool UseNewMessages = false;
 
-    private static int[] WaterTiles =
-    {
-        0x00A8, 0x00AB,
-        0x0136, 0x0137
-    };
-
     private static Rectangle2D[] BritRegions = { new(0, 0, 5120, 4096) };
 
     private static Rectangle2D[] IlshRegions =
@@ -179,53 +173,13 @@ public partial class SOS : Item
             var x = Utility.Random(reg.X, reg.Width);
             var y = Utility.Random(reg.Y, reg.Height);
 
-            if (!ValidateDeepWater(map, x, y))
-            {
-                continue;
-            }
-
-            var valid = true;
-
-            for (int j = 1, offset = 5; valid && j <= 5; ++j, offset += 5)
-            {
-                if (!ValidateDeepWater(map, x + offset, y + offset))
-                {
-                    valid = false;
-                }
-                else if (!ValidateDeepWater(map, x + offset, y - offset))
-                {
-                    valid = false;
-                }
-                else if (!ValidateDeepWater(map, x - offset, y + offset))
-                {
-                    valid = false;
-                }
-                else if (!ValidateDeepWater(map, x - offset, y - offset))
-                {
-                    valid = false;
-                }
-            }
-
-            if (valid)
+            if (SpecialFishingNet.FullValidation(map, x, y))
             {
                 return new Point3D(x, y, 0);
             }
         }
 
         return Point3D.Zero;
-    }
-
-    private static bool ValidateDeepWater(Map map, int x, int y)
-    {
-        var tileID = map.Tiles.GetLandTile(x, y).ID;
-        var water = false;
-
-        for (var i = 0; !water && i < WaterTiles.Length; i += 2)
-        {
-            water = tileID >= WaterTiles[i] && tileID <= WaterTiles[i + 1];
-        }
-
-        return water;
     }
 
     private class MessageGump : StaticGump<MessageGump>

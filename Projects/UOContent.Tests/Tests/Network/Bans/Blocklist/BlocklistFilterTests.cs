@@ -20,8 +20,10 @@ using Xunit;
 
 namespace Server.Tests.Network.Bans.Blocklist;
 
-// No [Collection] and no static reset hook: the filter is an instance, so each test owns its own
-// snapshot and promote-guard. That is the point of it no longer being a static class.
+// The filter is an instance, so each test owns its own snapshot and promote-guard. Evaluate still
+// consults the process-wide ManualAllowlist and LoginAllowlist, which other tests rewrite, so this
+// runs in the sequential collection.
+[Collection("Sequential UOContent Tests")]
 public class BlocklistFilterTests
 {
     private static BlocklistFilter WithList(string list, bool reportHits = true, long suppressionMs = 5000)

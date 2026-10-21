@@ -11,13 +11,7 @@ public class DamagePacketTests
     {
         var serial = (Serial)0x1024;
 
-        var expected = new DamagePacketOld(serial, inputAmount).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendDamage(serial, inputAmount);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new DamagePacketOld(serial, inputAmount), ns => ns.SendDamage(serial, inputAmount));
     }
 
     [Theory, InlineData(10), InlineData(-5), InlineData(1024), InlineData(100000)]
@@ -25,14 +19,10 @@ public class DamagePacketTests
     {
         var serial = (Serial)0x1024;
 
-        var expected = new DamagePacket(serial, inputAmount).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.ProtocolChanges = ProtocolChanges.DamagePacket;
-
-        ns.SendDamage(serial, inputAmount);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(
+            new DamagePacket(serial, inputAmount),
+            ns => ns.SendDamage(serial, inputAmount),
+            ProtocolChanges.DamagePacket
+        );
     }
 }

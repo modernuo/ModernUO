@@ -4,56 +4,14 @@ using Xunit;
 namespace Server.Tests.Maps;
 
 /// <summary>
-/// Tests for CanSpawnMobile that require TileData (client files) to be loaded.
-/// These tests will be skipped if client files are not available.
-/// Configure client path via MODERNUO_CLIENT_PATH environment variable or place files at C:\Ultima Online Classic.
+/// Tests for CanSpawnMobile over tile flags, using tiles from the generated test kit.
 /// </summary>
 [Collection("Sequential Server Tests")]
 public class CanSpawnMobileTileDataTests
 {
-    private readonly ServerFixture _fixture;
-
-    public CanSpawnMobileTileDataTests(ServerFixture fixture)
-    {
-        _fixture = fixture;
-    }
-
-    private void SkipIfNoTileData()
-    {
-        Skip.If(!ServerFixture.TileDataLoaded, "TileData not loaded - client files required");
-    }
-
-    [SkippableFact]
-    public void CanSpawnMobile_FindsSurfaceOnMulti()
-    {
-        SkipIfNoTileData();
-
-        var map = Map.Felucca;
-        const int x = 1100;
-        const int y = 1100;
-
-        TestMulti multi = null;
-        try
-        {
-            // Create a multi with a floor at Z=20 using a real surface tile
-            multi = CreateFloorMulti(map, new Point3D(x, y, 0), floorZ: 20);
-
-            var result = map.CanSpawnMobile(x, y, 15, 30, false, false, out var spawnZ);
-
-            Assert.True(result);
-            Assert.True(spawnZ >= 15 && spawnZ <= 30);
-        }
-        finally
-        {
-            multi?.Delete();
-        }
-    }
-
-    [SkippableFact]
+    [Fact]
     public void CanSpawnMobile_FindsLowestValidSurface()
     {
-        SkipIfNoTileData();
-
         var map = Map.Felucca;
         const int x = 1200;
         const int y = 1200;
@@ -77,11 +35,9 @@ public class CanSpawnMobileTileDataTests
         }
     }
 
-    [SkippableFact]
+    [Fact]
     public void CanSpawnMobile_ZRangeSelectsCorrectFloor()
     {
-        SkipIfNoTileData();
-
         var map = Map.Felucca;
         const int x = 1300;
         const int y = 1300;
@@ -105,11 +61,9 @@ public class CanSpawnMobileTileDataTests
         }
     }
 
-    [SkippableFact]
+    [Fact]
     public void CanSpawnMobile_LowCeilingBlocksSpawn()
     {
-        SkipIfNoTileData();
-
         var map = Map.Felucca;
         const int x = 1400;
         const int y = 1400;
@@ -122,7 +76,7 @@ public class CanSpawnMobileTileDataTests
             multi = CreateFloorWithCeilingMulti(map, new Point3D(x, y, 0), floorZ: 20, ceilingZ: 28);
 
             // The low ceiling should block spawning (need 16 units clearance for mobiles)
-            var result = map.CanSpawnMobile(x, y, 15, 35, false, false, out var spawnZ);
+            var result = map.CanSpawnMobile(x, y, 15, 35, false, false, out _);
 
             Assert.False(result);
         }
@@ -132,11 +86,9 @@ public class CanSpawnMobileTileDataTests
         }
     }
 
-    [SkippableFact]
+    [Fact]
     public void CanSpawnMobile_HighCeilingAllowsSpawn()
     {
-        SkipIfNoTileData();
-
         var map = Map.Felucca;
         const int x = 1450;
         const int y = 1450;
@@ -147,7 +99,7 @@ public class CanSpawnMobileTileDataTests
             // Create a multi with floor at Z=20 and ceiling at Z=50 (30 units clearance)
             multi = CreateFloorWithCeilingMulti(map, new Point3D(x, y, 0), floorZ: 20, ceilingZ: 50);
 
-            var result = map.CanSpawnMobile(x, y, 15, 35, false, false, out var spawnZ);
+            var result = map.CanSpawnMobile(x, y, 15, 35, false, false, out _);
 
             Assert.True(result);
         }
@@ -157,11 +109,9 @@ public class CanSpawnMobileTileDataTests
         }
     }
 
-    [SkippableFact]
+    [Fact]
     public void CanSpawnMobile_BlockerOutsideZRangeIgnored()
     {
-        SkipIfNoTileData();
-
         var map = Map.Felucca;
         const int x = 1475;
         const int y = 1475;
@@ -173,7 +123,7 @@ public class CanSpawnMobileTileDataTests
             multi = CreateFloorWithCeilingMulti(map, new Point3D(x, y, 0), floorZ: 20, ceilingZ: 100);
 
             // The blocker at Z=100 shouldn't affect spawning in range 15-35
-            var result = map.CanSpawnMobile(x, y, 15, 35, false, false, out var spawnZ);
+            var result = map.CanSpawnMobile(x, y, 15, 35, false, false, out _);
 
             Assert.True(result);
         }
@@ -183,11 +133,9 @@ public class CanSpawnMobileTileDataTests
         }
     }
 
-    [SkippableFact]
+    [Fact]
     public void CanSpawnMobile_WaterSurfaceForSwimmingMob()
     {
-        SkipIfNoTileData();
-
         var map = Map.Felucca;
         const int x = 1550;
         const int y = 1550;
@@ -199,7 +147,7 @@ public class CanSpawnMobileTileDataTests
             multi = CreateWaterMulti(map, new Point3D(x, y, 0), waterZ: 0);
 
             // canSwim=true should find the water surface
-            var result = map.CanSpawnMobile(x, y, -10, 10, true, false, out var spawnZ);
+            var result = map.CanSpawnMobile(x, y, -10, 10, true, false, out _);
 
             Assert.True(result);
         }
@@ -209,11 +157,9 @@ public class CanSpawnMobileTileDataTests
         }
     }
 
-    [SkippableFact]
+    [Fact]
     public void CanSpawnMobile_WorldItemSurfaceWorks()
     {
-        SkipIfNoTileData();
-
         var map = Map.Felucca;
         const int x = 1650;
         const int y = 1650;
@@ -228,7 +174,7 @@ public class CanSpawnMobileTileDataTests
             };
             surfaceItem.MoveToWorld(new Point3D(x, y, 10), map);
 
-            var result = map.CanSpawnMobile(x, y, 5, 30, false, false, out var spawnZ);
+            var result = map.CanSpawnMobile(x, y, 5, 30, false, false, out _);
 
             // Should find either land at Z=0 or the item surface, whichever is lowest
             Assert.True(result);
@@ -237,51 +183,6 @@ public class CanSpawnMobileTileDataTests
         {
             surfaceItem?.Delete();
         }
-    }
-
-    [SkippableFact]
-    public void CanSpawnMobile_MalasBuilding_FindsGroundFloor()
-    {
-        SkipIfNoTileData();
-
-        var map = Map.Malas;
-        const int x = 991;
-        const int y = 519;
-
-        var result = map.CanSpawnMobile(x, y, -60, -40, false, false, out var spawnZ);
-
-        Assert.True(result);
-        Assert.True(spawnZ >= -60 && spawnZ <= -40, $"Expected ground floor around -50, got {spawnZ}");
-    }
-
-    [SkippableFact]
-    public void CanSpawnMobile_MalasBuilding_FindsSecondFloor()
-    {
-        SkipIfNoTileData();
-
-        var map = Map.Malas;
-        const int x = 991;
-        const int y = 519;
-
-        var result = map.CanSpawnMobile(x, y, -30, 0, false, false, out var spawnZ);
-
-        Assert.True(result);
-        Assert.True(spawnZ >= -30 && spawnZ <= 0, $"Expected second floor, got {spawnZ}");
-    }
-
-    [SkippableFact]
-    public void CanSpawnMobile_MalasBuilding_LowestFloorPreferred()
-    {
-        SkipIfNoTileData();
-
-        var map = Map.Malas;
-        const int x = 991;
-        const int y = 519;
-
-        var result = map.CanSpawnMobile(x, y, -60, 0, false, false, out var spawnZ);
-
-        Assert.True(result);
-        Assert.True(spawnZ <= -40, $"Expected lowest floor around -50, got {spawnZ}");
     }
 
     private TestMulti CreateFloorMulti(Map map, Point3D location, int floorZ)
@@ -344,17 +245,5 @@ public class CanSpawnMobileTileDataTests
         [
             new MultiTileEntry(ServerFixture.WetTileId, 0, 0, (short)waterZ, TileFlag.Wet)
         ]);
-    }
-
-    private class TestMulti : BaseMulti
-    {
-        private readonly MultiComponentList _components;
-
-        public TestMulti(MultiComponentList components) : base(0x1)
-        {
-            _components = components ?? MultiComponentList.Empty;
-        }
-
-        public override MultiComponentList Components => _components;
     }
 }

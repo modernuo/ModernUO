@@ -3762,7 +3762,7 @@
     "homeRange": 4,
     "walkingRange": 4,
     "entries": [
-      { "name": "escortablewanderinghealer", "maxCount": 1, "probability": 100 }
+      { "name": "EscortableMage", "maxCount": 1, "probability": 100 }
     ]
   },
   {

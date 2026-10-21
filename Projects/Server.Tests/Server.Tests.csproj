@@ -5,10 +5,10 @@
         <RootNamespace>Server.Tests</RootNamespace>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.10.1" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.11.0" />
         <PackageReference Include="xunit" Version="2.9.3" />
         <PackageReference Include="xunit.SkippableFact" Version="1.5.85" />
-        <PackageReference Include="xunit.runner.visualstudio" Version="4.0.0">
+        <PackageReference Include="xunit.runner.visualstudio" Version="4.0.1">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
@@ -25,5 +25,9 @@
     </ItemGroup>
     <Target Name="CopyData" AfterTargets="AfterBuild">
         <Copy SourceFiles="@(DataFiles)" DestinationFolder="$(OutDir)\Data\%(RecursiveDir)" />
+    </Target>
+    <!-- The test host writes its generated tile data here at runtime (SyntheticWorld), so Clean does not track it. -->
+    <Target Name="CleanSyntheticData" AfterTargets="Clean">
+        <RemoveDir Directories="$(OutDir)\SyntheticData" />
     </Target>
 </Project>

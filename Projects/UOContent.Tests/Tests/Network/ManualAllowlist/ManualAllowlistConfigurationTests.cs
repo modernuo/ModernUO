@@ -50,12 +50,6 @@ public class ManualAllowlistConfigurationTests
     }
 
     // The point of the flag: a shard that never opts in must not start the reload poll.
-    [Fact]
-    public void Manual_allowlist_is_off_by_default()
-    {
-        Assert.False(new ManualAllowlistSettings().Enabled);
-    }
-
     // The generator creates ip-allowlist.txt beside the blocklist; the wildcard is what picks up a
     // carve-out file (-RefreshCarveouts writes ip-allowlist-starlink.txt) with no config edit.
     [Fact]

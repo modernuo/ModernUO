@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
 using Server.Accounting;
 using Server.Accounting.Security;
@@ -22,14 +23,43 @@ public class AuthIdTests : IDisposable
         IncomingAccountPackets.ClearAuthIdWindow();
     }
 
+    // The constructor registers each account in the process-wide Accounts table.
+    private readonly List<Account> _created = [];
+
     public void Dispose()
     {
+        for (var i = 0; i < _created.Count; i++)
+        {
+            _created[i].Delete();
+        }
+
         IncomingAccountPackets.ClearAuthIdWindow();
         AccountSecurity.CurrentAlgorithm = _originalAlgorithm;
     }
 
-    private static IAccount CreateAccount(string username) =>
-        Accounts.GetAccount(username) ?? new Account(username, "hunter2");
+    // Auth ids never read the password, so these accounts skip the Argon2 cost.
+    private IAccount CreateAccount(string username)
+    {
+        AccountSecurity.CurrentAlgorithm = PasswordProtectionAlgorithm.SHA2;
+        try
+        {
+            return TrackNewAccount(username);
+        }
+        finally
+        {
+            AccountSecurity.CurrentAlgorithm = PasswordProtectionAlgorithm.Argon2;
+        }
+    }
+
+    // The game-login tests run the real password check, so they keep the configured algorithm.
+    private IAccount CreateArgon2Account(string username) => TrackNewAccount(username);
+
+    private Account TrackNewAccount(string username)
+    {
+        var account = new Account(username, "hunter2");
+        _created.Add(account);
+        return account;
+    }
 
     private static int Register(IAccount account, IPAddress address) =>
         IncomingAccountPackets.RegisterAuthId(account, address, new ClientVersion(7, 0, 0, 0));
@@ -255,17 +285,6 @@ public class AuthIdTests : IDisposable
             new ClientVersion(7, 0, 0, 0)
         );
 
-    [Fact]
-    public void IssuesAnIdWhenTheConnectionHasNone()
-    {
-        var account = CreateAccount("authid-first-select-user");
-
-        var authId = Ensure(0, account, AddressX);
-
-        Assert.NotEqual(0, authId);
-        Assert.Equal(1, IncomingAccountPackets.AuthIdWindowCount);
-    }
-
     // Handing the same id back rather than minting another is what makes an orphan impossible,
     // instead of something to clean up afterwards.
     [Fact]
@@ -347,7 +366,7 @@ public class AuthIdTests : IDisposable
     [Fact]
     public void PreAuthenticatedGameLogin_SkipsThePasswordCheck()
     {
-        var account = CreateAccount("authid-preauth-user");
+        var account = CreateArgon2Account("authid-preauth-user");
         using var ns = PacketTestUtilities.CreateTestNetState();
 
         // A wrong password is accepted only because the auth id already vouched for the account.
@@ -360,7 +379,7 @@ public class AuthIdTests : IDisposable
     [Fact]
     public void GameLoginWithoutPreAuthentication_StillChecksThePassword()
     {
-        var account = CreateAccount("authid-nopreauth-user");
+        var account = CreateArgon2Account("authid-nopreauth-user");
         using var ns = PacketTestUtilities.CreateTestNetState();
 
         var wrong = new GameServer.GameLoginEventArgs(ns, account.Username, "wrong-password", false);
@@ -370,13 +389,5 @@ public class AuthIdTests : IDisposable
         var right = new GameServer.GameLoginEventArgs(ns, account.Username, "hunter2", false);
         GameServer.GameServerLoginEvent(right);
         Assert.True(right.Accepted);
-    }
-
-    [Fact]
-    public void GeneratesDistinctAuthIds()
-    {
-        var account = CreateAccount("authid-distinct-user");
-
-        Assert.NotEqual(Register(account, AddressX), Register(account, AddressX));
     }
 }

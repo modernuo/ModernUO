@@ -1,3 +1,5 @@
+using Server.Tests.Terrain;
+using System;
 using Server.Engines.Pathing.Cache;
 using Server.Items;
 using Server.Mobiles;
@@ -9,33 +11,23 @@ using Xunit.Abstractions;
 namespace Server.Tests.Pathfinding;
 
 [Collection("Sequential Pathfinding Tests")]
-public class MultiPathInvariantTests
+public class MultiPathInvariantTests : IDisposable
 {
     private readonly ITestOutputHelper _output;
+    private readonly StepCacheStateScope _cacheState = new();
 
     public MultiPathInvariantTests(ITestOutputHelper output) => _output = output;
 
-    private const int MapId = 1;
+    public void Dispose() => _cacheState.Dispose();
 
-    private sealed class WalkerStub : Mobile
-    {
-        public WalkerStub() => Body = 0xC9;
-    }
+    private const int MapId = 1;
 
     private static Direction[] FindWithFlag(Mobile m, Map map, Point3D start, Point3D goal, bool cacheOn)
     {
-        var prev = ContentFeatureFlags.BitmapPathfindingCache;
-        try
-        {
-            ContentFeatureFlags.BitmapPathfindingCache = cacheOn;
-            StepCache.Instance.Clear();
-            StepCache.Instance.MissPromotionThreshold = 1;
-            return BitmapAStarAlgorithm.Instance.Find(m, map, start, goal);
-        }
-        finally
-        {
-            ContentFeatureFlags.BitmapPathfindingCache = prev;
-        }
+        ContentFeatureFlags.BitmapPathfindingCache = cacheOn;
+        StepCache.Instance.Clear();
+        StepCache.Instance.MissPromotionThreshold = 1;
+        return BitmapAStarAlgorithm.Instance.Find(m, map, start, goal);
     }
 
     [Theory]
@@ -51,7 +43,7 @@ public class MultiPathInvariantTests
         var hx = (sx + gx) / 2;
         var hy = (sy + gy) / 2;
         map.GetAverageZ(hx, hy, out _, out var hz, out _);
-        var multi = new TestMulti(0x74);
+        var multi = new TestMulti(TestMultis.GuildHouse);
         multi.MoveToWorld(new Point3D(hx, hy, (sbyte)hz), map);
 
         var walker = new WalkerStub();
@@ -100,11 +92,11 @@ public class MultiPathInvariantTests
         {
             var on = FindWithFlag(walker, map, start, goal, cacheOn: true);
             var off = FindWithFlag(walker, map, start, goal, cacheOn: false);
-            Assert.Equal(off == null, on == null);
-            if (on != null)
-            {
-                Assert.Equal(off, on);
-            }
+
+            // Two nulls would agree about nothing: the control route must exist.
+            Assert.NotNull(off);
+            Assert.NotNull(on);
+            Assert.Equal(off, on);
         }
         finally
         {
@@ -118,15 +110,14 @@ public class MultiPathInvariantTests
         var map = Map.Maps[MapId];
         Assert.NotNull(map);
 
-        // Open area at (1480,1620,z=20): paths exist in all 8 directions (probe confirmed).
-        // N-S route: start=(1480,1630) goal=(1480,1610). House at (1480,1620) on direct line.
-        // Detour exists E (~1488+) and W (~1472-). Both cache-on and cache-off must agree.
+        // Flat default ground. N-S route: start=(1480,1630) goal=(1480,1610), house at (1480,1620) on
+        // the direct line; the detour runs round its east or west wall. Cache-on and cache-off must agree.
         const int hx = 1480, hy = 1620;
         const int sx = 1480, sy = 1630;
         const int gx = 1480, gy = 1610;
 
         map.GetAverageZ(hx, hy, out _, out var hz, out _);
-        var multi = new TestMulti(0x74);
+        var multi = new TestMulti(TestMultis.GuildHouse);
         multi.MoveToWorld(new Point3D(hx, hy, (sbyte)hz), map);
 
         var walker = new WalkerStub();

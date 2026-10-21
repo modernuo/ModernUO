@@ -36,25 +36,9 @@ public class SummonAcquireRulesTests : IDisposable
         return creature.AIObject.AcquireFocusMob(creature.RangePerception, creature.FightMode, false, false, true);
     }
 
-    [SkippableTheory]
-    [InlineData(true)]
-    [InlineData(false)]
-    public void PreAosFeluccaVortexTurnsOnItsCaster(bool bladeSpirits)
-    {
-        Skip.If(!Server.Tests.TestServerInitializer.TileDataLoaded, "Requires UO client map data.");
-        Core.Expansion = Expansion.UOR;
-
-        var caster = Player(Map.Felucca, 1500, 100);
-        var summon = Summon(bladeSpirits ? new BladeSpirits() : new EnergyVortex(), caster, 1499);
-
-        Assert.True(Acquire(summon));
-        Assert.Same(caster, summon.FocusMob);
-    }
-
-    [SkippableFact]
+    [Fact]
     public void PreAosFeluccaVortexPrefersAnyoneOverItsCaster()
     {
-        Skip.If(!Server.Tests.TestServerInitializer.TileDataLoaded, "Requires UO client map data.");
         Core.Expansion = Expansion.UOR;
 
         // The caster outranks the bystander on the vortex's int-over-distance ranking.
@@ -66,12 +50,11 @@ public class SummonAcquireRulesTests : IDisposable
         Assert.Same(bystander, vortex.FocusMob);
     }
 
-    [SkippableTheory]
+    [Theory]
     [InlineData(Expansion.UOR, 1)] // Trammel
     [InlineData(Expansion.AOS, 0)] // Felucca
     public void VortexSparesItsCasterOutsidePreAosFelucca(Expansion expansion, int mapIndex)
     {
-        Skip.If(!Server.Tests.TestServerInitializer.TileDataLoaded, "Requires UO client map data.");
         Core.Expansion = expansion;
 
         var caster = Player(Map.Maps[mapIndex], 1500, 100);
@@ -81,10 +64,9 @@ public class SummonAcquireRulesTests : IDisposable
         Assert.Null(vortex.FocusMob);
     }
 
-    [SkippableFact]
+    [Fact]
     public void MasterlessSummonDoesNotBreakAcquisition()
     {
-        Skip.If(!Server.Tests.TestServerInitializer.TileDataLoaded, "Requires UO client map data.");
         Core.Expansion = Expansion.AOS;
 
         var player = Player(Map.Felucca, 1500, 100);

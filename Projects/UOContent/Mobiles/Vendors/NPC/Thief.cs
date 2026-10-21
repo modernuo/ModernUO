@@ -31,10 +31,10 @@ namespace Server.Mobiles
         {
             base.InitOutfit();
 
-            AddItem(new Shirt(Utility.RandomNeutralHue()));
-            AddItem(new LongPants(Utility.RandomNeutralHue()));
+            ReplaceEquipment(new Shirt(Utility.RandomNeutralHue()));
+            ReplaceEquipment(new LongPants(Utility.RandomNeutralHue()));
             AddItem(new Dagger());
-            AddItem(new ThighBoots(Utility.RandomNeutralHue()));
+            ReplaceEquipment(new ThighBoots(Utility.RandomNeutralHue()));
         }
     }
 }

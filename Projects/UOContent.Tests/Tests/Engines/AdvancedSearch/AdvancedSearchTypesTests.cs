@@ -4,6 +4,7 @@ using Xunit;
 
 namespace UOContent.Tests;
 
+// Registers the poison table, which is process-wide, so this stays in the sequential collection.
 [Collection("Sequential UOContent Tests")]
 public class AdvancedSearchTypesTests
 {
@@ -15,7 +16,11 @@ public class AdvancedSearchTypesTests
     [Fact]
     public void Poison_ReferenceTypeParsedViaTypes()
     {
-        PoisonKinds.Configure(); // idempotent; registers Lesser..Lethal now that Core.Expansion is set
+        // The fixture does not run PoisonKinds.Configure, and a second registration throws.
+        if (Poison.Poisons.Count == 0)
+        {
+            PoisonKinds.Configure();
+        }
 
         // Poison is a reference type implementing ISpanParsable; its value routes through the shared
         // Server.Types converter. Poison.Parse returns the registered singleton, so "= Lethal" is a
@@ -26,8 +31,6 @@ public class AdvancedSearchTypesTests
         Assert.True(AdvancedSearchConditions.Compile(typeof(Subject), "Venom=Lethal")(subject));
         Assert.False(AdvancedSearchConditions.Compile(typeof(Subject), "Venom=Lesser")(subject));
 
-        var ex = Record.Exception(() =>
-            Assert.False(AdvancedSearchConditions.Compile(typeof(Subject), "Venom=notapoison")(subject)));
-        Assert.Null(ex);
+        Assert.False(AdvancedSearchConditions.Compile(typeof(Subject), "Venom=notapoison")(subject));
     }
 }

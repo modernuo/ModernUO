@@ -51,13 +51,11 @@ public class TreasureMapChestGuardianTests
 
     // Drives the real dig, one DigTimer tick per call, until the chest surfaces and its guardians
     // spawn. Levels 0 and 2+ spawn guardians; level 1 spawns none.
-    [SkippableTheory]
+    [Theory]
     [InlineData(0)]
     [InlineData(2)]
     public void Dig_AddsSpawnedGuardiansToTheChest(int level)
     {
-        TileDataRequirement.SkipIfMissing();
-
         var map = Map.Felucca;
         var site = new Point3D(SiteX, SiteY, map.GetAverageZ(SiteX, SiteY));
         var player = CreatePlayerMobile(map, new Point3D(site.X + 1, site.Y, site.Z));

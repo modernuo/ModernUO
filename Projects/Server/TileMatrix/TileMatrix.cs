@@ -220,9 +220,15 @@ public class TileMatrix
 
     public StaticTile[][][] GetStaticBlock(int x, int y)
     {
-        if (x < 0 || y < 0 || x >= BlockWidth || y >= BlockHeight || DataStream == null || IndexStream == null)
+        if (x < 0 || y < 0 || x >= BlockWidth || y >= BlockHeight)
         {
             return _emptyStaticBlock;
+        }
+
+        // A map without static files (tests, generated maps) serves only what was injected.
+        if (DataStream == null || IndexStream == null)
+        {
+            return _staticTiles[x]?[y] ?? _emptyStaticBlock;
         }
 
         _staticTiles[x] ??= new StaticTile[BlockHeight][][][];
@@ -292,9 +298,15 @@ public class TileMatrix
 
     public LandTile[] GetLandBlock(int x, int y)
     {
-        if (x < 0 || y < 0 || x >= BlockWidth || y >= BlockHeight || MapStream == null)
+        if (x < 0 || y < 0 || x >= BlockWidth || y >= BlockHeight)
         {
             return _invalidLandBlock;
+        }
+
+        // A map without a map file (tests, generated maps) serves only what was injected.
+        if (MapStream == null)
+        {
+            return _landTiles[x]?[y] ?? _invalidLandBlock;
         }
 
         _landTiles[x] ??= new LandTile[BlockHeight][];

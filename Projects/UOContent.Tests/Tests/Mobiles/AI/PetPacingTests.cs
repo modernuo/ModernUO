@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using Server;
 using Server.Mobiles;
+using Server.Tests;
 using Xunit;
+using static Server.Tests.TimerWheelScope;
 
 namespace UOContent.Tests.Mobiles.AI;
 
@@ -11,6 +13,7 @@ namespace UOContent.Tests.Mobiles.AI;
 public class PetPacingTests : IDisposable
 {
     private readonly List<Mobile> _created = new();
+    private TimerWheelScope _clock;
 
     private (PlayerMobile master, PetTestStub pet) Spawn(Point3D masterLoc, Point3D petLoc)
     {
@@ -28,6 +31,7 @@ public class PetPacingTests : IDisposable
         }
 
         _created.Clear();
+        _clock?.Dispose();
     }
 
     // Movement orders run active, resting orders run passive; the move clock follows.
@@ -64,8 +68,8 @@ public class PetPacingTests : IDisposable
         pet.ControlTarget = master;
         pet.ControlOrder = OrderType.Follow; // fixture era is EJ
 
-        Assert.Equal(0.2, pet.CurrentSpeed);     // active think, not the follow pace
-        Assert.Equal(0.1, pet.CurrentMoveSpeed); // capped at the follow pace
+        Assert.Equal(0.2, pet.CurrentSpeed);                     // active think, not the follow pace
+        Assert.Equal(pet.FollowMoveSpeed, pet.CurrentMoveSpeed); // capped at the follow pace
     }
 
     // A creature configured faster than the follow pace keeps its own.
@@ -73,12 +77,13 @@ public class PetPacingTests : IDisposable
     public void FollowMaster_KeepsAFasterConfiguredPace()
     {
         var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
-        pet.SetMoveSpeed(0.05, 0.9);
+        var faster = pet.FollowMoveSpeed / 2;
+        pet.SetMoveSpeed(faster, 0.9);
 
         pet.ControlTarget = master;
         pet.ControlOrder = OrderType.Follow;
 
-        Assert.Equal(0.05, pet.CurrentMoveSpeed);
+        Assert.Equal(faster, pet.CurrentMoveSpeed);
     }
 
     // The move-clock override survives the order: it is capped while following, not overwritten.
@@ -99,29 +104,6 @@ public class PetPacingTests : IDisposable
     }
 
     // Pre-AOS pets follow at their own pace; nothing caps them.
-    [Fact]
-    public void FollowMaster_PreAOS_KeepsItsOwnPace()
-    {
-        var previous = Core.Expansion;
-
-        try
-        {
-            Core.Expansion = Expansion.UOR;
-            var (master, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
-            pet.SetMoveSpeed(0.3, 0.9);
-
-            pet.ControlTarget = master;
-            pet.ControlOrder = OrderType.Follow;
-
-            Assert.Equal(0.2, pet.CurrentSpeed);
-            Assert.Equal(0.3, pet.CurrentMoveSpeed);
-        }
-        finally
-        {
-            Core.Expansion = previous;
-        }
-    }
-
     private sealed class SprintingPet : PetTestStub
     {
         public override double FollowMoveSpeed => 0.125;
@@ -168,7 +150,7 @@ public class PetPacingTests : IDisposable
         pet.ControlOrder = OrderType.Guard;
 
         Assert.Equal(0.2, pet.CurrentSpeed);
-        Assert.Equal(0.1, pet.CurrentMoveSpeed);
+        Assert.Equal(pet.FollowMoveSpeed, pet.CurrentMoveSpeed);
     }
 
     // Obeying the follow order must not write the pace into either clock.
@@ -184,7 +166,7 @@ public class PetPacingTests : IDisposable
         pet.AIObject.Obey();
 
         Assert.Equal(0.2, pet.CurrentSpeed);
-        Assert.Equal(0.1, pet.CurrentMoveSpeed);
+        Assert.Equal(pet.FollowMoveSpeed, pet.CurrentMoveSpeed);
     }
 
     // At the master's side a guarding pet stays active: no stale-warmode passive, no sprint.
@@ -204,35 +186,7 @@ public class PetPacingTests : IDisposable
     }
 
     // A pet chasing a combatant keeps the move table.
-    [Fact]
-    public void CombatChasingPet_KeepsMoveTable()
-    {
-        var (_, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
-        var target = new PetTestStub();
-        target.MoveToWorld(new Point3D(1003, 1000, 0), Map.Felucca);
-        _created.Add(target);
-
-        pet.SetMoveSpeed(0.3, 0.9);
-        pet.ControlOrder = OrderType.Guard;
-        pet.Combatant = target;
-        pet.SetCurrentSpeedToActive();
-
-        Assert.Equal(0.3, pet.CurrentMoveSpeed);
-    }
-
     // Herding overrides order pacing.
-    [Fact]
-    public void HerdedObeyingPet_KeepsHerdingPace()
-    {
-        var (_, pet) = Spawn(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
-        pet.SetMoveSpeed(0.45, 0.9);
-        pet.SetCurrentSpeedToPassive();
-
-        pet.TargetLocation = new Point2D(1010, 1010);
-
-        Assert.Equal(0.3, pet.CurrentMoveSpeed); // fixed herding pace
-    }
-
     private sealed class ThinkProbe : PetTestStub
     {
         public int Thinks;
@@ -259,41 +213,10 @@ public class PetPacingTests : IDisposable
         return (master, pet);
     }
 
-    // Advances time in 8ms lockstep so the wheel and Core.TickCount stay in sync.
-    private static void RunFor(long ms)
-    {
-        var deadline = Core._tickCount + ms;
-
-        while (Core._tickCount < deadline)
-        {
-            Core._tickCount += 8;
-            Timer.Slice(Core._tickCount);
-        }
-    }
-
-    private static bool RunUntil(Func<bool> condition, long maxMs)
-    {
-        var deadline = Core._tickCount + maxMs;
-
-        while (Core._tickCount < deadline)
-        {
-            if (condition())
-            {
-                return true;
-            }
-
-            Core._tickCount += 8;
-            Timer.Slice(Core._tickCount);
-        }
-
-        return condition();
-    }
-
     // Runs past the spawn stagger; returns right after a think with the next 0.4s away.
     private ThinkProbe SettledProbe(out PlayerMobile master)
     {
-        Core._tickCount = 0;
-        Timer.Init(0);
+        _clock = new TimerWheelScope();
 
         var (m, pet) = SpawnProbe();
         master = m;

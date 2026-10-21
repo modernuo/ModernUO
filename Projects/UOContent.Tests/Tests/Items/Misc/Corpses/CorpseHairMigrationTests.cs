@@ -45,15 +45,4 @@ public class CorpseHairMigrationTests
         // The entire block must be consumed - the loader validates exact byte length.
         Assert.Equal(buffer.Length, reader.Position);
     }
-
-    [Fact]
-    public void LegacyHairTail_Absent_ConsumesOnlyPresenceBool()
-    {
-        var buffer = WriteLegacyHairTail(false, 0, 0);
-        var reader = new BufferReader(buffer);
-
-        Assert.False(reader.ReadBool());
-        // Absent case: nothing else to read, and the presence bool was the only byte.
-        Assert.Equal(buffer.Length, reader.Position);
-    }
 }

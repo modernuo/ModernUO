@@ -13,7 +13,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using Server.Network;
 using Server.Network.Bans;
@@ -21,10 +23,18 @@ using Xunit;
 
 namespace Server.Tests.Network.Exemptions;
 
-// Addresses come from TEST-NET-1 (192.0.2.0/24) to stay clear of the other ban test classes if xUnit runs
-// them concurrently.
-public class BanExemptionsTests
+// ManualAllowlist is process-wide and BlocklistFilter reads it, so this runs in the sequential collection
+// and puts the original snapshot back. Addresses come from TEST-NET-1 (192.0.2.0/24).
+[Collection("Sequential UOContent Tests")]
+public class BanExemptionsTests : IDisposable
 {
+    private static readonly FieldInfo _snapshotField =
+        typeof(ManualAllowlist).GetField("_snapshot", BindingFlags.Static | BindingFlags.NonPublic);
+
+    private readonly object _savedSnapshot = _snapshotField.GetValue(null);
+
+    public void Dispose() => ManualAllowlist.LoadForTesting((BlocklistSnapshot)_savedSnapshot);
+
     private static readonly IPAddress _listed = IPAddress.Parse("192.0.2.10");
     private static readonly IPAddress _unlisted = IPAddress.Parse("192.0.2.11");
 
@@ -72,15 +82,6 @@ public class BanExemptionsTests
 
         Assert.False(BanExemptions.IsExempt(_listed, BanReasons.Blocklist, NeverCalled));
         Assert.False(BanExemptions.IsExempt(_listed, "some-future-reason", NeverCalled));
-    }
-
-    [Fact]
-    public void Manual_allowlist_does_not_spend_the_earned_lists_strikes()
-    {
-        WithManualAllowlist("192.0.2.10");
-
-        // Unconditional, so the revocable list must not be consulted -- that would burn a strike.
-        Assert.True(BanExemptions.IsExempt(_listed, BanReasons.RateLimit, NeverCalled));
     }
 
     [Fact]

@@ -22,15 +22,11 @@ public class VendorBuyPacketTests
             new("Third Item", cont.Serial, World.NewItem, 30, 10, 0x0F, 0)
         };
 
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.ProtocolChanges = protocolChanges;
-
-        var expected = new VendorBuyContent(buyStates, ns.ContainerGridLines).Compile();
-
-        ns.SendVendorBuyContent(buyStates);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(
+            ns => new VendorBuyContent(buyStates, ns.ContainerGridLines),
+            ns => ns.SendVendorBuyContent(buyStates),
+            protocolChanges
+        );
     }
 
     [Theory]
@@ -41,15 +37,11 @@ public class VendorBuyPacketTests
         var vendor = new Mobile((Serial)0x1);
         vendor.DefaultMobileInit();
 
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.ProtocolChanges = protocolChanges;
-
-        var expected = new DisplayBuyList(vendor.Serial, ns.HighSeas).Compile();
-
-        ns.SendDisplayBuyList(vendor.Serial);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(
+            ns => new DisplayBuyList(vendor.Serial, ns.HighSeas),
+            ns => ns.SendDisplayBuyList(vendor.Serial),
+            protocolChanges
+        );
     }
 
     [Fact]
@@ -67,13 +59,7 @@ public class VendorBuyPacketTests
             new("Third Item", cont.Serial, World.NewItem, 30, 10, 0x0F, 0)
         };
 
-        var expected = new VendorBuyList(vendor, buyStates).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendVendorBuyList(vendor, buyStates);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new VendorBuyList(vendor, buyStates), ns => ns.SendVendorBuyList(vendor, buyStates));
     }
 
     [Fact]
@@ -82,12 +68,6 @@ public class VendorBuyPacketTests
         var vendor = new Mobile((Serial)0x1);
         vendor.DefaultMobileInit();
 
-        var expected = new EndVendorBuy(vendor.Serial).Compile();
-
-        using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendEndVendorBuy(vendor.Serial);
-
-        var result = ns.SendBuffer.GetReadSpan();
-        AssertThat.Equal(result, expected);
+        PacketAssert.Sends(new EndVendorBuy(vendor.Serial), ns => ns.SendEndVendorBuy(vendor.Serial));
     }
 }

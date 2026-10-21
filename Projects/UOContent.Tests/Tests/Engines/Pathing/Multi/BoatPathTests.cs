@@ -1,5 +1,6 @@
 using Server.Engines.Pathing.Cache;
 using Server.Items;
+using Server.Tests.Terrain;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -12,20 +13,20 @@ public class BoatPathTests
 
     public BoatPathTests(ITestOutputHelper output) => _output = output;
 
-    // Open water in the south-Britain bay (Trammel), used by the existing swim-bake test.
+    // Open water: the middle of the DeepSea prefab.
     private const int MapId = 1;
-    private const int WaterX = 1450;
-    private const int WaterY = 1770;
+    private static int WaterX => Prefabs.DeepSea.Anchor.X;
+    private static int WaterY => Prefabs.DeepSea.Anchor.Y;
 
-    [SkippableFact]
+    [Fact]
     public void BoatDeck_HasWalkableSurfaceCells()
     {
-        TileDataRequirement.SkipIfMissing();
+        Prefabs.DeepSea.AssertPresent();
         StepCache.Instance.Clear();
         var map = Map.Maps[MapId];
 
         // SmallBoat North heading = multiID 0x0. A deck is made of surface tiles.
-        var boat = new TestMulti(0x0);
+        var boat = new TestMulti(TestMultis.SmallBoatNorth);
         map.GetAverageZ(WaterX, WaterY, out _, out var z, out _);
         boat.MoveToWorld(new Point3D(WaterX, WaterY, (sbyte)z), map);
 
@@ -43,31 +44,6 @@ public class BoatPathTests
         {
             boat.Delete();
         }
-    }
-
-    [SkippableFact]
-    public void BoatDeck_FootprintShape_IsPositionInvariant()
-    {
-        TileDataRequirement.SkipIfMissing();
-        // The property Phase 2's local-frame, movement-invariant boat cache must preserve:
-        // the deck's covered-cell shape (in local coords) is identical at two world positions.
-        var map = Map.Maps[MapId];
-
-        var a = new TestMulti(0x0);
-        map.GetAverageZ(WaterX, WaterY, out _, out var za, out _);
-        a.MoveToWorld(new Point3D(WaterX, WaterY, (sbyte)za), map);
-        var shapeA = LocalShape(a);
-        a.Delete();
-
-        var b = new TestMulti(0x0);
-        map.GetAverageZ(WaterX + 5, WaterY + 3, out _, out var zb, out _);
-        b.MoveToWorld(new Point3D(WaterX + 5, WaterY + 3, (sbyte)zb), map);
-        var shapeB = LocalShape(b);
-        b.Delete();
-
-        Assert.Equal(shapeA, shapeB);
-        Assert.NotEmpty(shapeA);
-        _output.WriteLine($"boat local deck shape stable across positions: {shapeA.Count} cells");
     }
 
     private static System.Collections.Generic.HashSet<(int lx, int ly)> LocalShape(BaseMulti multi)

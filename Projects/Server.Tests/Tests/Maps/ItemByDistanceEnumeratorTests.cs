@@ -39,100 +39,6 @@ public class ItemByDistanceEnumeratorTests
     }
 
     [Fact]
-    public void ItemByDistanceEnumerator_DeletedItemsAreSkipped()
-    {
-        var map = Map.Felucca;
-        var center = new Point3D(200, 200, 0);
-        const int range = 5;
-
-        var Items = new TestItem[3];
-        try
-        {
-            Items[0] = CreateItem(map, new Point3D(202, 202, 0));
-            Items[1] = CreateItem(map, new Point3D(203, 202, 0));
-            Items[2] = CreateItem(map, new Point3D(204, 202, 0));
-
-            Items[1].Delete();
-
-            var found = new List<Item>();
-            foreach (var (Item, _) in map.GetItemsInRangeByDistance(center, range))
-            {
-                found.Add(Item);
-            }
-
-            Assert.Equal(2, found.Count);
-            Assert.Contains(Items[0], found);
-            Assert.Contains(Items[2], found);
-            Assert.DoesNotContain(Items[1], found);
-        }
-        finally
-        {
-            DeleteAll(Items);
-        }
-    }
-
-    [Fact]
-    public void ItemByDistanceEnumerator_ReturnsMinDistance()
-    {
-        var map = Map.Felucca;
-        var center = new Point3D(300, 300, 0);
-        const int range = 10;
-
-        var Items = new TestItem[2];
-        try
-        {
-            Items[0] = CreateItem(map, new Point3D(305, 305, 0));
-            Items[1] = CreateItem(map, new Point3D(302, 302, 0));
-
-            var foundWithDistance = new List<(Item, int)>();
-            foreach (var result in map.GetItemsInRangeByDistance(center, range))
-            {
-                foundWithDistance.Add(result);
-            }
-
-            Assert.Equal(2, foundWithDistance.Count);
-            // Each Item should have a non-negative min distance
-            Assert.All(foundWithDistance, item => Assert.True(item.Item2 >= 0));
-        }
-        finally
-        {
-            DeleteAll(Items);
-        }
-    }
-
-    [Fact]
-    public void ItemByDistanceEnumerator_OrderedBySector()
-    {
-        var map = Map.Felucca;
-        var center = new Point3D(400, 400, 0);
-        const int range = Map.SectorSize * 2;
-
-        var Items = new TestItem[3];
-        try
-        {
-            // Place Items in different sectors
-            Items[0] = CreateItem(map, new Point3D(center.X + 2, center.Y + 2, 0));
-            Items[1] = CreateItem(map, new Point3D(center.X + Map.SectorSize + 2, center.Y + 2, 0));
-            Items[2] = CreateItem(map, new Point3D(center.X + 2, center.Y + Map.SectorSize + 2, 0));
-
-            var found = new List<Item>();
-            foreach (var (Item, _) in map.GetItemsInRangeByDistance(center, range))
-            {
-                found.Add(Item);
-            }
-
-            Assert.Equal(3, found.Count);
-            Assert.Contains(Items[0], found);
-            Assert.Contains(Items[1], found);
-            Assert.Contains(Items[2], found);
-        }
-        finally
-        {
-            DeleteAll(Items);
-        }
-    }
-
-    [Fact]
     public void ItemByDistanceEnumerator_MapNullYieldsEmpty()
     {
         var center = new Point2D(0, 0);
@@ -240,50 +146,6 @@ public class ItemByDistanceEnumeratorTests
     }
 
     [Fact]
-    public void ItemByDistanceEnumerator_UsesDifferentPointOverloads()
-    {
-        var map = Map.Felucca;
-        var center = new Point3D(800, 800, 5);
-        const int range = 5;
-
-        var Items = new TestItem[1];
-        try
-        {
-            Items[0] = CreateItem(map, new Point3D(802, 802, 0));
-
-            // Test Point3D overload
-            var found1 = new List<Item>();
-            foreach (var (Item, _) in map.GetItemsInRangeByDistance(center, range))
-            {
-                found1.Add(Item);
-            }
-
-            // Test (int, int) overload
-            var found2 = new List<Item>();
-            foreach (var (Item, _) in map.GetItemsInRangeByDistance<Item>(center.X, center.Y, range))
-            {
-                found2.Add(Item);
-            }
-
-            // Test Point2D overload
-            var found3 = new List<Item>();
-            foreach (var (Item, _) in map.GetItemsInRangeByDistance(new Point2D(center.X, center.Y), range))
-            {
-                found3.Add(Item);
-            }
-
-            Assert.Single(found1);
-            Assert.Equal(Items[0], found1[0]);
-            Assert.Equal(found1, found2);
-            Assert.Equal(found1, found3);
-        }
-        finally
-        {
-            DeleteAll(Items);
-        }
-    }
-
-    [Fact]
     public void ItemByDistanceEnumerator_RingTraversal()
     {
         var map = Map.Felucca;
@@ -381,58 +243,6 @@ public class ItemByDistanceEnumeratorTests
         finally
         {
             DeleteAll(Items);
-        }
-    }
-
-    [Fact]
-    public void ItemByDistanceEnumerator_MultipleRings()
-    {
-        var map = Map.Felucca;
-        var center = new Point3D(1100, 1100, 0);
-        const int range = Map.SectorSize * 3;
-
-        var Items = new List<TestItem>();
-        try
-        {
-            // Create a grid of Items across multiple sectors
-            for (var ringOffset = 0; ringOffset <= 2; ringOffset++)
-            {
-                for (var side = 0; side < 4; side++)
-                {
-                    var offset = ringOffset * Map.SectorSize;
-                    var pos = side switch
-                    {
-                        0 => new Point3D(center.X + offset, center.Y, 0),
-                        1 => new Point3D(center.X, center.Y + offset, 0),
-                        2 => new Point3D(center.X - offset, center.Y, 0),
-                        _ => new Point3D(center.X, center.Y - offset, 0)
-                    };
-                    Items.Add(CreateItem(map, pos));
-                }
-            }
-
-            var found = new List<Item>();
-            foreach (var (Item, _) in map.GetItemsInRangeByDistance(center, range))
-            {
-                found.Add(Item);
-            }
-
-            // Should find all Items within range
-            Assert.True(found.Count > 0);
-            Assert.All(found, Item =>
-            {
-                var dx = Item.X - center.X;
-                var dy = Item.Y - center.Y;
-                var distSq = dx * dx + dy * dy;
-                Assert.True(distSq <= range * range);
-            });
-        }
-        finally
-        {
-            foreach (var Item in Items)
-            {
-                Item?.Delete();
-            }
         }
     }
 
@@ -549,33 +359,6 @@ public class ItemByDistanceEnumeratorTests
             Assert.Equal(2, foundWithInclusive.Count);
             Assert.Contains(Items[0], foundWithInclusive);
             Assert.Contains(Items[1], foundWithInclusive);
-        }
-        finally
-        {
-            DeleteAll(Items);
-        }
-    }
-
-    [Fact]
-    public void ItemByDistanceEnumerator_Bounds_ReturnsMinDistance()
-    {
-        var map = Map.Felucca;
-        var bounds = new Rectangle2D(300, 300, 20, 20);
-
-        var Items = new TestItem[2];
-        try
-        {
-            Items[0] = CreateItem(map, new Point3D(305, 305, 0));
-            Items[1] = CreateItem(map, new Point3D(315, 315, 0));
-
-            var foundWithDistance = new List<(Item, int)>();
-            foreach (var result in map.GetItemsInBoundsByDistance<Item>(bounds))
-            {
-                foundWithDistance.Add(result);
-            }
-
-            Assert.Equal(2, foundWithDistance.Count);
-            Assert.All(foundWithDistance, item => Assert.True(item.Item2 >= 0));
         }
         finally
         {

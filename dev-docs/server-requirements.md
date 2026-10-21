@@ -126,6 +126,36 @@ See the README for the full supported list. Two things are worth calling out:
 - **Linux kernel 6.1** or newer (Debian 12 and equivalents). io_uring is used where available, with
   automatic epoll fallback.
 
+## Restarting under a supervisor
+
+By default a restart (`restart` console command, `AutoRestart`, `CrashGuard` crash recovery)
+launches a fresh copy of the server and exits. That copy is detached from the console you started
+the server in, and a systemd unit or container kills it as soon as the original process exits.
+
+If something else keeps the server running, let it do the relaunch instead. Set a restart exit code
+in `Distribution/Configuration/modernuo.json`:
+
+```json
+"settings": {
+  "server.restartExitCode": "75"
+}
+```
+
+A restart then shuts down and saves as usual and exits with that code (1–255) instead of launching
+a copy. A normal `shutdown` still exits with `0`. `75` is a suggestion; any code your supervisor
+does not use for something else works. Then restart on that code:
+
+- **systemd**: `Restart=on-failure` in the `[Service]` section.
+- **Docker**: `restart: on-failure` in Compose, or `--restart on-failure`.
+- **Shell loop** (Linux/macOS), keeps the server on the same terminal:
+  ```sh
+  while :; do dotnet ModernUO.dll; [ $? -eq 75 ] || break; done
+  ```
+- **PowerShell** (Windows):
+  ```powershell
+  do { dotnet ModernUO.dll } while ($LASTEXITCODE -eq 75)
+  ```
+
 ## Tuning for a small host
 
 | Setting | Default | Why change it |

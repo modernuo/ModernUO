@@ -1,6 +1,7 @@
 using System;
 using Server.Accounting;
 using Server.Accounting.Security;
+using Server.Tests.Accounting.Security;
 using Xunit;
 
 namespace Server.Tests.Accounting;
@@ -64,7 +65,9 @@ public class AccountPasswordTests : IDisposable
             "$argon2i$v=19$m=8192,t=3,p=1$LD1XJz7P3wQmIJ+Tu6ScgA$NO5hBABsHQ172C5nDO2X4gWnB4jDef3x6WhLdVE2LFw";
 
         Assert.True(account.CheckPassword(Password));
-        Assert.StartsWith("$argon2id$v=19$m=16384,t=1,p=1$", account.Password);
+        // The cost parameters are shard-tunable; the variant and version are not.
+        Assert.StartsWith("$argon2id$v=19$", account.Password);
+        Assert.StartsWith(Argon2TestParameters.CurrentPrefix, account.Password);
 
         // Already current: verifying again must not rewrite the hash.
         var afterFirst = account.Password;

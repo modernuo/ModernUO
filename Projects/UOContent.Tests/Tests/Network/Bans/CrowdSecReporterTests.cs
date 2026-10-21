@@ -218,14 +218,18 @@ public class CrowdSecReporterTests
 
     /// <summary>
     /// The drain task must track the loop's lifetime, not just its first await — a ValueTask-returning
-    /// drain loop passed to Task.Run yields a Task&lt;ValueTask&gt; that completes immediately, which makes
-    /// Stop()'s drain-exited handshake a no-op. With an empty queue the loop parks on WaitToReadAsync,
-    /// so a correctly unwrapped task cannot win this race; a slow pool only under-detects.
+    /// drain loop passed to Task.Run yields a Task&lt;ValueTask&gt; that completes at the first await
+    /// that suspends, which makes Stop()'s drain-exited handshake a no-op. The flush delay always
+    /// suspends before the first post, so once the client sees a post a wrapped task is already done.
     /// </summary>
     [Fact]
     public async Task Start_DrainTaskSpansLoopLifetime_NotJustTheFirstAwait()
     {
-        var reporter = new CrowdSecReporter(new NullAlertClient(), Settings());
+        var settings = Settings();
+        settings.FlushInterval = TimeSpan.FromMilliseconds(1);
+
+        var client = new SignalingAlertClient();
+        var reporter = new CrowdSecReporter(client, settings);
         using var cts = new CancellationTokenSource();
 
         reporter.Start(cts.Token);
@@ -233,12 +237,30 @@ public class CrowdSecReporterTests
         var drain = reporter.DrainTaskForTesting;
         Assert.NotNull(drain);
 
-        var first = await Task.WhenAny(drain, Task.Delay(TimeSpan.FromMilliseconds(500)));
-        Assert.False(ReferenceEquals(first, drain), "drain task completed while the loop was still running");
+        reporter.Report(IPAddress.Parse("9.9.9.9"), TimeSpan.FromHours(1), "rate-limit");
+        await client.Posted.Task.WaitAsync(TimeSpan.FromSeconds(10));
+
+        Assert.False(drain.IsCompleted, "drain task completed while the loop was still running");
 
         reporter.Stop();
 
         Assert.True(drain.IsCompleted, "Stop() returned before the drain loop exited");
+    }
+
+    private sealed class SignalingAlertClient : ICrowdSecAlertClient
+    {
+        public TaskCompletionSource Posted { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        public ValueTask PostAlertsAsync(IReadOnlyList<CrowdSecAlert> alerts, CancellationToken token)
+        {
+            Posted.TrySetResult();
+            return ValueTask.CompletedTask;
+        }
+
+        public ValueTask DeleteDecisionsAsync(string origin, IPAddress ip, CancellationToken token) =>
+            ValueTask.CompletedTask;
+
+        public void Dispose() { }
     }
 
     private sealed class NullAlertClient : ICrowdSecAlertClient

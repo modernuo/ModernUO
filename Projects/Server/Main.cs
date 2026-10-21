@@ -45,6 +45,10 @@ public static class Core
     private static volatile bool _performSnapshot;
     private static string _snapshotPath;
 
+    // 0 = relaunch in-process. Otherwise a restart exits with this code and leaves the relaunch to a
+    // supervisor; a spawned child loses the console and dies with a systemd unit or container.
+    private static int _restartExitCode;
+
     // A backstop, not a latency control: the wheel's tick rate already bounds the sleep.
     // Measured across 1/2/4/8ms; 2 is optimal.
     private static int _eventLoopIdleWaitMs = 2;
@@ -434,7 +438,7 @@ public static class Core
                 ConsoleInputHandler.ReadLine();
             }
 
-            DoKill();
+            DoKill(_restartOnKill);
         }
     }
 
@@ -468,27 +472,28 @@ public static class Core
 
         HandleClosed();
 
+        if (restart && _restartExitCode != 0)
+        {
+            logger.Information("Restarting (exiting with code {ExitCode} for the supervisor)", _restartExitCode);
+            Environment.Exit(_restartExitCode);
+        }
+
         if (restart)
         {
             try
             {
                 logger.Information("Restarting");
-                if (IsWindows)
-                {
-                    using var process = Process.Start("dotnet", $"{ApplicationAssembly.Location}");
-                }
-                else
-                {
-                    using var process = new Process();
-                    process.StartInfo = new ProcessStartInfo
-                    {
-                        FileName = "dotnet",
-                        Arguments = $"{ApplicationAssembly.Location}",
-                        UseShellExecute = true
-                    };
 
-                    process.Start();
+                // Relaunch through whichever host started us: the apphost (ModernUO.exe) runs directly,
+                // `dotnet ModernUO.dll` needs the assembly path. ArgumentList quotes paths with spaces.
+                var hostPath = Environment.ProcessPath ?? "dotnet";
+                var startInfo = new ProcessStartInfo(hostPath) { UseShellExecute = false };
+                if (Path.GetFileNameWithoutExtension(hostPath).Equals("dotnet", StringComparison.OrdinalIgnoreCase))
+                {
+                    startInfo.ArgumentList.Add(ApplicationAssembly.Location);
                 }
+
+                using var process = Process.Start(startInfo);
                 logger.Information("Restart done");
             }
             catch (Exception e)
@@ -629,6 +634,19 @@ public static class Core
         }
 
         _lateWakePercent = Math.Clamp(lateWakePercent, 0, 100);
+
+        // Unix truncates exit codes to a byte, so anything outside 1-255 cannot be told apart reliably.
+        var restartExitCode = ServerConfiguration.GetSetting("server.restartExitCode", 0);
+        if (restartExitCode is < 0 or > 255)
+        {
+            logger.Warning(
+                "server.restartExitCode {Value} is outside 1-255; restarts will relaunch the server directly",
+                restartExitCode
+            );
+            restartExitCode = 0;
+        }
+
+        _restartExitCode = restartExitCode;
 
         var assemblyPath = Path.Join(BaseDirectory, AssembliesConfiguration);
 

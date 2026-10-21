@@ -616,8 +616,8 @@ public class MageAI : BaseAI
         }
 
         var del = ScaleBySkill(3.0, SkillName.Magery);
-        var min = 6.0 - del * 0.75;
-        var max = 6.0 - del * 1.25;
+        var min = 6.0 - del * 1.25;
+        var max = 6.0 - del * 0.75;
 
         return TimeSpan.FromSeconds(min + (max - min) * Utility.RandomDouble());
     }

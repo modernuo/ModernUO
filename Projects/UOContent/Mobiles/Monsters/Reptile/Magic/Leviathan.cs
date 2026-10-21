@@ -62,6 +62,8 @@ namespace Server.Mobiles
 
         public override int TreasureMapLevel => 5;
 
+        public override double TreasureMapChance => 0.25;
+
         public override bool OnBeforeDeath()
         {
             PackItem(new MessageInABottle(Map == Map.Felucca ? Map.Felucca : Map.Trammel));
@@ -147,7 +149,7 @@ namespace Server.Mobiles
         {
             base.OnDeath(c);
 
-            if (Fisher != null && Utility.Random(100) < 25)
+            if (Core.SE && Fisher?.Skills.Fishing.Base >= 100.0 && Utility.Random(100) < 25)
             {
                 GiveArtifactTo(Fisher);
             }

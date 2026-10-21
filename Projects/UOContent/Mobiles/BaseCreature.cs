@@ -1,9 +1,10 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using ModernUO.Serialization;
 using Server.Collections;
 using Server.ContextMenus;
+using Server.Engines.CannedEvil;
 using Server.Engines.ConPVP;
 using Server.Engines.MLQuests;
 using Server.Engines.Quests.Doom;
@@ -1310,6 +1311,8 @@ namespace Server.Mobiles
 
         public virtual int TreasureMapLevel => -1;
 
+        public virtual double TreasureMapChance => TreasureMap.LootChance;
+
         public virtual bool IgnoreYoungProtection => false;
 
         public bool NoKillAwards { get; set; }
@@ -1498,9 +1501,46 @@ namespace Server.Mobiles
         public List<MLQuest> MLQuests =>
             (m_MLQuests ??= StaticMLQuester ? MLQuestSystem.FindQuestList(GetType()) : ConstructQuestList()) ?? MLQuestSystem.EmptyList;
 
+        /// <summary>
+        ///     The abilities this creature has. Must be a pure, stable query: it is called from lookups, damage
+        ///     calculations and cleanup, so it must not spawn, mutate state, or change with the creature's state.
+        ///     Gate abilities that should only work some of the time with <see cref="CanUseAbility" />.
+        /// </summary>
         public virtual MonsterAbility[] GetMonsterAbilities() => null;
 
+        /// <summary>
+        ///     Whether <paramref name="ability" /> may trigger or be looked up right now. Must be a pure read.
+        /// </summary>
+        public virtual bool CanUseAbility(MonsterAbility ability) => true;
+
         private MonsterAbilityTrigger _activeTriggers;
+
+        // Deadlines in Core.TickCount, keyed by ability. Lives on the creature so it is collected with it.
+        private Dictionary<MonsterAbility, long> _abilityCooldowns;
+
+        public bool IsAbilityOnCooldown(MonsterAbility ability)
+        {
+            if (_abilityCooldowns?.TryGetValue(ability, out var nextTrigger) != true)
+            {
+                return false;
+            }
+
+            if (nextTrigger - Core.TickCount > 0)
+            {
+                return true;
+            }
+
+            _abilityCooldowns.Remove(ability);
+            return false;
+        }
+
+        public void SetAbilityCooldown(MonsterAbility ability, TimeSpan cooldown)
+        {
+            _abilityCooldowns ??= new Dictionary<MonsterAbility, long>();
+            _abilityCooldowns[ability] = Core.TickCount + (long)cooldown.TotalMilliseconds;
+        }
+
+        public void ClearAbilityCooldowns() => _abilityCooldowns = null;
 
         public virtual MonsterAbility GetAbility(MonsterAbilityType type)
         {
@@ -1514,6 +1554,11 @@ namespace Server.Mobiles
             for (var i = 0; i < abilities.Length; i++)
             {
                 var ability = abilities[i];
+                if (!CanUseAbility(ability))
+                {
+                    continue;
+                }
+
                 if (ability is MonsterAbilityGroup group)
                 {
                     ability = group.GetAbilityWithType(type);
@@ -1577,7 +1622,7 @@ namespace Server.Mobiles
                 for (var i = 0; i < abilities.Length; i++)
                 {
                     var ability = abilities[i];
-                    if (ability.CanTrigger(this, trigger))
+                    if (CanUseAbility(ability) && ability.CanTrigger(this, trigger))
                     {
                         ability.Trigger(trigger, this, defender);
                         triggered = true;
@@ -1604,7 +1649,7 @@ namespace Server.Mobiles
             for (var i = 0; i < abilities.Length; i++)
             {
                 var ability = abilities[i];
-                if (ability.CanTrigger(this, trigger))
+                if (CanUseAbility(ability) && ability.CanTrigger(this, trigger))
                 {
                     ability.Move(this, d);
                 }
@@ -1623,7 +1668,7 @@ namespace Server.Mobiles
             for (var i = 0; i < abilities.Length; i++)
             {
                 var ability = abilities[i];
-                if (ability.CanTrigger(this, trigger))
+                if (CanUseAbility(ability) && ability.CanTrigger(this, trigger))
                 {
                     if ((trigger & MonsterAbilityTrigger.GiveMeleeDamage) != 0)
                     {
@@ -1664,7 +1709,7 @@ namespace Server.Mobiles
             for (var i = 0; i < abilities.Length; i++)
             {
                 var ability = abilities[i];
-                if (ability.CanTrigger(this, trigger))
+                if (CanUseAbility(ability) && ability.CanTrigger(this, trigger))
                 {
                     if ((trigger & MonsterAbilityTrigger.GiveSpellDamage) != 0)
                     {
@@ -3246,7 +3291,7 @@ namespace Server.Mobiles
                     {
                         PackItem(new ParagonChest(Name, treasureLevel));
                     }
-                    else if ((Map == Map.Felucca || Map == Map.Trammel) && Utility.RandomDouble() < TreasureMap.LootChance)
+                    else if ((Map == Map.Felucca || Map == Map.Trammel) && Utility.RandomDouble() < TreasureMapChance)
                     {
                         PackItem(new TreasureMap(treasureLevel, Map));
                     }
@@ -5720,6 +5765,47 @@ namespace Server.Mobiles
             {
                 pack.DropItem(item); // failed, drop it anyway
             }
+        }
+
+        /// <summary>
+        ///     Equips <paramref name="item" /> in place of whatever an inherited outfit put on its layer.
+        ///     AddItem would stack both on one layer, and EquipItem would refuse and orphan the item.
+        /// </summary>
+        public void ReplaceEquipment(Item item)
+        {
+            FindItemOnLayer(item.Layer)?.Delete();
+
+            if (!EquipItem(item))
+            {
+                item.Delete();
+            }
+        }
+
+        /// <summary>
+        ///     Brings <paramref name="minion" /> into the world on this creature's side. A minion of a champion spawn's
+        ///     champion or creatures belongs to that spawn, which deletes it when it clears its creatures.
+        /// </summary>
+        /// <returns>False, and the minion is deleted, if this creature is not in the world.</returns>
+        public bool SpawnMinion(BaseCreature minion, Mobile target = null, Point3D? location = null)
+        {
+            var map = Map;
+
+            if (Deleted || map == null || map == Map.Internal)
+            {
+                minion.Delete();
+                return false;
+            }
+
+            minion.Team = Team;
+            ChampionSpawn.FindSpawnOf(this)?.AddMinion(minion);
+            minion.MoveToWorld(location ?? map.GetRandomNearbyLocation(Location), map);
+
+            if (target != null)
+            {
+                minion.Combatant = target;
+            }
+
+            return true;
         }
 
         public virtual void HealStart(Mobile patient)

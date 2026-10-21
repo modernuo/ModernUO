@@ -13,7 +13,7 @@ namespace Server.Misc
 
         private static bool Enabled;
         private static bool SaveBackup;
-        private static bool RestartServer; // Disable this if using a daemon/service
+        private static bool RestartServer; // Under a daemon/service, set server.restartExitCode rather than disabling this
         private static bool GenerateReport;
 
         public static void Configure()

@@ -15,7 +15,7 @@ public partial class BigFish : Item, ICarvable
     public BigFish() : base(0x09CC)
     {
         // TODO: Find correct formula.  max on OSI currently 200, OSI dev says it's not 200 as max, and ~ 1/1,000,000 chance to get highest
-        Weight = Utility.RandomMinMax(3, 200);
+        Weight = Core.SE ? Utility.RandomMinMax(3, 200) : 100;
         Hue = Utility.RandomBool() ? 0x847 : 0x58C;
     }
 
@@ -23,7 +23,8 @@ public partial class BigFish : Item, ICarvable
 
     public void Carve(Mobile from, Item item)
     {
-        ScissorHelper(from, new RawFishSteak(), Math.Max(16, (int)Weight) / 4, false);
+        var steaks = Core.SE ? Math.Max(4, (int)Weight / 5) : Math.Max(16, (int)Weight) / 4;
+        ScissorHelper(from, new RawFishSteak(), steaks, false);
     }
 
     public override void GetProperties(IPropertyList list)

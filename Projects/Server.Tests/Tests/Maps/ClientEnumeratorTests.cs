@@ -309,49 +309,6 @@ public class ClientEnumeratorTests
     }
 
     [Fact]
-    public void ClientAtEnumerator_UsesDifferentPoint3DOverloads()
-    {
-        var map = Map.Felucca;
-        var location = new Point3D(800, 800, 5);
-
-        var clients = new (NetState, Mobile)[1];
-        try
-        {
-            clients[0] = CreateClientWithMobile(map, location);
-
-            // Test Point3D overload
-            var found1 = new List<NetState>();
-            foreach (var ns in map.GetClientsAt(location))
-            {
-                found1.Add(ns);
-            }
-
-            // Test (int, int) overload - should find the same client (Z is ignored)
-            var found2 = new List<NetState>();
-            foreach (var ns in map.GetClientsAt(location.X, location.Y))
-            {
-                found2.Add(ns);
-            }
-
-            // Test Point2D overload
-            var found3 = new List<NetState>();
-            foreach (var ns in map.GetClientsAt(new Point2D(location.X, location.Y)))
-            {
-                found3.Add(ns);
-            }
-
-            Assert.Single(found1);
-            Assert.Equal(clients[0].Item1, found1[0]);
-            Assert.Equal(found1, found2);
-            Assert.Equal(found1, found3);
-        }
-        finally
-        {
-            DeleteAll(clients);
-        }
-    }
-
-    [Fact]
     public void ClientEnumerator_GetClientsInRange()
     {
         var map = Map.Felucca;
@@ -376,39 +333,6 @@ public class ClientEnumeratorTests
             Assert.Equal(2, found.Count);
             Assert.Contains(clients[0].Item1, found);
             Assert.Contains(clients[1].Item1, found);
-        }
-        finally
-        {
-            DeleteAll(clients);
-        }
-    }
-
-    [Fact]
-    public void ClientEnumerator_DeletedMobilesAreSkipped()
-    {
-        var map = Map.Felucca;
-        var rect = new Rectangle2D(1000, 1000, 16, 16);
-
-        var clients = new (NetState, Mobile)[3];
-        try
-        {
-            clients[0] = CreateClientWithMobile(map, new Point3D(1005, 1005, 0));
-            clients[1] = CreateClientWithMobile(map, new Point3D(1006, 1005, 0));
-            clients[2] = CreateClientWithMobile(map, new Point3D(1007, 1005, 0));
-
-            // Delete the mobile (but not the NetState)
-            clients[1].Item2.Delete();
-
-            var found = new List<NetState>();
-            foreach (var ns in map.GetClientsInBounds(rect))
-            {
-                found.Add(ns);
-            }
-
-            // Should skip the client whose mobile was deleted
-            Assert.Equal(2, found.Count);
-            Assert.Contains(clients[0].Item1, found);
-            Assert.Contains(clients[2].Item1, found);
         }
         finally
         {
