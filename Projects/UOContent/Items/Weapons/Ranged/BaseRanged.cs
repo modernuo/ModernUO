@@ -75,6 +75,14 @@ namespace Server.Items
 
                     if (OnFired(attacker, defender))
                     {
+                        // Moving Shot is paid only for a shot that actually fires: a paralyzed or frozen
+                        // archer, one without ammo, or a failed harmful check keeps the move armed at no cost.
+                        if (WeaponAbility.GetCurrentAbility(attacker) is MovingShot movingShot &&
+                            !movingShot.CheckMana(attacker, true))
+                        {
+                            WeaponAbility.ClearCurrentAbility(attacker);
+                        }
+
                         if (CheckHit(attacker, defender))
                         {
                             OnHit(attacker, defender);

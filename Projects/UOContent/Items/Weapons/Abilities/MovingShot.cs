@@ -11,8 +11,9 @@ namespace Server.Items
 
         public override bool ValidatesDuringHit => false;
 
+        // Only checks the mana; BaseRanged.OnSwing charges it once the shot is actually fired.
         public override bool OnBeforeSwing(Mobile attacker, Mobile defender) =>
-            Validate(attacker) && CheckMana(attacker, true);
+            Validate(attacker) && CheckMana(attacker, false);
 
         public override void OnMiss(Mobile attacker, Mobile defender)
         {
