@@ -11,8 +11,9 @@ namespace Server.Items
 
         public override bool ValidatesDuringHit => false;
 
+        // Mana is only checked here; OnHit/OnMiss charge it, since they run only for a shot that actually fired.
         public override bool OnBeforeSwing(Mobile attacker, Mobile defender) =>
-            Validate(attacker) && CheckMana(attacker, true);
+            Validate(attacker) && CheckMana(attacker, false);
 
         public override void OnMiss(Mobile attacker, Mobile defender)
         {
@@ -20,7 +21,10 @@ namespace Server.Items
 
             ClearCurrentAbility(attacker);
 
-            attacker.SendLocalizedMessage(1060089); // You fail to execute your special move
+            if (CheckMana(attacker, true))
+            {
+                attacker.SendLocalizedMessage(1060089); // You fail to execute your special move
+            }
         }
 
         public override void OnHit(Mobile attacker, Mobile defender, int damage, WorldLocation worldLocation)
@@ -29,7 +33,10 @@ namespace Server.Items
 
             ClearCurrentAbility(attacker);
 
-            attacker.SendLocalizedMessage(1060216); // Your shot was successful
+            if (CheckMana(attacker, true))
+            {
+                attacker.SendLocalizedMessage(1060216); // Your shot was successful
+            }
         }
     }
 }
