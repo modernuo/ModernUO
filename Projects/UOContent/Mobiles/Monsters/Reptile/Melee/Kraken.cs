@@ -42,13 +42,11 @@ namespace Server.Mobiles
             CanSwim = true;
             CantWalk = true;
 
-            var rope = new Rope();
-            rope.ItemID = 0x14F8;
-            PackItem(rope);
-
-            if (Core.UOR)
+            if (Core.UOR && Utility.RandomDouble() < 0.02)
             {
-                PackItem(new SpecialFishingNet()); // Confirm?
+                var rope = new Rope();
+                rope.ItemID = 0x14F8;
+                PackItem(rope);
             }
         }
 
