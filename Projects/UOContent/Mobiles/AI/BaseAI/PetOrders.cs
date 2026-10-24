@@ -14,6 +14,7 @@
  ************************************************************************/
 
 using System;
+using Server.Collections;
 
 namespace Server.Mobiles;
 
@@ -430,7 +431,7 @@ public abstract partial class BaseAI
         }
 
         // The stand-down already cleared Combatant; the aggressor lists and the combat cooldown gate this.
-        if (Mobile.Aggressors.Count > 0 || Mobile.Aggressed.Count > 0 || Core.TickCount - Mobile.NextCombatTime < 0)
+        if (Mobile.HasAggressors || Mobile.HasAggressed || Core.TickCount - Mobile.NextCombatTime < 0)
         {
             from.SendMessage("You can not transfer a pet while in combat.");
             to.SendMessage("You can not transfer a pet while in combat.");
@@ -809,13 +810,11 @@ public abstract partial class BaseAI
             }
         }
 
-        var aggressors = controlMaster?.Aggressors;
-
-        if (aggressors != null)
+        if (controlMaster != null)
         {
-            for (var i = 0; i < aggressors.Count; i++)
+            foreach (var info in controlMaster.Aggressors)
             {
-                var aggressor = aggressors[i].Attacker;
+                var aggressor = info.Attacker;
 
                 if (aggressor == best || aggressor?.Deleted != false || IsGuardAlly(aggressor) || !aggressor.Alive ||
                     aggressor.IsDeadBondedPet || !Mobile.InRange(aggressor, Mobile.RangePerception))
