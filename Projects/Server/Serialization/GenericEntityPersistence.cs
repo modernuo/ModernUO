@@ -529,6 +529,7 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
             // The whole save shares one anchor. Publish it so payloads without their own
             // (GenericPersistence bins) can shift too; indexes load before any of them.
             World.LoadTimeShift = _anchoredTimeShift;
+            World.LoadedSaveStartTime = anchor;
         }
 
         if (version >= 4)
