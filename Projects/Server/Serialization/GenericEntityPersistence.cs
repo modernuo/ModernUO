@@ -710,7 +710,8 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
         accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref ptr);
         var dataReader = new UnmanagedDataReader(ptr, accessor.Length, typesDb)
         {
-            AnchoredTimeShift = _anchoredTimeShift
+            AnchoredTimeShift = _anchoredTimeShift,
+            AnchoredTimeOrigin = World.LoadedSaveStartTime
         };
 
         Deserialize(dataReader);

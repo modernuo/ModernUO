@@ -409,9 +409,9 @@ public class BufferWriter : IGenericWriter
     }
 
     /// <summary>
-    /// Writes the absolute value; <see cref="IGenericReader.ReadAnchoredTime" /> re-bases it
-    /// by the elapsed time since the save started, so downtime does not age it and an
-    /// unchanged value serializes to identical bytes.
+    /// Writes the absolute value; <see cref="IGenericReader.ReadAnchoredTime" /> re-bases it by
+    /// the downtime when it was still in the future at save start, so downtime does not consume a
+    /// running deadline and an unchanged value serializes to identical bytes.
     /// </summary>
     public void WriteAnchoredTime(DateTime value)
     {

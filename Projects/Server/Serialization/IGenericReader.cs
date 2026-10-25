@@ -65,6 +65,19 @@ public interface IGenericReader
     /// </summary>
     TimeSpan AnchoredTimeShift => TimeSpan.Zero;
 
+    /// <summary>
+    /// UTC start of the loaded save. <see cref="ReadAnchoredTime" /> leaves a value at or before
+    /// it unshifted. Default when unknown, which shifts every value.
+    /// </summary>
+    DateTime AnchoredTimeOrigin => default;
+
+    /// <summary>
+    /// Reads an anchored timestamp. A deadline still in the future when the save started is
+    /// shifted by <see cref="AnchoredTimeShift" />, so it keeps the time it had left. A value at or
+    /// before the save start is returned as saved: an expired deadline stays expired instead of
+    /// coming back, and a record of something that already happened (a last-use or last-loss stamp)
+    /// keeps its bytes across restarts, with downtime counting toward its window.
+    /// </summary>
     DateTime ReadAnchoredTime()
     {
         var value = ReadDateTime();
@@ -75,7 +88,7 @@ public interface IGenericReader
         }
 
         var shift = AnchoredTimeShift;
-        if (shift == TimeSpan.Zero)
+        if (shift == TimeSpan.Zero || value <= AnchoredTimeOrigin)
         {
             return value;
         }
