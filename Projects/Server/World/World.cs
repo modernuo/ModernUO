@@ -108,6 +108,12 @@ public static class World
     /// payloads, which carry no anchor of their own. Zero for saves that predate the anchor.
     /// </summary>
     public static TimeSpan LoadTimeShift { get; internal set; }
+
+    /// <summary>
+    /// UTC start time of the save being loaded, read from its index anchor. Default for saves
+    /// that predate the anchor.
+    /// </summary>
+    public static DateTime LoadedSaveStartTime { get; internal set; }
     public static bool Running => WorldState is not WorldState.Loading and not WorldState.Initial;
     public static bool Loading => WorldState == WorldState.Loading;
 
@@ -674,6 +680,7 @@ public static class World
                 }
 
                 item.ClearProperties();
+                item.CreditDowntimeToDecay(LoadedSaveStartTime, LoadTimeShift);
                 item.UpdateDecayRegistration();
             }
         }

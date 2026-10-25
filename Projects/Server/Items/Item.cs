@@ -1042,13 +1042,14 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
         writer.Write((int)flags);
 
-        // Anchored: shifted by downtime at load, so time-since-moved is preserved and the
-        // bytes are stable across saves while the item does not move.
-        writer.WriteAnchoredTime(LastMoved);
+        // Absolute and never shifted at load, so an item that does not move serializes to the
+        // same bytes across saves and across restarts. Downtime credit for a decay countdown that
+        // was running at save time goes into DecayResetTime (CreditDowntimeToDecay).
+        writer.Write(LastMoved);
 
         if (GetSaveFlag(flags, SaveFlag.DecayReset))
         {
-            writer.WriteAnchoredTime(info.m_DecayReset);
+            writer.Write(info.m_DecayReset);
         }
 
         if (GetSaveFlag(flags, SaveFlag.Direction))
@@ -2494,6 +2495,30 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         UpdateDecayRegistration();
     }
 
+    /// <summary>
+    /// Credits the downtime before this load to a decay countdown that was still running when the
+    /// save started, so the shard being down does not age the item. <see cref="LastMoved" /> stays
+    /// the real time of the move; the credit goes into <see cref="DecayResetTime" />, which only
+    /// the items moved within their <see cref="DecayTime" /> of the save ever carry. Called once
+    /// per item after the world loads, when <see cref="DecayTime" /> is final. An item already
+    /// due at save time gets nothing: it is due either way.
+    /// </summary>
+    internal void CreditDowntimeToDecay(DateTime saveStartUtc, TimeSpan downtime)
+    {
+        if (downtime <= TimeSpan.Zero || !Decays)
+        {
+            return;
+        }
+
+        var reset = DecayResetTime;
+        var start = reset > LastMoved ? reset : LastMoved;
+
+        if (start + DecayTime > saveStartUtc)
+        {
+            DecayResetTime = start + downtime;
+        }
+    }
+
     public void UpdateDecayRegistration()
     {
         DecayScheduler.Unregister(this);
@@ -2856,7 +2881,9 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
                     if (version >= 11)
                     {
-                        LastMoved = reader.ReadAnchoredTime();
+                        // Written with WriteAnchoredTime before LastMoved stopped being shifted;
+                        // the bytes are the same absolute ticks either way.
+                        LastMoved = reader.ReadDateTime();
                     }
                     else if (version < 7)
                     {
@@ -2878,7 +2905,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
                     if (version >= 10 && GetSaveFlag(flags, SaveFlag.DecayReset))
                     {
-                        var reset = version >= 11 ? reader.ReadAnchoredTime() : reader.ReadDeltaTime();
+                        var reset = version >= 11 ? reader.ReadDateTime() : reader.ReadDeltaTime();
 
                         // Pre-v11 LastMoved was stored at whole-minute precision; keep the
                         // stamp only while it still extends the deadline.
