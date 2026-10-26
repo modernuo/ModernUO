@@ -218,6 +218,21 @@ namespace Server.Engines.Harvest
         // From UO:R the chest needs 65 skill, and below that an SOS changes nothing.
         private static bool CanFishUpShipwreck(Mobile from) => !Core.UOR || from.Skills.Fishing.Base >= 65.0;
 
+        // An SOS works anywhere in the degree of latitude and longitude its message gives; the minutes don't matter.
+        private static bool IsAtShipwreck(Mobile from, SOS sos) =>
+            from.Map == sos.TargetMap && GetDegrees(from.Location, from.Map) is { } degrees &&
+            degrees == GetDegrees(sos.TargetLocation, sos.TargetMap);
+
+        private static (int Long, int Lat, bool East, bool South)? GetDegrees(Point3D p, Map map)
+        {
+            int xLong = 0, yLat = 0, xMins = 0, yMins = 0;
+            bool xEast = false, ySouth = false;
+
+            return Sextant.Format(p, map, ref xLong, ref yLat, ref xMins, ref yMins, ref xEast, ref ySouth)
+                ? (xLong, yLat, xEast, ySouth)
+                : null;
+        }
+
         public override bool CheckResources(Mobile from, Item tool, HarvestDefinition def, Map map, Point3D loc, bool timed)
         {
             var pack = from.Backpack;
@@ -226,7 +241,7 @@ namespace Server.Engines.Harvest
             {
                 foreach (var sos in pack.FindItemsByType<SOS>())
                 {
-                    if (from.Map == sos.TargetMap && from.InRange(sos.TargetLocation, 60))
+                    if (IsAtShipwreck(from, sos))
                     {
                         return true;
                     }
@@ -272,7 +287,7 @@ namespace Server.Engines.Harvest
                 // We don't have to queue since we are returning on the first SOS.
                 foreach (var sos in pack.FindItemsByType<SOS>())
                 {
-                    if (from.Map != sos.TargetMap || !from.InRange(sos.TargetLocation, 60))
+                    if (!IsAtShipwreck(from, sos))
                     {
                         continue;
                     }
