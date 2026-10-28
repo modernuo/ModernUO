@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using ModernUO.CodeGeneratedEvents;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.Items;
 
 
