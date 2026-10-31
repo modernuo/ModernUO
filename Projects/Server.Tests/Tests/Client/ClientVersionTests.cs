@@ -43,7 +43,6 @@ public class ClientVersionTests
     [InlineData("5.0.6e", 5, 0, 6, 5)]
     [InlineData("5.0.7.0", 5, 0, 7, 0)]
     [InlineData("5.0.9.1", 5, 0, 9, 1)]
-    [InlineData("4.0.11c uotd", 4, 0, 11, 3)]
     public void TestLetterPatchStringCtor(string version, int major, int minor, int revision, int patch)
     {
         var parsed = new ClientVersion(version);
@@ -53,7 +52,7 @@ public class ClientVersionTests
         Assert.Equal(minor, parsed.Minor);
         Assert.Equal(revision, parsed.Revision);
         Assert.Equal(patch, parsed.Patch);
-        Assert.Equal(version.Split(' ')[0], built.ToString());
+        Assert.Equal(version, built.ToString());
     }
 
     [Theory]
@@ -81,8 +80,10 @@ public class ClientVersionTests
         Assert.Equal(built.GetHashCode(), parsed.GetHashCode());
     }
 
+    // "4.0.11c UO:3D Client" is the string the 4.0.11c uotd.exe formats for itself ("%d.%d.%d%s UO:3D Client").
+    // Whether that client sends the same text in its version packet is unverified.
     [Theory]
-    [InlineData("4.0.11c uotd", ClientType.UOTD)]
+    [InlineData("4.0.11c UO:3D Client", ClientType.UOTD)]
     [InlineData("66.55.38", ClientType.KR)]
     [InlineData("67.0.33", ClientType.SA)]
     public void TestStringCtorKeepsOtherTypes(string version, ClientType type)
