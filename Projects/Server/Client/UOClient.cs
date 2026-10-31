@@ -15,7 +15,6 @@
 
 using System;
 using System.Buffers.Binary;
-using System.Collections.Generic;
 using System.IO;
 using System.Text.Json.Serialization;
 using Server.Json;
@@ -166,7 +165,7 @@ public static class UOClient
 
     private static bool TryOffsetToVirtualAddress(ReadOnlySpan<byte> exe, int offset, out uint virtualAddress)
     {
-        foreach (var (imageBase, sectionVa, rawPointer, rawSize) in GetSections(exe))
+        foreach (var (sectionVa, rawPointer, rawSize) in GetSections(exe, out var imageBase))
         {
             if (offset >= rawPointer && offset < rawPointer + rawSize)
             {
@@ -181,7 +180,7 @@ public static class UOClient
 
     private static bool TryVirtualAddressToOffset(ReadOnlySpan<byte> exe, uint virtualAddress, out int offset)
     {
-        foreach (var (imageBase, sectionVa, rawPointer, rawSize) in GetSections(exe))
+        foreach (var (sectionVa, rawPointer, rawSize) in GetSections(exe, out var imageBase))
         {
             var start = imageBase + sectionVa;
             if (virtualAddress >= start && virtualAddress < start + rawSize && rawPointer + (virtualAddress - start) < exe.Length)
@@ -195,37 +194,42 @@ public static class UOClient
         return false;
     }
 
-    // PE32 sections as (image base, virtual address, raw data pointer, raw data size); empty if not a PE32 image.
-    private static List<(uint, uint, uint, uint)> GetSections(ReadOnlySpan<byte> exe)
+    // PE32 section headers that fit in the file; empty if not a PE32 image.
+    private static (uint VirtualAddress, uint RawPointer, uint RawSize)[] GetSections(
+        ReadOnlySpan<byte> exe, out uint imageBase
+    )
     {
-        var sections = new List<(uint, uint, uint, uint)>();
+        imageBase = 0;
         if (exe.Length < 0x40)
         {
-            return sections;
+            return [];
         }
 
         var pe = BinaryPrimitives.ReadInt32LittleEndian(exe[0x3C..]);
         if (pe < 0 || pe + 24 + 32 > exe.Length || BinaryPrimitives.ReadUInt32LittleEndian(exe[pe..]) != 0x00004550 ||
             BinaryPrimitives.ReadUInt16LittleEndian(exe[(pe + 24)..]) != 0x10B) // "PE\0\0", PE32 optional header
         {
-            return sections;
+            return [];
         }
 
         var count = BinaryPrimitives.ReadUInt16LittleEndian(exe[(pe + 6)..]);
         var optionalSize = BinaryPrimitives.ReadUInt16LittleEndian(exe[(pe + 20)..]);
-        var imageBase = BinaryPrimitives.ReadUInt32LittleEndian(exe[(pe + 24 + 28)..]);
         var table = pe + 24 + optionalSize;
+        if (table >= exe.Length)
+        {
+            return [];
+        }
 
-        for (var i = 0; i < count && table + (i + 1) * 40 <= exe.Length; i++)
+        imageBase = BinaryPrimitives.ReadUInt32LittleEndian(exe[(pe + 24 + 28)..]);
+
+        var sections = new (uint, uint, uint)[Math.Min(count, (exe.Length - table) / 40)];
+        for (var i = 0; i < sections.Length; i++)
         {
             var section = exe.Slice(table + i * 40, 40);
-            sections.Add(
-                (
-                    imageBase,
-                    BinaryPrimitives.ReadUInt32LittleEndian(section[12..]),
-                    BinaryPrimitives.ReadUInt32LittleEndian(section[20..]),
-                    BinaryPrimitives.ReadUInt32LittleEndian(section[16..])
-                )
+            sections[i] = (
+                BinaryPrimitives.ReadUInt32LittleEndian(section[12..]),
+                BinaryPrimitives.ReadUInt32LittleEndian(section[20..]),
+                BinaryPrimitives.ReadUInt32LittleEndian(section[16..])
             );
         }
 

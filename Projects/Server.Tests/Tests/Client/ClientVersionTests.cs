@@ -34,4 +34,36 @@ public class ClientVersionTests
         Assert.Equal(equal, cc == ec);
         Assert.Equal(comparison, cc.CompareTo(ec));
     }
+
+    [Theory]
+    [InlineData("4.0.11c", 4, 0, 11, 3)]
+    [InlineData("4.0.11", 4, 0, 11, 0)]
+    [InlineData("5.0.0a", 5, 0, 0, 1)]
+    [InlineData("5.0.2b", 5, 0, 2, 2)]
+    [InlineData("5.0.6e", 5, 0, 6, 5)]
+    [InlineData("5.0.7.0", 5, 0, 7, 0)]
+    [InlineData("5.0.9.1", 5, 0, 9, 1)]
+    [InlineData("4.0.11c uotd", 4, 0, 11, 3)]
+    public void TestLetterPatchStringCtor(string version, int major, int minor, int revision, int patch)
+    {
+        var parsed = new ClientVersion(version);
+        var built = new ClientVersion(major, minor, revision, patch);
+
+        Assert.Equal(major, parsed.Major);
+        Assert.Equal(minor, parsed.Minor);
+        Assert.Equal(revision, parsed.Revision);
+        Assert.Equal(patch, parsed.Patch);
+        Assert.Equal(version.Split(' ')[0], built.ToString());
+    }
+
+    [Theory]
+    [InlineData("4.0.11b", "4.0.11c", -1)]
+    [InlineData("4.0.11c", "4.0.11", 1)]
+    [InlineData("4.0.11c", "5.0.0a", -1)]
+    [InlineData("5.0.2b", "5.0.2a", 1)]
+    [InlineData("5.0.6e", "5.0.7.0", -1)]
+    public void TestLetterPatchOrdering(string a, string b, int comparison)
+    {
+        Assert.Equal(comparison, new ClientVersion(a).CompareTo(new ClientVersion(b)));
+    }
 }

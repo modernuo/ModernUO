@@ -52,17 +52,18 @@ public class UOClientTests
     }
 
     [Theory]
-    [InlineData(4, 0, 11, "c", "4.0.11c")]
-    [InlineData(5, 0, 1, "", "5.0.1")]
-    public void DetectsPreResourceClientFromVersionFormat(byte major, byte minor, byte revision, string letter, string expected)
+    [InlineData(4, 0, 11, "c", "4.0.11c", 3)]
+    [InlineData(5, 0, 1, "", "5.0.1", 0)]
+    public void DetectsPreResourceClientFromVersionFormat(
+        byte major, byte minor, byte revision, string letter, string expected, int patch
+    )
     {
         var version = UOClient.DetectClassicClient(LegacyClient(major, minor, revision, letter));
 
         Assert.NotNull(version);
         Assert.Equal(expected, version.ToString());
-        Assert.Equal(major, version.Major);
-        Assert.Equal(minor, version.Minor);
-        Assert.Equal(revision, version.Revision);
+        Assert.Equal(new ClientVersion(expected), version);
+        Assert.Equal(patch, version.Patch);
     }
 
     [Fact]
