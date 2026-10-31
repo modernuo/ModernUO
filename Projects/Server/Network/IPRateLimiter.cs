@@ -14,22 +14,24 @@
  *************************************************************************/
 
 using System;
-using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 
 namespace Server.Network;
 
+/// <summary>
+/// Per-address connection rate limiter. Called from the accept path on the game loop; not thread-safe.
+/// </summary>
 public class IPRateLimiter
 {
-    private static readonly ConcurrentQueue<IPStats> _statsPool = [];
-    private const int MaxPoolSize = 32_768;
+    private const long CleanupInterval = 60_000; // milliseconds
+    private const int MaxCleanupPerCall = 1024;
 
-    private readonly SemaphoreSlim _cleanupSignal = new(0, 1);
-    private readonly ConcurrentDictionary<IPAddress, IPStats> _ipAttempts;
-    private readonly ConcurrentQueue<IPAddress> _cleanupQueue;
-    private readonly CancellationTokenSource _cts;
+    private readonly Dictionary<IPAddress, IPStats> _ipAttempts = [];
+
+    // Holds exactly the keys of _ipAttempts, oldest first, so a bounded sweep resumes where it stopped
+    private readonly Queue<IPAddress> _cleanupQueue = [];
 
     private readonly int _maxAttempts;
     private readonly long _timeWindow; // milliseconds
@@ -37,22 +39,20 @@ public class IPRateLimiter
     private readonly double _backoffMultiplier;
     private readonly long _maxBackoff; // milliseconds
 
-    public IPRateLimiter(
-        int maxAttempts, long timeWindow, long initialBackoff, double backoffMultiplier, long maxBackoff,
-        CancellationToken token
-    )
+    private long _nextCleanupTicks;
+    private int _cleanupRemaining;
+
+    public IPRateLimiter(int maxAttempts, long timeWindow, long initialBackoff, double backoffMultiplier, long maxBackoff)
     {
-        _ipAttempts = [];
-        _cleanupQueue = [];
         _maxAttempts = maxAttempts;
         _timeWindow = timeWindow;
         _initialBackoff = initialBackoff;
         _backoffMultiplier = backoffMultiplier;
         _maxBackoff = maxBackoff;
-        _cts = CancellationTokenSource.CreateLinkedTokenSource(token);
-
-        Task.Run(CleanupLoop, Core.ClosingTokenSource.Token);
+        _nextCleanupTicks = Core.TickCount + CleanupInterval;
     }
+
+    internal int Count => _ipAttempts.Count;
 
     public bool Verify(IPAddress ip, out int totalAttempts)
     {
@@ -63,141 +63,91 @@ public class IPRateLimiter
         }
 
         var nowTicks = Core.TickCount;
-        var ipStats = _ipAttempts.GetOrAdd(ip, _ => GetOrCreateIPStats());
-        var added = ipStats.AttemptCount == 0;
 
-        lock (ipStats)
+        if (_cleanupRemaining > 0 || nowTicks - _nextCleanupTicks >= 0)
         {
-            if (nowTicks - ipStats.LastAttemptTicks > _timeWindow)
-            {
-                ipStats.AttemptCount = 1; // Reset
-            }
-            else
-            {
-                ipStats.AttemptCount++;
-            }
+            Cleanup(nowTicks);
+        }
 
-            totalAttempts = ipStats.AttemptCount;
-            ipStats.LastAttemptTicks = nowTicks;
+        ref var ipStats = ref CollectionsMarshal.GetValueRefOrAddDefault(_ipAttempts, ip, out var exists);
 
-            if (ipStats.BlockUntilTicks - nowTicks > 0)
-            {
-                return false;
-            }
+        if (!exists || nowTicks - ipStats.LastAttemptTicks > _timeWindow)
+        {
+            ipStats.AttemptCount = 1;
+        }
+        else
+        {
+            ipStats.AttemptCount++;
+        }
 
-            if (ipStats.AttemptCount > _maxAttempts)
-            {
-                var backoffTime = Math.Min(
-                    (long)(_initialBackoff * Math.Pow(_backoffMultiplier, ipStats.AttemptCount - _maxAttempts)),
-                    _maxBackoff
-                );
+        if (!exists)
+        {
+            // Ticks can start negative, so a zero default would read as a block far in the future
+            ipStats.BlockUntilTicks = nowTicks;
+            _cleanupQueue.Enqueue(ip);
+        }
 
-                ipStats.BlockUntilTicks = nowTicks + backoffTime;
-                return false;
-            }
+        totalAttempts = ipStats.AttemptCount;
+        ipStats.LastAttemptTicks = nowTicks;
 
-            if (added)
-            {
-                _cleanupQueue.Enqueue(ip);
-                RunCleanup();
-            }
+        if (ipStats.BlockUntilTicks - nowTicks > 0)
+        {
+            return false;
+        }
+
+        if (ipStats.AttemptCount > _maxAttempts)
+        {
+            var backoffTime = Math.Min(
+                (long)(_initialBackoff * Math.Pow(_backoffMultiplier, ipStats.AttemptCount - _maxAttempts)),
+                _maxBackoff
+            );
+
+            ipStats.BlockUntilTicks = nowTicks + backoffTime;
+            return false;
         }
 
         return true;
     }
 
-    private static IPStats GetOrCreateIPStats() => _statsPool.TryDequeue(out var stats) ? stats : new IPStats();
-
-    private static void ReturnToPool(IPStats stats)
+    /// <summary>
+    /// Checks at most <see cref="MaxCleanupPerCall"/> entries. A rotation that does not finish continues on the next call.
+    /// </summary>
+    internal void Cleanup(long nowTicks)
     {
-        stats.Reset();
-
-        if (_statsPool.Count < MaxPoolSize)
+        if (_cleanupRemaining <= 0)
         {
-            _statsPool.Enqueue(stats);
-        }
-    }
-
-    private void RunCleanup()
-    {
-        if (_cleanupSignal.CurrentCount > 0)
-        {
-            return;
+            _cleanupRemaining = _cleanupQueue.Count;
         }
 
-        try
-        {
-            _cleanupSignal.Release();
-            Task.Run(CleanupLoop, _cts.Token);
-        }
-        catch
-        {
-            // Do nothing
-        }
-    }
+        var toProcess = Math.Min(_cleanupRemaining, MaxCleanupPerCall);
+        _cleanupRemaining -= toProcess;
 
-    private async ValueTask CleanupLoop()
-    {
-        while (!_cts.IsCancellationRequested)
+        for (var i = 0; i < toProcess; i++)
         {
-            await _cleanupSignal.WaitAsync(_cts.Token);
+            var ip = _cleanupQueue.Dequeue();
+            ref var ipStats = ref CollectionsMarshal.GetValueRefOrNullRef(_ipAttempts, ip);
 
-            var maxToProcess = Math.Min(_cleanupQueue.Count, 500);
-            var nowTicks = Core.TickCount;
-
-            for (var i = 0; i < maxToProcess; i++)
+            // A blocked address outlives its attempt window; evicting it early would lift the block
+            if (nowTicks - ipStats.LastAttemptTicks > _timeWindow && nowTicks - ipStats.BlockUntilTicks >= 0)
             {
-                if (!_cts.IsCancellationRequested)
-                {
-                    break;
-                }
-
-                if (!_cleanupQueue.TryDequeue(out var ip) || !_ipAttempts.TryGetValue(ip, out var ipStats))
-                {
-                    continue;
-                }
-
-                lock (ipStats)
-                {
-                    if (nowTicks - ipStats.LastAttemptTicks < _timeWindow)
-                    {
-                        _cleanupQueue.Enqueue(ip);
-                        continue;
-                    }
-
-                    if (_ipAttempts.TryRemove(ip, out _))
-                    {
-                        ReturnToPool(ipStats);
-                    }
-                }
+                _ipAttempts.Remove(ip);
             }
-
-            if (!_cleanupQueue.IsEmpty)
+            else
             {
-                await Task.Delay(TimeSpan.FromMinutes(1), _cts.Token);
-                try
-                {
-                    _cleanupSignal.Release();
-                }
-                catch
-                {
-                    // Do nothing
-                }
+                _cleanupQueue.Enqueue(ip);
             }
         }
+
+        if (_cleanupRemaining == 0)
+        {
+            _nextCleanupTicks = nowTicks + CleanupInterval;
+        }
     }
 
-    private class IPStats
+    private struct IPStats
     {
         public int AttemptCount;
         public long LastAttemptTicks;
         public long BlockUntilTicks;
-
-        public void Reset()
-        {
-            AttemptCount = 0;
-            LastAttemptTicks = 0;
-            BlockUntilTicks = 0;
-        }
     }
 }
