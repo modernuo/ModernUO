@@ -138,7 +138,7 @@ public partial class NetState
         _nextAliveCheck = Core.TickCount;
 
         // Initialize IP rate limiter
-        _ipRateLimiter = new IPRateLimiter(10, 10000, 1000, 2.0, 3_600_000, Core.ClosingTokenSource.Token);
+        _ipRateLimiter = new IPRateLimiter(10, 10000, 1000, 2.0, 3_600_000);
 
         // Sends in flight per connection; honoured by RIO only (see IIORingGroup). Costs a
         // request-queue and completion-queue slot per send, not another buffer. Worst-case added
