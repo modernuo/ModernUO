@@ -80,8 +80,8 @@ public class ClientVersionTests
         Assert.Equal(built.GetHashCode(), parsed.GetHashCode());
     }
 
-    // "4.0.11c UO:3D Client" is the string the 4.0.11c uotd.exe formats for itself ("%d.%d.%d%s UO:3D Client").
-    // Whether that client sends the same text in its version packet is unverified.
+    // The 4.0.11c uotd.exe formats its version as "%d.%d.%d%s UO:3D Client" and sends that text in its version
+    // packet (seen by the server as "4.0.11c uo:3d client").
     [Theory]
     [InlineData("4.0.11c UO:3D Client", ClientType.UOTD)]
     [InlineData("66.55.38", ClientType.KR)]
