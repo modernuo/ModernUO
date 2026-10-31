@@ -62,8 +62,7 @@ public class UOClientTests
 
         Assert.NotNull(version);
         Assert.Equal(expected, version.ToString());
-        Assert.Equal(new ClientVersion(expected), version);
-        Assert.Equal(patch, version.Patch);
+        Assert.Equal(new ClientVersion(major, minor, revision, patch), version);
     }
 
     [Fact]

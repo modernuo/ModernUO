@@ -66,4 +66,27 @@ public class ClientVersionTests
     {
         Assert.Equal(comparison, new ClientVersion(a).CompareTo(new ClientVersion(b)));
     }
+
+    [Theory]
+    [InlineData("4.0.11c", 4, 0, 11, 3)]
+    [InlineData("5.0.2b", 5, 0, 2, 2)]
+    [InlineData("7.0.33.1", 7, 0, 33, 1)]
+    public void TestStringAndIntCtorsAreEqual(string version, int major, int minor, int revision, int patch)
+    {
+        var parsed = new ClientVersion(version);
+        var built = new ClientVersion(major, minor, revision, patch);
+
+        Assert.Equal(ClientType.Classic, parsed.Type);
+        Assert.Equal(built, parsed);
+        Assert.Equal(built.GetHashCode(), parsed.GetHashCode());
+    }
+
+    [Theory]
+    [InlineData("4.0.11c uotd", ClientType.UOTD)]
+    [InlineData("66.55.38", ClientType.KR)]
+    [InlineData("67.0.33", ClientType.SA)]
+    public void TestStringCtorKeepsOtherTypes(string version, ClientType type)
+    {
+        Assert.Equal(type, new ClientVersion(version).Type);
+    }
 }

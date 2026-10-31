@@ -115,6 +115,10 @@ public class ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion
             {
                 Type = ClientType.UOTD;
             }
+            else
+            {
+                Type = ClientType.Classic;
+            }
         }
         catch
         {
