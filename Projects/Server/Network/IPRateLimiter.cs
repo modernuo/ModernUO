@@ -26,8 +26,12 @@ namespace Server.Network;
 public class IPRateLimiter
 {
     private const long CleanupInterval = 60_000; // milliseconds
+    private const int MaxCleanupPerCall = 1024;
 
     private readonly Dictionary<IPAddress, IPStats> _ipAttempts = [];
+
+    // Holds exactly the keys of _ipAttempts, oldest first, so a bounded sweep resumes where it stopped
+    private readonly Queue<IPAddress> _cleanupQueue = [];
 
     private readonly int _maxAttempts;
     private readonly long _timeWindow; // milliseconds
@@ -36,6 +40,7 @@ public class IPRateLimiter
     private readonly long _maxBackoff; // milliseconds
 
     private long _nextCleanupTicks;
+    private int _cleanupRemaining;
 
     public IPRateLimiter(int maxAttempts, long timeWindow, long initialBackoff, double backoffMultiplier, long maxBackoff)
     {
@@ -59,7 +64,7 @@ public class IPRateLimiter
 
         var nowTicks = Core.TickCount;
 
-        if (nowTicks - _nextCleanupTicks >= 0)
+        if (_cleanupRemaining > 0 || nowTicks - _nextCleanupTicks >= 0)
         {
             Cleanup(nowTicks);
         }
@@ -79,6 +84,7 @@ public class IPRateLimiter
         {
             // Ticks can start negative, so a zero default would read as a block far in the future
             ipStats.BlockUntilTicks = nowTicks;
+            _cleanupQueue.Enqueue(ip);
         }
 
         totalAttempts = ipStats.AttemptCount;
@@ -103,17 +109,38 @@ public class IPRateLimiter
         return true;
     }
 
+    /// <summary>
+    /// Checks at most <see cref="MaxCleanupPerCall"/> entries. A rotation that does not finish continues on the next call.
+    /// </summary>
     internal void Cleanup(long nowTicks)
     {
-        _nextCleanupTicks = nowTicks + CleanupInterval;
-
-        foreach (var (ip, ipStats) in _ipAttempts)
+        if (_cleanupRemaining <= 0)
         {
+            _cleanupRemaining = _cleanupQueue.Count;
+        }
+
+        var toProcess = Math.Min(_cleanupRemaining, MaxCleanupPerCall);
+        _cleanupRemaining -= toProcess;
+
+        for (var i = 0; i < toProcess; i++)
+        {
+            var ip = _cleanupQueue.Dequeue();
+            ref var ipStats = ref CollectionsMarshal.GetValueRefOrNullRef(_ipAttempts, ip);
+
             // A blocked address outlives its attempt window; evicting it early would lift the block
             if (nowTicks - ipStats.LastAttemptTicks > _timeWindow && nowTicks - ipStats.BlockUntilTicks >= 0)
             {
                 _ipAttempts.Remove(ip);
             }
+            else
+            {
+                _cleanupQueue.Enqueue(ip);
+            }
+        }
+
+        if (_cleanupRemaining == 0)
+        {
+            _nextCleanupTicks = nowTicks + CleanupInterval;
         }
     }
 
