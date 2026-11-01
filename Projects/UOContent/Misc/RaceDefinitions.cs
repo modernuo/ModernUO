@@ -244,7 +244,7 @@ namespace Server.Misc
             };
 
             public Gargoyle(int raceID, int raceIndex)
-                : base(raceID, raceIndex, "Gargoyle", "Gargoyles", 666, 667, 402, 403, Expansion.SA)
+                : base(raceID, raceIndex, "Gargoyle", "Gargoyles", 666, 667, 694, 695, Expansion.SA)
             {
             }
 
