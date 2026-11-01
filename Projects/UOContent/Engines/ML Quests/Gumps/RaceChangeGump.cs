@@ -133,13 +133,6 @@ namespace Server.Engines.MLQuests.Gumps
             }
         }
 
-        // The client race changer is a Mondain's Legacy feature, so every target race needs at least ML
-        public static Expansion GetRequiredExpansion(Race race) =>
-            race.RequiredExpansion > Expansion.ML ? race.RequiredExpansion : Expansion.ML;
-
-        public static bool CanSelect(PlayerMobile from, Race race) =>
-            race != null && race != from.Race && from.NetState?.SupportsExpansion(GetRequiredExpansion(race)) == true;
-
         public static bool IsWearingEquipment(Mobile from)
         {
             foreach (var item in from.Items)
@@ -175,16 +168,9 @@ namespace Server.Engines.MLQuests.Gumps
             {
                 from.SendLocalizedMessage(1111918); // You are already that race.
             }
-            else if (from.NetState?.SupportsExpansion(GetRequiredExpansion(targetRace)) != true)
+            else if (!MondainsLegacy.CheckML(from, false))
             {
-                if (GetRequiredExpansion(targetRace) == Expansion.ML)
-                {
-                    from.SendLocalizedMessage(1073651); // You must have Mondain's Legacy before proceeding...
-                }
-                else
-                {
-                    from.SendMessage($"You must have the {targetRace.Name} race expansion before proceeding...");
-                }
+                from.SendLocalizedMessage(1073651); // You must have Mondain's Legacy before proceeding...
             }
             else if (!from.Alive)
             {
@@ -312,108 +298,6 @@ namespace Server.Engines.MLQuests.Gumps
         }
     }
 
-    public class RaceChangeSelectGump : DynamicGump
-    {
-        private readonly IRaceChanger _owner;
-        private readonly Race[] _races;
-
-        public override bool Singleton => true;
-
-        private RaceChangeSelectGump(IRaceChanger owner, Race[] races) : base(50, 50)
-        {
-            _owner = owner;
-            _races = races;
-        }
-
-        public static void DisplayTo(PlayerMobile from, IRaceChanger owner)
-        {
-            if (from?.NetState == null)
-            {
-                return;
-            }
-
-            var allRaces = Race.AllRaces;
-            var count = 0;
-
-            for (var i = 0; i < allRaces.Count; i++)
-            {
-                if (RaceChangeConfirmGump.CanSelect(from, allRaces[i]))
-                {
-                    count++;
-                }
-            }
-
-            if (count == 0)
-            {
-                if (!from.NetState.SupportsExpansion(Expansion.ML))
-                {
-                    from.SendLocalizedMessage(1073651); // You must have Mondain's Legacy before proceeding...
-                }
-                else
-                {
-                    from.SendMessage("There is no other race available to you.");
-                }
-
-                return;
-            }
-
-            var races = new Race[count];
-            count = 0;
-
-            for (var i = 0; i < allRaces.Count; i++)
-            {
-                var race = allRaces[i];
-                if (RaceChangeConfirmGump.CanSelect(from, race))
-                {
-                    races[count++] = race;
-                }
-            }
-
-            if (races.Length == 1)
-            {
-                RaceChangeConfirmGump.DisplayTo(from, owner, races[0]);
-                return;
-            }
-
-            from.SendGump(new RaceChangeSelectGump(owner, races));
-        }
-
-        protected override void BuildLayout(ref DynamicGumpBuilder builder)
-        {
-            builder.AddPage();
-            builder.AddBackground(0, 0, 240, 60 + _races.Length * 25, 0x2422);
-            builder.AddHtml(15, 15, 210, 20, "Choose your new race:");
-
-            for (var i = 0; i < _races.Length; i++)
-            {
-                var y = 45 + i * 25;
-                builder.AddButton(20, y, 0xFA5, 0xFA7, i + 1);
-                builder.AddHtml(55, y + 2, 165, 20, _races[i].Name);
-            }
-        }
-
-        public override void OnResponse(NetState sender, in RelayInfo info)
-        {
-            if (sender.Mobile is not PlayerMobile pm)
-            {
-                return;
-            }
-
-            var index = info.ButtonID - 1;
-
-            if (index < 0 || index >= _races.Length)
-            {
-                _owner?.OnCancel(pm);
-                return;
-            }
-
-            if (_owner?.CheckComplete(pm) != false)
-            {
-                RaceChangeConfirmGump.DisplayTo(pm, _owner, _races[index]);
-            }
-        }
-    }
-
     [SerializationGenerator(0, false)]
     public partial class RaceChangeDeed : Item, IRaceChanger
     {
@@ -456,7 +340,7 @@ namespace Server.Engines.MLQuests.Gumps
 
             if (CheckComplete(pm))
             {
-                RaceChangeSelectGump.DisplayTo(pm, this);
+                RaceChangeConfirmGump.DisplayTo(pm, this, pm.Race == Race.Human ? Race.Elf : Race.Human);
             }
         }
     }
