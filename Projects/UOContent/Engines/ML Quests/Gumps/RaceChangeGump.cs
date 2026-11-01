@@ -17,6 +17,7 @@ namespace Server.Engines.MLQuests.Gumps
         bool CheckComplete(PlayerMobile from);
         void ConsumeNeeded(PlayerMobile from);
         void OnCancel(PlayerMobile from);
+        void OnSuccess(PlayerMobile from, Race targetRace);
     }
 
     public class RaceChangeConfirmGump : DynamicGump
@@ -99,19 +100,46 @@ namespace Server.Engines.MLQuests.Gumps
 
         public static bool IsPending(NetState state) => state != null && m_Pending.ContainsKey(state);
 
-        private static void Offer(IRaceChanger owner, PlayerMobile from, Race targetRace)
+        public static bool TryOffer(PlayerMobile from, IRaceChanger owner, Race targetRace)
+        {
+            if (from?.NetState == null || targetRace == null)
+            {
+                return false;
+            }
+
+            return Offer(owner, from, targetRace);
+        }
+
+        public static void SendSuccessMessage(PlayerMobile from, Race targetRace)
+        {
+            if (targetRace == Race.Human)
+            {
+                from.SendLocalizedMessage(1073654); // You are now fully human.
+            }
+            else if (targetRace == Race.Elf)
+            {
+                from.SendLocalizedMessage(1073653); // You are now fully initiated into the Elven culture.
+            }
+            else
+            {
+                from.SendMessage($"You have fully changed your race to {targetRace.Name}.");
+            }
+        }
+
+        private static bool Offer(IRaceChanger owner, PlayerMobile from, Race targetRace)
         {
             var ns = from.NetState;
 
             if (ns == null || !CanChange(from, targetRace))
             {
-                return;
+                return false;
             }
 
             CloseCurrent(ns);
 
             m_Pending[ns] = new RaceChangeState(owner, ns, targetRace);
             ns.SendRaceChanger(from.Female, targetRace);
+            return true;
         }
 
         private static void CloseCurrent(NetState ns)
@@ -168,9 +196,17 @@ namespace Server.Engines.MLQuests.Gumps
             {
                 from.SendLocalizedMessage(1111918); // You are already that race.
             }
-            else if (!MondainsLegacy.CheckML(from, false))
+            else if (targetRace.RequiredExpansion != Expansion.None &&
+                     from.NetState?.SupportsExpansion(targetRace.RequiredExpansion) != true)
             {
-                from.SendLocalizedMessage(1073651); // You must have Mondain's Legacy before proceeding...
+                if (targetRace.RequiredExpansion == Expansion.ML)
+                {
+                    from.SendLocalizedMessage(1073651); // You must have Mondain's Legacy before proceeding...
+                }
+                else
+                {
+                    from.SendMessage($"You must have the {targetRace.Name} race expansion before proceeding...");
+                }
             }
             else if (!from.Alive)
             {
@@ -224,7 +260,10 @@ namespace Server.Engines.MLQuests.Gumps
             var owner = raceChangeState.m_Owner;
             var targetRace = raceChangeState.m_TargetRace;
 
-            if (reader.Length == 5)
+            // The client sends a 5-byte packet (0xBF 0x0005 0x002A) when the
+            // race change window is cancelled. That leaves 0 bytes after the
+            // 2-byte extended command id.
+            if (reader.Remaining < 10)
             {
                 owner?.OnCancel(pm);
 
@@ -265,19 +304,7 @@ namespace Server.Engines.MLQuests.Gumps
                 pm.FacialHairItemID = 0;
             }
 
-            if (targetRace == Race.Human)
-            {
-                pm.SendLocalizedMessage(1073654); // You are now fully human.
-            }
-            else if (targetRace == Race.Elf)
-            {
-                pm.SendLocalizedMessage(1073653); // You are now fully initiated into the Elven culture.
-            }
-            else
-            {
-                pm.SendMessage($"You have fully changed your race to {targetRace.Name}.");
-            }
-
+            owner?.OnSuccess(pm, targetRace);
             owner?.ConsumeNeeded(pm);
         }
 
@@ -329,6 +356,11 @@ namespace Server.Engines.MLQuests.Gumps
 
         public void OnCancel(PlayerMobile pm)
         {
+        }
+
+        public void OnSuccess(PlayerMobile pm, Race targetRace)
+        {
+            RaceChangeConfirmGump.SendSuccessMessage(pm, targetRace);
         }
 
         public override void OnDoubleClick(Mobile from)
