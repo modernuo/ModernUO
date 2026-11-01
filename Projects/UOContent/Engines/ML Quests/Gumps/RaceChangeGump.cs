@@ -168,9 +168,17 @@ namespace Server.Engines.MLQuests.Gumps
             {
                 from.SendLocalizedMessage(1111918); // You are already that race.
             }
-            else if (!MondainsLegacy.CheckML(from, false))
+            else if (targetRace.RequiredExpansion != Expansion.None &&
+                     from.NetState?.SupportsExpansion(targetRace.RequiredExpansion) != true)
             {
-                from.SendLocalizedMessage(1073651); // You must have Mondain's Legacy before proceeding...
+                if (targetRace.RequiredExpansion == Expansion.ML)
+                {
+                    from.SendLocalizedMessage(1073651); // You must have Mondain's Legacy before proceeding...
+                }
+                else
+                {
+                    from.SendMessage($"You must have the {targetRace.Name} race expansion before proceeding...");
+                }
             }
             else if (!from.Alive)
             {
@@ -340,8 +348,34 @@ namespace Server.Engines.MLQuests.Gumps
 
             if (CheckComplete(pm))
             {
-                RaceChangeConfirmGump.DisplayTo(pm, this, pm.Race == Race.Human ? Race.Elf : Race.Human);
+                RaceChangeConfirmGump.DisplayTo(pm, this, GetNextRace(pm));
             }
+        }
+
+        private static Race GetNextRace(PlayerMobile pm)
+        {
+            Race[] cycle = [Race.Human, Race.Elf, Race.Gargoyle];
+            var current = 0;
+
+            for (var i = 0; i < cycle.Length; i++)
+            {
+                if (cycle[i] == pm.Race)
+                {
+                    current = i;
+                    break;
+                }
+            }
+
+            for (var step = 1; step <= cycle.Length; step++)
+            {
+                var next = cycle[(current + step) % cycle.Length];
+                if (next != pm.Race && pm.NetState?.SupportsExpansion(next.RequiredExpansion) == true)
+                {
+                    return next;
+                }
+            }
+
+            return Race.Human;
         }
     }
 }
