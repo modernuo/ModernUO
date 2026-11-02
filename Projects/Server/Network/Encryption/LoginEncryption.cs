@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using Server.Logging;
 
 namespace Server.Network;
 
@@ -23,6 +24,10 @@ namespace Server.Network;
 /// </summary>
 public sealed class LoginEncryption : IClientEncryption
 {
+    private static readonly ILogger logger = LogFactory.GetLogger(typeof(LoginEncryption));
+
+    private const int LoginPacketSize = 62;
+
     private uint _table1;
     private uint _table2;
     private readonly uint _key1;
@@ -49,8 +54,6 @@ public sealed class LoginEncryption : IClientEncryption
         ReadOnlySpan<byte> encryptedPacket,
         out LoginEncryption encryption)
     {
-        const int LoginPacketSize = 62;
-
         encryption = null;
 
         if (encryptedPacket.Length < LoginPacketSize)
@@ -64,17 +67,58 @@ public sealed class LoginEncryption : IClientEncryption
             return keys is not { Key1: 0, Key2: 0 } && TryDecryptWithKeys(keys, seed, encryptedPacket, out encryption);
         }
 
-        // No version available (pre-6.0.5 client) - try all known legacy keys
-        for (var i = 0; i < LoginKeys.LegacyKeys.Length; i++)
+        // No version available (pre-6.0.5 client) - try all known legacy keys. The 5.0.x and 6.0.x (x <= 4)
+        // keystreams differ only in bytes 16-23 and 37-44, inside the credential fields, so a login from
+        // either passes the structural check under both keys; only the field contents tell them apart.
+        // When they don't, the first candidate wins, as it always has: this may add logins, never remove one.
+        Span<byte> decrypted = stackalloc byte[LoginPacketSize];
+        var legacyKeys = LoginKeys.LegacyKeys;
+        var candidates = 0;
+        var firstCandidate = -1;
+        var wellFormed = 0;
+        var wellFormedCandidate = -1;
+
+        for (var i = 0; i < legacyKeys.Length; i++)
         {
-            var legacyKeys = LoginKeys.LegacyKeys[i];
-            if (TryDecryptWithKeys(legacyKeys, seed, encryptedPacket, out encryption))
+            if (!Decrypt(legacyKeys[i], seed, encryptedPacket, decrypted))
             {
-                return true;
+                continue;
+            }
+
+            if (candidates++ == 0)
+            {
+                firstCandidate = i;
+            }
+
+            if (HasWellFormedCredentials(decrypted))
+            {
+                wellFormed++;
+                wellFormedCandidate = i;
             }
         }
 
-        return false;
+        if (candidates == 0)
+        {
+            return false;
+        }
+
+        if (candidates > 1 && wellFormed == 1)
+        {
+            encryption = new LoginEncryption(seed, legacyKeys[wellFormedCandidate]);
+            return true;
+        }
+
+        if (candidates > 1)
+        {
+            logger.Debug(
+                "Login from a pre-6.0.5 client matches {Count} legacy encryption keys ({WellFormed} with well-formed credentials); using the first",
+                candidates,
+                wellFormed
+            );
+        }
+
+        encryption = new LoginEncryption(seed, legacyKeys[firstCandidate]);
+        return true;
     }
 
     /// <summary>
@@ -86,27 +130,47 @@ public sealed class LoginEncryption : IClientEncryption
         ReadOnlySpan<byte> encryptedPacket,
         out LoginEncryption encryption)
     {
-        const int LoginPacketSize = 62;
-
-        // Copy and decrypt
         Span<byte> decrypted = stackalloc byte[LoginPacketSize];
-        encryptedPacket[..LoginPacketSize].CopyTo(decrypted);
-        var enc = new LoginEncryption(seed, keys);
-        enc.ClientDecrypt(decrypted);
 
-        // Validate decrypted packet structure:
-        // - Byte 0 must be 0x80 (account login packet ID)
-        // - Byte 30 must be 0x00 (null terminator for username)
-        // - Byte 60 must be 0x00 (null terminator for password)
-        if (decrypted[0] != 0x80 || decrypted[30] != 0x00 || decrypted[60] != 0x00)
+        // Re-initialize encryption state for actual use
+        encryption = Decrypt(keys, seed, encryptedPacket, decrypted) ? new LoginEncryption(seed, keys) : null;
+        return encryption != null;
+    }
+
+    /// <summary>
+    /// Decrypts a copy of the login packet and checks its structure: byte 0 is 0x80 and the username and
+    /// password fields end in a NUL at bytes 30 and 60.
+    /// </summary>
+    private static bool Decrypt(LoginKeys keys, uint seed, ReadOnlySpan<byte> encryptedPacket, Span<byte> decrypted)
+    {
+        encryptedPacket[..LoginPacketSize].CopyTo(decrypted);
+        new LoginEncryption(seed, keys).ClientDecrypt(decrypted);
+        return decrypted[0] == 0x80 && decrypted[30] == 0x00 && decrypted[60] == 0x00;
+    }
+
+    // Only breaks ties between keys, so it may be stricter than the 0x80 handler: a wrong key leaves
+    // flipped bits in the padding or turns a character into a non-ASCII byte.
+    private static bool HasWellFormedCredentials(ReadOnlySpan<byte> decrypted) =>
+        IsWellFormedField(decrypted.Slice(1, 30), minLength: 1) && IsWellFormedField(decrypted.Slice(31, 30), minLength: 0);
+
+    // Printable ASCII, then NUL padding to the end of the field
+    private static bool IsWellFormedField(ReadOnlySpan<byte> field, int minLength)
+    {
+        var length = field.IndexOf((byte)0);
+        if (length < minLength)
         {
-            encryption = null;
             return false;
         }
 
-        // Re-initialize encryption state for actual use
-        encryption = new LoginEncryption(seed, keys);
-        return true;
+        for (var i = 0; i < length; i++)
+        {
+            if (field[i] is < 0x20 or > 0x7E)
+            {
+                return false;
+            }
+        }
+
+        return !field[length..].ContainsAnyExcept((byte)0);
     }
 
     /// <summary>
