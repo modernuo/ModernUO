@@ -20,7 +20,18 @@ namespace Server.Network;
 public partial class NetState
 {
     public ProtocolChanges ProtocolChanges { get; set; }
-    public ClientFlags Flags { get; set; }
+
+    private ClientFlags _flags;
+
+    public ClientFlags Flags
+    {
+        get => _flags;
+        set
+        {
+            _flags = value;
+            m_Expansion = null;
+        }
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasFlag(ClientFlags flag) => (Flags & flag) != 0;
@@ -28,7 +39,17 @@ public partial class NetState
     public ClientVersion Version
     {
         get => _version;
-        set => ProtocolChanges = (_version = value)?.ProtocolChanges ?? ProtocolChanges.None;
+        set
+        {
+            // The 0xBD probe is answered repeatedly with the same version
+            if (value == _version)
+            {
+                return;
+            }
+
+            ProtocolChanges = (_version = value)?.ProtocolChanges ?? ProtocolChanges.None;
+            m_Expansion = null;
+        }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -71,8 +92,9 @@ public partial class NetState
                         continue;
                     }
 
-                    if ((info.RequiredClient == null || !IsKRClient) &&
-                        Version >= info.RequiredClient || HasFlag(info.ClientFlags))
+                    // Expansions without a RequiredClient are detected by client flags only
+                    if (HasFlag(info.ClientFlags) ||
+                        info.RequiredClient != null && !IsKRClient && Version >= info.RequiredClient)
                     {
                         m_Expansion = info;
                         break;

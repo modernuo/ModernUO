@@ -81,6 +81,7 @@ public static class IncomingAccountPackets
         IncomingPackets.Register(0x83, &DeleteCharacter, 39, outgameOnly: true);
         IncomingPackets.Register(0x91, &GameLogin, 65, outgameOnly: true);
         IncomingPackets.Register(0xA0, &PlayServer, 3, outgameOnly: true);
+        IncomingPackets.Register(0xBB, &UltimaMessenger, 9);
         IncomingPackets.Register(0xBD, &ClientVersion);
         IncomingPackets.Register(0xE1, &ClientType);
         IncomingPackets.Register(0xEF, &LoginServerSeed, 21, outgameOnly: true);
@@ -244,6 +245,9 @@ public static class IncomingAccountPackets
 
         ClientVerification.ClientVersionReceived(state, version);
     }
+
+    // Sent by UO:TD clients; unhandled, it disconnects them. Carries nothing the server uses.
+    public static void UltimaMessenger(NetState state, SpanReader reader) { }
 
     public static void PlayCharacter(NetState state, SpanReader reader)
     {
