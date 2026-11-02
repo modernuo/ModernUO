@@ -6,7 +6,7 @@ using Server.Network;
 
 namespace Server.Items;
 
-[SerializationGenerator(0, false)]
+[SerializationGenerator(0)]
 public partial class RaceChangeToken : Item, IRaceChanger
 {
     [Constructible]
