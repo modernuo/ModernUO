@@ -162,15 +162,10 @@ public sealed class LoginEncryption : IClientEncryption
             return false;
         }
 
-        for (var i = 0; i < length; i++)
-        {
-            if (field[i] is < 0x20 or > 0x7E)
-            {
-                return false;
-            }
-        }
-
-        return !field[length..].ContainsAnyExcept((byte)0);
+        // Printable, not just ASCII: a wrong key flips one bit per byte, and a flipped 0x40 turns a letter
+        // into a control character that Ascii.IsValid would accept
+        return !field[..length].ContainsAnyExceptInRange((byte)0x20, (byte)0x7E) &&
+               !field[length..].ContainsAnyExcept((byte)0);
     }
 
     /// <summary>
