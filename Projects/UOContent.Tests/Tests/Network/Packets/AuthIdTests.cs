@@ -363,6 +363,21 @@ public class AuthIdTests : IDisposable
         }
     }
 
+    // The client echoes the id as the game connection's raw seed, and a seed starting with 0xEF is
+    // parsed as the 0xEF seed packet. 4096 draws make a 0xEF top byte all but certain (1 - e^-16)
+    // if the generator allowed one.
+    [Fact]
+    public void NeverIssuesAnIdThatStartsLikeTheSeedPacket()
+    {
+        var account = CreateAccount("authid-no-ef-user");
+
+        for (var i = 0; i < 4096; i++)
+        {
+            var authId = Register(account, AddressX);
+            Assert.NotEqual(0xEF, authId >>> 24);
+        }
+    }
+
     [Fact]
     public void PreAuthenticatedGameLogin_SkipsThePasswordCheck()
     {
