@@ -1,0 +1,128 @@
+[
+  {
+    "Key": "player_trading",
+    "Description": "Allow secure trades between players",
+    "Enabled": true,
+    "DefaultEnabled": true,
+    "Category": "Economy",
+    "LastModified": "2026-11-04T11:06:05.0173423Z",
+    "LastModifiedBy": "System"
+  },
+  {
+    "Key": "pvp_combat",
+    "Description": "Allow player vs player combat",
+    "Enabled": true,
+    "DefaultEnabled": true,
+    "Category": "Combat",
+    "LastModified": "2026-11-04T11:06:05.0173423Z",
+    "LastModifiedBy": "System"
+  },
+  {
+    "Key": "bank_access",
+    "Description": "Allow players to access their bank boxes",
+    "Enabled": true,
+    "DefaultEnabled": true,
+    "Category": "Economy",
+    "LastModified": "2026-11-04T11:06:05.0173423Z",
+    "LastModifiedBy": "System"
+  },
+  {
+    "Key": "speedhack_detection",
+    "Description": "Enable speedhack detection",
+    "Enabled": false,
+    "DefaultEnabled": false,
+    "Category": "System",
+    "LastModified": "2026-11-04T11:06:05.0173423Z",
+    "LastModifiedBy": "System"
+  },
+  {
+    "Key": "insurance",
+    "Description": "Enable item insurance",
+    "Enabled": true,
+    "DefaultEnabled": true,
+    "Category": "Economy",
+    "LastModified": "2026-11-04T11:06:05.0173423Z",
+    "LastModifiedBy": "System"
+  },
+  {
+    "Key": "vendor_purchase",
+    "Description": "Allow purchasing from NPC vendors",
+    "Enabled": true,
+    "DefaultEnabled": true,
+    "Category": "Economy",
+    "LastModified": "2026-11-04T11:06:05.0173423Z",
+    "LastModifiedBy": "System"
+  },
+  {
+    "Key": "vendor_sell",
+    "Description": "Allow selling to NPC vendors",
+    "Enabled": true,
+    "DefaultEnabled": true,
+    "Category": "Economy",
+    "LastModified": "2026-11-04T11:06:05.0173423Z",
+    "LastModifiedBy": "System"
+  },
+  {
+    "Key": "player_vendors",
+    "Description": "Allow player vendor interactions",
+    "Enabled": true,
+    "DefaultEnabled": true,
+    "Category": "Economy",
+    "LastModified": "2026-11-04T11:06:05.0173423Z",
+    "LastModifiedBy": "System"
+  },
+  {
+    "Key": "house_placement",
+    "Description": "Allow new house placements",
+    "Enabled": true,
+    "DefaultEnabled": true,
+    "Category": "Housing",
+    "LastModified": "2026-11-04T11:06:05.0173423Z",
+    "LastModifiedBy": "System"
+  },
+  {
+    "Key": "boat_placement",
+    "Description": "Allow new boat placements",
+    "Enabled": true,
+    "DefaultEnabled": true,
+    "Category": "Housing",
+    "LastModified": "2026-11-04T11:06:05.0173423Z",
+    "LastModifiedBy": "System"
+  },
+  {
+    "Key": "bulk_orders",
+    "Description": "Allow bulk order deeds",
+    "Enabled": true,
+    "DefaultEnabled": true,
+    "Category": "Crafting",
+    "LastModified": "2026-11-04T11:06:05.0173423Z",
+    "LastModifiedBy": "System"
+  },
+  {
+    "Key": "passive_detect_hidden",
+    "Description": "Enable passive detect hidden",
+    "Enabled": true,
+    "DefaultEnabled": true,
+    "Category": "System",
+    "LastModified": "2026-11-04T11:06:05.0173423Z",
+    "LastModifiedBy": "System"
+  },
+  {
+    "Key": "young_player_system",
+    "Description": "Enable the young player system",
+    "Enabled": true,
+    "DefaultEnabled": true,
+    "Category": "System",
+    "LastModified": "2026-11-04T11:06:05.0173423Z",
+    "LastModifiedBy": "System"
+  },
+  {
+    "Key": "bitmap_pathfinding_cache",
+    "Description": "Enable the bitmap pathfinding cache",
+    "Enabled": true,
+    "DefaultEnabled": true,
+    "Category": "Performance",
+    "LastModified": "2026-11-04T11:06:05.0173423Z",
+    "LastModifiedBy": "System"
+  }
+]

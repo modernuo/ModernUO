@@ -8,6 +8,7 @@
         <Configurations>Debug;Release;Analyze</Configurations>
         <RootNamespace>Server</RootNamespace>
         <PackageId>Server</PackageId>
+        <Platforms>AnyCPU;x64</Platforms>
     </PropertyGroup>
     <Target Name="CleanPub" AfterTargets="Clean">
         <Message Text="Server: Removing distribution files..." />
