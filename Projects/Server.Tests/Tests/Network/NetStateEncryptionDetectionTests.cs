@@ -585,13 +585,75 @@ public class NetStateEncryptionDetectionTests
         }
     }
 
-    [Fact]
-    public void LegacyEncryptedLogin_OnTheGameConnection_IsDecrypted()
+    public static TheoryData<int> LegacyKeyIndexes()
+    {
+        var data = new TheoryData<int>();
+        for (var i = 0; i < LoginKeys.LegacyKeys.Length; i++)
+        {
+            data.Add(i);
+        }
+
+        return data;
+    }
+
+    // Pre-0xEF clients send no version, so every legacy key is a candidate. The 5.0.x and 6.0.x (x <= 4)
+    // keystreams differ only in bytes 16-23 and 37-44, inside the credential fields, so both pass the
+    // structural check on bytes 0, 30 and 60.
+    [Theory]
+    [MemberData(nameof(LegacyKeyIndexes))]
+    public void LegacyEncryptedLogin_OnTheGameConnection_IsDecrypted(int keyIndex)
     {
         const uint seed = 0x0100007F;
         using var harness = new Harness(EncryptionMode.Both);
-        var plain = AccountLogin();
-        var cipher = LoginEncrypt(plain, seed, LoginKeys.LegacyKeys[0]);
+        var plain = AccountLogin(password: "password1");
+        var cipher = LoginEncrypt(plain, seed, LoginKeys.LegacyKeys[keyIndex]);
+
+        var ns = Connect(NetState.ProtocolState.GameServer_AwaitingGameServerLogin, seed, null, out var client);
+        try
+        {
+            client.Send(cipher);
+            AssertAccountLogin(ns, plain, encrypted: true);
+        }
+        finally
+        {
+            ns.Dispose();
+            client.Close();
+        }
+    }
+
+    // A non-ASCII byte where the 5.0.0 and 6.0.0 keystreams differ fails the well-formed check under both
+    // keys; the first candidate, 5.0.0, must still win as it did before the tie-break existed
+    [Fact]
+    public void LegacyEncryptedLogin_AmbiguousBetweenKeys_KeepsTheFirstCandidate()
+    {
+        const uint seed = 0x0100007F;
+        using var harness = new Harness(EncryptionMode.Both);
+        var plain = AccountLogin("userwithlongname", "password1");
+        plain[17] = 0xE9; // packet byte 17, inside the differing bytes 16..23
+        var cipher = LoginEncrypt(plain, seed, LoginKeys.LegacyKeys[1]);
+
+        var ns = Connect(NetState.ProtocolState.GameServer_AwaitingGameServerLogin, seed, null, out var client);
+        try
+        {
+            client.Send(cipher);
+            AssertAccountLogin(ns, plain, encrypted: true);
+        }
+        finally
+        {
+            ns.Dispose();
+            client.Close();
+        }
+    }
+
+    // Long credentials fill the differing bytes with characters rather than padding
+    [Theory]
+    [MemberData(nameof(LegacyKeyIndexes))]
+    public void LegacyEncryptedLogin_WithLongCredentials_IsDecrypted(int keyIndex)
+    {
+        const uint seed = 0x0A0B0CAA;
+        using var harness = new Harness(EncryptionMode.Both);
+        var plain = AccountLogin(new string('u', 29), new string('p', 29));
+        var cipher = LoginEncrypt(plain, seed, LoginKeys.LegacyKeys[keyIndex]);
 
         var ns = Connect(NetState.ProtocolState.GameServer_AwaitingGameServerLogin, seed, null, out var client);
         try
