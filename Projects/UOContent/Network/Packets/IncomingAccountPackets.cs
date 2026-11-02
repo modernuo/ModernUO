@@ -371,10 +371,13 @@ public static class IncomingAccountPackets
 
         // The id stands in for a password verify, so it has to be unguessable. Zero is reserved:
         // GameLogin reads state.AuthId == 0 as "no auth id was issued".
+        // A leading 0xEF is reserved too: the client sends the id back raw as the game connection's
+        // seed, and NetState reads a first byte of 0xEF as the 0xEF seed packet. It would swallow the
+        // seed plus the start of 0x91 and wait for bytes that never come until the idle limit drops it.
         do
         {
             authID = RandomNumberGenerator.GetInt32(int.MinValue, int.MaxValue);
-        } while (authID == 0 || _authIDWindow.ContainsKey(authID));
+        } while (authID == 0 || (authID >>> 24) == 0xEF || _authIDWindow.ContainsKey(authID));
 
         _authIDWindow[authID] = new AuthIDPersistence(version, account, address);
 
