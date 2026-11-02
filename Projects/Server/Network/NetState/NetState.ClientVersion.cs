@@ -26,9 +26,6 @@ public partial class NetState
     public ClientFlags Flags
     {
         get => _flags;
-        // Flags feed the cached expansion resolution (see ExpansionInfo); drop the cache like the
-        // Version setter does so a resolution made before the client sent its flag bits is not
-        // frozen in.
         set
         {
             _flags = value;
@@ -44,20 +41,13 @@ public partial class NetState
         get => _version;
         set
         {
-            // The speed-hack probe (0xBD) is answered repeatedly with the same version string;
-            // repeat reports carry no new information, so guard the invalidation below.
+            // The 0xBD probe is answered repeatedly with the same version
             if (value?.Equals(_version) == true)
             {
                 return;
             }
 
             ProtocolChanges = (_version = value)?.ProtocolChanges ?? ProtocolChanges.None;
-            // ExpansionInfo is resolved on first read and cached for the lifetime of the connection,
-            // with no other invalidation path. That first read can happen during the login flow while
-            // Version is still null — at which point no version-threshold expansion can match and the
-            // client would stay frozen on the Expansion.None fallback (oldest packet formats) forever,
-            // even after Classic clients report their version mid-login. Drop the cache so the next
-            // read re-resolves with the real version.
             m_Expansion = null;
         }
     }
@@ -102,9 +92,7 @@ public partial class NetState
                         continue;
                     }
 
-                    // Expansions without a RequiredClient are client-flag detected only: a null
-                    // requirement compares as satisfied, which pulls old or versionless clients into
-                    // SA-era packet formats (e.g. status gumps).
+                    // Expansions without a RequiredClient are detected by client flags only
                     if (HasFlag(info.ClientFlags) ||
                         info.RequiredClient != null && !IsKRClient && Version >= info.RequiredClient)
                     {

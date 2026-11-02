@@ -81,8 +81,8 @@ public static class IncomingAccountPackets
         IncomingPackets.Register(0x83, &DeleteCharacter, 39, outgameOnly: true);
         IncomingPackets.Register(0x91, &GameLogin, 65, outgameOnly: true);
         IncomingPackets.Register(0xA0, &PlayServer, 3, outgameOnly: true);
-        IncomingPackets.Register(0xBD, &ClientVersion);
         IncomingPackets.Register(0xBB, &UltimaMessenger, 9);
+        IncomingPackets.Register(0xBD, &ClientVersion);
         IncomingPackets.Register(0xE1, &ClientType);
         IncomingPackets.Register(0xEF, &LoginServerSeed, 21, outgameOnly: true);
         IncomingPackets.Register(0xF8, &CreateCharacter, 106, outgameOnly: true);
@@ -246,10 +246,7 @@ public static class IncomingAccountPackets
         ClientVerification.ClientVersionReceived(state, version);
     }
 
-    // Fixed 9-byte "Ultima Messenger" packet (two 4-byte ids, undocumented semantics; carries no
-    // version or client-type info verification could use). UO:TD clients send it as the reply to
-    // our 0xBD Client Version Request, which the 3D client does not answer with a 0xBD version
-    // string. Without a handler the parser rejects it as malformed and disconnects the client.
+    // UO:TD clients answer the 0xBD version request with this instead of a version string
     public static void UltimaMessenger(NetState state, SpanReader reader) { }
 
     public static void PlayCharacter(NetState state, SpanReader reader)
