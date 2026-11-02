@@ -246,7 +246,7 @@ public static class IncomingAccountPackets
         ClientVerification.ClientVersionReceived(state, version);
     }
 
-    // UO:TD clients answer the 0xBD version request with this instead of a version string
+    // Sent by UO:TD clients; unhandled, it disconnects them. Carries nothing the server uses.
     public static void UltimaMessenger(NetState state, SpanReader reader) { }
 
     public static void PlayCharacter(NetState state, SpanReader reader)

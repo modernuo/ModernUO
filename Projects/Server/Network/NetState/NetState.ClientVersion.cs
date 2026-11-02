@@ -42,7 +42,7 @@ public partial class NetState
         set
         {
             // The 0xBD probe is answered repeatedly with the same version
-            if (value?.Equals(_version) == true)
+            if (value == _version)
             {
                 return;
             }
