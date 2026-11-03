@@ -41,13 +41,9 @@ namespace Server.Mobiles
             CanSwim = true;
             CantWalk = true;
 
-            if (Utility.RandomBool())
+            if (Utility.RandomDouble() < 0.4)
             {
-                PackItem(new SulfurousAsh(4));
-            }
-            else
-            {
-                PackItem(new BlackPearl(4));
+                PackItem(Utility.RandomBool() ? new SulfurousAsh(4) : new BlackPearl(4));
             }
 
             // PackItem( new SpecialFishingNet() );
