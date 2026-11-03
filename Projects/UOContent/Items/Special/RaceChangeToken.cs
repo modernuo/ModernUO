@@ -71,6 +71,7 @@ public partial class RaceChangeToken : Item, IRaceChanger
         return true;
     }
 
+    // Called once the client confirms the race change, deleting the token.
     public void ConsumeNeeded(PlayerMobile pm) => Consume();
 
     public void OnCancel(PlayerMobile pm)
@@ -199,7 +200,14 @@ public class RaceChangeTokenGump : DynamicGump
                         _ => Race.Gargoyle
                     };
 
-                    RaceChangeConfirmGump.TryOffer(_from, _token, race);
+                    // The player's race may have changed while this gump was open, and
+                    // offering the change can also fail (equipment, combat, etc.). In
+                    // both cases rebuild the gump so it reflects the current state.
+                    if (_from.Race == race || !RaceChangeConfirmGump.Offer(_from, _token, race))
+                    {
+                        _from.SendGump(new RaceChangeTokenGump(_from, _token, GumpMode.Select));
+                    }
+
                     break;
                 }
         }

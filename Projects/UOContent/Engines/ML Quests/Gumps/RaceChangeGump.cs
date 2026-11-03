@@ -83,7 +83,7 @@ namespace Server.Engines.MLQuests.Gumps
                     {
                         if (_owner?.CheckComplete((PlayerMobile)from) != false)
                         {
-                            Offer(_owner, (PlayerMobile)from, _race);
+                            Offer((PlayerMobile)from, _owner, _race);
                         }
 
                         break;
@@ -99,16 +99,6 @@ namespace Server.Engines.MLQuests.Gumps
         }
 
         public static bool IsPending(NetState state) => state != null && m_Pending.ContainsKey(state);
-
-        public static bool TryOffer(PlayerMobile from, IRaceChanger owner, Race targetRace)
-        {
-            if (from?.NetState == null || targetRace == null)
-            {
-                return false;
-            }
-
-            return Offer(owner, from, targetRace);
-        }
 
         public static void SendSuccessMessage(PlayerMobile from, Race targetRace)
         {
@@ -126,14 +116,14 @@ namespace Server.Engines.MLQuests.Gumps
             }
         }
 
-        private static bool Offer(IRaceChanger owner, PlayerMobile from, Race targetRace)
+        public static bool Offer(PlayerMobile from, IRaceChanger owner, Race targetRace)
         {
-            var ns = from.NetState;
-
-            if (ns == null || !CanChange(from, targetRace))
+            if (!CanChange(from, targetRace))
             {
                 return false;
             }
+
+            var ns = from.NetState;
 
             CloseCurrent(ns);
 
@@ -187,6 +177,11 @@ namespace Server.Engines.MLQuests.Gumps
 
         private static bool CanChange(PlayerMobile from, Race targetRace)
         {
+            if (from?.NetState == null || targetRace == null)
+            {
+                return false;
+            }
+
             if (from.Deleted)
             {
                 return false;
