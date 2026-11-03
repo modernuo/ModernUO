@@ -220,17 +220,19 @@ namespace Server.Engines.Harvest
 
         // An SOS works anywhere in the degree of latitude and longitude its message gives; the minutes don't matter.
         private static bool IsAtShipwreck(Mobile from, SOS sos) =>
-            from.Map == sos.TargetMap && GetDegrees(from.Location, from.Map) is { } degrees &&
-            degrees == GetDegrees(sos.TargetLocation, sos.TargetMap);
+            from.Map == sos.TargetMap &&
+            GetDegrees(from.Location, from.Map, out var degrees) &&
+            GetDegrees(sos.TargetLocation, sos.TargetMap, out var sosDegrees) &&
+            degrees == sosDegrees;
 
-        private static (int Long, int Lat, bool East, bool South)? GetDegrees(Point3D p, Map map)
+        private static bool GetDegrees(Point3D p, Map map, out (int Long, int Lat, bool East, bool South) degrees)
         {
             int xLong = 0, yLat = 0, xMins = 0, yMins = 0;
             bool xEast = false, ySouth = false;
 
-            return Sextant.Format(p, map, ref xLong, ref yLat, ref xMins, ref yMins, ref xEast, ref ySouth)
-                ? (xLong, yLat, xEast, ySouth)
-                : null;
+            var valid = Sextant.Format(p, map, ref xLong, ref yLat, ref xMins, ref yMins, ref xEast, ref ySouth);
+            degrees = (xLong, yLat, xEast, ySouth);
+            return valid;
         }
 
         public override bool CheckResources(Mobile from, Item tool, HarvestDefinition def, Map map, Point3D loc, bool timed)
