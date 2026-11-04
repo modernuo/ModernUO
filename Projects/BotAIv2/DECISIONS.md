@@ -631,6 +631,31 @@ first sign is a behaviour, not an error. **Remedy.** Read the fork's source firs
 
 ### 4.1 Full entries, newest first
 
+**05.11.2026 · build 441 · The steady cry's near call reaches forty tiles and through trivial fights (night watch N2, second pass)**
+
+- *What showed it:* build 440's measurement (25 minutes of cumulative counters, Reflexes 01:52:47 / Arms 01:57:41): the
+  first pass moved the cut-offs (trivial 41.5 → 27.4 %, calls 1.5 → 3.6 % of steady cries, first blow undecided 4.3 % —
+  target ≤ 8 % met) but the headline metrics barely moved: open cries 61.5 % against the ≤ 40 % target, never-with-earshot
+  38.8 % of the open ones against ≤ 20 %. The never bucket is held by 166 "lapsed" (the crier's mark died or left — the
+  cry settled itself) and 133 earshot-never where the neighbours were busy: 79 in a fight, flight or mending, 20 in
+  companies.
+- *Decision:* three changes in `BotCry.cs` (8ce7f1177), thresholds and the "who is free" rule, companied bots untouched
+  (review A's rule), `MostNear` 1 kept. (1) `NearReach` 30 → 40. (2) `Unfree` gained a `dire` flag; the steady call —
+  only it — is loosened twice: a bot in a fight with a trivial foe (new `Trivial`: `Power(foe) < NearOdds × Power(m)`,
+  the same share the crier's own check uses) is callable, the `Hunted` gate included, else a fighter never reached the
+  `deed.Foe` check at all; and work that would not be taken up again (`!deed.Resumes`) is let go for a steady call, the
+  press honestly dropping it as Dropped. Flight, salve, brawl and escort still refuse. (3) Honest counting for the two
+  new doors: counters `NearFromFight` and `NearNoReturn` (bots sent out of their own fight / off non-resuming work, each
+  round), printed in `DescribeCalls`, reset in `Forget`.
+- *Checked:* BotAIv2 Release compiles clean (0 errors, 0 warnings; built with `-p:OutDir` aside, Distribution being
+  locked by the live shard). Deployed 02:56 through `deploy.sh` with the explicit cron environment of the 440 entry:
+  snapshot on disk in 2 s, shard stopped in 2 s, `Build succeeded`, `Distribution/Assemblies/BotAIv2.dll` dated 02:56,
+  `/api/state` reads `build: 2026-11-05 02:56`, 450 of 450 in the world; `check-boot.sh` all OK except the smith's-metal
+  pattern missed in the first minute as usual, 8 first-minute errors of the usual unstocked-shelf kind.
+- *Status:* deployed. The measurement (`tick.sh 60`, no earlier than ~03:26, better 03:30–04:00 so no 440 rows mix in)
+  decides the targets — open cries ≤ 40 %, never-with-earshot ≤ 20 %, first blow undecided ≤ 8 % — and reads the new
+  counters from `Arms:`.
+
 **05.11.2026 · build 440, again · The 00:58 deploy never built: the shard ran 10.13's assembly until 01:27**
 
 - *What showed it:* an hour into the "440" session a decree event still posted a bare word (`"data":tax`, 01:14:45), and
