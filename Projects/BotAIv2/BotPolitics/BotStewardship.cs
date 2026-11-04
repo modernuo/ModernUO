@@ -1317,7 +1317,7 @@ public static partial class BotStewardship
         if (o.Guild != null && Speaker(o, town) is { } speaker)
         {
             BotVoice.Say(speaker, "local", line, true);
-            BotEvents.Post("politics", speaker, line, "steward", kind);
+            BotEvents.Post("politics", speaker, line, "steward", BotJson.Object(w => w.WriteString("outcome", kind)));
 
             return;
         }
@@ -1329,7 +1329,7 @@ public static partial class BotStewardship
             return;
         }
 
-        BotEvents.Post("politics", o.Head ?? $"the steward of {town.Name}", null, o.Guild, town.Square.X, town.Square.Y, line, "steward", kind);
+        BotEvents.Post("politics", o.Head ?? $"the steward of {town.Name}", null, o.Guild, town.Square.X, town.Square.Y, line, "steward", BotJson.Object(w => w.WriteString("outcome", kind)));
     }
 
     // ---- telling ------------------------------------------------------------------------------------------------------------

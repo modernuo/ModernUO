@@ -971,7 +971,7 @@ public static class BotCharters
             new Dictionary<string, string> { ["town"] = key.Town, ["craft"] = Word(key.Craft), ["why"] = why }
         );
 
-        BotEvents.Post("charter", null, null, charter.Holder, 0, 0, $"{key.Town} took the {Word(key.Craft)} charter from {charter.Holder}: {why}", null, "revoked");
+        BotEvents.Post("charter", null, null, charter.Holder, 0, 0, $"{key.Town} took the {Word(key.Craft)} charter from {charter.Holder}: {why}", null, BotJson.Object(w => w.WriteString("outcome", "revoked")));
     }
 
     /// <summary>Every town's crafts under the hammer, the books closed and a new period opened.</summary>
@@ -1221,7 +1221,7 @@ public static class BotCharters
             BotVoice.ToGuild(prev.Holder, "charter:lost", new Dictionary<string, string>(fill));
         }
 
-        BotEvents.Post("charter", null, null, won.Guild, town.Square.X, town.Square.Y, $"{won.Guild} holds the {Word(craft)} charter of {town.Name}: {paid}gp to the town", null, kept ? "kept" : "won");
+        BotEvents.Post("charter", null, null, won.Guild, town.Square.X, town.Square.Y, $"{won.Guild} holds the {Word(craft)} charter of {town.Name}: {paid}gp to the town", null, BotJson.Object(w => w.WriteString("outcome", kept ? "kept" : "won")));
 
         return $"{won.Guild} holds {town.Name}'s {Word(craft)} charter for {paid}gp ({won.Share:P0} of {total}gp of sales; bids: {said}).";
     }

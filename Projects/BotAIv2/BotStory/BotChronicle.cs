@@ -166,11 +166,14 @@ public static class BotChronicle
             case "charter":
                 {
                     // 63 charters won or taken back on 12.10.2026, every six hours across the towns and crafts: kept light.
-                    if (e.Data == "won")
+                    // The data is a JSON object ({"outcome":"won"}); a bare word here broke the stream's ndjson lines (F2, 04.11.2026).
+                    var outcome = DataField(e.Data, "outcome");
+
+                    if (outcome == "won")
                     {
                         Record("town", text, 20.0);
                     }
-                    else if (e.Data == "revoked")
+                    else if (outcome == "revoked")
                     {
                         Record("town", text, 15.0);
                     }
@@ -479,21 +482,27 @@ public static class BotChronicle
         _dirty = true;
     }
 
-    private static string DataKind(string data)
+    private static string DataKind(string data) => DataField(data, "kind");
+
+    /// <summary>
+    /// A "name":"word" field out of an event's data object, or null when it is not there. The stream's data is written by
+    /// <see cref="BotJson"/> in one piece, so its quoting is known and searching for the field's opening is enough.
+    /// </summary>
+    private static string DataField(string data, string name)
     {
         if (string.IsNullOrEmpty(data))
         {
             return null;
         }
 
-        var at = data.IndexOf("\"kind\":\"", StringComparison.Ordinal);
+        var at = data.IndexOf($"\"{name}\":\"", StringComparison.Ordinal);
 
         if (at < 0)
         {
             return null;
         }
 
-        at += 8;
+        at += name.Length + 4;
 
         var end = data.IndexOf('"', at);
 
