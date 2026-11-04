@@ -74,7 +74,8 @@ public partial class NetState
 
     // Listener management
     private static nint[] _listeners = Array.Empty<nint>();
-    private static int _pendingAcceptCount;
+    private static IPEndPoint[] _listenerEndPoints = Array.Empty<IPEndPoint>();
+    private static int[] _pendingAccepts = Array.Empty<int>();
     private const int PendingAcceptsPerListener = 32;
 
     private const long AliveCheckIntervalMs = 5000;
@@ -456,6 +457,7 @@ public partial class NetState
     {
         HashSet<IPEndPoint> listeningAddresses = [];
         List<nint> listeners = [];
+        List<IPEndPoint> listenerEndPoints = [];
 
         var ring = _socketManager.Ring;
         for (var i = 0; i < ServerConfiguration.Listeners.Count; i++)
@@ -478,6 +480,7 @@ public partial class NetState
             }
 
             listeners.Add(listener);
+            listenerEndPoints.Add(ipep);
         }
 
         foreach (var ipep in listeningAddresses)
@@ -488,7 +491,7 @@ public partial class NetState
         ListeningAddresses = listeningAddresses.ToArray();
 
         // Register listeners to start accepting connections
-        RegisterListeners(listeners.ToArray());
+        RegisterListeners(listeners.ToArray(), listenerEndPoints.ToArray());
     }
 
     /// <summary>
@@ -512,21 +515,16 @@ public partial class NetState
     /// <summary>
     /// Registers listeners with the ring and starts accepting connections.
     /// </summary>
-    private static void RegisterListeners(nint[] listeners)
+    private static void RegisterListeners(nint[] listeners, IPEndPoint[] endPoints)
     {
         _listeners = listeners;
-
-        var ring = _socketManager.Ring;
+        _listenerEndPoints = endPoints;
+        _pendingAccepts = new int[listeners.Length];
 
         // Queue initial accept operations for each listener
         for (var i = 0; i < _listeners.Length; i++)
         {
-            var listener = _listeners[i];
-            for (var j = 0; j < PendingAcceptsPerListener; j++)
-            {
-                ring.PrepareAccept(listener, 0, 0, IORingUserData.EncodeAccept());
-                _pendingAcceptCount++;
-            }
+            ReplenishAccepts(i);
         }
     }
 
@@ -547,13 +545,17 @@ public partial class NetState
         }
 
         _listeners = [];
+        _listenerEndPoints = [];
+        _pendingAccepts = [];
     }
 
     private static void HandleAcceptCompletion(int result)
     {
-        _pendingAcceptCount--;
-
         var ring = _socketManager.Ring;
+
+        // The listener this accept was posted on: found from an accepted socket's local address,
+        // unknown for EAGAIN or an error, which carry no socket.
+        var listenerIndex = -1;
 
         // EAGAIN (-11) means no connection pending - just re-queue
         if (result == -11)
@@ -564,6 +566,7 @@ public partial class NetState
         if (result >= 0)
         {
             var clientSocket = (nint)result;
+            listenerIndex = FindListenerIndex(clientSocket);
             var remoteIP = SocketHelper.GetRemoteAddress(clientSocket);
 
             if (remoteIP != null)
@@ -610,13 +613,92 @@ public partial class NetState
         }
 
         ReplenishAccepts:
-        var targetAccepts = _listeners.Length * PendingAcceptsPerListener;
-        while (_pendingAcceptCount < targetAccepts && _listeners.Length > 0)
+        ConsumeAccept(listenerIndex);
+    }
+
+    /// <summary>
+    /// Re-arms the listener whose accept just completed. Each listener keeps its own
+    /// <see cref="PendingAcceptsPerListener"/> outstanding: re-arming whichever listener a shared
+    /// count pointed at would let a busy listener run dry while a quiet one piles up accepts.
+    /// </summary>
+    /// <param name="listenerIndex">
+    /// The completing listener, or -1 when unknown; the listener with the fewest pending accepts is
+    /// then charged instead.
+    /// </param>
+    private static void ConsumeAccept(int listenerIndex)
+    {
+        if (_listeners.Length == 0)
         {
-            var listenerIndex = _pendingAcceptCount % _listeners.Length;
-            ring.PrepareAccept(_listeners[listenerIndex], 0, 0, IORingUserData.EncodeAccept());
-            _pendingAcceptCount++;
+            return;
         }
+
+        if ((uint)listenerIndex >= (uint)_listeners.Length)
+        {
+            listenerIndex = FindMostDepletedListener();
+        }
+
+        if (_pendingAccepts[listenerIndex] > 0)
+        {
+            _pendingAccepts[listenerIndex]--;
+        }
+
+        ReplenishAccepts(listenerIndex);
+    }
+
+    private static void ReplenishAccepts(int listenerIndex)
+    {
+        var ring = _socketManager.Ring;
+        while (_pendingAccepts[listenerIndex] < PendingAcceptsPerListener)
+        {
+            ring.PrepareAccept(_listeners[listenerIndex], 0, 0, IORingUserData.EncodeAccept(listenerIndex));
+            _pendingAccepts[listenerIndex]++;
+        }
+    }
+
+    /// <summary>
+    /// Finds the listener an accepted socket came through from its local address, matching family
+    /// and port, and the address unless the listener is a wildcard. Port alone cannot tell an IPv4
+    /// and an IPv6 listener on the same port apart.
+    /// </summary>
+    /// <returns>The listener index, or -1 if no listener matches.</returns>
+    private static int FindListenerIndex(nint clientSocket)
+    {
+        if (_listeners.Length == 1)
+        {
+            return 0;
+        }
+
+        var local = SocketHelper.GetLocalEndPoint(clientSocket);
+        if (local == null)
+        {
+            return -1;
+        }
+
+        for (var i = 0; i < _listenerEndPoints.Length; i++)
+        {
+            var ep = _listenerEndPoints[i];
+            if (ep.Port == local.Port && ep.AddressFamily == local.AddressFamily &&
+                (ep.Address.Equals(IPAddress.Any) || ep.Address.Equals(IPAddress.IPv6Any) || ep.Address.Equals(local.Address)))
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    private static int FindMostDepletedListener()
+    {
+        var index = 0;
+        for (var i = 1; i < _pendingAccepts.Length; i++)
+        {
+            if (_pendingAccepts[i] < _pendingAccepts[index])
+            {
+                index = i;
+            }
+        }
+
+        return index;
     }
 
     /// <summary>
