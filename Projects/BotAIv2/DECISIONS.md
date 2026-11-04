@@ -631,6 +631,29 @@ first sign is a behaviour, not an error. **Remedy.** Read the fork's source firs
 
 ### 4.1 Full entries, newest first
 
+**05.11.2026 · build 440 · Event data posted as JSON objects, and the steady cry's near call loosened (night watch N1+N2)**
+
+- *Patrick:* the week's plan §3.1 F2 (the event file's broken lines) and F1 (W5: the near call almost never fires).
+- *What there was:* F2 — 716 invalid lines in `bot-events.ndjson`, every one a bare word in `data` (tax, won, caravan,
+  kept, chosen, revoked, holiday, captain, bounty, militia), written by `BotCharters` (twice) and `BotStewardship.Speak`
+  (twice) through `WriteRawValue(data, skipInputValidation: true)`; the reader `BotChronicle.Heard` matched
+  `e.Data == "won"/"revoked"` on the bare word. F1 — measured 45 minutes after a boot: 970 steady cries, 15 calls sent
+  21 bots (1.5 %); the refused buckets: 403 trivial (41.5 %, below `NearOdds` 0.5), 411 companied, 124 nobody free;
+  open cries 64.8 %, never-with-earshot 37.5 % of the open ones, first blow undecided 15.5 %.
+- *Decision:* F2 — the four producers post `data` as `{"outcome": …}` (`BotJson.Object`); the reader compares through a
+  new `DataField(data, "outcome")`, `DataKind` generalised (aa807c52f). F1 — thresholds moved, no new gates and no new
+  counters: the defaults `NearOdds` 0.5 → 0.25 and `NearReach` 20 → 30 in `BotCry.cs` (the dials already stand in
+  `bot-combat.json`, PascalCase); companied bots untouched (the company's own rule), `MostNear` 1 kept (e847d9042).
+- *Checked:* BotAIv2 compiles clean on both commits (0 warnings, 0 errors). Deployed 00:58 through `deploy.sh`
+  (save → stop → build → start, snapshot on disk in 2 s). `check-boot.sh`: listening, refused-ground record, training
+  field, population, first sweep, fires by address all OK; the smith's-metal pattern missed in the first minute — "No
+  forge with an anvil beside it is known within reach" at 00:58:45, the world still being swept; watch at the
+  measurement. The 8 first-minute errors are the usual unstocked-shelf kind. `/api/state` answers, 450 of 450 in the
+  world.
+- *Status:* deployed. The measurement (`tick.sh 60`, 30–60 minutes after 00:58) decides F1's targets — open cries
+  ≤ 40 %, never-with-earshot ≤ 20 %, first blow undecided ≤ 8 % — and re-validates the event file (0 invalid lines
+  expected of the new `data`).
+
 **13.10.2026 · no build · The shard runs in a visible window**
 
 - *Patrick:* "stop the shard and remove headless — I want to see the process."
