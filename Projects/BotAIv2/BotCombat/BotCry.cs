@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Server.Logging;
 using Server.Mobiles;
@@ -614,11 +614,11 @@ public static class BotCry
     /// </summary>
     public static bool NearCalls { get; set; } = true;
 
-    /// <summary>How far a steady cry calls its nearest free neighbour from. Twenty tiles: in sight, a few seconds' walk.</summary>
-    public static int NearReach { get; set; } = 20;
+    /// <summary>How far a steady cry calls its nearest free neighbour from. Thirty tiles: in sight, a short walk (05.11.2026, w5: twenty left 124 cries with nobody free on 970).</summary>
+    public static int NearReach { get; set; } = 30;
 
-    /// <summary>The least the thing on a steady crier must come to, as a share of the crier's own strength, to call a neighbour.</summary>
-    public static double NearOdds { get; set; } = 0.5;
+    /// <summary>The least the thing on a steady crier must come to, as a share of the crier's own strength, to call a neighbour. A quarter (05.11.2026, w5: a half let 41.5% of steady cries be trivial, and the call almost never came).</summary>
+    public static double NearOdds { get; set; } = 0.25;
 
     /// <summary>The most neighbours a steady cry sends. One: the crier is winning, the neighbour makes it quick.</summary>
     public static int MostNear { get; set; } = 1;
