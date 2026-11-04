@@ -631,6 +631,26 @@ first sign is a behaviour, not an error. **Remedy.** Read the fork's source firs
 
 ### 4.1 Full entries, newest first
 
+**05.11.2026 · build 440, again · The 00:58 deploy never built: the shard ran 10.13's assembly until 01:27**
+
+- *What showed it:* an hour into the "440" session a decree event still posted a bare word (`"data":tax`, 01:14:45), and
+  the cry line still read "within 20 tiles" / "under 50 %" — both interpolations of the dials F1 moved. The cause, in
+  order of the night's failures: the cron shell has no `dotnet` on PATH and empty `ProgramFiles`/`ProgramData`, so the
+  00:58 `deploy.sh` builds died before compile; its guard `grep -q "error"` cannot see "command not found" or a NuGet
+  restore refusal, so it printed "build ok" and started the old `Distribution/Assemblies/BotAIv2.dll` (dated 10.13
+  10:35; `/api/state` said `build: 2026-10-13 10:35`). With the environment set, the build then failed honestly on
+  NU1902/NU1903 (NuGet's package-vulnerability audit, warnings as errors — `System.Security.Cryptography.Pkcs` 10.0.0,
+  `Microsoft.DotNet.ILCompiler` 10.0.8), which is what had silently eaten the night builds.
+- *Decision:* redeployed at 01:27 through the same `deploy.sh`, with the environment made explicit: `dotnet` on PATH,
+  `ProgramFiles`/`ProgramData` set, `DOTNET_CLI_UI_LANGUAGE=en` (so errors read "error" for the script's grep), and
+  `NuGetAudit=false` (the audit is a restore-time policy, not this shard's code). No source changed; the commits stand
+  (aa807c52f, e847d9042).
+- *Checked:* `Build succeeded`; `Distribution/Assemblies/BotAIv2.dll` dated 01:27; `/api/state` reads
+  `build: 2026-11-05 01:27`, 450 of 450; `check-boot.sh` as at 00:58 (all OK, the smith's-metal pattern missed in the
+  first minute again, 7 first-minute errors of the usual unstocked-shelf kind).
+- *Status:* in force from 01:27; the F1 measurement window counts from 01:27, not 00:58. A standing lesson for
+  `deploy.sh`: verify the deployed assembly's build stamp against the commit, not the script's own "build ok".
+
 **05.11.2026 · build 440 · Event data posted as JSON objects, and the steady cry's near call loosened (night watch N1+N2)**
 
 - *Patrick:* the week's plan §3.1 F2 (the event file's broken lines) and F1 (W5: the near call almost never fires).
