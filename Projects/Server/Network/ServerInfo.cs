@@ -16,6 +16,7 @@
 using System;
 using System.Buffers.Binary;
 using System.Net;
+using System.Net.Sockets;
 
 namespace Server.Network;
 
@@ -43,8 +44,21 @@ public sealed class ServerInfo
         init
         {
             m_Address = value;
+
+            // The server list and relay packets hold a 4-byte address, so IPv6 is sent as 0.0.0.0
+            // (MapToIPv4 would quietly keep its low 32 bits). Only an IPv6-capable client
+            // (ClassicUO and forks such as TazUO) can have connected over IPv6, and those treat a
+            // zero relay address as "reconnect to the address and port you logged in with", the
+            // same as their ignore_relay_ip setting, which keeps them on IPv6.
+            var address = value.Address;
+            if (address.AddressFamily == AddressFamily.InterNetworkV6 && !address.IsIPv4MappedToIPv6)
+            {
+                RawAddress = 0;
+                return;
+            }
+
             Span<byte> integer = stackalloc byte[4];
-            value.Address.MapToIPv4().TryWriteBytes(integer, out var bytesWritten);
+            address.MapToIPv4().TryWriteBytes(integer, out var bytesWritten);
             if (bytesWritten != 4)
             {
                 throw new InvalidOperationException("IP Address could not be serialized to an integer");

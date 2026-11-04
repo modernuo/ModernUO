@@ -88,6 +88,15 @@ namespace Server.Misc
                 var localAddress = localEndPoint.Address;
                 var localPort = localEndPoint.Port;
 
+                // A client on IPv6 is listed as-is, which ServerInfo sends as 0.0.0.0: reconnect to
+                // the login address. Swapping in an IPv4 public address below could point it
+                // somewhere it has no route to. The server list ping for this entry is lost.
+                if (localAddress.AddressFamily == AddressFamily.InterNetworkV6)
+                {
+                    e.AddServer(ServerName, localEndPoint);
+                    return;
+                }
+
                 if (_useServerListingAddressConfig)
                 {
                     localAddress = _publicAddress;
@@ -138,9 +147,14 @@ namespace Server.Misc
             {
                 var iphe = Dns.GetHostEntry(addr);
 
-                if (iphe.AddressList.Length > 0)
+                // Only IPv4 fits in the server list.
+                for (var i = iphe.AddressList.Length - 1; i >= 0; i--)
                 {
-                    outValue = iphe.AddressList[^1];
+                    if (iphe.AddressList[i].AddressFamily == AddressFamily.InterNetwork)
+                    {
+                        outValue = iphe.AddressList[i];
+                        break;
+                    }
                 }
             }
             catch
