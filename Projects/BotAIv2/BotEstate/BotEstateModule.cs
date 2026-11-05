@@ -1,4 +1,5 @@
-﻿using Server.Logging;
+using System;
+using Server.Logging;
 
 namespace Server.BotAI.V2;
 
@@ -131,6 +132,10 @@ public sealed class BotEstateModule : BotModule
             BotSeat.Tell(),
             BotSeat.Settled
         );
+
+        _furnishTimer?.Stop();
+        _furnishTimer = new FurnishTimer(TimeSpan.FromSeconds(60));
+        _furnishTimer.Start();
     }
 
     public override void Reset()
@@ -171,5 +176,21 @@ public sealed class BotEstateModule : BotModule
         BotOutposter.Forget();
         BotShelf.Forget();
         BotFittings.Forget();
+        BotFurnish.Forget();
+
+        _furnishTimer?.Stop();
+        _furnishTimer = null;
+    }
+
+    /// <summary>The furnishing clock: one house looked at a minute. See <see cref="BotFurnish"/>.</summary>
+    private static Timer _furnishTimer;
+
+    private sealed class FurnishTimer : Timer
+    {
+        public FurnishTimer(TimeSpan interval) : base(interval, interval)
+        {
+        }
+
+        protected override void OnTick() => BotFurnish.Tick(Core.TickCount);
     }
 }

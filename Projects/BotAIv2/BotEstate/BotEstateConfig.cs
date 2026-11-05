@@ -69,6 +69,15 @@ public sealed class BotEstateSettings
     /// <summary>Whether a new hall is furnished with a chest and its guild's tools.</summary>
     public bool? Fittings { get; set; }
 
+    /// <summary>Whether the population's own houses are furnished over time. See BotFurnish.Running.</summary>
+    public bool? AbodeFurnish { get; set; }
+
+    /// <summary>What a bed costs a house's owner, in gold. See BotFurnish.BedPrice.</summary>
+    public int? FurnishBedPrice { get; set; }
+
+    /// <summary>Hours before a house is looked at again. See BotFurnish.EveryHours.</summary>
+    public double? FurnishEveryHours { get; set; }
+
     /// <summary>How many of a kind a guild counter holds before it stops being restocked.</summary>
     public int? ShelfDepth { get; set; }
 
@@ -207,6 +216,10 @@ public static class BotEstateConfig
         BotHall.Prior = settings.Expects ?? BotHall.Prior;
 
         BotFittings.Running = settings.Fittings ?? BotFittings.Running;
+
+        BotFurnish.Running = settings.AbodeFurnish ?? BotFurnish.Running;
+        BotFurnish.BedPrice = settings.FurnishBedPrice ?? BotFurnish.BedPrice;
+        BotFurnish.EveryHours = settings.FurnishEveryHours ?? BotFurnish.EveryHours;
 
         BotSupplier.Shelf = settings.ShelfDepth ?? BotSupplier.Shelf;
         BotSupplier.Batch = settings.ShelfBatch ?? BotSupplier.Batch;

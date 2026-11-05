@@ -219,16 +219,35 @@ public static class BotFittings
     /// </summary>
     public static bool Install(BaseHouse hall, Bench bench)
     {
-        if (hall is not { Deleted: false } || hall.Map == null || hall.Map == Map.Internal)
+        if (Place(hall, bench.Make?.Invoke()) is not { } addon)
         {
             return false;
         }
 
-        var addon = bench.Make?.Invoke();
+        Bought++;
+        Spent += bench.Price;
 
-        if (addon == null)
+        return true;
+    }
+
+    /// <summary>
+    /// Sets one addon up in a house of a bot's own, which the bot itself has paid for (PLAN-life A4). The same engine
+    /// answer on where it fits as a hall's bench gets; the guild's counters are not touched — a house's furnishing is
+    /// counted by <c>BotFurnish</c>. Returns the addon placed, or null when there is nowhere in the room it fits.
+    /// </summary>
+    public static BaseAddon InstallOwned(BaseHouse house, Func<BaseAddon> make) => Place(house, make?.Invoke());
+
+    /// <summary>
+    /// The shared body of <see cref="Install"/> and <see cref="InstallOwned"/>: the addon in hand is set down on the
+    /// first free tile of the room the engine accepts, nearest the last thing set down; deleted and null when nowhere fits.
+    /// </summary>
+    private static BaseAddon Place(BaseHouse hall, BaseAddon addon)
+    {
+        if (addon == null || hall is not { Deleted: false } || hall.Map == null || hall.Map == Map.Internal)
         {
-            return false;
+            addon?.Delete();
+
+            return null;
         }
 
         var spots = Free(Room(hall), hall.Map);
@@ -258,15 +277,12 @@ public static class BotFittings
             hall.Addons ??= [];
             hall.Addons.Add(addon);
 
-            Bought++;
-            Spent += bench.Price;
-
-            return true;
+            return addon;
         }
 
         addon.Delete();
 
-        return false;
+        return null;
     }
 
     /// <summary>

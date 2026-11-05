@@ -134,6 +134,7 @@ public static class BotCampTalk
             ["camp:tale-witness"] = ["Aye, {about}. I know them well.", "I have a tale of {about} myself, another evening.", "So that's what became of {about}."],
             ["camp:tale-heard"] = ["I've heard this one — told well all the same.", "Aye, {about}'s name travels.", "This one's reached my ears before."],
             ["camp:tale-retold"] = ["A story I picked up in {place}, from {teller}: {tale}", "{teller} told it in {place}, and I tell it again: {tale}", "Word travels. In {place} I heard {teller} tell it: {tale}"],
+            ["abode:furnished"] = ["A bed of my own, at last.", "There. A real bed, in my own house.", "Look at that. A bed, and it's mine."],
             ["meet:greet"] = ["Well met, {other}.", "{other}! Where are you off to?", "Hail, {other}. Keeping well?"],
             ["meet:answer"] = ["Well met yourself.", "About my work. You?", "Can't stop long, {other}.", "Keeping well enough."],
             ["meet:small"] = ["Warm day.", "Long road, this.", "Busy, busy.", "Have you seen the market lately?"]
