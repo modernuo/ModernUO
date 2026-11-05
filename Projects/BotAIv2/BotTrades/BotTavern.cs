@@ -839,7 +839,7 @@ public static class BotTaverns
             listener ??= tavern.Keeper;
 
             var fill = new Dictionary<string, string>();
-            var topic = BotCampTalk.Topic(speaker, tavern.Map, tavern.Stand, fill, "tavern:small", out var told);
+            var topic = BotCampTalk.Topic(speaker, tavern.Map, tavern.Stand, fill, "tavern:small", out var told, _talkers);
 
             if (BotCampTalk.Say(speaker, topic, "tavern:small", listener, fill))
             {

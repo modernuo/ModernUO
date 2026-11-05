@@ -420,7 +420,7 @@ public static class BotMeetings
     {
         var (speaker, listener) = Utility.RandomBool() ? (meeting.First, meeting.Second) : (meeting.Second, meeting.First);
         var fill = new Dictionary<string, string>();
-        var topic = BotCampTalk.Topic(speaker, speaker.Map, speaker.Location, fill, "meet:small", out var told);
+        var topic = BotCampTalk.Topic(speaker, speaker.Map, speaker.Location, fill, "meet:small", out var told, new[] { listener });
 
         if (!BotCampTalk.Say(speaker, topic, "meet:small", listener, fill))
         {

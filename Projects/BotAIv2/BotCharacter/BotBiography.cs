@@ -55,6 +55,15 @@ public static class BotBiography
     /// <summary>How many heard stories one bot carries (PLAN-life A6). Four: a listener's memory, not a library.</summary>
     public static int MostHeard { get; set; } = 4;
 
+    /// <summary>The share of tale-lines that retell a story heard at another fire instead of the teller's own (A6). 0.35.</summary>
+    public static double RetellShare { get; set; } = 0.35;
+
+    /// <summary>Hours before the same bot tells the same tale of its own again. Six: an evening's rest between tellings.</summary>
+    public static double TaleRestHours { get; set; } = 6.0;
+
+    /// <summary>A sociable bot's multiplier on the tale chance (A6: the good tellers are the sociable ones). 1.5.</summary>
+    public static double SociableTaleBoost { get; set; } = 1.5;
+
     public static long Written { get; private set; }
 
     public static long PushedOut { get; private set; }
@@ -82,6 +91,12 @@ public static class BotBiography
 
     /// <summary>Tales answered by somebody who had heard the story before.</summary>
     public static long HeardReplies { get; private set; }
+
+    /// <summary>Heard stories retold onward at another fire, table or meeting (A6: a story travels with its listeners).</summary>
+    public static long RetoldTales { get; private set; }
+
+    /// <summary>Tellings given up because at least half the audience already carried the story.</summary>
+    public static long RepeatsSuppressed { get; private set; }
 
     public static double KillsCredited { get; private set; }
 
@@ -439,16 +454,31 @@ public static class BotBiography
     }
 
     /// <summary>
-    /// A tale, or a word about a friend or an enemy, for a speaker at a fire or on the road, one time in <see cref="TaleChance"/>:
-    /// fills <c>{tale}</c>, <c>{friend}</c> or <c>{enemy}</c> and returns the occasion, or null to let the news be said.
-    /// When the occasion is <c>camp:tale</c>, <paramref name="told"/> is the tale itself, so the listeners seated there can
-    /// remember it (<see cref="Heard"/>) and answer to it (<see cref="Answer"/>); otherwise <paramref name="told"/> is null.
+    /// A tale, or a word about a friend or an enemy, for a speaker at a fire or on the road, one time in <see cref="TaleChance"/>
+    /// (times <see cref="SociableTaleBoost"/> for a sociable bot): fills <c>{tale}</c>, <c>{friend}</c> or <c>{enemy}</c> and
+    /// returns the occasion, or null to let the news be said. One telling in <see cref="RetellShare"/> is a story the speaker
+    /// itself heard at another fire, carried onward (occasion <c>camp:tale-retold</c>, PLAN-life A6). When the occasion is
+    /// <c>camp:tale</c> or <c>camp:tale-retold</c>, <paramref name="told"/> is the story itself, so the listeners seated there
+    /// can remember it (<see cref="Heard"/>) and answer to it (<see cref="Answer"/>); otherwise <paramref name="told"/> is null.
+    /// A story at least half the <paramref name="audience"/> already carries is not told again (<see cref="RepeatsSuppressed"/>).
     /// </summary>
-    public static string Tale(Mobile speaker, Dictionary<string, string> fill, out BotTale told)
+    public static string Tale(Mobile speaker, Dictionary<string, string> fill, out BotTale told, IEnumerable<Mobile> audience = null)
     {
         told = null;
 
-        if (!On || fill == null || Utility.RandomDouble() >= TaleChance || BotLives.Of(speaker) is not { } life)
+        if (!On || fill == null || BotLives.Of(speaker) is not { } life)
+        {
+            return null;
+        }
+
+        var chance = TaleChance;
+
+        if ((life.Traits & BotTrait.Sociable) != 0)
+        {
+            chance *= Math.Max(1.0, SociableTaleBoost);
+        }
+
+        if (Utility.RandomDouble() >= chance)
         {
             return null;
         }
@@ -478,11 +508,41 @@ public static class BotBiography
             }
         }
 
+        // A story heard at another fire, carried onward — this is how a tale travels between towns (A6). Not one about
+        // the speaker itself, and none carried too far already.
+        if (Utility.RandomDouble() < RetellShare && PickRetold(life) is { } heard)
+        {
+            if (KnownToMost(heard.Kind, heard.About, heard.Text, audience, speaker))
+            {
+                RepeatsSuppressed++;
+            }
+            else
+            {
+                heard.Hops++;
+                fill["tale"] = heard.Text;
+                fill["teller"] = heard.Teller ?? "a traveller";
+                fill["place"] = heard.Place ?? "a far fire";
+                told = new BotTale { Kind = heard.Kind, Other = heard.About, Text = heard.Text, At = heard.At };
+                RetoldTales++;
+                ToldAtFire++;
+
+                return "camp:tale-retold";
+            }
+        }
+
         if (Next(life) is not { } tale)
         {
             return null;
         }
 
+        if (KnownToMost(tale.Kind, tale.Other, tale.Text, audience, speaker))
+        {
+            RepeatsSuppressed++;
+
+            return null;
+        }
+
+        tale.ToldAt = DateTime.UtcNow;
         fill["tale"] = tale.Text;
         ToldAtFire++;
         told = tale;
@@ -490,7 +550,79 @@ public static class BotBiography
         return "camp:tale";
     }
 
-    /// <summary>The next tale to tell, round the three in turn so the same one is not told twice running.</summary>
+    /// <summary>A story this bot carries that it may retell: not about itself, not yet carried on twice, one of them at random.</summary>
+    private static BotHeardTale PickRetold(BotLife life)
+    {
+        BotHeardTale pick = null;
+        var seen = 0;
+
+        for (var i = 0; i < life.HeardTales.Count; i++)
+        {
+            var heard = life.HeardTales[i];
+
+            if (heard.Hops >= 2 || string.IsNullOrEmpty(heard.Text) || string.Equals(heard.About, life.Name, StringComparison.Ordinal))
+            {
+                continue;
+            }
+
+            if (Utility.Random(++seen) == 0)
+            {
+                pick = heard;
+            }
+        }
+
+        return pick;
+    }
+
+    /// <summary>Whether at least half the audience already carries this story, so telling it to them again would be a repeat. The speaker is not its own audience: a reteller always carries the story it retells.</summary>
+    private static bool KnownToMost(string kind, string about, string text, IEnumerable<Mobile> audience, Mobile speaker)
+    {
+        if (audience == null)
+        {
+            return false;
+        }
+
+        var carriers = 0;
+        var total = 0;
+
+        foreach (var m in audience)
+        {
+            if (m == null || ReferenceEquals(m, speaker))
+            {
+                continue;
+            }
+
+            total++;
+
+            var life = BotLives.Of(m);
+
+            if (life == null)
+            {
+                continue;
+            }
+
+            for (var i = 0; i < life.HeardTales.Count; i++)
+            {
+                var heard = life.HeardTales[i];
+
+                if (string.Equals(heard.Kind, kind, StringComparison.Ordinal)
+                    && string.Equals(heard.About, about, StringComparison.Ordinal)
+                    && string.Equals(heard.Text, text, StringComparison.Ordinal))
+                {
+                    carriers++;
+
+                    break;
+                }
+            }
+        }
+
+        return total > 0 && carriers * 2 >= total;
+    }
+
+    /// <summary>
+    /// The next tale to tell, round the three in turn so the same one is not told twice running, skipping any told aloud
+    /// within the last <see cref="TaleRestHours"/>. Null when every tale is resting.
+    /// </summary>
     private static BotTale Next(BotLife life)
     {
         if (life.Tales.Count == 0)
@@ -498,9 +630,22 @@ public static class BotBiography
             return null;
         }
 
-        life.ToldIndex = (life.ToldIndex + 1) % life.Tales.Count;
+        var now = DateTime.UtcNow;
+        var rest = TimeSpan.FromHours(Math.Max(0.0, TaleRestHours));
 
-        return life.Tales[life.ToldIndex];
+        for (var k = 0; k < life.Tales.Count; k++)
+        {
+            life.ToldIndex = (life.ToldIndex + 1) % life.Tales.Count;
+
+            var tale = life.Tales[life.ToldIndex];
+
+            if (tale.ToldAt == default || now - tale.ToldAt >= rest)
+            {
+                return tale;
+            }
+        }
+
+        return null;
     }
 
     /// <summary>
@@ -663,7 +808,8 @@ public static class BotBiography
             ? "biographies are off"
             : $"{Written} events written into a life ({(kinds.Length == 0 ? "none" : kinds)}), {PushedOut} pushed a lighter one out, {TooLight} too light to keep; "
               + $"tales told: {ToldAtFire} at a fire or on the road ({FriendTales} of a friend, {EnemyTales} of an enemy), {ToldLocal} after a mood in the local channel, {ToldTrade} in the trade room; {KillsCredited:F0} kills credited; "
-              + $"heard: {HeardRecorded} stories remembered by listeners ({HeardKnown} tellings already carried), {WitnessReplies} answered by somebody who knew the one in it, {HeardReplies} by somebody who had heard it";
+              + $"heard: {HeardRecorded} stories remembered by listeners ({HeardKnown} tellings already carried), {WitnessReplies} answered by somebody who knew the one in it, {HeardReplies} by somebody who had heard it, "
+              + $"{RetoldTales} carried on to another fire, {RepeatsSuppressed} tellings given up as already known";
     }
 
     public static void Forget()
@@ -680,6 +826,8 @@ public static class BotBiography
         HeardKnown = 0;
         WitnessReplies = 0;
         HeardReplies = 0;
+        RetoldTales = 0;
+        RepeatsSuppressed = 0;
         KillsCredited = 0;
         _byKind.Clear();
     }

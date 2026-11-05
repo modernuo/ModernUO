@@ -18,7 +18,7 @@ public sealed class BotCharacterStore : GenericPersistence
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(BotCharacterStore));
 
-    /// <summary>Shape 2 adds the heard stories (<see cref="BotLife.HeardTales"/>, A6); shape 1 is still read, without them.</summary>
+    /// <summary>Shape 2 adds the heard stories (<see cref="BotLife.HeardTales"/>, A6) and each tale's last telling; shape 1 is still read, without them.</summary>
     private const int Shape = 2;
 
     private static BotCharacterStore _store;
@@ -62,6 +62,7 @@ public sealed class BotCharacterStore : GenericPersistence
                 writer.Write(tale.Weight);
                 writer.WriteEncodedInt(tale.Number);
                 writer.Write(tale.At);
+                writer.Write(tale.ToldAt);
             }
 
             writer.WriteEncodedInt(life.Ties.Count);
@@ -141,7 +142,8 @@ public sealed class BotCharacterStore : GenericPersistence
                         Text = reader.ReadString(),
                         Weight = reader.ReadDouble(),
                         Number = reader.ReadEncodedInt(),
-                        At = reader.ReadDateTime()
+                        At = reader.ReadDateTime(),
+                        ToldAt = shape >= 2 ? reader.ReadDateTime() : default
                     }
                 );
             }

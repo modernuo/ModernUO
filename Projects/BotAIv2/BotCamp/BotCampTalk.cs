@@ -133,6 +133,7 @@ public static class BotCampTalk
             ["camp:reply"] = ["Is that so.", "Good to know.", "Hm.", "Aye.", "I'll keep that in mind.", "Huh. Thanks."],
             ["camp:tale-witness"] = ["Aye, {about}. I know them well.", "I have a tale of {about} myself, another evening.", "So that's what became of {about}."],
             ["camp:tale-heard"] = ["I've heard this one — told well all the same.", "Aye, {about}'s name travels.", "This one's reached my ears before."],
+            ["camp:tale-retold"] = ["A story I picked up in {place}, from {teller}: {tale}", "{teller} told it in {place}, and I tell it again: {tale}", "Word travels. In {place} I heard {teller} tell it: {tale}"],
             ["meet:greet"] = ["Well met, {other}.", "{other}! Where are you off to?", "Hail, {other}. Keeping well?"],
             ["meet:answer"] = ["Well met yourself.", "About my work. You?", "Can't stop long, {other}.", "Keeping well enough."],
             ["meet:small"] = ["Warm day.", "Long road, this.", "Busy, busy.", "Have you seen the market lately?"]
@@ -273,7 +274,21 @@ public static class BotCampTalk
 
         var listener = Other(fire, speaker.Bot, seated, n, preferKeeper: false);
         var fill = new Dictionary<string, string>();
-        var topic = Topic(speaker.Bot, fire.Map, fire.Centre, fill, "camp:small", out var told);
+
+        // Whoever is seated to hear it: a story at least half of them already carry is not told again (A6).
+        var audience = new List<Mobile>(n - 1);
+
+        for (var k = 0; k < n; k++)
+        {
+            var hearer = places[seated[k]].Bot;
+
+            if (!ReferenceEquals(hearer, speaker.Bot))
+            {
+                audience.Add(hearer);
+            }
+        }
+
+        var topic = Topic(speaker.Bot, fire.Map, fire.Centre, fill, "camp:small", out var told, audience);
 
         if (!Said(fire, speaker, listener, topic, "camp:small", fill))
         {
@@ -326,11 +341,11 @@ public static class BotCampTalk
     /// returns the occasion. When the occasion is <c>camp:tale</c>, <paramref name="told"/> is the tale itself, so the
     /// listeners can remember it and answer to it; otherwise null.
     /// </summary>
-    public static string Topic(Mobile speaker, Map map, Point3D at, Dictionary<string, string> fill, string small, out BotTale told)
+    public static string Topic(Mobile speaker, Map map, Point3D at, Dictionary<string, string> fill, string small, out BotTale told, IEnumerable<Mobile> audience = null)
     {
         // Now and then a tale of the speaker's own life, or a word about a friend or an enemy, instead of the news (07.10.2026,
         // traits17). See BotBiography.Tale.
-        if (BotBiography.Tale(speaker, fill, out told) is { } tale)
+        if (BotBiography.Tale(speaker, fill, out told, audience) is { } tale)
         {
             return tale;
         }

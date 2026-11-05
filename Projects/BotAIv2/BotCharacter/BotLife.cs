@@ -22,6 +22,9 @@ public sealed class BotTale
     public int Number;
 
     public DateTime At;
+
+    /// <summary>When it was last told aloud at a fire or a table; not told yet when default. See <see cref="BotBiography.TaleRestHours"/>.</summary>
+    public DateTime ToldAt;
 }
 
 /// <summary>
