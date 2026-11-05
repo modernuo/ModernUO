@@ -46,6 +46,9 @@ public sealed class BotTavern
 
     public Mobile LastSpeaker { get; internal set; }
 
+    /// <summary>The dice game running at the table, if one is (B5); one line a table-beat, in memory only.</summary>
+    internal BotDice.Game Dice;
+
     public int Lines { get; internal set; }
 
     /// <summary>Who sits at the table, and when each was last seen sitting there.</summary>
@@ -394,6 +397,7 @@ public static class BotTaverns
         }
 
         tavern.Table.Clear();
+        BotDice.Drop(tavern);
         Closed++;
         // Sell-through is measured over shifts that ran their course or sold out; a kitchen shut early says nothing about it.
         if (shown > 0)
@@ -812,6 +816,12 @@ public static class BotTaverns
                 continue;
             }
 
+            // A game of dice at the table takes the beat when one is running or is called (B5).
+            if (BotDice.Play(tavern, _talkers))
+            {
+                continue;
+            }
+
             // A guest who did not speak last says something; another guest, else the cook, hears it.
             var first = Utility.Random(_talkers.Count);
             BotMobile speaker = null;
@@ -906,7 +916,15 @@ public static class BotTaverns
             ["tavern:close"] = ["That's the kitchen closed. Safe roads.", "No more tonight, friends.", "Kitchen's shut. Thank you all."],
             ["tavern:greet"] = ["Evening, {other}. Something hot, please.", "A plate of whatever's good, {other}.", "I've walked a long way for this, {other}."],
             ["tavern:lodger"] = ["A bite to eat, then bed.", "Supper first, then sleep.", "Something warm before I turn in, {other}."],
-            ["tavern:small"] = ["Good food, this.", "My feet thank me.", "Warm in here.", "Another day done.", "Pass the salt.", "Best meal I've had all week."]
+            ["tavern:small"] = ["Good food, this.", "My feet thank me.", "Warm in here.", "Another day done.", "Pass the salt.", "Best meal I've had all week."],
+            ["tavern:dice:call"] = ["Dice, {other}? {stake} gold a throw.", "Fancy a throw, {other}? {stake} gold.", "The bones, {other}. {stake} gold says I out-roll you."],
+            ["tavern:dice:take"] = ["Done. {stake} gold it is.", "Roll them.", "You're on, {other}."],
+            ["tavern:dice:poor"] = ["Not this purse, not tonight.", "Keep your dice; my pouch is light."],
+            ["tavern:dice:roll"] = ["{rollA} against {rollB} — mine!", "{rollA} to your {rollB}. The table holds its breath.", "{rollA} and {rollB}. Luck's a fickle cook."],
+            ["tavern:dice:tie"] = ["Even. Again — once.", "A push. One more throw settles it."],
+            ["tavern:dice:paid"] = ["{stake} gold, as agreed. Well thrown.", "There — {stake}. The bones hate me tonight."],
+            ["tavern:dice:void"] = ["Then we call it no game. Another night.", "No coin, no wager. Forgotten."],
+            ["tavern:dice:watch"] = ["Ha! The bones choose.", "Well rolled.", "That's supper money changing hands."]
         };
 
     public static string Describe()
@@ -922,7 +940,7 @@ public static class BotTaverns
         return $"taverns {_open.Count} open now ({seated} at table): {Opened} opened, {Closed} shut ({SoldOut} sold out, {TimeUp} ran their {ShiftMinutes:F0} minutes, {ClosedAway} shut when the cook was taken away); "
                + $"{Meals} meals sold for {Gold}gp, sell-through {Share:P0} over {Shifts} shifts; {Rests} guests sat at a table after supper ({SatMinutes:F0} minutes, {GivenBack:F0} minutes of play given back, {RegenGiven} points regained); "
                + $"{Steered} tired bots sent to an inn with a tavern, {Lodgers} ate before bed and {LodgersNot} went without, {SupperBuffs} woke to the supper's longer buff; {Lines} lines said at table; "
-               + $"{BotTaverner.Describe()}; {BotSupperer.Describe()}";
+               + $"{BotDice.Describe()}; {BotTaverner.Describe()}; {BotSupperer.Describe()}";
     }
 
     public static void Forget()
@@ -955,5 +973,6 @@ public static class BotTaverns
         Shifts = 0;
         Shown = 0;
         Taken = 0;
+        BotDice.Forget();
     }
 }
