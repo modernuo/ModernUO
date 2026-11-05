@@ -631,6 +631,33 @@ first sign is a behaviour, not an error. **Remedy.** Read the fork's source firs
 
 ### 4.1 Full entries, newest first
 
+**06.11.2026 · build 443 · Dice at the tavern table for honest stakes (PLAN-life B5, night watch P2)**
+
+- *Patrick:* the evening's order — more visible life and interaction; B5: "two bots in a tavern agree a small stake, throw
+  the dice, say the result, the loser pays the winner from its own purse; watchers react. Equal stakes only, money reserved
+  before the throw, an honest return on leaving/death/restart, no gold created."
+- *Decision:* new `BotDice.cs` (6ce3a7ffe), played on the table's own talk clock — no walking, nobody leaves their seat.
+  A call ("Dice, {other}? {stake} gold a throw.", one in `GameChance` 0.08 of a table's lines when two guests sit), the
+  take (both pockets checked against the stake — a short one refuses politely, `RefusedPoor`), the throw (2d6 each, said
+  aloud by the winner, one re-throw on a tie, then `Tied`), and the payment: `BotMarket.Charge(loser, stake)` — never out
+  of a want's reservation — `DropItem(new Gold)` to the winner, `BotYield.Aside(loser, stake)` so the loser's work learns
+  nothing. **No escrow:** nothing moves before the throw, so a player gone, a death, a closed table or a restart owes and
+  strands nothing; a loser short at the payment voids the game, no credit. The cook keeps the kitchen. Counters
+  `GamesCalled`/`GamesTaken`/`RefusedPoor`/`GamesPlayed`/`Tied`/`Voided`/`GoldMoved`/`WatchersReacted` on the taverns'
+  describe; dials `DiceGames`/`DiceChance`/`DiceStakeMin`/`DiceStakeMax` in `bot-trades.json`; reset rides
+  `BotTrades.Forget`.
+- *Checked:* BotAIv2 Release compiles clean (0/0, `-p:OutDir` aside); self-review: on the loop, no world walks, cold-path
+  allocations only. Deployed through `deploy.sh` 01:06: snapshot 4 s, stop 2 s, `Build succeeded`. **The start then failed
+  twice** — the task-run shard died after its banner (session 01-06, log ends at the banner, no error) and the retry saw
+  no new log in 30 s; the cause was the scheduled task left "Running" by the first failure (`IgnoreNew` refused the second
+  run), cleared by `schtasks /End /TN ModernUO-shard`. A manual foreground exe, started to see the error, loaded the world
+  fine and was killed (headless, unsavable — the snapshot stood on disk). Up at 01:09: `/api/state` reads
+  `build: 2026-11-06 01:06`, 450 of 450; `check-boot.sh` all OK except the usual first-minute smith's-metal miss.
+- *Status:* deployed. The measurement (30–60 minutes on): `GamesCalled`/`GamesPlayed` rising in the evening's taverns,
+  `GoldMoved` equal on both sides by construction, `Voided`/`RefusedPoor` small; guards: work, paths, Needs, loop ms not
+  worse, err not up. Note for the watcher: a dying task left "Running" makes the next start say "no new log" —
+  `schtasks /End` first.
+
 **05.11.2026 · build 442 · Stories told aloud are remembered by their listeners, answered, and carried to the next town (PLAN-life A6, night watch P1)**
 
 - *Patrick:* the evening's order — more visible life and interaction from PLAN-life; A6 first: "at a tavern or a fireside
