@@ -839,13 +839,24 @@ public static class BotTaverns
             listener ??= tavern.Keeper;
 
             var fill = new Dictionary<string, string>();
-            var topic = BotCampTalk.Topic(speaker, tavern.Map, tavern.Stand, fill, "tavern:small");
+            var topic = BotCampTalk.Topic(speaker, tavern.Map, tavern.Stand, fill, "tavern:small", out var told);
 
             if (BotCampTalk.Say(speaker, topic, "tavern:small", listener, fill))
             {
                 tavern.Lines++;
                 tavern.LastSpeaker = speaker;
                 Lines++;
+
+                // A tale told at the table is remembered by everybody seated for it (PLAN-life A6).
+                if (told != null)
+                {
+                    var place = BotBiography.Place(tavern.Map, tavern.Stand);
+
+                    for (var k = 0; k < _talkers.Count; k++)
+                    {
+                        BotBiography.Heard(_talkers[k], speaker, told, place);
+                    }
+                }
             }
         }
     }

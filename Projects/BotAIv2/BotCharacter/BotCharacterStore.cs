@@ -18,7 +18,8 @@ public sealed class BotCharacterStore : GenericPersistence
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(BotCharacterStore));
 
-    private const int Shape = 1;
+    /// <summary>Shape 2 adds the heard stories (<see cref="BotLife.HeardTales"/>, A6); shape 1 is still read, without them.</summary>
+    private const int Shape = 2;
 
     private static BotCharacterStore _store;
 
@@ -75,6 +76,21 @@ public sealed class BotCharacterStore : GenericPersistence
                 writer.WriteEncodedInt(tie.Wronged);
                 writer.WriteEncodedInt(tie.Beside);
             }
+
+            writer.WriteEncodedInt(life.HeardTales.Count);
+
+            for (var i = 0; i < life.HeardTales.Count; i++)
+            {
+                var heard = life.HeardTales[i];
+
+                writer.Write(heard.Teller);
+                writer.Write(heard.Kind);
+                writer.Write(heard.About);
+                writer.Write(heard.Text);
+                writer.Write(heard.Place);
+                writer.Write(heard.At);
+                writer.WriteEncodedInt(heard.Hops);
+            }
         }
     }
 
@@ -82,7 +98,7 @@ public sealed class BotCharacterStore : GenericPersistence
     {
         var shape = reader.ReadEncodedInt();
 
-        if (shape != Shape)
+        if (shape is < 1 or > Shape)
         {
             logger.Warning("The saved characters are shape {Found} and this build reads {Wanted}; every nature is drawn again from the names, and no story or tie is kept", shape, Shape);
 
@@ -144,6 +160,27 @@ public sealed class BotCharacterStore : GenericPersistence
                         Beside = reader.ReadEncodedInt()
                     }
                 );
+            }
+
+            if (shape >= 2)
+            {
+                var heardCount = reader.ReadEncodedInt();
+
+                for (var i = 0; i < heardCount; i++)
+                {
+                    life.HeardTales.Add(
+                        new BotHeardTale
+                        {
+                            Teller = reader.ReadString(),
+                            Kind = reader.ReadString(),
+                            About = reader.ReadString(),
+                            Text = reader.ReadString(),
+                            Place = reader.ReadString(),
+                            At = reader.ReadDateTime(),
+                            Hops = reader.ReadEncodedInt()
+                        }
+                    );
+                }
             }
 
             if (string.IsNullOrEmpty(life.Name))

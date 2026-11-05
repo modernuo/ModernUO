@@ -52,6 +52,9 @@ public static class BotBiography
     /// <summary>The chance a tale of a sale told that way goes to the trade room rather than the local channel. 0.25.</summary>
     public static double TradeChance { get; set; } = 0.25;
 
+    /// <summary>How many heard stories one bot carries (PLAN-life A6). Four: a listener's memory, not a library.</summary>
+    public static int MostHeard { get; set; } = 4;
+
     public static long Written { get; private set; }
 
     public static long PushedOut { get; private set; }
@@ -67,6 +70,18 @@ public static class BotBiography
     public static long FriendTales { get; private set; }
 
     public static long EnemyTales { get; private set; }
+
+    /// <summary>Stories a seated listener remembered (A6).</summary>
+    public static long HeardRecorded { get; private set; }
+
+    /// <summary>Tellings a listener already carried and so did not write down again.</summary>
+    public static long HeardKnown { get; private set; }
+
+    /// <summary>Tales answered by somebody who knew the one they are about ("I was there").</summary>
+    public static long WitnessReplies { get; private set; }
+
+    /// <summary>Tales answered by somebody who had heard the story before.</summary>
+    public static long HeardReplies { get; private set; }
 
     public static double KillsCredited { get; private set; }
 
@@ -426,9 +441,13 @@ public static class BotBiography
     /// <summary>
     /// A tale, or a word about a friend or an enemy, for a speaker at a fire or on the road, one time in <see cref="TaleChance"/>:
     /// fills <c>{tale}</c>, <c>{friend}</c> or <c>{enemy}</c> and returns the occasion, or null to let the news be said.
+    /// When the occasion is <c>camp:tale</c>, <paramref name="told"/> is the tale itself, so the listeners seated there can
+    /// remember it (<see cref="Heard"/>) and answer to it (<see cref="Answer"/>); otherwise <paramref name="told"/> is null.
     /// </summary>
-    public static string Tale(Mobile speaker, Dictionary<string, string> fill)
+    public static string Tale(Mobile speaker, Dictionary<string, string> fill, out BotTale told)
     {
+        told = null;
+
         if (!On || fill == null || Utility.RandomDouble() >= TaleChance || BotLives.Of(speaker) is not { } life)
         {
             return null;
@@ -466,6 +485,7 @@ public static class BotBiography
 
         fill["tale"] = tale.Text;
         ToldAtFire++;
+        told = tale;
 
         return "camp:tale";
     }
@@ -481,6 +501,124 @@ public static class BotBiography
         life.ToldIndex = (life.ToldIndex + 1) % life.Tales.Count;
 
         return life.Tales[life.ToldIndex];
+    }
+
+    /// <summary>
+    /// Records a tale a listener heard told aloud where it was seated (PLAN-life A6): the words as they were said, the teller,
+    /// the one it is about and the place. A telling the listener already carries is counted and not written again; a full
+    /// memory lets the oldest go. This is the shard's honest "heard of X" — no listener records a story it was not seated for.
+    /// </summary>
+    public static void Heard(Mobile listener, Mobile teller, BotTale tale, string place)
+    {
+        if (!On || tale == null || listener == null || teller == null || ReferenceEquals(listener, teller))
+        {
+            return;
+        }
+
+        if (BotLives.Of(listener) is not { } life)
+        {
+            return;
+        }
+
+        var heard = life.HeardTales;
+
+        for (var i = 0; i < heard.Count; i++)
+        {
+            if (string.Equals(heard[i].Kind, tale.Kind, StringComparison.Ordinal)
+                && string.Equals(heard[i].About, tale.Other, StringComparison.Ordinal)
+                && string.Equals(heard[i].Text, tale.Text, StringComparison.Ordinal))
+            {
+                HeardKnown++;
+
+                return;
+            }
+        }
+
+        var at = heard.Count;
+
+        if (at >= Math.Max(1, MostHeard))
+        {
+            at = 0;
+
+            for (var i = 1; i < heard.Count; i++)
+            {
+                if (heard[i].At < heard[at].At)
+                {
+                    at = i;
+                }
+            }
+
+            heard.RemoveAt(at);
+        }
+
+        heard.Add(
+            new BotHeardTale
+            {
+                Teller = teller.Name,
+                Kind = tale.Kind,
+                About = tale.Other,
+                Text = tale.Text,
+                Place = place,
+                At = DateTime.UtcNow,
+                Hops = 0
+            }
+        );
+        HeardRecorded++;
+    }
+
+    /// <summary>
+    /// What a listener answers a tale just told at its fire, when the listener honestly can: <c>camp:tale-witness</c> when it
+    /// knows the one the tale is about — the same name in its own tales or a tie of deeds together, saves or wrongs — else
+    /// <c>camp:tale-heard</c> when it carries the story already from another telling; null when it has nothing to say, and the
+    /// fire falls back to a plain answer. Must be asked before <see cref="Heard"/> records the telling, else every listener
+    /// has "heard" it. The one it is about fills <c>{about}</c>.
+    /// </summary>
+    public static string Answer(Mobile listener, BotTale tale)
+    {
+        if (!On || tale == null || BotLives.Of(listener) is not { } life)
+        {
+            return null;
+        }
+
+        if (!string.IsNullOrEmpty(tale.Other) && !string.Equals(tale.Other, life.Name, StringComparison.Ordinal))
+        {
+            var knows = false;
+
+            for (var i = 0; i < life.Tales.Count; i++)
+            {
+                if (string.Equals(life.Tales[i].Other, tale.Other, StringComparison.Ordinal))
+                {
+                    knows = true;
+
+                    break;
+                }
+            }
+
+            if (!knows && life.Tie(tale.Other) is { } tie && tie.Saved + tie.Beside + tie.Wronged > 0)
+            {
+                knows = true;
+            }
+
+            if (knows)
+            {
+                WitnessReplies++;
+
+                return "camp:tale-witness";
+            }
+        }
+
+        for (var i = 0; i < life.HeardTales.Count; i++)
+        {
+            if (string.Equals(life.HeardTales[i].Kind, tale.Kind, StringComparison.Ordinal)
+                && string.Equals(life.HeardTales[i].About, tale.Other, StringComparison.Ordinal))
+            {
+                HeardReplies++;
+
+                return "camp:tale-heard";
+            }
+        }
+
+        return null;
     }
 
     /// <summary>
@@ -524,7 +662,8 @@ public static class BotBiography
         return !On
             ? "biographies are off"
             : $"{Written} events written into a life ({(kinds.Length == 0 ? "none" : kinds)}), {PushedOut} pushed a lighter one out, {TooLight} too light to keep; "
-              + $"tales told: {ToldAtFire} at a fire or on the road ({FriendTales} of a friend, {EnemyTales} of an enemy), {ToldLocal} after a mood in the local channel, {ToldTrade} in the trade room; {KillsCredited:F0} kills credited";
+              + $"tales told: {ToldAtFire} at a fire or on the road ({FriendTales} of a friend, {EnemyTales} of an enemy), {ToldLocal} after a mood in the local channel, {ToldTrade} in the trade room; {KillsCredited:F0} kills credited; "
+              + $"heard: {HeardRecorded} stories remembered by listeners ({HeardKnown} tellings already carried), {WitnessReplies} answered by somebody who knew the one in it, {HeardReplies} by somebody who had heard it";
     }
 
     public static void Forget()
@@ -537,6 +676,10 @@ public static class BotBiography
         ToldTrade = 0;
         FriendTales = 0;
         EnemyTales = 0;
+        HeardRecorded = 0;
+        HeardKnown = 0;
+        WitnessReplies = 0;
+        HeardReplies = 0;
         KillsCredited = 0;
         _byKind.Clear();
     }

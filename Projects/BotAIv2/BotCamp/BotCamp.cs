@@ -310,8 +310,8 @@ public static class BotCamp
         /// <summary>Whoever spoke last, so the next line is somebody else's.</summary>
         public Mobile LastSpeaker { get; internal set; }
 
-        /// <summary>An answer owed: who says it, to whom, and on what occasion. Said before any new line.</summary>
-        public (Mobile Who, Mobile To, string Occasion) Owed { get; internal set; }
+        /// <summary>An answer owed: who says it, to whom, on what occasion, and the name it is about when one is carried.</summary>
+        public (Mobile Who, Mobile To, string Occasion, string About) Owed { get; internal set; }
 
         /// <summary>Whether the engine's flame is burning at all (lit or dimming).</summary>
         public bool Burning => Flame is { Deleted: false } && Flame.Status != CampfireStatus.Off;

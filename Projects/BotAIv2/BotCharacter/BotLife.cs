@@ -24,6 +24,30 @@ public sealed class BotTale
     public DateTime At;
 }
 
+/// <summary>
+/// A story this bot heard told aloud at a fire or a table (PLAN-life A6): who told it, what kind it is, whom it is about,
+/// the words as they were said, where it was heard and how often it has been carried on. Recorded only for a bot actually
+/// seated there when the line was said — the shard's honest "heard of X".
+/// </summary>
+public sealed class BotHeardTale
+{
+    public string Teller;
+
+    public string Kind;
+
+    /// <summary>The one the story is about, as <see cref="BotTale.Other"/>; may be null.</summary>
+    public string About;
+
+    public string Text;
+
+    public string Place;
+
+    public DateTime At;
+
+    /// <summary>Times this copy has been retold onward; a story carried too far is let go.</summary>
+    public int Hops;
+}
+
 /// <summary>What one bot thinks of one other bot, by name, from −100 to +100. See <see cref="BotTies"/>.</summary>
 public sealed class BotTie
 {
@@ -84,6 +108,9 @@ public sealed class BotLife
     public DateTime VeteranAt;
 
     public readonly List<BotTale> Tales = new(3);
+
+    /// <summary>Stories heard told aloud at fires and tables, the heaviest few kept; see <see cref="BotBiography.Heard"/>.</summary>
+    public readonly List<BotHeardTale> HeardTales = new(4);
 
     public readonly List<BotTie> Ties = new(12);
 

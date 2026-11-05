@@ -420,9 +420,20 @@ public static class BotMeetings
     {
         var (speaker, listener) = Utility.RandomBool() ? (meeting.First, meeting.Second) : (meeting.Second, meeting.First);
         var fill = new Dictionary<string, string>();
-        var topic = BotCampTalk.Topic(speaker, speaker.Map, speaker.Location, fill, "meet:small");
+        var topic = BotCampTalk.Topic(speaker, speaker.Map, speaker.Location, fill, "meet:small", out var told);
 
-        return BotCampTalk.Say(speaker, topic, "meet:small", listener, fill);
+        if (!BotCampTalk.Say(speaker, topic, "meet:small", listener, fill))
+        {
+            return false;
+        }
+
+        // A tale told on the road is remembered by the one it was told to (PLAN-life A6).
+        if (told != null)
+        {
+            BotBiography.Heard(listener, speaker, told, BotBiography.Place(speaker.Map, speaker.Location));
+        }
+
+        return true;
     }
 
     /// <summary>The word is over, however it ended; each side's chat ends on its own next beat.</summary>
