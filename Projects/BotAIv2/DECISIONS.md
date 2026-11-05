@@ -653,10 +653,13 @@ first sign is a behaviour, not an error. **Remedy.** Read the fork's source firs
   run), cleared by `schtasks /End /TN ModernUO-shard`. A manual foreground exe, started to see the error, loaded the world
   fine and was killed (headless, unsavable — the snapshot stood on disk). Up at 01:09: `/api/state` reads
   `build: 2026-11-06 01:06`, 450 of 450; `check-boot.sh` all OK except the usual first-minute smith's-metal miss.
-- *Status:* deployed. The measurement (30–60 minutes on): `GamesCalled`/`GamesPlayed` rising in the evening's taverns,
-  `GoldMoved` equal on both sides by construction, `Voided`/`RefusedPoor` small; guards: work, paths, Needs, loop ms not
-  worse, err not up. Note for the watcher: a dying task left "Running" makes the next start say "no new log" —
-  `schtasks /End` first.
+- *Status:* **active** — measured on 26 minutes of the night session (taverns' describe 01:35, cumulative from the 01:09
+  boot): **14 games called, 6 taken (7 refused, pockets short), 5 played and paid, 0 tied, 1 voided, 66gp changed hands,
+  4 guests watched aloud** — the speech log shows the calls and a polite refusal verbatim ("Dice, Ansgar Ashdown? 11 gold
+  a throw." / "Keep your dice; my pouch is light."). Guards against 442 at the same age and hour: work 94.4 → 93.9 %,
+  Needs 98.7 → 99.2 %, paths 95.8 → 97.0 %, err/30 min 69 → 51 — no regression; loop 26.3 → 35.8 ms at 26 min is the
+  night's all-450-awake band and the first hour's caches, watched at the next tick (dice add a few dictionary
+  allocations per table line — no mechanism for a loop cost). Six taverns open, nine at table, in the small hours.
 
 **05.11.2026 · build 442 · Stories told aloud are remembered by their listeners, answered, and carried to the next town (PLAN-life A6, night watch P1)**
 
