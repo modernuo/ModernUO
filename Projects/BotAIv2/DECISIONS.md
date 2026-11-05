@@ -631,6 +631,29 @@ first sign is a behaviour, not an error. **Remedy.** Read the fork's source firs
 
 ### 4.1 Full entries, newest first
 
+**06.11.2026 · build 444 · A house of one's own gets a bed, bought at home with one's own money (PLAN-life A4, night watch P3, first slice)**
+
+- *Patrick:* the evening's order — more visible life; A4: "a bot who bought a house furnishes it over time: a bed, a
+  table and chairs, a chest — bought honestly". First slice: the bed.
+- *Decision:* new `BotFurnish` (3af4811c9) on the estate module's new minute clock: one house a minute from
+  `BotAbode.Houses` — no bed among its addons yet, the owner alive and **inside its own house** (furniture nobody sees
+  arrive is furniture that was always there), and `BotYield.Spendable` over `BedPrice` 800 + `BotAbode.Keep` — is set up
+  with an elven bed through the halls' own machinery: `BotFittings.InstallOwned`, a new public wrapper over the shared
+  `Place` (`Install` refactored; the guilds' `Bought`/`Spent` counters untouched, both old callers go the old way). Paid
+  through `BotMarket.Charge` after the bed stands, removed again if the charge fails; `BotYield.Aside` so the owner's
+  work learns nothing. The coin leaves the world as it does at any shopkeeper's. A house is asked again after
+  `FurnishEveryHours` 6; `HasBed` sees the bed, so a restart buys nothing twice. The owner says so aloud
+  (`abode:furnished`) and the event stream hears it. Dials `AbodeFurnish`/`FurnishBedPrice`/`FurnishEveryHours` in
+  `bot-estate.json`; counters `Bought`/`Spent`/`NoRoom`/`NotHome`/`Short` in `BotFurnish.Describe`; reset through the
+  estate module's `Reset`, timer stopped there too.
+- *Checked:* BotAIv2 Release compiles clean (0/0, `-p:OutDir` aside); self-review clean (on the loop, ≤ 20 houses a
+  minute, cold path, honest money with the place-then-charge-then-remove rollback). Deployed through `deploy.sh` 03:36:
+  snapshot, stop, `Build succeeded`, start clean this time; `/api/state` reads `build: 2026-11-06 03:36`, 450 of 450;
+  `check-boot.sh` all OK except the usual first-minute smith's-metal miss.
+- *Status:* deployed. The measurement (an hour on): `Bought` rising as owners come home, `Spent` = `Bought` × 800,
+  `NoRoom`/`Short`/`NotHome` sane; guards: work, paths, Needs, loop, err. Not in this slice: table/chairs/chest, the
+  house-warming, a carpenter's order (no carpenter class yet), sleeping at home (A1's territory).
+
 **06.11.2026 · build 443 · Dice at the tavern table for honest stakes (PLAN-life B5, night watch P2)**
 
 - *Patrick:* the evening's order — more visible life and interaction; B5: "two bots in a tavern agree a small stake, throw
