@@ -658,9 +658,13 @@ first sign is a behaviour, not an error. **Remedy.** Read the fork's source firs
   reset through `BotLives.Wipe`. Deployed 22:10 through `deploy.sh` with the explicit cron environment: snapshot 2 s,
   stop 2 s, `Build succeeded`; `/api/state` reads `build: 2026-11-05 22:10`, 450 of 450; `check-boot.sh` all OK except
   the usual first-minute smith's-metal miss; 6 first-minute errors of the usual kind.
-- *Status:* deployed. The measurement (30–60 minutes on, evening fires): `ToldAtFire`, `HeardRecorded` rising with the
-  fires, witness/heard answers above zero, `RetoldTales` above zero by the second evening, `RepeatsSuppressed` small
-  against told; guards: `work`, `paths`, `Needs`, loop ms not worse, `err` not up.
+- *Status:* **active** — measured on 55 minutes of the evening session (Character: 23:05, cumulative from the 22:10 boot):
+  232 tales told at fires and on the road (56 of a friend, 14 of an enemy), 52 after a mood; **heard: 268 stories
+  remembered by listeners** (9 tellings already carried), 3 answered by somebody who knew the one in it, 1 by somebody who
+  had heard it, **17 carried on to another fire**, 26 given up as already known. Witness/heard answers are rare by design
+  (a real tie or a carried story required) — 4 of 232. Guards against build 441's evening (same hours): work 92.0 → 94.5 %,
+  Needs 96.1 → 99.1 %, paths 94.8 → 95.5 %, loop 22.3 → 20.2 ms, errors per 30 min 93 → 34. No regression, no errors from
+  the new code in the log.
 
 **05.11.2026 · build 441 · The steady cry's near call reaches forty tiles and through trivial fights (night watch N2, second pass)**
 
