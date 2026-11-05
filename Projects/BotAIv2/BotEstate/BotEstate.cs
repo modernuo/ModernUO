@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Server.Guilds;
 using Server.Logging;
@@ -871,7 +871,7 @@ public static class BotEstate
             var owed = wanting.Length == 0 ? "every guild has one" : wanting.ToString();
 
             return
-                $"{halls}; {ledger}; {owed}; {BotSteward.Describe()}; {BotFitter.Describe()}; {BotHirer.Describe()}; {Merchanted} merchants hired for {Contracts}gp; {BotSupplier.Describe()}; {BotOffice.Describe()}; {BotShelf.Describe()}; {BotLand.Describe()}; {BotRegard.Describe()}; {BotBailiff.Describe()}; {BotFeuder.Describe()}; {BotExile.Describe()}; {BotRemover.Describe()}; {BotHolder.Describe()}; {BotReeve.Describe()}; {BotChest.Describe()}; {BotToll.Describe()}; {BotTollman.Describe()}; {BotEnlarger.Describe()}; {BotAbode.Describe()}; {BotAbodeBuyer.Describe()}; {BotReposer.Describe()}; {BotOutposter.Describe()}; {Barred} times a workshop was passed over as somebody else's; {BotPlot.Describe()}";
+                $"{halls}; {ledger}; {owed}; {BotSteward.Describe()}; {BotFitter.Describe()}; {BotHirer.Describe()}; {Merchanted} merchants hired for {Contracts}gp; {BotSupplier.Describe()}; {BotOffice.Describe()}; {BotShelf.Describe()}; {BotLand.Describe()}; {BotRegard.Describe()}; {BotBailiff.Describe()}; {BotFeuder.Describe()}; {BotExile.Describe()}; {BotRemover.Describe()}; {BotHolder.Describe()}; {BotReeve.Describe()}; {BotChest.Describe()}; {BotToll.Describe()}; {BotTollman.Describe()}; {BotEnlarger.Describe()}; {BotAbode.Describe()}; {BotAbodeBuyer.Describe()}; {BotReposer.Describe()}; {BotFurnish.Describe()}; {BotOutposter.Describe()}; {Barred} times a workshop was passed over as somebody else's; {BotPlot.Describe()}";
         }
         finally
         {
