@@ -631,6 +631,37 @@ first sign is a behaviour, not an error. **Remedy.** Read the fork's source firs
 
 ### 4.1 Full entries, newest first
 
+**05.11.2026 · build 442 · Stories told aloud are remembered by their listeners, answered, and carried to the next town (PLAN-life A6, night watch P1)**
+
+- *Patrick:* the evening's order — more visible life and interaction from PLAN-life; A6 first: "at a tavern or a fireside
+  bots tell stories aloud — their own deeds, a friend's death — and others answer; a told story becomes a rumour that
+  travels with the listeners to other towns".
+- *What there was:* tales were already told at fires and tables (one fire line in `TaleChance` 0.3 is `camp:tale`, the
+  biography's three heaviest) — but a listener kept nothing, answers were the generic "Is that so.", and no story ever
+  left the fire it was told at. `BotRumour` is the treasure-chest system, not gossip.
+- *Decision:* three commits (3231f29ff, d582bc31c, ccdb6bc4b). (1) A told tale is recorded into every listener actually
+  seated for it — fire ring, tavern table, road meeting — as a `BotHeardTale` (teller, kind, about, words, place; four
+  carried, the oldest let go; a telling already carried is counted, `HeardKnown`, not written twice). (2) The fire's owed
+  answer carries the name the tale is about: a listener who honestly knows them (the same name in its own tales, or a tie
+  of saves/deeds/wrongs) answers `camp:tale-witness`; one who already carries the story says so, `camp:tale-heard`; else
+  the plain answer as before. The answer is chosen before the recording, else every listener would "have heard" the tale
+  it is hearing. (3) One telling in `RetellShare` 0.35 retells a story the speaker itself heard elsewhere
+  (`camp:tale-retold`, teller and place named; never one about the teller; a copy carried on at most twice), so a story
+  travels with its listeners; a tale at least half the seated already carry is given up (`RepeatsSuppressed`); the same
+  bot does not tell the same tale of its own twice within `TaleRestHours` 6 (`BotTale.ToldAt`, persisted); a sociable bot
+  tells at ×`SociableTaleBoost` 1.5. Counters `HeardRecorded`/`HeardKnown`/`WitnessReplies`/`HeardReplies`/`RetoldTales`/
+  `RepeatsSuppressed` on the `Character:` line. Dials in `bot-character.json` (PascalCase). Persistence: `BotCharacterStore`
+  shape 2 (heard stories + each tale's last telling), shape 1 still read — no character wipe. Honestly noted: `Hops` is
+  per-copy, so a story's range is damped by `MostHeard` 4 and the repeat suppression, not by a global hop bound.
+- *Checked:* BotAIv2 Release compiles clean (0/0, `-p:OutDir` aside). Self-review against the audit rules: all on the
+  loop, no world walks (listeners come from the fire's seats and the tavern's table), cold-path allocations only, braces,
+  reset through `BotLives.Wipe`. Deployed 22:10 through `deploy.sh` with the explicit cron environment: snapshot 2 s,
+  stop 2 s, `Build succeeded`; `/api/state` reads `build: 2026-11-05 22:10`, 450 of 450; `check-boot.sh` all OK except
+  the usual first-minute smith's-metal miss; 6 first-minute errors of the usual kind.
+- *Status:* deployed. The measurement (30–60 minutes on, evening fires): `ToldAtFire`, `HeardRecorded` rising with the
+  fires, witness/heard answers above zero, `RetoldTales` above zero by the second evening, `RepeatsSuppressed` small
+  against told; guards: `work`, `paths`, `Needs`, loop ms not worse, `err` not up.
+
 **05.11.2026 · build 441 · The steady cry's near call reaches forty tiles and through trivial fights (night watch N2, second pass)**
 
 - *What showed it:* build 440's measurement (25 minutes of cumulative counters, Reflexes 01:52:47 / Arms 01:57:41): the
