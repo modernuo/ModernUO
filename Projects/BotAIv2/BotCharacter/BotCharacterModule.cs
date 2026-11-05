@@ -30,6 +30,18 @@ public sealed class BotCharacterSettings
     /// <summary>The share of a fire's lines that are tales. See BotBiography.TaleChance.</summary>
     public double? TaleChance { get; set; }
 
+    /// <summary>How many heard stories one bot carries. See BotBiography.MostHeard.</summary>
+    public int? MostHeard { get; set; }
+
+    /// <summary>The share of tale-lines that retell a heard story. See BotBiography.RetellShare.</summary>
+    public double? RetellShare { get; set; }
+
+    /// <summary>Hours before a bot tells the same tale of its own again. See BotBiography.TaleRestHours.</summary>
+    public double? TaleRestHours { get; set; }
+
+    /// <summary>A sociable bot's multiplier on the tale chance. See BotBiography.SociableTaleBoost.</summary>
+    public double? SociableTaleBoost { get; set; }
+
     /// <summary>Whether bots form friendships and feuds. See BotTies.On.</summary>
     public bool? Ties { get; set; }
 
@@ -232,6 +244,10 @@ public sealed class BotCharacterModule : BotModule
         BotTraits.VeteranKills = settings.VeteranKills ?? BotTraits.VeteranKills;
         BotBiography.On = settings.Biography ?? BotBiography.On;
         BotBiography.TaleChance = settings.TaleChance ?? BotBiography.TaleChance;
+        BotBiography.MostHeard = settings.MostHeard ?? BotBiography.MostHeard;
+        BotBiography.RetellShare = settings.RetellShare ?? BotBiography.RetellShare;
+        BotBiography.TaleRestHours = settings.TaleRestHours ?? BotBiography.TaleRestHours;
+        BotBiography.SociableTaleBoost = settings.SociableTaleBoost ?? BotBiography.SociableTaleBoost;
         BotTies.On = settings.Ties ?? BotTies.On;
         BotTies.DuelAt = settings.DuelAt ?? BotTies.DuelAt;
         BotTies.FriendAt = settings.FriendAt ?? BotTies.FriendAt;
