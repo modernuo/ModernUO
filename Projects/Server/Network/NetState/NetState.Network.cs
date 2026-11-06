@@ -617,9 +617,8 @@ public partial class NetState
     }
 
     /// <summary>
-    /// Re-arms the listener whose accept just completed. Each listener keeps its own
-    /// <see cref="PendingAcceptsPerListener"/> outstanding: re-arming whichever listener a shared
-    /// count pointed at would let a busy listener run dry while a quiet one piles up accepts.
+    /// Re-arms the listener whose accept just completed, so each keeps its own
+    /// <see cref="PendingAcceptsPerListener"/> outstanding and a busy one never runs dry.
     /// </summary>
     /// <param name="listenerIndex">
     /// The completing listener, or -1 when unknown; the listener with the fewest pending accepts is

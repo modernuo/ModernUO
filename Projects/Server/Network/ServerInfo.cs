@@ -45,11 +45,9 @@ public sealed class ServerInfo
         {
             m_Address = value;
 
-            // The server list and relay packets hold a 4-byte address, so IPv6 is sent as 0.0.0.0
-            // (MapToIPv4 would quietly keep its low 32 bits). Only an IPv6-capable client
-            // (ClassicUO and forks such as TazUO) can have connected over IPv6, and those treat a
-            // zero relay address as "reconnect to the address and port you logged in with", the
-            // same as their ignore_relay_ip setting, which keeps them on IPv6.
+            // The relay address is 4 bytes, so IPv6 is sent as 0.0.0.0 (MapToIPv4 would keep its low
+            // 32 bits). Only ClassicUO-based clients connect over IPv6, and they read 0 as
+            // "reconnect to the login address", which keeps them on IPv6.
             var address = value.Address;
             if (address.AddressFamily == AddressFamily.InterNetworkV6 && !address.IsIPv4MappedToIPv6)
             {

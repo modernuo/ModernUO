@@ -88,9 +88,8 @@ namespace Server.Misc
                 var localAddress = localEndPoint.Address;
                 var localPort = localEndPoint.Port;
 
-                // A client on IPv6 is listed as-is, which ServerInfo sends as 0.0.0.0: reconnect to
-                // the login address. Swapping in an IPv4 public address below could point it
-                // somewhere it has no route to. The server list ping for this entry is lost.
+                // Listed as-is, so ServerInfo sends 0.0.0.0 (reconnect to the login address): an
+                // IPv4 public address may be unreachable for an IPv6 client. Costs the list ping.
                 if (localAddress.AddressFamily == AddressFamily.InterNetworkV6)
                 {
                     e.AddServer(ServerName, localEndPoint);

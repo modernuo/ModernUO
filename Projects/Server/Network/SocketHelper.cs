@@ -165,9 +165,8 @@ public static partial class SocketHelper
     private static IPAddress ParseSockAddr(ReadOnlySpan<byte> buffer) => ParseSockAddrEndPoint(buffer)?.Address;
 
     /// <summary>
-    /// Parses a native sockaddr. An IPv4-mapped IPv6 address (an IPv4 client on a dual-mode
-    /// listener) is returned as plain IPv4, so rate limits, firewall rules and the server list see
-    /// the same address whichever listener the client came through.
+    /// Parses a native sockaddr. IPv4-mapped addresses (IPv4 clients on a dual-mode listener) come
+    /// back as plain IPv4, so rate limits, firewall rules and the server list see one address per client.
     /// </summary>
     private static IPEndPoint ParseSockAddrEndPoint(ReadOnlySpan<byte> buffer)
     {

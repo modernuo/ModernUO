@@ -92,9 +92,8 @@ public static class PingServer
         {
             listener.Bind(ipep);
 
-            // UdpClient keeps its own address family (IPv4 unless told otherwise) and fails every
-            // ReceiveAsync on a socket of the other family, so build it for the socket's family.
-            // The constructor opens a socket of its own, which the bound one replaces.
+            // A UdpClient fails every ReceiveAsync on a socket of another family than its own, so
+            // build it for this one and replace the socket its constructor opened.
             var client = new UdpClient(ipep.AddressFamily);
             client.Client.Dispose();
             client.Client = listener;
@@ -153,8 +152,8 @@ public static class PingServer
             }
             catch (Exception e)
             {
-                // Anything else recurs on every call. Thrown before the first await, retrying
-                // would spin the calling thread forever, and that is the startup thread.
+                // Anything else recurs on every call; thrown before the first await, retrying it
+                // would spin the startup thread forever.
                 logger.Error(e, "Ping listener {Address} stopped", endPoint);
                 break;
             }
