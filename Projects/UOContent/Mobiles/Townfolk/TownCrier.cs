@@ -510,6 +510,11 @@ public partial class TownCrier : Mobile, ITownCrierEntryList
 
     public override void OnDelete()
     {
+        _autoShoutTimer?.Stop();
+        _autoShoutTimer = null;
+        _newsTimer?.Stop();
+        _newsTimer = null;
+
         Instances.Remove(this);
         base.OnDelete();
     }
