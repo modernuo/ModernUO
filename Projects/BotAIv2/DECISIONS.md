@@ -631,6 +631,21 @@ first sign is a behaviour, not an error. **Remedy.** Read the fork's source firs
 
 ### 4.1 Full entries, newest first
 
+**06.11.2026 · build 445 · The doorstep is home enough for a delivery (A4, measurement fix) — and the furnishing counters print**
+
+- *What showed it:* three hours of build 444 without one bed bought, and the estate's own line explaining it twice over:
+  one house stands on the island (Lorelei's large marble), and a walk home counts the doorstep — `BotRepose` rests a bot
+  at `BanLocation`, two tiles, never through the door — so the furnishing's inside-only test could fire almost never.
+- *Decision:* the doorstep counts as home for a delivery (faf709c83): the same `IsInside ‖ InRange(BanLocation, 2)` the
+  reposer uses. And `BotFurnish.Describe` joins the `Estate:` line (f042e3b7b) — the counters had been written and never
+  printed (O3).
+- *Checked:* BotAIv2 Release compiles clean (0/0). Deployed through `deploy.sh` 07:38: build ok, start clean;
+  `/api/state` reads `build: 2026-11-06 07:38`, 450 of 450; `check-boot.sh` all OK except the usual first-minute
+  smith's-metal miss.
+- *Status:* deployed. The measurement: the first "furnished its house with a bed" when Lorelei next comes home (a tired
+  owner is walked home); `furnishing:` on the `Estate:` line now says the counts. Honestly noted: with one house
+  standing, A4's slice proves itself on one bot — the house-ownership funnel is its own question, not this feature's.
+
 **06.11.2026 · build 444 · A house of one's own gets a bed, bought at home with one's own money (PLAN-life A4, night watch P3, first slice)**
 
 - *Patrick:* the evening's order — more visible life; A4: "a bot who bought a house furnishes it over time: a bed, a
