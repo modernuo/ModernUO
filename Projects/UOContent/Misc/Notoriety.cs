@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using Server.Collections;
 using Server.Engines.ConPVP;
 using Server.Engines.PartySystem;
 using Server.Factions;
@@ -379,7 +379,7 @@ namespace Server.Misc
             return Notoriety.Innocent;
         }
 
-        /* Must be thread-safe */
+        // Runs on the game loop only; it walks the aggression lists, which are not safe to read concurrently.
         public static int MobileNotoriety(Mobile source, Mobile target)
         {
             var bcTarg = target as BaseCreature;
@@ -543,11 +543,11 @@ namespace Server.Misc
 
         public static bool IsSummoned(BaseCreature c) => c?.Summoned == true;
 
-        public static bool CheckAggressor(List<AggressorInfo> list, Mobile target)
+        public static bool CheckAggressor(in ValueLinkList<AggressorInfo> list, Mobile target)
         {
-            for (var i = 0; i < list.Count; ++i)
+            foreach (var info in list)
             {
-                if (list[i].Attacker == target)
+                if (info.Attacker == target)
                 {
                     return true;
                 }
@@ -556,12 +556,10 @@ namespace Server.Misc
             return false;
         }
 
-        public static bool CheckAggressed(List<AggressorInfo> list, Mobile target)
+        public static bool CheckAggressed(in ValueLinkList<AggressorInfo> list, Mobile target)
         {
-            for (var i = 0; i < list.Count; ++i)
+            foreach (var info in list)
             {
-                var info = list[i];
-
                 if (!info.CriminalAggression && info.Defender == target)
                 {
                     return true;

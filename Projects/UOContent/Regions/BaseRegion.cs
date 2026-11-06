@@ -69,7 +69,7 @@ public class BaseRegion : Region
     }
 
     public override TimeSpan GetLogoutDelay(Mobile m) =>
-        NoLogoutDelay && m.Aggressors.Count == 0 && m.Aggressed.Count == 0 && !m.Criminal
+        NoLogoutDelay && !m.HasAggressors && !m.HasAggressed && !m.Criminal
             ? TimeSpan.Zero
             : base.GetLogoutDelay(m);
 
