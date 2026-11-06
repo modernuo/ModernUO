@@ -91,8 +91,9 @@ public static class BotFurnish
                 continue;
             }
 
-            // Furniture nobody sees arrive is furniture that was always there: the owner is home for it.
-            if (!house.IsInside(owner))
+            // Furniture nobody sees arrive is furniture that was always there: the owner is home for it — inside, or at
+            // the doorstep, which is what a walk home counts as home (BotRepose).
+            if (!house.IsInside(owner) && (house.BanLocation == Point3D.Zero || !owner.InRange(house.BanLocation, 2)))
             {
                 NotHome++;
 
