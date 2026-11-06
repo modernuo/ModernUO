@@ -74,7 +74,6 @@ public partial class NetState
 
     // Listener management
     private static nint[] _listeners = Array.Empty<nint>();
-    private static IPEndPoint[] _listenerEndPoints = Array.Empty<IPEndPoint>();
     private static int[] _pendingAccepts = Array.Empty<int>();
     private const int PendingAcceptsPerListener = 32;
 
@@ -457,7 +456,6 @@ public partial class NetState
     {
         HashSet<IPEndPoint> listeningAddresses = [];
         List<nint> listeners = [];
-        List<IPEndPoint> listenerEndPoints = [];
 
         var ring = _socketManager.Ring;
         for (var i = 0; i < ServerConfiguration.Listeners.Count; i++)
@@ -480,7 +478,6 @@ public partial class NetState
             }
 
             listeners.Add(listener);
-            listenerEndPoints.Add(ipep);
         }
 
         foreach (var ipep in listeningAddresses)
@@ -491,7 +488,7 @@ public partial class NetState
         ListeningAddresses = listeningAddresses.ToArray();
 
         // Register listeners to start accepting connections
-        RegisterListeners(listeners.ToArray(), listenerEndPoints.ToArray());
+        RegisterListeners(listeners.ToArray());
     }
 
     /// <summary>
@@ -515,10 +512,9 @@ public partial class NetState
     /// <summary>
     /// Registers listeners with the ring and starts accepting connections.
     /// </summary>
-    private static void RegisterListeners(nint[] listeners, IPEndPoint[] endPoints)
+    private static void RegisterListeners(nint[] listeners)
     {
         _listeners = listeners;
-        _listenerEndPoints = endPoints;
         _pendingAccepts = new int[listeners.Length];
 
         // Queue initial accept operations for each listener
@@ -545,17 +541,14 @@ public partial class NetState
         }
 
         _listeners = [];
-        _listenerEndPoints = [];
         _pendingAccepts = [];
     }
 
-    private static void HandleAcceptCompletion(int result)
+    /// <param name="result">The accepted socket handle, or a negative errno.</param>
+    /// <param name="listenerIndex">The listener the accept was posted on, reported for errors too.</param>
+    private static void HandleAcceptCompletion(int result, int listenerIndex)
     {
         var ring = _socketManager.Ring;
-
-        // The listener this accept was posted on: found from an accepted socket's local address,
-        // unknown for EAGAIN or an error, which carry no socket.
-        var listenerIndex = -1;
 
         // EAGAIN (-11) means no connection pending - just re-queue
         if (result == -11)
@@ -566,7 +559,6 @@ public partial class NetState
         if (result >= 0)
         {
             var clientSocket = (nint)result;
-            listenerIndex = FindListenerIndex(clientSocket);
             var remoteIP = SocketHelper.GetRemoteAddress(clientSocket);
 
             if (remoteIP != null)
@@ -620,20 +612,12 @@ public partial class NetState
     /// Re-arms the listener whose accept just completed, so each keeps its own
     /// <see cref="PendingAcceptsPerListener"/> outstanding and a busy one never runs dry.
     /// </summary>
-    /// <param name="listenerIndex">
-    /// The completing listener, or -1 when unknown; the listener with the fewest pending accepts is
-    /// then charged instead.
-    /// </param>
     private static void ConsumeAccept(int listenerIndex)
     {
-        if (_listeners.Length == 0)
-        {
-            return;
-        }
-
+        // Out of range after CloseListeners emptied the arrays while accepts were still in flight.
         if ((uint)listenerIndex >= (uint)_listeners.Length)
         {
-            listenerIndex = FindMostDepletedListener();
+            return;
         }
 
         if (_pendingAccepts[listenerIndex] > 0)
@@ -652,52 +636,6 @@ public partial class NetState
             ring.PrepareAccept(_listeners[listenerIndex], 0, 0, IORingUserData.EncodeAccept(listenerIndex));
             _pendingAccepts[listenerIndex]++;
         }
-    }
-
-    /// <summary>
-    /// Finds the listener an accepted socket came through from its local address, matching family
-    /// and port, and the address unless the listener is a wildcard. Port alone cannot tell an IPv4
-    /// and an IPv6 listener on the same port apart.
-    /// </summary>
-    /// <returns>The listener index, or -1 if no listener matches.</returns>
-    private static int FindListenerIndex(nint clientSocket)
-    {
-        if (_listeners.Length == 1)
-        {
-            return 0;
-        }
-
-        var local = SocketHelper.GetLocalEndPoint(clientSocket);
-        if (local == null)
-        {
-            return -1;
-        }
-
-        for (var i = 0; i < _listenerEndPoints.Length; i++)
-        {
-            var ep = _listenerEndPoints[i];
-            if (ep.Port == local.Port && ep.AddressFamily == local.AddressFamily &&
-                (ep.Address.Equals(IPAddress.Any) || ep.Address.Equals(IPAddress.IPv6Any) || ep.Address.Equals(local.Address)))
-            {
-                return i;
-            }
-        }
-
-        return -1;
-    }
-
-    private static int FindMostDepletedListener()
-    {
-        var index = 0;
-        for (var i = 1; i < _pendingAccepts.Length; i++)
-        {
-            if (_pendingAccepts[i] < _pendingAccepts[index])
-            {
-                index = i;
-            }
-        }
-
-        return index;
     }
 
     /// <summary>
@@ -829,7 +767,7 @@ public partial class NetState
                 case RingSocketEventType.Accept:
                     {
                         // Handle accept - AcceptedSocketHandle contains the result
-                        HandleAcceptCompletion((int)evt.AcceptedSocketHandle);
+                        HandleAcceptCompletion((int)evt.AcceptedSocketHandle, evt.ListenerIndex);
                         break;
                     }
 
