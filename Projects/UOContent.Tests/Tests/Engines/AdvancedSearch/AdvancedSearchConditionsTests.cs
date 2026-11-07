@@ -405,6 +405,26 @@ public class AdvancedSearchConditionsTests
 [Collection("Sequential UOContent Tests")]
 public class AdvancedSearchEntityLeafTests
 {
+    [Fact]
+    public void MapLeaf_IsWorkerSafe()
+    {
+        var predicate = AdvancedSearchConditions.GetPredicate(new AdvancedSearchConditions.Cache(AccessLevel.GameMaster), typeof(Item), "Map=Felucca");
+
+        Assert.False(predicate.NeedsLoop);
+
+        var item = new Item(0x1);
+        try
+        {
+            Assert.False(predicate.Worker(item));
+            item.MoveToWorld(new Point3D(1000, 1000, 0), Map.Felucca);
+            Assert.True(predicate.Worker(item));
+        }
+        finally
+        {
+            item.Delete();
+        }
+    }
+
     private sealed class LinkedItem : Item
     {
         public LinkedItem() : base(0x1)

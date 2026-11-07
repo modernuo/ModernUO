@@ -63,6 +63,7 @@ public class PureGetterClassifierTests
         }
 
         public TimeSpan T => TimeSpan.FromSeconds(_secs);
+        public int Cmp => _b.CompareTo(_c);
         public int R => Random.Shared.Next();
 
         public int Ping(int depth) => depth <= 0 ? _f : Pong(depth - 1);
@@ -412,6 +413,13 @@ public class PureGetterClassifierTests
 
     [Fact]
     public void AllowlistedBcl_IsPure() => Assert.True(Pure(typeof(Fixture), nameof(Fixture.T)));
+
+    [Fact]
+    public void PrimitiveCompareTo_IsPure() => Assert.True(Pure(typeof(Fixture), nameof(Fixture.Cmp)));
+
+    [Fact]
+    public void MapCompareTo_IsPure() =>
+        Assert.True(PureGetterClassifier.IsPure(typeof(Map).GetMethod(nameof(Map.CompareTo), [typeof(Map)]), typeof(Map)));
 
     [Fact]
     public void UnknownBcl_IsImpure() => Assert.False(Pure(typeof(Fixture), nameof(Fixture.R)));

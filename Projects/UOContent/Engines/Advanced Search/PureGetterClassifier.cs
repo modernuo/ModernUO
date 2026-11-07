@@ -458,6 +458,12 @@ public static class PureGetterClassifier
                 "get_Length" or "get_Chars";
         }
 
+        if (def.IsPrimitive)
+        {
+            var parameters = m.GetParameters();
+            return name == "CompareTo" && parameters.Length == 1 && parameters[0].ParameterType == def;
+        }
+
         if (def == typeof(Math) || def == typeof(MathF))
         {
             return true;

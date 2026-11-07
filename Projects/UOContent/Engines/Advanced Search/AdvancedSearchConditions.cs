@@ -322,6 +322,12 @@ public static class AdvancedSearchConditions
         return string.Join('.', segments);
     }
 
+    // A Map leaf compiles to null checks around Map.CompareTo(Map); Map is sealed, so that is the only
+    // CompareTo that can run, and the classifier proves it rather than this list assuming it.
+    private static readonly bool _mapComparisonIsPure =
+        typeof(Map).IsSealed &&
+        PureGetterClassifier.IsPure(typeof(Map).GetMethod(nameof(Map.CompareTo), [typeof(Map)]), typeof(Map));
+
     // Types whose comparison runs no user code: the compiler reads them with operators and
     // framework CompareTo/Equals, so only the getter chain decides whether a leaf is worker-safe.
     private static bool IsSimpleValue(Type type)
@@ -330,7 +336,8 @@ public static class AdvancedSearchConditions
 
         return type.IsPrimitive || type.IsEnum || type == typeof(string) || type == typeof(Serial)
                || type == typeof(TimeSpan) || type == typeof(DateTime) || type == typeof(Point3D)
-               || type == typeof(Point2D) || typeof(IEntity).IsAssignableFrom(type);
+               || type == typeof(Point2D) || typeof(IEntity).IsAssignableFrom(type)
+               || type == typeof(Map) && _mapComparisonIsPure;
     }
 
     // A leaf the compiler rejects -- a relational operator on a type with no CompareTo -- is
