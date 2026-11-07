@@ -9,9 +9,9 @@ namespace Server.Engines.AdvancedSearch;
 
 /// <summary>
 /// Finishes a search on the game loop once the workers have drained: collects what the ignore sources
-/// hide, runs the full filter on the entities the workers deferred, then publishes the results. The work
-/// is cut into slices of at most <see cref="LoopBudgetMs" /> each, one slice per timer tick, so a large
-/// remainder never stalls the loop.
+/// hide, runs the full filter on the entities the workers deferred, then merges, filters and publishes the
+/// results. The work is cut into slices of at most <see cref="LoopBudgetMs" /> each, one slice per timer
+/// tick, so neither a large deferred remainder nor a large result set stalls the loop.
 /// </summary>
 public sealed class AdvancedSearchLoopPhase
 {
@@ -20,6 +20,17 @@ public sealed class AdvancedSearchLoopPhase
     // Stopwatch.GetTimestamp is cheap but not free; sampling it per entity would cost more than most entities.
     private const int BudgetCheckInterval = 64;
 
+    // A block copy of this many references takes microseconds, so the budget is checked once per block.
+    private const int CopyBlockSize = 4096;
+
+    private enum Stage
+    {
+        Drain,
+        Merge,
+        Copy,
+        Publish
+    }
+
     public static int LoopBudgetMs { get; private set; } = 2;
 
     private readonly Mobile _from;
@@ -27,27 +38,40 @@ public sealed class AdvancedSearchLoopPhase
     private readonly AdvancedSearchFilter _filter;
     private readonly WorldLocation _origin;
     private readonly AdvancedSearchConditions.Cache _predicates;
-    private readonly ConcurrentQueue<AdvancedSearchResult> _results;
+    private readonly AdvancedSearchResult[] _workerResults;
+    private readonly List<AdvancedSearchResult> _loopResults = [];
     private readonly ConcurrentQueue<IEntity> _deferred;
     private readonly ConcurrentQueue<IEntity> _ignoreSources;
     private readonly bool _restoreAutoSave;
     private readonly HashSet<IEntity> _ignored = [];
 
     private bool _finished;
-    private int _sliceCount;
+    private Stage _stage;
+    private int _entitiesThisSlice;
+
+    private AdvancedSearchResult[] _merged;
+    private int _mergedCount;
+    private int _workerCursor;
+    private int _loopCursor;
+    private AdvancedSearchResult[] _final;
+    private int _copied;
 
     public static void Configure()
     {
         LoopBudgetMs = Math.Max(ServerConfiguration.GetOrUpdateSetting("advancedSearch.loopBudgetMs", 2), 1);
     }
 
+    /// <param name="sortedWorkerResults">
+    /// The workers' matches, already sorted with <see cref="AdvancedSearchResultSerialComparer" /> off the
+    /// loop by the caller (serials never change, so the sort needs no game state).
+    /// </param>
     public AdvancedSearchLoopPhase(
         Mobile from,
         AdvancedSearchGump gump,
         AdvancedSearchFilter filter,
         WorldLocation origin,
         AdvancedSearchConditions.Cache predicates,
-        ConcurrentQueue<AdvancedSearchResult> results,
+        AdvancedSearchResult[] sortedWorkerResults,
         ConcurrentQueue<IEntity> deferred,
         ConcurrentQueue<IEntity> ignoreSources,
         bool restoreAutoSave
@@ -58,7 +82,7 @@ public sealed class AdvancedSearchLoopPhase
         _filter = filter;
         _origin = origin;
         _predicates = predicates;
-        _results = results;
+        _workerResults = sortedWorkerResults ?? [];
         _deferred = deferred;
         _ignoreSources = ignoreSources;
         _restoreAutoSave = restoreAutoSave;
@@ -72,7 +96,10 @@ public sealed class AdvancedSearchLoopPhase
         }
     }
 
-    /// <summary>Runs one slice. Returns true once the search has been published and released.</summary>
+    /// <summary>
+    /// Runs one slice. Returns true once the search has been published and released. Each stage after the
+    /// drains begins in a fresh slice, since the slice that ended the previous stage may have spent its budget.
+    /// </summary>
     internal bool RunSlice(long budgetTimestampTicks)
     {
         if (_finished)
@@ -81,19 +108,61 @@ public sealed class AdvancedSearchLoopPhase
         }
 
         var start = Stopwatch.GetTimestamp();
-        _sliceCount = 0;
+        _entitiesThisSlice = 0;
 
         var published = false;
 
         try
         {
-            if (!DrainIgnoreSources(start, budgetTimestampTicks) || !DrainDeferred(start, budgetTimestampTicks))
+            switch (_stage)
             {
-                return false;
-            }
+                case Stage.Drain:
+                    {
+                        if (DrainIgnoreSources(start, budgetTimestampTicks) &&
+                            DrainDeferred(start, budgetTimestampTicks))
+                        {
+                            _stage = Stage.Merge;
+                        }
 
-            Publish();
-            published = true;
+                        return false;
+                    }
+                case Stage.Merge:
+                    {
+                        if (!Merge(start, budgetTimestampTicks))
+                        {
+                            return false;
+                        }
+
+                        _ignored.Clear();
+
+                        if (_mergedCount == _merged.Length)
+                        {
+                            _final = _merged;
+                            _stage = Stage.Publish;
+                        }
+                        else
+                        {
+                            _stage = Stage.Copy;
+                        }
+
+                        return false;
+                    }
+                case Stage.Copy:
+                    {
+                        if (CopyToFinal(start, budgetTimestampTicks))
+                        {
+                            _stage = Stage.Publish;
+                        }
+
+                        return false;
+                    }
+                default:
+                    {
+                        _gump.SearchResults = _final;
+                        published = true;
+                        break;
+                    }
+            }
         }
         catch (Exception ex)
         {
@@ -105,7 +174,7 @@ public sealed class AdvancedSearchLoopPhase
     }
 
     private bool OutOfBudget(long start, long budget) =>
-        ++_sliceCount % BudgetCheckInterval == 0 && Stopwatch.GetTimestamp() - start >= budget;
+        ++_entitiesThisSlice % BudgetCheckInterval == 0 && Stopwatch.GetTimestamp() - start >= budget;
 
     private bool DrainIgnoreSources(long start, long budget)
     {
@@ -142,7 +211,7 @@ public sealed class AdvancedSearchLoopPhase
 
             if (outcome == MatchOutcome.Match)
             {
-                _results.Enqueue(result);
+                _loopResults.Add(result);
             }
 
             if (OutOfBudget(start, budget))
@@ -154,28 +223,65 @@ public sealed class AdvancedSearchLoopPhase
         return true;
     }
 
-    private void Publish()
+    // Merges the caller-sorted worker results with the loop's own (normally few) results, dropping entities
+    // deleted since they matched and entities an ignore source hides.
+    private bool Merge(long start, long budget)
     {
-        var list = new List<AdvancedSearchResult>(_results.Count);
+        var comparer = AdvancedSearchResultSerialComparer.Instance;
 
-        while (_results.TryDequeue(out var result))
+        if (_merged == null)
         {
+            _loopResults.Sort(comparer);
+            _merged = new AdvancedSearchResult[_workerResults.Length + _loopResults.Count];
+        }
+
+        while (_workerCursor < _workerResults.Length || _loopCursor < _loopResults.Count)
+        {
+            // Worker results win ties, keeping equal serials in a stable order.
+            var takeWorker = _loopCursor >= _loopResults.Count ||
+                             _workerCursor < _workerResults.Length &&
+                             comparer.Compare(_workerResults[_workerCursor], _loopResults[_loopCursor]) <= 0;
+
+            var result = takeWorker ? _workerResults[_workerCursor++] : _loopResults[_loopCursor++];
             var entity = result.Entity;
+
             if (entity?.Deleted == false && !_ignored.Contains(entity))
             {
-                list.Add(result);
+                _merged[_mergedCount++] = result;
+            }
+
+            if (OutOfBudget(start, budget))
+            {
+                return false;
             }
         }
 
-        _ignored.Clear();
+        return true;
+    }
 
-        list.Sort(AdvancedSearchResultSerialComparer.Instance);
-        _gump.SearchResults = list.ToArray();
+    private bool CopyToFinal(long start, long budget)
+    {
+        _final ??= new AdvancedSearchResult[_mergedCount];
+
+        while (_copied < _mergedCount)
+        {
+            var count = Math.Min(CopyBlockSize, _mergedCount - _copied);
+            Array.Copy(_merged, _copied, _final, _copied, count);
+            _copied += count;
+
+            if (_copied < _mergedCount && Stopwatch.GetTimestamp() - start >= budget)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private void Finish(bool published)
     {
         _finished = true;
+        _merged = null;
 
         // Release the guard only after the autosave restore lands, so a new search cannot capture the
         // disabled state as its own restore value.
