@@ -175,11 +175,13 @@ public class IPRateLimiterTests
         Assert.Equal(2, limiter.Count);
     }
 
-    [Fact]
-    public void PrivateIPv6_Bypassed()
+    [Theory]
+    [InlineData("fe80::1")]
+    [InlineData("fd00::1")]
+    public void PrivateIPv6_Bypassed(string address)
     {
         var limiter = new IPRateLimiter(1, TimeWindow, 1000, 2.0, MaxBackoff);
-        var ip = IPAddress.Parse("fe80::1");
+        var ip = IPAddress.Parse(address);
 
         for (var i = 0; i < 5; i++)
         {

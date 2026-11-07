@@ -99,6 +99,14 @@ public class FirewallTests : IDisposable
     }
 
     [Fact]
+    public void CreateSubscriberEntry_MappedIPv4_Single()
+    {
+        var entry = Server.Network.Firewall.CreateSubscriberEntry(Ip("::ffff:1.2.3.4"));
+        Assert.IsType<SingleIpFirewallEntry>(entry);
+        Assert.Equal(Ip("1.2.3.4").ToUInt128(), entry.MinIpAddress);
+    }
+
+    [Fact]
     public void ReportableNetwork_IPv4Single_True()
     {
         Assert.True(Server.Network.Firewall.TryGetReportableNetwork(new SingleIpFirewallEntry(Ip("1.2.3.4")), out var network));

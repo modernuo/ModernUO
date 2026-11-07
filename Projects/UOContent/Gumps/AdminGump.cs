@@ -1808,7 +1808,9 @@ namespace Server.Gumps
 
             if (okay)
             {
-                var firewallEntry = Firewall.ToFirewallEntry(toFirewall);
+                var firewallEntry = toFirewall is IPAddress ip
+                    ? Firewall.CreateSubscriberEntry(ip)
+                    : Firewall.ToFirewallEntry(toFirewall);
                 Firewall.Add(firewallEntry);
 
                 if (Firewall.TryGetReportableNetwork(firewallEntry, out var network))
