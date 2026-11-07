@@ -227,12 +227,17 @@ public static class Core
     // console-close handler about five seconds before it kills the process anyway.
     private static readonly TimeSpan OffLoopShutdownTimeout = TimeSpan.FromSeconds(5);
 
+    // Bounds the wait for an in-flight save before a crash handled off the loop exits. Not unbounded:
+    // the thread that faulted may be the writer.
+    private static readonly TimeSpan CrashWriteCompletionTimeout = TimeSpan.FromSeconds(30);
+
     private static volatile LoopLifecycle _loopLifecycle;
     private static readonly ManualResetEventSlim _shutdownComplete = new(false);
 
-    // Set by whichever thread exits first, so a crash handled off the loop and the loop's own shutdown
-    // cannot both relaunch the server.
-    private static int _exiting;
+    // Exactly one thread owns the process exit: the loop's DoKill, ProcessExit for an exit already under
+    // way, or the thread handling a crash. Only the owner calls Environment.Exit, so the exit code and a
+    // restart are decided once.
+    private static int _exitClaimed;
 
     // Native state the loop compresses with. Disposed only on the loop thread, once it is done with it.
     private static LibDeflateBinding _loopDeflate;
@@ -432,29 +437,32 @@ public static class Core
 
         var exception = e.ExceptionObject as Exception;
         var onLoopThread = Thread.CurrentThread == Thread;
+        var route = ShutdownRouting.RouteCrash(onLoopThread, _loopLifecycle);
 
-        switch (ShutdownRouting.RouteCrash(onLoopThread, _loopLifecycle))
+        if (route == CrashRoute.RunHere)
         {
-            case CrashRoute.RunHere:
-                {
-                    HandleCrash(exception);
-                    break;
-                }
-            case CrashRoute.HandOffToLoop:
-                {
-                    if (!HandOffCrash(exception))
-                    {
-                        HandleCrashOffLoop(exception);
-                    }
-
-                    break;
-                }
-            case CrashRoute.OffLoop:
-                {
-                    HandleCrashOffLoop(exception);
-                    break;
-                }
+            HandleCrash(exception);
+            return;
         }
+
+        // Set before claiming the exit, so ProcessExit never mistakes the crash exit for an external one.
+        _crashed = true;
+
+        // Another thread is already in Environment.Exit, which may be waiting on this one (the finalizer
+        // raises ProcessExit), so never block here.
+        if (!TryClaimExit())
+        {
+            return;
+        }
+
+        if (route == CrashRoute.HandOffToLoop && HandOffCrash(exception, out var close))
+        {
+            AwaitCrashAcknowledgement(close);
+            TerminateProcess(_restartOnKill);
+            return;
+        }
+
+        HandleCrashOffLoop(exception);
     }
 
     private static void HandleCrash(Exception exception)
@@ -465,11 +473,12 @@ public static class Core
     }
 
     /// <summary>
-    /// Runs the crash handling on the loop and blocks the faulting thread until it is done. The runtime
-    /// terminates the process as soon as this thread returns, and the loop exits it through DoKill, so
-    /// this normally never returns. Returns false when the loop did not pick the work up in time.
+    /// Runs the crash subscribers and HandleClosed on the loop and blocks the faulting thread until they
+    /// are done; the faulting thread then exits the process. The loop must not call Environment.Exit
+    /// itself: when the finalizer faulted, Exit would wait forever for it to raise ProcessExit.
+    /// Returns false when the loop did not pick the work up in time.
     /// </summary>
-    private static bool HandOffCrash(Exception exception)
+    private static bool HandOffCrash(Exception exception, out bool close)
     {
         var handoff = new CrashHandoff();
 
@@ -485,12 +494,17 @@ public static class Core
 
                 try
                 {
-                    HandleCrash(exception);
+                    handoff.Close = InvokeServerCrashed(exception);
+                    HandleClosed();
                 }
                 finally
                 {
                     handoff.Finished.Set();
                 }
+
+                // The network is shut down and the faulting thread owns the exit; another iteration would
+                // run against closed state.
+                Thread.Sleep(Timeout.Infinite);
             },
             EventLoopContext.Priority.High
         );
@@ -502,30 +516,39 @@ public static class Core
                 "The game loop did not take over crash handling within {Timeout}s; handling it off the loop",
                 OffLoopShutdownTimeout.TotalSeconds
             );
+            close = false;
             return false;
         }
 
         handoff.Finished.Wait();
+        close = handoff.Close;
         return true;
     }
 
     /// <summary>
     /// Crash handling for when the loop cannot take it. Subscribers see they are off the loop thread and
-    /// leave game and network state alone; HandleClosed is skipped for the same reason.
+    /// leave game and network state alone; HandleClosed is skipped for the same reason. The caller has
+    /// claimed the exit.
     /// </summary>
     private static void HandleCrashOffLoop(Exception exception)
     {
-        _crashed = true;
         AwaitCrashAcknowledgement(InvokeServerCrashed(exception));
 
-        // A loop that has stopped iterating is already exiting through DoKill.
+        if (!World.WaitForWriteCompletion(CrashWriteCompletionTimeout))
+        {
+            logger.Error(
+                "A world save was still writing {Timeout}s after the crash",
+                CrashWriteCompletionTimeout.TotalSeconds
+            );
+        }
+
+        // A loop that has stopped iterating is in HandleClosed; it parks once it reaches the exit.
         if (_loopLifecycle == LoopLifecycle.ShuttingDown)
         {
             _shutdownComplete.Wait(OffLoopShutdownTimeout);
-            return;
         }
 
-        ExitProcess(_restartOnKill);
+        TerminateProcess(_restartOnKill);
     }
 
     private static bool InvokeServerCrashed(Exception exception)
@@ -557,21 +580,23 @@ public static class Core
 
         public readonly ManualResetEventSlim Started = new(false);
         public readonly ManualResetEventSlim Finished = new(false);
+        public bool Close;
 
         // Exactly one of the loop and the faulting thread handles the crash.
         public bool TryClaim() => Interlocked.Exchange(ref _claimed, 1) == 0;
     }
 
+    // Raised on the finalizer thread for every exit, the loop's own Environment.Exit included.
     private static void CurrentDomain_ProcessExit(object sender, EventArgs e)
     {
-        // After a crash the crash handling owns the exit.
-        if (Closing || _crashed)
+        // After a crash the crash handling owns the exit. Otherwise this exit is not the loop's: claiming
+        // it parks the loop at its own exit rather than letting it override this exit code with 0.
+        if (Closing || _crashed || !TryClaimExit())
         {
             return;
         }
 
-        var onLoopThread = Thread.CurrentThread == Thread;
-        if (ShutdownRouting.RouteProcessExit(onLoopThread, _loopLifecycle) == ProcessExitRoute.RunHere)
+        if (ShutdownRouting.RouteProcessExit(_loopLifecycle) == ProcessExitRoute.RunHere)
         {
             HandleClosed();
             return;
@@ -628,14 +653,26 @@ public static class Core
         ExitProcess(restart);
     }
 
+    private static bool TryClaimExit() => Interlocked.Exchange(ref _exitClaimed, 1) == 0;
+
     private static void ExitProcess(bool restart)
     {
-        // The other thread is already in Environment.Exit, which ends the process without this one.
-        if (Interlocked.Exchange(ref _exiting, 1) != 0)
+        if (TryClaimExit())
+        {
+            TerminateProcess(restart);
+            return;
+        }
+
+        // The owner is in, or headed for, Environment.Exit, which ends the process without this thread.
+        // Only the loop parks: Exit waits on the finalizer thread, which may be the caller here.
+        if (Thread.CurrentThread == Thread)
         {
             Thread.Sleep(Timeout.Infinite);
         }
+    }
 
+    private static void TerminateProcess(bool restart)
+    {
         if (restart && _restartExitCode != 0)
         {
             logger.Information("Restarting (exiting with code {ExitCode} for the supervisor)", _restartExitCode);
