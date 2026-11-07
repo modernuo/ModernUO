@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Server.Accounting;
@@ -664,7 +665,14 @@ namespace Server.Gumps
                             var offset = 140 + i * 20;
 
                             AddLabelCropped(12, offset, 60, 20, LabelHue, accts.Count.ToString());
-                            AddLabelCropped(72, offset, 120, 20, LabelHue, ipAddr.ToString());
+                            if (ipAddr.AddressFamily == AddressFamily.InterNetworkV6)
+                            {
+                                AddLabelCropped(72, offset, 120, 20, LabelHue, ipAddr.ToSubscriberNetwork().ToString());
+                            }
+                            else
+                            {
+                                AddLabelCropped(72, offset, 120, 20, LabelHue, ipAddr.ToString());
+                            }
 
                             sb.Reset();
 
@@ -1520,7 +1528,7 @@ namespace Server.Gumps
 
         private static List<object> GetAllSharedAccounts()
         {
-            var table = new Dictionary<IPAddress, List<Account>>();
+            var table = new Dictionary<UInt128, KeyValuePair<IPAddress, List<Account>>>();
 
             foreach (Account acct in Accounts.GetAccounts())
             {
@@ -1531,22 +1539,31 @@ namespace Server.Gumps
                     var theirAddress = theirAddresses[i];
 
                     // This path is heavy for larger shards, so use optimized code
-                    ref var accts = ref CollectionsMarshal.GetValueRefOrAddDefault(table, theirAddress, out var acctExists);
+                    ref var group = ref CollectionsMarshal.GetValueRefOrAddDefault(
+                        table,
+                        theirAddress.ToSubscriberKey(),
+                        out var groupExists
+                    );
 
-                    // If we don't have a list, create one
-                    if (!acctExists)
+                    // The group keeps its first address; IPv6 groups are labelled by network at display time
+                    if (!groupExists)
                     {
-                        accts = [];
+                        group = new KeyValuePair<IPAddress, List<Account>>(theirAddress, []);
                     }
 
-                    accts.Add(acct);
+                    // Two addresses of one account can share a subscriber prefix
+                    var accts = group.Value;
+                    if (accts.Count == 0 || accts[^1] != acct)
+                    {
+                        accts.Add(acct);
+                    }
                 }
             }
 
             var list = new List<object>();
 
             // Lets find all the entries that have only one account
-            foreach (var kvp in table)
+            foreach (var kvp in table.Values)
             {
                 if (kvp.Value.Count > 1)
                 {
@@ -1577,7 +1594,7 @@ namespace Server.Gumps
 
                 for (var i = 0; !contains && i < theirAddresses.Length; ++i)
                 {
-                    contains = ipAddress.Equals(theirAddresses[i]);
+                    contains = ipAddress.IsSameSubscriber(theirAddresses[i]);
                 }
 
                 if (contains)
@@ -1605,7 +1622,7 @@ namespace Server.Gumps
 
                     for (var j = 0; !contains && j < ipAddresses.Length; ++j)
                     {
-                        contains = check.Equals(ipAddresses[j]);
+                        contains = check.IsSameSubscriber(ipAddresses[j]);
                     }
                 }
 

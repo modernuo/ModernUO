@@ -1438,7 +1438,7 @@ public class ChampionSpawnRegion : BaseRegion
         global = Math.Max(global, 1 + Spawn.Level);	//This is a guesstimate.  TODO: Verify & get exact values // OSI testing: at 2 red skulls, light = 0x3 ; 1 red = 0x3.; 3 = 8; 9 = 0xD 8 = 0xD 12 = 0x12 10 = 0xD
     }
 
-    private static readonly HashSet<IPAddress> _addresses = [];
+    private static readonly HashSet<UInt128> _addresses = [];
 
     public override void OnEnter(Mobile m)
     {
@@ -1465,7 +1465,7 @@ public class ChampionSpawnRegion : BaseRegion
             var player = players[i];
             if (player.AccessLevel == AccessLevel.Player && player.NetState != null && !((PlayerMobile)player).Young)
             {
-                _addresses.Add(player.NetState.Address);
+                _addresses.Add(player.NetState.Address.ToSubscriberKey());
             }
         }
 
