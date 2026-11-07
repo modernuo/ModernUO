@@ -35,7 +35,7 @@ public static class AccountHandler
     // Zero by default: behind a proxy without real-IP forwarding every player shares one address.
     internal static int MaxLoginsPerIP { get; set; }
 
-    // Keyed by subscriber so an IPv6 /64 counts as one address, as an IPv4 address does.
+    // Keyed by subscriber so an IPv6 subscriber prefix counts as one address, as an IPv4 address does.
     private static Dictionary<UInt128, int> AccountCounts
     {
         get
