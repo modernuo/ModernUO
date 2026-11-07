@@ -245,6 +245,12 @@ public class PureGetterClassifierTests
         public string Value => new string('x', 1);
     }
 
+    // Maps exactly, so only the variance implementer above can make the read impure.
+    internal class CovariantObjectImpl : ICovariantValue<object>
+    {
+        public object Value => null;
+    }
+
     internal class CovariantReader
     {
         private ICovariantValue<object> _v = new CovariantStringImpl();

@@ -661,7 +661,10 @@ public static class PureGetterClassifier
                 var definition = d.IsGenericType ? d.GetGenericTypeDefinition() : d;
                 var declaringAssembly = d.Assembly;
                 var declaringName = declaringAssembly.GetName().Name;
-                var scanAll = declaringAssembly == typeof(object).Assembly;
+
+                // Framework types are reached through facades under other assembly names, so a reference
+                // by name proves nothing; only game assemblies are pruned.
+                var scanAll = !IsGameAssembly(declaringAssembly);
                 var result = new List<Type>();
 
                 var assemblies = AppDomain.CurrentDomain.GetAssemblies();
@@ -673,8 +676,7 @@ public static class PureGetterClassifier
                         continue;
                     }
 
-                    // Only assemblies that reference the declaring assembly can derive from it. CoreLib is
-                    // reached through facades, so its derivatives can be anywhere.
+                    // Only assemblies that reference the declaring assembly can derive from it.
                     if (!scanAll && assembly != declaringAssembly && !References(assembly, declaringName))
                     {
                         continue;
