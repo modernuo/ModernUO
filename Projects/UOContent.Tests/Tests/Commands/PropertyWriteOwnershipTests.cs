@@ -95,4 +95,55 @@ public class PropertyWriteOwnershipTests : IDisposable
         Assert.Equal("Property has been set.", Properties.SetValue(gm, owner, "Backpack.Movable", "false"));
         Assert.False(pack.Movable);
     }
+
+    [Fact]
+    public void Inc_HigherPrivilegedTarget_IsRefused()
+    {
+        var admin = CreateStaff(AccessLevel.Administrator);
+        var developer = CreateOwnerWithPack(AccessLevel.Developer, out _);
+        developer.Hue = 10;
+
+        Assert.Equal(Refused, Properties.IncreaseValue(admin, developer, ["Hue", "1"]));
+        Assert.Equal(10, developer.Hue);
+    }
+
+    [Fact]
+    public void Inc_ThroughChainToHigherPrivileged_IsRefused()
+    {
+        var gm = CreateStaff(AccessLevel.GameMaster);
+        var owner = CreateOwnerWithPack(AccessLevel.Owner, out var pack);
+        var pet = CreatePet(owner);
+
+        Assert.Equal(Refused, Properties.IncreaseValue(gm, pet, ["ControlMaster.Backpack.Hue", "1"]));
+        Assert.Equal(5, pack.Hue);
+    }
+
+    [Fact]
+    public void Inc_AllowedTarget_StillIncrements()
+    {
+        var gm = CreateStaff(AccessLevel.GameMaster);
+        var owner = CreateOwnerWithPack(AccessLevel.Player, out var pack);
+        var pet = CreatePet(owner);
+        pet.Hue = 10;
+
+        Assert.Equal(
+            "The properties have been increased.",
+            Properties.IncreaseValue(gm, pet, ["Hue", "2", "ControlMaster.Backpack.Hue", "1"])
+        );
+        Assert.Equal(12, pet.Hue);
+        Assert.Equal(6, pack.Hue);
+    }
+
+    [Fact]
+    public void Inc_MultipleArgs_OneRefused_AppliesNone()
+    {
+        var gm = CreateStaff(AccessLevel.GameMaster);
+        var owner = CreateOwnerWithPack(AccessLevel.Owner, out var pack);
+        var pet = CreatePet(owner);
+        pet.Hue = 10;
+
+        Assert.Equal(Refused, Properties.IncreaseValue(gm, pet, ["Hue", "2", "ControlMaster.Backpack.Hue", "1"]));
+        Assert.Equal(10, pet.Hue);
+        Assert.Equal(5, pack.Hue);
+    }
 }

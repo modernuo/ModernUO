@@ -154,16 +154,19 @@ namespace Server.Commands
 
         public static string IncreaseValue(Mobile from, object o, string[] args)
         {
-            var realObjs = new object[args.Length / 2];
-            var realProps = new PropertyInfo[args.Length / 2];
-            var realValues = new int[args.Length / 2];
+            var count = args.Length / 2;
+            var realObjs = new object[count];
+            var realProps = new PropertyInfo[count];
+            var realValues = new object[count];
 
             var positive = false;
             var negative = false;
 
-            for (var i = 0; i < realProps.Length; ++i)
+            // Every increment is resolved, converted and authorized before any is applied, so a refusal applies none.
+            for (var i = 0; i < count; ++i)
             {
                 var name = args[i * 2];
+                int offset;
 
                 try
                 {
@@ -171,11 +174,11 @@ namespace Server.Commands
 
                     if (valueString.StartsWithOrdinal("0x"))
                     {
-                        realValues[i] = Convert.ToInt32(valueString[2..], 16);
+                        offset = Convert.ToInt32(valueString[2..], 16);
                     }
                     else
                     {
-                        realValues[i] = Convert.ToInt32(valueString);
+                        offset = Convert.ToInt32(valueString);
                     }
                 }
                 catch
@@ -183,11 +186,11 @@ namespace Server.Commands
                     return "Offset value could not be parsed.";
                 }
 
-                if (realValues[i] > 0)
+                if (offset > 0)
                 {
                     positive = true;
                 }
-                else if (realValues[i] < 0)
+                else if (offset < 0)
                 {
                     negative = true;
                 }
@@ -196,39 +199,58 @@ namespace Server.Commands
                     return "Zero is not a valid value to offset.";
                 }
 
-                realObjs[i] = o;
-                realProps[i] = GetPropertyInfo(from, ref realObjs[i], name, PropertyAccess.ReadWrite, out var failReason);
+                var obj = o;
+                var chain = GetPropertyInfoChain(from, obj.GetType(), name, PropertyAccess.ReadWrite, out var failReason);
+                var prop = chain == null ? null : WalkChain(from, ref obj, chain, out failReason);
 
                 if (failReason != null)
                 {
                     return failReason;
                 }
 
-                if (realProps[i] == null)
+                if (prop == null)
                 {
                     return "Property not found.";
                 }
-            }
 
-            for (var i = 0; i < realProps.Length; ++i)
-            {
-                var obj = realProps[i].GetValue(realObjs[i], null);
+                var current = prop.GetValue(obj, null);
 
-                if (obj is not IConvertible)
+                if (current is not IConvertible)
                 {
                     return "Property is not IConvertable.";
                 }
 
+                object toSet;
+
                 try
                 {
-                    var v = (long)Convert.ChangeType(obj, TypeCode.Int64);
-                    v += realValues[i];
-
-                    realProps[i].SetValue(realObjs[i], Convert.ChangeType(v, realProps[i].PropertyType), null);
+                    var v = (long)Convert.ChangeType(current, TypeCode.Int64) + offset;
+                    toSet = Convert.ChangeType(v, prop.PropertyType);
                 }
                 catch
                 {
                     return "Value could not be converted";
+                }
+
+                var refusal = CheckWrite(from, obj, toSet);
+
+                if (refusal != null)
+                {
+                    return refusal;
+                }
+
+                realObjs[i] = obj;
+                realProps[i] = prop;
+                realValues[i] = toSet;
+            }
+
+            for (var i = 0; i < count; ++i)
+            {
+                var result = SetDirect(from, o, realObjs[i], realProps[i], args[i * 2], realValues[i], true);
+
+                if (result != SetSuccess)
+                {
+                    return result;
                 }
             }
 
@@ -333,6 +355,32 @@ namespace Server.Commands
                    (mob.AccessLevel > from.AccessLevel || mob.Account?.AccessLevel > from.AccessLevel);
         }
 
+        // Returns null when from may write toSet onto obj; SetDirect applies the same check before every write.
+        private static string CheckWrite(Mobile from, object obj, object toSet)
+        {
+            if (IsHigherPrivileged(from, obj))
+            {
+                return HigherPrivilegedMessage;
+            }
+
+            if (toSet is AccessLevel newLevel)
+            {
+                var reqLevel = newLevel switch
+                {
+                    AccessLevel.Administrator => AccessLevel.Developer,
+                    >= AccessLevel.Developer  => AccessLevel.Owner,
+                    _                         => AccessLevel.Administrator
+                };
+
+                if (from.AccessLevel < reqLevel)
+                {
+                    return "You do not have access to that level.";
+                }
+            }
+
+            return null;
+        }
+
         public static string SetDirect(
             Mobile from, object logObject, object obj, PropertyInfo prop, string givenName,
             object toSet, bool shouldLog
@@ -340,24 +388,11 @@ namespace Server.Commands
         {
             try
             {
-                if (IsHigherPrivileged(from, obj))
-                {
-                    return HigherPrivilegedMessage;
-                }
+                var refusal = CheckWrite(from, obj, toSet);
 
-                if (toSet is AccessLevel newLevel)
+                if (refusal != null)
                 {
-                    var reqLevel = newLevel switch
-                    {
-                        AccessLevel.Administrator => AccessLevel.Developer,
-                        >= AccessLevel.Developer  => AccessLevel.Owner,
-                        _                         => AccessLevel.Administrator
-                    };
-
-                    if (from.AccessLevel < reqLevel)
-                    {
-                        return "You do not have access to that level.";
-                    }
+                    return refusal;
                 }
 
                 if (shouldLog)
