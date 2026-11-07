@@ -438,11 +438,15 @@ public static class AdvancedSearchConditions
             return null;
         }
 
+        // Entities have no ordering, so only equality is meaningful.
+        if (comparison is not (ComparisonOperator.Equal or ComparisonOperator.NotEqual))
+        {
+            return null;
+        }
+
         if (value == "null")
         {
-            return comparison is ComparisonOperator.Equal or ComparisonOperator.NotEqual
-                ? new EntityCondition(property, negate, comparison.Value, null)
-                : null;
+            return new EntityCondition(property, negate, comparison.Value, null);
         }
 
         return Types.TryParse(typeof(Serial), value, out var parsed) != null
@@ -503,8 +507,8 @@ public static class AdvancedSearchConditions
     }
 
     /// <summary>
-    /// <c>prop != null &amp;&amp; prop.Serial &lt;op&gt; value</c>, or a null test when the value
-    /// is <c>null</c>.
+    /// <c>prop != null &amp;&amp; prop.Serial == value</c>, <c>!=</c> being its negation, or a null
+    /// test when the value is <c>null</c>.
     /// </summary>
     private sealed class EntityCondition : ICondition
     {
@@ -546,7 +550,10 @@ public static class AdvancedSearchConditions
                             out var relation
                         );
 
-                        test = Expression.AndAlso(present, relation);
+                        // != is the exact negation of =, so a null reference is "not equal".
+                        test = _operator == ComparisonOperator.Equal
+                            ? Expression.AndAlso(present, relation)
+                            : Expression.OrElse(Expression.Not(present), relation);
                     }
 
                     return Expression.Block(

@@ -400,4 +400,78 @@ public class AdvancedSearchEntityLeafTests
             unlinked.Delete();
         }
     }
+
+    [Fact]
+    public void EntityLeaf_NotEqual_MatchesNullReference()
+    {
+        var target = new Item(0x1);
+        var unlinked = new LinkedItem();
+
+        try
+        {
+            var predicate = AdvancedSearchConditions.GetPredicate(
+                new AdvancedSearchConditions.Cache(AccessLevel.GameMaster),
+                typeof(LinkedItem),
+                $"Linked!=0x{target.Serial.Value:X}"
+            );
+
+            Assert.True(predicate.Worker(unlinked));
+        }
+        finally
+        {
+            target.Delete();
+            unlinked.Delete();
+        }
+    }
+
+    [Fact]
+    public void EntityLeaf_NotEqual_EqualsNegatedEqual()
+    {
+        var x = new Item(0x1);
+        var y = new Item(0x1);
+        var toX = new LinkedItem { Linked = x };
+        var toY = new LinkedItem { Linked = y };
+        var toNull = new LinkedItem();
+
+        try
+        {
+            var cache = new AdvancedSearchConditions.Cache(AccessLevel.GameMaster);
+            var notEqual = AdvancedSearchConditions.GetPredicate(cache, typeof(LinkedItem), $"Linked!=0x{x.Serial.Value:X}");
+            var negated = AdvancedSearchConditions.GetPredicate(new AdvancedSearchConditions.Cache(AccessLevel.GameMaster), typeof(LinkedItem), $"~Linked=0x{x.Serial.Value:X}");
+
+            foreach (var subject in new[] { toX, toY, toNull })
+            {
+                Assert.Equal(negated.Worker(subject), notEqual.Worker(subject));
+            }
+
+            Assert.False(notEqual.Worker(toX));
+            Assert.True(notEqual.Worker(toY));
+        }
+        finally
+        {
+            x.Delete();
+            y.Delete();
+            toX.Delete();
+            toY.Delete();
+            toNull.Delete();
+        }
+    }
+
+    // Entities have no ordering; a relational operator is a dead leaf, as it always was.
+    [Fact]
+    public void EntityLeaf_RelationalOperator_IsNoMatch()
+    {
+        var target = new Item(0x1);
+        var linked = new LinkedItem { Linked = target };
+
+        try
+        {
+            Assert.False(AdvancedSearchConditions.Compile(typeof(LinkedItem), $"Linked>0x1", AccessLevel.GameMaster)(linked));
+        }
+        finally
+        {
+            target.Delete();
+            linked.Delete();
+        }
+    }
 }
