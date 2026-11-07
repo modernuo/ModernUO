@@ -21,17 +21,17 @@ using System.Runtime.InteropServices;
 namespace Server.Network;
 
 /// <summary>
-/// Per-address connection rate limiter. Called from the accept path on the game loop; not thread-safe.
+/// Per-subscriber connection rate limiter (IPv6 addresses share a budget per subscriber prefix). Called from the accept path on the game loop; not thread-safe.
 /// </summary>
 public class IPRateLimiter
 {
     private const long CleanupInterval = 60_000; // milliseconds
     private const int MaxCleanupPerCall = 1024;
 
-    private readonly Dictionary<IPAddress, IPStats> _ipAttempts = [];
+    private readonly Dictionary<UInt128, IPStats> _ipAttempts = [];
 
     // Holds exactly the keys of _ipAttempts, oldest first, so a bounded sweep resumes where it stopped
-    private readonly Queue<IPAddress> _cleanupQueue = [];
+    private readonly Queue<UInt128> _cleanupQueue = [];
 
     private readonly int _maxAttempts;
     private readonly long _timeWindow; // milliseconds
@@ -62,6 +62,7 @@ public class IPRateLimiter
             return true;
         }
 
+        var key = ip.ToSubscriberKey();
         var nowTicks = Core.TickCount;
 
         if (_cleanupRemaining > 0 || nowTicks - _nextCleanupTicks >= 0)
@@ -69,7 +70,7 @@ public class IPRateLimiter
             Cleanup(nowTicks);
         }
 
-        ref var ipStats = ref CollectionsMarshal.GetValueRefOrAddDefault(_ipAttempts, ip, out var exists);
+        ref var ipStats = ref CollectionsMarshal.GetValueRefOrAddDefault(_ipAttempts, key, out var exists);
 
         if (!exists || nowTicks - ipStats.LastAttemptTicks > _timeWindow)
         {
@@ -84,7 +85,7 @@ public class IPRateLimiter
         {
             // Ticks can start negative, so a zero default would read as a block far in the future
             ipStats.BlockUntilTicks = nowTicks;
-            _cleanupQueue.Enqueue(ip);
+            _cleanupQueue.Enqueue(key);
         }
 
         totalAttempts = ipStats.AttemptCount;
@@ -124,17 +125,17 @@ public class IPRateLimiter
 
         for (var i = 0; i < toProcess; i++)
         {
-            var ip = _cleanupQueue.Dequeue();
-            ref var ipStats = ref CollectionsMarshal.GetValueRefOrNullRef(_ipAttempts, ip);
+            var key = _cleanupQueue.Dequeue();
+            ref var ipStats = ref CollectionsMarshal.GetValueRefOrNullRef(_ipAttempts, key);
 
             // A blocked address outlives its attempt window; evicting it early would lift the block
             if (nowTicks - ipStats.LastAttemptTicks > _timeWindow && nowTicks - ipStats.BlockUntilTicks >= 0)
             {
-                _ipAttempts.Remove(ip);
+                _ipAttempts.Remove(key);
             }
             else
             {
-                _cleanupQueue.Enqueue(ip);
+                _cleanupQueue.Enqueue(key);
             }
         }
 

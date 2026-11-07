@@ -138,7 +138,9 @@ public static partial class Utility
     // MatchCidr widens an IPv4 prefix by 96 bits but takes a mapped address's prefix at IPv6 scale
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool MatchClassC(this IPAddress ip1, IPAddress ip2) =>
-        ip1.MatchCidr(ip1.IsIPv4MappedToIPv6 ? 120 : 24, ip2);
+        ip1.AddressFamily == AddressFamily.InterNetworkV6 && !ip1.IsIPv4MappedToIPv6
+            ? ip1.IsSameSubscriber(ip2)
+            : ip1.MatchCidr(ip1.IsIPv4MappedToIPv6 ? 120 : 24, ip2);
 
     public static bool MatchCidr(this IPAddress cidrAddress, int prefixLength, IPAddress address)
     {
