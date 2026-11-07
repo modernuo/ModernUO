@@ -47,21 +47,22 @@ public class AdvancedSearchThreadWorker
 
     /// <param name="predicates">
     /// Compiled property-test memo for this search. Shared across the workers so a type is
-    /// compiled once per search rather than once per worker; a lone worker may leave it null.
+    /// compiled once per search rather than once per worker. It carries the searcher's access level,
+    /// so it is required.
     /// </param>
     public void Wake(
         WorldLocation worldLocation,
         AdvancedSearchFilter filter,
         ConcurrentQueue<AdvancedSearchResult> results,
         ConcurrentQueue<IEntity> ignoreQueue,
-        AdvancedSearchConditions.Cache predicates = null
+        AdvancedSearchConditions.Cache predicates
     )
     {
         _worldLocation = worldLocation;
         _filter = filter;
         _ignoreQueue = ignoreQueue;
         _results = results;
-        _predicates = predicates ?? new AdvancedSearchConditions.Cache();
+        _predicates = predicates ?? throw new ArgumentNullException(nameof(predicates));
         _startEvent.Set();
     }
 
@@ -75,7 +76,7 @@ public class AdvancedSearchThreadWorker
     {
         Volatile.Write(ref _exit, true);
 
-        Wake(WorldLocation.Zero, null, null, null);
+        _startEvent.Set();
 
         // Tolerate a worker that has already terminated (e.g. Core.Closing raced us) so
         // shutdown can't deadlock waiting on a stopEvent that will never be set.
@@ -113,7 +114,7 @@ public class AdvancedSearchThreadWorker
                 {
                     worker._results = null;
                     worker._filter = null;
-                    worker._predicates = null; // a compiled constant may pin an entity resolved by serial
+                    worker._predicates = null; // the memo belongs to one search
                     break;
                 }
                 else
@@ -387,7 +388,13 @@ public class AdvancedSearchThreadWorker
     {
         var test = _filter.PropertyTest;
 
-        return !string.IsNullOrWhiteSpace(test) &&
-               AdvancedSearchConditions.GetPredicate(_predicates, entity.GetType(), test)(entity);
+        if (string.IsNullOrWhiteSpace(test))
+        {
+            return false;
+        }
+
+        var predicate = AdvancedSearchConditions.GetPredicate(_predicates, entity.GetType(), test);
+
+        return (predicate.Loop ?? predicate.Worker)(entity);
     }
 }

@@ -767,7 +767,7 @@ public class AdvancedSearchGump : Gump
 
             var ignoreQueue = new ConcurrentQueue<IEntity>();
             var results = new ConcurrentQueue<AdvancedSearchResult>();
-            var predicates = new AdvancedSearchConditions.Cache();
+            var predicates = new AdvancedSearchConditions.Cache(from.AccessLevel);
             var worldLocation = new WorldLocation(from.Location, from.Map);
 
             for (var i = 0; i < _threadWorkers.Length; i++)

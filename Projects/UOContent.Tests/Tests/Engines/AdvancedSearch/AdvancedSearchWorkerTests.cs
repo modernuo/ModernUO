@@ -17,7 +17,7 @@ public class AdvancedSearchWorkerTests
     {
         public ThrowingItem() : base(0x1) { }
         public ThrowingItem(Serial s) : base(s) { }
-        public string Boom => throw new InvalidOperationException("boom");
+        [CommandProperty(AccessLevel.GameMaster)] public string Boom => throw new InvalidOperationException("boom");
     }
 
     [Fact]
@@ -36,7 +36,7 @@ public class AdvancedSearchWorkerTests
 
         try
         {
-            worker.Wake(new WorldLocation(Point3D.Zero, Map.Felucca), filter, results, ignore);
+            worker.Wake(new WorldLocation(Point3D.Zero, Map.Felucca), filter, results, ignore, new AdvancedSearchConditions.Cache(AccessLevel.GameMaster));
             worker.Push(item);
             worker.Sleep(); // drains; must not crash the test process
 
@@ -70,7 +70,7 @@ public class AdvancedSearchWorkerTests
 
         try
         {
-            worker.Wake(new WorldLocation(Point3D.Zero, Map.Felucca), filter, results, ignore);
+            worker.Wake(new WorldLocation(Point3D.Zero, Map.Felucca), filter, results, ignore, new AdvancedSearchConditions.Cache(AccessLevel.GameMaster));
             worker.Push(plain);
             worker.Push(hued);
             worker.Push(huedToo);
@@ -125,7 +125,7 @@ public class AdvancedSearchWorkerTests
 
         try
         {
-            worker.Wake(new WorldLocation(Point3D.Zero, Map.Felucca), filter, results, ignore);
+            worker.Wake(new WorldLocation(Point3D.Zero, Map.Felucca), filter, results, ignore, new AdvancedSearchConditions.Cache(AccessLevel.GameMaster));
             worker.Push(fel);
             worker.Push(tram);
             worker.Push(internalItem);
@@ -166,7 +166,7 @@ public class AdvancedSearchWorkerTests
 
         try
         {
-            worker.Wake(new WorldLocation(Point3D.Zero, Map.Felucca), filter, results, ignore);
+            worker.Wake(new WorldLocation(Point3D.Zero, Map.Felucca), filter, results, ignore, new AdvancedSearchConditions.Cache(AccessLevel.GameMaster));
             worker.Push(item);
             worker.Sleep();
 
