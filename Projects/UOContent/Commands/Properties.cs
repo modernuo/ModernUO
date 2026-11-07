@@ -338,13 +338,32 @@ namespace Server.Commands
                 }
 
                 prop.SetValue(obj, toSet, null);
-                return "Property has been set.";
+                return SetSuccess;
             }
             catch
             {
                 return "An exception was caught, the property may not be set.";
             }
         }
+
+        // Single entry point for props-gump writes so they share SetDirect's guards and logging.
+        internal static bool ApplyFromGump(
+            Mobile from, object obj, PropertyInfo prop, object toSet, PropertiesGump gump
+        )
+        {
+            var result = SetDirect(from, obj, obj, prop, prop.Name, toSet, true);
+            from.SendMessage(result);
+
+            if (result != SetSuccess)
+            {
+                return false;
+            }
+
+            gump.OnValueChanged(obj, prop);
+            return true;
+        }
+
+        private const string SetSuccess = "Property has been set.";
 
         public static string InternalSetValue(
             Mobile from, object logobj, object o, PropertyInfo p, string pname,

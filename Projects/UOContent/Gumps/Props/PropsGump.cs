@@ -213,6 +213,11 @@ namespace Server.Gumps
                             return;
                         }
 
+                        if (from.AccessLevel < cpa.ReadLevel)
+                        {
+                            return;
+                        }
+
                         var obj = prop.GetValue(m_Object, null);
                         var type = obj?.GetType() ?? prop.PropertyType;
 
@@ -364,7 +369,7 @@ namespace Server.Gumps
 
             if (peek.m_Property.CanWrite)
             {
-                peek.m_Property.SetValue(peek.m_Object, obj, null);
+                Server.Commands.Properties.SetDirect(m_Mobile, peek.m_Object, peek.m_Object, peek.m_Property, peek.m_Property.Name, obj, false);
             }
         }
 
