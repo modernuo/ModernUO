@@ -73,10 +73,9 @@ public static partial class Utility
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ApplyCidrMask(ref ulong high, ref ulong low, int prefixLength, bool isMax)
     {
-        // This should never happen, a 0 CIDR is not valid
         if (prefixLength == 0)
         {
-            high = low = ~0UL;
+            high = low = isMax ? ~0UL : 0UL;
             return;
         }
 
@@ -87,14 +86,14 @@ public static partial class Utility
 
         if (prefixLength == 64)
         {
-            low = 0;
+            low = isMax ? ~0UL : 0UL;
             return;
         }
 
         if (prefixLength < 64)
         {
             var bitsToFlip = 64 - prefixLength;
-            var highMask = isMax ? ~0UL >> bitsToFlip : ~0UL << (bitsToFlip + 1);
+            var highMask = isMax ? ~0UL >> prefixLength : ~0UL << bitsToFlip;
 
             high = isMax ? high | highMask : high & highMask;
             low = isMax ? ~0UL : 0UL;
@@ -136,8 +135,10 @@ public static partial class Utility
         ipAddress.TryWriteBytes(destination.Slice(12, 4), out _);
     }
 
+    // MatchCidr widens an IPv4 prefix by 96 bits but takes a mapped address's prefix at IPv6 scale
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool MatchClassC(this IPAddress ip1, IPAddress ip2) => ip1.MatchCidr(24, ip2);
+    public static bool MatchClassC(this IPAddress ip1, IPAddress ip2) =>
+        ip1.MatchCidr(ip1.IsIPv4MappedToIPv6 ? 120 : 24, ip2);
 
     public static bool MatchCidr(this IPAddress cidrAddress, int prefixLength, IPAddress address)
     {
