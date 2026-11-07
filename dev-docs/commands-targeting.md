@@ -318,6 +318,19 @@ public override void OnCast()
 
 ---
 
+## Property Access (`[CommandProperty]`)
+
+Staff-facing property access by name (`[props`, `[set`, `where`/`order by`/`distinct`) goes through one
+guard: `Projects/UOContent/Commands/CommandPropertyGuard.cs` (`Check`, `ResolveChain`).
+
+- The member must carry `[CommandProperty]`. Names match case-insensitively; the most-derived declaration wins.
+- Reading needs the attribute's `ReadLevel`; writing needs its `WriteLevel`. A getter-only property is read-only and a setter-only property is write-only.
+- In a dotted chain (`Backpack.Weight`), every intermediate link needs Read; only the final link is checked for the requested access.
+- `Properties.GetPropertyInfoByName` / `GetPropertyInfoChain` and `Property.BindTo(Type, PropertyAccess, AccessLevel)` wrap the guard.
+- Props-gump writes go through `Properties.ApplyFromGump`, which calls `Properties.SetDirect`; `PropertiesGump.OnResponse` checks ReadLevel.
+
+New code that resolves a staff-facing property by name must use the guard, not reflection directly.
+
 ## Best Practices
 
 1. **Register commands in `Configure()`** -- it's called automatically during startup
