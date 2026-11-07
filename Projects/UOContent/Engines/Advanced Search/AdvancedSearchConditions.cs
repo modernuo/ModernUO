@@ -62,7 +62,20 @@ public static class AdvancedSearchConditions
 
     private static SearchPredicate Build(Cache cache, Type runtimeType, string propertyTest)
     {
-        var groups = Parse(cache.AccessLevel, runtimeType, propertyTest, out var compiledType, out var safe, out var mask);
+        ICondition[][] groups;
+        Type compiledType;
+        bool[][] safe;
+        ulong mask;
+
+        // A leaf that throws while parsing is a dead search, not an error repeated per entity.
+        try
+        {
+            groups = Parse(cache.AccessLevel, runtimeType, propertyTest, out compiledType, out safe, out mask);
+        }
+        catch (Exception)
+        {
+            return SearchPredicate.Never;
+        }
 
         if (groups == null)
         {
@@ -238,7 +251,7 @@ public static class AdvancedSearchConditions
         }
 
         var chain = CommandPropertyGuard.ResolveChain(
-            runtimeType, propertyName.ToString(), level, PropertyAccess.Read, false, out _
+            runtimeType, TrimSegments(propertyName), level, PropertyAccess.Read, false, out _
         );
 
         if (chain == null)
@@ -280,6 +293,24 @@ public static class AdvancedSearchConditions
         workerSafe = IsSimpleValue(type) && PureGetterClassifier.IsPure(chain, runtimeType);
 
         return condition;
+    }
+
+    // A dotted name tolerates spaces around each link ("Child . Value").
+    private static string TrimSegments(ReadOnlySpan<char> name)
+    {
+        if (name.IndexOf('.') == -1)
+        {
+            return name.ToString();
+        }
+
+        var segments = name.ToString().Split('.');
+
+        for (var i = 0; i < segments.Length; ++i)
+        {
+            segments[i] = segments[i].Trim();
+        }
+
+        return string.Join('.', segments);
     }
 
     // Types whose comparison runs no user code: the compiler reads them with operators and
@@ -451,12 +482,13 @@ public static class AdvancedSearchConditions
 
         if (value == "null")
         {
-            return equality ? new EntityCondition(property, negate, comparison.Value, null) : null;
+            return new EntityCondition(property, negate, comparison.Value, null);
         }
 
-        return Types.TryParse(typeof(Serial), value, out var parsed) != null
-            ? null
-            : new EntityCondition(property, negate, comparison.Value, (Serial)parsed);
+        // A value Types cannot read as a serial can come back as something other than a Serial.
+        return Types.TryParse(typeof(Serial), value, out var parsed) == null && parsed is Serial serial
+            ? new EntityCondition(property, negate, comparison.Value, serial)
+            : null;
     }
 
     /// <summary>
@@ -544,7 +576,16 @@ public static class AdvancedSearchConditions
 
                     if (_value == null)
                     {
-                        test = _operator == ComparisonOperator.Equal ? Expression.Not(present) : present;
+                        // Item and Mobile CompareTo(null) is -1, so a present reference sorts below null.
+                        test = _operator switch
+                        {
+                            ComparisonOperator.Equal => Expression.Not(present),
+                            ComparisonOperator.NotEqual => present,
+                            _ => Expression.AndAlso(
+                                present,
+                                Expression.Constant(_operator is ComparisonOperator.Lesser or ComparisonOperator.LesserEqual)
+                            )
+                        };
                     }
                     else
                     {

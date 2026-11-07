@@ -349,6 +349,57 @@ public class AdvancedSearchConditionsTests
         Assert.False(AdvancedSearchConditions.GetPredicate(cache, typeof(PureDerived), "Name=x").NeedsLoop);
         Assert.True(AdvancedSearchConditions.GetPredicate(cache, typeof(ImpureDerived), "Name=x").NeedsLoop);
     }
+
+    [Fact]
+    public void DottedNameSegmentsAreTrimmed()
+    {
+        Assert.True(Check("Child . Value=7"));
+        Assert.False(Check("Child . Value=8"));
+    }
+
+    [Fact]
+    public void NegatedUnsafeLeaf_WorkerNeverRejectsAMatch()
+    {
+        var predicate = AdvancedSearchConditions.GetPredicate(
+            new AdvancedSearchConditions.Cache(AccessLevel.GameMaster), typeof(ImpureSubject), "Hue=5@~Lazy=2"
+        );
+
+        Assert.True(predicate.NeedsLoop);
+
+        foreach (var hue in new[] { 4, 5, 6 })
+        {
+            var subject = new ImpureSubject { Hue = hue };
+
+            if (predicate.Loop(subject))
+            {
+                Assert.True(predicate.Worker(subject));
+            }
+        }
+
+        Assert.True(predicate.Loop(new ImpureSubject()));
+        Assert.False(predicate.Loop(new ImpureSubject { Hue = 6 }));
+    }
+
+    [Fact]
+    public void MoreThanSixtyFourLeaves_AllRunOnTheLoop()
+    {
+        var test = string.Join('@', System.Linq.Enumerable.Repeat("Hue=5", 65));
+        var predicate = AdvancedSearchConditions.GetPredicate(
+            new AdvancedSearchConditions.Cache(AccessLevel.GameMaster), typeof(Subject), test
+        );
+        var compiled = AdvancedSearchConditions.Compile(typeof(Subject), test, AccessLevel.GameMaster);
+
+        Assert.True(predicate.NeedsLoop);
+
+        foreach (var hue in new[] { 5, 6 })
+        {
+            var subject = new Subject { Hue = hue };
+
+            Assert.True(predicate.Worker(subject));
+            Assert.Equal(hue == 5, predicate.Loop(subject));
+            Assert.Equal(predicate.Loop(subject), compiled(subject));
+        }
+    }
 }
 
 [Collection("Sequential UOContent Tests")]
@@ -518,6 +569,73 @@ public class AdvancedSearchEntityLeafTests
         {
             target.Delete();
         }
+    }
+
+    [Theory]
+    [InlineData("Linked=-1")]
+    [InlineData("Linked>-1")]
+    [InlineData("Linked=zzz")]
+    public void EntityLeaf_UnparseableSerial_IsDeadLeafAndDoesNotThrow(string test)
+    {
+        var predicate = AdvancedSearchConditions.GetPredicate(
+            new AdvancedSearchConditions.Cache(AccessLevel.GameMaster), typeof(LinkedItem), test
+        );
+
+        Assert.Same(SearchPredicate.Never, predicate);
+    }
+
+    [Fact]
+    public void EntityLeaf_DecimalSerial_Matches()
+    {
+        var target = new Item(0x1);
+        var linked = new LinkedItem { Linked = target };
+
+        try
+        {
+            Assert.True(AdvancedSearchConditions.Compile(typeof(LinkedItem), $"Linked={target.Serial.Value}", AccessLevel.GameMaster)(linked));
+        }
+        finally
+        {
+            target.Delete();
+            linked.Delete();
+        }
+    }
+
+    // Item.CompareTo(null) is -1, so a linked item is "less than" null.
+    [Fact]
+    public void EntityLeaf_RelationalAgainstNull_UsesCompareToNull()
+    {
+        var target = new Item(0x1);
+        var linked = new LinkedItem { Linked = target };
+        var unlinked = new LinkedItem();
+
+        try
+        {
+            bool Match(string test, LinkedItem subject) =>
+                AdvancedSearchConditions.Compile(typeof(LinkedItem), test, AccessLevel.GameMaster)(subject);
+
+            Assert.False(Match("Linked>null", linked));
+            Assert.False(Match("Linked>=null", linked));
+            Assert.True(Match("Linked<null", linked));
+            Assert.True(Match("Linked<=null", linked));
+            Assert.False(Match("Linked<null", unlinked));
+            Assert.False(Match("Linked>null", unlinked));
+        }
+        finally
+        {
+            target.Delete();
+            linked.Delete();
+            unlinked.Delete();
+        }
+    }
+
+    [Fact]
+    public void EntityLeaf_RelationalAgainstNull_InterfaceTyped_IsDead()
+    {
+        Assert.Same(
+            SearchPredicate.Never,
+            AdvancedSearchConditions.GetPredicate(new AdvancedSearchConditions.Cache(AccessLevel.GameMaster), typeof(EntityHolder), "Target<null")
+        );
     }
 
     private sealed class EntityHolder

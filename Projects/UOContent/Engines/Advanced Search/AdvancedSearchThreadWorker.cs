@@ -161,7 +161,8 @@ public class AdvancedSearchThreadWorker
     {
         if (_filter == null)
         {
-            // Exit() clears the filter; a straggler entity dequeued after teardown bails here.
+            // A worker that was never woken, or has gone back to sleep, has no filter; an entity it
+            // dequeues then bails here.
             return null;
         }
 
