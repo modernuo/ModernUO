@@ -223,7 +223,7 @@ namespace Server.Commands
                 // Repeated offsets to the same property add up, as sequential increments would.
                 var index = 0;
 
-                while (index < unique && (!ReferenceEquals(realObjs[index], obj) || realProps[index] != prop))
+                while (index < unique && (!ReferenceEquals(realObjs[index], obj) || !IsSameMember(realProps[index], prop)))
                 {
                     index++;
                 }
@@ -293,6 +293,16 @@ namespace Server.Commands
             }
 
             return positive ? "The properties have been increased." : "The properties have been decreased.";
+        }
+
+        // Chains through different static types reflect the same virtual property as distinct PropertyInfo instances.
+        private static bool IsSameMember(PropertyInfo a, PropertyInfo b)
+        {
+            var getA = a.GetMethod?.GetBaseDefinition();
+            var getB = b.GetMethod?.GetBaseDefinition();
+
+            return getA != null && getB != null &&
+                   getA.MetadataToken == getB.MetadataToken && getA.Module == getB.Module;
         }
 
         private static string InternalGetValue(object o, PropertyInfo p, PropertyInfo[] chain = null)

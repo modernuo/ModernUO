@@ -45,7 +45,7 @@ namespace Server.Commands.Generic
 
             return mob == null || mob == from ||
                    from.AccessLevel > mob.AccessLevel &&
-                   (mob.Account == null || from.AccessLevel > mob.Account.AccessLevel);
+                   (mob.Account == null || mob.Account == from.Account || mob.Account.AccessLevel <= from.AccessLevel);
         }
 
         public virtual void ExecuteList(CommandEventArgs e, List<object> list)

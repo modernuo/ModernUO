@@ -199,4 +199,39 @@ public class PropertyWriteOwnershipTests : IDisposable
 
         Assert.True(BaseCommand.IsAccessible(gm, character));
     }
+
+    [Fact]
+    public void IsAccessible_OwnPlayerAltOnSameAccount_IsAllowed()
+    {
+        var alt = CreateCharacterOnAccount(AccessLevel.GameMaster);
+        var gm = CreateStaff(AccessLevel.GameMaster);
+        gm.Account = alt.Account;
+
+        Assert.True(BaseCommand.IsAccessible(gm, alt));
+    }
+
+    [Fact]
+    public void IsAccessible_PlayerCharacterOnEqualLevelAccount_IsAllowed()
+    {
+        var gm = CreateStaff(AccessLevel.GameMaster);
+        var character = CreateCharacterOnAccount(AccessLevel.GameMaster);
+
+        Assert.True(BaseCommand.IsAccessible(gm, character));
+    }
+
+    [Fact]
+    public void Inc_SamePropertyThroughDifferentDeclaredTypes_AddsBoth()
+    {
+        var gm = CreateStaff(AccessLevel.GameMaster);
+        var owner = CreateOwnerWithPack(AccessLevel.Player, out _);
+        var pet = CreatePet(owner);
+        pet.FocusMob = pet;
+        pet.Hue = 10;
+
+        Assert.Equal(
+            "The properties have been increased.",
+            Properties.IncreaseValue(gm, pet, ["Hue", "1", "FocusMob.Hue", "1"])
+        );
+        Assert.Equal(12, pet.Hue);
+    }
 }
