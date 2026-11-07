@@ -640,12 +640,4 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
         }
     }
 
-    ~ObjectPropertyList()
-    {
-        if (_arrayToReturnToPool != null)
-        {
-            STArrayPool<char>.Shared.Return(_arrayToReturnToPool);
-            _arrayToReturnToPool = null;
-        }
-    }
 }

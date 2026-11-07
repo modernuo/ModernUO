@@ -2,6 +2,7 @@ using Xunit;
 
 namespace Server.Tests.Network;
 
+[Collection("Sequential Server Tests")]
 public class ClientVersionTests
 {
     [Theory]
