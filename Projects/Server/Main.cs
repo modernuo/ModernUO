@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -238,9 +237,6 @@ public static class Core
     // way, or the thread handling a crash. Only the owner calls Environment.Exit, so the exit code and a
     // restart are decided once.
     private static int _exitClaimed;
-
-    // Native state the loop compresses with. Disposed only on the loop thread, once it is done with it.
-    private static LibDeflateBinding _loopDeflate;
 
     // Kept alive for the life of the process: a collected registration silently unregisters.
     private static PosixSignalRegistration _sigtermRegistration;
@@ -769,8 +765,7 @@ public static class Core
             // compressing, so the instance is left for the process exit to reclaim.
             if (Thread.CurrentThread == Thread)
             {
-                _loopDeflate?.Dispose();
-                _loopDeflate = null;
+                Deflate.DisposeStandard();
             }
         }
         finally
@@ -853,7 +848,7 @@ public static class Core
         }
 
         // LibDeflate is not thread safe, so each thread gets its own instance; this is the loop's.
-        _loopDeflate = Deflate.Standard;
+        _ = Deflate.Standard;
 
         ServerConfiguration.Load();
 
