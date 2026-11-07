@@ -59,10 +59,12 @@ internal static class ShutdownRouting
 {
     /// <summary>
     /// Whether to cancel the runtime's default termination for SIGTERM and shut down through the loop.
-    /// During startup nothing would notice the request until the world finished loading, so the default
+    /// During startup nothing would notice the request until the world finished loading, and a repeated
+    /// signal means the operator wants out even if the loop is stuck, so in both cases the default
     /// (an immediate exit) stands.
     /// </summary>
-    public static bool ShouldInterceptTerminate(LoopLifecycle lifecycle) => lifecycle != LoopLifecycle.NotStarted;
+    public static bool ShouldInterceptTerminate(LoopLifecycle lifecycle, int priorSignals) =>
+        lifecycle != LoopLifecycle.NotStarted && priorSignals == 0;
 
     // ProcessExit is raised on the finalizer thread, never the loop, so waiting on the loop is always safe.
     public static ProcessExitRoute RouteProcessExit(LoopLifecycle lifecycle) =>
