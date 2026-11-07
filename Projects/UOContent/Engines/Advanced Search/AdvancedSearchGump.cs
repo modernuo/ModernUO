@@ -797,6 +797,7 @@ public class AdvancedSearchGump : Gump
 
             ThreadPool.QueueUserWorkItem(state =>
             {
+                var resend = false;
                 try
                 {
                     // Block until everything is processed
@@ -827,8 +828,7 @@ public class AdvancedSearchGump : Gump
                     resultsList.Clear();
                     resultsList.TrimExcess();
 
-                    // Send the gump on the main thread
-                    Core.LoopContext.Post(() => Resend(from));
+                    resend = true;
                 }
                 catch (Exception ex)
                 {
@@ -838,14 +838,26 @@ public class AdvancedSearchGump : Gump
                 }
                 finally
                 {
-                    AutoSave.SavesEnabled = (bool)state!;
-                    EndSearch();
+                    // The autosave setter drives a timer, and the guard must not release before the
+                    // restore lands, so both run on the loop.
+                    var restore = (bool)state!;
+                    Core.LoopContext.Post(() =>
+                        {
+                            AutoSave.SavesEnabled = restore;
+                            EndSearch();
+
+                            if (resend)
+                            {
+                                Resend(from);
+                            }
+                        }
+                    );
                 }
             }, autoSave);
         }
         catch
         {
-            // Setup failed before the work item took ownership of the release.
+            // Runs on the loop; setup failed before the work item took ownership of the release.
             AutoSave.SavesEnabled = autoSave;
             EndSearch();
             throw;
