@@ -55,6 +55,10 @@ namespace Server.Commands
 
         public static PropertyInfo GetPropertyInfoByName(
             Mobile from, PropertyInfo[] props, string propertyName, PropertyAccess access, out string failReason
+        ) => GetPropertyInfoByName(from.AccessLevel, props, propertyName, access, out failReason);
+
+        public static PropertyInfo GetPropertyInfoByName(
+            AccessLevel level, PropertyInfo[] props, string propertyName, PropertyAccess access, out string failReason
         )
         {
             for (var i = 0; i < props.Length; i++)
@@ -66,44 +70,8 @@ namespace Server.Commands
                     continue;
                 }
 
-                var attr = GetCPA(p);
-
-                if (attr == null)
-                {
-                    failReason = $"Property '{propertyName}' not found.";
-                    return null;
-                }
-
-                if ((access & PropertyAccess.Read) != 0 && from.AccessLevel < attr.ReadLevel)
-                {
-                    failReason =
-                        $"You must be at least {Mobile.GetAccessLevelName(attr.ReadLevel)} to get the property '{propertyName}'.";
-
-                    return null;
-                }
-
-                if ((access & PropertyAccess.Write) != 0 && from.AccessLevel < attr.WriteLevel)
-                {
-                    failReason =
-                        $"You must be at least {Mobile.GetAccessLevelName(attr.WriteLevel)} to set the property '{propertyName}'.";
-
-                    return null;
-                }
-
-                if ((access & PropertyAccess.Read) != 0 && !p.CanRead)
-                {
-                    failReason = $"Property '{propertyName}' is write only.";
-                    return null;
-                }
-
-                if ((access & PropertyAccess.Write) != 0 && (!p.CanWrite && !attr.CanModify || attr.ReadOnly))
-                {
-                    failReason = $"Property '{propertyName}' is read only.";
-                    return null;
-                }
-
-                failReason = null;
-                return p;
+                failReason = CommandPropertyGuard.Check(p, propertyName, level, access);
+                return failReason == null ? p : null;
             }
 
             failReason = null;
@@ -113,37 +81,12 @@ namespace Server.Commands
         public static PropertyInfo[] GetPropertyInfoChain(
             Mobile from, Type type, string propertyString,
             PropertyAccess access, out string failReason
-        )
-        {
-            failReason = null;
-            var split = propertyString.Split('.');
+        ) => GetPropertyInfoChain(from.AccessLevel, type, propertyString, access, out failReason);
 
-            if (split.Length == 0)
-            {
-                return null;
-            }
-
-            var info = new PropertyInfo[split.Length];
-
-            for (var i = 0; i < info.Length; ++i)
-            {
-                var propertyName = split[i];
-                var props = type.GetProperties(BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public);
-
-                var p = GetPropertyInfoByName(from, props, propertyName, access, out failReason);
-
-                if (p == null)
-                {
-                    failReason ??= $"Property '{propertyName}' not found.";
-                    return null;
-                }
-
-                info[i] = p;
-                type = p.PropertyType;
-            }
-
-            return info;
-        }
+        public static PropertyInfo[] GetPropertyInfoChain(
+            AccessLevel level, Type type, string propertyString,
+            PropertyAccess access, out string failReason
+        ) => CommandPropertyGuard.ResolveChain(type, propertyString, level, access, true, out failReason);
 
         public static PropertyInfo GetPropertyInfo(
             Mobile from, ref object obj, string propertyName, PropertyAccess access,
