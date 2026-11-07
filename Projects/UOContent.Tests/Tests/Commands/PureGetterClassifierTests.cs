@@ -4,10 +4,10 @@ using System.Reflection;
 using System.Runtime.Intrinsics;
 using System.Threading;
 using Server;
-using Server.Engines.AdvancedSearch;
+using Server.Commands;
 using Xunit;
 
-namespace UOContent.Tests;
+namespace UOContent.Tests.Commands;
 
 // Fixtures compile as Debug, so these also cover unoptimized IL (store-to-local-then-return).
 public class PureGetterClassifierTests

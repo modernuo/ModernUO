@@ -4,14 +4,14 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace Server.Engines.AdvancedSearch;
+namespace Server.Commands;
 
 /// <summary>
-/// Decides from a getter's IL whether it only reads state, so a search worker may call it off the loop.
+/// Decides from a getter's IL whether it only reads state, so it may be called off the loop.
 /// Fails closed: "no" keeps the read on the loop; "yes" must never be wrong.
 /// </summary>
 /// <remarks>
-/// Not handled: a first <c>ldsfld</c> can run a static constructor. They have all run long before any search.
+/// Not handled: a first <c>ldsfld</c> can run a static constructor. They have all run long before the server takes commands.
 /// </remarks>
 public static class PureGetterClassifier
 {

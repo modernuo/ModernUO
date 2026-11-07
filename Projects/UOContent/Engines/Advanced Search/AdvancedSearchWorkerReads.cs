@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Reflection;
+using Server.Commands;
 using Server.Mobiles;
 
 namespace Server.Engines.AdvancedSearch;
