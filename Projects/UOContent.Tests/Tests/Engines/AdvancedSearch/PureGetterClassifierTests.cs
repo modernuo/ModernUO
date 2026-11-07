@@ -45,7 +45,7 @@ public class PureGetterClassifierTests
         {
             get
             {
-                _cache ??= new List<int>();
+                _cache ??= [];
                 return _cache.Count;
             }
         }

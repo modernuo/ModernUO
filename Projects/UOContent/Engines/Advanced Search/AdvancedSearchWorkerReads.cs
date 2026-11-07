@@ -14,7 +14,7 @@ public static class AdvancedSearchWorkerReads
     private const BindingFlags Declared = BindingFlags.Public | BindingFlags.NonPublic |
                                           BindingFlags.Instance | BindingFlags.DeclaredOnly;
 
-    private static readonly ConcurrentDictionary<Type, bool> _memo = new();
+    private static readonly ConcurrentDictionary<Type, bool> _memo = [];
 
     // Every entity member AdvancedSearchMatcher reads off the loop must be listed here (or in Evaluate/Extras),
     // or it runs unvetted on the workers. Add one whenever the matcher's worker path reads a new member.

@@ -140,13 +140,13 @@ public class AdvancedSearchLoopPhaseTests
         var entities = new List<IEntity> { from, a, b };
 
         var filter = new AdvancedSearchFilter { FilterPropertyTest = true, PropertyTest = "Hue=5" };
-        var deferred = new ConcurrentQueue<IEntity>();
+        ConcurrentQueue<IEntity> deferred = [];
         deferred.Enqueue(b);
         deferred.Enqueue(a);
 
         try
         {
-            var phase = NewPhase(from, gump, filter, [], deferred, new ConcurrentQueue<IEntity>());
+            var phase = NewPhase(from, gump, filter, [], deferred, []);
 
             RunToCompletion(phase);
 
@@ -173,7 +173,7 @@ public class AdvancedSearchLoopPhaseTests
         var entities = new List<IEntity> { from, kept };
 
         AdvancedSearchResult[] results = [ResultFor(kept), ResultFor(deletedResult)];
-        var deferred = new ConcurrentQueue<IEntity>();
+        ConcurrentQueue<IEntity> deferred = [];
         deferred.Enqueue(deletedDeferred);
 
         deletedResult.Delete();
@@ -181,7 +181,7 @@ public class AdvancedSearchLoopPhaseTests
 
         try
         {
-            var phase = NewPhase(from, gump, new AdvancedSearchFilter(), results, deferred, new ConcurrentQueue<IEntity>());
+            var phase = NewPhase(from, gump, new AdvancedSearchFilter(), results, deferred, []);
 
             RunToCompletion(phase);
 
@@ -202,7 +202,7 @@ public class AdvancedSearchLoopPhaseTests
         var from = new Mobile();
         var gump = new AdvancedSearchGump();
         var entities = new List<IEntity> { from };
-        var deferred = new ConcurrentQueue<IEntity>();
+        ConcurrentQueue<IEntity> deferred = [];
 
         for (var i = 0; i < 500; i++)
         {
@@ -213,7 +213,7 @@ public class AdvancedSearchLoopPhaseTests
 
         try
         {
-            var phase = NewPhase(from, gump, new AdvancedSearchFilter(), [], deferred, new ConcurrentQueue<IEntity>());
+            var phase = NewPhase(from, gump, new AdvancedSearchFilter(), [], deferred, []);
 
             Assert.True(RunSlices(phase, 0) > 1);
             Assert.NotNull(gump.SearchResults);
@@ -239,12 +239,12 @@ public class AdvancedSearchLoopPhaseTests
 
         var filter = new AdvancedSearchFilter { HideValidInternalMap = true };
         AdvancedSearchResult[] results = [ResultFor(key), ResultFor(other)];
-        var ignoreSources = new ConcurrentQueue<IEntity>();
+        ConcurrentQueue<IEntity> ignoreSources = [];
         ignoreSources.Enqueue(keyRing);
 
         try
         {
-            var phase = NewPhase(from, gump, filter, results, new ConcurrentQueue<IEntity>(), ignoreSources);
+            var phase = NewPhase(from, gump, filter, results, [], ignoreSources);
 
             RunToCompletion(phase);
 
@@ -266,14 +266,14 @@ public class AdvancedSearchLoopPhaseTests
         var gump = new AdvancedSearchGump();
         var item = new Item(0x1);
         var entities = new List<IEntity> { from, item };
-        var deferred = new ConcurrentQueue<IEntity>();
+        ConcurrentQueue<IEntity> deferred = [];
         deferred.Enqueue(item);
 
         Assert.True(AdvancedSearchGump.TryBeginSearch());
 
         try
         {
-            var phase = NewPhase(from, gump, new AdvancedSearchFilter(), [], deferred, new ConcurrentQueue<IEntity>());
+            var phase = NewPhase(from, gump, new AdvancedSearchFilter(), [], deferred, []);
 
             RunToCompletion(phase);
 
@@ -295,8 +295,8 @@ public class AdvancedSearchLoopPhaseTests
         var gump = new AdvancedSearchGump();
         var keyRing = new KeyRing();
         var entities = new List<IEntity> { from, keyRing };
-        var expected = new List<IEntity>();
-        var workerResults = new List<AdvancedSearchResult>();
+        List<IEntity> expected = [];
+        List<AdvancedSearchResult> workerResults = [];
 
         for (var i = 0; i < 2000; i++)
         {
@@ -322,7 +322,7 @@ public class AdvancedSearchLoopPhaseTests
         }
 
         // Fewer than one budget interval, so the drains end inside the first slice.
-        var deferred = new ConcurrentQueue<IEntity>();
+        ConcurrentQueue<IEntity> deferred = [];
         for (var i = 0; i < 10; i++)
         {
             // On a real map, or HideValidInternalMap rejects it as a stray internal item.
@@ -333,7 +333,7 @@ public class AdvancedSearchLoopPhaseTests
             deferred.Enqueue(item);
         }
 
-        var ignoreSources = new ConcurrentQueue<IEntity>();
+        ConcurrentQueue<IEntity> ignoreSources = [];
         ignoreSources.Enqueue(keyRing);
 
         try
@@ -365,9 +365,9 @@ public class AdvancedSearchLoopPhaseTests
         var from = new Mobile();
         var gump = new AdvancedSearchGump();
         var entities = new List<IEntity> { from };
-        var workerResults = new List<AdvancedSearchResult>();
-        var deferred = new ConcurrentQueue<IEntity>();
-        var all = new List<IEntity>();
+        List<AdvancedSearchResult> workerResults = [];
+        ConcurrentQueue<IEntity> deferred = [];
+        List<IEntity> all = [];
 
         // Interleaved serials: even-indexed items come from the workers, odd-indexed from the loop.
         for (var i = 0; i < 20; i++)
@@ -388,7 +388,7 @@ public class AdvancedSearchLoopPhaseTests
 
         try
         {
-            var phase = NewPhase(from, gump, new AdvancedSearchFilter(), workerResults.ToArray(), deferred, new ConcurrentQueue<IEntity>());
+            var phase = NewPhase(from, gump, new AdvancedSearchFilter(), workerResults.ToArray(), deferred, []);
 
             RunToCompletion(phase);
 
@@ -413,8 +413,8 @@ public class AdvancedSearchLoopPhaseTests
         var from = new Mobile();
         var gump = new AdvancedSearchGump();
         var entities = new List<IEntity> { from };
-        var deferred = new ConcurrentQueue<IEntity>();
-        var items = new List<Item>();
+        ConcurrentQueue<IEntity> deferred = [];
+        List<Item> items = [];
 
         for (var i = 0; i < 3000; i++)
         {
@@ -435,7 +435,7 @@ public class AdvancedSearchLoopPhaseTests
 
         try
         {
-            var phase = NewPhase(from, gump, new AdvancedSearchFilter(), [], deferred, new ConcurrentQueue<IEntity>());
+            var phase = NewPhase(from, gump, new AdvancedSearchFilter(), [], deferred, []);
 
             // The drain hands the sort to the thread pool; its completion waits in the loop's queue.
             Assert.False(phase.RunSlice(long.MaxValue));
@@ -481,7 +481,7 @@ public class AdvancedSearchLoopPhaseTests
         var from = new Mobile();
         var item = new Item(0x1);
         var entities = new List<IEntity> { from, item };
-        var deferred = new ConcurrentQueue<IEntity>();
+        ConcurrentQueue<IEntity> deferred = [];
         deferred.Enqueue(item);
 
         Assert.True(AdvancedSearchGump.TryBeginSearch());
@@ -492,7 +492,7 @@ public class AdvancedSearchLoopPhaseTests
             // A null gump makes publishing throw, exercising the phase-level failure path.
             var phase = new AdvancedSearchLoopPhase(
                 from, null, new AdvancedSearchFilter(), Origin, NewCache(),
-                [], deferred, new ConcurrentQueue<IEntity>(), true
+                [], deferred, [], true
             );
 
             RunToCompletion(phase);

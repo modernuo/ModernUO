@@ -30,7 +30,7 @@ public class AdvancedSearchThreadWorker
     {
         _startEvent = new AutoResetEvent(false);
         _stopEvent = new AutoResetEvent(false);
-        _entities = new ConcurrentQueue<IEntity>();
+        _entities = [];
         _thread = new Thread(Execute)
         {
             IsBackground = true

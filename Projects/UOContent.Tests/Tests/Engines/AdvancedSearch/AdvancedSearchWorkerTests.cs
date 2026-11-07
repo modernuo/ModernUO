@@ -77,7 +77,7 @@ public class AdvancedSearchWorkerTests
 
     private static HashSet<IEntity> EntitiesOf(ConcurrentQueue<AdvancedSearchResult> results)
     {
-        var set = new HashSet<IEntity>();
+        HashSet<IEntity> set = [];
         foreach (var r in results)
         {
             set.Add(r.Entity);
@@ -92,13 +92,13 @@ public class AdvancedSearchWorkerTests
         var item = new Item(0x1);
         item.MoveToWorld(new Point3D(1000, 1000, 0), Map.Felucca);
 
-        var results = new ConcurrentQueue<AdvancedSearchResult>();
-        var deferred = new ConcurrentQueue<IEntity>();
+        ConcurrentQueue<AdvancedSearchResult> results = [];
+        ConcurrentQueue<IEntity> deferred = [];
         var filter = new AdvancedSearchFilter { FilterRegion = true, RegionName = "Britain" };
 
         try
         {
-            RunWorker(filter, results, deferred, new ConcurrentQueue<IEntity>(), item);
+            RunWorker(filter, results, deferred, [], item);
 
             Assert.Empty(results);
             Assert.Equal([item], deferred.ToArray());
@@ -114,13 +114,13 @@ public class AdvancedSearchWorkerTests
     {
         var item = new LazyItem();
 
-        var results = new ConcurrentQueue<AdvancedSearchResult>();
-        var deferred = new ConcurrentQueue<IEntity>();
+        ConcurrentQueue<AdvancedSearchResult> results = [];
+        ConcurrentQueue<IEntity> deferred = [];
         var filter = new AdvancedSearchFilter { FilterPropertyTest = true, PropertyTest = "Lazy=1" };
 
         try
         {
-            RunWorker(filter, results, deferred, new ConcurrentQueue<IEntity>(), item);
+            RunWorker(filter, results, deferred, [], item);
 
             Assert.Empty(results);
             Assert.Equal([item], deferred.ToArray());
@@ -136,13 +136,13 @@ public class AdvancedSearchWorkerTests
     {
         var item = new Item(0x1) { Hue = 5 };
 
-        var results = new ConcurrentQueue<AdvancedSearchResult>();
-        var deferred = new ConcurrentQueue<IEntity>();
+        ConcurrentQueue<AdvancedSearchResult> results = [];
+        ConcurrentQueue<IEntity> deferred = [];
         var filter = new AdvancedSearchFilter { FilterPropertyTest = true, PropertyTest = "Hue=5" };
 
         try
         {
-            RunWorker(filter, results, deferred, new ConcurrentQueue<IEntity>(), item);
+            RunWorker(filter, results, deferred, [], item);
 
             Assert.Empty(deferred);
             Assert.Equal([item], EntitiesOf(results));
@@ -160,9 +160,9 @@ public class AdvancedSearchWorkerTests
         var keyRing = new KeyRing();
         keyRing.MoveToWorld(new Point3D(1000, 1000, 0), Map.Felucca);
 
-        var results = new ConcurrentQueue<AdvancedSearchResult>();
-        var deferred = new ConcurrentQueue<IEntity>();
-        var ignoreSources = new ConcurrentQueue<IEntity>();
+        ConcurrentQueue<AdvancedSearchResult> results = [];
+        ConcurrentQueue<IEntity> deferred = [];
+        ConcurrentQueue<IEntity> ignoreSources = [];
         var filter = new AdvancedSearchFilter { HideValidInternalMap = true };
 
         try
@@ -254,9 +254,9 @@ public class AdvancedSearchWorkerTests
     public void Worker_FilterThrows_DoesNotEscape_ReturnsNoMatch()
     {
         var worker = new AdvancedSearchThreadWorker();
-        var results = new ConcurrentQueue<AdvancedSearchResult>();
-        var deferred = new ConcurrentQueue<IEntity>();
-        var ignore = new ConcurrentQueue<IEntity>();
+        ConcurrentQueue<AdvancedSearchResult> results = [];
+        ConcurrentQueue<IEntity> deferred = [];
+        ConcurrentQueue<IEntity> ignore = [];
         var filter = new AdvancedSearchFilter
         {
             FilterPropertyTest = true,
@@ -286,9 +286,9 @@ public class AdvancedSearchWorkerTests
     public void Worker_PropertyTest_FiltersItemsAndMobiles()
     {
         var worker = new AdvancedSearchThreadWorker();
-        var results = new ConcurrentQueue<AdvancedSearchResult>();
-        var deferred = new ConcurrentQueue<IEntity>();
-        var ignore = new ConcurrentQueue<IEntity>();
+        ConcurrentQueue<AdvancedSearchResult> results = [];
+        ConcurrentQueue<IEntity> deferred = [];
+        ConcurrentQueue<IEntity> ignore = [];
         var filter = new AdvancedSearchFilter
         {
             FilterPropertyTest = true,
@@ -309,7 +309,7 @@ public class AdvancedSearchWorkerTests
             worker.Push(mobile);
             worker.Sleep();
 
-            var matched = new HashSet<IEntity>();
+            HashSet<IEntity> matched = [];
             foreach (var r in results)
             {
                 matched.Add(r.Entity);
@@ -337,9 +337,9 @@ public class AdvancedSearchWorkerTests
     public void Worker_SeveralMapsTicked_MatchesAnyOfThem()
     {
         var worker = new AdvancedSearchThreadWorker();
-        var results = new ConcurrentQueue<AdvancedSearchResult>();
-        var deferred = new ConcurrentQueue<IEntity>();
-        var ignore = new ConcurrentQueue<IEntity>();
+        ConcurrentQueue<AdvancedSearchResult> results = [];
+        ConcurrentQueue<IEntity> deferred = [];
+        ConcurrentQueue<IEntity> ignore = [];
         var filter = new AdvancedSearchFilter
         {
             FilterFelucca = true,
@@ -365,7 +365,7 @@ public class AdvancedSearchWorkerTests
             worker.Push(malas);
             worker.Sleep();
 
-            var matched = new HashSet<IEntity>();
+            HashSet<IEntity> matched = [];
             foreach (var r in results)
             {
                 matched.Add(r.Entity);
@@ -390,9 +390,9 @@ public class AdvancedSearchWorkerTests
     public void Worker_DeletedEntity_IsSkipped()
     {
         var worker = new AdvancedSearchThreadWorker();
-        var results = new ConcurrentQueue<AdvancedSearchResult>();
-        var deferred = new ConcurrentQueue<IEntity>();
-        var ignore = new ConcurrentQueue<IEntity>();
+        ConcurrentQueue<AdvancedSearchResult> results = [];
+        ConcurrentQueue<IEntity> deferred = [];
+        ConcurrentQueue<IEntity> ignore = [];
         var filter = new AdvancedSearchFilter(); // no filters -> everything matches
 
         var item = new Item(0x1);

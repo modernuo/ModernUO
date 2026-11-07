@@ -20,9 +20,9 @@ public static class PureGetterClassifier
 
     private static readonly Dictionary<short, OpCode> _opCodes = BuildOpCodes();
 
-    private static readonly ConcurrentDictionary<(RuntimeMethodHandle, Type), bool> _memo = new();
+    private static readonly ConcurrentDictionary<(RuntimeMethodHandle, Type), bool> _memo = [];
     // Safe to build once: game assemblies all load at startup.
-    private static readonly ConcurrentDictionary<Type, Type[]> _derivedTypes = new();
+    private static readonly ConcurrentDictionary<Type, Type[]> _derivedTypes = [];
 
     // A stack overflow on a worker kills the process, so deep call chains are rejected.
     private const int MaxDepth = 64;
@@ -90,7 +90,7 @@ public static class PureGetterClassifier
 
     private static Dictionary<short, OpCode> BuildOpCodes()
     {
-        var table = new Dictionary<short, OpCode>();
+        Dictionary<short, OpCode> table = [];
         var fields = typeof(OpCodes).GetFields(BindingFlags.Public | BindingFlags.Static);
         for (var i = 0; i < fields.Length; i++)
         {
@@ -114,7 +114,7 @@ public static class PureGetterClassifier
             return known;
         }
 
-        var stack = _inProgress ??= new Dictionary<(RuntimeMethodHandle, Type), int>();
+        var stack = _inProgress ??= [];
         if (stack.TryGetValue(key, out var ancestorDepth))
         {
             // Coinductive: an impure instruction in the cycle is still found in some member's own body.
@@ -540,7 +540,7 @@ public static class PureGetterClassifier
     // A constructed interface maps exactly; an open one (inside a generic class) maps every instantiation.
     private static List<MethodInfo> MapInterfaceMethods(Type type, MethodInfo interfaceMethod, bool byDefinition = false)
     {
-        var result = new List<MethodInfo>();
+        List<MethodInfo> result = [];
         var declaring = interfaceMethod.DeclaringType;
         var exact = !byDefinition && (!declaring.IsGenericType || !declaring.ContainsGenericParameters);
         var interfaces = type.GetInterfaces();
@@ -668,7 +668,7 @@ public static class PureGetterClassifier
                 // Framework types are reached through facades under other assembly names, so a reference
                 // by name proves nothing; only game assemblies are pruned.
                 var scanAll = !IsGameAssembly(declaringAssembly);
-                var result = new List<Type>();
+                List<Type> result = [];
 
                 var assemblies = AppDomain.CurrentDomain.GetAssemblies();
                 for (var a = 0; a < assemblies.Length; a++)
@@ -765,7 +765,7 @@ public static class PureGetterClassifier
         }
         catch (ReflectionTypeLoadException e)
         {
-            var loaded = new List<Type>();
+            List<Type> loaded = [];
             for (var i = 0; i < e.Types.Length; i++)
             {
                 if (e.Types[i] != null)

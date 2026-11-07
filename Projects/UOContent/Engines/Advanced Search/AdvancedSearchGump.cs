@@ -765,9 +765,9 @@ public class AdvancedSearchGump : Gump
         {
             _threadWorkers ??= new AdvancedSearchThreadWorker[Math.Max(Environment.ProcessorCount - 1, 1)];
 
-            var results = new ConcurrentQueue<AdvancedSearchResult>();
-            var deferred = new ConcurrentQueue<IEntity>();
-            var ignoreSources = new ConcurrentQueue<IEntity>();
+            ConcurrentQueue<AdvancedSearchResult> results = [];
+            ConcurrentQueue<IEntity> deferred = [];
+            ConcurrentQueue<IEntity> ignoreSources = [];
             var predicates = new AdvancedSearchConditions.Cache(from.AccessLevel);
             var worldLocation = new WorldLocation(from.Location, from.Map);
             var filter = Filter;
@@ -918,7 +918,7 @@ public class AdvancedSearchGump : Gump
             return;
         }
 
-        var list = new List<object>();
+        List<object> list = [];
 
         if (SearchResults?.Length > 0)
         {

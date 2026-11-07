@@ -34,8 +34,8 @@ public static class AdvancedSearchConditions
     /// </summary>
     public sealed class Cache
     {
-        internal readonly ConcurrentDictionary<Type, SearchPredicate> ByRuntimeType = new();
-        internal readonly ConcurrentDictionary<(Type Type, ulong SafeMask), SearchPredicate> ByCompiledType = new();
+        internal readonly ConcurrentDictionary<Type, SearchPredicate> ByRuntimeType = [];
+        internal readonly ConcurrentDictionary<(Type Type, ulong SafeMask), SearchPredicate> ByCompiledType = [];
 
         public Cache(AccessLevel accessLevel) => AccessLevel = accessLevel;
 
@@ -126,8 +126,8 @@ public static class AdvancedSearchConditions
     {
         Type mostDerived = null;
 
-        var groups = new List<ICondition[]>();
-        var safeGroups = new List<bool[]>();
+        List<ICondition[]> groups = [];
+        List<bool[]> safeGroups = [];
         var leafCount = 0;
         mask = 0;
 
