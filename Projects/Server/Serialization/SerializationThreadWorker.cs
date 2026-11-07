@@ -79,6 +79,19 @@ public class SerializationThreadWorker
     internal List<IGenericSerializable> BufferEntities => _bufferEntities;
 
     /// <summary>
+    /// Lengths-log marker for an entity left out of the save. Its bytes are never written to the heap.
+    /// </summary>
+    internal const int SkippedRecord = -1;
+
+    /// <summary>
+    /// Whether an entity is left out of the save. Only valid while the world is frozen: the answer
+    /// depends on the entity's parent, which can change once the snapshot writer is running.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static bool SkipsSerialization(IGenericSerializable e) =>
+        e is Item { SkipSerialization: true } or Mobile { SkipSerialization: true };
+
+    /// <summary>
     /// First serializer exception during the drain. The drain continues so the handshake
     /// completes; the loop fails the save once every worker has paused.
     /// </summary>
@@ -216,9 +229,18 @@ public class SerializationThreadWorker
         for (var i = 0; i < count; i++)
         {
             var e = buffer[i];
-            var start = writer.Position;
-            e.Serialize(writer);
-            _lengths.Add((int)(writer.Position - start));
+
+            if (SkipsSerialization(e))
+            {
+                _lengths.Add(SkippedRecord);
+            }
+            else
+            {
+                var start = writer.Position;
+                e.Serialize(writer);
+                _lengths.Add((int)(writer.Position - start));
+            }
+
             _bufferEntities.Add(e);
         }
 
