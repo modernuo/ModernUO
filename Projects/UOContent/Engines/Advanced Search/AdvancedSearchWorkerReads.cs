@@ -22,6 +22,9 @@ public static class AdvancedSearchWorkerReads
 
     private static readonly string[] _mobileProperties = ["Name", "Map", "Location", "Deleted", "Account"];
 
+    // The matcher also reads these through IEntity, which dispatches through the runtime type's interface map.
+    private static readonly string[] _entityProperties = ["Map", "Location", "Deleted"];
+
     public static bool IsWorkerSafe(Type runtimeType)
     {
         if (runtimeType == null)
@@ -41,13 +44,13 @@ public static class AdvancedSearchWorkerReads
 
         if (typeof(Item).IsAssignableFrom(type))
         {
-            return AllProperties(type, _itemProperties) && Method(type, nameof(Item.GetWorldLocation)) &&
-                   Extras(type);
+            return AllProperties(typeof(Item), type, _itemProperties) && EntityProperties(type) &&
+                   Method(typeof(Item), type, nameof(Item.GetWorldLocation)) && Extras(type);
         }
 
         if (typeof(Mobile).IsAssignableFrom(type))
         {
-            return AllProperties(type, _mobileProperties) && Extras(type);
+            return AllProperties(typeof(Mobile), type, _mobileProperties) && EntityProperties(type) && Extras(type);
         }
 
         return false;
@@ -55,24 +58,26 @@ public static class AdvancedSearchWorkerReads
 
     private static bool Extras(Type type)
     {
-        if (typeof(BaseCreature).IsAssignableFrom(type) && !Property(type, nameof(BaseCreature.IsStabled)))
+        if (typeof(BaseCreature).IsAssignableFrom(type) &&
+            !Property(typeof(BaseCreature), type, nameof(BaseCreature.IsStabled)))
         {
             return false;
         }
 
-        if (typeof(PlayerVendor).IsAssignableFrom(type) && !Property(type, nameof(PlayerVendor.House)))
+        if (typeof(PlayerVendor).IsAssignableFrom(type) &&
+            !Property(typeof(PlayerVendor), type, nameof(PlayerVendor.House)))
         {
             return false;
         }
 
-        return !typeof(IMount).IsAssignableFrom(type) || InterfaceGetter(type);
+        return !typeof(IMount).IsAssignableFrom(type) || InterfaceProperty(typeof(IMount), type, nameof(IMount.Rider));
     }
 
-    private static bool AllProperties(Type type, string[] names)
+    private static bool AllProperties(Type callSiteType, Type runtimeType, string[] names)
     {
         for (var i = 0; i < names.Length; i++)
         {
-            if (!Property(type, names[i]))
+            if (!Property(callSiteType, runtimeType, names[i]))
             {
                 return false;
             }
@@ -81,52 +86,66 @@ public static class AdvancedSearchWorkerReads
         return true;
     }
 
-    private static bool Property(Type type, string name)
+    private static bool EntityProperties(Type runtimeType)
     {
-        for (var t = type; t != null; t = t.BaseType)
+        for (var i = 0; i < _entityProperties.Length; i++)
+        {
+            if (!InterfaceProperty(typeof(IEntity), runtimeType, _entityProperties[i]))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    // The getter is looked up on the type the matcher's call site is typed as, not the runtime type: a `new`
+    // member on a subclass hides by name but is never what that call site runs. The classifier then follows
+    // the override chain from there for the runtime type.
+    private static bool Property(Type callSiteType, Type runtimeType, string name)
+    {
+        for (var t = callSiteType; t != null; t = t.BaseType)
         {
             var property = t.GetProperty(name, Declared);
             if (property != null)
             {
                 var getter = property.GetGetMethod(true);
-                return getter != null && PureGetterClassifier.IsPure(getter, type);
+                return getter != null && PureGetterClassifier.IsPure(getter, runtimeType);
             }
         }
 
         return false;
     }
 
-    private static bool Method(Type type, string name)
+    private static bool Method(Type callSiteType, Type runtimeType, string name)
     {
-        for (var t = type; t != null; t = t.BaseType)
+        for (var t = callSiteType; t != null; t = t.BaseType)
         {
             var method = t.GetMethod(name, Declared, Type.EmptyTypes);
             if (method != null)
             {
-                return PureGetterClassifier.IsPure(method, type);
+                return PureGetterClassifier.IsPure(method, runtimeType);
             }
         }
 
         return false;
     }
 
-    private static bool InterfaceGetter(Type type)
+    // Interface members are declared on the interface or one it extends; the classifier maps the getter to
+    // the runtime type's implementation.
+    private static bool InterfaceProperty(Type interfaceType, Type runtimeType, string name)
     {
-        var getter = typeof(IMount).GetProperty(nameof(IMount.Rider))?.GetGetMethod();
-        if (getter == null)
+        var property = interfaceType.GetProperty(name);
+        if (property == null)
         {
-            return false;
-        }
-
-        var map = type.GetInterfaceMap(typeof(IMount));
-        for (var i = 0; i < map.InterfaceMethods.Length; i++)
-        {
-            if (map.InterfaceMethods[i] == getter)
+            var inherited = interfaceType.GetInterfaces();
+            for (var i = 0; i < inherited.Length && property == null; i++)
             {
-                return PureGetterClassifier.IsPure(map.TargetMethods[i], type);
+                property = inherited[i].GetProperty(name);
             }
         }
 
-        return false;
+        var getter = property?.GetGetMethod();
+        return getter != null && PureGetterClassifier.IsPure(getter, runtimeType);
     }
 }
