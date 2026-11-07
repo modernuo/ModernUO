@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Server.Commands;
 using Server.Commands.Generic;
+using Server.Logging;
 
 namespace Server.Engines.AdvancedSearch;
 
@@ -24,6 +25,8 @@ namespace Server.Engines.AdvancedSearch;
 /// </remarks>
 public static class AdvancedSearchConditions
 {
+    private static readonly ILogger _logger = LogFactory.GetLogger(typeof(AdvancedSearchConditions));
+
     // Beyond this many leaves the safety mask no longer fits, so every leaf runs on the loop.
     private const int MaxMaskedLeaves = 64;
 
@@ -62,20 +65,7 @@ public static class AdvancedSearchConditions
 
     private static SearchPredicate Build(Cache cache, Type runtimeType, string propertyTest)
     {
-        ICondition[][] groups;
-        Type compiledType;
-        bool[][] safe;
-        ulong mask;
-
-        // A leaf that throws while parsing is a dead search, not an error repeated per entity.
-        try
-        {
-            groups = Parse(cache.AccessLevel, runtimeType, propertyTest, out compiledType, out safe, out mask);
-        }
-        catch (Exception)
-        {
-            return SearchPredicate.Never;
-        }
+        var groups = Parse(cache.AccessLevel, runtimeType, propertyTest, out var compiledType, out var safe, out var mask);
 
         if (groups == null)
         {
@@ -214,7 +204,26 @@ public static class AdvancedSearchConditions
         return groups.Count > 0 ? groups.ToArray() : null;
     }
 
+    // A leaf that throws while binding is a dead leaf, so the groups beside it still work. Leaves
+    // are bound once per runtime type per search, which bounds the warning.
     private static ICondition Leaf(
+        AccessLevel level, Type runtimeType, ReadOnlySpan<char> expression, out Type declaringType, out bool workerSafe
+    )
+    {
+        try
+        {
+            return BindLeaf(level, runtimeType, expression, out declaringType, out workerSafe);
+        }
+        catch (Exception ex)
+        {
+            _logger.Warning(ex, "AdvancedSearch: could not bind {Leaf} on {Type}; treating it as no match", expression.ToString(), runtimeType);
+            declaringType = runtimeType;
+            workerSafe = false;
+            return null;
+        }
+    }
+
+    private static ICondition BindLeaf(
         AccessLevel level, Type runtimeType, ReadOnlySpan<char> expression, out Type declaringType, out bool workerSafe
     )
     {
@@ -576,15 +585,16 @@ public static class AdvancedSearchConditions
 
                     if (_value == null)
                     {
-                        // Item and Mobile CompareTo(null) is -1, so a present reference sorts below null.
+                        // Null ordering as the comparison compiler gives it: null vs null is 0 and a
+                        // present reference sorts below null (-1), so test that against 0.
                         test = _operator switch
                         {
-                            ComparisonOperator.Equal => Expression.Not(present),
-                            ComparisonOperator.NotEqual => present,
-                            _ => Expression.AndAlso(
-                                present,
-                                Expression.Constant(_operator is ComparisonOperator.Lesser or ComparisonOperator.LesserEqual)
-                            )
+                            ComparisonOperator.Equal        => Expression.Not(present),
+                            ComparisonOperator.NotEqual     => present,
+                            ComparisonOperator.Lesser       => present,
+                            ComparisonOperator.LesserEqual  => Expression.Constant(true),
+                            ComparisonOperator.Greater      => Expression.Constant(false),
+                            _                               => Expression.Not(present)
                         };
                     }
                     else

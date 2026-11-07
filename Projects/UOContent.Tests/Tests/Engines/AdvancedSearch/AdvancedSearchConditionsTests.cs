@@ -601,9 +601,9 @@ public class AdvancedSearchEntityLeafTests
         }
     }
 
-    // Item.CompareTo(null) is -1, so a linked item is "less than" null.
+    // The compiler's null ordering: null vs null is 0, and a present reference sorts below null.
     [Fact]
-    public void EntityLeaf_RelationalAgainstNull_UsesCompareToNull()
+    public void EntityLeaf_RelationalAgainstNull_UsesNullOrdering()
     {
         var target = new Item(0x1);
         var linked = new LinkedItem { Linked = target };
@@ -620,6 +620,9 @@ public class AdvancedSearchEntityLeafTests
             Assert.True(Match("Linked<=null", linked));
             Assert.False(Match("Linked<null", unlinked));
             Assert.False(Match("Linked>null", unlinked));
+            Assert.True(Match("Linked<=null", unlinked));
+            Assert.True(Match("Linked>=null", unlinked));
+            Assert.False(Match("~Linked<=null", unlinked));
         }
         finally
         {
