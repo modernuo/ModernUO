@@ -742,7 +742,7 @@ public class AdvancedSearchGump : Gump
         }
     }
 
-    private void DoSearch(Mobile from)
+    internal void DoSearch(Mobile from)
     {
         if (!World.Running)
         {
@@ -765,20 +765,29 @@ public class AdvancedSearchGump : Gump
         {
             _threadWorkers ??= new AdvancedSearchThreadWorker[Math.Max(Environment.ProcessorCount - 1, 1)];
 
-            var ignoreQueue = new ConcurrentQueue<IEntity>();
             var results = new ConcurrentQueue<AdvancedSearchResult>();
+            var deferred = new ConcurrentQueue<IEntity>();
+            var ignoreSources = new ConcurrentQueue<IEntity>();
             var predicates = new AdvancedSearchConditions.Cache(from.AccessLevel);
             var worldLocation = new WorldLocation(from.Location, from.Map);
+            var filter = Filter;
 
             for (var i = 0; i < _threadWorkers.Length; i++)
             {
-                (_threadWorkers[i] ??= new AdvancedSearchThreadWorker()).Wake(worldLocation, Filter, results, ignoreQueue, predicates);
+                (_threadWorkers[i] ??= new AdvancedSearchThreadWorker()).Wake(
+                    worldLocation,
+                    filter,
+                    results,
+                    deferred,
+                    ignoreSources,
+                    predicates
+                );
             }
 
-            var type = Filter.FilterType ? Filter.Type : null;
+            var type = filter.FilterType ? filter.Type : null;
 
-            // Push the entities. Workers read entity state concurrently with the main loop —
-            // see AdvancedSearchThreadWorker for the accepted, bounded race.
+            // Workers decide only what is pure to read off the loop; see AdvancedSearchMatcher for the split.
+            // Only entities of the searched type are pushed, so only they can act as ignore sources.
             foreach (var item in World.Items.Values)
             {
                 if (type == null || type.IsInstanceOfType(item))
@@ -797,7 +806,9 @@ public class AdvancedSearchGump : Gump
 
             ThreadPool.QueueUserWorkItem(state =>
             {
-                var resend = false;
+                var restore = (bool)state!;
+                AdvancedSearchResult[] sorted;
+
                 try
                 {
                     // Block until everything is processed
@@ -806,53 +817,37 @@ public class AdvancedSearchGump : Gump
                         _threadWorkers[i].Sleep();
                     }
 
-                    var ignoredEntities = new HashSet<IEntity>(ignoreQueue);
-
-                    // Force the GC to collect the ignored entities
-                    ignoreQueue.Clear();
-
-                    var resultsList = new List<AdvancedSearchResult>(results.Count);
-                    foreach (var result in results)
-                    {
-                        if (!ignoredEntities.Contains(result.Entity))
-                        {
-                            resultsList.Add(result);
-                        }
-                    }
-
-                    resultsList.Sort(AdvancedSearchResultSerialComparer.Instance);
-
-                    SearchResults = resultsList.ToArray();
-
-                    // Force the GC to collect the results
-                    resultsList.Clear();
-                    resultsList.TrimExcess();
-
-                    resend = true;
+                    // Serials never change, so the sort needs no game state and stays off the loop.
+                    sorted = results.ToArray();
+                    Array.Sort(sorted, AdvancedSearchResultSerialComparer.Instance);
                 }
                 catch (Exception ex)
                 {
-                    // A drain-phase throw here would terminate the process; the finally still
-                    // restores autosave and releases the guard.
+                    // A throw here would terminate the process. The autosave setter drives a timer, and the
+                    // guard must not release before the restore lands, so both run on the loop.
                     _logger.Warning(ex, "AdvancedSearch: search drain failed");
-                }
-                finally
-                {
-                    // The autosave setter drives a timer, and the guard must not release before the
-                    // restore lands, so both run on the loop.
-                    var restore = (bool)state!;
                     Core.LoopContext.Post(() =>
                         {
                             AutoSave.SavesEnabled = restore;
                             EndSearch();
-
-                            if (resend)
-                            {
-                                Resend(from);
-                            }
                         }
                     );
+                    return;
                 }
+
+                Core.LoopContext.Post(() =>
+                    new AdvancedSearchLoopPhase(
+                        from,
+                        this,
+                        filter,
+                        worldLocation,
+                        predicates,
+                        sorted,
+                        deferred,
+                        ignoreSources,
+                        restore
+                    ).Start()
+                );
             }, autoSave);
         }
         catch
