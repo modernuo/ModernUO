@@ -162,6 +162,12 @@ public static class PureGetterClassifier
 
     private static bool Analyze(MethodInfo method, Type receiverType, ref int low)
     {
+        // The JIT replaces an intrinsic's body, which is often a placeholder that only calls itself.
+        if (IsJitIntrinsic(method))
+        {
+            return false;
+        }
+
         var body = method.GetMethodBody();
         if (body == null)
         {
@@ -329,6 +335,13 @@ public static class PureGetterClassifier
             return !HasMutableByRef(callee);
         }
 
+        // Outside the game assemblies a by-ref store can hide behind an intrinsic or native body, so the
+        // IL cannot prove the address is only read.
+        if (HasMutableByRef(callee) && !IsGameAssembly(callee.Module.Assembly))
+        {
+            return false;
+        }
+
         var onThis = !caller.IsStatic && !callee.IsStatic && callee.GetParameters().Length == 0 &&
                      receiverLoadedFromThis;
 
@@ -359,6 +372,33 @@ public static class PureGetterClassifier
         }
 
         return false;
+    }
+
+    private static bool IsJitIntrinsic(MethodInfo m)
+    {
+        // The attribute is internal to CoreLib, so it is matched by name.
+        var attributes = m.GetCustomAttributesData();
+        for (var i = 0; i < attributes.Count; i++)
+        {
+            if (attributes[i].AttributeType.FullName == "System.Runtime.CompilerServices.IntrinsicAttribute")
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>Server, UOContent and the assemblies loaded from the configured assembly directories.</summary>
+    internal static bool IsGameAssembly(Assembly assembly)
+    {
+        if (assembly == typeof(Item).Assembly || assembly == typeof(PureGetterClassifier).Assembly)
+        {
+            return true;
+        }
+
+        var loaded = AssemblyHandler.Assemblies;
+        return loaded != null && Array.IndexOf(loaded, assembly) >= 0;
     }
 
     // Struct construction allocates nothing on the heap and these constructors only assign fields.

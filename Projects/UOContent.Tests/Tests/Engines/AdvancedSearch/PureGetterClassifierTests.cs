@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.Intrinsics;
+using System.Threading;
 using Server;
 using Server.Engines.AdvancedSearch;
 using Xunit;
@@ -185,6 +187,22 @@ public class PureGetterClassifierTests
         public int TryParse => DateTime.TryParse(_s, out _cached) ? 1 : 0;
     }
 
+    internal class InterlockedFixture
+    {
+        private int _n;
+        private int _m;
+
+        public int Inc => Interlocked.Increment(ref _n);
+        public int Swap => Interlocked.Exchange(ref _m, 1);
+        public int CompareSwap => Interlocked.CompareExchange(ref _m, 1, 0);
+    }
+
+    internal class IntrinsicFixture
+    {
+        // A JIT intrinsic whose IL body only calls itself; the IL says nothing about what really runs.
+        public bool Accelerated => Vector128.IsHardwareAccelerated;
+    }
+
     internal interface IGenericValue<T>
     {
         int Value { get; }
@@ -320,6 +338,18 @@ public class PureGetterClassifierTests
         Assert.False(Pure(typeof(ByRefFixture), nameof(ByRefFixture.DivRem)));
         Assert.False(Pure(typeof(ByRefFixture), nameof(ByRefFixture.TryParse)));
     }
+
+    [Fact]
+    public void Interlocked_OnField_IsImpure()
+    {
+        Assert.False(Pure(typeof(InterlockedFixture), nameof(InterlockedFixture.Inc)));
+        Assert.False(Pure(typeof(InterlockedFixture), nameof(InterlockedFixture.Swap)));
+        Assert.False(Pure(typeof(InterlockedFixture), nameof(InterlockedFixture.CompareSwap)));
+    }
+
+    [Fact]
+    public void JitIntrinsic_NotAllowlisted_IsImpure() =>
+        Assert.False(Pure(typeof(IntrinsicFixture), nameof(IntrinsicFixture.Accelerated)));
 
     [Fact]
     public void ConstructedInterface_MapsToItsOwnImplementation()
