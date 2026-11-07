@@ -328,7 +328,7 @@ guard: `Projects/UOContent/Commands/CommandPropertyGuard.cs` (`Check`, `ResolveC
 - In a dotted chain (`Backpack.Weight`), every intermediate link needs Read; only the final link is checked for the requested access.
 - `Properties.GetPropertyInfoByName` / `GetPropertyInfoChain` and `Property.BindTo(Type, PropertyAccess, AccessLevel)` wrap the guard.
 - The props gump opens an editor only when `CommandPropertyGuard.Check(prop, level, PropertyAccess.ReadWrite)` passes; its writes go through `Properties.ApplyFromGump`, which calls `Properties.SetDirect`.
-- A write is refused ("You cannot modify a higher privileged mobile.") when the object written to, the mobile holding it (an item's `RootParent`), or any object a `[set` chain walks through is a mobile whose AccessLevel, or whose account's AccessLevel, is above the editor's (`Properties.IsHigherPrivileged`).
+- A write is refused ("You cannot modify a higher privileged mobile.") when the object written to, the mobile holding it (an item's `RootParent`), any object a `[set`/`[inc` chain walks through, or any object the props gump stepped through to reach a nested object is a mobile whose AccessLevel, or whose account's AccessLevel, is above the editor's (`Properties.IsHigherPrivileged`).
 
 New code that resolves a staff-facing property by name must use the guard, not reflection directly.
 
