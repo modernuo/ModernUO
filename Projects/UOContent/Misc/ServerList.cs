@@ -88,6 +88,14 @@ namespace Server.Misc
                 var localAddress = localEndPoint.Address;
                 var localPort = localEndPoint.Port;
 
+                // Listed as-is, so ServerInfo sends 0.0.0.0 (reconnect to the login address): an
+                // IPv4 public address may be unreachable for an IPv6 client. Costs the list ping.
+                if (localAddress.AddressFamily == AddressFamily.InterNetworkV6)
+                {
+                    e.AddServer(ServerName, localEndPoint);
+                    return;
+                }
+
                 if (_useServerListingAddressConfig)
                 {
                     localAddress = _publicAddress;
@@ -138,9 +146,14 @@ namespace Server.Misc
             {
                 var iphe = Dns.GetHostEntry(addr);
 
-                if (iphe.AddressList.Length > 0)
+                // Only IPv4 fits in the server list.
+                for (var i = iphe.AddressList.Length - 1; i >= 0; i--)
                 {
-                    outValue = iphe.AddressList[^1];
+                    if (iphe.AddressList[i].AddressFamily == AddressFamily.InterNetwork)
+                    {
+                        outValue = iphe.AddressList[i];
+                        break;
+                    }
                 }
             }
             catch
