@@ -32,10 +32,12 @@ public class STArrayPool<T> : ArrayPool<T>
     public static STArrayPool<T> Shared => _shared;
 
     private int _trimCallbackCreated;
+    private int _trimPosted;
+    private readonly Action _trimOnLoop;
     private static STArray[] _cacheBuckets;
     private STArrayStack[] _buckets = new STArrayStack[BucketCount];
 
-    private STArrayPool() {}
+    private STArrayPool() => _trimOnLoop = TrimOnLoop;
 
     public override T[] Rent(int minimumLength)
     {
@@ -216,6 +218,52 @@ public class STArrayPool<T> : ArrayPool<T>
         return true;
     }
 
+    // Runs on the GC finalizer thread. The pool is single-threaded, so the trim is posted to the loop; the
+    // reads here only decide whether to post, and a stale read just defers the trim to the next Gen2.
+    private static bool OnGen2Gc(object state) => ((STArrayPool<T>)state).PostTrim(Core.LoopContext);
+
+    internal bool PostTrim(EventLoopContext loop)
+    {
+        if (loop != null && HasPooledArrays() && Interlocked.Exchange(ref _trimPosted, 1) == 0)
+        {
+            loop.Post(_trimOnLoop);
+        }
+
+        return true;
+    }
+
+    private void TrimOnLoop()
+    {
+        _trimPosted = 0;
+        Trim();
+    }
+
+    private bool HasPooledArrays()
+    {
+        var cacheBuckets = _cacheBuckets;
+        if (cacheBuckets != null)
+        {
+            for (var i = 0; i < cacheBuckets.Length; i++)
+            {
+                if (cacheBuckets[i].Array != null)
+                {
+                    return true;
+                }
+            }
+        }
+
+        var buckets = _buckets;
+        for (var i = 0; i < buckets.Length; i++)
+        {
+            if (buckets[i] is { IsEmpty: false })
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private STArrayStack CreateBucketStack(int bucketIndex)
     {
         return _buckets[bucketIndex] = new STArrayStack();
@@ -228,7 +276,7 @@ public class STArrayPool<T> : ArrayPool<T>
 
         if (Interlocked.Exchange(ref _trimCallbackCreated, 1) == 0)
         {
-            Gen2GcCallback.Register(o => ((STArrayPool<T>)o).Trim(), this);
+            Gen2GcCallback.Register(OnGen2Gc, this);
         }
 
         return _cacheBuckets = buckets;
@@ -280,6 +328,8 @@ public class STArrayPool<T> : ArrayPool<T>
         private readonly T[][] _arrays = new T[StackArraySize][];
         private int _count;
         private long _ticks;
+
+        public bool IsEmpty => _count == 0;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryPush(T[] array)
