@@ -87,14 +87,14 @@ public static partial class Utility
 
         if (prefixLength == 64)
         {
-            low = 0;
+            low = isMax ? ~0UL : 0UL;
             return;
         }
 
         if (prefixLength < 64)
         {
             var bitsToFlip = 64 - prefixLength;
-            var highMask = isMax ? ~0UL >> bitsToFlip : ~0UL << (bitsToFlip + 1);
+            var highMask = isMax ? ~0UL >> prefixLength : ~0UL << bitsToFlip;
 
             high = isMax ? high | highMask : high & highMask;
             low = isMax ? ~0UL : 0UL;
