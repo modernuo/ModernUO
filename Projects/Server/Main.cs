@@ -244,6 +244,14 @@ public static class Core
 
     // Kept alive for the life of the process: a collected registration silently unregisters.
     private static PosixSignalRegistration _sigtermRegistration;
+    private static int _terminateSignals;
+
+    // A SIGTERM'd server that has not finished shutting down by then is stuck; supervisors otherwise wait
+    // for their own kill timeout (systemd: 90 s).
+    private static readonly TimeSpan TerminateGracePeriod = TimeSpan.FromSeconds(30);
+
+    // 128 + SIGTERM, what the runtime's default handling would have exited with.
+    private const int TerminatedExitCode = 143;
 
     private static bool? _isRunningFromXUnit;
 
@@ -617,16 +625,40 @@ public static class Core
 
     private static void OnTerminateSignal(PosixSignalContext context)
     {
-        if (!ShutdownRouting.ShouldInterceptTerminate(_loopLifecycle))
+        var priorSignals = Interlocked.Increment(ref _terminateSignals) - 1;
+        if (!ShutdownRouting.ShouldInterceptTerminate(_loopLifecycle, priorSignals))
         {
+            if (priorSignals > 0)
+            {
+                logger.Warning("Detected {Signal} again; exiting without waiting for the game loop", context.Signal);
+            }
+
             return;
         }
 
         logger.Information("Detected {Signal}.", context.Signal);
 
-        // Without the cancel the runtime starts exiting on this thread while the loop keeps running.
+        // Without the cancel the runtime starts exiting while the loop keeps running.
         context.Cancel = true;
         Kill();
+
+        ThreadPool.UnsafeQueueUserWorkItem(static _ => ExitIfShutdownHangs(), null);
+    }
+
+    private static void ExitIfShutdownHangs()
+    {
+        if (_shutdownComplete.Wait(TerminateGracePeriod))
+        {
+            return;
+        }
+
+        logger.Error(
+            "The game loop did not shut down within {Timeout}s of SIGTERM; exiting without it",
+            TerminateGracePeriod.TotalSeconds
+        );
+
+        // ProcessExit still gives the loop its bounded chance at HandleClosed.
+        Environment.Exit(TerminatedExitCode);
     }
 
     private static void Console_CancelKeyPressed(object sender, ConsoleCancelEventArgs e)

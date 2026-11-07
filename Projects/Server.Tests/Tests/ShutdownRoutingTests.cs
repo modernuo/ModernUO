@@ -6,11 +6,13 @@ namespace Server.Tests;
 public class ShutdownRoutingTests
 {
     [Theory]
-    [InlineData((int)LoopLifecycle.NotStarted, false)]
-    [InlineData((int)LoopLifecycle.Running, true)]
-    [InlineData((int)LoopLifecycle.ShuttingDown, true)]
-    public void TerminateIsInterceptedOnceTheLoopRuns(int lifecycle, bool expected) =>
-        Assert.Equal(expected, ShutdownRouting.ShouldInterceptTerminate((LoopLifecycle)lifecycle));
+    [InlineData((int)LoopLifecycle.NotStarted, 0, false)]
+    [InlineData((int)LoopLifecycle.Running, 0, true)]
+    [InlineData((int)LoopLifecycle.ShuttingDown, 0, true)]
+    [InlineData((int)LoopLifecycle.Running, 1, false)]
+    [InlineData((int)LoopLifecycle.ShuttingDown, 2, false)]
+    public void OnlyTheFirstTerminateIsInterceptedOnceTheLoopRuns(int lifecycle, int priorSignals, bool expected) =>
+        Assert.Equal(expected, ShutdownRouting.ShouldInterceptTerminate((LoopLifecycle)lifecycle, priorSignals));
 
     [Theory]
     [InlineData((int)LoopLifecycle.NotStarted, (int)ProcessExitRoute.RunHere)]
