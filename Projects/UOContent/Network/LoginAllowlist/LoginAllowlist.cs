@@ -424,7 +424,8 @@ public static class LoginAllowlist
                     continue;
                 }
 
-                _allowed[address.ToSubscriberKey()] = stamp;
+                var key = address.ToSubscriberKey();
+                _allowed[key] = _allowed.TryGetValue(key, out var existing) ? Math.Max(existing, stamp) : stamp;
                 loaded++;
             }
         }

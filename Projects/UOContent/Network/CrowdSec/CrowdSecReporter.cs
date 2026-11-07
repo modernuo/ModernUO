@@ -215,7 +215,11 @@ public sealed class CrowdSecReporter : IBanReporter
             }
             catch (Exception e)
             {
-                logger.Warning(e, "CrowdSec flush-on-stop retract failed for {Network}", network);
+                logger.Warning(
+                    e,
+                    "CrowdSec flush-on-stop retract failed for {Address}",
+                    IsHost(network) ? network.BaseAddress : network
+                );
                 RecordSendFailure(1);
             }
         }

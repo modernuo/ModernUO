@@ -193,7 +193,7 @@ public static class Firewall
     public static IFirewallEntry CreateSubscriberEntry(IPAddress address)
     {
         var network = address.ToSubscriberNetwork();
-        return network.BaseAddress.AddressFamily == AddressFamily.InterNetworkV6 && !network.BaseAddress.IsIPv4MappedToIPv6
+        return network.BaseAddress.AddressFamily == AddressFamily.InterNetworkV6
             ? new CidrFirewallEntry(network.BaseAddress, network.PrefixLength)
             : new SingleIpFirewallEntry(address);
     }

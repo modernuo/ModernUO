@@ -95,7 +95,7 @@ namespace Server.Tests
         [Fact]
         public void SubscriberKey_RespectsPrefix()
         {
-            IPAddressUtility.SetSubscriberPrefixForTesting(56);
+            IPAddressUtility.SetSubscriberPrefix(56);
             try
             {
                 Assert.Equal(
@@ -109,7 +109,7 @@ namespace Server.Tests
             }
             finally
             {
-                IPAddressUtility.SetSubscriberPrefixForTesting(64);
+                IPAddressUtility.SetSubscriberPrefix(64);
             }
         }
 

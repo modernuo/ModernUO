@@ -154,6 +154,7 @@ public partial class NetState
             SendBufferSize,
             MaxSendBufferSize
         );
+
         var configuredSubscriberPrefix = ServerConfiguration.GetOrUpdateSetting("network.ipv6SubscriberPrefix", 64);
         IPAddressUtility.SetSubscriberPrefix(configuredSubscriberPrefix);
         if (IPAddressUtility.SubscriberPrefixLength != configuredSubscriberPrefix)

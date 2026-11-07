@@ -68,8 +68,6 @@ public static class IPAddressUtility
     public static int ClampSubscriberPrefix(int configured) =>
         Math.Clamp(configured, MinSubscriberPrefix, MaxSubscriberPrefix);
 
-    internal static void SetSubscriberPrefixForTesting(int prefix) => SubscriberPrefixLength = prefix;
-
     internal static void SetSubscriberPrefix(int prefix) => SubscriberPrefixLength = ClampSubscriberPrefix(prefix);
 
     // ::ffff:0:0/96 is where ToUInt128 places IPv4, whether it arrived as IPv4 or IPv4-mapped IPv6.

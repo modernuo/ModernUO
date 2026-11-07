@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Net.Sockets;
 using System.Threading;
 using Server.Logging;
 
@@ -114,7 +115,12 @@ public static class BanChannel
     public static Func<IPAddress, string, bool> IsExempt { get; set; }
 
     public static void Report(IPAddress ip, TimeSpan ttl, string reason) =>
-        Report(ip.ToSubscriberNetwork(), ttl, reason, ip);
+        Report(
+            ip.AddressFamily == AddressFamily.InterNetwork ? new IPNetwork(ip, 32) : ip.ToSubscriberNetwork(),
+            ttl,
+            reason,
+            ip
+        );
 
     public static void Report(IPNetwork network, TimeSpan ttl, string reason) =>
         Report(network, ttl, reason, network.BaseAddress);
@@ -124,7 +130,7 @@ public static class BanChannel
         var exempt = IsExempt;
         if (exempt != null && exempt(exemptionAddress, reason))
         {
-            logger.Debug("{Network} not contributed ('{Reason}'): exempt", network, reason);
+            logger.Debug("{Address} not contributed ('{Reason}'): exempt", exemptionAddress, reason);
             return;
         }
 

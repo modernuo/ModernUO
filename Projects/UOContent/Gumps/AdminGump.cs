@@ -665,14 +665,10 @@ namespace Server.Gumps
                             var offset = 140 + i * 20;
 
                             AddLabelCropped(12, offset, 60, 20, LabelHue, accts.Count.ToString());
-                            if (ipAddr.AddressFamily == AddressFamily.InterNetworkV6)
-                            {
-                                AddLabelCropped(72, offset, 120, 20, LabelHue, ipAddr.ToSubscriberNetwork().ToString());
-                            }
-                            else
-                            {
-                                AddLabelCropped(72, offset, 120, 20, LabelHue, ipAddr.ToString());
-                            }
+                            var shown = ipAddr.AddressFamily == AddressFamily.InterNetworkV6 && !ipAddr.IsIPv4MappedToIPv6
+                                ? ipAddr.ToSubscriberNetwork().ToString()
+                                : ipAddr.ToString();
+                            AddLabelCropped(72, offset, 120, 20, LabelHue, shown);
 
                             sb.Reset();
 
@@ -1835,7 +1831,10 @@ namespace Server.Gumps
                     BanChannel.Report(network, TimeSpan.Zero, BanReasons.Manual);
                 }
 
-                notice = $"{toFirewall} : Added to firewall.";
+                var added = toFirewall is IPAddress { AddressFamily: AddressFamily.InterNetworkV6, IsIPv4MappedToIPv6: false } v6
+                    ? v6.ToSubscriberNetwork()
+                    : toFirewall;
+                notice = $"{added} : Added to firewall.";
             }
             else
             {
