@@ -36,6 +36,11 @@ public static class PureGetterClassifier
         }
 
         var target = receiverType != null ? ResolveOverride(method, receiverType) : method;
+        if (target == null)
+        {
+            return false;
+        }
+
         var low = int.MaxValue;
         return Classify(target, receiverType, ref low);
     }
@@ -59,7 +64,8 @@ public static class PureGetterClassifier
             bool pure;
             if (i == 0)
             {
-                pure = Classify(ResolveOverride(getter, runtimeType), runtimeType, ref low);
+                var resolved = ResolveOverride(getter, runtimeType);
+                pure = resolved != null && Classify(resolved, runtimeType, ref low);
             }
             else if (IsOverridable(getter))
             {
@@ -197,6 +203,14 @@ public static class PureGetterClassifier
                     return false;
                 }
             }
+            else if (op == OpCodes.Newobj)
+            {
+                var ctor = module.ResolveMethod(BitConverter.ToInt32(il, operandStart), typeArgs, methodArgs);
+                if (!IsPureValueTypeCtor(ctor))
+                {
+                    return false;
+                }
+            }
             else if (op == OpCodes.Initobj)
             {
                 // Only a local may be reset; initobj through a field or argument address is a store.
@@ -247,10 +261,25 @@ public static class PureGetterClassifier
 
         if (onThis && receiverType != null)
         {
-            return Classify(ResolveOverride(callee, receiverType), receiverType, ref low);
+            var resolved = ResolveOverride(callee, receiverType);
+            return resolved != null && Classify(resolved, receiverType, ref low);
         }
 
         return AllOverridesPure(callee, ref low);
+    }
+
+    // Struct construction allocates nothing on the heap and these constructors only assign fields.
+    private static bool IsPureValueTypeCtor(MethodBase ctor)
+    {
+        var t = ctor.DeclaringType;
+        if (ctor is not ConstructorInfo || t == null || !t.IsValueType)
+        {
+            return false;
+        }
+
+        var def = t.IsGenericType ? t.GetGenericTypeDefinition() : t;
+        return def == typeof(Nullable<>) || def == typeof(TimeSpan) || def == typeof(DateTime) ||
+               def == typeof(Point2D) || def == typeof(Point3D) || def == typeof(Serial);
     }
 
     private static bool IsAllowedOp(OpCode op)
@@ -325,7 +354,7 @@ public static class PureGetterClassifier
         return false;
     }
 
-    // The override of `m` that an instance of `type` runs.
+    // The override of `m` that an instance of `type` runs; null when it cannot be determined, which callers treat as impure.
     private static MethodInfo ResolveOverride(MethodInfo m, Type type)
     {
         if (!m.IsVirtual || type == null)
@@ -339,11 +368,7 @@ public static class PureGetterClassifier
             {
                 if (!type.IsInterface && !type.IsAbstract)
                 {
-                    var mapped = MapInterfaceMethod(type, m);
-                    if (mapped != null)
-                    {
-                        return mapped;
-                    }
+                    return MapInterfaceMethod(type, m);
                 }
 
                 return m;
@@ -365,10 +390,10 @@ public static class PureGetterClassifier
         }
         catch (Exception)
         {
-            // Unresolvable: fall back to the declared method.
+            return null;
         }
 
-        return m;
+        return null;
     }
 
     private static bool SameMethod(MethodInfo a, MethodInfo b) =>

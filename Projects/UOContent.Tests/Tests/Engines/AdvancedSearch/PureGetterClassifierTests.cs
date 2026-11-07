@@ -67,6 +67,27 @@ public class PureGetterClassifierTests
         public int Pong(int depth) => depth <= 0 ? _g : Ping(depth - 1);
     }
 
+    internal struct LocalStruct
+    {
+        public int X;
+
+        public LocalStruct(int x)
+        {
+            X = x;
+        }
+    }
+
+    internal class StructFixture
+    {
+        private int _x = 1;
+        private int _y = 2;
+        private int _z = 3;
+
+        public Point3D Point => new Point3D(_x, _y, _z);
+        public LocalStruct Local => new LocalStruct(_x);
+        public int? Maybe => _x;
+    }
+
     internal class ImpureCycle
     {
         private int _f = 0;
@@ -204,6 +225,23 @@ public class PureGetterClassifierTests
 
     [Fact]
     public void UnknownBcl_IsImpure() => Assert.False(Pure(typeof(Fixture), nameof(Fixture.R)));
+
+    [Fact]
+    public void NewobjAllowlistedStruct_IsPure() => Assert.True(Pure(typeof(StructFixture), nameof(StructFixture.Point)));
+
+    [Fact]
+    public void NewobjNullable_IsPure() => Assert.True(Pure(typeof(StructFixture), nameof(StructFixture.Maybe)));
+
+    [Fact]
+    public void NewobjOtherStruct_IsImpure() => Assert.False(Pure(typeof(StructFixture), nameof(StructFixture.Local)));
+
+    [Fact]
+    public void UnrelatedReceiverType_IsImpure()
+    {
+        // The override cannot be resolved for a type outside the hierarchy, so it must not fall back to the base getter.
+        var name = typeof(ThisVirtualBase).GetProperty(nameof(ThisVirtualBase.DefaultName))!;
+        Assert.False(PureGetterClassifier.IsPure([name], typeof(string)));
+    }
 
     [Fact]
     public void AbstractGetter_IsImpure()
