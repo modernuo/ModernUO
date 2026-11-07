@@ -3,9 +3,11 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.Net;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using ModernUO.CodeGeneratedEvents;
 using Server.Accounting;
 using Server.Accounting.Security;
+using Server.Collections;
 using Server.Engines.CharacterCreation;
 using Server.Engines.Help;
 using Server.Logging;
@@ -24,37 +26,76 @@ public static class AccountHandler
     private static readonly TimeSpan DeleteDelay = TimeSpan.FromDays(7.0);
     private static bool PasswordCommandEnabled;
 
-    private static Dictionary<IPAddress, int> m_IPTable;
+    private static Dictionary<UInt128, int> _accountCounts;
 
     private static readonly SearchValues<char> ForbiddenChars = SearchValues.Create("<>:\"/\\|?*");
 
     public static AccessLevel LockdownLevel { get; set; }
 
-    public static Dictionary<IPAddress, int> IPTable
+    // Zero by default: behind a proxy without real-IP forwarding every player shares one address.
+    internal static int MaxLoginsPerIP { get; set; }
+
+    // Keyed by subscriber so an IPv6 /64 counts as one address, as an IPv4 address does.
+    private static Dictionary<UInt128, int> AccountCounts
     {
         get
         {
-            if (m_IPTable == null)
+            if (_accountCounts == null)
             {
-                m_IPTable = new Dictionary<IPAddress, int>();
+                _accountCounts = new Dictionary<UInt128, int>();
 
                 foreach (Account a in Accounts.GetAccounts())
                 {
                     if (a.LoginIPs.Length > 0)
                     {
-                        var ip = a.LoginIPs[0];
-                        m_IPTable[ip] = (m_IPTable.TryGetValue(ip, out var value) ? value : 0) + 1;
+                        var key = a.LoginIPs[0].ToSubscriberKey();
+                        CollectionsMarshal.GetValueRefOrAddDefault(_accountCounts, key, out _)++;
                     }
                 }
             }
 
-            return m_IPTable;
+            return _accountCounts;
+        }
+    }
+
+    public static int GetAccountCount(IPAddress ip) =>
+        ip != null && AccountCounts.TryGetValue(ip.ToSubscriberKey(), out var count) ? count : 0;
+
+    public static void IncrementAccountCount(IPAddress ip)
+    {
+        if (ip != null)
+        {
+            CollectionsMarshal.GetValueRefOrAddDefault(AccountCounts, ip.ToSubscriberKey(), out _)++;
+        }
+    }
+
+    public static void DecrementAccountCount(IPAddress ip)
+    {
+        if (ip == null)
+        {
+            return;
+        }
+
+        var counts = AccountCounts;
+        var key = ip.ToSubscriberKey();
+
+        if (counts.TryGetValue(key, out var count))
+        {
+            if (count > 1)
+            {
+                counts[key] = count - 1;
+            }
+            else
+            {
+                counts.Remove(key);
+            }
         }
     }
 
     public static void Configure()
     {
         MaxAccountsPerIP = ServerConfiguration.GetOrUpdateSetting("accountHandler.maxAccountsPerIP", 1);
+        MaxLoginsPerIP = ServerConfiguration.GetOrUpdateSetting("accountHandler.maxLoginsPerIP", 0);
         AutoAccountCreation = ServerConfiguration.GetOrUpdateSetting("accountHandler.enableAutoAccountCreation", true);
         PasswordCommandEnabled = ServerConfiguration.GetOrUpdateSetting(
             "accountHandler.enablePlayerPasswordCommand",
@@ -247,8 +288,45 @@ public static class AccountHandler
         state.SendCharacterListUpdate(acct);
     }
 
-    public static bool CanCreate(IPAddress ip) =>
-        !IPTable.TryGetValue(ip, out var result) || result < MaxAccountsPerIP;
+    public static bool CanCreate(IPAddress ip) => GetAccountCount(ip) < MaxAccountsPerIP;
+
+    internal static bool IsAtLoginCap(NetState state, Account acct) => IsAtLoginCap(state, acct, NetState.Instances);
+
+    /// <summary>
+    /// Counts distinct other player accounts connected from the same subscriber. The account itself is
+    /// excluded because its login-server connection can still be open when it relays to the game server.
+    /// </summary>
+    internal static bool IsAtLoginCap(NetState state, Account acct, HashSet<NetState> candidates)
+    {
+        var address = state.Address;
+
+        if (MaxLoginsPerIP <= 0 || acct.AccessLevel > AccessLevel.Player || address == null)
+        {
+            return false;
+        }
+
+        using var seen = PooledRefList<IAccount>.Create(MaxLoginsPerIP);
+
+        foreach (var ns in candidates)
+        {
+            var other = ns.Account;
+
+            if (ns == state || other == null || other == acct || other.AccessLevel != AccessLevel.Player ||
+                !ns.Address.IsSameSubscriber(address) || seen.Contains(other))
+            {
+                continue;
+            }
+
+            seen.Add(other);
+
+            if (seen.Count >= MaxLoginsPerIP)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsValidUsername(ReadOnlySpan<char> username) =>
@@ -367,6 +445,18 @@ public static class AccountHandler
         {
             logger.Information("Login: {NetState} Banned account '{Username}'", e.State, acct.Username);
             e.RejectReason = ALRReason.Blocked;
+            return;
+        }
+
+        if (IsAtLoginCap(e.State, acct))
+        {
+            logger.Information(
+                "Login: {NetState} Account '{Username}' refused, {Count} accounts already logged in from this address",
+                e.State,
+                acct.Username,
+                MaxLoginsPerIP
+            );
+            e.RejectReason = ALRReason.InUse;
             return;
         }
 
