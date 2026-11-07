@@ -113,12 +113,18 @@ public static class BanChannel
     /// </remarks>
     public static Func<IPAddress, string, bool> IsExempt { get; set; }
 
-    public static void Report(IPAddress ip, TimeSpan ttl, string reason)
+    public static void Report(IPAddress ip, TimeSpan ttl, string reason) =>
+        Report(ip.ToSubscriberNetwork(), ttl, reason, ip);
+
+    public static void Report(IPNetwork network, TimeSpan ttl, string reason) =>
+        Report(network, ttl, reason, network.BaseAddress);
+
+    private static void Report(IPNetwork network, TimeSpan ttl, string reason, IPAddress exemptionAddress)
     {
         var exempt = IsExempt;
-        if (exempt != null && exempt(ip, reason))
+        if (exempt != null && exempt(exemptionAddress, reason))
         {
-            logger.Debug("{Address} not contributed ('{Reason}'): exempt", ip, reason);
+            logger.Debug("{Network} not contributed ('{Reason}'): exempt", network, reason);
             return;
         }
 
@@ -127,7 +133,7 @@ public static class BanChannel
         {
             try
             {
-                reporters[i].Report(ip, ttl, reason);
+                reporters[i].Report(network, ttl, reason);
             }
             catch (Exception e)
             {
@@ -137,7 +143,10 @@ public static class BanChannel
     }
 
     /// <summary>Fans a retraction (manual unban) out to every retract-capable reporter.</summary>
-    public static void Retract(IPAddress ip)
+    public static void Retract(IPAddress ip) => Retract(ip.ToSubscriberNetwork());
+
+    /// <summary>Fans a retraction (manual unban) out to every retract-capable reporter.</summary>
+    public static void Retract(IPNetwork network)
     {
         var reporters = _reporters;
         for (var i = 0; i < reporters.Length; i++)
@@ -149,7 +158,7 @@ public static class BanChannel
 
             try
             {
-                reporters[i].Retract(ip);
+                reporters[i].Retract(network);
             }
             catch (Exception e)
             {

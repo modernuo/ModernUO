@@ -33,7 +33,7 @@ public sealed class CrowdSecReporter : IBanReporter
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(CrowdSecReporter));
 
-    internal readonly record struct ReportItem(IPAddress Ip, TimeSpan Ttl, string Reason, bool Retract);
+    internal readonly record struct ReportItem(IPNetwork Network, TimeSpan Ttl, string Reason, bool Retract);
 
     // Bounded retry for transient LAPI failures during a drain send (network blips, 5xx). Distinct from
     // CrowdSecAlertClient.SendWithRetryAsync's single 401-relogin retry, which is an auth concern.
@@ -202,7 +202,7 @@ public sealed class CrowdSecReporter : IBanReporter
                 break; // out of budget; the rest self-heal via ManualBanDuration
             }
 
-            var ip = retracts[i].Ip;
+            var ip = retracts[i].Network.BaseAddress;
             if (!seen.Add(ip.ToString()))
             {
                 continue;
@@ -220,11 +220,11 @@ public sealed class CrowdSecReporter : IBanReporter
         }
     }
 
-    public void Report(IPAddress address, TimeSpan ttl, string reason) =>
-        Enqueue(new ReportItem(address, ttl, reason, false));
+    public void Report(IPNetwork network, TimeSpan ttl, string reason) =>
+        Enqueue(new ReportItem(network, ttl, reason, false));
 
-    public void Retract(IPAddress address) =>
-        Enqueue(new ReportItem(address, TimeSpan.Zero, "retract", true));
+    public void Retract(IPNetwork network) =>
+        Enqueue(new ReportItem(network, TimeSpan.Zero, "retract", true));
 
     private void Enqueue(ReportItem item)
     {
@@ -283,7 +283,7 @@ public sealed class CrowdSecReporter : IBanReporter
 
                 for (var i = 0; i < retracts.Count; i++)
                 {
-                    var ip = retracts[i].Ip;
+                    var ip = retracts[i].Network.BaseAddress;
                     if (!await SendWithBoundedRetryAsync(() => _client.DeleteDecisionsAsync(_settings.Origin, ip, token), token)
                             .ConfigureAwait(false))
                     {
@@ -353,7 +353,7 @@ public sealed class CrowdSecReporter : IBanReporter
         Dictionary<string, ReportItem> byIp = [];
         foreach (var item in items)
         {
-            byIp[item.Ip.ToString()] = item;
+            byIp[item.Network.BaseAddress.ToString()] = item;
         }
 
         var timestamp = FormatTimestamp(nowUtc);

@@ -337,7 +337,8 @@ public sealed class AutoDenylistReporter : IBanReporter
     /// The contributed <paramref name="ttl"/> is ignored: how long a bouncer should ban an address is a
     /// different question from how long this shard holds it at accept.
     /// </summary>
-    public void Report(IPAddress address, TimeSpan ttl, string reason) => AutoDenylist.Hold(address, reason);
+    public void Report(IPNetwork network, TimeSpan ttl, string reason) =>
+        AutoDenylist.Hold(network.BaseAddress, reason);
 
-    public void Retract(IPAddress address) => AutoDenylist.Release(address);
+    public void Retract(IPNetwork network) => AutoDenylist.Release(network.BaseAddress);
 }

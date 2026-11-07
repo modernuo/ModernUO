@@ -41,9 +41,9 @@ public class CrowdSecReporterTests
         var now = DateTime.UnixEpoch;
         var items = new List<CrowdSecReporter.ReportItem>
         {
-            new(IPAddress.Parse("1.1.1.1"), TimeSpan.FromHours(1), "rate-limit", false),
-            new(IPAddress.Parse("1.1.1.1"), TimeSpan.FromHours(1), "rate-limit", false),
-            new(IPAddress.Parse("2.2.2.2"), TimeSpan.FromHours(1), "rate-limit", false)
+            new(new IPNetwork(IPAddress.Parse("1.1.1.1"), 32), TimeSpan.FromHours(1), "rate-limit", false),
+            new(new IPNetwork(IPAddress.Parse("1.1.1.1"), 32), TimeSpan.FromHours(1), "rate-limit", false),
+            new(new IPNetwork(IPAddress.Parse("2.2.2.2"), 32), TimeSpan.FromHours(1), "rate-limit", false)
         };
 
         var alerts = CrowdSecReporter.BuildAlerts(items, Settings(), now);
@@ -58,7 +58,7 @@ public class CrowdSecReporterTests
     public void BuildAlerts_ScenarioFromReason_OriginFromSettings()
     {
         var alerts = CrowdSecReporter.BuildAlerts(
-            [new(IPAddress.Parse("3.3.3.3"), TimeSpan.FromHours(1), "manual", false)],
+            [new(new IPNetwork(IPAddress.Parse("3.3.3.3"), 32), TimeSpan.FromHours(1), "manual", false)],
             Settings(),
             DateTime.UnixEpoch);
 
@@ -74,7 +74,7 @@ public class CrowdSecReporterTests
     public void BuildAlerts_ScenarioFromReason_Blocklist()
     {
         var alerts = CrowdSecReporter.BuildAlerts(
-            [new(IPAddress.Parse("5.5.5.5"), TimeSpan.FromHours(1), "blocklist", false)],
+            [new(new IPNetwork(IPAddress.Parse("5.5.5.5"), 32), TimeSpan.FromHours(1), "blocklist", false)],
             Settings(),
             DateTime.UnixEpoch);
 
@@ -92,7 +92,7 @@ public class CrowdSecReporterTests
     public void BuildAlerts_SerializedPayload_CarriesRequiredScenarioFields()
     {
         var alerts = CrowdSecReporter.BuildAlerts(
-            [new(IPAddress.Parse("9.9.9.9"), TimeSpan.FromHours(1), "rate-limit", false)],
+            [new(new IPNetwork(IPAddress.Parse("9.9.9.9"), 32), TimeSpan.FromHours(1), "rate-limit", false)],
             Settings(),
             DateTime.UnixEpoch);
 
@@ -158,7 +158,7 @@ public class CrowdSecReporterTests
 
         for (var i = 0; i < 10; i++)
         {
-            reporter.Report(IPAddress.Parse("4.4.4." + i), TimeSpan.FromHours(1), "rate-limit");
+            reporter.Report(new IPNetwork(IPAddress.Parse("4.4.4." + i), 32), TimeSpan.FromHours(1), "rate-limit");
         }
 
         Assert.True(reporter.DroppedCount >= 8);
@@ -172,7 +172,7 @@ public class CrowdSecReporterTests
         var client = new RecordingAlertClient();
         var reporter = new CrowdSecReporter(client, Settings());
 
-        reporter.Report(IPAddress.Parse("6.6.6.6"), TimeSpan.FromHours(1), "rate-limit");
+        reporter.Report(new IPNetwork(IPAddress.Parse("6.6.6.6"), 32), TimeSpan.FromHours(1), "rate-limit");
         reporter.Stop();
 
         var posted = Assert.Single(client.Posted);
@@ -186,7 +186,7 @@ public class CrowdSecReporterTests
         var client = new RecordingAlertClient();
         var reporter = new CrowdSecReporter(client, Settings());
 
-        reporter.Retract(IPAddress.Parse("8.8.8.8"));
+        reporter.Retract(new IPNetwork(IPAddress.Parse("8.8.8.8"), 32));
         reporter.Stop();
 
         Assert.Equal(IPAddress.Parse("8.8.8.8"), Assert.Single(client.Deleted));
@@ -198,7 +198,7 @@ public class CrowdSecReporterTests
     {
         var reporter = new CrowdSecReporter(new ThrowingAlertClient(), Settings());
 
-        reporter.Report(IPAddress.Parse("7.7.7.7"), TimeSpan.FromHours(1), "rate-limit");
+        reporter.Report(new IPNetwork(IPAddress.Parse("7.7.7.7"), 32), TimeSpan.FromHours(1), "rate-limit");
         reporter.Stop();
 
         Assert.Equal(1, reporter.SendFailureCount);
@@ -237,7 +237,7 @@ public class CrowdSecReporterTests
         var drain = reporter.DrainTaskForTesting;
         Assert.NotNull(drain);
 
-        reporter.Report(IPAddress.Parse("9.9.9.9"), TimeSpan.FromHours(1), "rate-limit");
+        reporter.Report(new IPNetwork(IPAddress.Parse("9.9.9.9"), 32), TimeSpan.FromHours(1), "rate-limit");
         await client.Posted.Task.WaitAsync(TimeSpan.FromSeconds(10));
 
         Assert.False(drain.IsCompleted, "drain task completed while the loop was still running");
