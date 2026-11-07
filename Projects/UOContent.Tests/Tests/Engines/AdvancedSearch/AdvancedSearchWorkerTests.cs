@@ -156,7 +156,7 @@ public class AdvancedSearchWorkerTests
     // A KeyRing stands in for any ignore source: what it hides is collected on the loop, but the source
     // itself is still a search candidate.
     [Fact]
-    public void Worker_HouseIsIgnoreSourceAndStillMatches()
+    public void Worker_IgnoreSourceIsQueuedAndStillEvaluated()
     {
         var keyRing = new KeyRing();
         keyRing.MoveToWorld(new Point3D(1000, 1000, 0), Map.Felucca);
