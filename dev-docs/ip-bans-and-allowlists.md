@@ -76,10 +76,9 @@ account access list) use /24 for IPv4 and the subscriber prefix for IPv6.
 
 ### Known limits
 
-- IPv6 CIDR ranges with a prefix of `/64` or shorter previously had wrong bounds (this also made `fc00::/7`
-  report as non-private). Firewall entries saved before the fix keep their stored min-max bounds; remove and
-  re-add them.
-- After the CIDR fix, ULA (`fc00::/7`) addresses count as private: they bypass the connection rate limiter and
+- Firewall entries are stored as a min-max range. IPv6 entries saved by builds before #2750 can carry wrong
+  bounds for prefixes of `/64` or shorter; remove and re-add them.
+- ULA (`fc00::/7`) and `::1` addresses are private: they bypass the connection rate limiter and
   login-allowlist checks and the server list treats them as local.
 - Dual-stack players (one person on both an IPv4 and an IPv6 address) are counted separately.
 - Plugins: `IBanReporter.Report`/`Retract` now take `IPNetwork`, and `AccountHandler.IPTable` is replaced by
