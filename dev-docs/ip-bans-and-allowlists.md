@@ -46,6 +46,41 @@ attacker is trying to flood — pays nothing for them. The accept gate itself is
 a whitelist there could only turn a deny into an allow at the cost of a lookup on every accept, the
 attacker's included.
 
+## IPv6 subscribers
+
+One IPv4 address is roughly one household; one IPv6 address is not, because a subscriber is delegated a whole
+prefix and can rotate addresses inside it at will. Every "same person" check therefore keys IPv6 by the
+**subscriber prefix** and IPv4 by the address (unchanged).
+
+| Setting | Default | Notes |
+|---|---|---|
+| `network.ipv6SubscriberPrefix` | `64` | Valid `48`-`64`; out-of-range values are clamped with a warning |
+| `accountHandler.maxLoginsPerIP` | `0` (off) | Caps other logged-in player accounts from one subscriber; staff are exempt. `10` is a reasonable start |
+
+Per-subscriber: the connection rate limiter, the account-creation cap (`accountHandler.maxAccountsPerIP`),
+the auto-denylist, the login allowlist, blocklist report suppression, the champion spawn proximity trigger,
+the admin accounts-by-IP views and the per-IP command implementor. The "class C" checks (raffle, shard poll,
+account access list) use /24 for IPv4 and the subscriber prefix for IPv6.
+
+### Banning
+
+- Banning a **player** (`[ban`, the admin gump) widens an IPv6 address to its subscriber network. IPv4 stays a
+  single address.
+- An address typed into the firewall box is kept exactly as typed.
+- `BanChannel` carries an `IPNetwork`, not an address. `IBanReporter.Report`/`Retract` take `IPNetwork`.
+- CrowdSec receives IPv6 subscriber bans as **scope `Range`** decisions (CIDR value); IPv4 is reported as a
+  single `Ip` decision as before. Reporting and retraction use each firewall entry's own range: IPv4 single
+  address, IPv6 the exact CIDR (`/48`-`/128`).
+
+### Known limits
+
+- IPv6 CIDR ranges with a prefix of `/64` or shorter previously had wrong bounds (this also made `fc00::/7`
+  report as non-private). Firewall entries saved before the fix keep their stored min-max bounds; remove and
+  re-add them.
+- Dual-stack players (one person on both an IPv4 and an IPv6 address) are counted separately.
+- Plugins: `IBanReporter.Report`/`Retract` now take `IPNetwork`, and `AccountHandler.IPTable` is replaced by
+  `GetAccountCount`/`IncrementAccountCount`/`DecrementAccountCount`.
+
 ## Unblocking a player
 
 ### 1. Find out what is actually blocking them
@@ -214,6 +249,7 @@ firewalled off. Shortening the 5s handshake window has been tried and broke real
 | `auto-denylist.json` | `enabled`, `duration`, `maxEntries` (default `324,449` — sized for the floods seen in practice; see the remark on the setting before raising it) |
 | `crowdsec.json` | `lapiUrl`, `machineId`, `password`, `origin`, `manualBanDuration`, `flushInterval`, `maxQueue` |
 | `firewall.json` | Admin-curated entries |
+| `modernuo.json` | `network.ipv6SubscriberPrefix`, `accountHandler.maxLoginsPerIP` (see [IPv6 subscribers](#ipv6-subscribers)) |
 
 A shard fronted by an upstream proxy can disable all of it and register nothing.
 
@@ -233,4 +269,5 @@ A shard fronted by an upstream proxy can disable all of it and register nothing.
 | `Projects/UOContent/Network/AutoDenylist/AutoDenylist.cs` | Short-lived local hold |
 | `Projects/UOContent/Network/CrowdSec/CrowdSecReporter.cs` | LAPI contribution sink |
 | `Projects/UOContent/Network/Firewall/Firewall.cs` | Admin-curated firewall set |
+| `Projects/Server/Utilities/IPAddressUtility.cs` | Subscriber-prefix keying helpers |
 | `tools/Export-IpBlocklist.ps1` | Blocklist generator + allowlist subtraction |
