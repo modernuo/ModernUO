@@ -34,7 +34,7 @@ internal readonly struct SerializedSegment
     public readonly int SlotCount;
     public readonly long HeapStart;
     public readonly int LengthsStart;
-    public readonly int RecordCount;
+    public readonly int RecordCount;   // entries in the lengths log, skipped records included
     public readonly int EntitiesStart; // buffer segments only
 
     public SerializedSegment(
@@ -77,6 +77,19 @@ public class SerializationThreadWorker
     internal List<SerializedSegment> Segments => _segments;
     internal List<int> Lengths => _lengths;
     internal List<IGenericSerializable> BufferEntities => _bufferEntities;
+
+    /// <summary>
+    /// Lengths-log marker for an entity left out of the save. Its bytes are never written to the heap.
+    /// </summary>
+    internal const int SkippedRecord = -1;
+
+    /// <summary>
+    /// Whether an entity is left out of the save. Only valid while the world is frozen: the answer
+    /// depends on the entity's parent, which can change once the snapshot writer is running.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static bool SkipsSerialization(IGenericSerializable e) =>
+        e is Item { SkipSerialization: true } or Mobile { SkipSerialization: true };
 
     /// <summary>
     /// First serializer exception during the drain. The drain continues so the handshake
@@ -199,7 +212,9 @@ public class SerializationThreadWorker
             if (serialized > 0)
             {
                 _segments.Add(
-                    new SerializedSegment(chunk.Source, chunk.Offset, chunk.Count, heapStart, lengthsStart, serialized, -1)
+                    new SerializedSegment(
+                        chunk.Source, chunk.Offset, chunk.Count, heapStart, lengthsStart, _lengths.Count - lengthsStart, -1
+                    )
                 );
             }
 
@@ -212,13 +227,24 @@ public class SerializationThreadWorker
         var bufferHeapStart = writer.Position;
         var bufferLengthsStart = _lengths.Count;
         var entitiesStart = _bufferEntities.Count;
+        var bufferSerialized = 0;
 
         for (var i = 0; i < count; i++)
         {
             var e = buffer[i];
-            var start = writer.Position;
-            e.Serialize(writer);
-            _lengths.Add((int)(writer.Position - start));
+
+            if (SkipsSerialization(e))
+            {
+                _lengths.Add(SkippedRecord);
+            }
+            else
+            {
+                var start = writer.Position;
+                e.Serialize(writer);
+                _lengths.Add((int)(writer.Position - start));
+                bufferSerialized++;
+            }
+
             _bufferEntities.Add(e);
         }
 
@@ -227,7 +253,7 @@ public class SerializationThreadWorker
         );
 
         _chunkSource.Return(buffer, count);
-        return count;
+        return bufferSerialized;
     }
 
     /// <summary>
