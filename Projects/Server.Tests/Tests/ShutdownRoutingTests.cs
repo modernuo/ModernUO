@@ -1,0 +1,27 @@
+using Xunit;
+
+namespace Server.Tests;
+
+// Enums travel as ints: the routing types are internal, and a public test method cannot take them.
+public class ShutdownRoutingTests
+{
+    [Theory]
+    [InlineData((int)LoopLifecycle.NotStarted, false)]
+    [InlineData((int)LoopLifecycle.Running, true)]
+    [InlineData((int)LoopLifecycle.ShuttingDown, true)]
+    public void TerminateIsInterceptedOnceTheLoopRuns(int lifecycle, bool expected) =>
+        Assert.Equal(expected, ShutdownRouting.ShouldInterceptTerminate((LoopLifecycle)lifecycle));
+
+    [Theory]
+    [InlineData(true, (int)LoopLifecycle.NotStarted, (int)ProcessExitRoute.RunHere)]
+    [InlineData(true, (int)LoopLifecycle.Running, (int)ProcessExitRoute.RunHere)]
+    [InlineData(true, (int)LoopLifecycle.ShuttingDown, (int)ProcessExitRoute.RunHere)]
+    [InlineData(false, (int)LoopLifecycle.NotStarted, (int)ProcessExitRoute.RunHere)]
+    [InlineData(false, (int)LoopLifecycle.Running, (int)ProcessExitRoute.WaitForLoop)]
+    [InlineData(false, (int)LoopLifecycle.ShuttingDown, (int)ProcessExitRoute.WaitForLoop)]
+    public void ProcessExitWaitsForTheLoopOnlyFromAnotherThread(bool onLoopThread, int lifecycle, int expected) =>
+        Assert.Equal(
+            (ProcessExitRoute)expected,
+            ShutdownRouting.RouteProcessExit(onLoopThread, (LoopLifecycle)lifecycle)
+        );
+}
