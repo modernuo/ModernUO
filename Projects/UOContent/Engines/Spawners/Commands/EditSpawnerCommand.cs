@@ -64,31 +64,7 @@ public class EditSpawnCommand : BaseCommand
             return;
         }
 
-        var argSpan = e.ArgString.AsSpan(name.Length + 1);
-        var setIndex = argSpan.InsensitiveIndexOf("set ");
-        var where = argSpan.InsensitiveIndexOf("where ");
-
-        ReadOnlySpan<char> props = null, findmatch = null;
-
-        if (setIndex > -1 || where > -1)
-        {
-            var start = setIndex + 4;
-            var len = where > -1 ? where : argSpan.Length;
-            findmatch = argSpan.Slice(len < argSpan.Length ? len + 6 : argSpan.Length);
-            if (setIndex > -1)
-            {
-                props = argSpan[start..^len];
-                argSpan = argSpan[..setIndex];
-            }
-            else
-            {
-                argSpan = argSpan[..^len];
-            }
-        }
-
-        var argStr = argSpan.ToString().DefaultIfNullOrEmpty(null);
-        var propsStr = props.ToString().DefaultIfNullOrEmpty(null);
-        var whereStr = findmatch.ToString().DefaultIfNullOrEmpty(null);
+        ParseArguments(e.ArgString, name, out var argStr, out var propsStr, out var whereStr);
 
         e.Mobile.SendMessage("Updating spawners...");
 
@@ -101,6 +77,38 @@ public class EditSpawnCommand : BaseCommand
         }
 
         e.Mobile.SendMessage("Update completed.");
+    }
+
+    /// <summary>
+    /// Splits <c>&lt;type&gt; [arguments] [set &lt;properties&gt;] [where &lt;properties&gt;]</c> into its parts.
+    /// Each part is trimmed, and is null when absent or empty.
+    /// </summary>
+    internal static void ParseArguments(
+        string argString, string name, out string arguments, out string properties, out string where
+    )
+    {
+        var argSpan = argString.Length > name.Length ? argString.AsSpan(name.Length + 1) : default;
+        var setIndex = argSpan.InsensitiveIndexOf("set ");
+        var whereIndex = argSpan.InsensitiveIndexOf("where ");
+
+        var end = whereIndex > -1 ? whereIndex : argSpan.Length;
+        var findmatch = whereIndex > -1 ? argSpan[(whereIndex + 6)..] : default;
+        ReadOnlySpan<char> props = default;
+
+        // A "set " after "where " is part of the where clause.
+        if (setIndex > -1 && setIndex < end)
+        {
+            props = argSpan[(setIndex + 4)..end];
+            argSpan = argSpan[..setIndex];
+        }
+        else
+        {
+            argSpan = argSpan[..end];
+        }
+
+        arguments = argSpan.Trim().ToString().DefaultIfNullOrEmpty(null);
+        properties = props.Trim().ToString().DefaultIfNullOrEmpty(null);
+        where = findmatch.Trim().ToString().DefaultIfNullOrEmpty(null);
     }
 
     public static void UpdateSpawner(BaseSpawner spawner, string name, string arguments, string properties, string find = null)

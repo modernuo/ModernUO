@@ -81,6 +81,12 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     internal ProtocolState _protocolState = ProtocolState.AwaitingSeed;
     private bool _packetLogging;
 
+    // Before the login packet the first byte may be ciphertext, so matching an info packet id proves nothing
+    private bool IsPostAuth =>
+        _protocolState is ProtocolState.LoginServer_AwaitingServerSelect
+            or ProtocolState.LoginServer_ServerSelectAck
+            or ProtocolState.GameServer_LoggedIn;
+
     // Whether ANY inbound bytes have arrived: what separates a slow client from a socket held open on
     // purpose. See BanSettings.ReportBadConnects.
     internal bool _receivedData;
@@ -833,8 +839,8 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
                 var packetId = packetReader.ReadByte();
                 var packetLength = length;
 
-                // These can arrive at any time and are only informational
-                if (_protocolState != ProtocolState.AwaitingSeed && IncomingPackets.IsInfoPacket(packetId))
+                // These can arrive at any time after auth and are only informational
+                if (IsPostAuth && IncomingPackets.IsInfoPacket(packetId))
                 {
                     _parserState = ParserState.ProcessingPacket;
                     _parserState = HandlePacket(packetReader, packetId, out packetLength);
@@ -926,17 +932,10 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
                         case ProtocolState.LoginServer_AwaitingLogin:
                             {
-                                // Check for unencrypted login packet
-                                if (packetId == 0x80)
+                                // An encrypted login starts with 0x80 for one seed in 256, so the first byte
+                                // proves plaintext only when encrypted clients are not accepted
+                                if (packetId == 0x80 && !EncryptionManager.AcceptsEncrypted)
                                 {
-                                    // Unencrypted - check if allowed
-                                    if (EncryptionManager.Enabled && !EncryptionManager.Mode.HasFlag(EncryptionMode.Unencrypted))
-                                    {
-                                        LogInfo("Unencrypted client rejected by encryption policy.");
-                                        HandleError(packetId, packetLength);
-                                        return;
-                                    }
-
                                     _parserState = ParserState.ProcessingPacket;
                                     _parserState = HandlePacket(packetReader, packetId, out packetLength);
                                     if (_parserState == ParserState.AwaitingNextPacket)
@@ -964,7 +963,11 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
                                 // Try to detect and decrypt encrypted login
                                 if (!this.DetectLoginEncryption(buffer[..62], out var loginEncryption))
                                 {
-                                    LogInfo("Encrypted client detection failed, disconnecting...");
+                                    LogInfo(
+                                        packetId == 0x80 && !EncryptionManager.Mode.HasFlag(EncryptionMode.Unencrypted)
+                                            ? "Unencrypted client rejected by encryption policy."
+                                            : "Encrypted client detection failed, disconnecting..."
+                                    );
                                     HandleError(packetId, packetLength);
                                     return;
                                 }
@@ -1023,37 +1026,48 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
                         case ProtocolState.GameServer_AwaitingGameServerLogin:
                             {
-                                // Some clients send 0x80 on game server connection
-                                if (packetId == 0x80 || length == 62)
+                                if (EncryptionManager.AcceptsEncrypted)
                                 {
-                                    goto case ProtocolState.LoginServer_AwaitingLogin;
-                                }
-
-                                // Check for unencrypted game login packet
-                                if (packetId == 0x91)
-                                {
-                                    // Unencrypted - check if allowed
-                                    if (EncryptionManager.Enabled && !EncryptionManager.Mode.HasFlag(EncryptionMode.Unencrypted))
+                                    // Neither the first byte nor a 62-byte read tells a 0x80 from an encrypted
+                                    // 0x91, which can start with either byte and arrive split. The auth id does:
+                                    // a 0x91 carries the seed, in the clear or once decrypted.
+                                    if (length < 5)
                                     {
-                                        LogInfo("Unencrypted game client rejected by encryption policy.");
+                                        _parserState = ParserState.AwaitingPartialPacket;
+                                        break;
+                                    }
+
+                                    // Pre-0xEF clients seed the login server like a game server, so their 0x80
+                                    // lands here
+                                    if (!this.IsGameLoginStart(buffer[..5]))
+                                    {
+                                        goto case ProtocolState.LoginServer_AwaitingLogin;
+                                    }
+                                }
+                                else
+                                {
+                                    // Some clients send 0x80 on game server connection
+                                    if (packetId == 0x80 || length == 62)
+                                    {
+                                        goto case ProtocolState.LoginServer_AwaitingLogin;
+                                    }
+
+                                    if (packetId == 0x91)
+                                    {
+                                        _parserState = ParserState.ProcessingPacket;
+                                        _parserState = HandlePacket(packetReader, packetId, out packetLength);
+                                        if (_parserState == ParserState.AwaitingNextPacket)
+                                        {
+                                            _protocolState = ProtocolState.GameServer_LoggedIn;
+                                        }
+                                        break;
+                                    }
+
+                                    if (!EncryptionManager.Enabled)
+                                    {
                                         HandleError(packetId, packetLength);
                                         return;
                                     }
-
-                                    _parserState = ParserState.ProcessingPacket;
-                                    _parserState = HandlePacket(packetReader, packetId, out packetLength);
-                                    if (_parserState == ParserState.AwaitingNextPacket)
-                                    {
-                                        _protocolState = ProtocolState.GameServer_LoggedIn;
-                                    }
-                                    break;
-                                }
-
-                                // First byte isn't 0x91 - might be encrypted
-                                if (!EncryptionManager.Enabled)
-                                {
-                                    HandleError(packetId, packetLength);
-                                    return;
                                 }
 
                                 // Need 65 bytes for game login packet to attempt decryption
@@ -1066,7 +1080,11 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
                                 // Try to detect and decrypt encrypted game login
                                 if (!this.DetectGameEncryption(buffer[..65], out var gameEncryption))
                                 {
-                                    LogInfo("Encrypted game client detection failed, disconnecting...");
+                                    LogInfo(
+                                        packetId == 0x91 && !EncryptionManager.Mode.HasFlag(EncryptionMode.Unencrypted)
+                                            ? "Unencrypted game client rejected by encryption policy."
+                                            : "Encrypted game client detection failed, disconnecting..."
+                                    );
                                     HandleError(packetId, packetLength);
                                     return;
                                 }

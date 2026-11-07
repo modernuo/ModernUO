@@ -224,7 +224,13 @@ public static partial class CharacterCreation
         newChar.Player = true;
         newChar.AccessLevel = args.Account.AccessLevel;
         newChar.Female = args.Female;
-        newChar.Hue = newChar.Race.ClipSkinHue(args.Hue & 0x3FFF) | 0x8000;
+
+        var race = newChar.AccessLevel == AccessLevel.Player && Core.Expansion >= args.Race.RequiredExpansion
+            ? args.Race
+            : Race.DefaultRace;
+
+        newChar.Race = race;
+        newChar.Hue = race.ClipSkinHue(args.Hue & 0x3FFF) | 0x8000;
         newChar.Hunger = 20;
 
         SetName(newChar, args.Name);
@@ -232,9 +238,6 @@ public static partial class CharacterCreation
 
         if (newChar.AccessLevel == AccessLevel.Player)
         {
-            var race = Core.Expansion >= args.Race.RequiredExpansion ? args.Race : Race.DefaultRace;
-            newChar.Race = race;
-
             if (newChar is PlayerMobile pm)
             {
                 if (((Account)pm.Account).Young)

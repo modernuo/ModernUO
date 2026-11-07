@@ -1113,7 +1113,10 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
     /// <param name="minZ">Minimum Z (inclusive)</param>
     /// <param name="maxZ">Maximum Z (inclusive)</param>
     /// <param name="canSwim">Whether the spawned entity can swim (water surfaces valid)</param>
-    /// <param name="cantWalk">Whether the spawned entity cannot walk (water-only)</param>
+    /// <param name="cantWalk">
+    /// Whether the spawned entity cannot walk. Only a swimmer that cannot walk is water-only; a non-swimmer that
+    /// cannot walk is a stationary land mobile and stands on the same surfaces as a walker.
+    /// </param>
     /// <param name="spawnZ">The valid spawn Z if found</param>
     /// <returns>True if a valid spawn Z was found within the range</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1130,7 +1133,10 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
     /// <param name="minZ">Minimum Z (inclusive)</param>
     /// <param name="maxZ">Maximum Z (inclusive)</param>
     /// <param name="canSwim">Whether the spawned entity can swim (water surfaces valid)</param>
-    /// <param name="cantWalk">Whether the spawned entity cannot walk (water-only)</param>
+    /// <param name="cantWalk">
+    /// Whether the spawned entity cannot walk. Only a swimmer that cannot walk is water-only; a non-swimmer that
+    /// cannot walk is a stationary land mobile and stands on the same surfaces as a walker.
+    /// </param>
     /// <param name="spawnZ">The valid spawn Z if found</param>
     /// <param name="failureReason">Indicates why spawn failed (if it did)</param>
     /// <returns>True if a valid spawn Z was found within the range</returns>
@@ -1159,6 +1165,8 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         var openSlots = BitMask256.AllSet();
         var surfaces = BitMask256.AllClear();
 
+        var landSurfaces = !(canSwim && cantWalk);
+
         // Track what types of blockers we encounter (for failure reason)
         var hasNonTransientBlocker = false;
         var hasTransientBlocker = false;
@@ -1181,8 +1189,8 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
                 hasNonTransientBlocker = true;
             }
 
-            // Surface: water for swimmers, passable land for walkers
-            if (avgZ >= minZ && avgZ <= maxZ && (canSwim && isWet || !cantWalk && !isImpassable))
+            // Surface: water for swimmers, passable land for anything not water-only
+            if (avgZ >= minZ && avgZ <= maxZ && (canSwim && isWet || landSurfaces && !isImpassable))
             {
                 surfaces.SetBit(avgZ - minZ);
             }
@@ -1207,7 +1215,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
             // Surface candidate
             if (tileTop >= minZ && tileTop <= maxZ &&
-                (canSwim && isWet || !cantWalk && isSurface && !isImpassable))
+                (canSwim && isWet || landSurfaces && isSurface && !isImpassable))
             {
                 surfaces.SetBit(tileTop - minZ);
             }
@@ -1247,7 +1255,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
             // Surface candidate (non-movable only)
             if (!item.Movable && itemTop >= minZ && itemTop <= maxZ &&
-                (canSwim && isWet || !cantWalk && isSurface && !isImpassable))
+                (canSwim && isWet || landSurfaces && isSurface && !isImpassable))
             {
                 surfaces.SetBit(itemTop - minZ);
             }

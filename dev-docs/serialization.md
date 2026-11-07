@@ -261,14 +261,17 @@ Best for fields that are usually small values (counts, IDs, indexes).
 ### [AnchoredDateTime]
 
 **Target**: `DateTime` field
-**Effect**: Stores the absolute UTC instant; at load it is shifted forward by the downtime
-between the save and the load (using the save-start anchor in the save's index file), so
-server downtime does not consume the remaining time. `DateTime.MinValue`/`MaxValue`
+**Effect**: Stores the absolute UTC instant. At load, a value still in the future when the save
+started is shifted forward by the downtime between the save and the load (using the save-start
+anchor in the save's index file), so server downtime does not consume the remaining time. A
+value at or before the save start is loaded as saved: an expired deadline stays expired, and a
+"last happened at" stamp lets downtime count toward its window. `DateTime.MinValue`/`MaxValue`
 sentinels pass through unshifted.
 
-Prefer this for deadlines and "elapsed while running" values. Unlike `[DeltaDateTime]`, the
-stored bytes do not change on every save when the value is unchanged, keeping idle saves
-byte-stable.
+Use this for deadlines. A field that only records when something happened (a last-use stamp)
+never shifts, so it may equally be a plain `DateTime`. Unlike `[DeltaDateTime]`, the stored
+bytes do not change on every save when the value is unchanged, and only deadlines still running
+at save time change across a restart.
 
 ```csharp
 [AnchoredDateTime]

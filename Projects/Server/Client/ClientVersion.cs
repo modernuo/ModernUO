@@ -85,11 +85,11 @@ public class ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion
 
             if (br3 < fmt.Length)
             {
-                if (Major <= 5 && Minor <= 0 && Revision <= 6) // Anything before 5.0.7
+                if (IsLetterVersion(Major, Minor, Revision))
                 {
-                    if (!char.IsWhiteSpace(fmt, br3))
+                    if (char.IsAsciiLetterLower(fmt[br3]))
                     {
-                        Patch = fmt[br3] - 'a';
+                        Patch = fmt[br3] - 'a' + 1;
                     }
                 }
                 else
@@ -114,6 +114,10 @@ public class ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion
                      fmt.InsensitiveContains("uo:3d"))
             {
                 Type = ClientType.UOTD;
+            }
+            else
+            {
+                Type = ClientType.Classic;
             }
         }
         catch
@@ -208,6 +212,10 @@ public class ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion
 
     public static bool operator !=(ClientVersion l, ClientVersion r) => !Equals(l, r);
 
+    // Clients before 5.0.7 write the patch as a letter: 4.0.11c is patch 3, no letter is patch 0.
+    private static bool IsLetterVersion(int major, int minor, int revision) =>
+        major < 5 || major == 5 && minor == 0 && revision < 7;
+
     private string ToStringImpl()
     {
         using var builder = new ValueStringBuilder(stackalloc char[32]);
@@ -216,7 +224,7 @@ public class ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion
         {
             builder.Append($"{Major + 60:00}.{Minor:00}.{Revision:00}");
         }
-        else if (Major > 5 || Minor > 0 || Revision > 6)
+        else if (!IsLetterVersion(Major, Minor, Revision))
         {
             builder.Append($"{Major}.{Minor}.{Revision}.{Patch}");
         }

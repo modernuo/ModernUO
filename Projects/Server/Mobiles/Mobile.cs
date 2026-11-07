@@ -2343,9 +2343,11 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     {
         writer.Write(38); // version
 
-        writer.WriteAnchoredTime(LastStrGain);
-        writer.WriteAnchoredTime(LastIntGain);
-        writer.WriteAnchoredTime(LastDexGain);
+        // Absolute and never shifted at load: the stat-gain cooldown is minutes long, so letting
+        // downtime count toward it costs nothing, and an idle mobile keeps its bytes across restarts.
+        writer.Write(LastStrGain);
+        writer.Write(LastIntGain);
+        writer.Write(LastDexGain);
 
         byte hairflag = 0x00;
 
@@ -6179,9 +6181,9 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 {
                     if (version >= 38)
                     {
-                        LastStrGain = reader.ReadAnchoredTime();
-                        LastIntGain = reader.ReadAnchoredTime();
-                        LastDexGain = reader.ReadAnchoredTime();
+                        LastStrGain = reader.ReadDateTime();
+                        LastIntGain = reader.ReadDateTime();
+                        LastDexGain = reader.ReadDateTime();
                     }
                     else
                     {

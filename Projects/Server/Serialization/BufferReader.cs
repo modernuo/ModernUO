@@ -39,6 +39,8 @@ public class BufferReader : IGenericReader
 
     public TimeSpan AnchoredTimeShift { get; set; }
 
+    public DateTime AnchoredTimeOrigin { get; set; }
+
     public BufferReader(byte[] buffer, Dictionary<ulong, string> typesDb = null, Encoding encoding = null)
     {
         _buffer = buffer;

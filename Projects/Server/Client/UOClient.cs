@@ -93,35 +93,147 @@ public static class UOClient
     {
         var path = Core.FindDataFile("client.exe", false);
 
-        if (File.Exists(path))
+        return File.Exists(path) ? DetectClassicClient(File.ReadAllBytes(path)) : null;
+    }
+
+    internal static ClientVersion DetectClassicClient(ReadOnlySpan<byte> exe) =>
+        DetectFromVersionInfo(exe) ?? DetectFromVersionFormat(exe);
+
+    private static ClientVersion DetectFromVersionInfo(ReadOnlySpan<byte> exe)
+    {
+        // VS_VERSION_INFO (unicode)
+        var versionIndex = exe.IndexOf("V\0S\0_\0V\0E\0R\0S\0I\0O\0N\0_\0I\0N\0F\0O\0"u8);
+        if (versionIndex < 0 || versionIndex + 50 > exe.Length)
         {
-            using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-            var buffer = GC.AllocateUninitializedArray<byte>((int)fs.Length, true);
-            _ = fs.Read(buffer);
-            // VS_VERSION_INFO (unicode)
-            Span<byte> vsVersionInfo = stackalloc byte[]
+            return null;
+        }
+
+        var offset = versionIndex + 42; // 30 + 12
+
+        var minorPart = BinaryPrimitives.ReadUInt16LittleEndian(exe[offset..]);
+        var majorPart = BinaryPrimitives.ReadUInt16LittleEndian(exe[(offset + 2)..]);
+        var privatePart = BinaryPrimitives.ReadUInt16LittleEndian(exe[(offset + 4)..]);
+        var buildPart = BinaryPrimitives.ReadUInt16LittleEndian(exe[(offset + 6)..]);
+
+        return new ClientVersion(majorPart, minorPart, buildPart, privatePart);
+    }
+
+    // Older clients (4.0.11c and later 4.x/5.0.x builds) have no version resource. They build the version string at
+    // startup with sprintf("%d.%d.%d%s", major, minor, revision, letter), so the parts are the operands of the pushes
+    // just before the format string's push:
+    //   68 <letter VA>   6A <revision>   6A <minor>   6A <major>   68 <format VA>
+    private static ClientVersion DetectFromVersionFormat(ReadOnlySpan<byte> exe)
+    {
+        var formatOffset = exe.IndexOf("%d.%d.%d%s\0"u8);
+        if (formatOffset < 0 || !TryOffsetToVirtualAddress(exe, formatOffset, out var formatVa))
+        {
+            return null;
+        }
+
+        Span<byte> pushFormat = stackalloc byte[5];
+        pushFormat[0] = 0x68;
+        BinaryPrimitives.WriteUInt32LittleEndian(pushFormat[1..], formatVa);
+
+        var pushOffset = exe.IndexOf(pushFormat);
+        if (pushOffset < 11 || exe[(pushOffset + 1)..].IndexOf(pushFormat) >= 0)
+        {
+            return null; // Missing or ambiguous
+        }
+
+        var pushes = exe.Slice(pushOffset - 11, 11);
+        if (pushes[0] != 0x68 || pushes[5] != 0x6A || pushes[7] != 0x6A || pushes[9] != 0x6A)
+        {
+            return null;
+        }
+
+        var letterVa = BinaryPrimitives.ReadUInt32LittleEndian(pushes[1..]);
+        if (!TryVirtualAddressToOffset(exe, letterVa, out var letterOffset))
+        {
+            return null;
+        }
+
+        var letter = exe[letterOffset..];
+        var letterLength = letter.IndexOf((byte)0);
+        if (letterLength is < 0 or > 1 || letterLength == 1 && !char.IsAsciiLetterLower((char)letter[0]))
+        {
+            return null;
+        }
+
+        var suffix = letterLength == 1 ? ((char)letter[0]).ToString() : "";
+        return new ClientVersion($"{pushes[10]}.{pushes[8]}.{pushes[6]}{suffix}");
+    }
+
+    private static bool TryOffsetToVirtualAddress(ReadOnlySpan<byte> exe, int offset, out uint virtualAddress)
+    {
+        foreach (var (sectionVa, rawPointer, rawSize) in GetSections(exe, out var imageBase))
+        {
+            if (offset >= rawPointer && offset < rawPointer + rawSize)
             {
-                0x56, 0x00, 0x53, 0x00, 0x5F, 0x00, 0x56, 0x00,
-                0x45, 0x00, 0x52, 0x00, 0x53, 0x00, 0x49, 0x00,
-                0x4F, 0x00, 0x4E, 0x00, 0x5F, 0x00, 0x49, 0x00,
-                0x4E, 0x00, 0x46, 0x00, 0x4F, 0x00
-            };
-
-            var versionIndex = buffer.AsSpan().IndexOf(vsVersionInfo);
-            if (versionIndex > -1)
-            {
-                var offset = versionIndex + 42; // 30 + 12
-
-                var minorPart = BinaryPrimitives.ReadUInt16LittleEndian(buffer.AsSpan(offset));
-                var majorPart = BinaryPrimitives.ReadUInt16LittleEndian(buffer.AsSpan(offset + 2));
-                var privatePart = BinaryPrimitives.ReadUInt16LittleEndian(buffer.AsSpan(offset + 4));
-                var buildPart = BinaryPrimitives.ReadUInt16LittleEndian(buffer.AsSpan(offset + 6));
-
-                return new ClientVersion(majorPart, minorPart, buildPart, privatePart);
+                virtualAddress = imageBase + sectionVa + (uint)(offset - rawPointer);
+                return true;
             }
         }
 
-        return null;
+        virtualAddress = 0;
+        return false;
+    }
+
+    private static bool TryVirtualAddressToOffset(ReadOnlySpan<byte> exe, uint virtualAddress, out int offset)
+    {
+        foreach (var (sectionVa, rawPointer, rawSize) in GetSections(exe, out var imageBase))
+        {
+            var start = imageBase + sectionVa;
+            if (virtualAddress >= start && virtualAddress < start + rawSize && rawPointer + (virtualAddress - start) < exe.Length)
+            {
+                offset = (int)(rawPointer + (virtualAddress - start));
+                return true;
+            }
+        }
+
+        offset = 0;
+        return false;
+    }
+
+    // PE32 section headers that fit in the file; empty if not a PE32 image.
+    private static (uint VirtualAddress, uint RawPointer, uint RawSize)[] GetSections(
+        ReadOnlySpan<byte> exe, out uint imageBase
+    )
+    {
+        imageBase = 0;
+        if (exe.Length < 0x40)
+        {
+            return [];
+        }
+
+        var pe = BinaryPrimitives.ReadInt32LittleEndian(exe[0x3C..]);
+        if (pe < 0 || pe + 24 + 32 > exe.Length || BinaryPrimitives.ReadUInt32LittleEndian(exe[pe..]) != 0x00004550 ||
+            BinaryPrimitives.ReadUInt16LittleEndian(exe[(pe + 24)..]) != 0x10B) // "PE\0\0", PE32 optional header
+        {
+            return [];
+        }
+
+        var count = BinaryPrimitives.ReadUInt16LittleEndian(exe[(pe + 6)..]);
+        var optionalSize = BinaryPrimitives.ReadUInt16LittleEndian(exe[(pe + 20)..]);
+        var table = pe + 24 + optionalSize;
+        if (table >= exe.Length)
+        {
+            return [];
+        }
+
+        imageBase = BinaryPrimitives.ReadUInt32LittleEndian(exe[(pe + 24 + 28)..]);
+
+        var sections = new (uint, uint, uint)[Math.Min(count, (exe.Length - table) / 40)];
+        for (var i = 0; i < sections.Length; i++)
+        {
+            var section = exe.Slice(table + i * 40, 40);
+            sections[i] = (
+                BinaryPrimitives.ReadUInt32LittleEndian(section[12..]),
+                BinaryPrimitives.ReadUInt32LittleEndian(section[20..]),
+                BinaryPrimitives.ReadUInt32LittleEndian(section[16..])
+            );
+        }
+
+        return sections;
     }
 
     public record CUOSettings

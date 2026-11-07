@@ -212,7 +212,7 @@ public sealed class BlocklistFilter : IConnectionFilter
 
         if (_reportHits)
         {
-            shouldReport = _guard.TryMark(address.ToUInt128(), nowTicks, _suppressionMs);
+            shouldReport = _guard.TryMark(address.ToSubscriberKey(), nowTicks, _suppressionMs);
         }
 
         return true;

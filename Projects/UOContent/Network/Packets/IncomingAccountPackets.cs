@@ -81,6 +81,7 @@ public static class IncomingAccountPackets
         IncomingPackets.Register(0x83, &DeleteCharacter, 39, outgameOnly: true);
         IncomingPackets.Register(0x91, &GameLogin, 65, outgameOnly: true);
         IncomingPackets.Register(0xA0, &PlayServer, 3, outgameOnly: true);
+        IncomingPackets.Register(0xBB, &UltimaMessenger, 9);
         IncomingPackets.Register(0xBD, &ClientVersion);
         IncomingPackets.Register(0xE1, &ClientType);
         IncomingPackets.Register(0xEF, &LoginServerSeed, 21, outgameOnly: true);
@@ -245,6 +246,9 @@ public static class IncomingAccountPackets
         ClientVerification.ClientVersionReceived(state, version);
     }
 
+    // Sent by UO:TD clients; unhandled, it disconnects them. Carries nothing the server uses.
+    public static void UltimaMessenger(NetState state, SpanReader reader) { }
+
     public static void PlayCharacter(NetState state, SpanReader reader)
     {
         reader.Seek(36, SeekOrigin.Current); // 4 = 0xEDEDEDED, 30 = Name, 2 = unknown
@@ -371,10 +375,13 @@ public static class IncomingAccountPackets
 
         // The id stands in for a password verify, so it has to be unguessable. Zero is reserved:
         // GameLogin reads state.AuthId == 0 as "no auth id was issued".
+        // A leading 0xEF is reserved too: the client sends the id back raw as the game connection's
+        // seed, and NetState reads a first byte of 0xEF as the 0xEF seed packet. It would swallow the
+        // seed plus the start of 0x91 and wait for bytes that never come until the idle limit drops it.
         do
         {
             authID = RandomNumberGenerator.GetInt32(int.MinValue, int.MaxValue);
-        } while (authID == 0 || _authIDWindow.ContainsKey(authID));
+        } while (authID == 0 || (authID >>> 24) == 0xEF || _authIDWindow.ContainsKey(authID));
 
         _authIDWindow[authID] = new AuthIDPersistence(version, account, address);
 

@@ -45,6 +45,8 @@ public unsafe class UnmanagedDataReader : IGenericReader
 
     public TimeSpan AnchoredTimeShift { get; set; }
 
+    public DateTime AnchoredTimeOrigin { get; set; }
+
     /// <summary>
     /// Read bits of data raw from a serialized file using Little-endian.
     /// </summary>

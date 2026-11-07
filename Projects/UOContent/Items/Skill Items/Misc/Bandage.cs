@@ -365,7 +365,7 @@ public class BandageContext : Timer
 
             if (Patient.Hits == Patient.HitsMax)
             {
-                Healer.SendLocalizedMessage(1010395); // You heal what little damage your patient had.
+                Healer.SendLocalizedMessage(500967); // You heal what little damage your patient had.
                 return;
             }
 

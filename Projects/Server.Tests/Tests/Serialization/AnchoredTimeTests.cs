@@ -67,6 +67,63 @@ public class AnchoredTimeTests
 
         Assert.Equal(local.ToUniversalTime(), read(TimeSpan.Zero).ReadAnchoredTime());
     }
+
+    private static readonly DateTime SaveStart = new(2026, 8, 22, 12, 0, 0, DateTimeKind.Utc);
+
+    private static IGenericReader ReadSaved(BufferWriter writer, TimeSpan downtime) =>
+        new BufferReader(writer.Buffer) { AnchoredTimeShift = downtime, AnchoredTimeOrigin = SaveStart };
+
+    [Fact]
+    public void AnchoredTime_DeadlineRunningAtSaveStart_KeepsItsRemainingTime()
+    {
+        var writer = new BufferWriter(new byte[64], true);
+        var deadline = SaveStart + TimeSpan.FromMinutes(20);
+        var downtime = TimeSpan.FromHours(3);
+
+        writer.WriteAnchoredTime(deadline);
+
+        Assert.Equal(deadline + downtime, ReadSaved(writer, downtime).ReadAnchoredTime());
+    }
+
+    /// <summary>
+    /// A deadline that had passed before the save must stay passed. Shifting it brought an expiry
+    /// back into the future whenever the downtime was longer than the time since it expired.
+    /// </summary>
+    [Fact]
+    public void AnchoredTime_DeadlinePassedBeforeSaveStart_StaysPassed()
+    {
+        var writer = new BufferWriter(new byte[64], true);
+        var expired = SaveStart - TimeSpan.FromMinutes(5);
+
+        writer.WriteAnchoredTime(expired);
+
+        Assert.Equal(expired, ReadSaved(writer, TimeSpan.FromMinutes(30)).ReadAnchoredTime());
+    }
+
+    /// <summary>
+    /// A stamp of something that already happened (a last-use time) is never shifted, so its
+    /// bytes survive a restart and downtime counts toward its window.
+    /// </summary>
+    [Fact]
+    public void AnchoredTime_PastStamp_IsNotShifted()
+    {
+        var writer = new BufferWriter(new byte[64], true);
+        var lastUse = SaveStart - TimeSpan.FromDays(2);
+
+        writer.WriteAnchoredTime(lastUse);
+
+        Assert.Equal(lastUse, ReadSaved(writer, TimeSpan.FromHours(1)).ReadAnchoredTime());
+    }
+
+    [Fact]
+    public void AnchoredTime_ValueAtSaveStart_IsNotShifted()
+    {
+        var writer = new BufferWriter(new byte[64], true);
+
+        writer.WriteAnchoredTime(SaveStart);
+
+        Assert.Equal(SaveStart, ReadSaved(writer, TimeSpan.FromHours(1)).ReadAnchoredTime());
+    }
 }
 
 internal class AnchoredEntity : ISerializable

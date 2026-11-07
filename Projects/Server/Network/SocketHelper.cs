@@ -137,36 +137,37 @@ public static partial class SocketHelper
         return ParseSockAddrEndPoint(buffer[..(int)len]);
     }
 
-    private static IPAddress ParseSockAddr(ReadOnlySpan<byte> buffer)
+    // AF_INET is 2 everywhere; AF_INET6 is not, and .NET's AddressFamily.InterNetworkV6 (23) is
+    // the Windows number, so a raw cast misreads IPv6 on Linux (10), macOS (30) and FreeBSD (28).
+    private const int NativeInterNetwork = 2;
+
+    private static readonly int NativeInterNetworkV6 =
+        OperatingSystem.IsWindows() ? 23 :
+        OperatingSystem.IsLinux() ? 10 :
+        OperatingSystem.IsFreeBSD() ? 28 : 30;
+
+    // macOS/BSD: sockaddr has sin_len (1 byte) + sin_family (1 byte)
+    // Windows/Linux: sa_family is a host-order 16-bit field
+    private static readonly bool IsBsd = OperatingSystem.IsMacOS() || OperatingSystem.IsFreeBSD();
+
+    private static AddressFamily ReadFamily(ReadOnlySpan<byte> buffer)
     {
-        if (buffer.Length < 2)
+        int family = IsBsd ? buffer[1] : BitConverter.ToUInt16(buffer);
+
+        if (family == NativeInterNetwork)
         {
-            return null;
+            return AddressFamily.InterNetwork;
         }
 
-        // macOS/BSD: sockaddr has sin_len (1 byte) + sin_family (1 byte)
-        // Linux: sockaddr has sa_family (2 bytes)
-        var isBsd = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ||
-                    RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD);
-        var family = isBsd
-            ? (AddressFamily)buffer[1]  // BSD: family is second byte
-            : (AddressFamily)BitConverter.ToInt16(buffer);  // Linux: family is first 2 bytes
-
-        if (family == AddressFamily.InterNetwork && buffer.Length >= 8)
-        {
-            // IPv4: family (2) + port (2) + addr (4)
-            return new IPAddress(buffer.Slice(4, 4));
-        }
-
-        if (family == AddressFamily.InterNetworkV6 && buffer.Length >= 28)
-        {
-            // IPv6: family (2) + port (2) + flowinfo (4) + addr (16) + scope (4)
-            return new IPAddress(buffer.Slice(8, 16));
-        }
-
-        return null;
+        return family == NativeInterNetworkV6 ? AddressFamily.InterNetworkV6 : AddressFamily.Unknown;
     }
 
+    private static IPAddress ParseSockAddr(ReadOnlySpan<byte> buffer) => ParseSockAddrEndPoint(buffer)?.Address;
+
+    /// <summary>
+    /// Parses a native sockaddr. IPv4-mapped addresses (IPv4 clients on a dual-mode listener) come
+    /// back as plain IPv4, so rate limits, firewall rules and the server list see one address per client.
+    /// </summary>
     private static IPEndPoint ParseSockAddrEndPoint(ReadOnlySpan<byte> buffer)
     {
         if (buffer.Length < 4)
@@ -174,13 +175,7 @@ public static partial class SocketHelper
             return null;
         }
 
-        // macOS/BSD: sockaddr has sin_len (1 byte) + sin_family (1 byte)
-        // Linux: sockaddr has sa_family (2 bytes)
-        var isBsd = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ||
-                    RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD);
-        var family = isBsd
-            ? (AddressFamily)buffer[1]  // BSD: family is second byte
-            : (AddressFamily)BitConverter.ToInt16(buffer);  // Linux: family is first 2 bytes
+        var family = ReadFamily(buffer);
 
         // Port is in network byte order (big-endian), at offset 2 on both platforms
         var port = (buffer[2] << 8) | buffer[3];
@@ -193,8 +188,9 @@ public static partial class SocketHelper
 
         if (family == AddressFamily.InterNetworkV6 && buffer.Length >= 28)
         {
-            // IPv6: family (2) + port (2) + flowinfo (4) + addr (16) + scope (4)
-            return new IPEndPoint(new IPAddress(buffer.Slice(8, 16)), port);
+            // IPv6: family (2) + port (2) + flowinfo (4) + addr (16) + scope (4, host order)
+            var address = new IPAddress(buffer.Slice(8, 16), BitConverter.ToUInt32(buffer.Slice(24, 4)));
+            return new IPEndPoint(address.IsIPv4MappedToIPv6 ? address.MapToIPv4() : address, port);
         }
 
         return null;

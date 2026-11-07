@@ -59,13 +59,23 @@ public class CanSpawnMobileTests
     }
 
     [Fact]
-    public void CanSpawnMobile_CantWalkSkipsLandSurface()
+    public void CanSpawnMobile_CantWalkSwimmerSkipsLandSurface()
     {
         var map = Map.Felucca;
-        // cantWalk=true means the mob can only swim, so land shouldn't be valid
+        // A swimmer that can't walk is water-only, so land isn't valid
+        var result = map.CanSpawnMobile(TestLandX, TestLandY, -128, 127, true, true, out _);
+
+        Assert.False(result, "canSwim + cantWalk should not find land as valid surface");
+    }
+
+    [Fact]
+    public void CanSpawnMobile_CantWalkNonSwimmerFindsLandSurface()
+    {
+        var map = Map.Felucca;
+        // CantWalk on its own is a stationary land mobile, not a water mobile
         var result = map.CanSpawnMobile(TestLandX, TestLandY, -128, 127, false, true, out _);
 
-        Assert.False(result, "cantWalk=true should not find land as valid surface");
+        Assert.True(result, "cantWalk without canSwim should find land as valid surface");
     }
 
     [Fact]

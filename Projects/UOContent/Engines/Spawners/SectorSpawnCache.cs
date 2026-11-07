@@ -249,7 +249,7 @@ public static class SectorSpawnCacheManager
     /// <param name="minZ">Minimum Z for spawn checks</param>
     /// <param name="maxZ">Maximum Z for spawn checks</param>
     /// <param name="canSwim">Whether to find water positions</param>
-    /// <param name="cantWalk">Whether the mob can't walk (water-only)</param>
+    /// <param name="cantWalk">Whether the mob can't walk (water-only when it can also swim)</param>
     /// <param name="currentRing">Current ring being scanned (updated on return)</param>
     /// <param name="ringPosition">Position within current ring (updated on return)</param>
     /// <param name="ringsPerTick">Number of rings to scan per call</param>

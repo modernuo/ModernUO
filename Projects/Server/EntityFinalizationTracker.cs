@@ -67,7 +67,7 @@ public static class EntityFinalizationTracker
             return;
         }
 
-        if (_enabled)
+        if (enable)
         {
             EnableLeakTracking(from);
         }
@@ -127,21 +127,27 @@ public static class EntityFinalizationTracker
         }
     }
 
+    // Runs on the finalizer thread after a gen2 GC; the shared collections are only touched under _sync.
+    // ExceptionToLeakCheck reads Mobile.Corpse unsynchronized, which is a benign racy read for a diagnostic.
     private static void CheckLeaks()
     {
-        if (_entities.Count == 0)
-        {
-            return;
-        }
-
         var now = Core.Now;
-        if (now <= _nextCheck)
+
+        lock (_sync)
         {
-            return;
+            if (_entities.Count == 0 || now <= _nextCheck)
+            {
+                return;
+            }
+
+            _nextCheck = now + TimeSpan.FromMinutes(2);
+
+            RemoveCollected(now);
         }
+    }
 
-        _nextCheck = now + TimeSpan.FromMinutes(2);
-
+    private static void RemoveCollected(DateTime now)
+    {
         _entities.RemoveAll(entry =>
         {
             if (_finalizedHashes.Remove(entry.ReferenceHash))

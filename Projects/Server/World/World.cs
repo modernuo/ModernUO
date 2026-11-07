@@ -108,6 +108,12 @@ public static class World
     /// payloads, which carry no anchor of their own. Zero for saves that predate the anchor.
     /// </summary>
     public static TimeSpan LoadTimeShift { get; internal set; }
+
+    /// <summary>
+    /// UTC start time of the save being loaded, read from its index anchor. Default for saves
+    /// that predate the anchor.
+    /// </summary>
+    public static DateTime LoadedSaveStartTime { get; internal set; }
     public static bool Running => WorldState is not WorldState.Loading and not WorldState.Initial;
     public static bool Loading => WorldState == WorldState.Loading;
 
@@ -126,6 +132,9 @@ public static class World
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void WaitForWriteCompletion() => _diskWriteHandle.WaitOne();
+
+    /// <summary>Waits for an in-flight disk write. Returns false if it did not finish in time.</summary>
+    public static bool WaitForWriteCompletion(TimeSpan timeout) => _diskWriteHandle.WaitOne(timeout);
 
     public static void Broadcast(int hue, bool ascii, string text)
     {
@@ -293,7 +302,7 @@ public static class World
             logger.Error(ex, "Preparing to save world {Status}", "failed");
             Persistence.TraceException(ex);
 
-            BroadcastStaff(0x35, true, "Preparing for a world save failed! Check the logs!");
+            Core.LoopContext.Post(() => BroadcastStaff(0x35, true, "Preparing for a world save failed! Check the logs!"));
         }
     }
 
@@ -407,7 +416,7 @@ public static class World
             logger.Error(ex, "Writing world save snapshot failed");
             Persistence.TraceException(ex);
 
-            BroadcastStaff(0x35, true, "Writing world save snapshot failed! Check the logs!");
+            Core.LoopContext.Post(() => BroadcastStaff(0x35, true, "Writing world save snapshot failed! Check the logs!"));
         }
 
         _diskWriteHandle.Set();
@@ -674,6 +683,7 @@ public static class World
                 }
 
                 item.ClearProperties();
+                item.CreditDowntimeToDecay(LoadedSaveStartTime, LoadTimeShift);
                 item.UpdateDecayRegistration();
             }
         }

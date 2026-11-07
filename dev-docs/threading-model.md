@@ -295,10 +295,27 @@ finally
 Architecture:
 - 27 buckets covering sizes 16 to 1GB+
 - Per-bucket cache (1 array) + stack storage (32 arrays)
-- Trim callbacks on Gen2 GC to reduce memory pressure
+- Trim on Gen2 GC to reduce memory pressure: the GC callback runs on the finalizer thread, so it only posts the
+  trim to the loop, and only when the pool holds arrays
 - Formula: bucket index = `Log2(size - 1 | 15) - 3`
 
 **Use `STArrayPool<T>.Shared`** in game code, **not** `ArrayPool<T>.Shared` (which uses locks).
+
+**Never rent or return off the loop.** Finalizers, `Gen2GcCallback`, timers and workers run on other threads;
+a second thread in the pool can hand the same array out twice. Test classes that reach the pool directly or
+indirectly (property lists, `ValueStringBuilder`, `PooledRefList`, packet writers) belong in a
+`DisableParallelization` collection (`Sequential Server Tests`, `Sequential UOContent Tests`).
+
+To find offenders, build with the opt-in audit and run the tests:
+
+```bash
+dotnet test Projects/Server.Tests/Server.Tests.csproj -p:ArrayPoolThreadAudit=true
+```
+
+It writes `starraypool-thread-audit.txt` next to the binaries on exit: under xUnit, every test class outside a
+`DisableParallelization` collection and every call with no test frame (finalizer, workers) that touched the
+pool, with a stack; on a server, every call off the event-loop thread. The audit captures a stack per call, so
+allocation-asserting tests (`*_NoAllocations`) fail while it is on.
 
 ### PooledRefList<T>
 

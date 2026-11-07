@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net;
+using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
@@ -33,7 +34,7 @@ public sealed class CrowdSecReporter : IBanReporter
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(CrowdSecReporter));
 
-    internal readonly record struct ReportItem(IPAddress Ip, TimeSpan Ttl, string Reason, bool Retract);
+    internal readonly record struct ReportItem(IPNetwork Network, TimeSpan Ttl, string Reason, bool Retract);
 
     // Bounded retry for transient LAPI failures during a drain send (network blips, 5xx). Distinct from
     // CrowdSecAlertClient.SendWithRetryAsync's single 401-relogin retry, which is an auth concern.
@@ -202,29 +203,33 @@ public sealed class CrowdSecReporter : IBanReporter
                 break; // out of budget; the rest self-heal via ManualBanDuration
             }
 
-            var ip = retracts[i].Ip;
-            if (!seen.Add(ip.ToString()))
+            var network = retracts[i].Network;
+            if (!seen.Add(network.ToString()))
             {
                 continue;
             }
 
             try
             {
-                await _client.DeleteDecisionsAsync(_settings.Origin, ip, flushCts.Token).ConfigureAwait(false);
+                await _client.DeleteDecisionsAsync(_settings.Origin, network, flushCts.Token).ConfigureAwait(false);
             }
             catch (Exception e)
             {
-                logger.Warning(e, "CrowdSec flush-on-stop retract failed for {Address}", ip);
+                logger.Warning(
+                    e,
+                    "CrowdSec flush-on-stop retract failed for {Address}",
+                    IsHost(network) ? network.BaseAddress : network
+                );
                 RecordSendFailure(1);
             }
         }
     }
 
-    public void Report(IPAddress address, TimeSpan ttl, string reason) =>
-        Enqueue(new ReportItem(address, ttl, reason, false));
+    public void Report(IPNetwork network, TimeSpan ttl, string reason) =>
+        Enqueue(new ReportItem(network, ttl, reason, false));
 
-    public void Retract(IPAddress address) =>
-        Enqueue(new ReportItem(address, TimeSpan.Zero, "retract", true));
+    public void Retract(IPNetwork network) =>
+        Enqueue(new ReportItem(network, TimeSpan.Zero, "retract", true));
 
     private void Enqueue(ReportItem item)
     {
@@ -283,8 +288,8 @@ public sealed class CrowdSecReporter : IBanReporter
 
                 for (var i = 0; i < retracts.Count; i++)
                 {
-                    var ip = retracts[i].Ip;
-                    if (!await SendWithBoundedRetryAsync(() => _client.DeleteDecisionsAsync(_settings.Origin, ip, token), token)
+                    var network = retracts[i].Network;
+                    if (!await SendWithBoundedRetryAsync(() => _client.DeleteDecisionsAsync(_settings.Origin, network, token), token)
                             .ConfigureAwait(false))
                     {
                         RecordSendFailure(1);
@@ -347,20 +352,30 @@ public sealed class CrowdSecReporter : IBanReporter
         );
     }
 
-    /// <summary>Coalesces items by IP (last write wins) and builds one alert per unique address.</summary>
+    /// <summary>
+    /// A single address (IPv4 /32, IPv6 /128) is an "Ip" decision; anything wider (an IPv6 subscriber
+    /// prefix) must be a "Range" decision, or LAPI would ban only the prefix's zero host.
+    /// </summary>
+    internal static bool IsHost(IPNetwork network) =>
+        network.PrefixLength == (network.BaseAddress.AddressFamily == AddressFamily.InterNetwork ? 32 : 128);
+
+    /// <summary>Coalesces items by network (last write wins) and builds one alert per unique network.</summary>
     internal static List<CrowdSecAlert> BuildAlerts(IEnumerable<ReportItem> items, CrowdSecSettings settings, DateTime nowUtc)
     {
-        Dictionary<string, ReportItem> byIp = [];
+        Dictionary<string, ReportItem> byNetwork = [];
         foreach (var item in items)
         {
-            byIp[item.Ip.ToString()] = item;
+            byNetwork[item.Network.ToString()] = item;
         }
 
         var timestamp = FormatTimestamp(nowUtc);
-        var alerts = new List<CrowdSecAlert>(byIp.Count);
+        var alerts = new List<CrowdSecAlert>(byNetwork.Count);
 
-        foreach (var (value, item) in byIp)
+        foreach (var item in byNetwork.Values)
         {
+            var host = IsHost(item.Network);
+            var scope = host ? "Ip" : "Range";
+            var value = host ? item.Network.BaseAddress.ToString() : item.Network.ToString();
             var ttl = item.Reason == BanReasons.Manual || item.Ttl <= TimeSpan.Zero ? settings.ManualBanDuration : item.Ttl;
             var scenario = $"{settings.Origin}/{item.Reason}";
 
@@ -370,14 +385,14 @@ public sealed class CrowdSecReporter : IBanReporter
                 Message = $"ModernUO {item.Reason} ban for {value}",
                 StartAt = timestamp,
                 StopAt = timestamp,
-                Source = new CrowdSecSource { Scope = "Ip", Value = value },
+                Source = new CrowdSecSource { Scope = scope, Value = value },
                 Decisions =
                 [
                     new CrowdSecDecisionDto
                     {
                         Origin = settings.Origin,
                         Type = "ban",
-                        Scope = "Ip",
+                        Scope = scope,
                         Value = value,
                         Duration = FormatDuration(ttl),
                         Scenario = scenario

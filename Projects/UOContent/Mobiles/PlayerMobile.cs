@@ -3775,6 +3775,22 @@ namespace Server.Mobiles
 
         public override void OnGenderChanged(bool oldFemale)
         {
+            var race = Race;
+
+            if (!IsBodyMod)
+            {
+                Body = race.Body(this);
+            }
+
+            if (HairItemID != 0 && !race.ValidateHair(this, HairItemID))
+            {
+                HairItemID = 0;
+            }
+
+            if (FacialHairItemID != 0 && !race.ValidateFacialHair(this, FacialHairItemID))
+            {
+                FacialHairItemID = 0;
+            }
         }
 
         public override void OnGuildChange(BaseGuild oldGuild)

@@ -37,7 +37,7 @@ public class CrowdSecAlertClientTests
     {
         // origin is operator-controlled config (crowdsec.json), so it must be treated as untrusted
         // input going into the URL, same as any other interpolated value.
-        var query = CrowdSecAlertClient.BuildDeleteQuery("modern uo/test&x=1", IPAddress.Parse("1.2.3.4"));
+        var query = CrowdSecAlertClient.BuildDeleteQuery("modern uo/test&x=1", new IPNetwork(IPAddress.Parse("1.2.3.4"), 32));
 
         Assert.Equal("/v1/decisions?origin=modern%20uo%2Ftest%26x%3D1&ip=1.2.3.4", query);
     }
@@ -47,8 +47,24 @@ public class CrowdSecAlertClientTests
     {
         // IPv6 textual form contains ':', which Uri.EscapeDataString percent-encodes like any other
         // reserved character — confirms the escaping is applied uniformly, not just for IPv4.
-        var query = CrowdSecAlertClient.BuildDeleteQuery("modernuo", IPAddress.Parse("2001:db8::1"));
+        var query = CrowdSecAlertClient.BuildDeleteQuery("modernuo", new IPNetwork(IPAddress.Parse("2001:db8::1"), 128));
 
         Assert.Equal("/v1/decisions?origin=modernuo&ip=2001%3Adb8%3A%3A1", query);
+    }
+
+    [Fact]
+    public void BuildDeleteQuery_IPv4_Unchanged()
+    {
+        var query = CrowdSecAlertClient.BuildDeleteQuery("modernuo", new IPNetwork(IPAddress.Parse("1.2.3.4"), 32));
+
+        Assert.Equal("/v1/decisions?origin=modernuo&ip=1.2.3.4", query);
+    }
+
+    [Fact]
+    public void BuildDeleteQuery_Range_UsesRangeParam()
+    {
+        var query = CrowdSecAlertClient.BuildDeleteQuery("modernuo", new IPNetwork(IPAddress.Parse("2001:db8:1:2::"), 64));
+
+        Assert.Equal("/v1/decisions?origin=modernuo&range=2001%3Adb8%3A1%3A2%3A%3A%2F64", query);
     }
 }
