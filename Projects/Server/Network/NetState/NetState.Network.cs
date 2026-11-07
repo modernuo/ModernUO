@@ -154,6 +154,17 @@ public partial class NetState
             SendBufferSize,
             MaxSendBufferSize
         );
+        var configuredSubscriberPrefix = ServerConfiguration.GetOrUpdateSetting("network.ipv6SubscriberPrefix", 64);
+        IPAddressUtility.SetSubscriberPrefix(configuredSubscriberPrefix);
+        if (IPAddressUtility.SubscriberPrefixLength != configuredSubscriberPrefix)
+        {
+            logger.Warning(
+                "network.ipv6SubscriberPrefix {Configured} is outside 48-64; using {Prefix}",
+                configuredSubscriberPrefix,
+                IPAddressUtility.SubscriberPrefixLength
+            );
+        }
+
         // 0 disables the ceiling
         _memoryCeilingPercent = Math.Clamp(ServerConfiguration.GetOrUpdateSetting("network.memoryCeilingPercent", DefaultMemoryCeilingPercent), 0, 100);
         _availableMemoryBytes = GC.GetGCMemoryInfo().TotalAvailableMemoryBytes;
