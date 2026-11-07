@@ -36,6 +36,51 @@ public class CrowdSecReporterTests
     };
 
     [Fact]
+    public void BuildAlerts_IPv4_ScopeIpUnchanged()
+    {
+        var alerts = CrowdSecReporter.BuildAlerts(
+            [new(new IPNetwork(IPAddress.Parse("1.2.3.4"), 32), TimeSpan.FromHours(1), "rate-limit", false)],
+            Settings(),
+            DateTime.UnixEpoch);
+
+        var alert = Assert.Single(alerts);
+        Assert.Equal("Ip", alert.Source.Scope);
+        Assert.Equal("1.2.3.4", alert.Source.Value);
+        var decision = Assert.Single(alert.Decisions);
+        Assert.Equal("Ip", decision.Scope);
+        Assert.Equal("1.2.3.4", decision.Value);
+    }
+
+    [Fact]
+    public void BuildAlerts_IPv6_ScopeRange()
+    {
+        var alerts = CrowdSecReporter.BuildAlerts(
+            [new(new IPNetwork(IPAddress.Parse("2001:db8:1:2::"), 64), TimeSpan.FromHours(1), "rate-limit", false)],
+            Settings(),
+            DateTime.UnixEpoch);
+
+        var alert = Assert.Single(alerts);
+        Assert.Equal("Range", alert.Source.Scope);
+        Assert.Equal("2001:db8:1:2::/64", alert.Source.Value);
+        var decision = Assert.Single(alert.Decisions);
+        Assert.Equal("Range", decision.Scope);
+        Assert.Equal("2001:db8:1:2::/64", decision.Value);
+    }
+
+    [Fact]
+    public void BuildAlerts_IPv6Host_ScopeIp()
+    {
+        var alerts = CrowdSecReporter.BuildAlerts(
+            [new(new IPNetwork(IPAddress.Parse("2001:db8::1"), 128), TimeSpan.FromHours(1), "rate-limit", false)],
+            Settings(),
+            DateTime.UnixEpoch);
+
+        var alert = Assert.Single(alerts);
+        Assert.Equal("Ip", alert.Source.Scope);
+        Assert.Equal("2001:db8::1", alert.Source.Value);
+    }
+
+    [Fact]
     public void BuildAlerts_DedupsByIp()
     {
         var now = DateTime.UnixEpoch;
@@ -189,7 +234,7 @@ public class CrowdSecReporterTests
         reporter.Retract(new IPNetwork(IPAddress.Parse("8.8.8.8"), 32));
         reporter.Stop();
 
-        Assert.Equal(IPAddress.Parse("8.8.8.8"), Assert.Single(client.Deleted));
+        Assert.Equal(new IPNetwork(IPAddress.Parse("8.8.8.8"), 32), Assert.Single(client.Deleted));
         Assert.Equal(0, reporter.SendFailureCount);
     }
 
@@ -257,7 +302,7 @@ public class CrowdSecReporterTests
             return ValueTask.CompletedTask;
         }
 
-        public ValueTask DeleteDecisionsAsync(string origin, IPAddress ip, CancellationToken token) =>
+        public ValueTask DeleteDecisionsAsync(string origin, IPNetwork network, CancellationToken token) =>
             ValueTask.CompletedTask;
 
         public void Dispose() { }
@@ -268,7 +313,7 @@ public class CrowdSecReporterTests
         public ValueTask PostAlertsAsync(IReadOnlyList<CrowdSecAlert> alerts, CancellationToken token) =>
             ValueTask.CompletedTask;
 
-        public ValueTask DeleteDecisionsAsync(string origin, IPAddress ip, CancellationToken token) =>
+        public ValueTask DeleteDecisionsAsync(string origin, IPNetwork network, CancellationToken token) =>
             ValueTask.CompletedTask;
 
         public void Dispose() { }
@@ -277,7 +322,7 @@ public class CrowdSecReporterTests
     private sealed class RecordingAlertClient : ICrowdSecAlertClient
     {
         public List<IReadOnlyList<CrowdSecAlert>> Posted { get; } = [];
-        public List<IPAddress> Deleted { get; } = [];
+        public List<IPNetwork> Deleted { get; } = [];
 
         public ValueTask PostAlertsAsync(IReadOnlyList<CrowdSecAlert> alerts, CancellationToken token)
         {
@@ -285,9 +330,9 @@ public class CrowdSecReporterTests
             return ValueTask.CompletedTask;
         }
 
-        public ValueTask DeleteDecisionsAsync(string origin, IPAddress ip, CancellationToken token)
+        public ValueTask DeleteDecisionsAsync(string origin, IPNetwork network, CancellationToken token)
         {
-            Deleted.Add(ip);
+            Deleted.Add(network);
             return ValueTask.CompletedTask;
         }
 
@@ -299,7 +344,7 @@ public class CrowdSecReporterTests
         public ValueTask PostAlertsAsync(IReadOnlyList<CrowdSecAlert> alerts, CancellationToken token) =>
             throw new InvalidOperationException("simulated LAPI outage");
 
-        public ValueTask DeleteDecisionsAsync(string origin, IPAddress ip, CancellationToken token) =>
+        public ValueTask DeleteDecisionsAsync(string origin, IPNetwork network, CancellationToken token) =>
             ValueTask.CompletedTask;
 
         public void Dispose() { }
