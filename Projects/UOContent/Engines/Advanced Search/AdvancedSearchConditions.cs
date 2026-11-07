@@ -438,15 +438,20 @@ public static class AdvancedSearchConditions
             return null;
         }
 
-        // Entities have no ordering, so only equality is meaningful.
-        if (comparison is not (ComparisonOperator.Equal or ComparisonOperator.NotEqual))
+        var equality = comparison is ComparisonOperator.Equal or ComparisonOperator.NotEqual;
+
+        // Ordering by serial is what Item and Mobile's own CompareTo does; a type without one
+        // (an interface) has no ordering, so that leaf is dead.
+        if (!equality && !PropertyExpressions.TryCompare(
+                Expression.Default(property.Type), Expression.Default(property.Type), 1, out _
+            ))
         {
             return null;
         }
 
         if (value == "null")
         {
-            return new EntityCondition(property, negate, comparison.Value, null);
+            return equality ? new EntityCondition(property, negate, comparison.Value, null) : null;
         }
 
         return Types.TryParse(typeof(Serial), value, out var parsed) != null
@@ -507,8 +512,8 @@ public static class AdvancedSearchConditions
     }
 
     /// <summary>
-    /// <c>prop != null &amp;&amp; prop.Serial == value</c>, <c>!=</c> being its negation, or a null
-    /// test when the value is <c>null</c>.
+    /// <c>prop != null &amp;&amp; prop.Serial &lt;op&gt; value</c>, <c>!=</c> being the negation of
+    /// <c>=</c>, or a null test when the value is <c>null</c>.
     /// </summary>
     private sealed class EntityCondition : ICondition
     {
@@ -551,9 +556,9 @@ public static class AdvancedSearchConditions
                         );
 
                         // != is the exact negation of =, so a null reference is "not equal".
-                        test = _operator == ComparisonOperator.Equal
-                            ? Expression.AndAlso(present, relation)
-                            : Expression.OrElse(Expression.Not(present), relation);
+                        test = _operator == ComparisonOperator.NotEqual
+                            ? Expression.OrElse(Expression.Not(present), relation)
+                            : Expression.AndAlso(present, relation);
                     }
 
                     return Expression.Block(

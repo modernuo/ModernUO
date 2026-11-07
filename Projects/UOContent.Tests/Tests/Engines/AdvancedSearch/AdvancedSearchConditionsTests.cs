@@ -457,21 +457,72 @@ public class AdvancedSearchEntityLeafTests
         }
     }
 
-    // Entities have no ordering; a relational operator is a dead leaf, as it always was.
     [Fact]
-    public void EntityLeaf_RelationalOperator_IsNoMatch()
+    public void EntityLeaf_Relational_ComparesSerial()
     {
         var target = new Item(0x1);
         var linked = new LinkedItem { Linked = target };
 
         try
         {
-            Assert.False(AdvancedSearchConditions.Compile(typeof(LinkedItem), $"Linked>0x1", AccessLevel.GameMaster)(linked));
+            var value = target.Serial.Value;
+
+            bool Match(string op, uint serial) =>
+                AdvancedSearchConditions.Compile(typeof(LinkedItem), $"Linked{op}0x{serial:X}", AccessLevel.GameMaster)(linked);
+
+            Assert.True(Match(">", value - 1));
+            Assert.False(Match(">", value));
+            Assert.True(Match(">=", value));
+            Assert.False(Match(">=", value + 1));
+            Assert.True(Match("<", value + 1));
+            Assert.False(Match("<", value));
+            Assert.True(Match("<=", value));
+            Assert.False(Match("<=", value - 1));
         }
         finally
         {
             target.Delete();
             linked.Delete();
         }
+    }
+
+    [Fact]
+    public void EntityLeaf_Relational_NullIsNoMatch()
+    {
+        var unlinked = new LinkedItem();
+
+        try
+        {
+            Assert.False(AdvancedSearchConditions.Compile(typeof(LinkedItem), "Linked>0x1", AccessLevel.GameMaster)(unlinked));
+            Assert.False(AdvancedSearchConditions.Compile(typeof(LinkedItem), "Linked<0x7FFFFFF0", AccessLevel.GameMaster)(unlinked));
+        }
+        finally
+        {
+            unlinked.Delete();
+        }
+    }
+
+    // An interface-typed property has no CompareTo, so ordering it is a dead leaf.
+    [Fact]
+    public void EntityLeaf_Relational_InterfaceTyped_IsNoMatch()
+    {
+        var target = new Item(0x1);
+        var holder = new EntityHolder { Target = target };
+
+        try
+        {
+            Assert.False(AdvancedSearchConditions.Compile(typeof(EntityHolder), "Target>0x1", AccessLevel.GameMaster)(holder));
+            Assert.True(AdvancedSearchConditions.Compile(typeof(EntityHolder), $"Target=0x{target.Serial.Value:X}", AccessLevel.GameMaster)(holder));
+        }
+        finally
+        {
+            target.Delete();
+        }
+    }
+
+    private sealed class EntityHolder
+    {
+        [CommandProperty(AccessLevel.GameMaster)]
+        public IEntity Target { get; set; }
     }
 }
