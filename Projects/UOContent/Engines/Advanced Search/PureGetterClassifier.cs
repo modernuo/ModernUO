@@ -22,7 +22,11 @@ public static class PureGetterClassifier
     private static readonly Dictionary<short, OpCode> _opCodes = BuildOpCodes();
 
     private static readonly ConcurrentDictionary<(RuntimeMethodHandle, Type), bool> _memo = new();
+    // Built once per declaring type: the game assemblies are all loaded at startup, before any search.
     private static readonly ConcurrentDictionary<Type, Type[]> _derivedTypes = new();
+
+    // An unhandled StackOverflow on a worker thread kills the process, so deep call chains are rejected.
+    private const int MaxDepth = 64;
 
     // Per-thread so concurrent search workers never see each other's in-progress methods.
     [ThreadStatic]
@@ -88,9 +92,10 @@ public static class PureGetterClassifier
     private static Dictionary<short, OpCode> BuildOpCodes()
     {
         var table = new Dictionary<short, OpCode>();
-        foreach (var field in typeof(OpCodes).GetFields(BindingFlags.Public | BindingFlags.Static))
+        var fields = typeof(OpCodes).GetFields(BindingFlags.Public | BindingFlags.Static);
+        for (var i = 0; i < fields.Length; i++)
         {
-            if (field.GetValue(null) is OpCode op)
+            if (fields[i].GetValue(null) is OpCode op)
             {
                 table[op.Value] = op;
             }
@@ -119,6 +124,11 @@ public static class PureGetterClassifier
         }
 
         var depth = stack.Count;
+        if (depth >= MaxDepth)
+        {
+            return false;
+        }
+
         stack[key] = depth;
         var myLow = int.MaxValue;
         bool pure;
@@ -168,11 +178,19 @@ public static class PureGetterClassifier
         var typeArgs = method.DeclaringType is { IsGenericType: true } ? method.DeclaringType.GetGenericArguments() : null;
         var methodArgs = method.IsGenericMethod ? method.GetGenericArguments() : null;
 
+        var branchTargets = FindBranchTargets(il);
+        if (branchTargets == null)
+        {
+            return false;
+        }
+
         var prev = default(OpCode);
+        var prevOffset = 0;
         var hasPrev = false;
         var i = 0;
         while (i < il.Length)
         {
+            var instructionStart = i;
             short code = il[i++];
             if (code == 0xFE)
             {
@@ -185,20 +203,20 @@ public static class PureGetterClassifier
             }
 
             var operandStart = i;
-            i += op.OperandType switch
-            {
-                OperandType.InlineNone => 0,
-                OperandType.ShortInlineBrTarget or OperandType.ShortInlineI or OperandType.ShortInlineVar => 1,
-                OperandType.InlineVar => 2,
-                OperandType.InlineI8 or OperandType.InlineR => 8,
-                OperandType.InlineSwitch => 4 + 4 * BitConverter.ToInt32(il, i),
-                _ => 4
-            };
+            i += OperandSize(op, il, i);
 
             if (op == OpCodes.Call || op == OpCodes.Callvirt)
             {
                 var token = BitConverter.ToInt32(il, operandStart);
-                if (!CallIsPure(method, receiverType, module.ResolveMethod(token, typeArgs, methodArgs), op, hasPrev, prev, ref low))
+                // Another path can reach the call between the receiver load and the call, so the receiver is
+                // only provably `this` when no branch lands in (prevOffset, call].
+                var straightLine = hasPrev && prev == OpCodes.Ldarg_0;
+                for (var k = prevOffset + 1; straightLine && k <= instructionStart; k++)
+                {
+                    straightLine = !branchTargets[k];
+                }
+
+                if (!CallIsPure(method, receiverType, module.ResolveMethod(token, typeArgs, methodArgs), op, straightLine, ref low))
                 {
                     return false;
                 }
@@ -228,6 +246,7 @@ public static class PureGetterClassifier
             if (op != OpCodes.Nop && op != OpCodes.Constrained)
             {
                 prev = op;
+                prevOffset = instructionStart;
                 hasPrev = true;
             }
         }
@@ -235,8 +254,67 @@ public static class PureGetterClassifier
         return true;
     }
 
+    private static int OperandSize(OpCode op, byte[] il, int at) => op.OperandType switch
+    {
+        OperandType.InlineNone => 0,
+        OperandType.ShortInlineBrTarget or OperandType.ShortInlineI or OperandType.ShortInlineVar => 1,
+        OperandType.InlineVar => 2,
+        OperandType.InlineI8 or OperandType.InlineR => 8,
+        OperandType.InlineSwitch => 4 + 4 * BitConverter.ToInt32(il, at),
+        _ => 4
+    };
+
+    // Marks every offset some branch or switch can jump to; null when the IL cannot be decoded.
+    private static bool[] FindBranchTargets(byte[] il)
+    {
+        var targets = new bool[il.Length + 1];
+        var i = 0;
+        while (i < il.Length)
+        {
+            short code = il[i++];
+            if (code == 0xFE)
+            {
+                code = (short)(0xFE00 | il[i++]);
+            }
+
+            if (!_opCodes.TryGetValue(code, out var op))
+            {
+                return null;
+            }
+
+            var operandStart = i;
+            i += OperandSize(op, il, i);
+            if (op.OperandType == OperandType.ShortInlineBrTarget)
+            {
+                Mark(targets, i + (sbyte)il[operandStart]);
+            }
+            else if (op.OperandType == OperandType.InlineBrTarget)
+            {
+                Mark(targets, i + BitConverter.ToInt32(il, operandStart));
+            }
+            else if (op.OperandType == OperandType.InlineSwitch)
+            {
+                var n = BitConverter.ToInt32(il, operandStart);
+                for (var k = 0; k < n; k++)
+                {
+                    Mark(targets, i + BitConverter.ToInt32(il, operandStart + 4 + 4 * k));
+                }
+            }
+        }
+
+        return targets;
+    }
+
+    private static void Mark(bool[] targets, int offset)
+    {
+        if (offset >= 0 && offset < targets.Length)
+        {
+            targets[offset] = true;
+        }
+    }
+
     private static bool CallIsPure(
-        MethodInfo caller, Type receiverType, MethodBase calleeBase, OpCode callOp, bool hasPrev, OpCode prev,
+        MethodInfo caller, Type receiverType, MethodBase calleeBase, OpCode callOp, bool receiverLoadedFromThis,
         ref int low
     )
     {
@@ -247,11 +325,12 @@ public static class PureGetterClassifier
 
         if (IsKnownPureBcl(callee))
         {
-            return true;
+            // A by-ref argument lets an allowlisted method store through ldflda/ldloca addresses.
+            return !HasMutableByRef(callee);
         }
 
         var onThis = !caller.IsStatic && !callee.IsStatic && callee.GetParameters().Length == 0 &&
-                     hasPrev && prev == OpCodes.Ldarg_0;
+                     receiverLoadedFromThis;
 
         // `call` is non-virtual dispatch even on a virtual method (base.Foo()).
         if (callOp == OpCodes.Call || !IsOverridable(callee))
@@ -266,6 +345,20 @@ public static class PureGetterClassifier
         }
 
         return AllOverridesPure(callee, ref low);
+    }
+
+    private static bool HasMutableByRef(MethodInfo m)
+    {
+        var parameters = m.GetParameters();
+        for (var i = 0; i < parameters.Length; i++)
+        {
+            if (parameters[i].ParameterType.IsByRef && !(parameters[i].IsIn && !parameters[i].IsOut))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     // Struct construction allocates nothing on the heap and these constructors only assign fields.
@@ -364,14 +457,16 @@ public static class PureGetterClassifier
 
         try
         {
+            // No concrete instance to resolve against, so nothing can be proven about what would run.
+            if (type.IsInterface || type.IsAbstract)
+            {
+                return null;
+            }
+
             if (m.DeclaringType.IsInterface)
             {
-                if (!type.IsInterface && !type.IsAbstract)
-                {
-                    return MapInterfaceMethod(type, m);
-                }
-
-                return m;
+                var mapped = MapInterfaceMethods(type, m);
+                return mapped.Count == 1 ? mapped[0] : null;
             }
 
             var baseDef = m.GetBaseDefinition();
@@ -399,13 +494,17 @@ public static class PureGetterClassifier
     private static bool SameMethod(MethodInfo a, MethodInfo b) =>
         a.Module == b.Module && a.MetadataToken == b.MetadataToken;
 
-    private static MethodInfo MapInterfaceMethod(Type type, MethodInfo interfaceMethod)
+    // A constructed interface maps exactly; an open one (inside a generic class) maps every instantiation.
+    private static List<MethodInfo> MapInterfaceMethods(Type type, MethodInfo interfaceMethod)
     {
+        var result = new List<MethodInfo>();
+        var declaring = interfaceMethod.DeclaringType;
+        var exact = !declaring.IsGenericType || !declaring.ContainsGenericParameters;
         var interfaces = type.GetInterfaces();
         for (var i = 0; i < interfaces.Length; i++)
         {
             var iface = interfaces[i];
-            if (!SameDefinition(iface, interfaceMethod.DeclaringType))
+            if (exact ? iface != declaring : !SameDefinition(iface, declaring))
             {
                 continue;
             }
@@ -415,12 +514,12 @@ public static class PureGetterClassifier
             {
                 if (SameMethod(map.InterfaceMethods[k], interfaceMethod))
                 {
-                    return map.TargetMethods[k];
+                    result.Add(map.TargetMethods[k]);
                 }
             }
         }
 
-        return null;
+        return result;
     }
 
     private static bool SameDefinition(Type a, Type b) =>
@@ -448,25 +547,23 @@ public static class PureGetterClassifier
                     continue;
                 }
 
-                MethodInfo target;
+                List<MethodInfo> targets;
                 try
                 {
-                    target = MapInterfaceMethod(type, callee);
+                    targets = MapInterfaceMethods(type, callee);
                 }
                 catch (Exception)
                 {
                     return false;
                 }
 
-                if (target == null)
+                for (var k = 0; k < targets.Count; k++)
                 {
-                    continue;
-                }
-
-                found = true;
-                if (!Classify(target, null, ref low))
-                {
-                    return false;
+                    found = true;
+                    if (!Classify(targets[k], null, ref low))
+                    {
+                        return false;
+                    }
                 }
 
                 continue;
@@ -515,8 +612,10 @@ public static class PureGetterClassifier
                 var scanAll = declaringAssembly == typeof(object).Assembly;
                 var result = new List<Type>();
 
-                foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+                var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+                for (var a = 0; a < assemblies.Length; a++)
                 {
+                    var assembly = assemblies[a];
                     if (assembly.IsDynamic)
                     {
                         continue;
@@ -529,8 +628,10 @@ public static class PureGetterClassifier
                         continue;
                     }
 
-                    foreach (var type in SafeTypes(assembly))
+                    var types = SafeTypes(assembly);
+                    for (var k = 0; k < types.Length; k++)
                     {
+                        var type = types[k];
                         if (type != d && DerivesFrom(type, d, definition))
                         {
                             result.Add(type);

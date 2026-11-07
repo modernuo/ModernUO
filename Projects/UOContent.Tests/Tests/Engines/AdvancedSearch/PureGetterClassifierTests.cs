@@ -138,6 +138,64 @@ public class PureGetterClassifierTests
         public override int Value => 1;
     }
 
+    internal abstract class PureBase
+    {
+        public abstract int Value { get; }
+    }
+
+    internal class PureOverrideOne : PureBase
+    {
+        public override int Value => 1;
+    }
+
+    internal class PureOverrideTwo : PureBase
+    {
+        public override int Value => 2;
+    }
+
+    internal class PureReader
+    {
+        private PureBase _other = new PureOverrideOne();
+        public int Read => _other.Value;
+        public PureBase Other => _other;
+    }
+
+    internal class MergedReceiverBase : ThisVirtualBase
+    {
+        private ThisVirtualBase _other = new ImpureDerived();
+
+        // Either operand can be the receiver at the call, so it is not provably `this`.
+        public string Via => (_other ?? this).DefaultName;
+    }
+
+    internal class MergedReceiverPure : MergedReceiverBase
+    {
+        public override string DefaultName => "p";
+    }
+
+    internal class ByRefFixture
+    {
+        private int _a = 7;
+        private int _b = 2;
+        private int _rem = 0;
+        private string _s = "1";
+        private DateTime _cached = default;
+
+        public int DivRem => Math.DivRem(_a, _b, out _rem);
+        public int TryParse => DateTime.TryParse(_s, out _cached) ? 1 : 0;
+    }
+
+    internal interface IGenericValue<T>
+    {
+        int Value { get; }
+    }
+
+    internal class BothInterfaces : IGenericValue<int>, IGenericValue<string>
+    {
+        int IGenericValue<int>.Value => 1;
+        int IGenericValue<string>.Value => new string('x', 1).Length;
+    }
+
     internal class ForeignReader
     {
         private AbstractHolder _other = new ForeignPure();
@@ -191,13 +249,60 @@ public class PureGetterClassifierTests
     }
 
     [Fact]
-    public void ForeignVirtual_AllPureOverridesIsPureAsChainLink()
+    public void ForeignVirtual_ImpureOverridePoisonsChainLink()
     {
         // Link 1 uses all-overrides semantics, so the impure override poisons it for every runtime type.
         var value = typeof(AbstractHolder).GetProperty(nameof(AbstractHolder.Value))!;
         var read = typeof(ForeignReader).GetProperty(nameof(ForeignReader.Read))!;
 
         Assert.False(PureGetterClassifier.IsPure([read, value], typeof(ForeignReader)));
+    }
+
+    [Fact]
+    public void ForeignVirtual_AllPureOverrides_IsPure()
+    {
+        Assert.True(Pure(typeof(PureReader), nameof(PureReader.Read)));
+
+        var other = typeof(PureReader).GetProperty(nameof(PureReader.Other))!;
+        var value = typeof(PureBase).GetProperty(nameof(PureBase.Value))!;
+        Assert.True(PureGetterClassifier.IsPure([other, value], typeof(PureReader)));
+    }
+
+    [Fact]
+    public void BranchMergedReceiver_IsNotTreatedAsThis()
+    {
+        Assert.False(PureGetterClassifier.IsPure(
+            Getter(typeof(MergedReceiverBase), nameof(MergedReceiverBase.Via)),
+            typeof(MergedReceiverPure)
+        ));
+    }
+
+    [Fact]
+    public void AllowlistedBclWithByRefParameter_IsImpure()
+    {
+        Assert.False(Pure(typeof(ByRefFixture), nameof(ByRefFixture.DivRem)));
+        Assert.False(Pure(typeof(ByRefFixture), nameof(ByRefFixture.TryParse)));
+    }
+
+    [Fact]
+    public void ConstructedInterface_MapsToItsOwnImplementation()
+    {
+        var pure = typeof(IGenericValue<int>).GetProperty("Value")!.GetGetMethod()!;
+        var impure = typeof(IGenericValue<string>).GetProperty("Value")!.GetGetMethod()!;
+
+        Assert.True(PureGetterClassifier.IsPure(pure, typeof(BothInterfaces)));
+        Assert.False(PureGetterClassifier.IsPure(impure, typeof(BothInterfaces)));
+    }
+
+    [Fact]
+    public void AbstractOrInterfaceReceiver_IsImpure()
+    {
+        var iface = typeof(IGenericValue<int>).GetProperty("Value")!.GetGetMethod()!;
+        Assert.False(PureGetterClassifier.IsPure(iface, typeof(IGenericValue<int>)));
+        Assert.False(PureGetterClassifier.IsPure(
+            Getter(typeof(ThisVirtualBase), nameof(ThisVirtualBase.DefaultName)),
+            typeof(PureBase)
+        ));
     }
 
     [Fact]
