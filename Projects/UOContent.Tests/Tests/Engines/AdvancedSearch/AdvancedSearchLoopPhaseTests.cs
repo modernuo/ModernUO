@@ -40,17 +40,23 @@ public class AdvancedSearchLoopPhaseTests
     {
         // The caller sorts the worker results off the loop.
         Array.Sort(workerResults, AdvancedSearchResultSerialComparer.Instance);
-        return new AdvancedSearchLoopPhase(from, gump, filter, Origin, NewCache(), workerResults, deferred, ignoreSources, false);
+        return new AdvancedSearchLoopPhase(from, gump, filter, Origin, NewCache(), workerResults, deferred, ignoreSources, false)
+        {
+            // The test thread stands in for both the thread pool and the loop.
+            RunOffLoop = static work => work(),
+            PostToLoop = static resume => resume()
+        };
     }
 
-    // Each stage after the drains starts in a fresh slice: drain, merge, copy (when anything was dropped), publish.
+    // Each stage after the drains starts in a fresh slice: drain (handing off the sort), allocate, merge,
+    // copy (when anything was dropped), publish.
     private static void RunToCompletion(AdvancedSearchLoopPhase phase)
     {
         var slices = 1;
         while (!phase.RunSlice(long.MaxValue))
         {
             slices++;
-            Assert.True(slices <= 4, "an unlimited budget should finish within four slices");
+            Assert.True(slices <= 5, "an unlimited budget should finish within five slices");
         }
     }
 
@@ -396,6 +402,117 @@ public class AdvancedSearchLoopPhaseTests
         }
         finally
         {
+            DeleteAll(entities);
+            AdvancedSearchGump.EndSearch();
+        }
+    }
+
+    [Fact]
+    public void LoopPhase_LargeDeferredSet_SortsOffTheLoopAndPublishesInSerialOrder()
+    {
+        var from = new Mobile();
+        var gump = new AdvancedSearchGump();
+        var entities = new List<IEntity> { from };
+        var deferred = new ConcurrentQueue<IEntity>();
+        var items = new List<Item>();
+
+        for (var i = 0; i < 3000; i++)
+        {
+            var item = new Item(0x1);
+            entities.Add(item);
+            items.Add(item);
+        }
+
+        // Highest serial first, so the drain collects the loop results in reverse order.
+        for (var i = items.Count - 1; i >= 0; i--)
+        {
+            deferred.Enqueue(items[i]);
+        }
+
+        Action offLoop = null;
+        Action posted = null;
+
+        try
+        {
+            var phase = new AdvancedSearchLoopPhase(
+                from, gump, new AdvancedSearchFilter(), Origin, NewCache(),
+                [], deferred, new ConcurrentQueue<IEntity>(), false
+            )
+            {
+                RunOffLoop = work => offLoop = work,
+                PostToLoop = resume => posted = resume
+            };
+
+            Assert.False(phase.RunSlice(long.MaxValue));
+            Assert.NotNull(offLoop);
+
+            // While the sort is out, loop slices do nothing.
+            Assert.False(phase.RunSlice(long.MaxValue));
+            Assert.False(phase.RunSlice(long.MaxValue));
+            Assert.Null(gump.SearchResults);
+            Assert.Null(posted);
+
+            var sorter = new System.Threading.Thread(() => offLoop());
+            sorter.Start();
+            sorter.Join();
+
+            Assert.NotNull(posted);
+            posted();
+
+            var slices = 0;
+            while (!phase.RunSlice(long.MaxValue))
+            {
+                Assert.True(++slices <= 4, "allocate, merge, publish should follow the sort");
+            }
+
+            Assert.NotNull(gump.SearchResults);
+            Assert.Equal(items.Count, gump.SearchResults.Length);
+            for (var i = 0; i < items.Count; i++)
+            {
+                Assert.Same(items[i], gump.SearchResults[i].Entity);
+            }
+        }
+        finally
+        {
+            DeleteAll(entities);
+            AdvancedSearchGump.EndSearch();
+        }
+    }
+
+    [Fact]
+    public void LoopPhase_SortFailure_StillFinishesOnTheLoop()
+    {
+        var original = AutoSave.SavesEnabled;
+        var from = new Mobile();
+        var a = new Item(0x1);
+        var b = new Item(0x1);
+        var entities = new List<IEntity> { from, a, b };
+        var deferred = new ConcurrentQueue<IEntity>();
+        deferred.Enqueue(b);
+        deferred.Enqueue(a);
+
+        Assert.True(AdvancedSearchGump.TryBeginSearch());
+        AutoSave.SavesEnabled = false;
+
+        try
+        {
+            var phase = new AdvancedSearchLoopPhase(
+                from, new AdvancedSearchGump(), new AdvancedSearchFilter(), Origin, NewCache(),
+                [], deferred, new ConcurrentQueue<IEntity>(), true
+            )
+            {
+                // The sort job itself never runs; the phase sees it as a failure.
+                RunOffLoop = _ => throw new InvalidOperationException("no thread pool"),
+                PostToLoop = _ => { }
+            };
+
+            Assert.True(phase.RunSlice(long.MaxValue));
+            Assert.True(AutoSave.SavesEnabled);
+            Assert.False(AdvancedSearchGump.IsSearchInProgress);
+        }
+        finally
+        {
+            AutoSave.SavesEnabled = original;
             DeleteAll(entities);
             AdvancedSearchGump.EndSearch();
         }

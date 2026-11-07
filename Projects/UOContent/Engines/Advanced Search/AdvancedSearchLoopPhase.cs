@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 using Server.Logging;
 using Server.Saves;
 
@@ -11,7 +12,9 @@ namespace Server.Engines.AdvancedSearch;
 /// Finishes a search on the game loop once the workers have drained: collects what the ignore sources
 /// hide, runs the full filter on the entities the workers deferred, then merges, filters and publishes the
 /// results. The work is cut into slices of at most <see cref="LoopBudgetMs" /> each, one slice per timer
-/// tick, so neither a large deferred remainder nor a large result set stalls the loop.
+/// tick, so neither a large deferred remainder nor a large result set stalls the loop. The loop's own results
+/// are sorted on the thread pool between the drain and the merge, and the phase resumes when that sort posts
+/// back.
 /// </summary>
 public sealed class AdvancedSearchLoopPhase
 {
@@ -26,6 +29,8 @@ public sealed class AdvancedSearchLoopPhase
     private enum Stage
     {
         Drain,
+        Sort,
+        Allocate,
         Merge,
         Copy,
         Publish
@@ -46,6 +51,7 @@ public sealed class AdvancedSearchLoopPhase
     private readonly HashSet<IEntity> _ignored = [];
 
     private bool _finished;
+    private bool _selfScheduled;
     private Stage _stage;
     private int _entitiesThisSlice;
 
@@ -55,6 +61,12 @@ public sealed class AdvancedSearchLoopPhase
     private int _loopCursor;
     private AdvancedSearchResult[] _final;
     private int _copied;
+
+    /// <summary>Runs the loop-result sort off the loop. Test seam.</summary>
+    internal Action<Action> RunOffLoop { get; init; } = static work => ThreadPool.QueueUserWorkItem(static w => w(), work, false);
+
+    /// <summary>Hands the sort's completion back to the loop. Test seam.</summary>
+    internal Action<Action> PostToLoop { get; init; } = static resume => Core.LoopContext.Post(resume);
 
     public static void Configure()
     {
@@ -90,7 +102,10 @@ public sealed class AdvancedSearchLoopPhase
 
     public void Start()
     {
-        if (!RunSlice(Stopwatch.Frequency * LoopBudgetMs / 1000))
+        _selfScheduled = true;
+
+        // While the sort is out, its completion resumes the phase instead of a timer.
+        if (!RunSlice(Stopwatch.Frequency * LoopBudgetMs / 1000) && _stage != Stage.Sort)
         {
             Timer.StartTimer(Start);
         }
@@ -121,9 +136,19 @@ public sealed class AdvancedSearchLoopPhase
                         if (DrainIgnoreSources(start, budgetTimestampTicks) &&
                             DrainDeferred(start, budgetTimestampTicks))
                         {
-                            _stage = Stage.Merge;
+                            BeginSort();
                         }
 
+                        return false;
+                    }
+                case Stage.Sort:
+                    {
+                        return false;
+                    }
+                case Stage.Allocate:
+                    {
+                        _merged = new AdvancedSearchResult[_workerResults.Length + _loopResults.Count];
+                        _stage = Stage.Merge;
                         return false;
                     }
                 case Stage.Merge:
@@ -223,17 +248,71 @@ public sealed class AdvancedSearchLoopPhase
         return true;
     }
 
+    private void BeginSort()
+    {
+        if (_loopResults.Count < 2)
+        {
+            _stage = Stage.Allocate;
+            return;
+        }
+
+        _stage = Stage.Sort;
+        RunOffLoop(SortLoopResults);
+    }
+
+    // Thread pool. The comparer reads only Entity.Serial, which never changes, and the loop leaves
+    // _loopResults alone until the completion below runs on it.
+    private void SortLoopResults()
+    {
+        Exception failure = null;
+
+        try
+        {
+            _loopResults.Sort(AdvancedSearchResultSerialComparer.Instance);
+        }
+        catch (Exception ex)
+        {
+            failure = ex;
+        }
+
+        try
+        {
+            PostToLoop(() => ResumeAfterSort(failure));
+        }
+        catch (Exception ex)
+        {
+            // A throw here would terminate the process; nothing else can reach the loop.
+            _logger.Error(ex, "AdvancedSearch: could not hand the sorted results back to the loop");
+        }
+    }
+
+    private void ResumeAfterSort(Exception failure)
+    {
+        if (_finished)
+        {
+            return;
+        }
+
+        if (failure != null)
+        {
+            _logger.Warning(failure, "AdvancedSearch: sorting the loop results failed");
+            Finish(false);
+            return;
+        }
+
+        _stage = Stage.Allocate;
+
+        if (_selfScheduled)
+        {
+            Start();
+        }
+    }
+
     // Merges the caller-sorted worker results with the loop's own (normally few) results, dropping entities
     // deleted since they matched and entities an ignore source hides.
     private bool Merge(long start, long budget)
     {
         var comparer = AdvancedSearchResultSerialComparer.Instance;
-
-        if (_merged == null)
-        {
-            _loopResults.Sort(comparer);
-            _merged = new AdvancedSearchResult[_workerResults.Length + _loopResults.Count];
-        }
 
         while (_workerCursor < _workerResults.Length || _loopCursor < _loopResults.Count)
         {
