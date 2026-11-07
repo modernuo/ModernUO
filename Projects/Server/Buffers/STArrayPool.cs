@@ -41,6 +41,9 @@ public class STArrayPool<T> : ArrayPool<T>
 
     public override T[] Rent(int minimumLength)
     {
+#if DEBUG_ARRAYPOOL_THREADS
+        STArrayPoolThreadAudit.Record(typeof(T));
+#endif
         T[] buffer;
 
         var bucketIndex = SelectBucketIndex(minimumLength);
@@ -108,6 +111,9 @@ public class STArrayPool<T> : ArrayPool<T>
 
     public override void Return(T[]? array, bool clearArray = false)
     {
+#if DEBUG_ARRAYPOOL_THREADS
+        STArrayPoolThreadAudit.Record(typeof(T));
+#endif
         if (array is null)
         {
             return;
