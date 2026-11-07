@@ -134,6 +134,18 @@ public class LoginAllowlistTests : IDisposable
     }
 
     [Fact]
+    public void LoginAllowlist_LoginExemptsSlash64()
+    {
+        Reset();
+
+        LoginAllowlist.RecordLogin(IPAddress.Parse("2001:db8:1:2::1"), Now);
+
+        Assert.True(LoginAllowlist.IsAllowed(IPAddress.Parse("2001:db8:1:2::99"), Now));
+        Assert.False(LoginAllowlist.IsAllowed(IPAddress.Parse("2001:db8:1:3::1"), Now));
+        Assert.Equal(1, LoginAllowlist.Count);
+    }
+
+    [Fact]
     public void Private_addresses_are_never_recorded()
     {
         Reset();

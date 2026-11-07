@@ -29,6 +29,7 @@ public static class NetworkUtilities
     );
 
     private static readonly SortedRangeIndex<UInt128> _privateNetworkV6 = BuildIndex(
+        "::1/128",
         "fc00::/7",
         "fe80::/10"
     );
