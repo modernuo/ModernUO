@@ -221,6 +221,16 @@ public static class Core
     private static bool _crashed;
     private static string _baseDirectory;
 
+    // Bounds how long an off-loop exit waits for the loop to finish shutting down on its own thread.
+    // Windows allows a console-close handler about five seconds before it kills the process anyway.
+    private static readonly TimeSpan OffLoopShutdownTimeout = TimeSpan.FromSeconds(5);
+
+    private static volatile LoopLifecycle _loopLifecycle;
+    private static readonly ManualResetEventSlim _shutdownComplete = new(false);
+
+    // Kept alive for the life of the process: a collected registration silently unregisters.
+    private static PosixSignalRegistration _sigtermRegistration;
+
     private static bool? _isRunningFromXUnit;
 
     private static int _itemCount;
@@ -437,10 +447,43 @@ public static class Core
 
     private static void CurrentDomain_ProcessExit(object sender, EventArgs e)
     {
-        if (!Closing)
+        if (Closing)
+        {
+            return;
+        }
+
+        var onLoopThread = Thread.CurrentThread == Thread;
+        if (ShutdownRouting.RouteProcessExit(onLoopThread, _loopLifecycle) == ProcessExitRoute.RunHere)
         {
             HandleClosed();
+            return;
         }
+
+        // The shutdown handlers touch network and game state, so the loop runs them. This thread only
+        // has to keep the process alive until it has: returning lets the runtime finish exiting.
+        Kill();
+
+        if (!_shutdownComplete.Wait(OffLoopShutdownTimeout))
+        {
+            logger.Warning(
+                "The process is exiting and the game loop did not shut down within {Timeout}s",
+                OffLoopShutdownTimeout.TotalSeconds
+            );
+        }
+    }
+
+    private static void OnTerminateSignal(PosixSignalContext context)
+    {
+        if (!ShutdownRouting.ShouldInterceptTerminate(_loopLifecycle))
+        {
+            return;
+        }
+
+        logger.Information("Detected {Signal}.", context.Signal);
+
+        // Without the cancel the runtime starts exiting on this thread while the loop keeps running.
+        context.Cancel = true;
+        Kill();
     }
 
     private static void Console_CancelKeyPressed(object sender, ConsoleCancelEventArgs e)
@@ -502,18 +545,25 @@ public static class Core
     {
         ClosingTokenSource.Cancel();
 
-        logger.Information("Shutting down");
-
-        World.WaitForWriteCompletion();
-        World.ExitSerializationThreads();
-        PingServer.Shutdown();
-        NetState.Shutdown();
-        BanChannel.Stop();
-        ConnectionFilters.Stop();
-
-        if (!_crashed)
+        try
         {
-            EventSink.InvokeShutdown();
+            logger.Information("Shutting down");
+
+            World.WaitForWriteCompletion();
+            World.ExitSerializationThreads();
+            PingServer.Shutdown();
+            NetState.Shutdown();
+            BanChannel.Stop();
+            ConnectionFilters.Stop();
+
+            if (!_crashed)
+            {
+                EventSink.InvokeShutdown();
+            }
+        }
+        finally
+        {
+            _shutdownComplete.Set();
         }
     }
 
@@ -576,6 +626,13 @@ public static class Core
         Utility.PopColor();
 
         Console.CancelKeyPress += Console_CancelKeyPressed;
+
+        // SIGINT and SIGQUIT already arrive through CancelKeyPress. SIGTERM (docker stop, systemctl stop)
+        // would otherwise run the shutdown handlers on the runtime's exit thread, concurrently with the loop.
+        if (!OperatingSystem.IsWindows())
+        {
+            _sigtermRegistration = PosixSignalRegistration.Create(PosixSignal.SIGTERM, OnTerminateSignal);
+        }
 
         Headless = Console.IsInputRedirected;
         if (Headless)
@@ -715,6 +772,8 @@ public static class Core
 
     public static void RunEventLoop()
     {
+        _loopLifecycle = LoopLifecycle.Running;
+
         try
         {
             while (!Closing)
@@ -798,10 +857,12 @@ public static class Core
         }
         catch (Exception e)
         {
+            _loopLifecycle = LoopLifecycle.ShuttingDown;
             CurrentDomain_UnhandledException(null, new UnhandledExceptionEventArgs(e, true));
             return;
         }
 
+        _loopLifecycle = LoopLifecycle.ShuttingDown;
         DoKill(_restartOnKill);
     }
 
