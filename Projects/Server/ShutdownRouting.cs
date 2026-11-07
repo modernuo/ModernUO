@@ -36,10 +36,24 @@ internal enum ProcessExitRoute
     WaitForLoop
 }
 
+internal enum CrashRoute
+{
+    /// <summary>Run the full crash handling on the calling thread.</summary>
+    RunHere,
+
+    /// <summary>Post the crash handling to the loop and wait for it.</summary>
+    HandOffToLoop,
+
+    /// <summary>
+    /// No loop can take the work: run only what is safe off the loop and leave game and network state alone.
+    /// </summary>
+    OffLoop
+}
+
 /// <summary>
-/// Decides which thread runs shutdown handling. Those handlers touch network and game
+/// Decides which thread runs shutdown and crash handling. Those handlers touch network and game
 /// state, so they must run on the loop thread, but the runtime raises the events that trigger them
-/// on whatever thread exits.
+/// on whatever thread exits or faults.
 /// </summary>
 internal static class ShutdownRouting
 {
@@ -53,4 +67,14 @@ internal static class ShutdownRouting
     // The loop thread must never wait on itself.
     public static ProcessExitRoute RouteProcessExit(bool onLoopThread, LoopLifecycle lifecycle) =>
         onLoopThread || lifecycle == LoopLifecycle.NotStarted ? ProcessExitRoute.RunHere : ProcessExitRoute.WaitForLoop;
+
+    // Only a running loop drains posted work: during startup the post would sit unexecuted, and once
+    // the loop stops iterating it never runs again.
+    public static CrashRoute RouteCrash(bool onLoopThread, LoopLifecycle lifecycle) =>
+        (onLoopThread, lifecycle) switch
+        {
+            (true, _)                  => CrashRoute.RunHere,
+            (_, LoopLifecycle.Running) => CrashRoute.HandOffToLoop,
+            _                          => CrashRoute.OffLoop
+        };
 }

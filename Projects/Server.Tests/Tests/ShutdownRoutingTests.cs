@@ -24,4 +24,14 @@ public class ShutdownRoutingTests
             (ProcessExitRoute)expected,
             ShutdownRouting.RouteProcessExit(onLoopThread, (LoopLifecycle)lifecycle)
         );
+
+    [Theory]
+    [InlineData(true, (int)LoopLifecycle.NotStarted, (int)CrashRoute.RunHere)]
+    [InlineData(true, (int)LoopLifecycle.Running, (int)CrashRoute.RunHere)]
+    [InlineData(true, (int)LoopLifecycle.ShuttingDown, (int)CrashRoute.RunHere)]
+    [InlineData(false, (int)LoopLifecycle.NotStarted, (int)CrashRoute.OffLoop)]
+    [InlineData(false, (int)LoopLifecycle.Running, (int)CrashRoute.HandOffToLoop)]
+    [InlineData(false, (int)LoopLifecycle.ShuttingDown, (int)CrashRoute.OffLoop)]
+    public void CrashIsHandedOffOnlyToARunningLoop(bool onLoopThread, int lifecycle, int expected) =>
+        Assert.Equal((CrashRoute)expected, ShutdownRouting.RouteCrash(onLoopThread, (LoopLifecycle)lifecycle));
 }
