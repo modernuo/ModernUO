@@ -64,8 +64,10 @@ account access list) use /24 for IPv4 and the subscriber prefix for IPv6.
 
 ### Banning
 
-- Banning a **player** (`[ban`, the admin gump) widens an IPv6 address to its subscriber network. IPv4 stays a
-  single address.
+- Firewalling a **player** (`[firewall` on a player, and the admin gump's firewall-account / firewall-login-IP /
+  Add (Target) actions) widens an IPv6 address to its subscriber network. IPv4 stays a single address.
+- Automatic reports (rate limit, silent connect, invalid seed, blocklist) for an IPv6 address also go out as the
+  subscriber network (CrowdSec scope `Range`).
 - An address typed into the firewall box is kept exactly as typed.
 - `BanChannel` carries an `IPNetwork`, not an address. `IBanReporter.Report`/`Retract` take `IPNetwork`.
 - CrowdSec receives IPv6 subscriber bans as **scope `Range`** decisions (CIDR value); IPv4 is reported as a
@@ -77,6 +79,8 @@ account access list) use /24 for IPv4 and the subscriber prefix for IPv6.
 - IPv6 CIDR ranges with a prefix of `/64` or shorter previously had wrong bounds (this also made `fc00::/7`
   report as non-private). Firewall entries saved before the fix keep their stored min-max bounds; remove and
   re-add them.
+- After the CIDR fix, ULA (`fc00::/7`) addresses count as private: they bypass the connection rate limiter and
+  login-allowlist checks and the server list treats them as local.
 - Dual-stack players (one person on both an IPv4 and an IPv6 address) are counted separately.
 - Plugins: `IBanReporter.Report`/`Retract` now take `IPNetwork`, and `AccountHandler.IPTable` is replaced by
   `GetAccountCount`/`IncrementAccountCount`/`DecrementAccountCount`.
@@ -95,6 +99,10 @@ cscli decisions list --ip 203.0.113.42
 # Admin-curated?
 grep 203.0.113.42 Distribution/Configuration/firewall.json
 ```
+
+An IPv6 player's firewall entry is stored as a `min-max` range (for example
+`2001:db8:1:2::-2001:db8:1:2:ffff:ffff:ffff:ffff`), so grep the /64 prefix (`2001:db8:1:2::`) rather than the full
+address. CrowdSec decisions for IPv6 are ranges too.
 
 If none of those match, they may be inside a **CIDR** in the blocklist, or held by the in-memory
 `auto-denylist` — that one is not queryable and expires on its own within 15 minutes.
