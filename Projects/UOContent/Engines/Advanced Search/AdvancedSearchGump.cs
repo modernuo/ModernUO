@@ -786,7 +786,6 @@ public class AdvancedSearchGump : Gump
 
             var type = filter.FilterType ? filter.Type : null;
 
-            // Workers decide only what is pure to read off the loop; see AdvancedSearchMatcher for the split.
             // Only entities of the searched type are pushed, so only they can act as ignore sources.
             foreach (var item in World.Items.Values)
             {
@@ -817,14 +816,14 @@ public class AdvancedSearchGump : Gump
                         _threadWorkers[i].Sleep();
                     }
 
-                    // Serials never change, so the sort needs no game state and stays off the loop.
+                    // Serials never change, so this sort needs no game state.
                     sorted = results.ToArray();
                     Array.Sort(sorted, AdvancedSearchResultSerialComparer.Instance);
                 }
                 catch (Exception ex)
                 {
-                    // A throw here would terminate the process. The autosave setter drives a timer, and the
-                    // guard must not release before the restore lands, so both run on the loop.
+                    // A throw here would kill the process. Autosave drives a timer, so restore it and release
+                    // the guard on the loop, in that order.
                     _logger.Warning(ex, "AdvancedSearch: search drain failed");
                     Core.LoopContext.Post(() =>
                         {

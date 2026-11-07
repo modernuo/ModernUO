@@ -15,11 +15,9 @@ internal enum MatchOutcome
 }
 
 /// <summary>
-/// The search filter, shared by the search workers and the loop phase. Off the loop
-/// (<c>onLoop: false</c>) it runs only reads proven pure for the entity's runtime type and returns
-/// <see cref="MatchOutcome.Defer" /> for anything else: a type whose fixed reads are not worker-safe, a
-/// property test that needs its loop predicate, and the region filter (<c>Region.Find</c> lazily
-/// allocates map sectors). On the loop it runs the whole filter and never defers.
+/// The search filter, shared by the workers and the loop phase. Off the loop it runs only reads proven
+/// pure for the runtime type and returns <see cref="MatchOutcome.Defer" /> for the rest, including the
+/// region filter (<c>Region.Find</c> lazily allocates map sectors). On the loop it never defers.
 /// </summary>
 internal static class AdvancedSearchMatcher
 {
@@ -64,7 +62,7 @@ internal static class AdvancedSearchMatcher
     {
         result = null;
 
-        // The map, location, name and internal-validity reads below are the fixed reads vetted per type.
+        // Vets the fixed reads below (map, location, name, internal validity) for this type.
         if (!onLoop && !AdvancedSearchWorkerReads.IsWorkerSafe(entity.GetType()))
         {
             WarmPredicate(entity.GetType(), filter, predicates);
@@ -127,8 +125,7 @@ internal static class AdvancedSearchMatcher
                 return MatchOutcome.Reject;
             }
 
-            // Compiled once per runtime type for the search and memoized; after that each entity costs a
-            // dictionary lookup and a delegate call.
+            // Memoized per runtime type for the search.
             var predicate = AdvancedSearchConditions.GetPredicate(predicates, entity.GetType(), test);
 
             if (onLoop)
@@ -167,8 +164,7 @@ internal static class AdvancedSearchMatcher
         return MatchOutcome.Match;
     }
 
-    // Compiling a predicate is reflection and Expression.Compile, with no game state, so it is done here on the
-    // worker rather than in the loop's drain. A failure only means the loop compiles it instead.
+    // Compiling touches no game state, so the worker does it and spares the loop; on failure the loop compiles it.
     private static void WarmPredicate(Type runtimeType, AdvancedSearchFilter filter, AdvancedSearchConditions.Cache predicates)
     {
         if (!filter.FilterPropertyTest || string.IsNullOrWhiteSpace(filter.PropertyTest) || predicates == null)
@@ -187,8 +183,7 @@ internal static class AdvancedSearchMatcher
     }
 
     /// <summary>
-    /// The placement filters an ignore source must pass before it hides anything: map, range and, on
-    /// the loop, region. Loop only.
+    /// Map, range and region filters an ignore source must pass before it hides anything. Loop only.
     /// </summary>
     internal static bool PassesPlacement(IEntity entity, AdvancedSearchFilter filter, WorldLocation origin)
     {
@@ -222,8 +217,7 @@ internal static class AdvancedSearchMatcher
                Utility.InRange(origin.Location, location, filter.Range.Value);
     }
 
-    // The map boxes are independent checks, so several can be ticked at once: an entity passes when
-    // its map is any of them. With none ticked there is no map constraint.
+    // Passes when the map is any ticked box; none ticked means no map constraint.
     internal static bool OnASelectedMap(AdvancedSearchFilter f, Map map)
     {
         var anySelected = f.FilterFelucca || f.FilterTrammel || f.FilterIlshenar || f.FilterMalas ||
@@ -314,8 +308,7 @@ internal static class AdvancedSearchMatcher
     internal static bool IsIgnoreSource(IEntity entity) => entity is CommodityDeed or KeyRing or BaseHouse;
 
     /// <summary>
-    /// Adds the entities <paramref name="source" /> legitimately keeps on the internal map. Enumerates live
-    /// lists, so loop only.
+    /// Adds what <paramref name="source" /> legitimately keeps on the internal map. Loop only (live lists).
     /// </summary>
     internal static void CollectIgnored(IEntity source, HashSet<IEntity> ignored)
     {

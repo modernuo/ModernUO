@@ -8,11 +8,10 @@ namespace Server.Engines.AdvancedSearch;
 
 /// <summary>
 /// Decides from a getter's IL whether it only reads state, so a search worker may call it off the loop.
-/// A "no" is always safe (the read stays on the loop); a "yes" must never be wrong.
+/// Fails closed: "no" keeps the read on the loop; "yes" must never be wrong.
 /// </summary>
 /// <remarks>
-/// Known accepted gap: the first <c>ldsfld</c> of a type can run its static constructor. The server has
-/// run them all long before any search, so this is documented rather than handled.
+/// Not handled: a first <c>ldsfld</c> can run a static constructor. They have all run long before any search.
 /// </remarks>
 public static class PureGetterClassifier
 {
@@ -22,13 +21,13 @@ public static class PureGetterClassifier
     private static readonly Dictionary<short, OpCode> _opCodes = BuildOpCodes();
 
     private static readonly ConcurrentDictionary<(RuntimeMethodHandle, Type), bool> _memo = new();
-    // Built once per declaring type: the game assemblies are all loaded at startup, before any search.
+    // Safe to build once: game assemblies all load at startup.
     private static readonly ConcurrentDictionary<Type, Type[]> _derivedTypes = new();
 
-    // An unhandled StackOverflow on a worker thread kills the process, so deep call chains are rejected.
+    // A stack overflow on a worker kills the process, so deep call chains are rejected.
     private const int MaxDepth = 64;
 
-    // Per-thread so concurrent search workers never see each other's in-progress methods.
+    // Per-thread so workers never see each other's in-progress methods.
     [ThreadStatic]
     private static Dictionary<(RuntimeMethodHandle, Type), int> _inProgress;
 
@@ -145,8 +144,7 @@ public static class PureGetterClassifier
             stack.Remove(key);
         }
 
-        // A pure verdict that leaned on an ancestor still in progress is provisional until that ancestor
-        // finishes; an impure verdict is final either way.
+        // A pure verdict that leaned on an in-progress ancestor is provisional; an impure one is final.
         if (!pure || myLow >= depth)
         {
             _memo[key] = pure;
@@ -214,8 +212,7 @@ public static class PureGetterClassifier
             if (op == OpCodes.Call || op == OpCodes.Callvirt)
             {
                 var token = BitConverter.ToInt32(il, operandStart);
-                // Another path can reach the call between the receiver load and the call, so the receiver is
-                // only provably `this` when no branch lands in (prevOffset, call].
+                // The receiver is provably `this` only if no branch lands in (prevOffset, call].
                 var straightLine = hasPrev && prev == OpCodes.Ldarg_0;
                 for (var k = prevOffset + 1; straightLine && k <= instructionStart; k++)
                 {
@@ -248,7 +245,7 @@ public static class PureGetterClassifier
                 return false;
             }
 
-            // Prefixes and nops sit between the receiver load and the call, so they must not hide it.
+            // Prefixes and nops must not hide the receiver load.
             if (op != OpCodes.Nop && op != OpCodes.Constrained)
             {
                 prev = op;

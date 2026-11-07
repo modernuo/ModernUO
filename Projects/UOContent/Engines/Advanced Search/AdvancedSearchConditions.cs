@@ -17,24 +17,20 @@ namespace Server.Engines.AdvancedSearch;
 /// one comparison engine. A leaf that cannot be resolved or parsed is simply "no match".
 /// </summary>
 /// <remarks>
-/// Runs on the search workers, off the game loop: binding is reflection, compiling is
-/// <c>Expression.Compile</c>, and neither touches game state. An entity-typed value compares by
-/// serial and never looks the entity up. Property names resolve through
-/// <see cref="CommandPropertyGuard" /> at the searcher's access level, and each leaf is classified
-/// as worker-safe or loop-only (see <see cref="SearchPredicate" />).
+/// Binding and compiling touch no game state, so they run on the search workers. Names resolve
+/// through <see cref="CommandPropertyGuard" /> at the searcher's access level; entity values
+/// compare by serial without a world lookup. See <see cref="SearchPredicate" /> for the split.
 /// </remarks>
 public static class AdvancedSearchConditions
 {
     private static readonly ILogger _logger = LogFactory.GetLogger(typeof(AdvancedSearchConditions));
 
-    // Beyond this many leaves the safety mask no longer fits, so every leaf runs on the loop.
+    // The safety mask holds one bit per leaf; past this, every leaf runs on the loop.
     private const int MaxMaskedLeaves = 64;
 
     /// <summary>
-    /// Per-search memo shared by every worker. Predicates are keyed twice: by the runtime type
-    /// seen, and by the type the predicate was actually compiled for -- the most derived type
-    /// that declares one of the properties -- plus which leaves are worker-safe, so every subclass
-    /// of Item that does not hide <c>Hue</c> shares one compiled <c>Hue = 5</c>.
+    /// Per-search memo shared by every worker, keyed by runtime type and by (compiled type, safety
+    /// mask), so every Item subclass that does not hide <c>Hue</c> shares one compiled <c>Hue = 5</c>.
     /// </summary>
     public sealed class Cache
     {
@@ -53,7 +49,7 @@ public static class AdvancedSearchConditions
             (cache, propertyTest)
         );
 
-    /// <summary>Compiles the full predicate without a shared cache. Test seam and one-off use.</summary>
+    /// <summary>Compiles the full predicate without a shared cache.</summary>
     public static Func<object, bool> Compile(
         Type runtimeType, string propertyTest, AccessLevel accessLevel = AccessLevel.Owner
     )
@@ -88,7 +84,7 @@ public static class AdvancedSearchConditions
 
             for (var g = 0; g < groups.Length; ++g)
             {
-                // Index 0 is the TypeCondition; it stays so the worker predicate keeps its null guard.
+                // Index 0 is the TypeCondition, the worker predicate's null guard.
                 var kept = new List<ICondition>(groups[g].Length) { groups[g][0] };
 
                 for (var i = 1; i < groups[g].Length; ++i)
@@ -122,10 +118,8 @@ public static class AdvancedSearchConditions
         }
     }
 
-    // OR of ANDs, which is what splitting on '|' and then on '@' yields. A group with a dead leaf
-    // is dropped; no live group left means nothing can match, reported as null. `safe` parallels
-    // the groups (index 0 is the TypeCondition) and `mask` carries one bit per live leaf, in
-    // order, for the compiled-type cache key.
+    // OR of ANDs ('|' then '@'). A group with a dead leaf is dropped; null means no live group.
+    // `safe` parallels the groups (index 0 is the TypeCondition); `mask` has one bit per live leaf.
     private static ICondition[][] Parse(
         AccessLevel level, Type runtimeType, string propertyTest, out Type compiledType, out bool[][] safe, out ulong mask
     )
@@ -156,9 +150,8 @@ public static class AdvancedSearchConditions
                 group.Add(leaf);
                 groupSafe.Add(leafSafe);
 
-                // Every declaring type is an ancestor of the runtime type (or the type itself), so
-                // they nest; the predicate is compiled for the most derived one any leaf needs and
-                // serves every runtime type that resolves the same properties.
+                // Declaring types are all ancestors of the runtime type, so they nest; compiling for
+                // the most derived one serves every runtime type that resolves the same properties.
                 if (mostDerived == null || declaringType.IsAssignableTo(mostDerived))
                 {
                     mostDerived = declaringType;
@@ -204,8 +197,8 @@ public static class AdvancedSearchConditions
         return groups.Count > 0 ? groups.ToArray() : null;
     }
 
-    // A leaf that throws while binding is a dead leaf, so the groups beside it still work. Leaves
-    // are bound once per runtime type per search, which bounds the warning.
+    // A leaf that throws while binding is dead; other groups still work. Bound once per runtime
+    // type per search, so the warning is bounded.
     private static ICondition Leaf(
         AccessLevel level, Type runtimeType, ReadOnlySpan<char> expression, out Type declaringType, out bool workerSafe
     )
@@ -322,14 +315,12 @@ public static class AdvancedSearchConditions
         return string.Join('.', segments);
     }
 
-    // A Map leaf compiles to null checks around Map.CompareTo(Map); Map is sealed, so that is the only
-    // CompareTo that can run, and the classifier proves it rather than this list assuming it.
+    // A Map leaf calls Map.CompareTo(Map); Map is sealed, so only that body can run.
     private static readonly bool _mapComparisonIsPure =
         typeof(Map).IsSealed &&
         PureGetterClassifier.IsPure(typeof(Map).GetMethod(nameof(Map.CompareTo), [typeof(Map)]), typeof(Map));
 
-    // Types whose comparison runs no user code: the compiler reads them with operators and
-    // framework CompareTo/Equals, so only the getter chain decides whether a leaf is worker-safe.
+    // Types whose comparison runs no user code, so only the getter chain decides worker safety.
     private static bool IsSimpleValue(Type type)
     {
         type = Nullable.GetUnderlyingType(type) ?? type;
@@ -340,8 +331,7 @@ public static class AdvancedSearchConditions
                || type == typeof(Map) && _mapComparisonIsPure;
     }
 
-    // A leaf the compiler rejects -- a relational operator on a type with no CompareTo -- is
-    // "no match" for that leaf, not an error for the whole search.
+    // A leaf the compiler rejects (e.g. a relational operator with no CompareTo) is "no match".
     private static bool Probe(ICondition condition, Type runtimeType)
     {
         try
@@ -474,8 +464,7 @@ public static class AdvancedSearchConditions
             _           => null
         };
 
-    // An entity compares by serial: a value naming an entity that does not exist matches nothing,
-    // and no lookup into the world ever happens. `null` tests the reference itself.
+    // Entities compare by serial with no world lookup; `null` tests the reference.
     private static ICondition EntityLeaf(Property property, bool negate, string op, string value)
     {
         var comparison = MapOperator(op);
@@ -487,8 +476,7 @@ public static class AdvancedSearchConditions
 
         var equality = comparison is ComparisonOperator.Equal or ComparisonOperator.NotEqual;
 
-        // Ordering by serial is what Item and Mobile's own CompareTo does; a type without one
-        // (an interface) has no ordering, so that leaf is dead.
+        // Item and Mobile order by serial; a type with no CompareTo (an interface) has no order.
         if (!equality && !PropertyExpressions.TryCompare(
                 Expression.Default(property.Type), Expression.Default(property.Type), 1, out _
             ))
@@ -560,8 +548,7 @@ public static class AdvancedSearchConditions
     }
 
     /// <summary>
-    /// <c>prop != null &amp;&amp; prop.Serial &lt;op&gt; value</c>, <c>!=</c> being the negation of
-    /// <c>=</c>, or a null test when the value is <c>null</c>.
+    /// <c>prop != null &amp;&amp; prop.Serial &lt;op&gt; value</c>, or a null test for <c>null</c>.
     /// </summary>
     private sealed class EntityCondition : ICondition
     {
@@ -592,8 +579,7 @@ public static class AdvancedSearchConditions
 
                     if (_value == null)
                     {
-                        // Null ordering as the comparison compiler gives it: null vs null is 0 and a
-                        // present reference sorts below null (-1), so test that against 0.
+                        // Matches the comparison compiler: null vs null is 0, present vs null is -1.
                         test = _operator switch
                         {
                             ComparisonOperator.Equal        => Expression.Not(present),
@@ -613,7 +599,7 @@ public static class AdvancedSearchConditions
                             out var relation
                         );
 
-                        // != is the exact negation of =, so a null reference is "not equal".
+                        // != negates =, so a null reference is "not equal".
                         test = _operator == ComparisonOperator.NotEqual
                             ? Expression.OrElse(Expression.Not(present), relation)
                             : Expression.AndAlso(present, relation);

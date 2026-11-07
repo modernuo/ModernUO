@@ -22,7 +22,7 @@ public class AdvancedSearchWorkerTests
         [CommandProperty(AccessLevel.GameMaster)] public string Boom => throw new InvalidOperationException("boom");
     }
 
-    // A getter that writes on first read, so the classifier rejects it and the test needs the loop.
+    // Writes on first read, so the classifier sends it to the loop.
     private sealed class LazyItem : Item
     {
         private object _cache;
@@ -153,8 +153,7 @@ public class AdvancedSearchWorkerTests
         }
     }
 
-    // A KeyRing stands in for any ignore source: what it hides is collected on the loop, but the source
-    // itself is still a search candidate.
+    // A KeyRing is an ignore source and still a search candidate itself.
     [Fact]
     public void Worker_IgnoreSourceIsQueuedAndStillEvaluated()
     {
@@ -179,8 +178,7 @@ public class AdvancedSearchWorkerTests
         }
     }
 
-    // Ignore sources come only from entities that pass the type filter, so a KeyRing outside the searched
-    // type hides nothing. The name-only search is the control: there the KeyRing is searched and hides its key.
+    // Only entities passing the type filter act as ignore sources; the name-only search is the control.
     [Theory]
     [InlineData(true, true)]
     [InlineData(false, false)]
@@ -214,7 +212,7 @@ public class AdvancedSearchWorkerTests
 
         try
         {
-            // Disabled outside the scoped wheel, so the search's own restore never starts the autosave timer on it.
+            // Disabled outside the scoped wheel so the search's restore never starts the autosave timer on it.
             AutoSave.SavesEnabled = false;
 
             using (new TimerWheelScope())

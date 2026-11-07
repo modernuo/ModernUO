@@ -45,8 +45,7 @@ public class AdvancedSearchLoopPhaseTests
 
     private static void RunToCompletion(AdvancedSearchLoopPhase phase) => RunSlices(phase, long.MaxValue);
 
-    // The test thread stands in for the game loop: it runs the phase's slices and the completion the
-    // thread-pool sort posts back. Returns the number of slices taken.
+    // The test thread acts as the game loop: runs slices and the sort's posted completion. Returns slices taken.
     private static int RunSlices(AdvancedSearchLoopPhase phase, long budget)
     {
         var original = Core.LoopContext;
@@ -122,7 +121,7 @@ public class AdvancedSearchLoopPhaseTests
             Assert.False(AdvancedSearchWorkerReads.IsWorkerSafe(typeof(NotWorkerSafeItem)));
             Assert.Equal(MatchOutcome.Defer, AdvancedSearchMatcher.Evaluate(item, filter, Origin, cache, false, out _));
 
-            // The loop's drain then finds the predicate cached instead of compiling it on the loop.
+            // The loop's drain then finds the predicate already compiled.
             Assert.True(cache.ByRuntimeType.ContainsKey(typeof(NotWorkerSafeItem)));
         }
         finally
@@ -490,7 +489,7 @@ public class AdvancedSearchLoopPhaseTests
 
         try
         {
-            // A null gump makes publishing throw: the phase-level failure path, not a per-entity one.
+            // A null gump makes publishing throw, exercising the phase-level failure path.
             var phase = new AdvancedSearchLoopPhase(
                 from, null, new AdvancedSearchFilter(), Origin, NewCache(),
                 [], deferred, new ConcurrentQueue<IEntity>(), true

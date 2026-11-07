@@ -9,8 +9,7 @@ using Xunit;
 
 namespace UOContent.Tests;
 
-// Fixtures are compiled with the test project's configuration (Debug), so these also pin that the
-// classifier accepts unoptimized IL (store-to-local-then-return shapes).
+// Fixtures compile as Debug, so these also cover unoptimized IL (store-to-local-then-return).
 public class PureGetterClassifierTests
 {
     private const BindingFlags All = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance |
@@ -436,7 +435,7 @@ public class PureGetterClassifierTests
     [Fact]
     public void UnrelatedReceiverType_IsImpure()
     {
-        // The override cannot be resolved for a type outside the hierarchy, so it must not fall back to the base getter.
+        // Unresolvable for a type outside the hierarchy; must not fall back to the base getter.
         var name = typeof(ThisVirtualBase).GetProperty(nameof(ThisVirtualBase.DefaultName))!;
         Assert.False(PureGetterClassifier.IsPure([name], typeof(string)));
     }

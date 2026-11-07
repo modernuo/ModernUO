@@ -6,9 +6,8 @@ using Server.Mobiles;
 namespace Server.Engines.AdvancedSearch;
 
 /// <summary>
-/// Decides per runtime entity type whether the members the search worker itself reads (to place, name and
-/// filter an entity) are pure for that type. Overrides are what get classified, so a content subclass with an
-/// impure override opts its instances out of off-loop evaluation instead of being read unsafely.
+/// Decides per runtime type whether the members the worker itself reads (to place, name and filter an
+/// entity) are pure. Overrides are classified, so an impure override sends that type to the loop.
 /// </summary>
 public static class AdvancedSearchWorkerReads
 {
@@ -22,7 +21,7 @@ public static class AdvancedSearchWorkerReads
 
     private static readonly string[] _mobileProperties = ["Name", "Map", "Location", "Deleted", "Account"];
 
-    // The matcher also reads these through IEntity, which dispatches through the runtime type's interface map.
+    // Also read through IEntity, which dispatches via the runtime type's interface map.
     private static readonly string[] _entityProperties = ["Map", "Location", "Deleted"];
 
     public static bool IsWorkerSafe(Type runtimeType)
@@ -99,9 +98,8 @@ public static class AdvancedSearchWorkerReads
         return true;
     }
 
-    // The getter is looked up on the type the matcher's call site is typed as, not the runtime type: a `new`
-    // member on a subclass hides by name but is never what that call site runs. The classifier then follows
-    // the override chain from there for the runtime type.
+    // Looked up on the call site's static type: a subclass `new` member hides by name but never runs there.
+    // The classifier follows overrides from there for the runtime type.
     private static bool Property(Type callSiteType, Type runtimeType, string name)
     {
         for (var t = callSiteType; t != null; t = t.BaseType)
@@ -131,8 +129,7 @@ public static class AdvancedSearchWorkerReads
         return false;
     }
 
-    // Interface members are declared on the interface or one it extends; the classifier maps the getter to
-    // the runtime type's implementation.
+    // Declared on the interface or one it extends; the classifier maps it to the runtime implementation.
     private static bool InterfaceProperty(Type interfaceType, Type runtimeType, string name)
     {
         var property = interfaceType.GetProperty(name);

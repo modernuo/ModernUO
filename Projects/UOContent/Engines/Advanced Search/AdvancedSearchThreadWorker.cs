@@ -6,11 +6,8 @@ using Server.Logging;
 namespace Server.Engines.AdvancedSearch;
 
 /// <summary>
-/// Runs the search filter off the loop over the entities <see cref="AdvancedSearchGump" /> pushes to it.
-/// Each entity is evaluated with <see cref="AdvancedSearchMatcher" /> in worker mode, which reads only
-/// members proven pure for the entity's runtime type: a decided match goes to the results queue, and
-/// anything that needs a loop-only read goes to the deferred queue for <see cref="AdvancedSearchLoopPhase" />.
-/// Ignore sources are queued for the loop phase as well, since collecting what they hide enumerates live lists.
+/// Runs <see cref="AdvancedSearchMatcher" /> off the loop in worker mode. Matches go to the results queue;
+/// entities needing a loop-only read, and ignore sources, are queued for <see cref="AdvancedSearchLoopPhase" />.
 /// </summary>
 public class AdvancedSearchThreadWorker
 {
@@ -42,9 +39,7 @@ public class AdvancedSearchThreadWorker
     }
 
     /// <param name="predicates">
-    /// Compiled property-test memo for this search. Shared across the workers so a type is
-    /// compiled once per search rather than once per worker. It carries the searcher's access level,
-    /// so it is required.
+    /// Compiled property-test memo shared by all workers; carries the searcher's access level.
     /// </param>
     public void Wake(
         WorldLocation worldLocation,
@@ -139,8 +134,7 @@ public class AdvancedSearchThreadWorker
     {
         var filter = _filter;
 
-        // A worker that was never woken, or has gone back to sleep, has no filter; an entity it dequeues
-        // then bails here.
+        // A worker that is not woken has no filter.
         if (entity == null || filter == null || entity.Deleted)
         {
             return;

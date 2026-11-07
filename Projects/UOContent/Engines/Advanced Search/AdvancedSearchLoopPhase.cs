@@ -9,21 +9,18 @@ using Server.Saves;
 namespace Server.Engines.AdvancedSearch;
 
 /// <summary>
-/// Finishes a search on the game loop once the workers have drained: collects what the ignore sources
-/// hide, runs the full filter on the entities the workers deferred, then merges, filters and publishes the
-/// results. The work is cut into slices of at most <see cref="LoopBudgetMs" /> each, one slice per timer
-/// tick, so neither a large deferred remainder nor a large result set stalls the loop. The loop's own results
-/// are sorted on the thread pool between the drain and the merge, and the phase resumes when that sort posts
-/// back.
+/// Finishes a search on the loop after the workers drain: applies ignore sources, filters deferred
+/// entities, then merges and publishes, in slices of at most <see cref="LoopBudgetMs" /> per tick.
+/// The loop's own results are sorted on the thread pool; the phase resumes when that sort posts back.
 /// </summary>
 public sealed class AdvancedSearchLoopPhase
 {
     private static readonly ILogger _logger = LogFactory.GetLogger(typeof(AdvancedSearchLoopPhase));
 
-    // Stopwatch.GetTimestamp is cheap but not free; sampling it per entity would cost more than most entities.
+    // Sampling the clock per entity would cost more than most entities.
     private const int BudgetCheckInterval = 64;
 
-    // A block copy of this many references takes microseconds, so the budget is checked once per block.
+    // A block this size copies in microseconds, so the budget is checked per block.
     private const int CopyBlockSize = 4096;
 
     private enum Stage
@@ -68,8 +65,7 @@ public sealed class AdvancedSearchLoopPhase
     }
 
     /// <param name="sortedWorkerResults">
-    /// The workers' matches, already sorted with <see cref="AdvancedSearchResultSerialComparer" /> off the
-    /// loop by the caller (serials never change, so the sort needs no game state).
+    /// The workers' matches, sorted off the loop with <see cref="AdvancedSearchResultSerialComparer" />.
     /// </param>
     public AdvancedSearchLoopPhase(
         Mobile from,
@@ -98,7 +94,7 @@ public sealed class AdvancedSearchLoopPhase
     {
         _selfScheduled = true;
 
-        // While the sort is out, its completion resumes the phase instead of a timer.
+        // During the sort, its completion resumes the phase, not the timer.
         if (!RunSlice(Stopwatch.Frequency * LoopBudgetMs / 1000) && _stage != Stage.Sort)
         {
             Timer.StartTimer(Start);
@@ -106,8 +102,8 @@ public sealed class AdvancedSearchLoopPhase
     }
 
     /// <summary>
-    /// Runs one slice. Returns true once the search has been published and released. Each stage after the
-    /// drains begins in a fresh slice, since the slice that ended the previous stage may have spent its budget.
+    /// Runs one slice; true once published and released. Each stage after the drains starts a fresh
+    /// slice, since the previous one may have spent its budget.
     /// </summary>
     internal bool RunSlice(long budgetTimestampTicks)
     {
@@ -201,7 +197,7 @@ public sealed class AdvancedSearchLoopPhase
         {
             try
             {
-                // An ignore source hides entities only when it would itself pass the placement filters.
+                // An ignore source hides entities only if it passes the placement filters itself.
                 if (_filter.HideValidInternalMap && source?.Deleted == false &&
                     AdvancedSearchMatcher.PassesPlacement(source, _filter, _origin))
                 {
@@ -254,8 +250,7 @@ public sealed class AdvancedSearchLoopPhase
         ThreadPool.QueueUserWorkItem(static phase => phase.SortLoopResults(), this, false);
     }
 
-    // Thread pool. The comparer reads only Entity.Serial, which never changes, and the loop leaves
-    // _loopResults alone until the completion below runs on it.
+    // Thread pool. Serials never change, and the loop leaves _loopResults alone until the completion runs.
     private void SortLoopResults()
     {
         Exception failure = null;
@@ -302,15 +297,14 @@ public sealed class AdvancedSearchLoopPhase
         }
     }
 
-    // Merges the caller-sorted worker results with the loop's own (normally few) results, dropping entities
-    // deleted since they matched and entities an ignore source hides.
+    // Merges worker and loop results, dropping deleted and ignored entities.
     private bool Merge(long start, long budget)
     {
         var comparer = AdvancedSearchResultSerialComparer.Instance;
 
         while (_workerCursor < _workerResults.Length || _loopCursor < _loopResults.Count)
         {
-            // Worker results win ties, keeping equal serials in a stable order.
+            // Worker results win ties, keeping the merge stable.
             var takeWorker = _loopCursor >= _loopResults.Count ||
                              _workerCursor < _workerResults.Length &&
                              comparer.Compare(_workerResults[_workerCursor], _loopResults[_loopCursor]) <= 0;
@@ -356,8 +350,7 @@ public sealed class AdvancedSearchLoopPhase
         _finished = true;
         _merged = null;
 
-        // Release the guard only after the autosave restore lands, so a new search cannot capture the
-        // disabled state as its own restore value.
+        // Release the guard after restoring autosave, or a new search would capture it disabled.
         try
         {
             AutoSave.SavesEnabled = _restoreAutoSave;
