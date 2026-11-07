@@ -27,7 +27,7 @@ public class NullablePropertyConditionTests
     private static bool Check(Subject subject, string binding, ComparisonOperator op, string value)
     {
         var prop = new Property(binding);
-        prop.BindTo(typeof(Subject), PropertyAccess.Read);
+        prop.BindTo(typeof(Subject), PropertyAccess.Read, AccessLevel.Owner);
 
         var conditional = new ObjectConditional(
             typeof(Subject),
@@ -122,7 +122,7 @@ public class NullablePropertyConditionTests
     public void SortingOnANullableOrdersValuesAndPlacesUnsetConsistently()
     {
         var prop = new Property("Count");
-        prop.BindTo(typeof(Subject), PropertyAccess.Read);
+        prop.BindTo(typeof(Subject), PropertyAccess.Read, AccessLevel.Owner);
 
         var comparer = SortCompiler.Compile<object>(typeof(Subject), [new OrderInfo(prop, true)]);
 

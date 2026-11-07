@@ -418,90 +418,43 @@ namespace Server
             }
         }
 
-        public bool CheckAccess(Mobile from)
-        {
-            if (!IsBound)
-            {
-                throw new NotYetBoundException(this);
-            }
-
-            for (var i = 0; i < m_Chain.Length; ++i)
-            {
-                var prop = m_Chain[i];
-
-                var isFinal = i == m_Chain.Length - 1;
-
-                var access = Access;
-
-                if (!isFinal)
-                {
-                    access |= PropertyAccess.Read;
-                }
-
-                var security = GetCPA(prop);
-
-                if (security == null)
-                {
-                    throw new InternalAccessException(this);
-                }
-
-                if ((access & PropertyAccess.Read) != 0 && from.AccessLevel < security.ReadLevel)
-                {
-                    throw new ReadAccessException(this, from.AccessLevel, security.ReadLevel);
-                }
-
-                if ((access & PropertyAccess.Write) != 0 && (from.AccessLevel < security.WriteLevel || security.ReadOnly))
-                {
-                    throw new WriteAccessException(this, from.AccessLevel, security.ReadLevel);
-                }
-            }
-
-            return true;
-        }
-
-        public void BindTo(Type objectType, PropertyAccess desiredAccess)
+        public void BindTo(Type objectType, PropertyAccess desiredAccess, AccessLevel accessLevel)
         {
             if (IsBound)
             {
                 throw new AlreadyBoundException(this);
             }
 
-            var split = Binding.Split('.');
+            var chain = CommandPropertyGuard.ResolveChain(
+                objectType, Binding, accessLevel, desiredAccess, false, out var failure, out var failed, out var name
+            );
 
-            var chain = new PropertyInfo[split.Length];
-
-            for (var i = 0; i < split.Length; ++i)
+            switch (failure)
             {
-                var isFinal = i == chain.Length - 1;
-
-                chain[i] = objectType.GetProperty(
-                    split[i],
-                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase
-                );
-
-                if (chain[i] == null)
-                {
-                    throw new UnknownPropertyException(this, split[i]);
-                }
-
-                objectType = chain[i].PropertyType;
-
-                var access = desiredAccess;
-
-                if (!isFinal)
-                {
-                    access |= PropertyAccess.Read;
-                }
-
-                if ((access & PropertyAccess.Read) != 0 && !chain[i].CanRead)
-                {
-                    throw new WriteOnlyException(this);
-                }
-
-                if ((access & PropertyAccess.Write) != 0 && !chain[i].CanWrite)
-                {
-                    throw new ReadOnlyException(this);
-                }
+                case GuardFailure.NotFound:
+                    {
+                        throw new UnknownPropertyException(this, name);
+                    }
+                case GuardFailure.NoAttribute:
+                    {
+                        throw new InternalAccessException(this);
+                    }
+                case GuardFailure.ReadLevel:
+                    {
+                        throw new ReadAccessException(this, accessLevel, GetCPA(failed).ReadLevel);
+                    }
+                case GuardFailure.WriteLevel:
+                    {
+                        throw new WriteAccessException(this, accessLevel, GetCPA(failed).WriteLevel);
+                    }
+                case GuardFailure.WriteOnly:
+                    {
+                        throw new WriteOnlyException(this);
+                    }
+                case GuardFailure.ReadOnly:
+                    {
+                        throw new ReadOnlyException(this);
+                    }
             }
 
             Access = desiredAccess;
@@ -525,11 +478,11 @@ namespace Server
             return string.Join(".", toJoin);
         }
 
-        public static Property Parse(Type type, string binding, PropertyAccess access)
+        public static Property Parse(Type type, string binding, PropertyAccess access, AccessLevel accessLevel)
         {
             var prop = new Property(binding);
 
-            prop.BindTo(type, access);
+            prop.BindTo(type, access, accessLevel);
 
             return prop;
         }

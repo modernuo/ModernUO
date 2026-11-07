@@ -19,34 +19,55 @@ public static class CommandPropertyGuard
 
     internal static string Check(PropertyInfo prop, string displayName, AccessLevel level, PropertyAccess access)
     {
+        var failure = Evaluate(prop, level, access);
+        return failure == GuardFailure.None ? null : Describe(failure, prop, displayName);
+    }
+
+    // Callers that map failures to typed exceptions need the rule that failed, not the message text.
+    internal static GuardFailure Evaluate(PropertyInfo prop, AccessLevel level, PropertyAccess access)
+    {
         var attr = GetCPA(prop);
 
         if (attr == null)
         {
-            return $"Property '{displayName}' not found.";
+            return GuardFailure.NoAttribute;
         }
 
         if ((access & PropertyAccess.Read) != 0 && level < attr.ReadLevel)
         {
-            return $"You must be at least {Mobile.GetAccessLevelName(attr.ReadLevel)} to get the property '{displayName}'.";
+            return GuardFailure.ReadLevel;
         }
 
         if ((access & PropertyAccess.Write) != 0 && level < attr.WriteLevel)
         {
-            return $"You must be at least {Mobile.GetAccessLevelName(attr.WriteLevel)} to set the property '{displayName}'.";
+            return GuardFailure.WriteLevel;
         }
 
         if ((access & PropertyAccess.Read) != 0 && !prop.CanRead)
         {
-            return $"Property '{displayName}' is write only.";
+            return GuardFailure.WriteOnly;
         }
 
         if ((access & PropertyAccess.Write) != 0 && (!prop.CanWrite && !attr.CanModify || attr.ReadOnly))
         {
-            return $"Property '{displayName}' is read only.";
+            return GuardFailure.ReadOnly;
         }
 
-        return null;
+        return GuardFailure.None;
+    }
+
+    private static string Describe(GuardFailure failure, PropertyInfo prop, string displayName)
+    {
+        var attr = GetCPA(prop);
+
+        return failure switch
+        {
+            GuardFailure.NoAttribute => $"Property '{displayName}' not found.",
+            GuardFailure.ReadLevel   => $"You must be at least {Mobile.GetAccessLevelName(attr.ReadLevel)} to get the property '{displayName}'.",
+            GuardFailure.WriteLevel  => $"You must be at least {Mobile.GetAccessLevelName(attr.WriteLevel)} to set the property '{displayName}'.",
+            GuardFailure.WriteOnly   => $"Property '{displayName}' is write only.",
+            _                        => $"Property '{displayName}' is read only."
+        };
     }
 
     /// <summary>
@@ -56,7 +77,24 @@ public static class CommandPropertyGuard
         Type type, string binding, AccessLevel level, PropertyAccess access, bool allowStatic, out string failReason
     )
     {
-        failReason = null;
+        var chain = ResolveChain(type, binding, level, access, allowStatic, out var failure, out var failed, out var name);
+        failReason = failure switch
+        {
+            GuardFailure.None     => null,
+            GuardFailure.NotFound => $"Property '{name}' not found.",
+            _                     => Describe(failure, failed, name)
+        };
+        return chain;
+    }
+
+    internal static PropertyInfo[] ResolveChain(
+        Type type, string binding, AccessLevel level, PropertyAccess access, bool allowStatic,
+        out GuardFailure failure, out PropertyInfo failedProp, out string failedName
+    )
+    {
+        failure = GuardFailure.None;
+        failedProp = null;
+        failedName = null;
         var split = binding.Split('.');
 
         if (split.Length == 0)
@@ -74,14 +112,17 @@ public static class CommandPropertyGuard
 
             if (p == null)
             {
-                failReason = $"Property '{name}' not found.";
+                failure = GuardFailure.NotFound;
+                failedName = name;
                 return null;
             }
 
-            failReason = Check(p, name, level, linkAccess);
+            failure = Evaluate(p, level, linkAccess);
 
-            if (failReason != null)
+            if (failure != GuardFailure.None)
             {
+                failedProp = p;
+                failedName = name;
                 return null;
             }
 
@@ -115,4 +156,15 @@ public static class CommandPropertyGuard
 
         return best;
     }
+}
+
+internal enum GuardFailure
+{
+    None,
+    NotFound,
+    NoAttribute,
+    ReadLevel,
+    WriteLevel,
+    WriteOnly,
+    ReadOnly
 }
