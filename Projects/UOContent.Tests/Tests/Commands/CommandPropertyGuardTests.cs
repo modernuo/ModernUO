@@ -42,6 +42,9 @@ public class CommandPropertyGuardTests
 
         [CommandProperty(AccessLevel.GameMaster)]
         public static int Shared { get; set; }
+
+        [CommandProperty(AccessLevel.Administrator)]
+        public Inner Restricted { get; } = new();
     }
 
     private class Base
@@ -115,6 +118,31 @@ public class CommandPropertyGuardTests
     }
 
     [Fact]
+    public void Chain_IntermediateBelowReadLevel_Rejected()
+    {
+        var chain = CommandPropertyGuard.ResolveChain(
+            typeof(Outer), "Restricted.Value", AccessLevel.GameMaster, PropertyAccess.Write, true, out var reason
+        );
+
+        Assert.Null(chain);
+        Assert.Equal(
+            $"You must be at least {Mobile.GetAccessLevelName(AccessLevel.Administrator)} to get the property 'Restricted'.",
+            reason
+        );
+    }
+
+    [Fact]
+    public void Chain_FinalLinkReadOnly_RejectedForWrite()
+    {
+        var chain = CommandPropertyGuard.ResolveChain(
+            typeof(Outer), "Inner", AccessLevel.Owner, PropertyAccess.Write, true, out var reason
+        );
+
+        Assert.Null(chain);
+        Assert.Equal("Property 'Inner' is read only.", reason);
+    }
+
+    [Fact]
     public void Chain_UnknownLink_NotFound()
     {
         var chain = CommandPropertyGuard.ResolveChain(
@@ -165,8 +193,11 @@ public class CommandPropertyGuardTests
 
         try
         {
-            foreach (var binding in new[] { "Inner.Value", "Secret" })
+            string[] bindings = ["Inner.Value", "Secret"];
+
+            for (var i = 0; i < bindings.Length; i++)
             {
+                var binding = bindings[i];
                 var a = Properties.GetPropertyInfoChain(mobile, typeof(Outer), binding, PropertyAccess.Read, out var reasonA);
                 var b = Properties.GetPropertyInfoChain(
                     mobile.AccessLevel, typeof(Outer), binding, PropertyAccess.Read, out var reasonB

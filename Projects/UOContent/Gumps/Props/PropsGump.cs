@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Server.Commands;
 using Server.Commands.Generic;
 using Server.Network;
 using static Server.Types;
@@ -205,15 +206,7 @@ namespace Server.Gumps
                             return;
                         }
 
-                        var cpa = GetCPA(prop);
-
-                        if (cpa == null || !(prop.CanWrite || cpa.CanModify) || cpa.ReadOnly ||
-                            from.AccessLevel < cpa.WriteLevel)
-                        {
-                            return;
-                        }
-
-                        if (from.AccessLevel < cpa.ReadLevel)
+                        if (CommandPropertyGuard.Check(prop, from.AccessLevel, PropertyAccess.ReadWrite) != null)
                         {
                             return;
                         }
@@ -369,7 +362,9 @@ namespace Server.Gumps
 
             if (peek.m_Property.CanWrite)
             {
-                Server.Commands.Properties.SetDirect(m_Mobile, peek.m_Object, peek.m_Object, peek.m_Property, peek.m_Property.Name, obj, false);
+                Properties.SetDirect(
+                    m_Mobile, peek.m_Object, peek.m_Object, peek.m_Property, peek.m_Property.Name, obj, false
+                );
             }
         }
 

@@ -148,7 +148,7 @@ public static class CommandPropertyGuard
                 continue;
             }
 
-            if (best == null || p.DeclaringType != null && p.DeclaringType.IsSubclassOf(best.DeclaringType!))
+            if (best == null || p.DeclaringType != null && p.DeclaringType.IsSubclassOf(best.DeclaringType))
             {
                 best = p;
             }
