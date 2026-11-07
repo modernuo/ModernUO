@@ -34,7 +34,7 @@ public class EmitterRobustnessTests
     private static bool Check(string binding, ComparisonOperator op, string value)
     {
         var prop = new Property(binding);
-        prop.BindTo(typeof(Subject), PropertyAccess.Read);
+        prop.BindTo(typeof(Subject), PropertyAccess.Read, AccessLevel.Owner);
 
         var compiled = ConditionalCompiler.Compile(
             typeof(Subject),

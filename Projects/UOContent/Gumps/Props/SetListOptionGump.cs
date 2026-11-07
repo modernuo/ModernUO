@@ -100,24 +100,7 @@ namespace Server.Gumps
             {
                 try
                 {
-                    var toSet = m_Values[index];
-
-                    var result = Properties.SetDirect(
-                        m_Mobile,
-                        m_Object,
-                        m_Object,
-                        m_Property,
-                        m_Property.Name,
-                        toSet,
-                        true
-                    );
-
-                    m_Mobile.SendMessage(result);
-
-                    if (result == "Property has been set.")
-                    {
-                        m_PropertiesGump.OnValueChanged(m_Object, m_Property);
-                    }
+                    Properties.ApplyFromGump(m_Mobile, m_Object, m_Property, m_Values[index], m_PropertiesGump);
                 }
                 catch
                 {

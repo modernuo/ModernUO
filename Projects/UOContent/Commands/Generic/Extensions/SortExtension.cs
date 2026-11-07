@@ -29,8 +29,7 @@ namespace Server.Commands.Generic
 
             foreach (var order in m_Orders)
             {
-                order.Property.BindTo(baseType, PropertyAccess.Read);
-                order.Property.CheckAccess(from);
+                order.Property.BindTo(baseType, PropertyAccess.Read, from.AccessLevel);
             }
 
             m_Comparer = SortCompiler.Compile<object>(baseType, m_Orders.ToArray());

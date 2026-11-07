@@ -1,0 +1,237 @@
+using System;
+using System.Collections.Generic;
+using Server;
+using Server.Accounting;
+using Server.Accounting.Security;
+using Server.Commands;
+using Server.Commands.Generic;
+using Server.Items;
+using Server.Mobiles;
+using UOContent.Tests.Mobiles.AI;
+using Xunit;
+
+namespace UOContent.Tests.Commands;
+
+[Collection("Sequential UOContent Tests")]
+public class PropertyWriteOwnershipTests : IDisposable
+{
+    private const string Refused = "You cannot modify a higher privileged mobile.";
+
+    private readonly List<IEntity> _created = [];
+    private readonly List<Account> _accounts = [];
+    private readonly PasswordProtectionAlgorithm _originalAlgorithm = AccountSecurity.CurrentAlgorithm;
+
+    public void Dispose()
+    {
+        for (var i = _created.Count - 1; i >= 0; i--)
+        {
+            _created[i].Delete();
+        }
+
+        for (var i = 0; i < _accounts.Count; i++)
+        {
+            _accounts[i].Delete();
+        }
+
+        _created.Clear();
+        _accounts.Clear();
+        AccountSecurity.CurrentAlgorithm = _originalAlgorithm;
+    }
+
+    private Mobile CreateStaff(AccessLevel level)
+    {
+        var m = new Mobile { AccessLevel = level };
+        m.MoveToWorld(new Point3D(1500, 1600, 0), Map.Felucca);
+        _created.Add(m);
+        return m;
+    }
+
+    private PlayerMobile CreateOwnerWithPack(AccessLevel level, out Backpack pack)
+    {
+        var owner = new PlayerMobile { AccessLevel = level };
+        owner.MoveToWorld(new Point3D(1501, 1600, 0), Map.Felucca);
+        _created.Add(owner);
+
+        pack = new Backpack { Hue = 5 };
+        owner.AddItem(pack);
+        _created.Add(pack);
+
+        return owner;
+    }
+
+    private PetTestStub CreatePet(Mobile owner)
+    {
+        var pet = new PetTestStub();
+        pet.MoveToWorld(new Point3D(1502, 1600, 0), owner.Map);
+        pet.SetControlMaster(owner);
+        pet.AIObject.AITimer.Stop();
+        _created.Add(pet);
+        return pet;
+    }
+
+    [Fact]
+    public void ChainThroughHigherPrivilegedOwner_IsRefused()
+    {
+        var gm = CreateStaff(AccessLevel.GameMaster);
+        var owner = CreateOwnerWithPack(AccessLevel.Owner, out var pack);
+        var pet = CreatePet(owner);
+
+        var result = Properties.SetValue(gm, pet, "ControlMaster.Backpack.Hue", "0");
+
+        Assert.Equal(Refused, result);
+        Assert.Equal(5, pack.Hue);
+    }
+
+    [Fact]
+    public void ItemHeldByHigherPrivilegedMobile_IsRefused()
+    {
+        var admin = CreateStaff(AccessLevel.Administrator);
+        var developer = CreateOwnerWithPack(AccessLevel.Developer, out var pack);
+
+        var result = Properties.SetValue(admin, developer, "Backpack.Movable", "false");
+
+        Assert.Equal(Refused, result);
+        Assert.True(pack.Movable);
+    }
+
+    [Fact]
+    public void ChainThroughPlayerOwner_Succeeds()
+    {
+        var gm = CreateStaff(AccessLevel.GameMaster);
+        var owner = CreateOwnerWithPack(AccessLevel.Player, out var pack);
+        var pet = CreatePet(owner);
+
+        Assert.Equal("Property has been set.", Properties.SetValue(gm, pet, "ControlMaster.Backpack.Hue", "0"));
+        Assert.Equal(0, pack.Hue);
+
+        Assert.Equal("Property has been set.", Properties.SetValue(gm, owner, "Backpack.Movable", "false"));
+        Assert.False(pack.Movable);
+    }
+
+    [Fact]
+    public void Inc_HigherPrivilegedTarget_IsRefused()
+    {
+        var admin = CreateStaff(AccessLevel.Administrator);
+        var developer = CreateOwnerWithPack(AccessLevel.Developer, out _);
+        developer.Hue = 10;
+
+        Assert.Equal(Refused, Properties.IncreaseValue(admin, developer, ["Hue", "1"]));
+        Assert.Equal(10, developer.Hue);
+    }
+
+    [Fact]
+    public void Inc_ThroughChainToHigherPrivileged_IsRefused()
+    {
+        var gm = CreateStaff(AccessLevel.GameMaster);
+        var owner = CreateOwnerWithPack(AccessLevel.Owner, out var pack);
+        var pet = CreatePet(owner);
+
+        Assert.Equal(Refused, Properties.IncreaseValue(gm, pet, ["ControlMaster.Backpack.Hue", "1"]));
+        Assert.Equal(5, pack.Hue);
+    }
+
+    [Fact]
+    public void Inc_AllowedTarget_StillIncrements()
+    {
+        var gm = CreateStaff(AccessLevel.GameMaster);
+        var owner = CreateOwnerWithPack(AccessLevel.Player, out var pack);
+        var pet = CreatePet(owner);
+        pet.Hue = 10;
+
+        Assert.Equal(
+            "The properties have been increased.",
+            Properties.IncreaseValue(gm, pet, ["Hue", "2", "ControlMaster.Backpack.Hue", "1"])
+        );
+        Assert.Equal(12, pet.Hue);
+        Assert.Equal(6, pack.Hue);
+    }
+
+    [Fact]
+    public void Inc_MultipleArgs_OneRefused_AppliesNone()
+    {
+        var gm = CreateStaff(AccessLevel.GameMaster);
+        var owner = CreateOwnerWithPack(AccessLevel.Owner, out var pack);
+        var pet = CreatePet(owner);
+        pet.Hue = 10;
+
+        Assert.Equal(Refused, Properties.IncreaseValue(gm, pet, ["Hue", "2", "ControlMaster.Backpack.Hue", "1"]));
+        Assert.Equal(10, pet.Hue);
+        Assert.Equal(5, pack.Hue);
+    }
+
+    [Fact]
+    public void Inc_SamePropertyTwice_AddsBoth()
+    {
+        var gm = CreateStaff(AccessLevel.GameMaster);
+        var owner = CreateOwnerWithPack(AccessLevel.Player, out _);
+        var pet = CreatePet(owner);
+        pet.Hue = 10;
+
+        Assert.Equal("The properties have been increased.", Properties.IncreaseValue(gm, pet, ["Hue", "1", "hue", "1"]));
+        Assert.Equal(12, pet.Hue);
+    }
+
+    private Mobile CreateCharacterOnAccount(AccessLevel accountLevel)
+    {
+        AccountSecurity.CurrentAlgorithm = PasswordProtectionAlgorithm.SHA2;
+        var account = new Account($"guard-{Guid.NewGuid():N}", "hunter2") { AccessLevel = accountLevel };
+        _accounts.Add(account);
+
+        var m = CreateStaff(AccessLevel.Player);
+        m.Account = account;
+        return m;
+    }
+
+    [Fact]
+    public void IsAccessible_PlayerCharacterOnHigherAccount_IsRefused()
+    {
+        var gm = CreateStaff(AccessLevel.GameMaster);
+        var character = CreateCharacterOnAccount(AccessLevel.Administrator);
+
+        Assert.False(BaseCommand.IsAccessible(gm, character));
+    }
+
+    [Fact]
+    public void IsAccessible_PlayerCharacterOnPlayerAccount_IsAllowed()
+    {
+        var gm = CreateStaff(AccessLevel.GameMaster);
+        var character = CreateCharacterOnAccount(AccessLevel.Player);
+
+        Assert.True(BaseCommand.IsAccessible(gm, character));
+    }
+
+    [Fact]
+    public void IsAccessible_OwnPlayerAltOnSameAccount_IsAllowed()
+    {
+        var alt = CreateCharacterOnAccount(AccessLevel.GameMaster);
+        var gm = CreateStaff(AccessLevel.GameMaster);
+        gm.Account = alt.Account;
+
+        Assert.True(BaseCommand.IsAccessible(gm, alt));
+    }
+
+    [Fact]
+    public void IsAccessible_PlayerCharacterOnEqualLevelAccount_IsAllowed()
+    {
+        var gm = CreateStaff(AccessLevel.GameMaster);
+        var character = CreateCharacterOnAccount(AccessLevel.GameMaster);
+
+        Assert.True(BaseCommand.IsAccessible(gm, character));
+    }
+
+    [Fact]
+    public void Inc_SamePropertyThroughDifferentDeclaredTypes_AddsBoth()
+    {
+        var gm = CreateStaff(AccessLevel.GameMaster);
+        var owner = CreateOwnerWithPack(AccessLevel.Player, out _);
+        var pet = CreatePet(owner);
+        pet.FocusMob = pet;
+        pet.Hue = 10;
+
+        Assert.Equal(
+            "The properties have been increased.",
+            Properties.IncreaseValue(gm, pet, ["Hue", "1", "FocusMob.Hue", "1"])
+        );
+        Assert.Equal(12, pet.Hue);
+    }
+}

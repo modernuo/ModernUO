@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Server.Commands;
 using Server.Commands.Generic;
 using Server.Network;
 using static Server.Types;
@@ -205,10 +206,7 @@ namespace Server.Gumps
                             return;
                         }
 
-                        var cpa = GetCPA(prop);
-
-                        if (cpa == null || !(prop.CanWrite || cpa.CanModify) || cpa.ReadOnly ||
-                            from.AccessLevel < cpa.WriteLevel)
+                        if (CommandPropertyGuard.Check(prop, from.AccessLevel, PropertyAccess.ReadWrite) != null)
                         {
                             return;
                         }
@@ -348,9 +346,28 @@ namespace Server.Gumps
 
         private static bool IsCustomEnum(Type type) => type.IsDefined(OfCustomEnum, false);
 
+        // A nested object is reached through every object on the stack, so a write must not pass any of them.
+        internal bool IsPathHigherPrivileged(Mobile from)
+        {
+            if (m_Stack == null)
+            {
+                return false;
+            }
+
+            foreach (var entry in m_Stack)
+            {
+                if (Properties.IsHigherPrivileged(from, entry.m_Object))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public void OnValueChanged(object obj, PropertyInfo prop)
         {
-            if (m_Stack == null || m_Stack.Count == 0)
+            if (m_Stack == null || m_Stack.Count == 0 || IsPathHigherPrivileged(m_Mobile))
             {
                 return;
             }
@@ -364,7 +381,9 @@ namespace Server.Gumps
 
             if (peek.m_Property.CanWrite)
             {
-                peek.m_Property.SetValue(peek.m_Object, obj, null);
+                Properties.SetDirect(
+                    m_Mobile, peek.m_Object, peek.m_Object, peek.m_Property, peek.m_Property.Name, obj, false
+                );
             }
         }
 
