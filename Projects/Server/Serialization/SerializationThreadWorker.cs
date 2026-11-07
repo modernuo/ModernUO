@@ -34,7 +34,7 @@ internal readonly struct SerializedSegment
     public readonly int SlotCount;
     public readonly long HeapStart;
     public readonly int LengthsStart;
-    public readonly int RecordCount;
+    public readonly int RecordCount;   // entries in the lengths log, skipped records included
     public readonly int EntitiesStart; // buffer segments only
 
     public SerializedSegment(
@@ -212,7 +212,9 @@ public class SerializationThreadWorker
             if (serialized > 0)
             {
                 _segments.Add(
-                    new SerializedSegment(chunk.Source, chunk.Offset, chunk.Count, heapStart, lengthsStart, serialized, -1)
+                    new SerializedSegment(
+                        chunk.Source, chunk.Offset, chunk.Count, heapStart, lengthsStart, _lengths.Count - lengthsStart, -1
+                    )
                 );
             }
 
@@ -225,6 +227,7 @@ public class SerializationThreadWorker
         var bufferHeapStart = writer.Position;
         var bufferLengthsStart = _lengths.Count;
         var entitiesStart = _bufferEntities.Count;
+        var bufferSerialized = 0;
 
         for (var i = 0; i < count; i++)
         {
@@ -239,6 +242,7 @@ public class SerializationThreadWorker
                 var start = writer.Position;
                 e.Serialize(writer);
                 _lengths.Add((int)(writer.Position - start));
+                bufferSerialized++;
             }
 
             _bufferEntities.Add(e);
@@ -249,7 +253,7 @@ public class SerializationThreadWorker
         );
 
         _chunkSource.Return(buffer, count);
-        return count;
+        return bufferSerialized;
     }
 
     /// <summary>
