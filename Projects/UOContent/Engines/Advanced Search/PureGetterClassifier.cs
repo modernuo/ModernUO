@@ -495,11 +495,11 @@ public static class PureGetterClassifier
         a.Module == b.Module && a.MetadataToken == b.MetadataToken;
 
     // A constructed interface maps exactly; an open one (inside a generic class) maps every instantiation.
-    private static List<MethodInfo> MapInterfaceMethods(Type type, MethodInfo interfaceMethod)
+    private static List<MethodInfo> MapInterfaceMethods(Type type, MethodInfo interfaceMethod, bool byDefinition = false)
     {
         var result = new List<MethodInfo>();
         var declaring = interfaceMethod.DeclaringType;
-        var exact = !declaring.IsGenericType || !declaring.ContainsGenericParameters;
+        var exact = !byDefinition && (!declaring.IsGenericType || !declaring.ContainsGenericParameters);
         var interfaces = type.GetInterfaces();
         for (var i = 0; i < interfaces.Length; i++)
         {
@@ -551,6 +551,18 @@ public static class PureGetterClassifier
                 try
                 {
                     targets = MapInterfaceMethods(type, callee);
+
+                    // Generic implementers (class G<T> : IFoo<T>) and variance (IFoo<string> reached via
+                    // IFoo<object>) never match exactly; they may still run, so map by definition.
+                    if (targets.Count == 0)
+                    {
+                        targets = MapInterfaceMethods(type, callee, true);
+                    }
+
+                    if (targets.Count == 0)
+                    {
+                        return false;
+                    }
                 }
                 catch (Exception)
                 {

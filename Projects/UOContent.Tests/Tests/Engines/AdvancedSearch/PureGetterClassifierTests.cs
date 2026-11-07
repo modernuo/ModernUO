@@ -196,6 +196,43 @@ public class PureGetterClassifierTests
         int IGenericValue<string>.Value => new string('x', 1).Length;
     }
 
+    internal interface IPlainValue<T>
+    {
+        int Value { get; }
+    }
+
+    internal class PlainIntImpl : IPlainValue<int>
+    {
+        public int Value => 1;
+    }
+
+    internal class PlainGenericImpl<T> : IPlainValue<T>
+    {
+        public int Value => new string('x', 1).Length;
+    }
+
+    internal class PlainReader
+    {
+        private IPlainValue<int> _v = new PlainIntImpl();
+        public int Read => _v.Value;
+    }
+
+    internal interface ICovariantValue<out T>
+    {
+        T Value { get; }
+    }
+
+    internal class CovariantStringImpl : ICovariantValue<string>
+    {
+        public string Value => new string('x', 1);
+    }
+
+    internal class CovariantReader
+    {
+        private ICovariantValue<object> _v = new CovariantStringImpl();
+        public object Read => _v.Value;
+    }
+
     internal class ForeignReader
     {
         private AbstractHolder _other = new ForeignPure();
@@ -292,6 +329,18 @@ public class PureGetterClassifierTests
 
         Assert.True(PureGetterClassifier.IsPure(pure, typeof(BothInterfaces)));
         Assert.False(PureGetterClassifier.IsPure(impure, typeof(BothInterfaces)));
+    }
+
+    [Fact]
+    public void GenericImplementer_IsNotSkipped()
+    {
+        Assert.False(Pure(typeof(PlainReader), nameof(PlainReader.Read)));
+    }
+
+    [Fact]
+    public void VarianceImplementer_IsNotSkipped()
+    {
+        Assert.False(Pure(typeof(CovariantReader), nameof(CovariantReader.Read)));
     }
 
     [Fact]
