@@ -208,7 +208,6 @@ protected override void OnTargetUntargetable(Mobile from, object targeted)
 - **Missing access level validation**: Always set appropriate `AccessLevel`
 - **Not checking `e.Length`**: Accessing missing arguments returns defaults silently
 - **Hardcoded range in targeting**: Use -1 for unlimited, appropriate range for game mechanics
-
 - **Resolving staff-facing properties by reflection**: Use `Properties.GetPropertyInfoByName`/`GetPropertyInfoChain` or `Property.BindTo` (`CommandPropertyGuard`); intermediate chain links need Read, gump writes go through `Properties.SetDirect`
 
 ## Real Examples
