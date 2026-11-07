@@ -24,6 +24,10 @@ public static class PureGetterClassifier
     // Safe to build once: game assemblies all load at startup.
     private static readonly ConcurrentDictionary<Type, Type[]> _derivedTypes = [];
 
+    // Walking a hierarchy's declared methods allocates a copy per level; types never change, so resolve once.
+    private static readonly ConcurrentDictionary<(RuntimeMethodHandle, Type), MethodInfo> _overrides = [];
+    private static readonly ConcurrentDictionary<RuntimeMethodHandle, bool> _allOverrides = [];
+
     // A stack overflow on a worker kills the process, so deep call chains are rejected.
     private const int MaxDepth = 64;
 
@@ -491,13 +495,13 @@ public static class PureGetterClassifier
     }
 
     // The override of `m` that an instance of `type` runs; null when it cannot be determined, which callers treat as impure.
-    private static MethodInfo ResolveOverride(MethodInfo m, Type type)
-    {
-        if (!m.IsVirtual || type == null)
-        {
-            return m;
-        }
+    private static MethodInfo ResolveOverride(MethodInfo m, Type type) =>
+        !m.IsVirtual || type == null
+            ? m
+            : _overrides.GetOrAdd((m.MethodHandle, type), static (key, m) => ResolveOverrideCore(m, key.Item2), m);
 
+    private static MethodInfo ResolveOverrideCore(MethodInfo m, Type type)
+    {
         try
         {
             // No concrete instance to resolve against, so nothing can be proven about what would run.
@@ -570,6 +574,27 @@ public static class PureGetterClassifier
 
     // The callee itself plus every override or implementation in the loaded assemblies must be pure.
     private static bool AllOverridesPure(MethodInfo callee, ref int low)
+    {
+        var key = callee.MethodHandle;
+        if (_allOverrides.TryGetValue(key, out var known))
+        {
+            return known;
+        }
+
+        var myLow = int.MaxValue;
+        var pure = AllOverridesPureCore(callee, ref myLow);
+
+        // Same rule as Classify: a pure verdict that leaned on an in-progress method is provisional.
+        if (!pure || myLow == int.MaxValue)
+        {
+            _allOverrides[key] = pure;
+        }
+
+        low = Math.Min(low, myLow);
+        return pure;
+    }
+
+    private static bool AllOverridesPureCore(MethodInfo callee, ref int low)
     {
         // The callee's own body is checked first: most rejections need no assembly scan.
         if (!callee.IsAbstract && !Classify(callee, null, ref low))
