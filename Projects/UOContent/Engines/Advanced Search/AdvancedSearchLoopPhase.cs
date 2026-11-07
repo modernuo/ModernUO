@@ -62,12 +62,6 @@ public sealed class AdvancedSearchLoopPhase
     private AdvancedSearchResult[] _final;
     private int _copied;
 
-    /// <summary>Runs the loop-result sort off the loop. Test seam.</summary>
-    internal Action<Action> RunOffLoop { get; init; } = static work => ThreadPool.QueueUserWorkItem(static w => w(), work, false);
-
-    /// <summary>Hands the sort's completion back to the loop. Test seam.</summary>
-    internal Action<Action> PostToLoop { get; init; } = static resume => Core.LoopContext.Post(resume);
-
     public static void Configure()
     {
         LoopBudgetMs = Math.Max(ServerConfiguration.GetOrUpdateSetting("advancedSearch.loopBudgetMs", 2), 1);
@@ -257,7 +251,7 @@ public sealed class AdvancedSearchLoopPhase
         }
 
         _stage = Stage.Sort;
-        RunOffLoop(SortLoopResults);
+        ThreadPool.QueueUserWorkItem(static phase => phase.SortLoopResults(), this, false);
     }
 
     // Thread pool. The comparer reads only Entity.Serial, which never changes, and the loop leaves
@@ -277,7 +271,7 @@ public sealed class AdvancedSearchLoopPhase
 
         try
         {
-            PostToLoop(() => ResumeAfterSort(failure));
+            Core.LoopContext.Post(() => ResumeAfterSort(failure));
         }
         catch (Exception ex)
         {

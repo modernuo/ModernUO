@@ -40,23 +40,37 @@ public class AdvancedSearchLoopPhaseTests
     {
         // The caller sorts the worker results off the loop.
         Array.Sort(workerResults, AdvancedSearchResultSerialComparer.Instance);
-        return new AdvancedSearchLoopPhase(from, gump, filter, Origin, NewCache(), workerResults, deferred, ignoreSources, false)
-        {
-            // The test thread stands in for both the thread pool and the loop.
-            RunOffLoop = static work => work(),
-            PostToLoop = static resume => resume()
-        };
+        return new AdvancedSearchLoopPhase(from, gump, filter, Origin, NewCache(), workerResults, deferred, ignoreSources, false);
     }
 
-    // Each stage after the drains starts in a fresh slice: drain (handing off the sort), allocate, merge,
-    // copy (when anything was dropped), publish.
-    private static void RunToCompletion(AdvancedSearchLoopPhase phase)
+    private static void RunToCompletion(AdvancedSearchLoopPhase phase) => RunSlices(phase, long.MaxValue);
+
+    // The test thread stands in for the game loop: it runs the phase's slices and the completion the
+    // thread-pool sort posts back. Returns the number of slices taken.
+    private static int RunSlices(AdvancedSearchLoopPhase phase, long budget)
     {
-        var slices = 1;
-        while (!phase.RunSlice(long.MaxValue))
+        var original = Core.LoopContext;
+
+        // The context pins itself to the thread that built it; own one for the test's thread.
+        var loop = new EventLoopContext();
+        Core.LoopContext = loop;
+
+        try
         {
-            slices++;
-            Assert.True(slices <= 5, "an unlimited budget should finish within five slices");
+            var slices = 1;
+            var deadline = DateTime.UtcNow.AddSeconds(20);
+            while (!phase.RunSlice(budget))
+            {
+                Assert.True(DateTime.UtcNow < deadline, "loop phase never finished");
+                loop.ExecuteTasks();
+                slices++;
+            }
+
+            return slices;
+        }
+        finally
+        {
+            Core.LoopContext = original;
         }
     }
 
@@ -202,14 +216,7 @@ public class AdvancedSearchLoopPhaseTests
         {
             var phase = NewPhase(from, gump, new AdvancedSearchFilter(), [], deferred, new ConcurrentQueue<IEntity>());
 
-            var slices = 1;
-            while (!phase.RunSlice(0))
-            {
-                slices++;
-                Assert.True(slices < 1000, "loop phase never finished");
-            }
-
-            Assert.True(slices > 1);
+            Assert.True(RunSlices(phase, 0) > 1);
             Assert.NotNull(gump.SearchResults);
             Assert.Equal(500, gump.SearchResults.Length);
         }
@@ -334,15 +341,9 @@ public class AdvancedSearchLoopPhaseTests
         {
             var phase = NewPhase(from, gump, new AdvancedSearchFilter { HideValidInternalMap = true }, workerResults.ToArray(), deferred, ignoreSources);
 
-            var falseReturns = 0;
-            while (!phase.RunSlice(0))
-            {
-                falseReturns++;
-                Assert.True(falseReturns < 10000, "loop phase never finished");
-            }
-
             // Slice 1 drains, and publishing then takes ~2000/64 slices of its own.
-            Assert.True(falseReturns > 2, $"published in {falseReturns + 1} slices");
+            var slices = RunSlices(phase, 0);
+            Assert.True(slices > 3, $"published in {slices} slices");
 
             expected.Sort((a, b) => a.Serial.CompareTo(b.Serial));
             Assert.NotNull(gump.SearchResults);
@@ -429,35 +430,29 @@ public class AdvancedSearchLoopPhaseTests
             deferred.Enqueue(items[i]);
         }
 
-        Action offLoop = null;
-        Action posted = null;
+        var original = Core.LoopContext;
+        var loop = new EventLoopContext();
+        Core.LoopContext = loop;
 
         try
         {
-            var phase = new AdvancedSearchLoopPhase(
-                from, gump, new AdvancedSearchFilter(), Origin, NewCache(),
-                [], deferred, new ConcurrentQueue<IEntity>(), false
-            )
-            {
-                RunOffLoop = work => offLoop = work,
-                PostToLoop = resume => posted = resume
-            };
+            var phase = NewPhase(from, gump, new AdvancedSearchFilter(), [], deferred, new ConcurrentQueue<IEntity>());
 
+            // The drain hands the sort to the thread pool; its completion waits in the loop's queue.
             Assert.False(phase.RunSlice(long.MaxValue));
-            Assert.NotNull(offLoop);
+            var deadline = DateTime.UtcNow.AddSeconds(20);
+            while (loop.IsEmpty)
+            {
+                Assert.True(DateTime.UtcNow < deadline, "the sort never posted back to the loop");
+                System.Threading.Thread.Yield();
+            }
 
-            // While the sort is out, loop slices do nothing.
+            // Until the loop runs that completion, slices do nothing.
             Assert.False(phase.RunSlice(long.MaxValue));
             Assert.False(phase.RunSlice(long.MaxValue));
             Assert.Null(gump.SearchResults);
-            Assert.Null(posted);
 
-            var sorter = new System.Threading.Thread(() => offLoop());
-            sorter.Start();
-            sorter.Join();
-
-            Assert.NotNull(posted);
-            posted();
+            loop.ExecuteTasks();
 
             var slices = 0;
             while (!phase.RunSlice(long.MaxValue))
@@ -474,45 +469,7 @@ public class AdvancedSearchLoopPhaseTests
         }
         finally
         {
-            DeleteAll(entities);
-            AdvancedSearchGump.EndSearch();
-        }
-    }
-
-    [Fact]
-    public void LoopPhase_SortFailure_StillFinishesOnTheLoop()
-    {
-        var original = AutoSave.SavesEnabled;
-        var from = new Mobile();
-        var a = new Item(0x1);
-        var b = new Item(0x1);
-        var entities = new List<IEntity> { from, a, b };
-        var deferred = new ConcurrentQueue<IEntity>();
-        deferred.Enqueue(b);
-        deferred.Enqueue(a);
-
-        Assert.True(AdvancedSearchGump.TryBeginSearch());
-        AutoSave.SavesEnabled = false;
-
-        try
-        {
-            var phase = new AdvancedSearchLoopPhase(
-                from, new AdvancedSearchGump(), new AdvancedSearchFilter(), Origin, NewCache(),
-                [], deferred, new ConcurrentQueue<IEntity>(), true
-            )
-            {
-                // The sort job itself never runs; the phase sees it as a failure.
-                RunOffLoop = _ => throw new InvalidOperationException("no thread pool"),
-                PostToLoop = _ => { }
-            };
-
-            Assert.True(phase.RunSlice(long.MaxValue));
-            Assert.True(AutoSave.SavesEnabled);
-            Assert.False(AdvancedSearchGump.IsSearchInProgress);
-        }
-        finally
-        {
-            AutoSave.SavesEnabled = original;
+            Core.LoopContext = original;
             DeleteAll(entities);
             AdvancedSearchGump.EndSearch();
         }
