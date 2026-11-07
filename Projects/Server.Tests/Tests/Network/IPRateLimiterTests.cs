@@ -146,4 +146,46 @@ public class IPRateLimiterTests
             Core._tickCount = previousTicks;
         }
     }
+
+    [Fact]
+    public void SameSlash64_SharesBudget()
+    {
+        var limiter = new IPRateLimiter(3, TimeWindow, 1000, 2.0, MaxBackoff);
+
+        Assert.True(limiter.Verify(IPAddress.Parse("2001:db8:1:2::1"), out _));
+        Assert.True(limiter.Verify(IPAddress.Parse("2001:db8:1:2::2"), out _));
+        Assert.True(limiter.Verify(IPAddress.Parse("2001:db8:1:2::3"), out _));
+        Assert.False(limiter.Verify(IPAddress.Parse("2001:db8:1:2::4"), out _));
+        Assert.Equal(1, limiter.Count);
+    }
+
+    [Fact]
+    public void DifferentSlash64_Independent()
+    {
+        var limiter = new IPRateLimiter(3, TimeWindow, 1000, 2.0, MaxBackoff);
+        var a = IPAddress.Parse("2001:db8:1:2::1");
+        var b = IPAddress.Parse("2001:db8:1:3::1");
+
+        for (var i = 0; i < 3; i++)
+        {
+            Assert.True(limiter.Verify(a, out _));
+            Assert.True(limiter.Verify(b, out _));
+        }
+
+        Assert.Equal(2, limiter.Count);
+    }
+
+    [Fact]
+    public void PrivateIPv6_Bypassed()
+    {
+        var limiter = new IPRateLimiter(1, TimeWindow, 1000, 2.0, MaxBackoff);
+        var ip = IPAddress.Parse("fe80::1");
+
+        for (var i = 0; i < 5; i++)
+        {
+            Assert.True(limiter.Verify(ip, out _));
+        }
+
+        Assert.Equal(0, limiter.Count);
+    }
 }
