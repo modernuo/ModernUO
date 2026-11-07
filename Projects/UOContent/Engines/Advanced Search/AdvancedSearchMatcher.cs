@@ -62,7 +62,8 @@ internal static class AdvancedSearchMatcher
     {
         result = null;
 
-        // Vets the fixed reads below (map, location, name, internal validity) for this type.
+        // Vets the fixed reads below for this type. Reading a new entity member off the loop means
+        // adding it to AdvancedSearchWorkerReads.
         if (!onLoop && !AdvancedSearchWorkerReads.IsWorkerSafe(entity.GetType()))
         {
             WarmPredicate(entity.GetType(), filter, predicates);

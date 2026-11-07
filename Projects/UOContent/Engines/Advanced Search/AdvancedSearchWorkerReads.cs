@@ -16,13 +16,19 @@ public static class AdvancedSearchWorkerReads
 
     private static readonly ConcurrentDictionary<Type, bool> _memo = new();
 
+    // Every entity member AdvancedSearchMatcher reads off the loop must be listed here (or in Evaluate/Extras),
+    // or it runs unvetted on the workers. Add one whenever the matcher's worker path reads a new member.
     private static readonly string[] _itemProperties =
-        ["Name", "ItemData", "Map", "Location", "RootParent", "Parent", "HeldBy", "Deleted"];
+    [
+        nameof(Item.Name), nameof(Item.ItemData), nameof(Item.Map), nameof(Item.Location),
+        nameof(Item.RootParent), nameof(Item.Parent), nameof(Item.HeldBy), nameof(Item.Deleted)
+    ];
 
-    private static readonly string[] _mobileProperties = ["Name", "Map", "Location", "Deleted", "Account"];
+    private static readonly string[] _mobileProperties =
+        [nameof(Mobile.Name), nameof(Mobile.Map), nameof(Mobile.Location), nameof(Mobile.Deleted), nameof(Mobile.Account)];
 
     // Also read through IEntity, which dispatches via the runtime type's interface map.
-    private static readonly string[] _entityProperties = ["Map", "Location", "Deleted"];
+    private static readonly string[] _entityProperties = [nameof(IEntity.Map), nameof(IEntity.Location), nameof(IEntity.Deleted)];
 
     public static bool IsWorkerSafe(Type runtimeType)
     {
