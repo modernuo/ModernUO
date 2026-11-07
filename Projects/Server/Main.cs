@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -227,6 +228,9 @@ public static class Core
 
     private static volatile LoopLifecycle _loopLifecycle;
     private static readonly ManualResetEventSlim _shutdownComplete = new(false);
+
+    // Native state the loop compresses with. Disposed only on the loop thread, once it is done with it.
+    private static LibDeflateBinding _loopDeflate;
 
     // Kept alive for the life of the process: a collected registration silently unregisters.
     private static PosixSignalRegistration _sigtermRegistration;
@@ -560,6 +564,14 @@ public static class Core
             {
                 EventSink.InvokeShutdown();
             }
+
+            // Nothing compresses after the shutdown subscribers. Off the loop the loop may still be
+            // compressing, so the instance is left for the process exit to reclaim.
+            if (Thread.CurrentThread == Thread)
+            {
+                _loopDeflate?.Dispose();
+                _loopDeflate = null;
+            }
         }
         finally
         {
@@ -640,9 +652,8 @@ public static class Core
             logger.Information("Headless mode detected (stdin is not a TTY); interactive console input is disabled.");
         }
 
-        // LibDeflate is not thread safe, so we need to create a new instance for each thread
-        var standard = Deflate.Standard;
-        AppDomain.CurrentDomain.ProcessExit += (_, _) => standard.Dispose();
+        // LibDeflate is not thread safe, so each thread gets its own instance; this is the loop's.
+        _loopDeflate = Deflate.Standard;
 
         ServerConfiguration.Load();
 
