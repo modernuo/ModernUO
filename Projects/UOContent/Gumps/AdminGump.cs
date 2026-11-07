@@ -1779,8 +1779,12 @@ namespace Server.Gumps
             {
                 for (var i = 0; i < a.LoginIPs.Length; ++i)
                 {
-                    Firewall.Add(new SingleIpFirewallEntry(a.LoginIPs[i]));
-                    BanChannel.Report(a.LoginIPs[i], TimeSpan.Zero, BanReasons.Manual);
+                    var entry = Firewall.CreateSubscriberEntry(a.LoginIPs[i]);
+                    Firewall.Add(entry);
+                    if (Firewall.TryGetReportableNetwork(entry, out var network))
+                    {
+                        BanChannel.Report(network, TimeSpan.Zero, BanReasons.Manual);
+                    }
                 }
 
                 notice = "All addresses in the list have been firewalled.";
@@ -1807,9 +1811,9 @@ namespace Server.Gumps
                 var firewallEntry = Firewall.ToFirewallEntry(toFirewall);
                 Firewall.Add(firewallEntry);
 
-                if (firewallEntry.MinIpAddress == firewallEntry.MaxIpAddress)
+                if (Firewall.TryGetReportableNetwork(firewallEntry, out var network))
                 {
-                    BanChannel.Report(firewallEntry.MinIpAddress.ToIpAddress(), TimeSpan.Zero, BanReasons.Manual);
+                    BanChannel.Report(network, TimeSpan.Zero, BanReasons.Manual);
                 }
 
                 notice = $"{toFirewall} : Added to firewall.";
@@ -3626,10 +3630,10 @@ namespace Server.Gumps
 
                                         Firewall.Add(firewallEntry);
 
-                                        if (firewallEntry.MinIpAddress == firewallEntry.MaxIpAddress)
+                                        if (Firewall.TryGetReportableNetwork(firewallEntry, out var network))
                                         {
                                             BanChannel.Report(
-                                                firewallEntry.MinIpAddress.ToIpAddress(),
+                                                network,
                                                 TimeSpan.Zero,
                                                 BanReasons.Manual
                                             );
@@ -3675,9 +3679,9 @@ namespace Server.Gumps
 
                                         Firewall.Remove(m_State as IFirewallEntry);
 
-                                        if (m_State is IFirewallEntry fe && fe.MinIpAddress == fe.MaxIpAddress)
+                                        if (m_State is IFirewallEntry fe && Firewall.TryGetReportableNetwork(fe, out var network))
                                         {
-                                            BanChannel.Retract(fe.MinIpAddress.ToIpAddress());
+                                            BanChannel.Retract(network);
                                         }
 
                                         from.SendGump(

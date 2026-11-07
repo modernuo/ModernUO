@@ -18,6 +18,7 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using Server.Collections;
 using Server.Json;
@@ -184,6 +185,56 @@ public static class Firewall
 
         _indexDirty = true;
         MarkDirty();
+    }
+
+    /// <summary>
+    /// The entry a player ban installs: a single address for IPv4, the whole subscriber prefix for IPv6.
+    /// </summary>
+    public static IFirewallEntry CreateSubscriberEntry(IPAddress address)
+    {
+        var network = address.ToSubscriberNetwork();
+        return network.BaseAddress.AddressFamily == AddressFamily.InterNetworkV6 && !network.BaseAddress.IsIPv4MappedToIPv6
+            ? new CidrFirewallEntry(network.BaseAddress, network.PrefixLength)
+            : new SingleIpFirewallEntry(address);
+    }
+
+    /// <summary>
+    /// Whether an entry is shaped like something the ban channel can carry: a single IPv4 address, or an
+    /// IPv6 range that is an exact CIDR with prefix 48-128. Derived from the entry's own range, never from
+    /// the current subscriber prefix setting, so entries stay reportable and retractable after it changes.
+    /// </summary>
+    public static bool TryGetReportableNetwork(IFirewallEntry entry, out IPNetwork network)
+    {
+        network = default;
+
+        var min = entry.MinIpAddress;
+        var max = entry.MaxIpAddress;
+
+        if (min == max && (min >> 32) == 0xFFFFUL)
+        {
+            network = new IPNetwork(min.ToIpAddress(), 32);
+            return true;
+        }
+
+        if ((min >> 32) == 0xFFFFUL || max < min)
+        {
+            return false;
+        }
+
+        var span = max - min;
+        if ((span & (span + UInt128.One)) != 0 || (min & span) != 0)
+        {
+            return false;
+        }
+
+        var prefix = 128 - (int)UInt128.PopCount(span);
+        if (prefix < 48)
+        {
+            return false;
+        }
+
+        network = new IPNetwork(min.ToIpAddress(true), prefix);
+        return true;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
