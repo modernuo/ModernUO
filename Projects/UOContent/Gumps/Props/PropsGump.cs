@@ -346,9 +346,28 @@ namespace Server.Gumps
 
         private static bool IsCustomEnum(Type type) => type.IsDefined(OfCustomEnum, false);
 
+        // A nested object is reached through every object on the stack, so a write must not pass any of them.
+        internal bool IsPathHigherPrivileged(Mobile from)
+        {
+            if (m_Stack == null)
+            {
+                return false;
+            }
+
+            foreach (var entry in m_Stack)
+            {
+                if (Properties.IsHigherPrivileged(from, entry.m_Object))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public void OnValueChanged(object obj, PropertyInfo prop)
         {
-            if (m_Stack == null || m_Stack.Count == 0)
+            if (m_Stack == null || m_Stack.Count == 0 || IsPathHigherPrivileged(m_Mobile))
             {
                 return;
             }

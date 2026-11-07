@@ -88,6 +88,10 @@ namespace Server.Commands
             PropertyAccess access, out string failReason
         ) => CommandPropertyGuard.ResolveChain(type, propertyString, level, access, true, out failReason);
 
+        /// <summary>
+        /// Resolves <paramref name="propertyName"/> on <paramref name="obj"/> for reading. Writes go through
+        /// <see cref="SetValue"/> or <see cref="SetDirect"/>, which also check who owns the objects reached.
+        /// </summary>
         public static PropertyInfo GetPropertyInfo(
             Mobile from, ref object obj, string propertyName, PropertyAccess access,
             out string failReason
@@ -157,7 +161,10 @@ namespace Server.Commands
             var count = args.Length / 2;
             var realObjs = new object[count];
             var realProps = new PropertyInfo[count];
+            var realNames = new string[count];
+            var realOffsets = new long[count];
             var realValues = new object[count];
+            var unique = 0;
 
             var positive = false;
             var negative = false;
@@ -213,6 +220,29 @@ namespace Server.Commands
                     return "Property not found.";
                 }
 
+                // Repeated offsets to the same property add up, as sequential increments would.
+                var index = 0;
+
+                while (index < unique && (!ReferenceEquals(realObjs[index], obj) || realProps[index] != prop))
+                {
+                    index++;
+                }
+
+                if (index == unique)
+                {
+                    realObjs[index] = obj;
+                    realProps[index] = prop;
+                    realNames[index] = name;
+                    unique++;
+                }
+
+                realOffsets[index] += offset;
+            }
+
+            for (var i = 0; i < unique; ++i)
+            {
+                var obj = realObjs[i];
+                var prop = realProps[i];
                 var current = prop.GetValue(obj, null);
 
                 if (current is not IConvertible)
@@ -224,7 +254,7 @@ namespace Server.Commands
 
                 try
                 {
-                    var v = (long)Convert.ChangeType(current, TypeCode.Int64) + offset;
+                    var v = (long)Convert.ChangeType(current, TypeCode.Int64) + realOffsets[i];
                     toSet = Convert.ChangeType(v, prop.PropertyType);
                 }
                 catch
@@ -239,14 +269,12 @@ namespace Server.Commands
                     return refusal;
                 }
 
-                realObjs[i] = obj;
-                realProps[i] = prop;
                 realValues[i] = toSet;
             }
 
-            for (var i = 0; i < count; ++i)
+            for (var i = 0; i < unique; ++i)
             {
-                var result = SetDirect(from, o, realObjs[i], realProps[i], args[i * 2], realValues[i], true);
+                var result = SetDirect(from, o, realObjs[i], realProps[i], realNames[i], realValues[i], true);
 
                 if (result != SetSuccess)
                 {
@@ -254,7 +282,7 @@ namespace Server.Commands
                 }
             }
 
-            if (realProps.Length == 1)
+            if (count == 1)
             {
                 return positive ? "The property has been increased." : "The property has been decreased.";
             }
@@ -419,7 +447,9 @@ namespace Server.Commands
             Mobile from, object obj, PropertyInfo prop, object toSet, PropertiesGump gump
         )
         {
-            var result = SetDirect(from, obj, obj, prop, prop.Name, toSet, true);
+            var result = gump.IsPathHigherPrivileged(from)
+                ? HigherPrivilegedMessage
+                : SetDirect(from, obj, obj, prop, prop.Name, toSet, true);
             from.SendMessage(result);
 
             if (result != SetSuccess)

@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
 using Server;
+using Server.Accounting;
+using Server.Accounting.Security;
 using Server.Commands;
+using Server.Commands.Generic;
 using Server.Items;
 using Server.Mobiles;
 using UOContent.Tests.Mobiles.AI;
@@ -15,6 +18,8 @@ public class PropertyWriteOwnershipTests : IDisposable
     private const string Refused = "You cannot modify a higher privileged mobile.";
 
     private readonly List<IEntity> _created = [];
+    private readonly List<Account> _accounts = [];
+    private readonly PasswordProtectionAlgorithm _originalAlgorithm = AccountSecurity.CurrentAlgorithm;
 
     public void Dispose()
     {
@@ -23,7 +28,14 @@ public class PropertyWriteOwnershipTests : IDisposable
             _created[i].Delete();
         }
 
+        for (var i = 0; i < _accounts.Count; i++)
+        {
+            _accounts[i].Delete();
+        }
+
         _created.Clear();
+        _accounts.Clear();
+        AccountSecurity.CurrentAlgorithm = _originalAlgorithm;
     }
 
     private Mobile CreateStaff(AccessLevel level)
@@ -145,5 +157,46 @@ public class PropertyWriteOwnershipTests : IDisposable
         Assert.Equal(Refused, Properties.IncreaseValue(gm, pet, ["Hue", "2", "ControlMaster.Backpack.Hue", "1"]));
         Assert.Equal(10, pet.Hue);
         Assert.Equal(5, pack.Hue);
+    }
+
+    [Fact]
+    public void Inc_SamePropertyTwice_AddsBoth()
+    {
+        var gm = CreateStaff(AccessLevel.GameMaster);
+        var owner = CreateOwnerWithPack(AccessLevel.Player, out _);
+        var pet = CreatePet(owner);
+        pet.Hue = 10;
+
+        Assert.Equal("The properties have been increased.", Properties.IncreaseValue(gm, pet, ["Hue", "1", "hue", "1"]));
+        Assert.Equal(12, pet.Hue);
+    }
+
+    private Mobile CreateCharacterOnAccount(AccessLevel accountLevel)
+    {
+        AccountSecurity.CurrentAlgorithm = PasswordProtectionAlgorithm.SHA2;
+        var account = new Account($"guard-{Guid.NewGuid():N}", "hunter2") { AccessLevel = accountLevel };
+        _accounts.Add(account);
+
+        var m = CreateStaff(AccessLevel.Player);
+        m.Account = account;
+        return m;
+    }
+
+    [Fact]
+    public void IsAccessible_PlayerCharacterOnHigherAccount_IsRefused()
+    {
+        var gm = CreateStaff(AccessLevel.GameMaster);
+        var character = CreateCharacterOnAccount(AccessLevel.Administrator);
+
+        Assert.False(BaseCommand.IsAccessible(gm, character));
+    }
+
+    [Fact]
+    public void IsAccessible_PlayerCharacterOnPlayerAccount_IsAllowed()
+    {
+        var gm = CreateStaff(AccessLevel.GameMaster);
+        var character = CreateCharacterOnAccount(AccessLevel.Player);
+
+        Assert.True(BaseCommand.IsAccessible(gm, character));
     }
 }

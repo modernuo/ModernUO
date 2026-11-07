@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Server;
 using Server.Gumps;
+using Server.Items;
 using Server.Network;
 using Server.Tests.Network;
 using Xunit;
@@ -93,6 +94,48 @@ public class PropsGumpWriteTests : IDisposable
         SubmitName(from, ns, target, "Changed");
 
         Assert.Equal("Changed", target.Name);
+    }
+
+    private static Longsword GiveWeapon(Mobile holder)
+    {
+        var pack = new Backpack();
+        holder.AddItem(pack);
+
+        var weapon = new Longsword();
+        pack.DropItem(weapon);
+        return weapon;
+    }
+
+    private static void SubmitNestedAttribute(Mobile from, NetState ns, BaseWeapon weapon, string text)
+    {
+        var attributesProp = typeof(BaseWeapon).GetProperty(nameof(BaseWeapon.Attributes));
+        var prop = typeof(AosAttributes).GetProperty(nameof(AosAttributes.SpellChanneling));
+        var gump = new PropertiesGump(from, weapon.Attributes, null, new StackEntry(weapon, attributesProp));
+        var setGump = new SetGump(prop, from, weapon.Attributes, gump);
+
+        setGump.OnResponse(ns, NameInfo(text));
+    }
+
+    [Fact]
+    public void NestedObject_OnHigherPrivilegedHolder_IsRefused()
+    {
+        var (from, ns) = CreateEditor(AccessLevel.Administrator);
+        var weapon = GiveWeapon(CreateTarget(AccessLevel.Developer));
+
+        SubmitNestedAttribute(from, ns, weapon, "1");
+
+        Assert.Equal(0, weapon.Attributes.SpellChanneling);
+    }
+
+    [Fact]
+    public void NestedObject_OnPlayerHolder_IsWritten()
+    {
+        var (from, ns) = CreateEditor(AccessLevel.Administrator);
+        var weapon = GiveWeapon(CreateTarget(AccessLevel.Player));
+
+        SubmitNestedAttribute(from, ns, weapon, "1");
+
+        Assert.Equal(1, weapon.Attributes.SpellChanneling);
     }
 
     [Fact]
