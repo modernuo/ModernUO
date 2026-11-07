@@ -21,8 +21,8 @@ public class BanChannelTests : IDisposable
 
     private sealed class FakeReporter : IBanReporter
     {
-        public readonly List<(IPAddress ip, TimeSpan ttl, string reason)> Reports = [];
-        public readonly List<IPAddress> Retractions = [];
+        public readonly List<(IPNetwork network, TimeSpan ttl, string reason)> Reports = [];
+        public readonly List<IPNetwork> Retractions = [];
         public bool ThrowOnReport;
 
         public string Name => "fake";
@@ -31,17 +31,17 @@ public class BanChannelTests : IDisposable
         public void Start(CancellationToken token) { }
         public void Stop() { }
 
-        public void Report(IPAddress address, TimeSpan ttl, string reason)
+        public void Report(IPNetwork network, TimeSpan ttl, string reason)
         {
             if (ThrowOnReport)
             {
                 throw new InvalidOperationException("boom");
             }
 
-            Reports.Add((address, ttl, reason));
+            Reports.Add((network, ttl, reason));
         }
 
-        public void Retract(IPAddress address) => Retractions.Add(address);
+        public void Retract(IPNetwork network) => Retractions.Add(network);
     }
 
     [Fact]
@@ -95,5 +95,56 @@ public class BanChannelTests : IDisposable
         BanChannel.Retract(IPAddress.Parse("9.9.9.9"));
 
         Assert.Single(a.Retractions);
+    }
+
+    [Fact]
+    public void ReportIPv6_FansOutSubscriberNetwork()
+    {
+        var a = new FakeReporter();
+        BanChannel.ConfigureForTesting([a]);
+
+        BanChannel.Report(IPAddress.Parse("2001:db8:1:2::7"), TimeSpan.FromHours(1), "rate-limit");
+
+        Assert.Equal(new IPNetwork(IPAddress.Parse("2001:db8:1:2::"), 64), a.Reports[0].network);
+    }
+
+    [Fact]
+    public void ReportIPv4_FansOutSlash32()
+    {
+        var a = new FakeReporter();
+        BanChannel.ConfigureForTesting([a]);
+
+        BanChannel.Report(IPAddress.Parse("1.2.3.4"), TimeSpan.FromHours(1), "rate-limit");
+
+        Assert.Equal(new IPNetwork(IPAddress.Parse("1.2.3.4"), 32), a.Reports[0].network);
+    }
+
+    [Fact]
+    public void RetractIPv6_FansOutSubscriberNetwork()
+    {
+        var a = new FakeReporter();
+        BanChannel.ConfigureForTesting([a]);
+
+        BanChannel.Retract(IPAddress.Parse("2001:db8:1:2::7"));
+
+        Assert.Equal(new IPNetwork(IPAddress.Parse("2001:db8:1:2::"), 64), a.Retractions[0]);
+    }
+
+    [Fact]
+    public void Report_IPv6Exemption_ReceivesTriggeringAddress()
+    {
+        var a = new FakeReporter();
+        BanChannel.ConfigureForTesting([a]);
+        var trigger = IPAddress.Parse("2001:db8:1:2::7");
+        IPAddress seen = null;
+        BanChannel.IsExempt = (ip, _) =>
+        {
+            seen = ip;
+            return false;
+        };
+
+        BanChannel.Report(trigger, TimeSpan.FromHours(1), "rate-limit");
+
+        Assert.Equal(trigger, seen);
     }
 }

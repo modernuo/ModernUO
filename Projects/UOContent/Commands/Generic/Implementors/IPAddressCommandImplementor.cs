@@ -36,16 +36,17 @@ namespace Server.Commands.Generic
                 }
 
                 var list = new List<object>();
-                var addresses = new List<IPAddress>();
+                var addresses = new HashSet<UInt128>();
 
                 foreach (var ns in NetState.Instances)
                 {
                     var mob = ns.Mobile;
+                    var key = ns.Address.ToSubscriberKey();
 
-                    if (mob != null && !addresses.Contains(ns.Address) && ext.IsValid(mob))
+                    if (mob != null && !addresses.Contains(key) && ext.IsValid(mob))
                     {
                         list.Add(mob);
-                        addresses.Add(ns.Address);
+                        addresses.Add(key);
                     }
                 }
 

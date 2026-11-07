@@ -257,13 +257,6 @@ public static class Core
 
     private static readonly Type[] _serialTypeArray = { typeof(Serial) };
 
-    public static readonly bool IsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-    public static readonly bool IsDarwin = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
-    public static readonly bool IsFreeBSD = RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD);
-    public static readonly bool IsLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || IsFreeBSD;
-    public static readonly bool IsBSD = IsDarwin || IsFreeBSD;
-    public static readonly bool Unix = IsBSD || IsLinux;
-
     private const string AssembliesConfiguration = "Data/assemblies.json";
 
 #nullable enable
@@ -383,7 +376,7 @@ public static class Core
         {
             fullPath = Path.Combine(p, path);
 
-            if (IsLinux && !File.Exists(fullPath))
+            if ((OperatingSystem.IsLinux() || OperatingSystem.IsFreeBSD()) && !File.Exists(fullPath))
             {
                 var fi = new FileInfo(fullPath);
                 if (fi.Directory != null && Directory.Exists(fi.Directory.FullName))

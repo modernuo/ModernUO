@@ -30,7 +30,7 @@ namespace Server.Network.Bans.CrowdSec;
 public interface ICrowdSecAlertClient : IDisposable
 {
     ValueTask PostAlertsAsync(IReadOnlyList<CrowdSecAlert> alerts, CancellationToken token);
-    ValueTask DeleteDecisionsAsync(string origin, IPAddress ip, CancellationToken token);
+    ValueTask DeleteDecisionsAsync(string origin, IPNetwork network, CancellationToken token);
 }
 
 /// <summary>
@@ -110,9 +110,9 @@ public sealed class CrowdSecAlertClient : ICrowdSecAlertClient
         }, token).ConfigureAwait(false);
     }
 
-    public async ValueTask DeleteDecisionsAsync(string origin, IPAddress ip, CancellationToken token)
+    public async ValueTask DeleteDecisionsAsync(string origin, IPNetwork network, CancellationToken token)
     {
-        var query = BuildDeleteQuery(origin, ip);
+        var query = BuildDeleteQuery(origin, network);
         await SendWithRetryAsync(() =>
         {
             var message = new HttpRequestMessage(HttpMethod.Delete, query);
@@ -125,8 +125,10 @@ public sealed class CrowdSecAlertClient : ICrowdSecAlertClient
     /// Builds the decisions-delete query string. <paramref name="origin"/> is operator-controlled config
     /// (crowdsec.json), so it must be escaped like any other untrusted value going into a URL.
     /// </summary>
-    internal static string BuildDeleteQuery(string origin, IPAddress ip) =>
-        $"/v1/decisions?origin={Uri.EscapeDataString(origin)}&ip={Uri.EscapeDataString(ip.ToString())}";
+    internal static string BuildDeleteQuery(string origin, IPNetwork network) =>
+        CrowdSecReporter.IsHost(network)
+            ? $"/v1/decisions?origin={Uri.EscapeDataString(origin)}&ip={Uri.EscapeDataString(network.BaseAddress.ToString())}"
+            : $"/v1/decisions?origin={Uri.EscapeDataString(origin)}&range={Uri.EscapeDataString(network.ToString())}";
 
     private async ValueTask SendWithRetryAsync(Func<HttpRequestMessage> build, CancellationToken token)
     {
