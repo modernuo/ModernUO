@@ -98,7 +98,11 @@ namespace Server.Commands
             return chain == null ? null : GetPropertyInfo(ref obj, chain, out failReason);
         }
 
-        public static PropertyInfo GetPropertyInfo(ref object obj, PropertyInfo[] chain, out string failReason)
+        public static PropertyInfo GetPropertyInfo(ref object obj, PropertyInfo[] chain, out string failReason) =>
+            WalkChain(null, ref obj, chain, out failReason);
+
+        // When writer is set, the walk refuses to pass through anything a higher privileged mobile owns.
+        private static PropertyInfo WalkChain(Mobile writer, ref object obj, PropertyInfo[] chain, out string failReason)
         {
             if (chain == null || chain.Length == 0)
             {
@@ -111,6 +115,12 @@ namespace Server.Commands
                 if (chain[i] == null)
                 {
                     continue;
+                }
+
+                if (writer != null && IsHigherPrivileged(writer, obj))
+                {
+                    failReason = HigherPrivilegedMessage;
+                    return null;
                 }
 
                 obj = chain[i].GetValue(obj, null);
@@ -292,9 +302,35 @@ namespace Server.Commands
         {
             var logObject = o;
 
-            var p = GetPropertyInfo(from, ref o, name, PropertyAccess.Write, out var failReason);
+            var chain = GetPropertyInfoChain(from, o.GetType(), name, PropertyAccess.Write, out var failReason);
+
+            if (chain == null)
+            {
+                return failReason;
+            }
+
+            var p = WalkChain(from, ref o, chain, out failReason);
 
             return p == null ? failReason : InternalSetValue(from, logObject, o, p, name, value, true);
+        }
+
+        private const string HigherPrivilegedMessage = "You cannot modify a higher privileged mobile.";
+
+        /// <summary>
+        /// True when <paramref name="obj"/> is, or is an item held by, a mobile whose own or account
+        /// AccessLevel exceeds <paramref name="from"/>'s.
+        /// </summary>
+        internal static bool IsHigherPrivileged(Mobile from, object obj)
+        {
+            var mob = obj switch
+            {
+                Mobile m => m,
+                Item item => item.RootParent as Mobile,
+                _ => null
+            };
+
+            return mob != null &&
+                   (mob.AccessLevel > from.AccessLevel || mob.Account?.AccessLevel > from.AccessLevel);
         }
 
         public static string SetDirect(
@@ -304,12 +340,9 @@ namespace Server.Commands
         {
             try
             {
-                // Don't allow staff to be modified if they are under StaffAccess command
-                if (obj is Mobile mob &&
-                    (mob.AccessLevel > from.AccessLevel ||
-                     mob.Account?.AccessLevel > from.AccessLevel))
+                if (IsHigherPrivileged(from, obj))
                 {
-                    return "You cannot modify a higher privileged mobile.";
+                    return HigherPrivilegedMessage;
                 }
 
                 if (toSet is AccessLevel newLevel)
