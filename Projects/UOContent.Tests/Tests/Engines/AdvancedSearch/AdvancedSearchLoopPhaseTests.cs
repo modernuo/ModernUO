@@ -16,6 +16,13 @@ public class AdvancedSearchLoopPhaseTests
 
     private static AdvancedSearchConditions.Cache NewCache() => new(AccessLevel.GameMaster);
 
+    private sealed class NotWorkerSafeItem : Item
+    {
+        public NotWorkerSafeItem() : base(0x1) { }
+        public NotWorkerSafeItem(Serial s) : base(s) { }
+        public override string DefaultName => new string('n', 1);
+    }
+
     private static AdvancedSearchResult ResultFor(Item item) =>
         new(item.Name ?? item.ItemData.Name, item.GetType(), item.Location, item.Map, item.RootParent)
         {
@@ -76,6 +83,27 @@ public class AdvancedSearchLoopPhaseTests
                 AdvancedSearchMatcher.Evaluate(item, filter, Origin, NewCache(), false, out var workerResult)
             );
             Assert.Null(workerResult);
+        }
+        finally
+        {
+            item.Delete();
+        }
+    }
+
+    [Fact]
+    public void Matcher_Worker_CompilesPredicateBeforeDeferringUnsafeType()
+    {
+        var item = new NotWorkerSafeItem();
+        var cache = NewCache();
+        var filter = new AdvancedSearchFilter { FilterPropertyTest = true, PropertyTest = "Hue=5" };
+
+        try
+        {
+            Assert.False(AdvancedSearchWorkerReads.IsWorkerSafe(typeof(NotWorkerSafeItem)));
+            Assert.Equal(MatchOutcome.Defer, AdvancedSearchMatcher.Evaluate(item, filter, Origin, cache, false, out _));
+
+            // The loop's drain then finds the predicate cached instead of compiling it on the loop.
+            Assert.True(cache.ByRuntimeType.ContainsKey(typeof(NotWorkerSafeItem)));
         }
         finally
         {

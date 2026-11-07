@@ -67,6 +67,7 @@ internal static class AdvancedSearchMatcher
         // The map, location, name and internal-validity reads below are the fixed reads vetted per type.
         if (!onLoop && !AdvancedSearchWorkerReads.IsWorkerSafe(entity.GetType()))
         {
+            WarmPredicate(entity.GetType(), filter, predicates);
             return MatchOutcome.Defer;
         }
 
@@ -164,6 +165,25 @@ internal static class AdvancedSearchMatcher
             };
 
         return MatchOutcome.Match;
+    }
+
+    // Compiling a predicate is reflection and Expression.Compile, with no game state, so it is done here on the
+    // worker rather than in the loop's drain. A failure only means the loop compiles it instead.
+    private static void WarmPredicate(Type runtimeType, AdvancedSearchFilter filter, AdvancedSearchConditions.Cache predicates)
+    {
+        if (!filter.FilterPropertyTest || string.IsNullOrWhiteSpace(filter.PropertyTest) || predicates == null)
+        {
+            return;
+        }
+
+        try
+        {
+            AdvancedSearchConditions.GetPredicate(predicates, runtimeType, filter.PropertyTest);
+        }
+        catch (Exception ex)
+        {
+            _logger.Debug(ex, "AdvancedSearch: precompiling the predicate for {Type} failed", runtimeType);
+        }
     }
 
     /// <summary>
