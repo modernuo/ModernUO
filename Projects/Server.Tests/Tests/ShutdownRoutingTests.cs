@@ -13,17 +13,11 @@ public class ShutdownRoutingTests
         Assert.Equal(expected, ShutdownRouting.ShouldInterceptTerminate((LoopLifecycle)lifecycle));
 
     [Theory]
-    [InlineData(true, (int)LoopLifecycle.NotStarted, (int)ProcessExitRoute.RunHere)]
-    [InlineData(true, (int)LoopLifecycle.Running, (int)ProcessExitRoute.RunHere)]
-    [InlineData(true, (int)LoopLifecycle.ShuttingDown, (int)ProcessExitRoute.RunHere)]
-    [InlineData(false, (int)LoopLifecycle.NotStarted, (int)ProcessExitRoute.RunHere)]
-    [InlineData(false, (int)LoopLifecycle.Running, (int)ProcessExitRoute.WaitForLoop)]
-    [InlineData(false, (int)LoopLifecycle.ShuttingDown, (int)ProcessExitRoute.WaitForLoop)]
-    public void ProcessExitWaitsForTheLoopOnlyFromAnotherThread(bool onLoopThread, int lifecycle, int expected) =>
-        Assert.Equal(
-            (ProcessExitRoute)expected,
-            ShutdownRouting.RouteProcessExit(onLoopThread, (LoopLifecycle)lifecycle)
-        );
+    [InlineData((int)LoopLifecycle.NotStarted, (int)ProcessExitRoute.RunHere)]
+    [InlineData((int)LoopLifecycle.Running, (int)ProcessExitRoute.WaitForLoop)]
+    [InlineData((int)LoopLifecycle.ShuttingDown, (int)ProcessExitRoute.WaitForLoop)]
+    public void ProcessExitWaitsForAStartedLoop(int lifecycle, int expected) =>
+        Assert.Equal((ProcessExitRoute)expected, ShutdownRouting.RouteProcessExit((LoopLifecycle)lifecycle));
 
     [Theory]
     [InlineData(true, (int)LoopLifecycle.NotStarted, (int)CrashRoute.RunHere)]

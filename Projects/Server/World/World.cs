@@ -133,6 +133,9 @@ public static class World
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void WaitForWriteCompletion() => _diskWriteHandle.WaitOne();
 
+    /// <summary>Waits for an in-flight disk write. Returns false if it did not finish in time.</summary>
+    public static bool WaitForWriteCompletion(TimeSpan timeout) => _diskWriteHandle.WaitOne(timeout);
+
     public static void Broadcast(int hue, bool ascii, string text)
     {
         var length = OutgoingMessagePackets.GetMaxMessageLength(text.Length);
