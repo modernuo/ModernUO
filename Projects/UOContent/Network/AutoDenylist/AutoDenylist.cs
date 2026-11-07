@@ -96,7 +96,7 @@ public static class AutoDenylist
 
         Drain(nowTicks);
 
-        var key = address.ToUInt128();
+        var key = address.ToSubscriberKey();
 
         // Deliberately not refreshed: the first detection sets the expiry and later ones leave it alone.
         // That keeps insertion order equal to expiry order, which is why the drain can stop at the first
@@ -143,7 +143,7 @@ public static class AutoDenylist
         }
 
         Drain(nowTicks);
-        return _held.Contains(address.ToUInt128());
+        return _held.Contains(address.ToSubscriberKey());
     }
 
     /// <summary>Releases an address early, e.g. when an operator retracts a ban.</summary>
@@ -154,7 +154,7 @@ public static class AutoDenylist
             return;
         }
 
-        var key = address.ToUInt128();
+        var key = address.ToSubscriberKey();
         if (_held.Remove(key))
         {
             // The ring record has to go too. Nothing records that this key was released, so if it were
