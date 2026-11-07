@@ -5,6 +5,7 @@ using Xunit;
 
 namespace Server.Tests;
 
+[Collection("Sequential Server Tests")]
 public class ObjectPropertyListHashTests
 {
     private static int BuildHash(params (int cliloc, string arg)[] properties)

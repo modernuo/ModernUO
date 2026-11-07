@@ -52,6 +52,8 @@ public sealed class EventLoopContext : SynchronizationContext
     /// </remarks>
     public bool IsEmpty => _queue.IsEmpty && _priorityQueue.IsEmpty;
 
+    internal bool IsLoopThread => Thread.CurrentThread == _mainThread;
+
     public void Post(Action d, Priority priority = Priority.Normal)
     {
         (priority == Priority.High ? _priorityQueue : _queue).Enqueue(d);
