@@ -55,6 +55,10 @@ namespace Server.Commands
 
         public static PropertyInfo GetPropertyInfoByName(
             Mobile from, PropertyInfo[] props, string propertyName, PropertyAccess access, out string failReason
+        ) => GetPropertyInfoByName(from.AccessLevel, props, propertyName, access, out failReason);
+
+        public static PropertyInfo GetPropertyInfoByName(
+            AccessLevel level, PropertyInfo[] props, string propertyName, PropertyAccess access, out string failReason
         )
         {
             for (var i = 0; i < props.Length; i++)
@@ -66,44 +70,8 @@ namespace Server.Commands
                     continue;
                 }
 
-                var attr = GetCPA(p);
-
-                if (attr == null)
-                {
-                    failReason = $"Property '{propertyName}' not found.";
-                    return null;
-                }
-
-                if ((access & PropertyAccess.Read) != 0 && from.AccessLevel < attr.ReadLevel)
-                {
-                    failReason =
-                        $"You must be at least {Mobile.GetAccessLevelName(attr.ReadLevel)} to get the property '{propertyName}'.";
-
-                    return null;
-                }
-
-                if ((access & PropertyAccess.Write) != 0 && from.AccessLevel < attr.WriteLevel)
-                {
-                    failReason =
-                        $"You must be at least {Mobile.GetAccessLevelName(attr.WriteLevel)} to set the property '{propertyName}'.";
-
-                    return null;
-                }
-
-                if ((access & PropertyAccess.Read) != 0 && !p.CanRead)
-                {
-                    failReason = $"Property '{propertyName}' is write only.";
-                    return null;
-                }
-
-                if ((access & PropertyAccess.Write) != 0 && (!p.CanWrite && !attr.CanModify || attr.ReadOnly))
-                {
-                    failReason = $"Property '{propertyName}' is read only.";
-                    return null;
-                }
-
-                failReason = null;
-                return p;
+                failReason = CommandPropertyGuard.Check(p, propertyName, level, access);
+                return failReason == null ? p : null;
             }
 
             failReason = null;
@@ -113,38 +81,17 @@ namespace Server.Commands
         public static PropertyInfo[] GetPropertyInfoChain(
             Mobile from, Type type, string propertyString,
             PropertyAccess access, out string failReason
-        )
-        {
-            failReason = null;
-            var split = propertyString.Split('.');
+        ) => GetPropertyInfoChain(from.AccessLevel, type, propertyString, access, out failReason);
 
-            if (split.Length == 0)
-            {
-                return null;
-            }
+        public static PropertyInfo[] GetPropertyInfoChain(
+            AccessLevel level, Type type, string propertyString,
+            PropertyAccess access, out string failReason
+        ) => CommandPropertyGuard.ResolveChain(type, propertyString, level, access, true, out failReason);
 
-            var info = new PropertyInfo[split.Length];
-
-            for (var i = 0; i < info.Length; ++i)
-            {
-                var propertyName = split[i];
-                var props = type.GetProperties(BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public);
-
-                var p = GetPropertyInfoByName(from, props, propertyName, access, out failReason);
-
-                if (p == null)
-                {
-                    failReason ??= $"Property '{propertyName}' not found.";
-                    return null;
-                }
-
-                info[i] = p;
-                type = p.PropertyType;
-            }
-
-            return info;
-        }
-
+        /// <summary>
+        /// Resolves <paramref name="propertyName"/> on <paramref name="obj"/> for reading. Writes go through
+        /// <see cref="SetValue"/> or <see cref="SetDirect"/>, which also check who owns the objects reached.
+        /// </summary>
         public static PropertyInfo GetPropertyInfo(
             Mobile from, ref object obj, string propertyName, PropertyAccess access,
             out string failReason
@@ -155,7 +102,11 @@ namespace Server.Commands
             return chain == null ? null : GetPropertyInfo(ref obj, chain, out failReason);
         }
 
-        public static PropertyInfo GetPropertyInfo(ref object obj, PropertyInfo[] chain, out string failReason)
+        public static PropertyInfo GetPropertyInfo(ref object obj, PropertyInfo[] chain, out string failReason) =>
+            WalkChain(null, ref obj, chain, out failReason);
+
+        // When writer is set, the walk refuses to pass through anything a higher privileged mobile owns.
+        private static PropertyInfo WalkChain(Mobile writer, ref object obj, PropertyInfo[] chain, out string failReason)
         {
             if (chain == null || chain.Length == 0)
             {
@@ -168,6 +119,12 @@ namespace Server.Commands
                 if (chain[i] == null)
                 {
                     continue;
+                }
+
+                if (writer != null && IsHigherPrivileged(writer, obj))
+                {
+                    failReason = HigherPrivilegedMessage;
+                    return null;
                 }
 
                 obj = chain[i].GetValue(obj, null);
@@ -201,16 +158,22 @@ namespace Server.Commands
 
         public static string IncreaseValue(Mobile from, object o, string[] args)
         {
-            var realObjs = new object[args.Length / 2];
-            var realProps = new PropertyInfo[args.Length / 2];
-            var realValues = new int[args.Length / 2];
+            var count = args.Length / 2;
+            var realObjs = new object[count];
+            var realProps = new PropertyInfo[count];
+            var realNames = new string[count];
+            var realOffsets = new long[count];
+            var realValues = new object[count];
+            var unique = 0;
 
             var positive = false;
             var negative = false;
 
-            for (var i = 0; i < realProps.Length; ++i)
+            // Every increment is resolved, converted and authorized before any is applied, so a refusal applies none.
+            for (var i = 0; i < count; ++i)
             {
                 var name = args[i * 2];
+                int offset;
 
                 try
                 {
@@ -218,11 +181,11 @@ namespace Server.Commands
 
                     if (valueString.StartsWithOrdinal("0x"))
                     {
-                        realValues[i] = Convert.ToInt32(valueString[2..], 16);
+                        offset = Convert.ToInt32(valueString[2..], 16);
                     }
                     else
                     {
-                        realValues[i] = Convert.ToInt32(valueString);
+                        offset = Convert.ToInt32(valueString);
                     }
                 }
                 catch
@@ -230,11 +193,11 @@ namespace Server.Commands
                     return "Offset value could not be parsed.";
                 }
 
-                if (realValues[i] > 0)
+                if (offset > 0)
                 {
                     positive = true;
                 }
-                else if (realValues[i] < 0)
+                else if (offset < 0)
                 {
                     negative = true;
                 }
@@ -243,43 +206,83 @@ namespace Server.Commands
                     return "Zero is not a valid value to offset.";
                 }
 
-                realObjs[i] = o;
-                realProps[i] = GetPropertyInfo(from, ref realObjs[i], name, PropertyAccess.ReadWrite, out var failReason);
+                var obj = o;
+                var chain = GetPropertyInfoChain(from, obj.GetType(), name, PropertyAccess.ReadWrite, out var failReason);
+                var prop = chain == null ? null : WalkChain(from, ref obj, chain, out failReason);
 
                 if (failReason != null)
                 {
                     return failReason;
                 }
 
-                if (realProps[i] == null)
+                if (prop == null)
                 {
                     return "Property not found.";
                 }
+
+                // Repeated offsets to the same property add up, as sequential increments would.
+                var index = 0;
+
+                while (index < unique && (!ReferenceEquals(realObjs[index], obj) || !IsSameMember(realProps[index], prop)))
+                {
+                    index++;
+                }
+
+                if (index == unique)
+                {
+                    realObjs[index] = obj;
+                    realProps[index] = prop;
+                    realNames[index] = name;
+                    unique++;
+                }
+
+                realOffsets[index] += offset;
             }
 
-            for (var i = 0; i < realProps.Length; ++i)
+            for (var i = 0; i < unique; ++i)
             {
-                var obj = realProps[i].GetValue(realObjs[i], null);
+                var obj = realObjs[i];
+                var prop = realProps[i];
+                var current = prop.GetValue(obj, null);
 
-                if (obj is not IConvertible)
+                if (current is not IConvertible)
                 {
                     return "Property is not IConvertable.";
                 }
 
+                object toSet;
+
                 try
                 {
-                    var v = (long)Convert.ChangeType(obj, TypeCode.Int64);
-                    v += realValues[i];
-
-                    realProps[i].SetValue(realObjs[i], Convert.ChangeType(v, realProps[i].PropertyType), null);
+                    var v = (long)Convert.ChangeType(current, TypeCode.Int64) + realOffsets[i];
+                    toSet = Convert.ChangeType(v, prop.PropertyType);
                 }
                 catch
                 {
                     return "Value could not be converted";
                 }
+
+                var refusal = CheckWrite(from, obj, toSet);
+
+                if (refusal != null)
+                {
+                    return refusal;
+                }
+
+                realValues[i] = toSet;
             }
 
-            if (realProps.Length == 1)
+            for (var i = 0; i < unique; ++i)
+            {
+                var result = SetDirect(from, o, realObjs[i], realProps[i], realNames[i], realValues[i], true);
+
+                if (result != SetSuccess)
+                {
+                    return result;
+                }
+            }
+
+            if (count == 1)
             {
                 return positive ? "The property has been increased." : "The property has been decreased.";
             }
@@ -290,6 +293,16 @@ namespace Server.Commands
             }
 
             return positive ? "The properties have been increased." : "The properties have been decreased.";
+        }
+
+        // Chains through different static types reflect the same virtual property as distinct PropertyInfo instances.
+        private static bool IsSameMember(PropertyInfo a, PropertyInfo b)
+        {
+            var getA = a.GetMethod?.GetBaseDefinition();
+            var getB = b.GetMethod?.GetBaseDefinition();
+
+            return getA != null && getB != null &&
+                   getA.MetadataToken == getB.MetadataToken && getA.Module == getB.Module;
         }
 
         private static string InternalGetValue(object o, PropertyInfo p, PropertyInfo[] chain = null)
@@ -349,9 +362,61 @@ namespace Server.Commands
         {
             var logObject = o;
 
-            var p = GetPropertyInfo(from, ref o, name, PropertyAccess.Write, out var failReason);
+            var chain = GetPropertyInfoChain(from, o.GetType(), name, PropertyAccess.Write, out var failReason);
+
+            if (chain == null)
+            {
+                return failReason;
+            }
+
+            var p = WalkChain(from, ref o, chain, out failReason);
 
             return p == null ? failReason : InternalSetValue(from, logObject, o, p, name, value, true);
+        }
+
+        private const string HigherPrivilegedMessage = "You cannot modify a higher privileged mobile.";
+
+        /// <summary>
+        /// True when <paramref name="obj"/> is, or is an item held by, a mobile whose own or account
+        /// AccessLevel exceeds <paramref name="from"/>'s.
+        /// </summary>
+        internal static bool IsHigherPrivileged(Mobile from, object obj)
+        {
+            var mob = obj switch
+            {
+                Mobile m => m,
+                Item item => item.RootParent as Mobile,
+                _ => null
+            };
+
+            return mob != null &&
+                   (mob.AccessLevel > from.AccessLevel || mob.Account?.AccessLevel > from.AccessLevel);
+        }
+
+        // Returns null when from may write toSet onto obj; SetDirect applies the same check before every write.
+        private static string CheckWrite(Mobile from, object obj, object toSet)
+        {
+            if (IsHigherPrivileged(from, obj))
+            {
+                return HigherPrivilegedMessage;
+            }
+
+            if (toSet is AccessLevel newLevel)
+            {
+                var reqLevel = newLevel switch
+                {
+                    AccessLevel.Administrator => AccessLevel.Developer,
+                    >= AccessLevel.Developer  => AccessLevel.Owner,
+                    _                         => AccessLevel.Administrator
+                };
+
+                if (from.AccessLevel < reqLevel)
+                {
+                    return "You do not have access to that level.";
+                }
+            }
+
+            return null;
         }
 
         public static string SetDirect(
@@ -361,27 +426,11 @@ namespace Server.Commands
         {
             try
             {
-                // Don't allow staff to be modified if they are under StaffAccess command
-                if (obj is Mobile mob &&
-                    (mob.AccessLevel > from.AccessLevel ||
-                     mob.Account?.AccessLevel > from.AccessLevel))
-                {
-                    return "You cannot modify a higher privileged mobile.";
-                }
+                var refusal = CheckWrite(from, obj, toSet);
 
-                if (toSet is AccessLevel newLevel)
+                if (refusal != null)
                 {
-                    var reqLevel = newLevel switch
-                    {
-                        AccessLevel.Administrator => AccessLevel.Developer,
-                        >= AccessLevel.Developer  => AccessLevel.Owner,
-                        _                         => AccessLevel.Administrator
-                    };
-
-                    if (from.AccessLevel < reqLevel)
-                    {
-                        return "You do not have access to that level.";
-                    }
+                    return refusal;
                 }
 
                 if (shouldLog)
@@ -395,13 +444,34 @@ namespace Server.Commands
                 }
 
                 prop.SetValue(obj, toSet, null);
-                return "Property has been set.";
+                return SetSuccess;
             }
             catch
             {
                 return "An exception was caught, the property may not be set.";
             }
         }
+
+        // Single entry point for props-gump writes so they share SetDirect's guards and logging.
+        internal static bool ApplyFromGump(
+            Mobile from, object obj, PropertyInfo prop, object toSet, PropertiesGump gump
+        )
+        {
+            var result = gump.IsPathHigherPrivileged(from)
+                ? HigherPrivilegedMessage
+                : SetDirect(from, obj, obj, prop, prop.Name, toSet, true);
+            from.SendMessage(result);
+
+            if (result != SetSuccess)
+            {
+                return false;
+            }
+
+            gump.OnValueChanged(obj, prop);
+            return true;
+        }
+
+        private const string SetSuccess = "Property has been set.";
 
         public static string InternalSetValue(
             Mobile from, object logobj, object o, PropertyInfo p, string pname,
@@ -475,90 +545,43 @@ namespace Server
             }
         }
 
-        public bool CheckAccess(Mobile from)
-        {
-            if (!IsBound)
-            {
-                throw new NotYetBoundException(this);
-            }
-
-            for (var i = 0; i < m_Chain.Length; ++i)
-            {
-                var prop = m_Chain[i];
-
-                var isFinal = i == m_Chain.Length - 1;
-
-                var access = Access;
-
-                if (!isFinal)
-                {
-                    access |= PropertyAccess.Read;
-                }
-
-                var security = GetCPA(prop);
-
-                if (security == null)
-                {
-                    throw new InternalAccessException(this);
-                }
-
-                if ((access & PropertyAccess.Read) != 0 && from.AccessLevel < security.ReadLevel)
-                {
-                    throw new ReadAccessException(this, from.AccessLevel, security.ReadLevel);
-                }
-
-                if ((access & PropertyAccess.Write) != 0 && (from.AccessLevel < security.WriteLevel || security.ReadOnly))
-                {
-                    throw new WriteAccessException(this, from.AccessLevel, security.ReadLevel);
-                }
-            }
-
-            return true;
-        }
-
-        public void BindTo(Type objectType, PropertyAccess desiredAccess)
+        public void BindTo(Type objectType, PropertyAccess desiredAccess, AccessLevel accessLevel)
         {
             if (IsBound)
             {
                 throw new AlreadyBoundException(this);
             }
 
-            var split = Binding.Split('.');
+            var chain = CommandPropertyGuard.ResolveChain(
+                objectType, Binding, accessLevel, desiredAccess, false, out var failure, out var failed, out var name
+            );
 
-            var chain = new PropertyInfo[split.Length];
-
-            for (var i = 0; i < split.Length; ++i)
+            switch (failure)
             {
-                var isFinal = i == chain.Length - 1;
-
-                chain[i] = objectType.GetProperty(
-                    split[i],
-                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase
-                );
-
-                if (chain[i] == null)
-                {
-                    throw new UnknownPropertyException(this, split[i]);
-                }
-
-                objectType = chain[i].PropertyType;
-
-                var access = desiredAccess;
-
-                if (!isFinal)
-                {
-                    access |= PropertyAccess.Read;
-                }
-
-                if ((access & PropertyAccess.Read) != 0 && !chain[i].CanRead)
-                {
-                    throw new WriteOnlyException(this);
-                }
-
-                if ((access & PropertyAccess.Write) != 0 && !chain[i].CanWrite)
-                {
-                    throw new ReadOnlyException(this);
-                }
+                case GuardFailure.NotFound:
+                    {
+                        throw new UnknownPropertyException(this, name);
+                    }
+                case GuardFailure.NoAttribute:
+                    {
+                        throw new InternalAccessException(this);
+                    }
+                case GuardFailure.ReadLevel:
+                    {
+                        throw new ReadAccessException(this, accessLevel, GetCPA(failed).ReadLevel);
+                    }
+                case GuardFailure.WriteLevel:
+                    {
+                        throw new WriteAccessException(this, accessLevel, GetCPA(failed).WriteLevel);
+                    }
+                case GuardFailure.WriteOnly:
+                    {
+                        throw new WriteOnlyException(this);
+                    }
+                case GuardFailure.ReadOnly:
+                    {
+                        throw new ReadOnlyException(this);
+                    }
             }
 
             Access = desiredAccess;
@@ -582,11 +605,11 @@ namespace Server
             return string.Join(".", toJoin);
         }
 
-        public static Property Parse(Type type, string binding, PropertyAccess access)
+        public static Property Parse(Type type, string binding, PropertyAccess access, AccessLevel accessLevel)
         {
             var prop = new Property(binding);
 
-            prop.BindTo(type, access);
+            prop.BindTo(type, access, accessLevel);
 
             return prop;
         }

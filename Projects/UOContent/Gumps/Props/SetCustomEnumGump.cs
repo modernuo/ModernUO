@@ -33,42 +33,21 @@ namespace Server.Gumps
                 {
                     var info = m_Property.PropertyType.GetMethod("Parse", [typeof(string)]);
 
-                    string result;
-
                     if (info != null)
                     {
-                        result = Properties.SetDirect(
-                            m_Mobile,
-                            m_Object,
-                            m_Object,
-                            m_Property,
-                            m_Property.Name,
-                            info.Invoke(null, [m_Names[index]]),
-                            true
+                        Properties.ApplyFromGump(
+                            m_Mobile, m_Object, m_Property, info.Invoke(null, [m_Names[index]]), m_PropertiesGump
                         );
                     }
                     else if (m_Property.PropertyType == typeof(Enum) || m_Property.PropertyType.IsSubclassOf(typeof(Enum)))
                     {
-                        result = Properties.SetDirect(
+                        Properties.ApplyFromGump(
                             m_Mobile,
                             m_Object,
-                            m_Object,
                             m_Property,
-                            m_Property.Name,
                             Enum.Parse(m_Property.PropertyType, m_Names[index], false),
-                            true
+                            m_PropertiesGump
                         );
-                    }
-                    else
-                    {
-                        result = "";
-                    }
-
-                    m_Mobile.SendMessage(result);
-
-                    if (result == "Property has been set.")
-                    {
-                        m_PropertiesGump.OnValueChanged(m_Object, m_Property);
                     }
                 }
                 catch

@@ -7,6 +7,7 @@ using Xunit;
 
 namespace Server.Tests;
 
+[Collection("Sequential Server Tests")]
 public class ObjectPropertyListSpanAddTests
 {
     // Decodes a terminated OPL buffer into (cliloc, argument) entries.

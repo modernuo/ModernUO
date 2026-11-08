@@ -126,7 +126,7 @@ public static class LoginAllowlist
             return;
         }
 
-        var key = address.ToUInt128();
+        var key = address.ToSubscriberKey();
         _allowed[key] = nowUnix;
 
         // A fresh login clears the tally: someone just proved they hold an account.
@@ -148,7 +148,7 @@ public static class LoginAllowlist
             return false;
         }
 
-        return _allowed.TryGetValue(address.ToUInt128(), out var stamp) && nowUnix - stamp <= _ttlSeconds;
+        return _allowed.TryGetValue(address.ToSubscriberKey(), out var stamp) && nowUnix - stamp <= _ttlSeconds;
     }
 
     public static bool IsExemptFromEscalation(IPAddress address, string reason) =>
@@ -171,7 +171,7 @@ public static class LoginAllowlist
             return true; // revocation disabled: an entry is unconditional
         }
 
-        var key = address.ToUInt128();
+        var key = address.ToSubscriberKey();
         _strikes.TryGetValue(key, out var strike);
 
         if (strike.WindowStart == 0 || nowUnix - strike.WindowStart > _strikeWindowSeconds)
@@ -424,7 +424,8 @@ public static class LoginAllowlist
                     continue;
                 }
 
-                _allowed[address.ToUInt128()] = stamp;
+                var key = address.ToSubscriberKey();
+                _allowed[key] = _allowed.TryGetValue(key, out var existing) ? Math.Max(existing, stamp) : stamp;
                 loaded++;
             }
         }

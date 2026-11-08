@@ -143,6 +143,30 @@ public class AutoDenylistTests
     }
 
     [Fact]
+    public void AutoDenylist_HoldsWholeSlash64()
+    {
+        Reset();
+
+        Assert.True(AutoDenylist.Hold(IPAddress.Parse("2001:db8:1:2::1"), BanReasons.InvalidSeed, Now));
+
+        Assert.True(AutoDenylist.IsDenied(IPAddress.Parse("2001:db8:1:2::abcd"), Now));
+        Assert.False(AutoDenylist.IsDenied(IPAddress.Parse("2001:db8:1:3::1"), Now));
+        Assert.Equal(1, AutoDenylist.Count);
+    }
+
+    [Fact]
+    public void AutoDenylist_ReleaseClearsSlash64()
+    {
+        Reset();
+
+        AutoDenylist.Hold(IPAddress.Parse("2001:db8:1:2::1"), BanReasons.InvalidSeed, Now);
+        AutoDenylist.Release(IPAddress.Parse("2001:db8:1:2::99"));
+
+        Assert.False(AutoDenylist.IsDenied(IPAddress.Parse("2001:db8:1:2::1"), Now));
+        Assert.Equal(0, AutoDenylist.RingCount);
+    }
+
+    [Fact]
     public void Release_drops_the_hold_immediately()
     {
         Reset();

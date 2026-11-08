@@ -108,8 +108,9 @@ and it does not stop the sweep. The same applies under `not`: an unreadable bind
 For `order by` and `distinct`, which have no "no match" to give, a null link reads as the property
 type's default (`0`, `null`, …).
 
-Chains are **read-only**. `[set Message.Number 5` fails when the intermediate's members are
-get-only, as `TextDefinition`'s are.
+Intermediate links in a chain need only Read access; the final link needs the access the command
+asks for. `[set Message.Number 5` therefore fails because `Number` is the final link and
+`TextDefinition`'s members are get-only.
 
 ## Values
 

@@ -79,4 +79,66 @@ public class FirewallTests : IDisposable
         Assert.IsType<CidrFirewallEntry>(Server.Network.Firewall.ToFirewallEntry("10.0.0.0-10.0.0.255"));
         Assert.Null(Server.Network.Firewall.ToFirewallEntry("not-an-ip"));
     }
+
+    [Fact]
+    public void CreateSubscriberEntry_IPv6_CoversSlash64()
+    {
+        var entry = Server.Network.Firewall.CreateSubscriberEntry(Ip("2001:db8:1:2:aaaa:bbbb:cccc:dddd"));
+        Assert.True(entry.MinIpAddress <= Ip("2001:db8:1:2::").ToUInt128());
+        Assert.True(entry.MaxIpAddress >= Ip("2001:db8:1:2:ffff:ffff:ffff:ffff").ToUInt128());
+        Assert.True(entry.MinIpAddress > Ip("2001:db8:1:1:ffff:ffff:ffff:ffff").ToUInt128());
+        Assert.True(entry.MaxIpAddress < Ip("2001:db8:1:3::").ToUInt128());
+    }
+
+    [Fact]
+    public void CreateSubscriberEntry_IPv4_Single()
+    {
+        var entry = Server.Network.Firewall.CreateSubscriberEntry(Ip("1.2.3.4"));
+        Assert.IsType<SingleIpFirewallEntry>(entry);
+        Assert.Equal(entry.MinIpAddress, entry.MaxIpAddress);
+    }
+
+    [Fact]
+    public void CreateSubscriberEntry_MappedIPv4_Single()
+    {
+        var entry = Server.Network.Firewall.CreateSubscriberEntry(Ip("::ffff:1.2.3.4"));
+        Assert.IsType<SingleIpFirewallEntry>(entry);
+        Assert.Equal(Ip("1.2.3.4").ToUInt128(), entry.MinIpAddress);
+    }
+
+    [Fact]
+    public void ReportableNetwork_IPv4Single_True()
+    {
+        Assert.True(Server.Network.Firewall.TryGetReportableNetwork(new SingleIpFirewallEntry(Ip("1.2.3.4")), out var network));
+        Assert.Equal(32, network.PrefixLength);
+        Assert.Equal(Ip("1.2.3.4"), network.BaseAddress);
+    }
+
+    [Fact]
+    public void ReportableNetwork_IPv4Range_False()
+    {
+        Assert.False(Server.Network.Firewall.TryGetReportableNetwork(new CidrFirewallEntry("10.0.0.0/24"), out _));
+    }
+
+    [Fact]
+    public void ReportableNetwork_UsesEntryRange()
+    {
+        var entry = new CidrFirewallEntry("2001:db8:1:200::/56");
+        Assert.True(Server.Network.Firewall.TryGetReportableNetwork(entry, out var network));
+        Assert.Equal(56, network.PrefixLength);
+        Assert.Equal(Ip("2001:db8:1:200::"), network.BaseAddress);
+    }
+
+    [Fact]
+    public void ReportableNetwork_IPv6Slash32_False()
+    {
+        Assert.False(Server.Network.Firewall.TryGetReportableNetwork(new CidrFirewallEntry("2001:db8::/32"), out _));
+    }
+
+    [Fact]
+    public void ReportableNetwork_IPv6NonCidrRange_False()
+    {
+        var entry = new CidrFirewallEntry(Ip("2001:db8:1:2::1"), Ip("2001:db8:1:2::3"));
+        Assert.False(Server.Network.Firewall.TryGetReportableNetwork(entry, out _));
+    }
 }

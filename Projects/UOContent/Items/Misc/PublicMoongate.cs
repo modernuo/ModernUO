@@ -111,6 +111,7 @@ public partial class PublicMoongate : Item
         count += MoonGen(PMList.Ilshenar, MapSelectionFlags.Ilshenar);
         count += MoonGen(PMList.Malas, MapSelectionFlags.Malas);
         count += MoonGen(PMList.Tokuno, MapSelectionFlags.Tokuno);
+        count += MoonGen(PMList.TerMur, MapSelectionFlags.TerMur);
 
         World.Broadcast(0x35, true, $"{count} moongates generated.");
     }

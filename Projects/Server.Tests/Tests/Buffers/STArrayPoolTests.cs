@@ -68,4 +68,39 @@ public class STArrayPoolTests
             Assert.Equal(i != weakReferences2.Length - 2, weakReferences2[i].IsAlive);
         }
     }
+
+    // Element types used only here, so these pools are not shared with any other test.
+    private struct EmptyPoolProbe;
+    private struct PooledProbe;
+
+    [Fact]
+    public void PostTrim_NothingPooled_DoesNotPost()
+    {
+        var loop = new EventLoopContext();
+
+        STArrayPool<EmptyPoolProbe>.Shared.PostTrim(loop);
+
+        Assert.True(loop.IsEmpty);
+    }
+
+    [Fact]
+    public void PostTrim_PostsOnceUntilTheTrimRuns()
+    {
+        var pool = STArrayPool<PooledProbe>.Shared;
+        pool.Return(pool.Rent(16));
+
+        Assert.True(pool.PostTrim(null));
+
+        var loop = new EventLoopContext(maxPerFrame: 1);
+        pool.PostTrim(loop);
+        pool.PostTrim(loop);
+        Assert.False(loop.IsEmpty);
+
+        loop.ExecuteTasks();
+        Assert.True(loop.IsEmpty);
+
+        pool.PostTrim(loop);
+        Assert.False(loop.IsEmpty);
+        loop.ExecuteTasks();
+    }
 }

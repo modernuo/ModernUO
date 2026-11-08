@@ -318,6 +318,20 @@ public override void OnCast()
 
 ---
 
+## Property Access (`[CommandProperty]`)
+
+Staff-facing property access by name (`[props`, `[set`, `where`/`order by`/`distinct`) goes through one
+guard: `Projects/UOContent/Commands/CommandPropertyGuard.cs` (`Check`, `ResolveChain`).
+
+- The member must carry `[CommandProperty]`. Names match case-insensitively; the most-derived declaration wins.
+- Reading needs the attribute's `ReadLevel`; writing needs its `WriteLevel`. A getter-only property is read-only unless the attribute sets `canModify: true`, a setter-only property is write-only, and `readOnly: true` makes a property read-only even with a setter.
+- In a dotted chain (`Backpack.Weight`), every intermediate link needs Read; only the final link is checked for the requested access.
+- `Properties.GetPropertyInfoByName` / `GetPropertyInfoChain` and `Property.BindTo(Type, PropertyAccess, AccessLevel)` wrap the guard.
+- The props gump opens an editor only when `CommandPropertyGuard.Check(prop, level, PropertyAccess.ReadWrite)` passes; its writes go through `Properties.ApplyFromGump`, which calls `Properties.SetDirect`.
+- A write is refused ("You cannot modify a higher privileged mobile.") when the object written to, the mobile holding it (an item's `RootParent`), any object a `[set`/`[inc` chain walks through, or any object the props gump stepped through to reach a nested object is a mobile whose AccessLevel, or whose account's AccessLevel, is above the editor's (`Properties.IsHigherPrivileged`).
+
+New code that resolves a staff-facing property by name must use the guard, not reflection directly.
+
 ## Best Practices
 
 1. **Register commands in `Configure()`** -- it's called automatically during startup

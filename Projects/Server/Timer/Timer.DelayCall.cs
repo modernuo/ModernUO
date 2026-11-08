@@ -150,7 +150,7 @@ public partial class Timer
             {
 
 #if DEBUG_TIMERS
-                _stackTraces.Remove(GetHashCode());
+                _stackTraces.TryRemove(GetHashCode(), out _);
 #endif
 
                 if (_poolCount >= _poolCapacity)
@@ -192,13 +192,15 @@ public partial class Timer
         public override string ToString() => $"DelayCallTimer[{FormatDelegate(_continuation)}]";
 
 #if DEBUG_TIMERS
-        internal static Dictionary<int, string> _stackTraces = new();
+        // Concurrent because the finalizer thread reads it while the loop mutates it.
+        internal static System.Collections.Concurrent.ConcurrentDictionary<int, string> _stackTraces = new();
 
         ~DelayCallTimer()
         {
             if (!_allowFinalization)
             {
-                logger.Warning($"Pooled timer was not returned to the pool.{Environment.NewLine}{{StackTrace}}", _stackTraces[GetHashCode()]);
+                _stackTraces.TryGetValue(GetHashCode(), out var stackTrace);
+                logger.Warning($"Pooled timer was not returned to the pool.{Environment.NewLine}{{StackTrace}}", stackTrace);
             }
         }
 #endif

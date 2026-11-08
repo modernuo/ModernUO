@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -91,10 +92,12 @@ public static class PingServer
         {
             listener.Bind(ipep);
 
-            return new UdpClient
-            {
-                Client = listener
-            };
+            // A UdpClient fails every ReceiveAsync on a socket of another family than its own, so
+            // build it for this one and replace the socket its constructor opened.
+            var client = new UdpClient(ipep.AddressFamily);
+            client.Client.Dispose();
+            client.Client = listener;
+            return client;
         }
         catch (SocketException se)
         {
@@ -125,6 +128,7 @@ public static class PingServer
         }
 
         var cancellationToken = Core.ClosingTokenSource.Token;
+        var endPoint = listener.Client.LocalEndPoint;
 
         while (!cancellationToken.IsCancellationRequested)
         {
@@ -133,9 +137,25 @@ public static class PingServer
                 var result = await listener.ReceiveAsync(cancellationToken);
                 await listener.SendAsync(result.Buffer, result.RemoteEndPoint, cancellationToken);
             }
-            catch
+            catch (OperationCanceledException)
             {
-                // ignored
+                break;
+            }
+            catch (ObjectDisposedException)
+            {
+                // Closed by Shutdown
+                break;
+            }
+            catch (SocketException)
+            {
+                // A single datagram failed, e.g. an ICMP port unreachable surfacing as a reset
+            }
+            catch (Exception e)
+            {
+                // Anything else recurs on every call; thrown before the first await, retrying it
+                // would spin the startup thread forever.
+                logger.Error(e, "Ping listener {Address} stopped", endPoint);
+                break;
             }
         }
     }

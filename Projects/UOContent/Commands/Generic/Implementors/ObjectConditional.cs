@@ -162,8 +162,7 @@ namespace Server.Commands.Generic
 
                 var prop = new Property(binding);
 
-                prop.BindTo(objectType, PropertyAccess.Read);
-                prop.CheckAccess(from);
+                prop.BindTo(objectType, PropertyAccess.Read, from.AccessLevel);
 
                 var condition = oper switch
                 {

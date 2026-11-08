@@ -76,6 +76,8 @@ namespace Server.Gumps
                 $"You must be at least {Mobile.GetAccessLevelName(neededAccess)} to {accessType} this property."
             )
         {
+            PlayerAccess = playerAccess;
+            NeededAccess = neededAccess;
         }
 
         public AccessLevel PlayerAccess { get; set; }

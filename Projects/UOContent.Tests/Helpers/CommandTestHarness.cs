@@ -24,7 +24,7 @@ internal sealed class CommandTestHarness : IDisposable
     public static Property Bind(Type type, string binding)
     {
         var prop = new Property(binding);
-        prop.BindTo(type, PropertyAccess.Read);
+        prop.BindTo(type, PropertyAccess.Read, AccessLevel.Owner);
         return prop;
     }
 

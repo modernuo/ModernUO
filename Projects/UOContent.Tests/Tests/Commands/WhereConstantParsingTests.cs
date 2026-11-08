@@ -56,7 +56,7 @@ public class WhereConstantParsingTests : IDisposable
         ComparisonOperator op = ComparisonOperator.Equal)
     {
         var prop = new Property(binding);
-        prop.BindTo(typeof(Subject), PropertyAccess.Read);
+        prop.BindTo(typeof(Subject), PropertyAccess.Read, AccessLevel.Owner);
 
         var compiled = ConditionalCompiler.Compile(
             typeof(Subject),
