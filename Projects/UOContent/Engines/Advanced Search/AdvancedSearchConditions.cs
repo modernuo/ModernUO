@@ -3,7 +3,9 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
+using Server.Commands;
 using Server.Commands.Generic;
+using Server.Logging;
 
 namespace Server.Engines.AdvancedSearch;
 
@@ -15,83 +17,129 @@ namespace Server.Engines.AdvancedSearch;
 /// one comparison engine. A leaf that cannot be resolved or parsed is simply "no match".
 /// </summary>
 /// <remarks>
-/// Runs on the search workers, off the game loop: binding is reflection, compiling is
-/// <c>Expression.Compile</c>, and neither touches game state. The one exception is a value that
-/// names an entity by serial, which <see cref="Types.TryParse" /> resolves through the world --
-/// the same read the previous per-entity evaluator made, now made once per type instead.
+/// Binding and compiling touch no game state, so they run on the search workers. Names resolve
+/// through <see cref="CommandPropertyGuard" /> at the searcher's access level; entity values
+/// compare by serial without a world lookup. See <see cref="SearchPredicate" /> for the split.
 /// </remarks>
 public static class AdvancedSearchConditions
 {
-    // Runtime type -> its public readable instance properties, for the case-insensitive name scan.
-    private static readonly ConcurrentDictionary<Type, PropertyInfo[]> _properties = new();
+    private static readonly ILogger _logger = LogFactory.GetLogger(typeof(AdvancedSearchConditions));
 
-    private static readonly Func<object, bool> _never = static _ => false;
+    // The safety mask holds one bit per leaf; past this, every leaf runs on the loop.
+    private const int MaxMaskedLeaves = 64;
 
     /// <summary>
-    /// Per-search memo shared by every worker. Predicates are keyed twice: by the runtime type
-    /// seen, and by the type the predicate was actually compiled for -- the most derived type
-    /// that declares one of the properties -- so every subclass of Item that does not hide
-    /// <c>Hue</c> shares one compiled <c>Hue = 5</c>.
+    /// Per-search memo shared by every worker, keyed by runtime type and by (compiled type, safety
+    /// mask), so every Item subclass that does not hide <c>Hue</c> shares one compiled <c>Hue = 5</c>.
     /// </summary>
     public sealed class Cache
     {
-        internal readonly ConcurrentDictionary<Type, Func<object, bool>> ByRuntimeType = new();
-        internal readonly ConcurrentDictionary<Type, Func<object, bool>> ByCompiledType = new();
+        internal readonly ConcurrentDictionary<Type, SearchPredicate> ByRuntimeType = [];
+        internal readonly ConcurrentDictionary<(Type Type, ulong SafeMask), SearchPredicate> ByCompiledType = [];
+
+        public Cache(AccessLevel accessLevel) => AccessLevel = accessLevel;
+
+        public AccessLevel AccessLevel { get; }
     }
 
-    public static Func<object, bool> GetPredicate(Cache cache, Type runtimeType, string propertyTest) =>
+    public static SearchPredicate GetPredicate(Cache cache, Type runtimeType, string propertyTest) =>
         cache.ByRuntimeType.GetOrAdd(
             runtimeType,
             static (type, state) => Build(state.cache, type, state.propertyTest),
             (cache, propertyTest)
         );
 
-    /// <summary>Compiles without a cache. Test seam and one-off use.</summary>
-    public static Func<object, bool> Compile(Type runtimeType, string propertyTest) =>
-        Build(new Cache(), runtimeType, propertyTest);
-
-    private static Func<object, bool> Build(Cache cache, Type runtimeType, string propertyTest)
+    /// <summary>Compiles the full predicate without a shared cache.</summary>
+    public static Func<object, bool> Compile(
+        Type runtimeType, string propertyTest, AccessLevel accessLevel = AccessLevel.Owner
+    )
     {
-        var groups = Parse(runtimeType, propertyTest, out var compiledType);
+        var predicate = GetPredicate(new Cache(accessLevel), runtimeType, propertyTest);
+
+        return predicate.Loop ?? predicate.Worker;
+    }
+
+    private static SearchPredicate Build(Cache cache, Type runtimeType, string propertyTest)
+    {
+        var groups = Parse(cache.AccessLevel, runtimeType, propertyTest, out var compiledType, out var safe, out var mask);
 
         if (groups == null)
         {
-            return _never;
+            return SearchPredicate.Never;
         }
 
         return cache.ByCompiledType.GetOrAdd(
-            compiledType,
-            static (type, groups) =>
-            {
-                try
-                {
-                    return ConditionalCompiler.Build(type, groups).Compile();
-                }
-                catch (Exception)
-                {
-                    return _never;
-                }
-            },
-            groups
+            (compiledType, mask),
+            static (key, state) => CompileSplit(key.Type, state.groups, state.safe),
+            (groups, safe)
         );
     }
 
-    // OR of ANDs, which is what splitting on '|' and then on '@' yields. A group with a dead leaf
-    // is dropped; no live group left means nothing can match, reported as null.
-    private static ICondition[][] Parse(Type runtimeType, string propertyTest, out Type compiledType)
+    private static SearchPredicate CompileSplit(Type compiledType, ICondition[][] groups, bool[][] safe)
+    {
+        try
+        {
+            var allSafe = true;
+            var workerGroups = new ICondition[groups.Length][];
+
+            for (var g = 0; g < groups.Length; ++g)
+            {
+                // Index 0 is the TypeCondition, the worker predicate's null guard.
+                var kept = new List<ICondition>(groups[g].Length) { groups[g][0] };
+
+                for (var i = 1; i < groups[g].Length; ++i)
+                {
+                    if (safe[g][i])
+                    {
+                        kept.Add(groups[g][i]);
+                    }
+                    else
+                    {
+                        allSafe = false;
+                    }
+                }
+
+                workerGroups[g] = kept.ToArray();
+            }
+
+            if (allSafe)
+            {
+                return new SearchPredicate(ConditionalCompiler.Build(compiledType, groups).Compile(), null);
+            }
+
+            return new SearchPredicate(
+                ConditionalCompiler.Build(compiledType, workerGroups).Compile(),
+                ConditionalCompiler.Build(compiledType, groups).Compile()
+            );
+        }
+        catch (Exception)
+        {
+            return SearchPredicate.Never;
+        }
+    }
+
+    // OR of ANDs ('|' then '@'). A group with a dead leaf is dropped; null means no live group.
+    // `safe` parallels the groups (index 0 is the TypeCondition); `mask` has one bit per live leaf.
+    private static ICondition[][] Parse(
+        AccessLevel level, Type runtimeType, string propertyTest, out Type compiledType, out bool[][] safe, out ulong mask
+    )
     {
         Type mostDerived = null;
 
-        var groups = new List<ICondition[]>();
+        List<ICondition[]> groups = [];
+        List<bool[]> safeGroups = [];
+        var leafCount = 0;
+        mask = 0;
 
         foreach (var orPart in propertyTest.Split('|'))
         {
             var group = new List<ICondition> { TypeCondition.Default };
+            var groupSafe = new List<bool> { true };
             var alive = true;
 
             foreach (var andPart in orPart.Split('@'))
             {
-                var leaf = Leaf(runtimeType, andPart, out var declaringType);
+                var leaf = Leaf(level, runtimeType, andPart, out var declaringType, out var leafSafe);
 
                 if (leaf == null)
                 {
@@ -100,30 +148,80 @@ public static class AdvancedSearchConditions
                 }
 
                 group.Add(leaf);
+                groupSafe.Add(leafSafe);
 
-                // Every declaring type is an ancestor of the runtime type (or the type itself), so
-                // they nest; the predicate is compiled for the most derived one any leaf needs and
-                // serves every runtime type that resolves the same properties.
+                // Declaring types are all ancestors of the runtime type, so they nest; compiling for
+                // the most derived one serves every runtime type that resolves the same properties.
                 if (mostDerived == null || declaringType.IsAssignableTo(mostDerived))
                 {
                     mostDerived = declaringType;
                 }
             }
 
-            if (alive)
+            if (!alive)
             {
-                groups.Add(group.ToArray());
+                continue;
             }
+
+            for (var i = 1; i < groupSafe.Count; ++i)
+            {
+                if (groupSafe[i] && leafCount < MaxMaskedLeaves)
+                {
+                    mask |= 1UL << leafCount;
+                }
+
+                ++leafCount;
+            }
+
+            groups.Add(group.ToArray());
+            safeGroups.Add(groupSafe.ToArray());
         }
 
         compiledType = mostDerived ?? runtimeType;
 
+        if (leafCount > MaxMaskedLeaves)
+        {
+            mask = 0;
+
+            for (var g = 0; g < safeGroups.Count; ++g)
+            {
+                for (var i = 1; i < safeGroups[g].Length; ++i)
+                {
+                    safeGroups[g][i] = false;
+                }
+            }
+        }
+
+        safe = safeGroups.ToArray();
+
         return groups.Count > 0 ? groups.ToArray() : null;
     }
 
-    private static ICondition Leaf(Type runtimeType, ReadOnlySpan<char> expression, out Type declaringType)
+    // A leaf that throws while binding is dead; other groups still work. Bound once per runtime
+    // type per search, so the warning is bounded.
+    private static ICondition Leaf(
+        AccessLevel level, Type runtimeType, ReadOnlySpan<char> expression, out Type declaringType, out bool workerSafe
+    )
+    {
+        try
+        {
+            return BindLeaf(level, runtimeType, expression, out declaringType, out workerSafe);
+        }
+        catch (Exception ex)
+        {
+            _logger.Warning(ex, "AdvancedSearch: could not bind {Leaf} on {Type}; treating it as no match", expression.ToString(), runtimeType);
+            declaringType = runtimeType;
+            workerSafe = false;
+            return null;
+        }
+    }
+
+    private static ICondition BindLeaf(
+        AccessLevel level, Type runtimeType, ReadOnlySpan<char> expression, out Type declaringType, out bool workerSafe
+    )
     {
         declaringType = runtimeType;
+        workerSafe = false;
         expression = expression.Trim();
 
         if (expression.Length == 0)
@@ -154,7 +252,9 @@ public static class AdvancedSearchConditions
             return null;
         }
 
-        var chain = Resolve(runtimeType, propertyName);
+        var chain = CommandPropertyGuard.ResolveChain(
+            runtimeType, TrimSegments(propertyName), level, PropertyAccess.Read, false, out _
+        );
 
         if (chain == null)
         {
@@ -178,16 +278,60 @@ public static class AdvancedSearchConditions
         {
             condition = EpsilonLeaf(property, negate, op, value);
         }
+        else if (typeof(IEntity).IsAssignableFrom(type))
+        {
+            condition = EntityLeaf(property, negate, op, value);
+        }
         else
         {
             condition = ComparisonLeaf(property, negate, op, value);
         }
 
-        return condition != null && Probe(condition, runtimeType) ? condition : null;
+        if (condition == null || !Probe(condition, runtimeType))
+        {
+            return null;
+        }
+
+        workerSafe = IsSimpleValue(type) && PureGetterClassifier.IsPure(chain, runtimeType);
+
+        return condition;
     }
 
-    // A leaf the compiler rejects -- a relational operator on a type with no CompareTo -- is
-    // "no match" for that leaf, not an error for the whole search.
+    // A dotted name tolerates spaces around each link ("Child . Value").
+    private static string TrimSegments(ReadOnlySpan<char> name)
+    {
+        if (name.IndexOf('.') == -1)
+        {
+            return name.ToString();
+        }
+
+        var segments = name.ToString().Split('.');
+
+        for (var i = 0; i < segments.Length; ++i)
+        {
+            segments[i] = segments[i].Trim();
+        }
+
+        return string.Join('.', segments);
+    }
+
+    // A Map leaf calls Map.CompareTo(Map); Map is sealed, so only that body can run.
+    private static readonly bool _mapComparisonIsPure =
+        typeof(Map).IsSealed &&
+        PureGetterClassifier.IsPure(typeof(Map).GetMethod(nameof(Map.CompareTo), [typeof(Map)]), typeof(Map));
+
+    // Types whose comparison runs no user code, so only the getter chain decides worker safety.
+    private static bool IsSimpleValue(Type type)
+    {
+        type = Nullable.GetUnderlyingType(type) ?? type;
+
+        return type.IsPrimitive || type.IsEnum || type == typeof(string) || type == typeof(Serial)
+               || type == typeof(TimeSpan) || type == typeof(DateTime) || type == typeof(Point3D)
+               || type == typeof(Point2D) || typeof(IEntity).IsAssignableFrom(type)
+               || type == typeof(Map) && _mapComparisonIsPure;
+    }
+
+    // A leaf the compiler rejects (e.g. a relational operator with no CompareTo) is "no match".
     private static bool Probe(ICondition condition, Type runtimeType)
     {
         try
@@ -320,62 +464,35 @@ public static class AdvancedSearchConditions
             _           => null
         };
 
-    // Case-insensitive, first readable match per link, the way the gump has always resolved a
-    // name. A dotted name walks into the property's type.
-    private static PropertyInfo[] Resolve(Type type, ReadOnlySpan<char> name)
+    // Entities compare by serial with no world lookup; `null` tests the reference.
+    private static ICondition EntityLeaf(Property property, bool negate, string op, string value)
     {
-        var count = name.Count('.') + 1;
-        var chain = new PropertyInfo[count];
+        var comparison = MapOperator(op);
 
-        for (var i = 0; i < count; ++i)
+        if (comparison == null)
         {
-            var dot = name.IndexOf('.');
-            var segment = dot == -1 ? name : name[..dot];
-            name = dot == -1 ? default : name[(dot + 1)..];
-
-            var found = Find(type, segment.Trim());
-
-            if (found == null)
-            {
-                return null;
-            }
-
-            chain[i] = found;
-            type = found.PropertyType;
+            return null;
         }
 
-        return chain;
-    }
+        var equality = comparison is ComparisonOperator.Equal or ComparisonOperator.NotEqual;
 
-    private static PropertyInfo Find(Type type, ReadOnlySpan<char> name)
-    {
-        var properties = _properties.GetOrAdd(type, static t => Readable(t));
-
-        for (var i = 0; i < properties.Length; ++i)
+        // Item and Mobile order by serial; a type with no CompareTo (an interface) has no order.
+        if (!equality && !PropertyExpressions.TryCompare(
+                Expression.Default(property.Type), Expression.Default(property.Type), 1, out _
+            ))
         {
-            if (name.InsensitiveEquals(properties[i].Name))
-            {
-                return properties[i];
-            }
+            return null;
         }
 
-        return null;
-    }
-
-    private static PropertyInfo[] Readable(Type type)
-    {
-        var all = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
-        var readable = new List<PropertyInfo>(all.Length);
-
-        for (var i = 0; i < all.Length; ++i)
+        if (value == "null")
         {
-            if (all[i].CanRead && all[i].GetIndexParameters().Length == 0)
-            {
-                readable.Add(all[i]);
-            }
+            return new EntityCondition(property, negate, comparison.Value, null);
         }
 
-        return readable.ToArray();
+        // A value Types cannot read as a serial can come back as something other than a Serial.
+        return Types.TryParse(typeof(Serial), value, out var parsed) == null && parsed is Serial serial
+            ? new EntityCondition(property, negate, comparison.Value, serial)
+            : null;
     }
 
     /// <summary>
@@ -425,6 +542,74 @@ public static class AdvancedSearchConditions
                     };
 
                     return _not ? Expression.Not(test) : test;
+                },
+                Expression.Constant(false)
+            );
+    }
+
+    /// <summary>
+    /// <c>prop != null &amp;&amp; prop.Serial &lt;op&gt; value</c>, or a null test for <c>null</c>.
+    /// </summary>
+    private sealed class EntityCondition : ICondition
+    {
+        private static readonly MethodInfo _serial = typeof(ISerializable).GetProperty(nameof(ISerializable.Serial))!.GetMethod!;
+
+        private readonly Property _property;
+        private readonly bool _not;
+        private readonly ComparisonOperator _operator;
+        private readonly Serial? _value;
+
+        public EntityCondition(Property property, bool not, ComparisonOperator op, Serial? value)
+        {
+            _property = property;
+            _not = not;
+            _operator = op;
+            _value = value;
+        }
+
+        public Expression Build(ParameterExpression target) =>
+            PropertyExpressions.Chain(
+                target,
+                _property,
+                read =>
+                {
+                    var entity = Expression.Variable(read.Type, "entity");
+                    var present = Expression.ReferenceNotEqual(entity, Expression.Constant(null, entity.Type));
+                    Expression test;
+
+                    if (_value == null)
+                    {
+                        // Matches the comparison compiler: null vs null is 0, present vs null is -1.
+                        test = _operator switch
+                        {
+                            ComparisonOperator.Equal        => Expression.Not(present),
+                            ComparisonOperator.NotEqual     => present,
+                            ComparisonOperator.Lesser       => present,
+                            ComparisonOperator.LesserEqual  => Expression.Constant(true),
+                            ComparisonOperator.Greater      => Expression.Constant(false),
+                            _                               => Expression.Not(present)
+                        };
+                    }
+                    else
+                    {
+                        PropertyExpressions.TryRelational(
+                            Expression.Call(Expression.Convert(entity, typeof(ISerializable)), _serial),
+                            Expression.Constant(_value.Value),
+                            _operator,
+                            out var relation
+                        );
+
+                        // != negates =, so a null reference is "not equal".
+                        test = _operator == ComparisonOperator.NotEqual
+                            ? Expression.OrElse(Expression.Not(present), relation)
+                            : Expression.AndAlso(present, relation);
+                    }
+
+                    return Expression.Block(
+                        [entity],
+                        Expression.Assign(entity, read),
+                        _not ? Expression.Not(test) : test
+                    );
                 },
                 Expression.Constant(false)
             );

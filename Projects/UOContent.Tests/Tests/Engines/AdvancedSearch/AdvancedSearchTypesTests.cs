@@ -10,7 +10,7 @@ public class AdvancedSearchTypesTests
 {
     public class Subject
     {
-        public Poison Venom { get; set; }
+        [CommandProperty(AccessLevel.GameMaster)] public Poison Venom { get; set; }
     }
 
     [Fact]

@@ -136,7 +136,18 @@ public static class CommandPropertyGuard
     // A `new`-hidden member is reported once per declaring type; the most derived one is the one callers mean.
     private static PropertyInfo FindMostDerived(Type type, string name, bool allowStatic)
     {
-        var props = type.GetProperties(allowStatic ? StaticAndInstanceFlags : InstanceFlags);
+        var flags = allowStatic ? StaticAndInstanceFlags : InstanceFlags;
+
+        // A direct lookup avoids copying every property; it throws only when hiding or casing makes the name ambiguous.
+        try
+        {
+            return type.GetProperty(name, flags | BindingFlags.IgnoreCase);
+        }
+        catch (AmbiguousMatchException)
+        {
+        }
+
+        var props = type.GetProperties(flags);
         PropertyInfo best = null;
 
         for (var i = 0; i < props.Length; i++)
