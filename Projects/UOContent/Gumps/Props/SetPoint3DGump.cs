@@ -113,9 +113,7 @@ namespace Server.Gumps
             {
                 try
                 {
-                    CommandLogging.LogChangeProperty(m_Mobile, m_Object, m_Property.Name, toSet.ToString());
-                    m_Property.SetValue(m_Object, toSet, null);
-                    m_PropertiesGump.OnValueChanged(m_Object, m_Property);
+                    Properties.ApplyFromGump(m_Mobile, m_Object, m_Property, toSet, m_PropertiesGump);
                 }
                 catch
                 {
@@ -151,9 +149,7 @@ namespace Server.Gumps
                 {
                     try
                     {
-                        CommandLogging.LogChangeProperty(m_Mobile, m_Object, m_Property.Name, new Point3D(p).ToString());
-                        m_Property.SetValue(m_Object, new Point3D(p), null);
-                        m_PropertiesGump.OnValueChanged(m_Object, m_Property);
+                        Properties.ApplyFromGump(m_Mobile, m_Object, m_Property, new Point3D(p), m_PropertiesGump);
                     }
                     catch
                     {

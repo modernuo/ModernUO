@@ -182,7 +182,7 @@ Timer.DelayCall(TimeSpan.Zero, TimeSpan.FromMilliseconds(50), () =>
 | Worker | Justification |
 |---|---|
 | `Accounting/Security/PasswordWorker.cs` | 8.9 ms/login on-loop at Argon2; 3.5-8.9 ms measured saving |
-| `Engines/Advanced Search/AdvancedSearchGump.cs` | Admin-triggered full-world scan, saves disabled |
+| `Engines/Advanced Search/AdvancedSearchGump.cs` | Workers evaluate only IL-proven read-only getters; the rest finishes on the loop in budgeted slices; saves disabled. Its reflection-metadata memos are deliberately `ConcurrentDictionary` (no game state) |
 
 ### The six rules
 

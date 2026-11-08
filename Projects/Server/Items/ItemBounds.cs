@@ -110,6 +110,7 @@ public static class ItemBounds
                     }
 
                     logger.Error(ex, "Failed to generate {BoundsFilePath}", _boundsFileName);
+                    _isGenerating = false;
                     return;
                 }
 

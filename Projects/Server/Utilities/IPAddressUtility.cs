@@ -56,6 +56,48 @@ public static class IPAddressUtility
         return new UInt128(high, low);
     }
 
+    private const int MinSubscriberPrefix = 48;
+    private const int MaxSubscriberPrefix = 64;
+
+    /// <summary>
+    /// Prefix length that identifies one IPv6 subscriber; a residential delegation is a /56 to /64, so a
+    /// single person can rotate through every address in it.
+    /// </summary>
+    public static int SubscriberPrefixLength { get; private set; } = MaxSubscriberPrefix;
+
+    public static int ClampSubscriberPrefix(int configured) =>
+        Math.Clamp(configured, MinSubscriberPrefix, MaxSubscriberPrefix);
+
+    internal static void SetSubscriberPrefix(int prefix) => SubscriberPrefixLength = ClampSubscriberPrefix(prefix);
+
+    // ::ffff:0:0/96 is where ToUInt128 places IPv4, whether it arrived as IPv4 or IPv4-mapped IPv6.
+    private static bool IsMappedIPv4(UInt128 value) => (value >> 32) == 0xFFFFUL;
+
+    /// <summary>
+    /// Identity of the person behind an address: the exact address for IPv4 (including IPv4-mapped IPv6),
+    /// the configured prefix for IPv6.
+    /// </summary>
+    public static UInt128 ToSubscriberKey(this IPAddress ip)
+    {
+        var value = ip.ToUInt128();
+        return IsMappedIPv4(value) ? value : value & ~(UInt128.MaxValue >> SubscriberPrefixLength);
+    }
+
+    public static IPNetwork ToSubscriberNetwork(this IPAddress ip)
+    {
+        var value = ip.ToUInt128();
+        if (IsMappedIPv4(value))
+        {
+            return new IPNetwork(value.ToIpAddress(), 32);
+        }
+
+        // IPNetwork rejects a base address with host bits set, so build it from the masked key.
+        return new IPNetwork(ToIpAddress(ToSubscriberKey(ip), true), SubscriberPrefixLength);
+    }
+
+    public static bool IsSameSubscriber(this IPAddress a, IPAddress b) =>
+        a != null && b != null && a.ToSubscriberKey() == b.ToSubscriberKey();
+
     // Converts a UInt128 in IPv6 format to an IPAddress
     public static IPAddress ToIpAddress(this UInt128 value, bool mapToIpv6 = false)
     {

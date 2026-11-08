@@ -45,11 +45,11 @@ public interface IBanReporter
     /// </summary>
     /// <param name="ttl"><see cref="TimeSpan.Zero"/> or negative = use the reporter's default duration.</param>
     /// <param name="reason">Short slug (<c>manual</c>, <c>rate-limit</c>) used as the scenario suffix.</param>
-    void Report(IPAddress address, TimeSpan ttl, string reason);
+    void Report(IPNetwork network, TimeSpan ttl, string reason);
 
     /// <summary>True if this reporter can retract a previously-reported ban.</summary>
     bool CanRetract { get; }
 
     /// <summary>Enqueues a retraction (e.g. a manual unban). No-op if unsupported.</summary>
-    void Retract(IPAddress address);
+    void Retract(IPNetwork network);
 }

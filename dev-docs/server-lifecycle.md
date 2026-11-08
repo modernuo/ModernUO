@@ -67,7 +67,13 @@ Subscribe to these from `Configure`/`Initialize` (`EventSink.<Event> += handler`
 
 - **`ServerStarted`** — after world load and listeners are up, at loop start.
 - **`WorldLoad`** / **`WorldSave`** — around persistence (see `WorldEvents`).
-- **`Shutdown`** — during shutdown.
+- **`Shutdown`** — during shutdown. On the loop thread once the loop is running; an exit during
+  startup runs it on the finalizer thread, which is where the runtime raises `ProcessExit`.
+- **`ServerCrashed`** — on a fatal unhandled exception. Normally on the loop thread: a crash on
+  another thread is handed to the loop. When the loop cannot take it (it has not started, has
+  stopped, or does not respond within a few seconds), handlers run on the faulting thread instead;
+  check `Thread.CurrentThread == Core.Thread` and leave world, network and timer state alone when
+  it is false.
 
 ## Recipe: add a first-boot prompt
 

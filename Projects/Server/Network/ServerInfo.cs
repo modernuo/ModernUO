@@ -16,6 +16,7 @@
 using System;
 using System.Buffers.Binary;
 using System.Net;
+using System.Net.Sockets;
 
 namespace Server.Network;
 
@@ -43,8 +44,19 @@ public sealed class ServerInfo
         init
         {
             m_Address = value;
+
+            // The relay address is 4 bytes, so IPv6 is sent as 0.0.0.0 (MapToIPv4 would keep its low
+            // 32 bits). Only ClassicUO-based clients connect over IPv6, and they read 0 as
+            // "reconnect to the login address", which keeps them on IPv6.
+            var address = value.Address;
+            if (address.AddressFamily == AddressFamily.InterNetworkV6 && !address.IsIPv4MappedToIPv6)
+            {
+                RawAddress = 0;
+                return;
+            }
+
             Span<byte> integer = stackalloc byte[4];
-            value.Address.MapToIPv4().TryWriteBytes(integer, out var bytesWritten);
+            address.MapToIPv4().TryWriteBytes(integer, out var bytesWritten);
             if (bytesWritten != 4)
             {
                 throw new InvalidOperationException("IP Address could not be serialized to an integer");

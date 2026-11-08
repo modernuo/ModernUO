@@ -30,8 +30,7 @@ namespace Server.Commands.Generic
 
             foreach (var prop in m_Properties)
             {
-                prop.BindTo(baseType, PropertyAccess.Read);
-                prop.CheckAccess(from);
+                prop.BindTo(baseType, PropertyAccess.Read, from.AccessLevel);
             }
 
             m_Comparer = DistinctCompiler.Compile<object>(baseType, m_Properties.ToArray());

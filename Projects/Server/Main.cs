@@ -221,6 +221,34 @@ public static class Core
     private static bool _crashed;
     private static string _baseDirectory;
 
+    // Bounds how long an off-loop exit waits for the loop to finish shutting down on its own thread, and
+    // how long an off-loop crash waits for the loop to pick up its handling. Windows allows a
+    // console-close handler about five seconds before it kills the process anyway.
+    private static readonly TimeSpan OffLoopShutdownTimeout = TimeSpan.FromSeconds(5);
+
+    // Bounds the wait for an in-flight save before a crash handled off the loop exits. Not unbounded:
+    // the thread that faulted may be the writer.
+    private static readonly TimeSpan CrashWriteCompletionTimeout = TimeSpan.FromSeconds(30);
+
+    private static volatile LoopLifecycle _loopLifecycle;
+    private static readonly ManualResetEventSlim _shutdownComplete = new(false);
+
+    // Exactly one thread owns the process exit: the loop's DoKill, ProcessExit for an exit already under
+    // way, or the thread handling a crash. Only the owner calls Environment.Exit, so the exit code and a
+    // restart are decided once.
+    private static int _exitClaimed;
+
+    // Kept alive for the life of the process: a collected registration silently unregisters.
+    private static PosixSignalRegistration _sigtermRegistration;
+    private static int _terminateSignals;
+
+    // A SIGTERM'd server that has not finished shutting down by then is stuck; supervisors otherwise wait
+    // for their own kill timeout (systemd: 90 s).
+    private static readonly TimeSpan TerminateGracePeriod = TimeSpan.FromSeconds(30);
+
+    // 128 + SIGTERM, what the runtime's default handling would have exited with.
+    private const int TerminatedExitCode = 143;
+
     private static bool? _isRunningFromXUnit;
 
     private static int _itemCount;
@@ -228,13 +256,6 @@ public static class Core
     public static EventLoopContext LoopContext { get; set; }
 
     private static readonly Type[] _serialTypeArray = { typeof(Serial) };
-
-    public static readonly bool IsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-    public static readonly bool IsDarwin = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
-    public static readonly bool IsFreeBSD = RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD);
-    public static readonly bool IsLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || IsFreeBSD;
-    public static readonly bool IsBSD = IsDarwin || IsFreeBSD;
-    public static readonly bool Unix = IsBSD || IsLinux;
 
     private const string AssembliesConfiguration = "Data/assemblies.json";
 
@@ -355,7 +376,7 @@ public static class Core
         {
             fullPath = Path.Combine(p, path);
 
-            if (IsLinux && !File.Exists(fullPath))
+            if ((OperatingSystem.IsLinux() || OperatingSystem.IsFreeBSD()) && !File.Exists(fullPath))
             {
                 var fi = new FileInfo(fullPath);
                 if (fi.Directory != null && Directory.Exists(fi.Directory.FullName))
@@ -413,41 +434,227 @@ public static class Core
         Console.WriteLine(e.IsTerminating ? "Error:" : "Warning:");
         Console.WriteLine(e.ExceptionObject);
 
-        if (e.IsTerminating)
+        if (!e.IsTerminating)
         {
-            _crashed = true;
+            return;
+        }
 
-            var close = false;
+        var exception = e.ExceptionObject as Exception;
+        var onLoopThread = Thread.CurrentThread == Thread;
+        var route = ShutdownRouting.RouteCrash(onLoopThread, _loopLifecycle);
 
-            try
+        if (route == CrashRoute.RunHere)
+        {
+            HandleCrash(exception);
+            return;
+        }
+
+        // Set before claiming the exit, so ProcessExit never mistakes the crash exit for an external one.
+        _crashed = true;
+
+        // Another thread is already in Environment.Exit, which may be waiting on this one (the finalizer
+        // raises ProcessExit), so never block here.
+        if (!TryClaimExit())
+        {
+            return;
+        }
+
+        if (route == CrashRoute.HandOffToLoop && HandOffCrash(exception, out var close))
+        {
+            AwaitCrashAcknowledgement(close);
+            TerminateProcess(_restartOnKill);
+            return;
+        }
+
+        HandleCrashOffLoop(exception);
+    }
+
+    private static void HandleCrash(Exception exception)
+    {
+        _crashed = true;
+        AwaitCrashAcknowledgement(InvokeServerCrashed(exception));
+        DoKill(_restartOnKill);
+    }
+
+    /// <summary>
+    /// Runs the crash subscribers and HandleClosed on the loop and blocks the faulting thread until they
+    /// are done; the faulting thread then exits the process. The loop must not call Environment.Exit
+    /// itself: when the finalizer faulted, Exit would wait forever for it to raise ProcessExit.
+    /// Returns false when the loop did not pick the work up in time.
+    /// </summary>
+    private static bool HandOffCrash(Exception exception, out bool close)
+    {
+        var handoff = new CrashHandoff();
+
+        LoopContext.Post(
+            () =>
             {
-                var args = new ServerCrashedEventArgs(e.ExceptionObject as Exception);
+                if (!handoff.TryClaim())
+                {
+                    return;
+                }
 
-                EventSink.InvokeServerCrashed(args);
+                handoff.Started.Set();
 
-                close = args.Close;
-            }
-            catch
-            {
-                // ignored
-            }
+                try
+                {
+                    handoff.Close = InvokeServerCrashed(exception);
+                    HandleClosed();
+                }
+                finally
+                {
+                    handoff.Finished.Set();
+                }
 
-            if (!close && !Headless)
-            {
-                Console.WriteLine("This exception is fatal, press return to exit");
-                ConsoleInputHandler.ReadLine();
-            }
+                // The network is shut down and the faulting thread owns the exit; another iteration would
+                // run against closed state.
+                Thread.Sleep(Timeout.Infinite);
+            },
+            EventLoopContext.Priority.High
+        );
 
-            DoKill(_restartOnKill);
+        // The loop may be blocked on the very thread that faulted (a save writer, for example).
+        if (!handoff.Started.Wait(OffLoopShutdownTimeout) && handoff.TryClaim())
+        {
+            logger.Error(
+                "The game loop did not take over crash handling within {Timeout}s; handling it off the loop",
+                OffLoopShutdownTimeout.TotalSeconds
+            );
+            close = false;
+            return false;
+        }
+
+        handoff.Finished.Wait();
+        close = handoff.Close;
+        return true;
+    }
+
+    /// <summary>
+    /// Crash handling for when the loop cannot take it. Subscribers see they are off the loop thread and
+    /// leave game and network state alone; HandleClosed is skipped for the same reason. The caller has
+    /// claimed the exit.
+    /// </summary>
+    private static void HandleCrashOffLoop(Exception exception)
+    {
+        AwaitCrashAcknowledgement(InvokeServerCrashed(exception));
+
+        if (!World.WaitForWriteCompletion(CrashWriteCompletionTimeout))
+        {
+            logger.Error(
+                "A world save was still writing {Timeout}s after the crash",
+                CrashWriteCompletionTimeout.TotalSeconds
+            );
+        }
+
+        // A loop that has stopped iterating is in HandleClosed; it parks once it reaches the exit.
+        if (_loopLifecycle == LoopLifecycle.ShuttingDown)
+        {
+            _shutdownComplete.Wait(OffLoopShutdownTimeout);
+        }
+
+        TerminateProcess(_restartOnKill);
+    }
+
+    private static bool InvokeServerCrashed(Exception exception)
+    {
+        try
+        {
+            var args = new ServerCrashedEventArgs(exception);
+            EventSink.InvokeServerCrashed(args);
+            return args.Close;
+        }
+        catch
+        {
+            return false;
         }
     }
 
+    private static void AwaitCrashAcknowledgement(bool close)
+    {
+        if (!close && !Headless)
+        {
+            Console.WriteLine("This exception is fatal, press return to exit");
+            ConsoleInputHandler.ReadLine();
+        }
+    }
+
+    private sealed class CrashHandoff
+    {
+        private int _claimed;
+
+        public readonly ManualResetEventSlim Started = new(false);
+        public readonly ManualResetEventSlim Finished = new(false);
+        public bool Close;
+
+        // Exactly one of the loop and the faulting thread handles the crash.
+        public bool TryClaim() => Interlocked.Exchange(ref _claimed, 1) == 0;
+    }
+
+    // Raised on the finalizer thread for every exit, the loop's own Environment.Exit included.
     private static void CurrentDomain_ProcessExit(object sender, EventArgs e)
     {
-        if (!Closing)
+        // After a crash the crash handling owns the exit. Otherwise this exit is not the loop's: claiming
+        // it parks the loop at its own exit rather than letting it override this exit code with 0.
+        if (Closing || _crashed || !TryClaimExit())
+        {
+            return;
+        }
+
+        if (ShutdownRouting.RouteProcessExit(_loopLifecycle) == ProcessExitRoute.RunHere)
         {
             HandleClosed();
+            return;
         }
+
+        // The shutdown handlers touch network and game state, so the loop runs them. This thread only
+        // has to keep the process alive until it has: returning lets the runtime finish exiting.
+        Kill();
+
+        if (!_shutdownComplete.Wait(OffLoopShutdownTimeout))
+        {
+            logger.Warning(
+                "The process is exiting and the game loop did not shut down within {Timeout}s",
+                OffLoopShutdownTimeout.TotalSeconds
+            );
+        }
+    }
+
+    private static void OnTerminateSignal(PosixSignalContext context)
+    {
+        var priorSignals = Interlocked.Increment(ref _terminateSignals) - 1;
+        if (!ShutdownRouting.ShouldInterceptTerminate(_loopLifecycle, priorSignals))
+        {
+            if (priorSignals > 0)
+            {
+                logger.Warning("Detected {Signal} again; exiting without waiting for the game loop", context.Signal);
+            }
+
+            return;
+        }
+
+        logger.Information("Detected {Signal}.", context.Signal);
+
+        // Without the cancel the runtime starts exiting while the loop keeps running.
+        context.Cancel = true;
+        Kill();
+
+        ThreadPool.UnsafeQueueUserWorkItem(static _ => ExitIfShutdownHangs(), null);
+    }
+
+    private static void ExitIfShutdownHangs()
+    {
+        if (_shutdownComplete.Wait(TerminateGracePeriod))
+        {
+            return;
+        }
+
+        logger.Error(
+            "The game loop did not shut down within {Timeout}s of SIGTERM; exiting without it",
+            TerminateGracePeriod.TotalSeconds
+        );
+
+        // ProcessExit still gives the loop its bounded chance at HandleClosed.
+        Environment.Exit(TerminatedExitCode);
     }
 
     private static void Console_CancelKeyPressed(object sender, ConsoleCancelEventArgs e)
@@ -471,7 +678,29 @@ public static class Core
         }
 
         HandleClosed();
+        ExitProcess(restart);
+    }
 
+    private static bool TryClaimExit() => Interlocked.Exchange(ref _exitClaimed, 1) == 0;
+
+    private static void ExitProcess(bool restart)
+    {
+        if (TryClaimExit())
+        {
+            TerminateProcess(restart);
+            return;
+        }
+
+        // The owner is in, or headed for, Environment.Exit, which ends the process without this thread.
+        // Only the loop parks: Exit waits on the finalizer thread, which may be the caller here.
+        if (Thread.CurrentThread == Thread)
+        {
+            Thread.Sleep(Timeout.Infinite);
+        }
+    }
+
+    private static void TerminateProcess(bool restart)
+    {
         if (restart && _restartExitCode != 0)
         {
             logger.Information("Restarting (exiting with code {ExitCode} for the supervisor)", _restartExitCode);
@@ -509,18 +738,32 @@ public static class Core
     {
         ClosingTokenSource.Cancel();
 
-        logger.Information("Shutting down");
-
-        World.WaitForWriteCompletion();
-        World.ExitSerializationThreads();
-        PingServer.Shutdown();
-        NetState.Shutdown();
-        BanChannel.Stop();
-        ConnectionFilters.Stop();
-
-        if (!_crashed)
+        try
         {
-            EventSink.InvokeShutdown();
+            logger.Information("Shutting down");
+
+            World.WaitForWriteCompletion();
+            World.ExitSerializationThreads();
+            PingServer.Shutdown();
+            NetState.Shutdown();
+            BanChannel.Stop();
+            ConnectionFilters.Stop();
+
+            if (!_crashed)
+            {
+                EventSink.InvokeShutdown();
+            }
+
+            // Nothing compresses after the shutdown subscribers. Off the loop the loop may still be
+            // compressing, so the instance is left for the process exit to reclaim.
+            if (Thread.CurrentThread == Thread)
+            {
+                Deflate.DisposeStandard();
+            }
+        }
+        finally
+        {
+            _shutdownComplete.Set();
         }
     }
 
@@ -584,15 +827,21 @@ public static class Core
 
         Console.CancelKeyPress += Console_CancelKeyPressed;
 
+        // SIGINT and SIGQUIT already arrive through CancelKeyPress. SIGTERM (docker stop, systemctl stop)
+        // would otherwise run the shutdown handlers on the runtime's exit thread, concurrently with the loop.
+        if (!OperatingSystem.IsWindows())
+        {
+            _sigtermRegistration = PosixSignalRegistration.Create(PosixSignal.SIGTERM, OnTerminateSignal);
+        }
+
         Headless = Console.IsInputRedirected;
         if (Headless)
         {
             logger.Information("Headless mode detected (stdin is not a TTY); interactive console input is disabled.");
         }
 
-        // LibDeflate is not thread safe, so we need to create a new instance for each thread
-        var standard = Deflate.Standard;
-        AppDomain.CurrentDomain.ProcessExit += (_, _) => standard.Dispose();
+        // LibDeflate is not thread safe, so each thread gets its own instance; this is the loop's.
+        _ = Deflate.Standard;
 
         ServerConfiguration.Load();
 
@@ -722,6 +971,8 @@ public static class Core
 
     public static void RunEventLoop()
     {
+        _loopLifecycle = LoopLifecycle.Running;
+
         try
         {
             while (!Closing)
@@ -805,10 +1056,12 @@ public static class Core
         }
         catch (Exception e)
         {
+            _loopLifecycle = LoopLifecycle.ShuttingDown;
             CurrentDomain_UnhandledException(null, new UnhandledExceptionEventArgs(e, true));
             return;
         }
 
+        _loopLifecycle = LoopLifecycle.ShuttingDown;
         DoKill(_restartOnKill);
     }
 

@@ -233,8 +233,8 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
         var lengths = worker.Lengths;
         var lengthIndex = segment.LengthsStart;
 
-        var heapPos = (int)segment.HeapStart;
-        var spanStart = heapPos;
+        var heapStart = (int)segment.HeapStart;
+        var heapPos = heapStart;
 
         if (segment.SlotOffset >= 0)
         {
@@ -253,16 +253,10 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
 
                 var length = lengths[lengthIndex++];
 
-                if (entity is Item { SkipSerialization: true } or Mobile { SkipSerialization: true })
+                // Decided while frozen and never serialized. Re-reading SkipSerialization here would see
+                // parent moves made after the unfreeze, disagreeing with the parents' frozen child lists.
+                if (length == SerializationThreadWorker.SkippedRecord)
                 {
-                    // The bytes exist in the heap but are not part of the save: split the span.
-                    if (heapPos > spanStart)
-                    {
-                        binFs.Write(worker.GetHeap(spanStart, heapPos - spanStart));
-                    }
-
-                    heapPos += length;
-                    spanStart = heapPos;
                     continue;
                 }
 
@@ -286,15 +280,8 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
                 var entity = (T)bufferEntities[segment.EntitiesStart + i];
                 var length = lengths[lengthIndex++];
 
-                if (entity is Item { SkipSerialization: true } or Mobile { SkipSerialization: true })
+                if (length == SerializationThreadWorker.SkippedRecord)
                 {
-                    if (heapPos > spanStart)
-                    {
-                        binFs.Write(worker.GetHeap(spanStart, heapPos - spanStart));
-                    }
-
-                    heapPos += length;
-                    spanStart = heapPos;
                     continue;
                 }
 
@@ -310,9 +297,10 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
             }
         }
 
-        if (heapPos > spanStart)
+        // Skipped records occupy no heap, so the segment's bytes are one contiguous span.
+        if (heapPos > heapStart)
         {
-            binFs.Write(worker.GetHeap(spanStart, heapPos - spanStart));
+            binFs.Write(worker.GetHeap(heapStart, heapPos - heapStart));
         }
 
         return binPosition;
@@ -382,7 +370,16 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
             // Occupied slots are exactly the non-null values: Dictionary clears reference
             // values on remove, and never-used capacity is zero-initialized.
             var entity = entry.Value;
-            if (entity != null)
+            if (entity == null)
+            {
+                continue;
+            }
+
+            if (SerializationThreadWorker.SkipsSerialization(entity))
+            {
+                lengths.Add(SerializationThreadWorker.SkippedRecord);
+            }
+            else
             {
                 var start = writer.Position;
                 entity.Serialize(writer);

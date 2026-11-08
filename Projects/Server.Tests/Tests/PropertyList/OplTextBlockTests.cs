@@ -7,6 +7,7 @@ using Xunit;
 
 namespace Server.Tests;
 
+[Collection("Sequential Server Tests")]
 public class OplTextBlockTests
 {
     private static (int cliloc, string arg)[] Decode(ObjectPropertyList opl)

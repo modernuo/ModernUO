@@ -5,6 +5,7 @@ using Xunit;
 
 namespace Server.Tests.Network;
 
+[Collection("Sequential Server Tests")]
 public class UOClientTests
 {
     private const uint ImageBase = 0x400000;

@@ -74,7 +74,7 @@ public partial class NetState
 
     // Listener management
     private static nint[] _listeners = Array.Empty<nint>();
-    private static int _pendingAcceptCount;
+    private static int[] _pendingAccepts = Array.Empty<int>();
     private const int PendingAcceptsPerListener = 32;
 
     private const long AliveCheckIntervalMs = 5000;
@@ -154,6 +154,18 @@ public partial class NetState
             SendBufferSize,
             MaxSendBufferSize
         );
+
+        var configuredSubscriberPrefix = ServerConfiguration.GetOrUpdateSetting("network.ipv6SubscriberPrefix", 64);
+        IPAddressUtility.SetSubscriberPrefix(configuredSubscriberPrefix);
+        if (IPAddressUtility.SubscriberPrefixLength != configuredSubscriberPrefix)
+        {
+            logger.Warning(
+                "network.ipv6SubscriberPrefix {Configured} is outside 48-64; using {Prefix}",
+                configuredSubscriberPrefix,
+                IPAddressUtility.SubscriberPrefixLength
+            );
+        }
+
         // 0 disables the ceiling
         _memoryCeilingPercent = Math.Clamp(ServerConfiguration.GetOrUpdateSetting("network.memoryCeilingPercent", DefaultMemoryCeilingPercent), 0, 100);
         _availableMemoryBytes = GC.GetGCMemoryInfo().TotalAvailableMemoryBytes;
@@ -515,18 +527,12 @@ public partial class NetState
     private static void RegisterListeners(nint[] listeners)
     {
         _listeners = listeners;
-
-        var ring = _socketManager.Ring;
+        _pendingAccepts = new int[listeners.Length];
 
         // Queue initial accept operations for each listener
         for (var i = 0; i < _listeners.Length; i++)
         {
-            var listener = _listeners[i];
-            for (var j = 0; j < PendingAcceptsPerListener; j++)
-            {
-                ring.PrepareAccept(listener, 0, 0, IORingUserData.EncodeAccept());
-                _pendingAcceptCount++;
-            }
+            ReplenishAccepts(i);
         }
     }
 
@@ -547,12 +553,13 @@ public partial class NetState
         }
 
         _listeners = [];
+        _pendingAccepts = [];
     }
 
-    private static void HandleAcceptCompletion(int result)
+    /// <param name="result">The accepted socket handle, or a negative errno.</param>
+    /// <param name="listenerIndex">The listener the accept was posted on, reported for errors too.</param>
+    private static void HandleAcceptCompletion(int result, int listenerIndex)
     {
-        _pendingAcceptCount--;
-
         var ring = _socketManager.Ring;
 
         // EAGAIN (-11) means no connection pending - just re-queue
@@ -610,12 +617,36 @@ public partial class NetState
         }
 
         ReplenishAccepts:
-        var targetAccepts = _listeners.Length * PendingAcceptsPerListener;
-        while (_pendingAcceptCount < targetAccepts && _listeners.Length > 0)
+        ConsumeAccept(listenerIndex);
+    }
+
+    /// <summary>
+    /// Re-arms the listener whose accept just completed, so each keeps its own
+    /// <see cref="PendingAcceptsPerListener"/> outstanding and a busy one never runs dry.
+    /// </summary>
+    private static void ConsumeAccept(int listenerIndex)
+    {
+        // Out of range after CloseListeners emptied the arrays while accepts were still in flight.
+        if ((uint)listenerIndex >= (uint)_listeners.Length)
         {
-            var listenerIndex = _pendingAcceptCount % _listeners.Length;
-            ring.PrepareAccept(_listeners[listenerIndex], 0, 0, IORingUserData.EncodeAccept());
-            _pendingAcceptCount++;
+            return;
+        }
+
+        if (_pendingAccepts[listenerIndex] > 0)
+        {
+            _pendingAccepts[listenerIndex]--;
+        }
+
+        ReplenishAccepts(listenerIndex);
+    }
+
+    private static void ReplenishAccepts(int listenerIndex)
+    {
+        var ring = _socketManager.Ring;
+        while (_pendingAccepts[listenerIndex] < PendingAcceptsPerListener)
+        {
+            ring.PrepareAccept(_listeners[listenerIndex], 0, 0, IORingUserData.EncodeAccept(listenerIndex));
+            _pendingAccepts[listenerIndex]++;
         }
     }
 
@@ -748,7 +779,7 @@ public partial class NetState
                 case RingSocketEventType.Accept:
                     {
                         // Handle accept - AcceptedSocketHandle contains the result
-                        HandleAcceptCompletion((int)evt.AcceptedSocketHandle);
+                        HandleAcceptCompletion((int)evt.AcceptedSocketHandle, evt.ListenerIndex);
                         break;
                     }
 

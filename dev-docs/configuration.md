@@ -98,6 +98,8 @@ Examples from the codebase:
 accountHandler.enableAutoAccountCreation
 accountHandler.enablePlayerPasswordCommand
 accountHandler.maxAccountsPerIP
+accountHandler.maxLoginsPerIP
+network.ipv6SubscriberPrefix
 accountSecurity.encryptionAlgorithm
 autosave.enabled
 autosave.saveDelay

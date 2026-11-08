@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading;
 using Server.Accounting;
 using Server.Logging;
 using Server.Network;
@@ -129,66 +130,17 @@ namespace Server.Misc
                     op.WriteLine(".NET Framework: {0}", Environment.Version);
                     op.WriteLine("Time: {0}", timeStamp);
 
-                    try
+                    // A crash the loop could not take is reported from another thread, where the world,
+                    // accounts and clients are still being mutated by the loop.
+                    if (Thread.CurrentThread != Core.Thread)
                     {
-                        op.WriteLine($"Accounts: {Accounts.Count}");
+                        op.WriteLine($"Exception: {e.Exception}");
+                        op.WriteLine();
+                        op.WriteLine("World and client state omitted: the crash was handled off the game loop.");
                     }
-                    catch
+                    else
                     {
-                        // ignored
-                    }
-
-                    try
-                    {
-                        op.WriteLine($"Mobiles: {World.Mobiles.Count}");
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
-
-                    try
-                    {
-                        op.WriteLine($"Items: {World.Items.Count}");
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
-
-                    op.WriteLine($"Exception: {e.Exception}");
-                    op.WriteLine();
-
-                    op.WriteLine("Clients:");
-
-                    try
-                    {
-                        var states = NetState.Instances;
-
-                        op.WriteLine($"- Count: {states.Count}");
-
-                        foreach (var ns in NetState.Instances)
-                        {
-                            op.Write($"+ {ns}:");
-
-                            if (ns.Account is Account a)
-                            {
-                                op.Write($" (account = {a.Username})");
-                            }
-
-                            var m = ns.Mobile;
-
-                            if (m != null)
-                            {
-                                op.Write($" (mobile = {m.Serial} '{m.Name}')");
-                            }
-
-                            op.WriteLine();
-                        }
-                    }
-                    catch
-                    {
-                        op.WriteLine("- Failed");
+                        WriteLoopState(op, e);
                     }
                 }
 
@@ -199,6 +151,71 @@ namespace Server.Misc
             catch
             {
                 logger.Error("Crash report generation failed");
+            }
+        }
+
+        private static void WriteLoopState(StreamWriter op, ServerCrashedEventArgs e)
+        {
+            try
+            {
+                op.WriteLine($"Accounts: {Accounts.Count}");
+            }
+            catch
+            {
+                // ignored
+            }
+
+            try
+            {
+                op.WriteLine($"Mobiles: {World.Mobiles.Count}");
+            }
+            catch
+            {
+                // ignored
+            }
+
+            try
+            {
+                op.WriteLine($"Items: {World.Items.Count}");
+            }
+            catch
+            {
+                // ignored
+            }
+
+            op.WriteLine($"Exception: {e.Exception}");
+            op.WriteLine();
+
+            op.WriteLine("Clients:");
+
+            try
+            {
+                var states = NetState.Instances;
+
+                op.WriteLine($"- Count: {states.Count}");
+
+                foreach (var ns in NetState.Instances)
+                {
+                    op.Write($"+ {ns}:");
+
+                    if (ns.Account is Account a)
+                    {
+                        op.Write($" (account = {a.Username})");
+                    }
+
+                    var m = ns.Mobile;
+
+                    if (m != null)
+                    {
+                        op.Write($" (mobile = {m.Serial} '{m.Name}')");
+                    }
+
+                    op.WriteLine();
+                }
+            }
+            catch
+            {
+                op.WriteLine("- Failed");
             }
         }
     }

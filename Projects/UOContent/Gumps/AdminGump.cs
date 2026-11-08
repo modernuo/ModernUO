@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Server.Accounting;
@@ -664,7 +665,10 @@ namespace Server.Gumps
                             var offset = 140 + i * 20;
 
                             AddLabelCropped(12, offset, 60, 20, LabelHue, accts.Count.ToString());
-                            AddLabelCropped(72, offset, 120, 20, LabelHue, ipAddr.ToString());
+                            var shown = ipAddr.AddressFamily == AddressFamily.InterNetworkV6 && !ipAddr.IsIPv4MappedToIPv6
+                                ? ipAddr.ToSubscriberNetwork().ToString()
+                                : ipAddr.ToString();
+                            AddLabelCropped(72, offset, 120, 20, LabelHue, shown);
 
                             sb.Reset();
 
@@ -1520,7 +1524,7 @@ namespace Server.Gumps
 
         private static List<object> GetAllSharedAccounts()
         {
-            var table = new Dictionary<IPAddress, List<Account>>();
+            var table = new Dictionary<UInt128, KeyValuePair<IPAddress, List<Account>>>();
 
             foreach (Account acct in Accounts.GetAccounts())
             {
@@ -1531,22 +1535,31 @@ namespace Server.Gumps
                     var theirAddress = theirAddresses[i];
 
                     // This path is heavy for larger shards, so use optimized code
-                    ref var accts = ref CollectionsMarshal.GetValueRefOrAddDefault(table, theirAddress, out var acctExists);
+                    ref var group = ref CollectionsMarshal.GetValueRefOrAddDefault(
+                        table,
+                        theirAddress.ToSubscriberKey(),
+                        out var groupExists
+                    );
 
-                    // If we don't have a list, create one
-                    if (!acctExists)
+                    // The group keeps its first address; IPv6 groups are labelled by network at display time
+                    if (!groupExists)
                     {
-                        accts = [];
+                        group = new KeyValuePair<IPAddress, List<Account>>(theirAddress, []);
                     }
 
-                    accts.Add(acct);
+                    // Two addresses of one account can share a subscriber prefix
+                    var accts = group.Value;
+                    if (accts.Count == 0 || accts[^1] != acct)
+                    {
+                        accts.Add(acct);
+                    }
                 }
             }
 
             var list = new List<object>();
 
             // Lets find all the entries that have only one account
-            foreach (var kvp in table)
+            foreach (var kvp in table.Values)
             {
                 if (kvp.Value.Count > 1)
                 {
@@ -1577,7 +1590,7 @@ namespace Server.Gumps
 
                 for (var i = 0; !contains && i < theirAddresses.Length; ++i)
                 {
-                    contains = ipAddress.Equals(theirAddresses[i]);
+                    contains = ipAddress.IsSameSubscriber(theirAddresses[i]);
                 }
 
                 if (contains)
@@ -1605,7 +1618,7 @@ namespace Server.Gumps
 
                     for (var j = 0; !contains && j < ipAddresses.Length; ++j)
                     {
-                        contains = check.Equals(ipAddresses[j]);
+                        contains = check.IsSameSubscriber(ipAddresses[j]);
                     }
                 }
 
@@ -1779,8 +1792,12 @@ namespace Server.Gumps
             {
                 for (var i = 0; i < a.LoginIPs.Length; ++i)
                 {
-                    Firewall.Add(new SingleIpFirewallEntry(a.LoginIPs[i]));
-                    BanChannel.Report(a.LoginIPs[i], TimeSpan.Zero, BanReasons.Manual);
+                    var entry = Firewall.CreateSubscriberEntry(a.LoginIPs[i]);
+                    Firewall.Add(entry);
+                    if (Firewall.TryGetReportableNetwork(entry, out var network))
+                    {
+                        BanChannel.Report(network, TimeSpan.Zero, BanReasons.Manual);
+                    }
                 }
 
                 notice = "All addresses in the list have been firewalled.";
@@ -1804,15 +1821,20 @@ namespace Server.Gumps
 
             if (okay)
             {
-                var firewallEntry = Firewall.ToFirewallEntry(toFirewall);
+                var firewallEntry = toFirewall is IPAddress ip
+                    ? Firewall.CreateSubscriberEntry(ip)
+                    : Firewall.ToFirewallEntry(toFirewall);
                 Firewall.Add(firewallEntry);
 
-                if (firewallEntry.MinIpAddress == firewallEntry.MaxIpAddress)
+                if (Firewall.TryGetReportableNetwork(firewallEntry, out var network))
                 {
-                    BanChannel.Report(firewallEntry.MinIpAddress.ToIpAddress(), TimeSpan.Zero, BanReasons.Manual);
+                    BanChannel.Report(network, TimeSpan.Zero, BanReasons.Manual);
                 }
 
-                notice = $"{toFirewall} : Added to firewall.";
+                var added = toFirewall is IPAddress { AddressFamily: AddressFamily.InterNetworkV6, IsIPv4MappedToIPv6: false } v6
+                    ? v6.ToSubscriberNetwork()
+                    : toFirewall;
+                notice = $"{added} : Added to firewall.";
             }
             else
             {
@@ -1835,9 +1857,9 @@ namespace Server.Gumps
             {
                 var ips = a.LoginIPs;
 
-                if (ips.Length != 0 && Equals(ip, ips[0]) && AccountHandler.IPTable.ContainsKey(ips[0]))
+                if (ips.Length != 0 && Equals(ip, ips[0]))
                 {
-                    --AccountHandler.IPTable[ip];
+                    AccountHandler.DecrementAccountCount(ip);
                 }
 
                 var newList = new List<IPAddress>(ips);
@@ -1867,9 +1889,9 @@ namespace Server.Gumps
             {
                 var ips = a.LoginIPs;
 
-                if (ips.Length != 0 && AccountHandler.IPTable.ContainsKey(ips[0]))
+                if (ips.Length != 0)
                 {
-                    --AccountHandler.IPTable[ips[0]];
+                    AccountHandler.DecrementAccountCount(ips[0]);
                 }
 
                 a.LoginIPs = [];
@@ -3626,10 +3648,10 @@ namespace Server.Gumps
 
                                         Firewall.Add(firewallEntry);
 
-                                        if (firewallEntry.MinIpAddress == firewallEntry.MaxIpAddress)
+                                        if (Firewall.TryGetReportableNetwork(firewallEntry, out var network))
                                         {
                                             BanChannel.Report(
-                                                firewallEntry.MinIpAddress.ToIpAddress(),
+                                                network,
                                                 TimeSpan.Zero,
                                                 BanReasons.Manual
                                             );
@@ -3675,9 +3697,9 @@ namespace Server.Gumps
 
                                         Firewall.Remove(m_State as IFirewallEntry);
 
-                                        if (m_State is IFirewallEntry fe && fe.MinIpAddress == fe.MaxIpAddress)
+                                        if (m_State is IFirewallEntry fe && Firewall.TryGetReportableNetwork(fe, out var network))
                                         {
-                                            BanChannel.Retract(fe.MinIpAddress.ToIpAddress());
+                                            BanChannel.Retract(network);
                                         }
 
                                         from.SendGump(
