@@ -136,6 +136,18 @@ public static class World
     /// <summary>Waits for an in-flight disk write. Returns false if it did not finish in time.</summary>
     public static bool WaitForWriteCompletion(TimeSpan timeout) => _diskWriteHandle.WaitOne(timeout);
 
+    /// <summary>
+    /// Shutdown's wait. Only a save already writing to disk finishes without the game loop; one still
+    /// pending or snapshotting needs the loop, which has stopped, so it is abandoned instead.
+    /// </summary>
+    internal static void WaitForWriteOnShutdown()
+    {
+        if (WorldState == WorldState.WritingSave)
+        {
+            _diskWriteHandle.WaitOne();
+        }
+    }
+
     public static void Broadcast(int hue, bool ascii, string text)
     {
         var length = OutgoingMessagePackets.GetMaxMessageLength(text.Length);
@@ -292,18 +304,33 @@ public static class World
                 worker.AllocateHeap();
             }
 
+            // Disk I/O, so it stays off the loop; a failure here lands in the catch below instead of
+            // crashing the loop with the serialization threads already awake.
+            var snapshotPath = PathUtility.EnsureRandomPath(_tempSavePath);
+
             WakeSerializationThreads();
 
-            // Execute this synchronously so we don't have a race condition
-            Core.LoopContext.Post(() => Core.RequestSnapshot(PathUtility.EnsureRandomPath(_tempSavePath)));
+            Core.LoopContext.Post(() => Core.RequestSnapshot(snapshotPath));
         }
         catch (Exception ex)
         {
             logger.Error(ex, "Preparing to save world {Status}", "failed");
             Persistence.TraceException(ex);
 
-            Core.LoopContext.Post(() => BroadcastStaff(0x35, true, "Preparing for a world save failed! Check the logs!"));
+            // Nothing was frozen or written. Release waiters (shutdown among them) now; the state is the loop's.
+            _diskWriteHandle.Set();
+            Core.LoopContext.Post(AbandonPendingSave);
         }
+    }
+
+    private static void AbandonPendingSave()
+    {
+        if (WorldState == WorldState.PendingSave)
+        {
+            WorldState = WorldState.Running;
+        }
+
+        BroadcastStaff(0x35, true, "Preparing for a world save failed! Check the logs!");
     }
 
     internal static void Snapshot(string snapshotPath)
