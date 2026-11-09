@@ -15,6 +15,7 @@
 
 using System;
 using System.IO;
+using System.Security.Cryptography;
 using Server.Text;
 
 namespace Server;
@@ -59,8 +60,9 @@ public static class PathUtility
 
     public static string EnsureRandomPath(string basePath)
     {
+        // Thread-safe: world saves call this off the loop, where the shared game RNG must not be touched.
         Span<byte> bytes = stackalloc byte[8];
-        Utility.RandomBytes(bytes);
+        RandomNumberGenerator.Fill(bytes);
         return EnsureDirectory(Path.Combine(basePath, bytes.ToHexString()));
     }
 
