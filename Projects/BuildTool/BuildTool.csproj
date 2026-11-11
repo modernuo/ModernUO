@@ -2,12 +2,8 @@
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <ApplicationIcon>build-tool.ico</ApplicationIcon>
-        <!-- One framework, picked by the SDK: older distros still build on SDK 10, and a multi-target
-             project would make every `dotnet run` caller pass a framework. -->
-        <TargetFramework>net10.0</TargetFramework>
-        <TargetFramework Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(NETCoreSdkVersion)', '11.0'))">net11.0</TargetFramework>
-        <LangVersion>14</LangVersion>
-        <ImportDirectoryBuildProps>false</ImportDirectoryBuildProps>
+        <TargetFramework>net11.0</TargetFramework>
+        <LangVersion>15</LangVersion>
         <RootNamespace>BuildTool</RootNamespace>
         <AssemblyName>build-tool</AssemblyName>
         <ImplicitUsings>enable</ImplicitUsings>
@@ -19,7 +15,7 @@
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Microsoft.DotNet.ILCompiler" Version="11.0.0" />
+        <PackageReference Include="Nerdbank.GitVersioning" Version="3.10.94" PrivateAssets="all" />
         <PackageReference Include="Spectre.Console" Version="0.57.2" />
     </ItemGroup>
 </Project>

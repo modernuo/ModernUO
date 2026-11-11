@@ -143,18 +143,40 @@ jobs:
           path: artifacts/
           merge-multiple: true
 
+      - name: Read version
+        id: version
+        run: |
+          chmod +x artifacts/build-tool-linux-x64
+          # 1.0.<height>+<commit> on main; keep major.minor.patch for the tag.
+          version="$(artifacts/build-tool-linux-x64 --version | cut -d+ -f1 | cut -d. -f1-3)"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
       - name: Generate checksums
         run: |
           cd artifacts
           sha256sum build-tool-* > checksums-sha256.txt
 
-      - name: Create or update release
+      - name: Create versioned release
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: build-tool-v${{ steps.version.outputs.version }}
+          target_commitish: ${{ github.sha }}
+          name: Build Tool ${{ steps.version.outputs.version }}
+          body: |
+            NativeAOT-compiled build tool binaries, version ${{ steps.version.outputs.version }}.
+          prerelease: true
+          files: |
+            artifacts/build-tool-*
+            artifacts/checksums-sha256.txt
+          make_latest: false
+
+      - name: Create or update latest release
         uses: softprops/action-gh-release@v3
         with:
           tag_name: build-tool-latest
           name: Build Tool (Latest)
           body: |
-            Latest NativeAOT-compiled build tool binaries.
+            Latest NativeAOT-compiled build tool binaries (${{ steps.version.outputs.version }}).
             These are automatically downloaded by `publish.cmd` / `publish.sh`.
           prerelease: true
           files: |

@@ -194,7 +194,7 @@ public static partial class DotNetSdkManager
             }
         }
 
-        return new Version(10, 0);
+        return new Version(11, 0);
     }
 
     [GeneratedRegex(@"^(\d+\.\d+\.\d+\S*)")]

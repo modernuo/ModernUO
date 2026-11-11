@@ -90,7 +90,7 @@ public static class GuidedMode
 
             // Write the true-color ANSI logo directly (bypasses Spectre markup parsing)
             Console.Write(Branding.UOLogoAnsi);
-            AnsiConsole.Write(new Text($"  {Branding.Subtitle}\n", Branding.DimGoldStyle));
+            AnsiConsole.Write(new Text($"  {Branding.Subtitle}  ·  build-tool {Branding.Version}\n", Branding.DimGoldStyle));
             AnsiConsole.WriteLine();
 
             // Show environment info

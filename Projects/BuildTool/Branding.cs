@@ -52,4 +52,9 @@ public static class Branding
     /// Subtitle shown below the banner.
     /// </summary>
     public const string Subtitle = "Ultima Online Server Emulator";
+
+    /// <summary>
+    /// The tool's own version, computed by Nerdbank.GitVersioning from Projects/BuildTool/version.json.
+    /// </summary>
+    public const string Version = ThisAssembly.AssemblyInformationalVersion;
 }
