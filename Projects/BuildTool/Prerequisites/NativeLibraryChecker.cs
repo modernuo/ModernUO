@@ -17,21 +17,21 @@ public static class NativeLibraryChecker
             "win" => (
                 "Windows",
                 [
-                    ".NET 10 Runtime — https://dotnet.microsoft.com/download/dotnet/10.0",
+                    ".NET 11 Runtime — https://dotnet.microsoft.com/download/dotnet/11.0",
                     "VC++ Redistributable v14 — https://aka.ms/vs/17/release/vc_redist.x64.exe"
                 ]
             ),
             "osx" => (
                 "macOS",
                 [
-                    ".NET 10 Runtime — https://dotnet.microsoft.com/download/dotnet/10.0",
+                    ".NET 11 Runtime — https://dotnet.microsoft.com/download/dotnet/11.0",
                     "brew install icu4c libdeflate zstd argon2"
                 ]
             ),
             "linux" => (
                 "Linux",
                 [
-                    ".NET 10 Runtime — https://dotnet.microsoft.com/download/dotnet/10.0",
+                    ".NET 11 Runtime — https://dotnet.microsoft.com/download/dotnet/11.0",
                     "Debian/Ubuntu:  sudo apt-get install -y libdeflate0 libargon2-1 libicuNN tzdata",
                     "                (libicuNN varies by release, e.g. libicu76 — run build-tool --check-prereqs there for the exact name)",
                     "                (add tzdata-legacy if the shard is configured with an alias such as US/Eastern)",
@@ -39,7 +39,7 @@ public static class NativeLibraryChecker
                     "CentOS:         Also requires epel-release and CRB enabled"
                 ]
             ),
-            _ => ("Unknown", [".NET 10 Runtime — https://dotnet.microsoft.com/download/dotnet/10.0"])
+            _ => ("Unknown", [".NET 11 Runtime — https://dotnet.microsoft.com/download/dotnet/11.0"])
         };
     }
 

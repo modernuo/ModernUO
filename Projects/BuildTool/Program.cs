@@ -15,6 +15,8 @@ if (args is ["--version"])
     return 0;
 }
 
+TerminalProfile.Configure();
+
 var repoRoot = FindRepoRoot();
 if (repoRoot is null)
 {

@@ -89,7 +89,14 @@ public static class GuidedMode
             AnsiConsole.Clear();
 
             // Write the true-color ANSI logo directly (bypasses Spectre markup parsing)
-            Console.Write(Branding.UOLogoAnsi);
+            if (TerminalProfile.IsLegacyConsole)
+            {
+                AnsiConsole.Write(new FigletText("ModernUO").Color(Branding.Gold));
+            }
+            else
+            {
+                Console.Write(Branding.UOLogoAnsi);
+            }
             AnsiConsole.Write(new Text($"  {Branding.Subtitle}  ·  build-tool {Branding.Version}\n", Branding.DimGoldStyle));
             AnsiConsole.WriteLine();
 
