@@ -3826,6 +3826,7 @@ namespace Server.Mobiles
         public override void OnAccessLevelChanged(AccessLevel oldLevel)
         {
             IgnoreMobiles = AccessLevel != AccessLevel.Player;
+            Server.Commands.StaffAccess.OnAccessLevelChanged(this);
         }
 
         public override void OnRawStatChange(StatType stat, int oldValue)
