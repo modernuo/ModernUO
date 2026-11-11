@@ -60,6 +60,11 @@ public abstract partial class DoneQuestCollector : BaseCreature, IRaceChanger
         pm.SendLocalizedMessage(1073645); // You may try this again later...
     }
 
+    public void OnSuccess(PlayerMobile pm, Race targetRace)
+    {
+        RaceChangeConfirmGump.SendSuccessMessage(pm, targetRace);
+    }
+
     public override void OnDoubleClick(Mobile from)
     {
         TryTalkTo(from, true);
