@@ -1,0 +1,5 @@
+<Project>
+    <!-- Stops the search for the repository Directory.Build.props: the servers packages, RID defaults
+         and constants do not belong in this NativeAOT tool. ImportDirectoryBuildProps cannot do this
+         from the project body because MSBuild reads it before the body is evaluated. -->
+</Project>

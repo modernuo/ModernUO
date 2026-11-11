@@ -17,7 +17,8 @@ jobs:
     - name: Install .NET
       uses: actions/setup-dotnet@v6
       with:
-        global-json-file: global.json
+        # global.json's latestMajor installs the LTS SDK: https://github.com/actions/setup-dotnet/issues/802
+        dotnet-version: 11.0.x
     - name: Compute version
       uses: dotnet/nbgv@v0.5.2
       id: nbgv

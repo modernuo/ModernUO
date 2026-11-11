@@ -115,7 +115,7 @@ fi
 echo ""
 echo -e "\033[31mError: Could not run the build tool.\033[0m"
 echo ""
-echo -e "\033[33mThe .NET 10 SDK is required. Download it from:\033[0m"
-echo -e "\033[36m  https://dotnet.microsoft.com/download/dotnet/10.0\033[0m"
+echo -e "\033[33mThe .NET 11 SDK is required. Download it from:\033[0m"
+echo -e "\033[36m  https://dotnet.microsoft.com/download/dotnet/11.0\033[0m"
 echo ""
 exit 1
