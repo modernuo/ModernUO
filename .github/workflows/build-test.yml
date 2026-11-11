@@ -42,8 +42,8 @@ jobs:
     - name: Install .NET
       uses: actions/setup-dotnet@v6
       with:
-        global-json-file: global.json
-        dotnet-channel: STS
+        # global.json's latestMajor installs the LTS SDK: https://github.com/actions/setup-dotnet/issues/802
+        dotnet-version: 11.0.x
     - name: Install Prerequisites
       run: |
         brew update
@@ -161,8 +161,8 @@ jobs:
       - name: Install .NET
         uses: actions/setup-dotnet@v6
         with:
-          global-json-file: global.json
-          dotnet-channel: STS
+          # global.json's latestMajor installs the LTS SDK: https://github.com/actions/setup-dotnet/issues/802
+          dotnet-version: 11.0.x
       - name: Build
         run: dotnet run --project Projects/BuildTool -- --config Release --skip-prereqs
       - name: Test
