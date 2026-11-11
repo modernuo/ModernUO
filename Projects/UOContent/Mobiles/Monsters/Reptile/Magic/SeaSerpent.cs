@@ -42,10 +42,14 @@ namespace Server.Mobiles
             CanSwim = true;
             CantWalk = true;
 
-            if (Utility.RandomDouble() < 0.4)
+            Item reagent = Utility.RandomDouble() switch
             {
-                PackItem(Utility.RandomBool() ? new SulfurousAsh(4) : new BlackPearl(4));
-            }
+                < 0.2 => new SulfurousAsh(4),
+                < 0.4 => new BlackPearl(4),
+                _ => null
+            };
+
+            PackItem(reagent);
 
             PackItem(new RawFishSteak());
 
