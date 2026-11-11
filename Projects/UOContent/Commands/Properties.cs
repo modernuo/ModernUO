@@ -105,6 +105,15 @@ namespace Server.Commands
         public static PropertyInfo GetPropertyInfo(ref object obj, PropertyInfo[] chain, out string failReason) =>
             WalkChain(null, ref obj, chain, out failReason);
 
+        /// <summary>
+        /// Walks <paramref name="chain"/> for <paramref name="from"/>, refusing to pass through anything a
+        /// higher privileged mobile owns. On success <paramref name="obj"/> is the object holding the returned
+        /// property; callers that go on to read or write that property must still check it.
+        /// </summary>
+        public static PropertyInfo GetPropertyInfo(
+            Mobile from, ref object obj, PropertyInfo[] chain, out string failReason
+        ) => WalkChain(from, ref obj, chain, out failReason);
+
         // When writer is set, the walk refuses to pass through anything a higher privileged mobile owns.
         private static PropertyInfo WalkChain(Mobile writer, ref object obj, PropertyInfo[] chain, out string failReason)
         {
@@ -374,7 +383,7 @@ namespace Server.Commands
             return p == null ? failReason : InternalSetValue(from, logObject, o, p, name, value, true);
         }
 
-        private const string HigherPrivilegedMessage = "You cannot modify a higher privileged mobile.";
+        internal const string HigherPrivilegedMessage = "You cannot modify a higher privileged mobile.";
 
         /// <summary>
         /// True when <paramref name="obj"/> is, or is an item held by, a mobile whose own or account
