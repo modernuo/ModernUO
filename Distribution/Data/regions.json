@@ -131,6 +131,167 @@
     "Music": "Britain1"
   },
   {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
+    "Name": "the Britain Bakery",
+    "Priority": 50,
+    "Area": [{"x1": 1446, "y1": 1613, "x2": 1454, "y2": 1621}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
+    "Name": "the Britain Butcher",
+    "Priority": 50,
+    "Area": [{"x1": 1445, "y1": 1719, "x2": 1453, "y2": 1727}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
+    "Name": "the Britain Blacksmith",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1416, "y1": 1543, "x2": 1422, "y2": 1551},
+      {"x1": 1358, "y1": 1570, "x2": 1366, "y2": 1578},
+      {"x1": 1477, "y1": 1580, "x2": 1485, "y2": 1588},
+      {"x1": 1443, "y1": 1643, "x2": 1451, "y2": 1651},
+      {"x1": 1633, "y1": 1689, "x2": 1641, "y2": 1697},
+      {"x1": 1345, "y1": 1774, "x2": 1353, "y2": 1782}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
+    "Name": "the Britain Bowyer",
+    "Priority": 50,
+    "Area": [{"x1": 1466, "y1": 1574, "x2": 1474, "y2": 1582}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
+    "Name": "the Britain Tinker",
+    "Priority": 50,
+    "Area": [{"x1": 1418, "y1": 1650, "x2": 1426, "y2": 1658}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
+    "Name": "the Britain Tailor",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1385, "y1": 1584, "x2": 1392, "y2": 1592},
+      {"x1": 1543, "y1": 1655, "x2": 1551, "y2": 1663},
+      {"x1": 1463, "y1": 1682, "x2": 1471, "y2": 1690}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
+    "Name": "the Britain Mage",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1481, "y1": 1546, "x2": 1489, "y2": 1554},
+      {"x1": 1586, "y1": 1650, "x2": 1594, "y2": 1658},
+      {"x1": 1494, "y1": 1655, "x2": 1502, "y2": 1663},
+      {"x1": 1401, "y1": 1806, "x2": 1409, "y2": 1814}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
+    "Name": "the Britain Provisioner",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1465, "y1": 1664, "x2": 1473, "y2": 1672},
+      {"x1": 1598, "y1": 1708, "x2": 1606, "y2": 1716}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
+    "Name": "the Britain Jeweler",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1646, "y1": 1638, "x2": 1654, "y2": 1646},
+      {"x1": 1447, "y1": 1675, "x2": 1455, "y2": 1683}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
+    "Name": "the Britain Bank",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1646, "y1": 1604, "x2": 1654, "y2": 1612},
+      {"x1": 1421, "y1": 1686, "x2": 1429, "y2": 1694}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
+    "Name": "the Britain Healer",
+    "Priority": 50,
+    "Area": [{"x1": 1467, "y1": 1607, "x2": 1475, "y2": 1615}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
+    "Name": "the Britain Carpenter",
+    "Priority": 50,
+    "Area": [{"x1": 1426, "y1": 1593, "x2": 1434, "y2": 1601}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
+    "Name": "the Britain Scribe",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1405, "y1": 1586, "x2": 1413, "y2": 1594},
+      {"x1": 1490, "y1": 1711, "x2": 1498, "y2": 1719}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
+    "Name": "the Britain Bard",
+    "Priority": 50,
+    "Area": [{"x1": 1451, "y1": 1553, "x2": 1459, "y2": 1561}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
+    "Name": "the Britain Tanner",
+    "Priority": 50,
+    "Area": [{"x1": 1427, "y1": 1608, "x2": 1435, "y2": 1616}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
+    "Name": "the Britain Docks",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1432, "y1": 1748, "x2": 1440, "y2": 1756},
+      {"x1": 1416, "y1": 1750, "x2": 1420, "y2": 1758},
+      {"x1": 1434, "y1": 1757, "x2": 1442, "y2": 1765},
+      {"x1": 1466, "y1": 1761, "x2": 1474, "y2": 1769}
+    ]
+  },
+  {
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Felucca",
@@ -314,6 +475,84 @@
     "Music": "Minoc"
   },
   {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Minoc", "Map": "Felucca" },
+    "Name": "the Minoc Butcher",
+    "Priority": 50,
+    "Area": [{"x1": 2434, "y1": 406, "x2": 2442, "y2": 414}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Minoc", "Map": "Felucca" },
+    "Name": "the Minoc Blacksmith",
+    "Priority": 50,
+    "Area": [
+      {"x1": 2467, "y1": 560, "x2": 2475, "y2": 568},
+      {"x1": 2529, "y1": 568, "x2": 2537, "y2": 576}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Minoc", "Map": "Felucca" },
+    "Name": "the Minoc Tinker",
+    "Priority": 50,
+    "Area": [{"x1": 2457, "y1": 453, "x2": 2465, "y2": 461}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Minoc", "Map": "Felucca" },
+    "Name": "the Minoc Provisioner",
+    "Priority": 50,
+    "Area": [
+      {"x1": 2446, "y1": 424, "x2": 2454, "y2": 432},
+      {"x1": 2522, "y1": 542, "x2": 2530, "y2": 550}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Minoc", "Map": "Felucca" },
+    "Name": "the Minoc Bank",
+    "Priority": 50,
+    "Area": [{"x1": 2499, "y1": 548, "x2": 2507, "y2": 556}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Minoc", "Map": "Felucca" },
+    "Name": "the Minoc Healer",
+    "Priority": 50,
+    "Area": [{"x1": 2573, "y1": 595, "x2": 2581, "y2": 603}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Minoc", "Map": "Felucca" },
+    "Name": "the Minoc Carpenter",
+    "Priority": 50,
+    "Area": [{"x1": 2509, "y1": 473, "x2": 2517, "y2": 481}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Minoc", "Map": "Felucca" },
+    "Name": "the Minoc Bard",
+    "Priority": 50,
+    "Area": [{"x1": 2420, "y1": 551, "x2": 2428, "y2": 559}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Minoc", "Map": "Felucca" },
+    "Name": "the Minoc Tanner",
+    "Priority": 50,
+    "Area": [{"x1": 2518, "y1": 520, "x2": 2526, "y2": 528}]
+  },
+  {
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Felucca",
@@ -372,6 +611,122 @@
     "Music": "Trinsic"
   },
   {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Trinsic", "Map": "Felucca" },
+    "Name": "the Trinsic Bakery",
+    "Priority": 50,
+    "Area": [{"x1": 1876, "y1": 2798, "x2": 1884, "y2": 2806}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Trinsic", "Map": "Felucca" },
+    "Name": "the Trinsic Butcher",
+    "Priority": 50,
+    "Area": [{"x1": 1986, "y1": 2885, "x2": 1994, "y2": 2893}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Trinsic", "Map": "Felucca" },
+    "Name": "the Trinsic Blacksmith",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1891, "y1": 2649, "x2": 1899, "y2": 2657},
+      {"x1": 1931, "y1": 2762, "x2": 1939, "y2": 2770}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Trinsic", "Map": "Felucca" },
+    "Name": "the Trinsic Tinker",
+    "Priority": 50,
+    "Area": [{"x1": 1844, "y1": 2676, "x2": 1852, "y2": 2684}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Trinsic", "Map": "Felucca" },
+    "Name": "the Trinsic Tailor",
+    "Priority": 50,
+    "Area": [{"x1": 1977, "y1": 2834, "x2": 1985, "y2": 2842}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Trinsic", "Map": "Felucca" },
+    "Name": "the Trinsic Mage",
+    "Priority": 50,
+    "Area": [{"x1": 1842, "y1": 2711, "x2": 1850, "y2": 2719}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Trinsic", "Map": "Felucca" },
+    "Name": "the Trinsic Provisioner",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1846, "y1": 2792, "x2": 1854, "y2": 2800},
+      {"x1": 1848, "y1": 2827, "x2": 1856, "y2": 2835}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Trinsic", "Map": "Felucca" },
+    "Name": "the Trinsic Jeweler",
+    "Priority": 50,
+    "Area": [{"x1": 1893, "y1": 2801, "x2": 1901, "y2": 2809}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Trinsic", "Map": "Felucca" },
+    "Name": "the Trinsic Bank",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1893, "y1": 2680, "x2": 1901, "y2": 2688},
+      {"x1": 1809, "y1": 2821, "x2": 1816, "y2": 2829}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Trinsic", "Map": "Felucca" },
+    "Name": "the Trinsic Healer",
+    "Priority": 50,
+    "Area": [{"x1": 1907, "y1": 2801, "x2": 1915, "y2": 2809}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Trinsic", "Map": "Felucca" },
+    "Name": "the Trinsic Scribe",
+    "Priority": 50,
+    "Area": [{"x1": 1998, "y1": 2717, "x2": 2006, "y2": 2725}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Trinsic", "Map": "Felucca" },
+    "Name": "the Trinsic Tanner",
+    "Priority": 50,
+    "Area": [{"x1": 1987, "y1": 2863, "x2": 1995, "y2": 2871}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Trinsic", "Map": "Felucca" },
+    "Name": "the Trinsic Docks",
+    "Priority": 50,
+    "Area": [
+      {"x1": 2022, "y1": 2841, "x2": 2030, "y2": 2849},
+      {"x1": 2068, "y1": 2852, "x2": 2076, "y2": 2860}
+    ]
+  },
+  {
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Felucca",
@@ -399,6 +754,136 @@
     ],
     "GoLocation": {"x": 2899, "y": 676, "z": 0},
     "Music": "Vesper"
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Vesper", "Map": "Felucca" },
+    "Name": "the Vesper Bakery",
+    "Priority": 50,
+    "Area": [{"x1": 2994, "y1": 756, "x2": 3002, "y2": 764}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Vesper", "Map": "Felucca" },
+    "Name": "the Vesper Butcher",
+    "Priority": 50,
+    "Area": [
+      {"x1": 3013, "y1": 757, "x2": 3021, "y2": 765},
+      {"x1": 2983, "y1": 773, "x2": 2991, "y2": 781},
+      {"x1": 3008, "y1": 776, "x2": 3016, "y2": 784}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Vesper", "Map": "Felucca" },
+    "Name": "the Vesper Blacksmith",
+    "Priority": 50,
+    "Area": [
+      {"x1": 2831, "y1": 801, "x2": 2839, "y2": 809},
+      {"x1": 2861, "y1": 848, "x2": 2869, "y2": 856}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Vesper", "Map": "Felucca" },
+    "Name": "the Vesper Bowyer",
+    "Priority": 50,
+    "Area": [{"x1": 2857, "y1": 808, "x2": 2865, "y2": 816}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Vesper", "Map": "Felucca" },
+    "Name": "the Vesper Tinker",
+    "Priority": 50,
+    "Area": [{"x1": 2895, "y1": 786, "x2": 2903, "y2": 794}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Vesper", "Map": "Felucca" },
+    "Name": "the Vesper Tailor",
+    "Priority": 50,
+    "Area": [
+      {"x1": 2957, "y1": 617, "x2": 2965, "y2": 625},
+      {"x1": 2836, "y1": 881, "x2": 2844, "y2": 889}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Vesper", "Map": "Felucca" },
+    "Name": "the Vesper Mage",
+    "Priority": 50,
+    "Area": [
+      {"x1": 2886, "y1": 648, "x2": 2894, "y2": 655},
+      {"x1": 2914, "y1": 668, "x2": 2922, "y2": 676},
+      {"x1": 2988, "y1": 840, "x2": 2996, "y2": 848}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Vesper", "Map": "Felucca" },
+    "Name": "the Vesper Provisioner",
+    "Priority": 50,
+    "Area": [{"x1": 2982, "y1": 633, "x2": 2990, "y2": 641}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Vesper", "Map": "Felucca" },
+    "Name": "the Vesper Jeweler",
+    "Priority": 50,
+    "Area": [{"x1": 2878, "y1": 719, "x2": 2886, "y2": 727}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Vesper", "Map": "Felucca" },
+    "Name": "the Vesper Bank",
+    "Priority": 50,
+    "Area": [{"x1": 2877, "y1": 680, "x2": 2885, "y2": 688}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Vesper", "Map": "Felucca" },
+    "Name": "the Vesper Healer",
+    "Priority": 50,
+    "Area": [{"x1": 2916, "y1": 852, "x2": 2924, "y2": 860}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Vesper", "Map": "Felucca" },
+    "Name": "the Vesper Carpenter",
+    "Priority": 50,
+    "Area": [{"x1": 2913, "y1": 794, "x2": 2921, "y2": 802}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Vesper", "Map": "Felucca" },
+    "Name": "the Vesper Tanner",
+    "Priority": 50,
+    "Area": [{"x1": 2856, "y1": 995, "x2": 2864, "y2": 1003}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Vesper", "Map": "Felucca" },
+    "Name": "the Vesper Docks",
+    "Priority": 50,
+    "Area": [
+      {"x1": 2959, "y1": 809, "x2": 2967, "y2": 817},
+      {"x1": 2991, "y1": 811, "x2": 2999, "y2": 819},
+      {"x1": 3030, "y1": 823, "x2": 3038, "y2": 831}
+    ]
   },
   {
     "$type": "TownRegion",
@@ -1302,6 +1787,167 @@
     "Music": "Britain1"
   },
   {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
+    "Name": "the Britain Bakery",
+    "Priority": 50,
+    "Area": [{"x1": 1446, "y1": 1613, "x2": 1454, "y2": 1621}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
+    "Name": "the Britain Butcher",
+    "Priority": 50,
+    "Area": [{"x1": 1445, "y1": 1719, "x2": 1453, "y2": 1727}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
+    "Name": "the Britain Blacksmith",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1416, "y1": 1543, "x2": 1422, "y2": 1551},
+      {"x1": 1358, "y1": 1570, "x2": 1366, "y2": 1578},
+      {"x1": 1477, "y1": 1580, "x2": 1485, "y2": 1588},
+      {"x1": 1443, "y1": 1643, "x2": 1451, "y2": 1651},
+      {"x1": 1633, "y1": 1689, "x2": 1641, "y2": 1697},
+      {"x1": 1345, "y1": 1774, "x2": 1353, "y2": 1782}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
+    "Name": "the Britain Bowyer",
+    "Priority": 50,
+    "Area": [{"x1": 1466, "y1": 1574, "x2": 1474, "y2": 1582}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
+    "Name": "the Britain Tinker",
+    "Priority": 50,
+    "Area": [{"x1": 1418, "y1": 1650, "x2": 1426, "y2": 1658}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
+    "Name": "the Britain Tailor",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1385, "y1": 1584, "x2": 1392, "y2": 1592},
+      {"x1": 1543, "y1": 1655, "x2": 1551, "y2": 1663},
+      {"x1": 1463, "y1": 1682, "x2": 1471, "y2": 1690}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
+    "Name": "the Britain Mage",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1481, "y1": 1546, "x2": 1489, "y2": 1554},
+      {"x1": 1586, "y1": 1650, "x2": 1594, "y2": 1658},
+      {"x1": 1494, "y1": 1655, "x2": 1502, "y2": 1663},
+      {"x1": 1401, "y1": 1806, "x2": 1409, "y2": 1814}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
+    "Name": "the Britain Provisioner",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1465, "y1": 1664, "x2": 1473, "y2": 1672},
+      {"x1": 1598, "y1": 1708, "x2": 1606, "y2": 1716}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
+    "Name": "the Britain Jeweler",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1646, "y1": 1638, "x2": 1654, "y2": 1646},
+      {"x1": 1447, "y1": 1675, "x2": 1455, "y2": 1683}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
+    "Name": "the Britain Bank",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1646, "y1": 1604, "x2": 1654, "y2": 1612},
+      {"x1": 1421, "y1": 1686, "x2": 1429, "y2": 1694}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
+    "Name": "the Britain Healer",
+    "Priority": 50,
+    "Area": [{"x1": 1467, "y1": 1607, "x2": 1475, "y2": 1615}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
+    "Name": "the Britain Carpenter",
+    "Priority": 50,
+    "Area": [{"x1": 1426, "y1": 1593, "x2": 1434, "y2": 1601}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
+    "Name": "the Britain Scribe",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1405, "y1": 1586, "x2": 1413, "y2": 1594},
+      {"x1": 1490, "y1": 1711, "x2": 1498, "y2": 1719}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
+    "Name": "the Britain Bard",
+    "Priority": 50,
+    "Area": [{"x1": 1451, "y1": 1553, "x2": 1459, "y2": 1561}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
+    "Name": "the Britain Tanner",
+    "Priority": 50,
+    "Area": [{"x1": 1427, "y1": 1608, "x2": 1435, "y2": 1616}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
+    "Name": "the Britain Docks",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1432, "y1": 1748, "x2": 1440, "y2": 1756},
+      {"x1": 1416, "y1": 1750, "x2": 1420, "y2": 1758},
+      {"x1": 1434, "y1": 1757, "x2": 1442, "y2": 1765},
+      {"x1": 1466, "y1": 1761, "x2": 1474, "y2": 1769}
+    ]
+  },
+  {
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Trammel",
@@ -1483,6 +2129,84 @@
     ],
     "GoLocation": {"x": 2466, "y": 544, "z": 0},
     "Music": "Minoc"
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Minoc", "Map": "Trammel" },
+    "Name": "the Minoc Butcher",
+    "Priority": 50,
+    "Area": [{"x1": 2434, "y1": 406, "x2": 2442, "y2": 414}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Minoc", "Map": "Trammel" },
+    "Name": "the Minoc Blacksmith",
+    "Priority": 50,
+    "Area": [
+      {"x1": 2467, "y1": 560, "x2": 2475, "y2": 568},
+      {"x1": 2529, "y1": 568, "x2": 2537, "y2": 576}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Minoc", "Map": "Trammel" },
+    "Name": "the Minoc Tinker",
+    "Priority": 50,
+    "Area": [{"x1": 2457, "y1": 453, "x2": 2465, "y2": 461}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Minoc", "Map": "Trammel" },
+    "Name": "the Minoc Provisioner",
+    "Priority": 50,
+    "Area": [
+      {"x1": 2446, "y1": 424, "x2": 2454, "y2": 432},
+      {"x1": 2522, "y1": 542, "x2": 2530, "y2": 550}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Minoc", "Map": "Trammel" },
+    "Name": "the Minoc Bank",
+    "Priority": 50,
+    "Area": [{"x1": 2499, "y1": 548, "x2": 2507, "y2": 556}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Minoc", "Map": "Trammel" },
+    "Name": "the Minoc Healer",
+    "Priority": 50,
+    "Area": [{"x1": 2573, "y1": 595, "x2": 2581, "y2": 603}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Minoc", "Map": "Trammel" },
+    "Name": "the Minoc Carpenter",
+    "Priority": 50,
+    "Area": [{"x1": 2509, "y1": 473, "x2": 2517, "y2": 481}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Minoc", "Map": "Trammel" },
+    "Name": "the Minoc Bard",
+    "Priority": 50,
+    "Area": [{"x1": 2420, "y1": 551, "x2": 2428, "y2": 559}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Minoc", "Map": "Trammel" },
+    "Name": "the Minoc Tanner",
+    "Priority": 50,
+    "Area": [{"x1": 2518, "y1": 520, "x2": 2526, "y2": 528}]
   },
   {
     "$type": "TownRegion",
@@ -2021,6 +2745,122 @@
     "Music": "Trinsic"
   },
   {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Trinsic", "Map": "Trammel" },
+    "Name": "the Trinsic Bakery",
+    "Priority": 50,
+    "Area": [{"x1": 1876, "y1": 2798, "x2": 1884, "y2": 2806}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Trinsic", "Map": "Trammel" },
+    "Name": "the Trinsic Butcher",
+    "Priority": 50,
+    "Area": [{"x1": 1986, "y1": 2885, "x2": 1994, "y2": 2893}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Trinsic", "Map": "Trammel" },
+    "Name": "the Trinsic Blacksmith",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1891, "y1": 2649, "x2": 1899, "y2": 2657},
+      {"x1": 1931, "y1": 2762, "x2": 1939, "y2": 2770}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Trinsic", "Map": "Trammel" },
+    "Name": "the Trinsic Tinker",
+    "Priority": 50,
+    "Area": [{"x1": 1844, "y1": 2676, "x2": 1852, "y2": 2684}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Trinsic", "Map": "Trammel" },
+    "Name": "the Trinsic Tailor",
+    "Priority": 50,
+    "Area": [{"x1": 1977, "y1": 2834, "x2": 1985, "y2": 2842}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Trinsic", "Map": "Trammel" },
+    "Name": "the Trinsic Mage",
+    "Priority": 50,
+    "Area": [{"x1": 1842, "y1": 2711, "x2": 1850, "y2": 2719}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Trinsic", "Map": "Trammel" },
+    "Name": "the Trinsic Provisioner",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1846, "y1": 2792, "x2": 1854, "y2": 2800},
+      {"x1": 1848, "y1": 2827, "x2": 1856, "y2": 2835}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Trinsic", "Map": "Trammel" },
+    "Name": "the Trinsic Jeweler",
+    "Priority": 50,
+    "Area": [{"x1": 1893, "y1": 2801, "x2": 1901, "y2": 2809}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Trinsic", "Map": "Trammel" },
+    "Name": "the Trinsic Bank",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1893, "y1": 2680, "x2": 1901, "y2": 2688},
+      {"x1": 1809, "y1": 2821, "x2": 1816, "y2": 2829}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Trinsic", "Map": "Trammel" },
+    "Name": "the Trinsic Healer",
+    "Priority": 50,
+    "Area": [{"x1": 1907, "y1": 2801, "x2": 1915, "y2": 2809}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Trinsic", "Map": "Trammel" },
+    "Name": "the Trinsic Scribe",
+    "Priority": 50,
+    "Area": [{"x1": 1998, "y1": 2717, "x2": 2006, "y2": 2725}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Trinsic", "Map": "Trammel" },
+    "Name": "the Trinsic Tanner",
+    "Priority": 50,
+    "Area": [{"x1": 1987, "y1": 2863, "x2": 1995, "y2": 2871}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Trinsic", "Map": "Trammel" },
+    "Name": "the Trinsic Docks",
+    "Priority": 50,
+    "Area": [
+      {"x1": 2022, "y1": 2841, "x2": 2030, "y2": 2849},
+      {"x1": 2068, "y1": 2852, "x2": 2076, "y2": 2860}
+    ]
+  },
+  {
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Trammel",
@@ -2048,6 +2888,136 @@
     ],
     "GoLocation": {"x": 2899, "y": 676, "z": 0},
     "Music": "Vesper"
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Vesper", "Map": "Trammel" },
+    "Name": "the Vesper Bakery",
+    "Priority": 50,
+    "Area": [{"x1": 2994, "y1": 756, "x2": 3002, "y2": 764}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Vesper", "Map": "Trammel" },
+    "Name": "the Vesper Butcher",
+    "Priority": 50,
+    "Area": [
+      {"x1": 3013, "y1": 757, "x2": 3021, "y2": 765},
+      {"x1": 2983, "y1": 773, "x2": 2991, "y2": 781},
+      {"x1": 3008, "y1": 776, "x2": 3016, "y2": 784}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Vesper", "Map": "Trammel" },
+    "Name": "the Vesper Blacksmith",
+    "Priority": 50,
+    "Area": [
+      {"x1": 2831, "y1": 801, "x2": 2839, "y2": 809},
+      {"x1": 2861, "y1": 848, "x2": 2869, "y2": 856}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Vesper", "Map": "Trammel" },
+    "Name": "the Vesper Bowyer",
+    "Priority": 50,
+    "Area": [{"x1": 2857, "y1": 808, "x2": 2865, "y2": 816}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Vesper", "Map": "Trammel" },
+    "Name": "the Vesper Tinker",
+    "Priority": 50,
+    "Area": [{"x1": 2895, "y1": 786, "x2": 2903, "y2": 794}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Vesper", "Map": "Trammel" },
+    "Name": "the Vesper Tailor",
+    "Priority": 50,
+    "Area": [
+      {"x1": 2957, "y1": 617, "x2": 2965, "y2": 625},
+      {"x1": 2836, "y1": 881, "x2": 2844, "y2": 889}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Vesper", "Map": "Trammel" },
+    "Name": "the Vesper Mage",
+    "Priority": 50,
+    "Area": [
+      {"x1": 2886, "y1": 648, "x2": 2894, "y2": 655},
+      {"x1": 2914, "y1": 668, "x2": 2922, "y2": 676},
+      {"x1": 2988, "y1": 840, "x2": 2996, "y2": 848}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Vesper", "Map": "Trammel" },
+    "Name": "the Vesper Provisioner",
+    "Priority": 50,
+    "Area": [{"x1": 2982, "y1": 633, "x2": 2990, "y2": 641}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Vesper", "Map": "Trammel" },
+    "Name": "the Vesper Jeweler",
+    "Priority": 50,
+    "Area": [{"x1": 2878, "y1": 719, "x2": 2886, "y2": 727}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Vesper", "Map": "Trammel" },
+    "Name": "the Vesper Bank",
+    "Priority": 50,
+    "Area": [{"x1": 2877, "y1": 680, "x2": 2885, "y2": 688}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Vesper", "Map": "Trammel" },
+    "Name": "the Vesper Healer",
+    "Priority": 50,
+    "Area": [{"x1": 2916, "y1": 852, "x2": 2924, "y2": 860}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Vesper", "Map": "Trammel" },
+    "Name": "the Vesper Carpenter",
+    "Priority": 50,
+    "Area": [{"x1": 2913, "y1": 794, "x2": 2921, "y2": 802}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Vesper", "Map": "Trammel" },
+    "Name": "the Vesper Tanner",
+    "Priority": 50,
+    "Area": [{"x1": 2856, "y1": 995, "x2": 2864, "y2": 1003}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Vesper", "Map": "Trammel" },
+    "Name": "the Vesper Docks",
+    "Priority": 50,
+    "Area": [
+      {"x1": 2959, "y1": 809, "x2": 2967, "y2": 817},
+      {"x1": 2991, "y1": 811, "x2": 2999, "y2": 819},
+      {"x1": 3030, "y1": 823, "x2": 3038, "y2": 831}
+    ]
   },
   {
     "$type": "TownRegion",
@@ -4198,5 +5168,2533 @@
     "Priority": 50,
     "Area": [{ "x1": 435, "y1": 2270, "z1": -25, "x2": 675, "y2": 2490, "z2": 128 }],
     "GoLocation": { "x": 542, "y": 2473, "z": 0 }
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Buccaneer's Den", "Map": "Trammel" },
+    "Name": "the Buccaneer's Den Bank",
+    "Priority": 50,
+    "Area": [{"x1": 2727, "y1": 2188, "x2": 2735, "y2": 2196}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Buccaneer's Den", "Map": "Trammel" },
+    "Name": "the Buccaneer's Den Blacksmith",
+    "Priority": 50,
+    "Area": [{"x1": 2630, "y1": 2079, "x2": 2638, "y2": 2087}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Buccaneer's Den", "Map": "Trammel" },
+    "Name": "the Buccaneer's Den Carpenter",
+    "Priority": 50,
+    "Area": [{"x1": 2623, "y1": 2096, "x2": 2631, "y2": 2104}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Buccaneer's Den", "Map": "Trammel" },
+    "Name": "the Buccaneer's Den Docks",
+    "Priority": 50,
+    "Area": [{"x1": 2748, "y1": 2151, "x2": 2756, "y2": 2159}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Buccaneer's Den", "Map": "Trammel" },
+    "Name": "the Buccaneer's Den Healer",
+    "Priority": 50,
+    "Area": [{"x1": 2705, "y1": 2126, "x2": 2713, "y2": 2134}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Buccaneer's Den", "Map": "Trammel" },
+    "Name": "the Buccaneer's Den Provisioner",
+    "Priority": 50,
+    "Area": [{"x1": 2733, "y1": 2246, "x2": 2741, "y2": 2254}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Buccaneer's Den", "Map": "Trammel" },
+    "Name": "the Buccaneer's Den Tanner",
+    "Priority": 50,
+    "Area": [{"x1": 2703, "y1": 2174, "x2": 2711, "y2": 2182}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Buccaneer's Den", "Map": "Trammel" },
+    "Name": "the Buccaneer's Den Thief Guild",
+    "Priority": 50,
+    "Area": [{"x1": 2655, "y1": 2190, "x2": 2663, "y2": 2198}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Cove", "Map": "Trammel" },
+    "Name": "the Cove Blacksmith",
+    "Priority": 50,
+    "Area": [{"x1": 2212, "y1": 1163, "x2": 2220, "y2": 1171}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Cove", "Map": "Trammel" },
+    "Name": "the Cove Docks",
+    "Priority": 50,
+    "Area": [{"x1": 2252, "y1": 1177, "x2": 2260, "y2": 1185}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Cove", "Map": "Trammel" },
+    "Name": "the Cove Healer",
+    "Priority": 50,
+    "Area": [{"x1": 2241, "y1": 1227, "x2": 2249, "y2": 1235}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Cove", "Map": "Trammel" },
+    "Name": "the Cove Provisioner",
+    "Priority": 50,
+    "Area": [{"x1": 2212, "y1": 1188, "x2": 2220, "y2": 1196}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Delucia", "Map": "Trammel" },
+    "Name": "the Delucia Bank",
+    "Priority": 50,
+    "Area": [{"x1": 5271, "y1": 3973, "x2": 5279, "y2": 3981}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Delucia", "Map": "Trammel" },
+    "Name": "the Delucia Blacksmith",
+    "Priority": 50,
+    "Area": [{"x1": 5221, "y1": 3996, "x2": 5229, "y2": 4004}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Delucia", "Map": "Trammel" },
+    "Name": "the Delucia Healer",
+    "Priority": 50,
+    "Area": [{"x1": 5187, "y1": 3985, "x2": 5195, "y2": 3993}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Delucia", "Map": "Trammel" },
+    "Name": "the Delucia Mage",
+    "Priority": 50,
+    "Area": [{"x1": 5292, "y1": 3974, "x2": 5300, "y2": 3982}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Delucia", "Map": "Trammel" },
+    "Name": "the Delucia Provisioner",
+    "Priority": 50,
+    "Area": [{"x1": 5215, "y1": 4008, "x2": 5223, "y2": 4016}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Delucia", "Map": "Trammel" },
+    "Name": "the Delucia Stables",
+    "Priority": 50,
+    "Area": [{"x1": 5293, "y1": 4003, "x2": 5301, "y2": 4011}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Delucia", "Map": "Trammel" },
+    "Name": "the Delucia Tailor",
+    "Priority": 50,
+    "Area": [{"x1": 5230, "y1": 4021, "x2": 5238, "y2": 4029}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Jhelom", "Map": "Trammel" },
+    "Name": "the Jhelom Bakery",
+    "Priority": 50,
+    "Area": [{"x1": 1360, "y1": 3728, "x2": 1368, "y2": 3736}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Jhelom", "Map": "Trammel" },
+    "Name": "the Jhelom Bank",
+    "Priority": 50,
+    "Area": [{"x1": 1313, "y1": 3769, "x2": 1321, "y2": 3777}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Jhelom", "Map": "Trammel" },
+    "Name": "the Jhelom Blacksmith",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1350, "y1": 3750, "x2": 1358, "y2": 3758},
+      {"x1": 1391, "y1": 3701, "x2": 1399, "y2": 3709},
+      {"x1": 1415, "y1": 3855, "x2": 1423, "y2": 3863},
+      {"x1": 1437, "y1": 3715, "x2": 1445, "y2": 3723},
+      {"x1": 1452, "y1": 3846, "x2": 1460, "y2": 3854},
+      {"x1": 1471, "y1": 3861, "x2": 1479, "y2": 3869}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Jhelom", "Map": "Trammel" },
+    "Name": "the Jhelom Butcher",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1382, "y1": 3821, "x2": 1390, "y2": 3829},
+      {"x1": 1446, "y1": 4022, "x2": 1454, "y2": 4030}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Jhelom", "Map": "Trammel" },
+    "Name": "the Jhelom Carpenter",
+    "Priority": 50,
+    "Area": [{"x1": 1431, "y1": 3816, "x2": 1439, "y2": 3824}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Jhelom", "Map": "Trammel" },
+    "Name": "the Jhelom Docks",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1368, "y1": 3904, "x2": 1376, "y2": 3912},
+      {"x1": 1433, "y1": 3746, "x2": 1441, "y2": 3754}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Jhelom", "Map": "Trammel" },
+    "Name": "the Jhelom Healer",
+    "Priority": 50,
+    "Area": [{"x1": 1412, "y1": 3775, "x2": 1420, "y2": 3783}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Jhelom", "Map": "Trammel" },
+    "Name": "the Jhelom Jeweler",
+    "Priority": 50,
+    "Area": [{"x1": 1443, "y1": 3977, "x2": 1451, "y2": 3985}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Jhelom", "Map": "Trammel" },
+    "Name": "the Jhelom Mage",
+    "Priority": 50,
+    "Area": [{"x1": 1421, "y1": 3977, "x2": 1429, "y2": 3985}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Jhelom", "Map": "Trammel" },
+    "Name": "the Jhelom Provisioner",
+    "Priority": 50,
+    "Area": [{"x1": 1438, "y1": 3798, "x2": 1446, "y2": 3806}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Jhelom", "Map": "Trammel" },
+    "Name": "the Jhelom Scribe",
+    "Priority": 50,
+    "Area": [{"x1": 1383, "y1": 3767, "x2": 1391, "y2": 3775}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Jhelom", "Map": "Trammel" },
+    "Name": "the Jhelom Tailor",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1352, "y1": 3776, "x2": 1360, "y2": 3784},
+      {"x1": 1450, "y1": 3999, "x2": 1458, "y2": 4007}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Jhelom", "Map": "Trammel" },
+    "Name": "the Jhelom Tinker",
+    "Priority": 50,
+    "Area": [{"x1": 1400, "y1": 3798, "x2": 1408, "y2": 3806}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Magincia", "Map": "Trammel" },
+    "Name": "the Magincia Bakery",
+    "Priority": 50,
+    "Area": [
+      {"x1": 3679, "y1": 2167, "x2": 3687, "y2": 2175},
+      {"x1": 3751, "y1": 2223, "x2": 3759, "y2": 2231}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Magincia", "Map": "Trammel" },
+    "Name": "the Magincia Bank",
+    "Priority": 50,
+    "Area": [{"x1": 3730, "y1": 2145, "x2": 3738, "y2": 2153}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Magincia", "Map": "Trammel" },
+    "Name": "the Magincia Blacksmith",
+    "Priority": 50,
+    "Area": [{"x1": 3661, "y1": 2136, "x2": 3669, "y2": 2144}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Magincia", "Map": "Trammel" },
+    "Name": "the Magincia Docks",
+    "Priority": 50,
+    "Area": [
+      {"x1": 3670, "y1": 2285, "x2": 3678, "y2": 2293},
+      {"x1": 3679, "y1": 2248, "x2": 3687, "y2": 2256}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Magincia", "Map": "Trammel" },
+    "Name": "the Magincia Healer",
+    "Priority": 50,
+    "Area": [{"x1": 3683, "y1": 2223, "x2": 3691, "y2": 2231}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Magincia", "Map": "Trammel" },
+    "Name": "the Magincia Jeweler",
+    "Priority": 50,
+    "Area": [{"x1": 3657, "y1": 2179, "x2": 3665, "y2": 2187}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Magincia", "Map": "Trammel" },
+    "Name": "the Magincia Mage",
+    "Priority": 50,
+    "Area": [{"x1": 3695, "y1": 2214, "x2": 3703, "y2": 2222}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Magincia", "Map": "Trammel" },
+    "Name": "the Magincia Merchant",
+    "Priority": 50,
+    "Area": [{"x1": 3699, "y1": 2245, "x2": 3707, "y2": 2253}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Magincia", "Map": "Trammel" },
+    "Name": "the Magincia Tailor",
+    "Priority": 50,
+    "Area": [{"x1": 3662, "y1": 2231, "x2": 3670, "y2": 2239}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Magincia", "Map": "Trammel" },
+    "Name": "the Magincia Tinker",
+    "Priority": 50,
+    "Area": [{"x1": 3716, "y1": 2122, "x2": 3724, "y2": 2130}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Moonglow", "Map": "Trammel" },
+    "Name": "the Moonglow Bakery",
+    "Priority": 50,
+    "Area": [{"x1": 4388, "y1": 1064, "x2": 4396, "y2": 1072}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Moonglow", "Map": "Trammel" },
+    "Name": "the Moonglow Bank",
+    "Priority": 50,
+    "Area": [{"x1": 4467, "y1": 1152, "x2": 4475, "y2": 1160}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Moonglow", "Map": "Trammel" },
+    "Name": "the Moonglow Blacksmith",
+    "Priority": 50,
+    "Area": [
+      {"x1": 4388, "y1": 1113, "x2": 4396, "y2": 1121},
+      {"x1": 4436, "y1": 1158, "x2": 4444, "y2": 1166}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Moonglow", "Map": "Trammel" },
+    "Name": "the Moonglow Butcher",
+    "Priority": 50,
+    "Area": [
+      {"x1": 4391, "y1": 1133, "x2": 4399, "y2": 1141},
+      {"x1": 4477, "y1": 1081, "x2": 4485, "y2": 1089}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Moonglow", "Map": "Trammel" },
+    "Name": "the Moonglow Carpenter",
+    "Priority": 50,
+    "Area": [{"x1": 4412, "y1": 1081, "x2": 4420, "y2": 1089}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Moonglow", "Map": "Trammel" },
+    "Name": "the Moonglow Docks",
+    "Priority": 50,
+    "Area": [{"x1": 4402, "y1": 1034, "x2": 4410, "y2": 1042}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Moonglow", "Map": "Trammel" },
+    "Name": "the Moonglow Healer",
+    "Priority": 50,
+    "Area": [{"x1": 4390, "y1": 1079, "x2": 4398, "y2": 1087}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Moonglow", "Map": "Trammel" },
+    "Name": "the Moonglow Mage",
+    "Priority": 50,
+    "Area": [
+      {"x1": 4405, "y1": 1107, "x2": 4413, "y2": 1115},
+      {"x1": 4412, "y1": 1129, "x2": 4420, "y2": 1137},
+      {"x1": 4444, "y1": 1086, "x2": 4452, "y2": 1094},
+      {"x1": 4541, "y1": 856, "x2": 4549, "y2": 864}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Moonglow", "Map": "Trammel" },
+    "Name": "the Moonglow Provisioner",
+    "Priority": 50,
+    "Area": [{"x1": 4413, "y1": 1060, "x2": 4421, "y2": 1068}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Moonglow", "Map": "Trammel" },
+    "Name": "the Moonglow Tailor",
+    "Priority": 50,
+    "Area": [{"x1": 4454, "y1": 1056, "x2": 4462, "y2": 1064}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Nujel'm", "Map": "Trammel" },
+    "Name": "the Nujel'm Bank",
+    "Priority": 50,
+    "Area": [{"x1": 3760, "y1": 1313, "x2": 3768, "y2": 1321}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Nujel'm", "Map": "Trammel" },
+    "Name": "the Nujel'm Blacksmith",
+    "Priority": 50,
+    "Area": [
+      {"x1": 3542, "y1": 1181, "x2": 3550, "y2": 1189},
+      {"x1": 3550, "y1": 1198, "x2": 3558, "y2": 1206}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Nujel'm", "Map": "Trammel" },
+    "Name": "the Nujel'm Bowyer",
+    "Priority": 50,
+    "Area": [{"x1": 3543, "y1": 1191, "x2": 3549, "y2": 1197}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Nujel'm", "Map": "Trammel" },
+    "Name": "the Nujel'm Butcher",
+    "Priority": 50,
+    "Area": [{"x1": 3551, "y1": 1167, "x2": 3559, "y2": 1175}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Nujel'm", "Map": "Trammel" },
+    "Name": "the Nujel'm Jeweler",
+    "Priority": 50,
+    "Area": [{"x1": 3774, "y1": 1168, "x2": 3782, "y2": 1176}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Nujel'm", "Map": "Trammel" },
+    "Name": "the Nujel'm Tailor",
+    "Priority": 50,
+    "Area": [{"x1": 3770, "y1": 1261, "x2": 3778, "y2": 1269}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Nujel'm", "Map": "Trammel" },
+    "Name": "the Nujel'm Tanner",
+    "Priority": 50,
+    "Area": [{"x1": 3543, "y1": 1176, "x2": 3547, "y2": 1180}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Papua", "Map": "Trammel" },
+    "Name": "the Papua Bakery",
+    "Priority": 50,
+    "Area": [{"x1": 5742, "y1": 3196, "x2": 5750, "y2": 3204}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Papua", "Map": "Trammel" },
+    "Name": "the Papua Bank",
+    "Priority": 50,
+    "Area": [{"x1": 5665, "y1": 3127, "x2": 5673, "y2": 3135}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Papua", "Map": "Trammel" },
+    "Name": "the Papua Blacksmith",
+    "Priority": 50,
+    "Area": [{"x1": 5801, "y1": 3296, "x2": 5809, "y2": 3304}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Papua", "Map": "Trammel" },
+    "Name": "the Papua Butcher",
+    "Priority": 50,
+    "Area": [{"x1": 5694, "y1": 3278, "x2": 5702, "y2": 3286}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Papua", "Map": "Trammel" },
+    "Name": "the Papua Carpenter",
+    "Priority": 50,
+    "Area": [{"x1": 5687, "y1": 3205, "x2": 5695, "y2": 3213}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Papua", "Map": "Trammel" },
+    "Name": "the Papua Docks",
+    "Priority": 50,
+    "Area": [{"x1": 5835, "y1": 3252, "x2": 5843, "y2": 3260}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Papua", "Map": "Trammel" },
+    "Name": "the Papua Healer",
+    "Priority": 50,
+    "Area": [{"x1": 5733, "y1": 3218, "x2": 5741, "y2": 3226}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Papua", "Map": "Trammel" },
+    "Name": "the Papua Jeweler",
+    "Priority": 50,
+    "Area": [{"x1": 5658, "y1": 3146, "x2": 5666, "y2": 3154}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Papua", "Map": "Trammel" },
+    "Name": "the Papua Mage",
+    "Priority": 50,
+    "Area": [
+      {"x1": 5710, "y1": 3198, "x2": 5718, "y2": 3206},
+      {"x1": 5727, "y1": 3188, "x2": 5735, "y2": 3196}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Papua", "Map": "Trammel" },
+    "Name": "the Papua Provisioner",
+    "Priority": 50,
+    "Area": [{"x1": 5732, "y1": 3259, "x2": 5740, "y2": 3267}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Papua", "Map": "Trammel" },
+    "Name": "the Papua Stables",
+    "Priority": 50,
+    "Area": [{"x1": 5667, "y1": 3283, "x2": 5675, "y2": 3291}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Papua", "Map": "Trammel" },
+    "Name": "the Papua Tailor",
+    "Priority": 50,
+    "Area": [{"x1": 5748, "y1": 3268, "x2": 5756, "y2": 3276}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Papua", "Map": "Trammel" },
+    "Name": "the Papua Tinker",
+    "Priority": 50,
+    "Area": [{"x1": 5722, "y1": 3239, "x2": 5730, "y2": 3247}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Serpent's Hold", "Map": "Trammel" },
+    "Name": "the Serpent's Hold Bakery",
+    "Priority": 50,
+    "Area": [{"x1": 2971, "y1": 3349, "x2": 2979, "y2": 3357}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Serpent's Hold", "Map": "Trammel" },
+    "Name": "the Serpent's Hold Bank",
+    "Priority": 50,
+    "Area": [{"x1": 2876, "y1": 3468, "x2": 2884, "y2": 3476}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Serpent's Hold", "Map": "Trammel" },
+    "Name": "the Serpent's Hold Blacksmith",
+    "Priority": 50,
+    "Area": [
+      {"x1": 3003, "y1": 3404, "x2": 3011, "y2": 3412},
+      {"x1": 3014, "y1": 3422, "x2": 3022, "y2": 3430}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Serpent's Hold", "Map": "Trammel" },
+    "Name": "the Serpent's Hold Bowyer",
+    "Priority": 50,
+    "Area": [{"x1": 3047, "y1": 3363, "x2": 3055, "y2": 3371}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Serpent's Hold", "Map": "Trammel" },
+    "Name": "the Serpent's Hold Butcher",
+    "Priority": 50,
+    "Area": [{"x1": 2902, "y1": 3481, "x2": 2910, "y2": 3489}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Serpent's Hold", "Map": "Trammel" },
+    "Name": "the Serpent's Hold Docks",
+    "Priority": 50,
+    "Area": [
+      {"x1": 2936, "y1": 3406, "x2": 2944, "y2": 3414},
+      {"x1": 2988, "y1": 3447, "x2": 2996, "y2": 3455}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Serpent's Hold", "Map": "Trammel" },
+    "Name": "the Serpent's Hold Healer",
+    "Priority": 50,
+    "Area": [{"x1": 2993, "y1": 3424, "x2": 3001, "y2": 3432}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Serpent's Hold", "Map": "Trammel" },
+    "Name": "the Serpent's Hold Mage",
+    "Priority": 50,
+    "Area": [
+      {"x1": 2999, "y1": 3351, "x2": 3007, "y2": 3359},
+      {"x1": 3009, "y1": 3349, "x2": 3017, "y2": 3357}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Serpent's Hold", "Map": "Trammel" },
+    "Name": "the Serpent's Hold Provisioner",
+    "Priority": 50,
+    "Area": [{"x1": 3004, "y1": 3385, "x2": 3012, "y2": 3393}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Serpent's Hold", "Map": "Trammel" },
+    "Name": "the Serpent's Hold Stables",
+    "Priority": 50,
+    "Area": [
+      {"x1": 2901, "y1": 3513, "x2": 2909, "y2": 3521},
+      {"x1": 3032, "y1": 3460, "x2": 3040, "y2": 3468}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Serpent's Hold", "Map": "Trammel" },
+    "Name": "the Serpent's Hold Tailor",
+    "Priority": 50,
+    "Area": [{"x1": 2879, "y1": 3498, "x2": 2887, "y2": 3506}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Serpent's Hold", "Map": "Trammel" },
+    "Name": "the Serpent's Hold Tinker",
+    "Priority": 50,
+    "Area": [{"x1": 2936, "y1": 3496, "x2": 2944, "y2": 3504}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Serpent's Hold", "Map": "Trammel" },
+    "Name": "the Serpent's Hold Warrior",
+    "Priority": 50,
+    "Area": [
+      {"x1": 3027, "y1": 3346, "x2": 3035, "y2": 3354},
+      {"x1": 3054, "y1": 3396, "x2": 3062, "y2": 3404}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Skara Brae", "Map": "Trammel" },
+    "Name": "the Skara Brae Bank",
+    "Priority": 50,
+    "Area": [{"x1": 583, "y1": 2142, "x2": 591, "y2": 2150}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Skara Brae", "Map": "Trammel" },
+    "Name": "the Skara Brae Blacksmith",
+    "Priority": 50,
+    "Area": [
+      {"x1": 582, "y1": 2166, "x2": 590, "y2": 2174},
+      {"x1": 626, "y1": 2190, "x2": 634, "y2": 2198},
+      {"x1": 646, "y1": 2157, "x2": 654, "y2": 2165}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Skara Brae", "Map": "Trammel" },
+    "Name": "the Skara Brae Bowyer",
+    "Priority": 50,
+    "Area": [{"x1": 586, "y1": 2201, "x2": 594, "y2": 2209}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Skara Brae", "Map": "Trammel" },
+    "Name": "the Skara Brae Butcher",
+    "Priority": 50,
+    "Area": [
+      {"x1": 578, "y1": 2182, "x2": 586, "y2": 2190},
+      {"x1": 607, "y1": 2153, "x2": 615, "y2": 2161}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Skara Brae", "Map": "Trammel" },
+    "Name": "the Skara Brae Carpenter",
+    "Priority": 50,
+    "Area": [{"x1": 623, "y1": 2159, "x2": 631, "y2": 2167}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Skara Brae", "Map": "Trammel" },
+    "Name": "the Skara Brae Docks",
+    "Priority": 50,
+    "Area": [{"x1": 652, "y1": 2231, "x2": 660, "y2": 2239}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Skara Brae", "Map": "Trammel" },
+    "Name": "the Skara Brae Healer",
+    "Priority": 50,
+    "Area": [{"x1": 616, "y1": 2214, "x2": 624, "y2": 2222}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Skara Brae", "Map": "Trammel" },
+    "Name": "the Skara Brae Mage",
+    "Priority": 50,
+    "Area": [
+      {"x1": 598, "y1": 2176, "x2": 606, "y2": 2184},
+      {"x1": 655, "y1": 2137, "x2": 663, "y2": 2145}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Skara Brae", "Map": "Trammel" },
+    "Name": "the Skara Brae Provisioner",
+    "Priority": 50,
+    "Area": [{"x1": 574, "y1": 2223, "x2": 582, "y2": 2231}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Skara Brae", "Map": "Trammel" },
+    "Name": "the Skara Brae Ranger",
+    "Priority": 50,
+    "Area": [{"x1": 558, "y1": 2144, "x2": 566, "y2": 2152}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Skara Brae", "Map": "Trammel" },
+    "Name": "the Skara Brae Stables",
+    "Priority": 50,
+    "Area": [{"x1": 566, "y1": 2117, "x2": 574, "y2": 2125}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Skara Brae", "Map": "Trammel" },
+    "Name": "the Skara Brae Tailor",
+    "Priority": 50,
+    "Area": [{"x1": 646, "y1": 2174, "x2": 654, "y2": 2182}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Wind", "Map": "Trammel" },
+    "Name": "the Wind Bakery",
+    "Priority": 50,
+    "Area": [{"x1": 5347, "y1": 52, "x2": 5355, "y2": 60}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Wind", "Map": "Trammel" },
+    "Name": "the Wind Bank",
+    "Priority": 50,
+    "Area": [{"x1": 5343, "y1": 72, "x2": 5351, "y2": 80}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Wind", "Map": "Trammel" },
+    "Name": "the Wind Healer",
+    "Priority": 50,
+    "Area": [{"x1": 5259, "y1": 125, "x2": 5267, "y2": 133}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Wind", "Map": "Trammel" },
+    "Name": "the Wind Mage",
+    "Priority": 50,
+    "Area": [
+      {"x1": 5144, "y1": 56, "x2": 5152, "y2": 64},
+      {"x1": 5211, "y1": 113, "x2": 5219, "y2": 121},
+      {"x1": 5296, "y1": 86, "x2": 5304, "y2": 94}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Wind", "Map": "Trammel" },
+    "Name": "the Wind Provisioner",
+    "Priority": 50,
+    "Area": [{"x1": 5150, "y1": 93, "x2": 5158, "y2": 101}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Wind", "Map": "Trammel" },
+    "Name": "the Wind Scribe",
+    "Priority": 50,
+    "Area": [
+      {"x1": 5232, "y1": 138, "x2": 5240, "y2": 146},
+      {"x1": 5238, "y1": 176, "x2": 5246, "y2": 184}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Wind", "Map": "Trammel" },
+    "Name": "the Wind Tailor",
+    "Priority": 50,
+    "Area": [{"x1": 5199, "y1": 82, "x2": 5207, "y2": 90}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Yew", "Map": "Trammel" },
+    "Name": "the Yew Bakery",
+    "Priority": 50,
+    "Area": [{"x1": 549, "y1": 981, "x2": 557, "y2": 989}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Yew", "Map": "Trammel" },
+    "Name": "the Yew Bank",
+    "Priority": 50,
+    "Area": [{"x1": 648, "y1": 816, "x2": 656, "y2": 824}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Yew", "Map": "Trammel" },
+    "Name": "the Yew Bowyer",
+    "Priority": 50,
+    "Area": [
+      {"x1": 566, "y1": 965, "x2": 574, "y2": 973},
+      {"x1": 620, "y1": 1141, "x2": 628, "y2": 1149}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Yew", "Map": "Trammel" },
+    "Name": "the Yew Butcher",
+    "Priority": 50,
+    "Area": [{"x1": 525, "y1": 1004, "x2": 533, "y2": 1012}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Yew", "Map": "Trammel" },
+    "Name": "the Yew Carpenter",
+    "Priority": 50,
+    "Area": [{"x1": 560, "y1": 1007, "x2": 568, "y2": 1015}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Yew", "Map": "Trammel" },
+    "Name": "the Yew Healer",
+    "Priority": 50,
+    "Area": [
+      {"x1": 536, "y1": 962, "x2": 544, "y2": 970},
+      {"x1": 639, "y1": 1079, "x2": 647, "y2": 1087}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Yew", "Map": "Trammel" },
+    "Name": "the Yew Provisioner",
+    "Priority": 50,
+    "Area": [{"x1": 531, "y1": 863, "x2": 539, "y2": 871}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Yew", "Map": "Trammel" },
+    "Name": "the Yew Tanner",
+    "Priority": 50,
+    "Area": [{"x1": 513, "y1": 982, "x2": 521, "y2": 990}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Buccaneer's Den", "Map": "Felucca" },
+    "Name": "the Buccaneer's Den Bank",
+    "Priority": 50,
+    "Area": [{"x1": 2727, "y1": 2188, "x2": 2735, "y2": 2196}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Buccaneer's Den", "Map": "Felucca" },
+    "Name": "the Buccaneer's Den Blacksmith",
+    "Priority": 50,
+    "Area": [{"x1": 2630, "y1": 2079, "x2": 2638, "y2": 2087}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Buccaneer's Den", "Map": "Felucca" },
+    "Name": "the Buccaneer's Den Carpenter",
+    "Priority": 50,
+    "Area": [{"x1": 2623, "y1": 2096, "x2": 2631, "y2": 2104}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Buccaneer's Den", "Map": "Felucca" },
+    "Name": "the Buccaneer's Den Docks",
+    "Priority": 50,
+    "Area": [{"x1": 2748, "y1": 2151, "x2": 2756, "y2": 2159}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Buccaneer's Den", "Map": "Felucca" },
+    "Name": "the Buccaneer's Den Healer",
+    "Priority": 50,
+    "Area": [{"x1": 2705, "y1": 2126, "x2": 2713, "y2": 2134}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Buccaneer's Den", "Map": "Felucca" },
+    "Name": "the Buccaneer's Den Provisioner",
+    "Priority": 50,
+    "Area": [{"x1": 2733, "y1": 2246, "x2": 2741, "y2": 2254}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Buccaneer's Den", "Map": "Felucca" },
+    "Name": "the Buccaneer's Den Tanner",
+    "Priority": 50,
+    "Area": [{"x1": 2703, "y1": 2174, "x2": 2711, "y2": 2182}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Buccaneer's Den", "Map": "Felucca" },
+    "Name": "the Buccaneer's Den Thief Guild",
+    "Priority": 50,
+    "Area": [{"x1": 2655, "y1": 2190, "x2": 2663, "y2": 2198}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Cove", "Map": "Felucca" },
+    "Name": "the Cove Blacksmith",
+    "Priority": 50,
+    "Area": [{"x1": 2212, "y1": 1163, "x2": 2220, "y2": 1171}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Cove", "Map": "Felucca" },
+    "Name": "the Cove Docks",
+    "Priority": 50,
+    "Area": [{"x1": 2252, "y1": 1177, "x2": 2260, "y2": 1185}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Cove", "Map": "Felucca" },
+    "Name": "the Cove Healer",
+    "Priority": 50,
+    "Area": [{"x1": 2241, "y1": 1227, "x2": 2249, "y2": 1235}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Cove", "Map": "Felucca" },
+    "Name": "the Cove Provisioner",
+    "Priority": 50,
+    "Area": [{"x1": 2212, "y1": 1188, "x2": 2220, "y2": 1196}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Delucia", "Map": "Felucca" },
+    "Name": "the Delucia Bank",
+    "Priority": 50,
+    "Area": [{"x1": 5271, "y1": 3973, "x2": 5279, "y2": 3981}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Delucia", "Map": "Felucca" },
+    "Name": "the Delucia Blacksmith",
+    "Priority": 50,
+    "Area": [{"x1": 5221, "y1": 3996, "x2": 5229, "y2": 4004}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Delucia", "Map": "Felucca" },
+    "Name": "the Delucia Healer",
+    "Priority": 50,
+    "Area": [{"x1": 5187, "y1": 3985, "x2": 5195, "y2": 3993}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Delucia", "Map": "Felucca" },
+    "Name": "the Delucia Mage",
+    "Priority": 50,
+    "Area": [{"x1": 5292, "y1": 3974, "x2": 5300, "y2": 3982}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Delucia", "Map": "Felucca" },
+    "Name": "the Delucia Provisioner",
+    "Priority": 50,
+    "Area": [{"x1": 5215, "y1": 4008, "x2": 5223, "y2": 4016}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Delucia", "Map": "Felucca" },
+    "Name": "the Delucia Stables",
+    "Priority": 50,
+    "Area": [{"x1": 5293, "y1": 4003, "x2": 5301, "y2": 4011}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Delucia", "Map": "Felucca" },
+    "Name": "the Delucia Tailor",
+    "Priority": 50,
+    "Area": [{"x1": 5230, "y1": 4021, "x2": 5238, "y2": 4029}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Jhelom", "Map": "Felucca" },
+    "Name": "the Jhelom Bakery",
+    "Priority": 50,
+    "Area": [{"x1": 1360, "y1": 3728, "x2": 1368, "y2": 3736}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Jhelom", "Map": "Felucca" },
+    "Name": "the Jhelom Bank",
+    "Priority": 50,
+    "Area": [{"x1": 1313, "y1": 3769, "x2": 1321, "y2": 3777}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Jhelom", "Map": "Felucca" },
+    "Name": "the Jhelom Blacksmith",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1350, "y1": 3750, "x2": 1358, "y2": 3758},
+      {"x1": 1391, "y1": 3701, "x2": 1399, "y2": 3709},
+      {"x1": 1415, "y1": 3855, "x2": 1423, "y2": 3863},
+      {"x1": 1437, "y1": 3715, "x2": 1445, "y2": 3723},
+      {"x1": 1452, "y1": 3846, "x2": 1460, "y2": 3854},
+      {"x1": 1471, "y1": 3861, "x2": 1479, "y2": 3869}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Jhelom", "Map": "Felucca" },
+    "Name": "the Jhelom Butcher",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1382, "y1": 3821, "x2": 1390, "y2": 3829},
+      {"x1": 1446, "y1": 4022, "x2": 1454, "y2": 4030}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Jhelom", "Map": "Felucca" },
+    "Name": "the Jhelom Carpenter",
+    "Priority": 50,
+    "Area": [{"x1": 1431, "y1": 3816, "x2": 1439, "y2": 3824}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Jhelom", "Map": "Felucca" },
+    "Name": "the Jhelom Docks",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1368, "y1": 3904, "x2": 1376, "y2": 3912},
+      {"x1": 1433, "y1": 3746, "x2": 1441, "y2": 3754}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Jhelom", "Map": "Felucca" },
+    "Name": "the Jhelom Healer",
+    "Priority": 50,
+    "Area": [{"x1": 1412, "y1": 3775, "x2": 1420, "y2": 3783}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Jhelom", "Map": "Felucca" },
+    "Name": "the Jhelom Jeweler",
+    "Priority": 50,
+    "Area": [{"x1": 1443, "y1": 3977, "x2": 1451, "y2": 3985}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Jhelom", "Map": "Felucca" },
+    "Name": "the Jhelom Mage",
+    "Priority": 50,
+    "Area": [{"x1": 1421, "y1": 3977, "x2": 1429, "y2": 3985}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Jhelom", "Map": "Felucca" },
+    "Name": "the Jhelom Provisioner",
+    "Priority": 50,
+    "Area": [{"x1": 1438, "y1": 3798, "x2": 1446, "y2": 3806}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Jhelom", "Map": "Felucca" },
+    "Name": "the Jhelom Scribe",
+    "Priority": 50,
+    "Area": [{"x1": 1383, "y1": 3767, "x2": 1391, "y2": 3775}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Jhelom", "Map": "Felucca" },
+    "Name": "the Jhelom Tailor",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1352, "y1": 3776, "x2": 1360, "y2": 3784},
+      {"x1": 1450, "y1": 3999, "x2": 1458, "y2": 4007}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Jhelom", "Map": "Felucca" },
+    "Name": "the Jhelom Tinker",
+    "Priority": 50,
+    "Area": [{"x1": 1400, "y1": 3798, "x2": 1408, "y2": 3806}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Magincia", "Map": "Felucca" },
+    "Name": "the Magincia Bakery",
+    "Priority": 50,
+    "Area": [
+      {"x1": 3679, "y1": 2167, "x2": 3687, "y2": 2175},
+      {"x1": 3751, "y1": 2223, "x2": 3759, "y2": 2231}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Magincia", "Map": "Felucca" },
+    "Name": "the Magincia Bank",
+    "Priority": 50,
+    "Area": [{"x1": 3730, "y1": 2145, "x2": 3738, "y2": 2153}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Magincia", "Map": "Felucca" },
+    "Name": "the Magincia Blacksmith",
+    "Priority": 50,
+    "Area": [{"x1": 3661, "y1": 2136, "x2": 3669, "y2": 2144}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Magincia", "Map": "Felucca" },
+    "Name": "the Magincia Docks",
+    "Priority": 50,
+    "Area": [
+      {"x1": 3670, "y1": 2285, "x2": 3678, "y2": 2293},
+      {"x1": 3679, "y1": 2248, "x2": 3687, "y2": 2256}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Magincia", "Map": "Felucca" },
+    "Name": "the Magincia Healer",
+    "Priority": 50,
+    "Area": [{"x1": 3683, "y1": 2223, "x2": 3691, "y2": 2231}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Magincia", "Map": "Felucca" },
+    "Name": "the Magincia Jeweler",
+    "Priority": 50,
+    "Area": [{"x1": 3657, "y1": 2179, "x2": 3665, "y2": 2187}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Magincia", "Map": "Felucca" },
+    "Name": "the Magincia Mage",
+    "Priority": 50,
+    "Area": [{"x1": 3695, "y1": 2214, "x2": 3703, "y2": 2222}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Magincia", "Map": "Felucca" },
+    "Name": "the Magincia Merchant",
+    "Priority": 50,
+    "Area": [{"x1": 3699, "y1": 2245, "x2": 3707, "y2": 2253}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Magincia", "Map": "Felucca" },
+    "Name": "the Magincia Tailor",
+    "Priority": 50,
+    "Area": [{"x1": 3662, "y1": 2231, "x2": 3670, "y2": 2239}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Magincia", "Map": "Felucca" },
+    "Name": "the Magincia Tinker",
+    "Priority": 50,
+    "Area": [{"x1": 3716, "y1": 2122, "x2": 3724, "y2": 2130}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Moonglow", "Map": "Felucca" },
+    "Name": "the Moonglow Bakery",
+    "Priority": 50,
+    "Area": [{"x1": 4388, "y1": 1064, "x2": 4396, "y2": 1072}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Moonglow", "Map": "Felucca" },
+    "Name": "the Moonglow Bank",
+    "Priority": 50,
+    "Area": [{"x1": 4467, "y1": 1152, "x2": 4475, "y2": 1160}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Moonglow", "Map": "Felucca" },
+    "Name": "the Moonglow Blacksmith",
+    "Priority": 50,
+    "Area": [
+      {"x1": 4388, "y1": 1113, "x2": 4396, "y2": 1121},
+      {"x1": 4436, "y1": 1158, "x2": 4444, "y2": 1166}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Moonglow", "Map": "Felucca" },
+    "Name": "the Moonglow Butcher",
+    "Priority": 50,
+    "Area": [
+      {"x1": 4391, "y1": 1133, "x2": 4399, "y2": 1141},
+      {"x1": 4477, "y1": 1081, "x2": 4485, "y2": 1089}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Moonglow", "Map": "Felucca" },
+    "Name": "the Moonglow Carpenter",
+    "Priority": 50,
+    "Area": [{"x1": 4412, "y1": 1081, "x2": 4420, "y2": 1089}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Moonglow", "Map": "Felucca" },
+    "Name": "the Moonglow Docks",
+    "Priority": 50,
+    "Area": [{"x1": 4402, "y1": 1034, "x2": 4410, "y2": 1042}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Moonglow", "Map": "Felucca" },
+    "Name": "the Moonglow Healer",
+    "Priority": 50,
+    "Area": [{"x1": 4390, "y1": 1079, "x2": 4398, "y2": 1087}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Moonglow", "Map": "Felucca" },
+    "Name": "the Moonglow Mage",
+    "Priority": 50,
+    "Area": [
+      {"x1": 4405, "y1": 1107, "x2": 4413, "y2": 1115},
+      {"x1": 4412, "y1": 1129, "x2": 4420, "y2": 1137},
+      {"x1": 4444, "y1": 1086, "x2": 4452, "y2": 1094},
+      {"x1": 4541, "y1": 856, "x2": 4549, "y2": 864}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Moonglow", "Map": "Felucca" },
+    "Name": "the Moonglow Provisioner",
+    "Priority": 50,
+    "Area": [{"x1": 4413, "y1": 1060, "x2": 4421, "y2": 1068}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Moonglow", "Map": "Felucca" },
+    "Name": "the Moonglow Tailor",
+    "Priority": 50,
+    "Area": [{"x1": 4454, "y1": 1056, "x2": 4462, "y2": 1064}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Nujel'm", "Map": "Felucca" },
+    "Name": "the Nujel'm Bank",
+    "Priority": 50,
+    "Area": [{"x1": 3760, "y1": 1313, "x2": 3768, "y2": 1321}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Nujel'm", "Map": "Felucca" },
+    "Name": "the Nujel'm Blacksmith",
+    "Priority": 50,
+    "Area": [
+      {"x1": 3542, "y1": 1181, "x2": 3550, "y2": 1189},
+      {"x1": 3550, "y1": 1198, "x2": 3558, "y2": 1206}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Nujel'm", "Map": "Felucca" },
+    "Name": "the Nujel'm Bowyer",
+    "Priority": 50,
+    "Area": [{"x1": 3543, "y1": 1191, "x2": 3549, "y2": 1197}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Nujel'm", "Map": "Felucca" },
+    "Name": "the Nujel'm Butcher",
+    "Priority": 50,
+    "Area": [{"x1": 3551, "y1": 1167, "x2": 3559, "y2": 1175}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Nujel'm", "Map": "Felucca" },
+    "Name": "the Nujel'm Jeweler",
+    "Priority": 50,
+    "Area": [{"x1": 3774, "y1": 1168, "x2": 3782, "y2": 1176}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Nujel'm", "Map": "Felucca" },
+    "Name": "the Nujel'm Tailor",
+    "Priority": 50,
+    "Area": [{"x1": 3770, "y1": 1261, "x2": 3778, "y2": 1269}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Nujel'm", "Map": "Felucca" },
+    "Name": "the Nujel'm Tanner",
+    "Priority": 50,
+    "Area": [{"x1": 3543, "y1": 1176, "x2": 3547, "y2": 1180}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Ocllo", "Map": "Felucca" },
+    "Name": "the Ocllo Bakery",
+    "Priority": 50,
+    "Area": [{"x1": 3606, "y1": 2573, "x2": 3614, "y2": 2581}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Ocllo", "Map": "Felucca" },
+    "Name": "the Ocllo Bank",
+    "Priority": 50,
+    "Area": [{"x1": 3691, "y1": 2507, "x2": 3699, "y2": 2515}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Ocllo", "Map": "Felucca" },
+    "Name": "the Ocllo Bard",
+    "Priority": 50,
+    "Area": [{"x1": 3661, "y1": 2527, "x2": 3669, "y2": 2535}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Ocllo", "Map": "Felucca" },
+    "Name": "the Ocllo Blacksmith",
+    "Priority": 50,
+    "Area": [{"x1": 3628, "y1": 2591, "x2": 3636, "y2": 2599}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Ocllo", "Map": "Felucca" },
+    "Name": "the Ocllo Butcher",
+    "Priority": 50,
+    "Area": [{"x1": 3704, "y1": 2645, "x2": 3712, "y2": 2653}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Ocllo", "Map": "Felucca" },
+    "Name": "the Ocllo Docks",
+    "Priority": 50,
+    "Area": [{"x1": 3643, "y1": 2677, "x2": 3651, "y2": 2685}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Ocllo", "Map": "Felucca" },
+    "Name": "the Ocllo Healer",
+    "Priority": 50,
+    "Area": [{"x1": 3625, "y1": 2604, "x2": 3633, "y2": 2612}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Ocllo", "Map": "Felucca" },
+    "Name": "the Ocllo Mage",
+    "Priority": 50,
+    "Area": [{"x1": 3624, "y1": 2537, "x2": 3632, "y2": 2545}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Ocllo", "Map": "Felucca" },
+    "Name": "the Ocllo Provisioner",
+    "Priority": 50,
+    "Area": [{"x1": 3632, "y1": 2561, "x2": 3640, "y2": 2569}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Ocllo", "Map": "Felucca" },
+    "Name": "the Ocllo Scribe",
+    "Priority": 50,
+    "Area": [{"x1": 3608, "y1": 2462, "x2": 3616, "y2": 2470}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Ocllo", "Map": "Felucca" },
+    "Name": "the Ocllo Tailor",
+    "Priority": 50,
+    "Area": [{"x1": 3663, "y1": 2582, "x2": 3671, "y2": 2590}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Ocllo", "Map": "Felucca" },
+    "Name": "the Ocllo Tanner",
+    "Priority": 50,
+    "Area": [{"x1": 3598, "y1": 2611, "x2": 3606, "y2": 2619}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Papua", "Map": "Felucca" },
+    "Name": "the Papua Bakery",
+    "Priority": 50,
+    "Area": [{"x1": 5742, "y1": 3196, "x2": 5750, "y2": 3204}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Papua", "Map": "Felucca" },
+    "Name": "the Papua Bank",
+    "Priority": 50,
+    "Area": [{"x1": 5665, "y1": 3127, "x2": 5673, "y2": 3135}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Papua", "Map": "Felucca" },
+    "Name": "the Papua Blacksmith",
+    "Priority": 50,
+    "Area": [{"x1": 5801, "y1": 3296, "x2": 5809, "y2": 3304}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Papua", "Map": "Felucca" },
+    "Name": "the Papua Butcher",
+    "Priority": 50,
+    "Area": [{"x1": 5694, "y1": 3278, "x2": 5702, "y2": 3286}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Papua", "Map": "Felucca" },
+    "Name": "the Papua Carpenter",
+    "Priority": 50,
+    "Area": [{"x1": 5687, "y1": 3205, "x2": 5695, "y2": 3213}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Papua", "Map": "Felucca" },
+    "Name": "the Papua Docks",
+    "Priority": 50,
+    "Area": [{"x1": 5835, "y1": 3252, "x2": 5843, "y2": 3260}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Papua", "Map": "Felucca" },
+    "Name": "the Papua Healer",
+    "Priority": 50,
+    "Area": [{"x1": 5733, "y1": 3218, "x2": 5741, "y2": 3226}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Papua", "Map": "Felucca" },
+    "Name": "the Papua Jeweler",
+    "Priority": 50,
+    "Area": [{"x1": 5658, "y1": 3146, "x2": 5666, "y2": 3154}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Papua", "Map": "Felucca" },
+    "Name": "the Papua Mage",
+    "Priority": 50,
+    "Area": [
+      {"x1": 5710, "y1": 3198, "x2": 5718, "y2": 3206},
+      {"x1": 5727, "y1": 3188, "x2": 5735, "y2": 3196}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Papua", "Map": "Felucca" },
+    "Name": "the Papua Provisioner",
+    "Priority": 50,
+    "Area": [{"x1": 5732, "y1": 3259, "x2": 5740, "y2": 3267}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Papua", "Map": "Felucca" },
+    "Name": "the Papua Stables",
+    "Priority": 50,
+    "Area": [{"x1": 5667, "y1": 3283, "x2": 5675, "y2": 3291}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Papua", "Map": "Felucca" },
+    "Name": "the Papua Tailor",
+    "Priority": 50,
+    "Area": [{"x1": 5748, "y1": 3268, "x2": 5756, "y2": 3276}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Papua", "Map": "Felucca" },
+    "Name": "the Papua Tinker",
+    "Priority": 50,
+    "Area": [{"x1": 5722, "y1": 3239, "x2": 5730, "y2": 3247}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Serpent's Hold", "Map": "Felucca" },
+    "Name": "the Serpent's Hold Bakery",
+    "Priority": 50,
+    "Area": [{"x1": 2971, "y1": 3349, "x2": 2979, "y2": 3357}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Serpent's Hold", "Map": "Felucca" },
+    "Name": "the Serpent's Hold Bank",
+    "Priority": 50,
+    "Area": [{"x1": 2876, "y1": 3468, "x2": 2884, "y2": 3476}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Serpent's Hold", "Map": "Felucca" },
+    "Name": "the Serpent's Hold Blacksmith",
+    "Priority": 50,
+    "Area": [
+      {"x1": 3003, "y1": 3404, "x2": 3011, "y2": 3412},
+      {"x1": 3014, "y1": 3422, "x2": 3022, "y2": 3430}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Serpent's Hold", "Map": "Felucca" },
+    "Name": "the Serpent's Hold Bowyer",
+    "Priority": 50,
+    "Area": [{"x1": 3047, "y1": 3363, "x2": 3055, "y2": 3371}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Serpent's Hold", "Map": "Felucca" },
+    "Name": "the Serpent's Hold Butcher",
+    "Priority": 50,
+    "Area": [{"x1": 2902, "y1": 3481, "x2": 2910, "y2": 3489}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Serpent's Hold", "Map": "Felucca" },
+    "Name": "the Serpent's Hold Docks",
+    "Priority": 50,
+    "Area": [
+      {"x1": 2936, "y1": 3406, "x2": 2944, "y2": 3414},
+      {"x1": 2988, "y1": 3447, "x2": 2996, "y2": 3455}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Serpent's Hold", "Map": "Felucca" },
+    "Name": "the Serpent's Hold Healer",
+    "Priority": 50,
+    "Area": [{"x1": 2993, "y1": 3424, "x2": 3001, "y2": 3432}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Serpent's Hold", "Map": "Felucca" },
+    "Name": "the Serpent's Hold Mage",
+    "Priority": 50,
+    "Area": [
+      {"x1": 2999, "y1": 3351, "x2": 3007, "y2": 3359},
+      {"x1": 3009, "y1": 3349, "x2": 3017, "y2": 3357}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Serpent's Hold", "Map": "Felucca" },
+    "Name": "the Serpent's Hold Provisioner",
+    "Priority": 50,
+    "Area": [{"x1": 3004, "y1": 3385, "x2": 3012, "y2": 3393}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Serpent's Hold", "Map": "Felucca" },
+    "Name": "the Serpent's Hold Stables",
+    "Priority": 50,
+    "Area": [
+      {"x1": 2901, "y1": 3513, "x2": 2909, "y2": 3521},
+      {"x1": 3032, "y1": 3460, "x2": 3040, "y2": 3468}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Serpent's Hold", "Map": "Felucca" },
+    "Name": "the Serpent's Hold Tailor",
+    "Priority": 50,
+    "Area": [{"x1": 2879, "y1": 3498, "x2": 2887, "y2": 3506}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Serpent's Hold", "Map": "Felucca" },
+    "Name": "the Serpent's Hold Tinker",
+    "Priority": 50,
+    "Area": [{"x1": 2936, "y1": 3496, "x2": 2944, "y2": 3504}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Serpent's Hold", "Map": "Felucca" },
+    "Name": "the Serpent's Hold Warrior",
+    "Priority": 50,
+    "Area": [
+      {"x1": 3027, "y1": 3346, "x2": 3035, "y2": 3354},
+      {"x1": 3054, "y1": 3396, "x2": 3062, "y2": 3404}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Skara Brae", "Map": "Felucca" },
+    "Name": "the Skara Brae Bank",
+    "Priority": 50,
+    "Area": [{"x1": 583, "y1": 2142, "x2": 591, "y2": 2150}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Skara Brae", "Map": "Felucca" },
+    "Name": "the Skara Brae Blacksmith",
+    "Priority": 50,
+    "Area": [
+      {"x1": 582, "y1": 2166, "x2": 590, "y2": 2174},
+      {"x1": 626, "y1": 2190, "x2": 634, "y2": 2198},
+      {"x1": 646, "y1": 2157, "x2": 654, "y2": 2165}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Skara Brae", "Map": "Felucca" },
+    "Name": "the Skara Brae Bowyer",
+    "Priority": 50,
+    "Area": [{"x1": 586, "y1": 2201, "x2": 594, "y2": 2209}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Skara Brae", "Map": "Felucca" },
+    "Name": "the Skara Brae Butcher",
+    "Priority": 50,
+    "Area": [
+      {"x1": 578, "y1": 2182, "x2": 586, "y2": 2190},
+      {"x1": 607, "y1": 2153, "x2": 615, "y2": 2161}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Skara Brae", "Map": "Felucca" },
+    "Name": "the Skara Brae Carpenter",
+    "Priority": 50,
+    "Area": [{"x1": 623, "y1": 2159, "x2": 631, "y2": 2167}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Skara Brae", "Map": "Felucca" },
+    "Name": "the Skara Brae Docks",
+    "Priority": 50,
+    "Area": [{"x1": 652, "y1": 2231, "x2": 660, "y2": 2239}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Skara Brae", "Map": "Felucca" },
+    "Name": "the Skara Brae Healer",
+    "Priority": 50,
+    "Area": [{"x1": 616, "y1": 2214, "x2": 624, "y2": 2222}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Skara Brae", "Map": "Felucca" },
+    "Name": "the Skara Brae Mage",
+    "Priority": 50,
+    "Area": [
+      {"x1": 598, "y1": 2176, "x2": 606, "y2": 2184},
+      {"x1": 655, "y1": 2137, "x2": 663, "y2": 2145}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Skara Brae", "Map": "Felucca" },
+    "Name": "the Skara Brae Provisioner",
+    "Priority": 50,
+    "Area": [{"x1": 574, "y1": 2223, "x2": 582, "y2": 2231}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Skara Brae", "Map": "Felucca" },
+    "Name": "the Skara Brae Ranger",
+    "Priority": 50,
+    "Area": [{"x1": 558, "y1": 2144, "x2": 566, "y2": 2152}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Skara Brae", "Map": "Felucca" },
+    "Name": "the Skara Brae Stables",
+    "Priority": 50,
+    "Area": [{"x1": 566, "y1": 2117, "x2": 574, "y2": 2125}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Skara Brae", "Map": "Felucca" },
+    "Name": "the Skara Brae Tailor",
+    "Priority": 50,
+    "Area": [{"x1": 646, "y1": 2174, "x2": 654, "y2": 2182}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Wind", "Map": "Felucca" },
+    "Name": "the Wind Bakery",
+    "Priority": 50,
+    "Area": [{"x1": 5347, "y1": 52, "x2": 5355, "y2": 60}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Wind", "Map": "Felucca" },
+    "Name": "the Wind Bank",
+    "Priority": 50,
+    "Area": [{"x1": 5343, "y1": 72, "x2": 5351, "y2": 80}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Wind", "Map": "Felucca" },
+    "Name": "the Wind Healer",
+    "Priority": 50,
+    "Area": [{"x1": 5259, "y1": 125, "x2": 5267, "y2": 133}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Wind", "Map": "Felucca" },
+    "Name": "the Wind Mage",
+    "Priority": 50,
+    "Area": [
+      {"x1": 5144, "y1": 56, "x2": 5152, "y2": 64},
+      {"x1": 5211, "y1": 113, "x2": 5219, "y2": 121},
+      {"x1": 5296, "y1": 86, "x2": 5304, "y2": 94}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Wind", "Map": "Felucca" },
+    "Name": "the Wind Provisioner",
+    "Priority": 50,
+    "Area": [{"x1": 5150, "y1": 93, "x2": 5158, "y2": 101}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Wind", "Map": "Felucca" },
+    "Name": "the Wind Scribe",
+    "Priority": 50,
+    "Area": [
+      {"x1": 5232, "y1": 138, "x2": 5240, "y2": 146},
+      {"x1": 5238, "y1": 176, "x2": 5246, "y2": 184}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Wind", "Map": "Felucca" },
+    "Name": "the Wind Tailor",
+    "Priority": 50,
+    "Area": [{"x1": 5199, "y1": 82, "x2": 5207, "y2": 90}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Yew", "Map": "Felucca" },
+    "Name": "the Yew Bakery",
+    "Priority": 50,
+    "Area": [{"x1": 549, "y1": 981, "x2": 557, "y2": 989}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Yew", "Map": "Felucca" },
+    "Name": "the Yew Bank",
+    "Priority": 50,
+    "Area": [{"x1": 648, "y1": 816, "x2": 656, "y2": 824}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Yew", "Map": "Felucca" },
+    "Name": "the Yew Bowyer",
+    "Priority": 50,
+    "Area": [
+      {"x1": 566, "y1": 965, "x2": 574, "y2": 973},
+      {"x1": 620, "y1": 1141, "x2": 628, "y2": 1149}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Yew", "Map": "Felucca" },
+    "Name": "the Yew Butcher",
+    "Priority": 50,
+    "Area": [{"x1": 525, "y1": 1004, "x2": 533, "y2": 1012}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Yew", "Map": "Felucca" },
+    "Name": "the Yew Carpenter",
+    "Priority": 50,
+    "Area": [{"x1": 560, "y1": 1007, "x2": 568, "y2": 1015}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Yew", "Map": "Felucca" },
+    "Name": "the Yew Healer",
+    "Priority": 50,
+    "Area": [
+      {"x1": 536, "y1": 962, "x2": 544, "y2": 970},
+      {"x1": 639, "y1": 1079, "x2": 647, "y2": 1087}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Yew", "Map": "Felucca" },
+    "Name": "the Yew Provisioner",
+    "Priority": 50,
+    "Area": [{"x1": 531, "y1": 863, "x2": 539, "y2": 871}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Yew", "Map": "Felucca" },
+    "Name": "the Yew Tanner",
+    "Priority": 50,
+    "Area": [{"x1": 513, "y1": 982, "x2": 521, "y2": 990}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Ilshenar",
+    "Parent": { "Name": "Gargoyle City", "Map": "Ilshenar" },
+    "Name": "the Gargoyle City Bank",
+    "Priority": 50,
+    "Area": [
+      {"x1": 850, "y1": 676, "x2": 858, "y2": 684},
+      {"x1": 851, "y1": 599, "x2": 859, "y2": 607}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Ilshenar",
+    "Parent": { "Name": "Gargoyle City", "Map": "Ilshenar" },
+    "Name": "the Gargoyle City Blacksmith",
+    "Priority": 50,
+    "Area": [
+      {"x1": 788, "y1": 661, "x2": 796, "y2": 669},
+      {"x1": 804, "y1": 582, "x2": 812, "y2": 590},
+      {"x1": 804, "y1": 693, "x2": 812, "y2": 701}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Ilshenar",
+    "Parent": { "Name": "Gargoyle City", "Map": "Ilshenar" },
+    "Name": "the Gargoyle City Healer",
+    "Priority": 50,
+    "Area": [{"x1": 868, "y1": 582, "x2": 876, "y2": 590}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Ilshenar",
+    "Parent": { "Name": "Gargoyle City", "Map": "Ilshenar" },
+    "Name": "the Gargoyle City Jeweler",
+    "Priority": 50,
+    "Area": [{"x1": 855, "y1": 694, "x2": 863, "y2": 702}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Ilshenar",
+    "Parent": { "Name": "Gargoyle City", "Map": "Ilshenar" },
+    "Name": "the Gargoyle City Mage",
+    "Priority": 50,
+    "Area": [{"x1": 836, "y1": 567, "x2": 844, "y2": 575}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Ilshenar",
+    "Parent": { "Name": "Gargoyle City", "Map": "Ilshenar" },
+    "Name": "the Gargoyle City Provisioner",
+    "Priority": 50,
+    "Area": [
+      {"x1": 820, "y1": 598, "x2": 828, "y2": 606},
+      {"x1": 822, "y1": 675, "x2": 830, "y2": 683}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Ilshenar",
+    "Parent": { "Name": "Gargoyle City", "Map": "Ilshenar" },
+    "Name": "the Gargoyle City Scribe",
+    "Priority": 50,
+    "Area": [
+      {"x1": 864, "y1": 653, "x2": 872, "y2": 661},
+      {"x1": 865, "y1": 621, "x2": 873, "y2": 629}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Ilshenar",
+    "Parent": { "Name": "Gargoyle City", "Map": "Ilshenar" },
+    "Name": "the Gargoyle City Tailor",
+    "Priority": 50,
+    "Area": [{"x1": 892, "y1": 606, "x2": 900, "y2": 614}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Ilshenar",
+    "Parent": { "Name": "Gargoyle City", "Map": "Ilshenar" },
+    "Name": "the Gargoyle City Tinker",
+    "Priority": 50,
+    "Area": [{"x1": 762, "y1": 637, "x2": 770, "y2": 645}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Ilshenar",
+    "Parent": { "Name": "Reg Volon", "Map": "Ilshenar" },
+    "Name": "the Reg Volon Healer",
+    "Priority": 50,
+    "Area": [{"x1": 1360, "y1": 1047, "x2": 1368, "y2": 1055}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Malas",
+    "Parent": { "Name": "Luna", "Map": "Malas" },
+    "Name": "the Luna Blacksmith",
+    "Priority": 50,
+    "Area": [{"x1": 972, "y1": 508, "x2": 980, "y2": 516}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Malas",
+    "Parent": { "Name": "Luna", "Map": "Malas" },
+    "Name": "the Luna Healer",
+    "Priority": 50,
+    "Area": [
+      {"x1": 946, "y1": 516, "x2": 954, "y2": 524},
+      {"x1": 1025, "y1": 516, "x2": 1033, "y2": 524}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Malas",
+    "Parent": { "Name": "Luna", "Map": "Malas" },
+    "Name": "the Luna Stables",
+    "Priority": 50,
+    "Area": [{"x1": 1023, "y1": 490, "x2": 1031, "y2": 498}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Malas",
+    "Parent": { "Name": "Luna", "Map": "Malas" },
+    "Name": "the Luna Tailor",
+    "Priority": 50,
+    "Area": [{"x1": 972, "y1": 523, "x2": 980, "y2": 531}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Malas",
+    "Parent": { "Name": "Umbra", "Map": "Malas" },
+    "Name": "the Umbra Bakery",
+    "Priority": 50,
+    "Area": [{"x1": 2013, "y1": 1352, "x2": 2021, "y2": 1360}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Malas",
+    "Parent": { "Name": "Umbra", "Map": "Malas" },
+    "Name": "the Umbra Bank",
+    "Priority": 50,
+    "Area": [{"x1": 2044, "y1": 1339, "x2": 2052, "y2": 1347}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Malas",
+    "Parent": { "Name": "Umbra", "Map": "Malas" },
+    "Name": "the Umbra Blacksmith",
+    "Priority": 50,
+    "Area": [{"x1": 1973, "y1": 1361, "x2": 1981, "y2": 1369}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Malas",
+    "Parent": { "Name": "Umbra", "Map": "Malas" },
+    "Name": "the Umbra Carpenter",
+    "Priority": 50,
+    "Area": [{"x1": 2056, "y1": 1279, "x2": 2064, "y2": 1287}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Malas",
+    "Parent": { "Name": "Umbra", "Map": "Malas" },
+    "Name": "the Umbra Healer",
+    "Priority": 50,
+    "Area": [{"x1": 2064, "y1": 1368, "x2": 2072, "y2": 1376}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Malas",
+    "Parent": { "Name": "Umbra", "Map": "Malas" },
+    "Name": "the Umbra Jeweler",
+    "Priority": 50,
+    "Area": [{"x1": 2041, "y1": 1393, "x2": 2049, "y2": 1401}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Malas",
+    "Parent": { "Name": "Umbra", "Map": "Malas" },
+    "Name": "the Umbra Mage",
+    "Priority": 50,
+    "Area": [
+      {"x1": 2019, "y1": 1375, "x2": 2027, "y2": 1383},
+      {"x1": 2021, "y1": 1383, "x2": 2029, "y2": 1391}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Malas",
+    "Parent": { "Name": "Umbra", "Map": "Malas" },
+    "Name": "the Umbra Provisioner",
+    "Priority": 50,
+    "Area": [{"x1": 2007, "y1": 1322, "x2": 2015, "y2": 1330}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Malas",
+    "Parent": { "Name": "Umbra", "Map": "Malas" },
+    "Name": "the Umbra Stables",
+    "Priority": 50,
+    "Area": [{"x1": 1988, "y1": 1311, "x2": 1996, "y2": 1319}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Malas",
+    "Parent": { "Name": "Umbra", "Map": "Malas" },
+    "Name": "the Umbra Tailor",
+    "Priority": 50,
+    "Area": [{"x1": 2079, "y1": 1318, "x2": 2087, "y2": 1326}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Malas",
+    "Parent": { "Name": "Umbra", "Map": "Malas" },
+    "Name": "the Umbra Tanner",
+    "Priority": 50,
+    "Area": [{"x1": 2078, "y1": 1327, "x2": 2078, "y2": 1327}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Malas",
+    "Parent": { "Name": "Umbra", "Map": "Malas" },
+    "Name": "the Umbra Tinker",
+    "Priority": 50,
+    "Area": [{"x1": 2065, "y1": 1281, "x2": 2067, "y2": 1283}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Tokuno",
+    "Parent": { "Name": "Zento", "Map": "Tokuno" },
+    "Name": "the Zento Bakery",
+    "Priority": 50,
+    "Area": [{"x1": 699, "y1": 1258, "x2": 707, "y2": 1266}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Tokuno",
+    "Parent": { "Name": "Zento", "Map": "Tokuno" },
+    "Name": "the Zento Bank",
+    "Priority": 50,
+    "Area": [{"x1": 725, "y1": 1245, "x2": 733, "y2": 1253}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Tokuno",
+    "Parent": { "Name": "Zento", "Map": "Tokuno" },
+    "Name": "the Zento Bard",
+    "Priority": 50,
+    "Area": [
+      {"x1": 664, "y1": 1250, "x2": 672, "y2": 1258},
+      {"x1": 671, "y1": 1261, "x2": 679, "y2": 1269}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Tokuno",
+    "Parent": { "Name": "Zento", "Map": "Tokuno" },
+    "Name": "the Zento Blacksmith",
+    "Priority": 50,
+    "Area": [
+      {"x1": 657, "y1": 1205, "x2": 665, "y2": 1213},
+      {"x1": 658, "y1": 1206, "x2": 666, "y2": 1214},
+      {"x1": 738, "y1": 1300, "x2": 746, "y2": 1308},
+      {"x1": 745, "y1": 1299, "x2": 753, "y2": 1307},
+      {"x1": 752, "y1": 1298, "x2": 760, "y2": 1306},
+      {"x1": 769, "y1": 1244, "x2": 777, "y2": 1252},
+      {"x1": 775, "y1": 1255, "x2": 783, "y2": 1263},
+      {"x1": 802, "y1": 1304, "x2": 810, "y2": 1312}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Tokuno",
+    "Parent": { "Name": "Zento", "Map": "Tokuno" },
+    "Name": "the Zento Bowyer",
+    "Priority": 50,
+    "Area": [{"x1": 777, "y1": 1297, "x2": 785, "y2": 1305}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Tokuno",
+    "Parent": { "Name": "Zento", "Map": "Tokuno" },
+    "Name": "the Zento Carpenter",
+    "Priority": 50,
+    "Area": [{"x1": 735, "y1": 1219, "x2": 743, "y2": 1227}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Tokuno",
+    "Parent": { "Name": "Zento", "Map": "Tokuno" },
+    "Name": "the Zento Healer",
+    "Priority": 50,
+    "Area": [{"x1": 777, "y1": 1215, "x2": 785, "y2": 1223}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Tokuno",
+    "Parent": { "Name": "Zento", "Map": "Tokuno" },
+    "Name": "the Zento Jeweler",
+    "Priority": 50,
+    "Area": [{"x1": 720, "y1": 1293, "x2": 728, "y2": 1301}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Tokuno",
+    "Parent": { "Name": "Zento", "Map": "Tokuno" },
+    "Name": "the Zento Mage",
+    "Priority": 50,
+    "Area": [
+      {"x1": 679, "y1": 1294, "x2": 687, "y2": 1302},
+      {"x1": 691, "y1": 1293, "x2": 699, "y2": 1301},
+      {"x1": 698, "y1": 1294, "x2": 706, "y2": 1302}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Tokuno",
+    "Parent": { "Name": "Zento", "Map": "Tokuno" },
+    "Name": "the Zento Provisioner",
+    "Priority": 50,
+    "Area": [{"x1": 726, "y1": 1278, "x2": 734, "y2": 1286}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Tokuno",
+    "Parent": { "Name": "Zento", "Map": "Tokuno" },
+    "Name": "the Zento Scribe",
+    "Priority": 50,
+    "Area": [{"x1": 685, "y1": 1251, "x2": 693, "y2": 1259}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Tokuno",
+    "Parent": { "Name": "Zento", "Map": "Tokuno" },
+    "Name": "the Zento Stables",
+    "Priority": 50,
+    "Area": [{"x1": 785, "y1": 1274, "x2": 793, "y2": 1282}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Tokuno",
+    "Parent": { "Name": "Zento", "Map": "Tokuno" },
+    "Name": "the Zento Tailor",
+    "Priority": 50,
+    "Area": [
+      {"x1": 740, "y1": 1206, "x2": 748, "y2": 1214},
+      {"x1": 744, "y1": 1219, "x2": 744, "y2": 1219}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Tokuno",
+    "Parent": { "Name": "Zento", "Map": "Tokuno" },
+    "Name": "the Zento Tanner",
+    "Priority": 50,
+    "Area": [{"x1": 716, "y1": 1207, "x2": 724, "y2": 1215}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "TerMur",
+    "Parent": { "Name": "Royal City", "Map": "TerMur" },
+    "Name": "the Royal City Bakery",
+    "Priority": 50,
+    "Area": [{"x1": 801, "y1": 3487, "x2": 809, "y2": 3495}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "TerMur",
+    "Parent": { "Name": "Royal City", "Map": "TerMur" },
+    "Name": "the Royal City Bank",
+    "Priority": 50,
+    "Area": [
+      {"x1": 829, "y1": 3435, "x2": 837, "y2": 3443},
+      {"x1": 839, "y1": 3435, "x2": 847, "y2": 3443}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "TerMur",
+    "Parent": { "Name": "Royal City", "Map": "TerMur" },
+    "Name": "the Royal City Blacksmith",
+    "Priority": 50,
+    "Area": [
+      {"x1": 723, "y1": 3421, "x2": 731, "y2": 3429},
+      {"x1": 812, "y1": 3415, "x2": 820, "y2": 3423}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "TerMur",
+    "Parent": { "Name": "Royal City", "Map": "TerMur" },
+    "Name": "the Royal City Butcher",
+    "Priority": 50,
+    "Area": [
+      {"x1": 711, "y1": 3442, "x2": 719, "y2": 3450},
+      {"x1": 790, "y1": 3442, "x2": 798, "y2": 3450},
+      {"x1": 813, "y1": 3452, "x2": 821, "y2": 3460}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "TerMur",
+    "Parent": { "Name": "Royal City", "Map": "TerMur" },
+    "Name": "the Royal City Carpenter",
+    "Priority": 50,
+    "Area": [{"x1": 813, "y1": 3434, "x2": 821, "y2": 3442}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "TerMur",
+    "Parent": { "Name": "Royal City", "Map": "TerMur" },
+    "Name": "the Royal City Healer",
+    "Priority": 50,
+    "Area": [{"x1": 779, "y1": 3487, "x2": 787, "y2": 3495}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "TerMur",
+    "Parent": { "Name": "Royal City", "Map": "TerMur" },
+    "Name": "the Royal City Jeweler",
+    "Priority": 50,
+    "Area": [{"x1": 775, "y1": 3427, "x2": 783, "y2": 3435}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "TerMur",
+    "Parent": { "Name": "Royal City", "Map": "TerMur" },
+    "Name": "the Royal City Mage",
+    "Priority": 50,
+    "Area": [
+      {"x1": 768, "y1": 3486, "x2": 776, "y2": 3494},
+      {"x1": 769, "y1": 3474, "x2": 777, "y2": 3482}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "TerMur",
+    "Parent": { "Name": "Royal City", "Map": "TerMur" },
+    "Name": "the Royal City Provisioner",
+    "Priority": 50,
+    "Area": [{"x1": 794, "y1": 3491, "x2": 800, "y2": 3497}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "TerMur",
+    "Parent": { "Name": "Royal City", "Map": "TerMur" },
+    "Name": "the Royal City Scribe",
+    "Priority": 50,
+    "Area": [{"x1": 768, "y1": 3463, "x2": 776, "y2": 3471}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "TerMur",
+    "Parent": { "Name": "Royal City", "Map": "TerMur" },
+    "Name": "the Royal City Stables",
+    "Priority": 50,
+    "Area": [{"x1": 847, "y1": 3400, "x2": 855, "y2": 3408}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "TerMur",
+    "Parent": { "Name": "Royal City", "Map": "TerMur" },
+    "Name": "the Royal City Tailor",
+    "Priority": 50,
+    "Area": [
+      {"x1": 698, "y1": 3431, "x2": 706, "y2": 3439},
+      {"x1": 801, "y1": 3393, "x2": 809, "y2": 3401}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "TerMur",
+    "Parent": { "Name": "Royal City", "Map": "TerMur" },
+    "Name": "the Royal City Tanner",
+    "Priority": 50,
+    "Area": [{"x1": 800, "y1": 3383, "x2": 808, "y2": 3391}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "TerMur",
+    "Parent": { "Name": "Royal City", "Map": "TerMur" },
+    "Name": "the Royal City Tinker",
+    "Priority": 50,
+    "Area": [{"x1": 815, "y1": 3424, "x2": 819, "y2": 3428}]
   }
 ]
