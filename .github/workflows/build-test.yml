@@ -43,6 +43,7 @@ jobs:
       uses: actions/setup-dotnet@v6
       with:
         global-json-file: global.json
+        dotnet-channel: STS
     - name: Install Prerequisites
       run: |
         brew update
@@ -161,6 +162,7 @@ jobs:
         uses: actions/setup-dotnet@v6
         with:
           global-json-file: global.json
+          dotnet-channel: STS
       - name: Build
         run: dotnet run --project Projects/BuildTool -- --config Release --skip-prereqs
       - name: Test

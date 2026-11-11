@@ -40,7 +40,7 @@ jobs:
         uses: actions/setup-dotnet@v6
         with:
           global-json-file: global.json
-
+          dotnet-channel: STS
       - name: Publish NativeAOT
         run: dotnet publish Projects/BuildTool/BuildTool.csproj -c Release -r ${{ matrix.rid }} -o publish/
 
