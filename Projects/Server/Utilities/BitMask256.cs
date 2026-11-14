@@ -354,6 +354,49 @@ public struct BitMask256
     }
 
     /// <summary>
+    /// Returns the index of the set bit closest to <paramref name="target"/>, or -1 if no bits are set.
+    /// On a tie (one set bit the same distance below and above) the lower one wins.
+    /// <paramref name="target"/> may lie outside 0-255; it is clamped, which makes
+    /// <c>NearestSetBit(0)</c> the same as <see cref="LowestSetBit"/>.
+    /// </summary>
+    /// <remarks>
+    /// Two masked scans instead of walking outwards bit by bit: the highest set bit at or below the
+    /// target and the lowest set bit at or above it, each found with the existing O(1) scans.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly int NearestSetBit(int target)
+    {
+        target = Math.Clamp(target, 0, 255);
+
+        var below = this;
+        if (target < 255)
+        {
+            below.ClearRange(target + 1, 255);
+        }
+
+        var above = this;
+        if (target > 0)
+        {
+            above.ClearRange(0, target - 1);
+        }
+
+        var low = below.HighestSetBit();
+        var high = above.LowestSetBit();
+
+        if (low < 0)
+        {
+            return high;
+        }
+
+        if (high < 0)
+        {
+            return low;
+        }
+
+        return target - low <= high - target ? low : high;
+    }
+
+    /// <summary>
     /// Returns the index of the Nth set bit (0-indexed), or -1 if fewer than N+1 bits are set.
     /// Uses BMI2 PDEP for O(1) performance when available, otherwise O(popcount) fallback.
     /// </summary>
