@@ -463,13 +463,18 @@ public abstract partial class BaseSpawner : Item, ISpawner
             int spawnZ;
             SpawnFailureReason failureReason;
 
+            // Prefer the surface nearest the spawner's own Z rather than the lowest. HomeRange bounds span
+            // Z -128 to 127 (BoundsFromHomeRange), so wherever a floor stands 16 or more above the ground
+            // (raised wooden floors in Tokuno, porches, bridges, upper storeys) the lowest surface is the
+            // ground under that floor: the spawn is hidden beneath it, and a vendor or animal placed for the
+            // floor never reaches it. Over open ground the ground is the only surface, so nothing changes there.
             if (isMobile)
             {
-                success = map.CanSpawnMobile(x, y, minZ, maxZ, canSwim, cantWalk, out spawnZ, out failureReason);
+                success = map.CanSpawnMobile(x, y, minZ, maxZ, Z, canSwim, cantWalk, out spawnZ, out failureReason);
             }
             else
             {
-                success = map.CanSpawnItem(x, y, minZ, maxZ, out spawnZ);
+                success = map.CanSpawnItem(x, y, minZ, maxZ, Z, out spawnZ);
                 failureReason = success ? SpawnFailureReason.None : SpawnFailureReason.NonTransientBlocker;
             }
 
@@ -551,7 +556,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
         }
 
         // Phase 4: Try cached positions from global sector cache (uses deduplicated sectors)
-        if (TryGetVerifiedCachedPosition(map, allBounds, isMobile, isWaterMob, canSwim, cantWalk, out var spawnPos))
+        if (TryGetVerifiedCachedPosition(map, allBounds, Z, isMobile, isWaterMob, canSwim, cantWalk, out var spawnPos))
         {
             // Check if cache returned a useful position (not just spawner's own location)
             if (spawnPos != Location)
@@ -587,6 +592,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
     private static bool TryGetVerifiedCachedPosition(
         Map map,
         ReadOnlySpan<Rectangle3D> allBounds,
+        int preferredZ,
         bool isMobile,
         bool isWaterMob,
         bool canSwim,
@@ -605,14 +611,16 @@ public abstract partial class BaseSpawner : Item, ISpawner
             return false;
         }
 
-        // Re-verify in 3D using the bounds that contains this position
+        // Re-verify in 3D using the bounds that contains this position. The cache is shared by every
+        // spawner whose bounds cover the sector and only stands for "something can spawn at this X/Y", so
+        // the Z is chosen again here, for this spawner (preferredZ is its Z, as in Phase 1).
         var normalizedBounds = containingBounds.Normalized;
         var minZ = normalizedBounds.Start.Z;
         var maxZ = Math.Max(minZ, normalizedBounds.End.Z - 1);
 
         var verified = isMobile
-            ? map.CanSpawnMobile(cachedPos.X, cachedPos.Y, minZ, maxZ, canSwim, cantWalk, out var verifiedZ)
-            : map.CanSpawnItem(cachedPos.X, cachedPos.Y, minZ, maxZ, out verifiedZ);
+            ? map.CanSpawnMobile(cachedPos.X, cachedPos.Y, minZ, maxZ, preferredZ, canSwim, cantWalk, out var verifiedZ)
+            : map.CanSpawnItem(cachedPos.X, cachedPos.Y, minZ, maxZ, preferredZ, out verifiedZ);
 
         if (!verified)
         {

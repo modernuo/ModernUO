@@ -311,6 +311,95 @@ public class CanSpawnMobileTileDataTests
         return multi;
     }
 
+    // A floor standing 16 or more above the ground, like Tokuno's raised wooden floors: the ground under
+    // it passes the 16-high headroom check, so with the lowest surface preferred a spawner on the floor
+    // put its spawns underneath, where the client draws the floor over them.
+    [Fact]
+    public void CanSpawnMobile_PreferredZ_PicksRaisedFloorOverGroundBelow()
+    {
+        var map = Map.Felucca;
+        const int x = 1500;
+        const int y = 1500;
+
+        TestMulti multi = null;
+        try
+        {
+            map.GetAverageZ(x, y, out _, out var groundZ, out _);
+            var floorZ = groundZ + 20;
+            multi = CreateFloorMulti(map, new Point3D(x, y, 0), floorZ);
+            var floorTop = floorZ + TileData.ItemTable[ServerFixture.SurfaceTileId].CalcHeight;
+
+            Assert.True(map.CanSpawnMobile(x, y, -128, 127, false, false, out var lowestZ));
+            Assert.Equal(groundZ, lowestZ);
+
+            Assert.True(map.CanSpawnMobile(x, y, -128, 127, floorTop, false, false, out var nearZ));
+            Assert.Equal(floorTop, nearZ);
+        }
+        finally
+        {
+            multi?.Delete();
+        }
+    }
+
+    [Fact]
+    public void CanSpawnMobile_PreferredZ_PicksNearestOfSeveralFloors()
+    {
+        var map = Map.Felucca;
+        const int x = 1525;
+        const int y = 1525;
+
+        TestMulti multi = null;
+        try
+        {
+            map.GetAverageZ(x, y, out _, out var groundZ, out _);
+            multi = CreateTwoFloorMulti(map, new Point3D(x, y, 0), floor1Z: groundZ + 30, floor2Z: groundZ + 70);
+            var height = TileData.ItemTable[ServerFixture.SurfaceTileId].CalcHeight;
+
+            // Nearest to a point just under the upper floor is the upper floor, not the ground or the middle one
+            Assert.True(map.CanSpawnMobile(x, y, -128, 127, groundZ + 65, false, false, out var spawnZ));
+            Assert.Equal(groundZ + 70 + height, spawnZ);
+
+            // A preferredZ outside the range is clamped to it: above everything picks the highest surface
+            Assert.True(map.CanSpawnMobile(x, y, -128, 127, 1000, false, false, out spawnZ));
+            Assert.Equal(groundZ + 70 + height, spawnZ);
+
+            // The Z range still bounds the choice
+            Assert.True(map.CanSpawnMobile(x, y, -128, groundZ + 40, groundZ + 65, false, false, out spawnZ));
+            Assert.Equal(groundZ + 30 + height, spawnZ);
+        }
+        finally
+        {
+            multi?.Delete();
+        }
+    }
+
+    [Fact]
+    public void CanSpawnItem_PreferredZ_PicksRaisedFloorOverGroundBelow()
+    {
+        var map = Map.Felucca;
+        const int x = 1550;
+        const int y = 1550;
+
+        TestMulti multi = null;
+        try
+        {
+            map.GetAverageZ(x, y, out _, out var groundZ, out _);
+            var floorZ = groundZ + 20;
+            multi = CreateFloorMulti(map, new Point3D(x, y, 0), floorZ);
+            var floorTop = floorZ + TileData.ItemTable[ServerFixture.SurfaceTileId].CalcHeight;
+
+            Assert.True(map.CanSpawnItem(x, y, -128, 127, out var lowestZ));
+            Assert.Equal(groundZ, lowestZ);
+
+            Assert.True(map.CanSpawnItem(x, y, -128, 127, floorTop, out var nearZ));
+            Assert.Equal(floorTop, nearZ);
+        }
+        finally
+        {
+            multi?.Delete();
+        }
+    }
+
     private TestMulti CreateTwoFloorMulti(Map map, Point3D location, int floor1Z, int floor2Z)
     {
         var multi = new TestMulti(CreateTwoFloorComponents(floor1Z, floor2Z));
