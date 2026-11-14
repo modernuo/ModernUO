@@ -742,7 +742,7 @@ public static class Core
         {
             logger.Information("Shutting down");
 
-            World.WaitForWriteCompletion();
+            World.WaitForWriteOnShutdown();
             World.ExitSerializationThreads();
             PingServer.Shutdown();
             NetState.Shutdown();
@@ -1015,7 +1015,8 @@ public static class Core
                     _performSnapshot = false;
                 }
 
-                if (_performProcessKill)
+                // A pending save is snapshotted by this loop, so waiting for its write before then never returns.
+                if (_performProcessKill && World.WorldState != WorldState.PendingSave)
                 {
                     World.WaitForWriteCompletion();
                     break;

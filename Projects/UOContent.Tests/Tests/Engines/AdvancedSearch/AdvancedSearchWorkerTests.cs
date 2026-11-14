@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading;
 using Server;
 using Server.Engines.AdvancedSearch;
 using Server.Items;
+using Server.Saves;
 using Server.Tests;
 using Xunit;
 
@@ -17,15 +19,244 @@ public class AdvancedSearchWorkerTests
     {
         public ThrowingItem() : base(0x1) { }
         public ThrowingItem(Serial s) : base(s) { }
-        public string Boom => throw new InvalidOperationException("boom");
+        [CommandProperty(AccessLevel.GameMaster)] public string Boom => throw new InvalidOperationException("boom");
+    }
+
+    // Writes on first read, so the classifier sends it to the loop.
+    private sealed class LazyItem : Item
+    {
+        private object _cache;
+
+        public LazyItem() : base(0x1) { }
+        public LazyItem(Serial s) : base(s) { }
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int Lazy
+        {
+            get
+            {
+                _cache ??= new object();
+                return 1;
+            }
+        }
+    }
+
+    private static void RunWorker(
+        AdvancedSearchFilter filter,
+        ConcurrentQueue<AdvancedSearchResult> results,
+        ConcurrentQueue<IEntity> deferred,
+        ConcurrentQueue<IEntity> ignoreSources,
+        params IEntity[] entities
+    )
+    {
+        var worker = new AdvancedSearchThreadWorker();
+
+        try
+        {
+            worker.Wake(
+                new WorldLocation(Point3D.Zero, Map.Felucca),
+                filter,
+                results,
+                deferred,
+                ignoreSources,
+                new AdvancedSearchConditions.Cache(AccessLevel.GameMaster)
+            );
+
+            for (var i = 0; i < entities.Length; i++)
+            {
+                worker.Push(entities[i]);
+            }
+
+            worker.Sleep();
+        }
+        finally
+        {
+            worker.Exit();
+        }
+    }
+
+    private static HashSet<IEntity> EntitiesOf(ConcurrentQueue<AdvancedSearchResult> results)
+    {
+        HashSet<IEntity> set = [];
+        foreach (var r in results)
+        {
+            set.Add(r.Entity);
+        }
+
+        return set;
+    }
+
+    [Fact]
+    public void Worker_RegionFilter_DefersInsteadOfFindingRegion()
+    {
+        var item = new Item(0x1);
+        item.MoveToWorld(new Point3D(1000, 1000, 0), Map.Felucca);
+
+        ConcurrentQueue<AdvancedSearchResult> results = [];
+        ConcurrentQueue<IEntity> deferred = [];
+        var filter = new AdvancedSearchFilter { FilterRegion = true, RegionName = "Britain" };
+
+        try
+        {
+            RunWorker(filter, results, deferred, [], item);
+
+            Assert.Empty(results);
+            Assert.Equal([item], deferred.ToArray());
+        }
+        finally
+        {
+            item.Delete();
+        }
+    }
+
+    [Fact]
+    public void Worker_ImpurePropertyTest_Defers()
+    {
+        var item = new LazyItem();
+
+        ConcurrentQueue<AdvancedSearchResult> results = [];
+        ConcurrentQueue<IEntity> deferred = [];
+        var filter = new AdvancedSearchFilter { FilterPropertyTest = true, PropertyTest = "Lazy=1" };
+
+        try
+        {
+            RunWorker(filter, results, deferred, [], item);
+
+            Assert.Empty(results);
+            Assert.Equal([item], deferred.ToArray());
+        }
+        finally
+        {
+            item.Delete();
+        }
+    }
+
+    [Fact]
+    public void Worker_PurePropertyTest_MatchesDirectly()
+    {
+        var item = new Item(0x1) { Hue = 5 };
+
+        ConcurrentQueue<AdvancedSearchResult> results = [];
+        ConcurrentQueue<IEntity> deferred = [];
+        var filter = new AdvancedSearchFilter { FilterPropertyTest = true, PropertyTest = "Hue=5" };
+
+        try
+        {
+            RunWorker(filter, results, deferred, [], item);
+
+            Assert.Empty(deferred);
+            Assert.Equal([item], EntitiesOf(results));
+        }
+        finally
+        {
+            item.Delete();
+        }
+    }
+
+    // A KeyRing is an ignore source and still a search candidate itself.
+    [Fact]
+    public void Worker_IgnoreSourceIsQueuedAndStillEvaluated()
+    {
+        var keyRing = new KeyRing();
+        keyRing.MoveToWorld(new Point3D(1000, 1000, 0), Map.Felucca);
+
+        ConcurrentQueue<AdvancedSearchResult> results = [];
+        ConcurrentQueue<IEntity> deferred = [];
+        ConcurrentQueue<IEntity> ignoreSources = [];
+        var filter = new AdvancedSearchFilter { HideValidInternalMap = true };
+
+        try
+        {
+            RunWorker(filter, results, deferred, ignoreSources, keyRing);
+
+            Assert.Equal([keyRing], ignoreSources.ToArray());
+            Assert.True(EntitiesOf(results).Contains(keyRing) || Array.IndexOf(deferred.ToArray(), keyRing) >= 0);
+        }
+        finally
+        {
+            keyRing.Delete();
+        }
+    }
+
+    // Only entities passing the type filter act as ignore sources; the name-only search is the control.
+    [Theory]
+    [InlineData(true, true)]
+    [InlineData(false, false)]
+    public void DoSearch_IgnoreSourcesComeOnlyFromTypeFilteredEntities(bool filterByKeyType, bool keyExpected)
+    {
+        const string keyName = "advanced-search-type-filter-key";
+
+        var from = new Mobile { AccessLevel = AccessLevel.GameMaster };
+        var keyRing = new KeyRing();
+        keyRing.MoveToWorld(new Point3D(1000, 1000, 0), Map.Felucca);
+        var pack = new Backpack();
+        pack.MoveToWorld(new Point3D(1001, 1000, 0), Map.Felucca);
+        var key = new Key { Name = keyName };
+        keyRing.Add(key);
+        pack.DropItem(key); // in a container on Felucca, so only the KeyRing can hide it
+
+        var gump = new AdvancedSearchGump
+        {
+            Filter = new AdvancedSearchFilter
+            {
+                FilterType = filterByKeyType,
+                Type = filterByKeyType ? typeof(Key) : null,
+                FilterName = true,
+                Name = keyName,
+                HideValidInternalMap = true
+            }
+        };
+
+        var autoSave = AutoSave.SavesEnabled;
+        var originalContext = Core.LoopContext;
+
+        try
+        {
+            // Disabled outside the scoped wheel so the search's restore never starts the autosave timer on it.
+            AutoSave.SavesEnabled = false;
+
+            using (new TimerWheelScope())
+            {
+                // The context pins itself to the thread that built it; own one for the test's thread.
+                var owned = new EventLoopContext();
+                Core.LoopContext = owned;
+
+                gump.DoSearch(from);
+
+                var deadline = DateTime.UtcNow.AddSeconds(20);
+                while (AdvancedSearchGump.IsSearchInProgress && DateTime.UtcNow < deadline)
+                {
+                    owned.ExecuteTasks();
+                    TimerWheelScope.RunFor(TimerWheelScope.Step);
+                    Thread.Sleep(1);
+                }
+
+                Assert.False(AdvancedSearchGump.IsSearchInProgress, "search never finished");
+                Assert.False(AutoSave.SavesEnabled);
+            }
+
+            Assert.NotNull(gump.SearchResults);
+            Assert.Equal(keyExpected, Array.Exists(gump.SearchResults, r => r.Entity == key));
+        }
+        finally
+        {
+            Core.LoopContext = originalContext;
+            AutoSave.SavesEnabled = autoSave;
+            AdvancedSearchGump.EndSearch();
+            key.Delete();
+            pack.Delete();
+            keyRing.Delete();
+            from.Delete();
+        }
     }
 
     [Fact]
     public void Worker_FilterThrows_DoesNotEscape_ReturnsNoMatch()
     {
         var worker = new AdvancedSearchThreadWorker();
-        var results = new ConcurrentQueue<AdvancedSearchResult>();
-        var ignore = new ConcurrentQueue<IEntity>();
+        ConcurrentQueue<AdvancedSearchResult> results = [];
+        ConcurrentQueue<IEntity> deferred = [];
+        ConcurrentQueue<IEntity> ignore = [];
         var filter = new AdvancedSearchFilter
         {
             FilterPropertyTest = true,
@@ -36,7 +267,7 @@ public class AdvancedSearchWorkerTests
 
         try
         {
-            worker.Wake(new WorldLocation(Point3D.Zero, Map.Felucca), filter, results, ignore);
+            worker.Wake(new WorldLocation(Point3D.Zero, Map.Felucca), filter, results, deferred, ignore, new AdvancedSearchConditions.Cache(AccessLevel.GameMaster));
             worker.Push(item);
             worker.Sleep(); // drains; must not crash the test process
 
@@ -55,8 +286,9 @@ public class AdvancedSearchWorkerTests
     public void Worker_PropertyTest_FiltersItemsAndMobiles()
     {
         var worker = new AdvancedSearchThreadWorker();
-        var results = new ConcurrentQueue<AdvancedSearchResult>();
-        var ignore = new ConcurrentQueue<IEntity>();
+        ConcurrentQueue<AdvancedSearchResult> results = [];
+        ConcurrentQueue<IEntity> deferred = [];
+        ConcurrentQueue<IEntity> ignore = [];
         var filter = new AdvancedSearchFilter
         {
             FilterPropertyTest = true,
@@ -70,14 +302,14 @@ public class AdvancedSearchWorkerTests
 
         try
         {
-            worker.Wake(new WorldLocation(Point3D.Zero, Map.Felucca), filter, results, ignore);
+            worker.Wake(new WorldLocation(Point3D.Zero, Map.Felucca), filter, results, deferred, ignore, new AdvancedSearchConditions.Cache(AccessLevel.GameMaster));
             worker.Push(plain);
             worker.Push(hued);
             worker.Push(huedToo);
             worker.Push(mobile);
             worker.Sleep();
 
-            var matched = new HashSet<IEntity>();
+            HashSet<IEntity> matched = [];
             foreach (var r in results)
             {
                 matched.Add(r.Entity);
@@ -105,8 +337,9 @@ public class AdvancedSearchWorkerTests
     public void Worker_SeveralMapsTicked_MatchesAnyOfThem()
     {
         var worker = new AdvancedSearchThreadWorker();
-        var results = new ConcurrentQueue<AdvancedSearchResult>();
-        var ignore = new ConcurrentQueue<IEntity>();
+        ConcurrentQueue<AdvancedSearchResult> results = [];
+        ConcurrentQueue<IEntity> deferred = [];
+        ConcurrentQueue<IEntity> ignore = [];
         var filter = new AdvancedSearchFilter
         {
             FilterFelucca = true,
@@ -125,14 +358,14 @@ public class AdvancedSearchWorkerTests
 
         try
         {
-            worker.Wake(new WorldLocation(Point3D.Zero, Map.Felucca), filter, results, ignore);
+            worker.Wake(new WorldLocation(Point3D.Zero, Map.Felucca), filter, results, deferred, ignore, new AdvancedSearchConditions.Cache(AccessLevel.GameMaster));
             worker.Push(fel);
             worker.Push(tram);
             worker.Push(internalItem);
             worker.Push(malas);
             worker.Sleep();
 
-            var matched = new HashSet<IEntity>();
+            HashSet<IEntity> matched = [];
             foreach (var r in results)
             {
                 matched.Add(r.Entity);
@@ -157,8 +390,9 @@ public class AdvancedSearchWorkerTests
     public void Worker_DeletedEntity_IsSkipped()
     {
         var worker = new AdvancedSearchThreadWorker();
-        var results = new ConcurrentQueue<AdvancedSearchResult>();
-        var ignore = new ConcurrentQueue<IEntity>();
+        ConcurrentQueue<AdvancedSearchResult> results = [];
+        ConcurrentQueue<IEntity> deferred = [];
+        ConcurrentQueue<IEntity> ignore = [];
         var filter = new AdvancedSearchFilter(); // no filters -> everything matches
 
         var item = new Item(0x1);
@@ -166,7 +400,7 @@ public class AdvancedSearchWorkerTests
 
         try
         {
-            worker.Wake(new WorldLocation(Point3D.Zero, Map.Felucca), filter, results, ignore);
+            worker.Wake(new WorldLocation(Point3D.Zero, Map.Felucca), filter, results, deferred, ignore, new AdvancedSearchConditions.Cache(AccessLevel.GameMaster));
             worker.Push(item);
             worker.Sleep();
 

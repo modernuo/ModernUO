@@ -1,21 +1,13 @@
 using System;
 using System.Collections.Concurrent;
 using System.Threading;
-using Server.Items;
 using Server.Logging;
-using Server.Mobiles;
-using Server.Multis;
 
 namespace Server.Engines.AdvancedSearch;
 
 /// <summary>
-/// Filters entities on a background thread while the main loop keeps mutating them — an
-/// intentional, bounded race. Reads of live <see cref="Item"/>/<see cref="Mobile"/> state are
-/// unsynchronized, so a torn <see cref="Point3D"/> read may report stale coordinates, and any
-/// getter that throws mid-read is caught per-entity in <see cref="DoEntitySearch"/> and skipped.
-/// Results are best-effort and may omit a concurrently modified entity, but never fault or corrupt
-/// server state. Eliminating the race would require snapshotting each read field onto the main
-/// thread before handing entities off; that is deferred.
+/// Runs <see cref="AdvancedSearchMatcher" /> off the loop in worker mode. Matches go to the results queue;
+/// entities needing a loop-only read, and ignore sources, are queued for <see cref="AdvancedSearchLoopPhase" />.
 /// </summary>
 public class AdvancedSearchThreadWorker
 {
@@ -28,7 +20,8 @@ public class AdvancedSearchThreadWorker
     private bool _exit;
     private readonly ConcurrentQueue<IEntity> _entities;
     private ConcurrentQueue<AdvancedSearchResult> _results;
-    private ConcurrentQueue<IEntity> _ignoreQueue;
+    private ConcurrentQueue<IEntity> _deferred;
+    private ConcurrentQueue<IEntity> _ignoreSources;
     private WorldLocation _worldLocation;
     private AdvancedSearchFilter _filter;
     private AdvancedSearchConditions.Cache _predicates;
@@ -37,7 +30,7 @@ public class AdvancedSearchThreadWorker
     {
         _startEvent = new AutoResetEvent(false);
         _stopEvent = new AutoResetEvent(false);
-        _entities = new ConcurrentQueue<IEntity>();
+        _entities = [];
         _thread = new Thread(Execute)
         {
             IsBackground = true
@@ -46,22 +39,23 @@ public class AdvancedSearchThreadWorker
     }
 
     /// <param name="predicates">
-    /// Compiled property-test memo for this search. Shared across the workers so a type is
-    /// compiled once per search rather than once per worker; a lone worker may leave it null.
+    /// Compiled property-test memo shared by all workers; carries the searcher's access level.
     /// </param>
     public void Wake(
         WorldLocation worldLocation,
         AdvancedSearchFilter filter,
         ConcurrentQueue<AdvancedSearchResult> results,
-        ConcurrentQueue<IEntity> ignoreQueue,
-        AdvancedSearchConditions.Cache predicates = null
+        ConcurrentQueue<IEntity> deferred,
+        ConcurrentQueue<IEntity> ignoreSources,
+        AdvancedSearchConditions.Cache predicates
     )
     {
         _worldLocation = worldLocation;
         _filter = filter;
-        _ignoreQueue = ignoreQueue;
-        _results = results;
-        _predicates = predicates ?? new AdvancedSearchConditions.Cache();
+        _results = results ?? throw new ArgumentNullException(nameof(results));
+        _deferred = deferred ?? throw new ArgumentNullException(nameof(deferred));
+        _ignoreSources = ignoreSources ?? throw new ArgumentNullException(nameof(ignoreSources));
+        _predicates = predicates ?? throw new ArgumentNullException(nameof(predicates));
         _startEvent.Set();
     }
 
@@ -75,7 +69,7 @@ public class AdvancedSearchThreadWorker
     {
         Volatile.Write(ref _exit, true);
 
-        Wake(WorldLocation.Zero, null, null, null);
+        _startEvent.Set();
 
         // Tolerate a worker that has already terminated (e.g. Core.Closing raced us) so
         // shutdown can't deadlock waiting on a stopEvent that will never be set.
@@ -103,17 +97,15 @@ public class AdvancedSearchThreadWorker
                 var pauseRequested = Volatile.Read(ref worker._pause);
                 if (reader.TryDequeue(out var entity))
                 {
-                    var result = worker.DoEntitySearch(entity);
-                    if (result != null)
-                    {
-                        worker._results?.Enqueue(result);
-                    }
+                    worker.DoEntitySearch(entity);
                 }
                 else if (pauseRequested) // Break when finished
                 {
                     worker._results = null;
+                    worker._deferred = null;
+                    worker._ignoreSources = null;
                     worker._filter = null;
-                    worker._predicates = null; // a compiled constant may pin an entity resolved by serial
+                    worker._predicates = null; // the memo belongs to one search
                     break;
                 }
                 else
@@ -138,256 +130,37 @@ public class AdvancedSearchThreadWorker
         }
     }
 
-    private AdvancedSearchResult DoEntitySearch(IEntity entity)
+    private void DoEntitySearch(IEntity entity)
     {
-        if (entity == null || entity.Deleted)
+        var filter = _filter;
+
+        // A worker that is not woken has no filter.
+        if (entity == null || filter == null || entity.Deleted)
         {
-            return null;
+            return;
         }
 
         try
         {
-            return DoEntitySearchCore(entity);
+            if (filter.HideValidInternalMap && AdvancedSearchMatcher.IsIgnoreSource(entity))
+            {
+                _ignoreSources.Enqueue(entity);
+            }
+
+            var outcome = AdvancedSearchMatcher.Evaluate(entity, filter, _worldLocation, _predicates, false, out var result);
+
+            if (outcome == MatchOutcome.Match)
+            {
+                _results.Enqueue(result);
+            }
+            else if (outcome == MatchOutcome.Defer)
+            {
+                _deferred.Enqueue(entity);
+            }
         }
         catch (Exception ex)
         {
             _logger.Warning(ex, "AdvancedSearch: filter threw for {Entity}; skipping", entity);
-            return null;
         }
-    }
-
-    private AdvancedSearchResult DoEntitySearchCore(IEntity entity)
-    {
-        if (_filter == null)
-        {
-            // Exit() clears the filter; a straggler entity dequeued after teardown bails here.
-            return null;
-        }
-
-        if (!OnASelectedMap(entity.Map))
-        {
-            return null;
-        }
-
-        var location = (entity as Item)?.GetWorldLocation() ?? entity.Location;
-
-        if (_filter.FilterRange &&
-            (_filter.Range == null ||
-             _filter.Range < 0 ||
-             entity.Map != _worldLocation.Map ||
-             !Utility.InRange(_worldLocation.Location, location, _filter.Range.Value)))
-        {
-            return null;
-        }
-
-        if (_filter.FilterRegion &&
-            (string.IsNullOrWhiteSpace(_filter.RegionName) ||
-             !Region.Find(location, entity.Map).IsPartOf(_filter.RegionName)))
-        {
-            return null;
-        }
-
-        // After the cheap filters, so non-qualifying entities skip the house/keyring enumeration.
-        if (_filter.HideValidInternalMap)
-        {
-            HandleValidInternal(entity);
-        }
-
-        if (entity is Mobile mobile)
-        {
-            return DoMobileSearch(mobile);
-        }
-
-        if (entity is Item item)
-        {
-            return DoItemSearch(item);
-        }
-
-        return null;
-    }
-
-    // The map boxes are independent checks, so several can be ticked at once: an entity passes when
-    // its map is any of them. With none ticked there is no map constraint.
-    private bool OnASelectedMap(Map map)
-    {
-        var f = _filter;
-
-        var anySelected = f.FilterFelucca || f.FilterTrammel || f.FilterIlshenar || f.FilterMalas ||
-                          f.FilterTokuno || f.FilterTerMur || f.FilterInternalMap || f.FilterNullMap;
-
-        if (!anySelected)
-        {
-            return true;
-        }
-
-        if (map == null)
-        {
-            return f.FilterNullMap;
-        }
-
-        if (map == Map.Internal)
-        {
-            return f.FilterInternalMap;
-        }
-
-        return map == Map.Felucca && f.FilterFelucca ||
-               map == Map.Trammel && f.FilterTrammel ||
-               map == Map.Ilshenar && f.FilterIlshenar ||
-               map == Map.Malas && f.FilterMalas ||
-               map == Map.Tokuno && f.FilterTokuno ||
-               map == Map.TerMur && f.FilterTerMur;
-    }
-
-    private static bool IsValidInternal(Item item)
-    {
-        if (item.Parent != null || item.HeldBy != null)
-        {
-            return true;
-        }
-
-        if (item is Fists
-            or MountItem
-            or EffectItem
-            or MovingCrate
-            or BaseDockedBoat
-            or BaseBoat
-            or Plank
-            or TillerMan
-            or Hold)
-        {
-            return true;
-        }
-
-        // DisplayCache container
-        if (item.GetType().DeclaringType == typeof(GenericBuyInfo))
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-    private AdvancedSearchResult DoItemSearch(Item item)
-    {
-        if (_filter.FilterName && !string.IsNullOrWhiteSpace(_filter.Name) && !(item.Name ?? item.ItemData.Name).InsensitiveContains(_filter.Name))
-        {
-            return null;
-        }
-
-        if (_filter.HideValidInternalMap && item.Map == Map.Internal && !IsValidInternal(item))
-        {
-            return null;
-        }
-
-        if (_filter.FilterPropertyTest && !PassesPropertyTest(item))
-        {
-            return null;
-        }
-
-        return new AdvancedSearchResult(item.Name ?? item.ItemData.Name, item.GetType(), item.Location, item.Map, item.RootParent)
-        {
-            Entity = item,
-        };
-    }
-
-    private AdvancedSearchResult DoMobileSearch(Mobile mobile)
-    {
-        if (_filter.FilterName && !string.IsNullOrWhiteSpace(_filter.Name) && !mobile.Name.InsensitiveContains(_filter.Name))
-        {
-            return null;
-        }
-
-        if (_filter.HideValidInternalMap && mobile.Map == Map.Internal && !IsValidInternal(mobile))
-        {
-            return null;
-        }
-
-        if (_filter.FilterPropertyTest && !PassesPropertyTest(mobile))
-        {
-            return null;
-        }
-
-        return new AdvancedSearchResult(mobile.Name, mobile.GetType(), mobile.Location, mobile.Map, null)
-        {
-            Entity = mobile
-        };
-    }
-
-    private static bool IsValidInternal(Mobile m)
-    {
-        // Logged out players
-        if (m.Account != null)
-        {
-            return true;
-        }
-
-        // Stabled pets
-        if (m is BaseCreature creature && creature.IsStabled)
-        {
-            return true;
-        }
-
-        // Internalized vendors
-        if (m is PlayerVendor playerVendor && playerVendor.House != null)
-        {
-            return true;
-        }
-
-        // Currently mounted creatures
-        if (m is IMount mount && mount.Rider != null)
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-    public void HandleValidInternal(IEntity entity)
-    {
-        if (entity is CommodityDeed deed && deed.Commodity != null && deed.Commodity.Map == Map.Internal)
-        {
-            _ignoreQueue.Enqueue(entity);
-            return;
-        }
-
-        // Keys don't have a backreference, so we just ignore them for now
-        if (entity is KeyRing keyring && keyring.Keys?.Count > 0)
-        {
-            foreach (var k in keyring.Keys)
-            {
-                _ignoreQueue.Enqueue(k);
-            }
-
-            return;
-        }
-
-        if (entity is BaseHouse house)
-        {
-            foreach (var relEntity in house.RelocatedEntities)
-            {
-                if (relEntity.Entity is Item)
-                {
-                    _ignoreQueue.Enqueue(relEntity.Entity);
-                }
-            }
-
-            foreach (var inventory in house.VendorInventories)
-            {
-                foreach (var subItem in inventory.Items)
-                {
-                    _ignoreQueue.Enqueue(subItem);
-                }
-            }
-        }
-    }
-
-    // The test is compiled once per runtime type for the search and memoized; after that each
-    // entity costs a dictionary lookup and a delegate call.
-    private bool PassesPropertyTest(IEntity entity)
-    {
-        var test = _filter.PropertyTest;
-
-        return !string.IsNullOrWhiteSpace(test) &&
-               AdvancedSearchConditions.GetPredicate(_predicates, entity.GetType(), test)(entity);
     }
 }

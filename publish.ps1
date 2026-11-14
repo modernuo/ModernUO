@@ -108,7 +108,7 @@ if (Test-DotNetAvailable) {
 Write-Host ""
 Write-Host "Error: Could not run the build tool." -ForegroundColor Red
 Write-Host ""
-Write-Host "The .NET 10 SDK is required. Download it from:" -ForegroundColor Yellow
-Write-Host "  https://dotnet.microsoft.com/download/dotnet/10.0" -ForegroundColor Cyan
+Write-Host "The .NET 11 SDK is required. Download it from:" -ForegroundColor Yellow
+Write-Host "  https://dotnet.microsoft.com/download/dotnet/11.0" -ForegroundColor Cyan
 Write-Host ""
 exit 1

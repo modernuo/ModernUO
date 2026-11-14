@@ -178,7 +178,7 @@ version of this -- it is a correctness bug.
 | Worker | Off-loop work | Justification |
 |---|---|---|
 | `Accounting/Security/PasswordWorker.cs` | Password verification and hashing | `docs/handoffs/2026-08-07-off-loop-argon2-hashing.md` -- 8.9 ms/login on-loop at Argon2, measured 3.5--8.9 ms saved |
-| `Engines/Advanced Search/AdvancedSearchGump.cs` | Parallel entity search | Admin-triggered full-world scan; saves disabled for its duration |
+| `Engines/Advanced Search/AdvancedSearchGump.cs` | Parallel entity search | Workers evaluate only IL-proven read-only getters and fixed field reads; region lookups, house/keyring enumeration and impure getters finish on the loop in `advancedSearch.loopBudgetMs` slices (default 2 ms); saves disabled for the search's duration. The classifier and worker-read memos are `ConcurrentDictionary` on purpose: the workers call them concurrently and they hold reflection metadata only, no game state |
 
 Adding to this table needs the same bar: a measurement, and all five rules below.
 
