@@ -283,9 +283,18 @@ public partial class SpecialFishingNet : Item
 
         spawn.MoveToWorld(new Point3D(x, y, p.Z), map);
 
-        if (spawn is Kraken && Utility.RandomDouble() < 0.2)
+        var facet = map == Map.Felucca ? Map.Felucca : Map.Trammel;
+        Item loot = spawn switch
         {
-            spawn.PackItem(new MessageInABottle(map == Map.Felucca ? Map.Felucca : Map.Trammel));
+            Kraken when Utility.RandomDouble() < 0.45 => new MessageInABottle(facet),
+            SeaSerpent when Utility.RandomDouble() < 0.26 => new TreasureMap(1, facet),
+            DeepSeaSerpent when Utility.RandomDouble() < 0.3 => new TreasureMap(2, facet),
+            _ => null
+        };
+
+        if (loot != null)
+        {
+            spawn.PackItem(loot);
         }
     }
 

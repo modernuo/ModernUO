@@ -1,5 +1,6 @@
 using ModernUO.Serialization;
 using Server.Items;
+using Server.Regions;
 
 namespace Server.Mobiles
 {
@@ -42,13 +43,11 @@ namespace Server.Mobiles
             CanSwim = true;
             CantWalk = true;
 
-            var rope = new Rope();
-            rope.ItemID = 0x14F8;
-            PackItem(rope);
-
-            if (Core.UOR)
+            if (Core.UOR && Utility.RandomDouble() < 0.02)
             {
-                PackItem(new SpecialFishingNet()); // Confirm?
+                var rope = new Rope();
+                rope.ItemID = 0x14F8;
+                PackItem(rope);
             }
         }
 
@@ -59,7 +58,8 @@ namespace Server.Mobiles
 
         public override bool OnBeforeDeath()
         {
-            if (Core.T2A && Utility.RandomDouble() < .05)
+            // Only the open-sea kraken carries a bottle, not the dungeon one.
+            if (Core.T2A && !Region.IsPartOf<DungeonRegion>() && Utility.RandomDouble() < .05)
             {
                 PackItem(new MessageInABottle(Map == Map.Felucca ? Map.Felucca : Map.Trammel));
             }
