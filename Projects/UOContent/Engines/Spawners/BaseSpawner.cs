@@ -583,10 +583,9 @@ public abstract partial class BaseSpawner : Item, ISpawner
     }
 
     /// <summary>
-    /// The Z a spawn in <paramref name="bounds"/> should land nearest. A spawner standing inside its bounds
-    /// (every HomeRange spawner) prefers the surface at its own level, so spawns stay on the raised floor,
-    /// dungeon level or cave it was placed on. A spawner outside them (region spawners, offset custom bounds)
-    /// says nothing about the intended level, so the lowest surface is used.
+    /// The Z a spawn in <paramref name="bounds"/> should land nearest: the spawner's own Z when it stands inside
+    /// them (every HomeRange spawner), otherwise the lowest surface, since a spawner placed elsewhere (region
+    /// spawners, offset bounds) says nothing about the intended level.
     /// </summary>
     private int GetPreferredSpawnZ(Rectangle3D bounds, int minZ) => bounds.Contains(Location) ? Z : minZ;
 

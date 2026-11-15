@@ -1128,10 +1128,8 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
     /// <paramref name="preferredZ"/>.
     /// </summary>
     /// <remarks>
-    /// Spawners standing inside their bounds pass their own Z here. Their bounds usually span the whole Z range (-128 to 127), and with
-    /// the lowest surface preferred, a spawner standing on a raised floor spawns onto the ground beneath it
-    /// whenever the floor is 16 or more above the ground: the gap passes the 16-high headroom check, the
-    /// client draws the floor over the mobile, and only its name shows.
+    /// Spawners inside their bounds pass their own Z, so a spawner on a raised floor spawns on the floor rather
+    /// than on the ground beneath it, whose gap also passes the 16-high headroom check.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool CanSpawnMobile(int x, int y, int minZ, int maxZ, int preferredZ, bool canSwim, bool cantWalk, out int spawnZ)
@@ -1163,10 +1161,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
     /// With <paramref name="preferredZ"/> at or below <paramref name="minZ"/> that is the lowest valid surface.
     /// Also reports the reason for failure if no valid position is found.
     /// </summary>
-    /// <param name="preferredZ">
-    /// The Z the caller wants to be near, normally a spawner's own Z. A walking mobile can only reach a surface
-    /// it shares a level with, so the surface nearest the spawner is the one its spawns were placed for.
-    /// </param>
+    /// <param name="preferredZ">The Z to spawn nearest, normally the spawner's own Z.</param>
     /// <inheritdoc cref="CanSpawnMobile(int, int, int, int, bool, bool, out int, out SpawnFailureReason)"/>
     public bool CanSpawnMobile(
         int x, int y, int minZ, int maxZ, int preferredZ, bool canSwim, bool cantWalk, out int spawnZ,
@@ -1304,8 +1299,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             }
         }
 
-        // Find the unblocked surface nearest preferredZ. Bits are relative to minZ, so is the target;
-        // NearestSetBit clamps a target outside the range to its nearer end.
+        // Bits are relative to minZ; a target outside the range clamps to its nearer end
         var validSurfaces = surfaces.And(in openSlots);
         var chosenBit = validSurfaces.NearestSetBit(preferredZ - minZ);
 
@@ -1343,12 +1337,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
     /// <param name="y">Y coordinate</param>
     /// <param name="minZ">Minimum Z (inclusive)</param>
     /// <param name="maxZ">Maximum Z (inclusive)</param>
-    /// <param name="preferredZ">
-    /// The Z the caller wants to be near, normally a spawner's own Z. The valid surface closest to it is
-    /// chosen, the lower one on a tie, for the same reason as in
-    /// <see cref="CanSpawnMobile(int, int, int, int, int, bool, bool, out int, out SpawnFailureReason)"/>:
-    /// reagents and other spawned items otherwise land under raised floors and inside cellars.
-    /// </param>
+    /// <param name="preferredZ">The Z to spawn nearest (the lower surface on a tie), normally the spawner's own Z.</param>
     /// <param name="spawnZ">The valid spawn Z if found</param>
     /// <returns>True if a valid spawn Z was found within the range</returns>
     public bool CanSpawnItem(int x, int y, int minZ, int maxZ, int preferredZ, out int spawnZ)
@@ -1440,7 +1429,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             }
         }
 
-        // Find the unblocked surface nearest preferredZ (see CanSpawnMobile)
+        // Bits are relative to minZ; a target outside the range clamps to its nearer end
         var validSurfaces = surfaces.And(in openSlots);
         var chosenBit = validSurfaces.NearestSetBit(preferredZ - minZ);
 

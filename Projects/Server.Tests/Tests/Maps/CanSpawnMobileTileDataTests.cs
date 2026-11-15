@@ -311,9 +311,8 @@ public class CanSpawnMobileTileDataTests
         return multi;
     }
 
-    // A floor standing 16 or more above the ground, like Tokuno's raised wooden floors: the ground under
-    // it passes the 16-high headroom check, so with the lowest surface preferred a spawner on the floor
-    // put its spawns underneath, where the client draws the floor over them.
+    // A floor 16+ above the ground: the gap under it also passes the headroom check, so only preferredZ
+    // separates the floor from the ground beneath it.
     [Fact]
     public void CanSpawnMobile_PreferredZ_PicksRaisedFloorOverGroundBelow()
     {
