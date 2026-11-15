@@ -16,32 +16,58 @@
 using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 
 namespace Server;
 
 /// <summary>
-/// A 256-bit bitmask stored as 4 ulongs.
+/// A 256-bit bitmask backed by a single <see cref="Vector256{T}"/>.
 /// Useful for tracking 256 discrete states such as:
 /// - Z levels in UO (-128 to 127 = 256 values)
 /// - Sector positions (16x16 = 256 tiles)
-/// Uses BMI2 for efficient bit selection when available.
+/// On x64 with AVX2 the mask lives in one YMM register; elsewhere the JIT splits it into two 128-bit halves.
 /// </summary>
-public struct BitMask256
+public struct BitMask256 : IEquatable<BitMask256>
 {
-    public ulong Bits0, Bits1, Bits2, Bits3;
+    private Vector256<ulong> _value;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private BitMask256(Vector256<ulong> value) => _value = value;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public BitMask256(ulong bits0, ulong bits1, ulong bits2, ulong bits3) =>
+        _value = Vector256.Create(bits0, bits1, bits2, bits3);
+
+    public readonly ulong Bits0
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => _value.GetElement(0);
+    }
+
+    public readonly ulong Bits1
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => _value.GetElement(1);
+    }
+
+    public readonly ulong Bits2
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => _value.GetElement(2);
+    }
+
+    public readonly ulong Bits3
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => _value.GetElement(3);
+    }
 
     /// <summary>
     /// Creates a mask with all 256 bits set.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static BitMask256 AllSet() => new()
-    {
-        Bits0 = ulong.MaxValue,
-        Bits1 = ulong.MaxValue,
-        Bits2 = ulong.MaxValue,
-        Bits3 = ulong.MaxValue
-    };
+    public static BitMask256 AllSet() => new(Vector256<ulong>.AllBitsSet);
 
     /// <summary>
     /// Creates a mask with all bits cleared (default state).
@@ -50,76 +76,119 @@ public struct BitMask256
     public static BitMask256 AllClear() => default;
 
     /// <summary>
-    /// Sets a single bit at the specified index (0-255).
+    /// Creates a mask with only the bit at <paramref name="index"/> (0-255) set.
+    /// Out-of-range indices produce an empty mask.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void SetBit(int index)
+    public static BitMask256 SingleBit(int index)
     {
         if ((uint)index >= 256)
         {
-            return;
+            return default;
         }
 
-        var segment = index >> 6;
-        var localBit = index & 0x3F;
-        var mask = 1UL << localBit;
+        var laneSelector = Vector256.Equals(
+            Vector256.Create(0UL, 1UL, 2UL, 3UL),
+            Vector256.Create((ulong)((uint)index >> 6))
+        );
 
-        switch (segment)
-        {
-            case 0:
-                {
-                    Bits0 |= mask; break;
-                }
-            case 1:
-                {
-                    Bits1 |= mask; break;
-                }
-            case 2:
-                {
-                    Bits2 |= mask; break;
-                }
-            case 3:
-                {
-                    Bits3 |= mask; break;
-                }
-        }
+        // Uniform shift count: a single vpsllq on AVX2, ushl on NEON
+        return new BitMask256(Vector256.ShiftLeft(laneSelector & Vector256<ulong>.One, index & 0x3F));
     }
+
+    /// <summary>
+    /// Creates a mask with all bits in the inclusive range [start, end] set, clamped to 0-255.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static BitMask256 FromRange(int start, int end)
+    {
+        if (end < 0 || start > 255 || start > end)
+        {
+            return default;
+        }
+
+        start = Math.Max(0, start);
+        end = Math.Min(255, end);
+
+        if (Avx2.IsSupported)
+        {
+            var laneStart = Vector256.Create(0UL, 64UL, 128UL, 192UL);
+            var laneEnd = laneStart + Vector256.Create(64UL);
+
+            // Clamp to each lane before subtracting so nothing underflows: both values land in [0, 64]
+            var localStart = Vector256.Min(Vector256.Max(Vector256.Create((ulong)start), laneStart), laneEnd) - laneStart;
+            var localEndExcl = Vector256.Min(Vector256.Max(Vector256.Create((ulong)end + 1), laneStart), laneEnd) - laneStart;
+
+            // An active lane has localStart <= 63 and localEndExcl >= 1, so its shift counts stay in [0, 63].
+            // Inactive lanes may shift by 64 (vpsllvq/vpsrlvq yield 0) and are masked off regardless.
+            var active = Vector256.GreaterThan(localEndExcl, localStart);
+            var low = Avx2.ShiftLeftLogicalVariable(Vector256<ulong>.AllBitsSet, localStart);
+            var high = Avx2.ShiftRightLogicalVariable(Vector256<ulong>.AllBitsSet, Vector256.Create(64UL) - localEndExcl);
+
+            return new BitMask256(low & high & active);
+        }
+
+        return new BitMask256(
+            CreateSegmentMask(start, end, 0),
+            CreateSegmentMask(start, end, 64),
+            CreateSegmentMask(start, end, 128),
+            CreateSegmentMask(start, end, 192)
+        );
+    }
+
+    /// <summary>
+    /// Creates a bitmask for the portion of [start, end] that falls within a 64-bit segment.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static ulong CreateSegmentMask(int start, int end, int segmentOffset)
+    {
+        var localStart = Math.Max(0, start - segmentOffset);
+        var localEnd = Math.Min(63, end - segmentOffset);
+
+        if (localStart > 63 || localEnd < 0 || localStart > localEnd)
+        {
+            return 0;
+        }
+
+        return (ulong.MaxValue << localStart) & (ulong.MaxValue >> (63 - localEnd));
+    }
+
+    /// <summary>
+    /// Sets a single bit at the specified index (0-255).
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void SetBit(int index) => _value |= SingleBit(index)._value;
 
     /// <summary>
     /// Clears a single bit at the specified index (0-255).
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void ClearBit(int index)
-    {
-        if ((uint)index >= 256)
-        {
-            return;
-        }
+    public void ClearBit(int index) => _value = Vector256.AndNot(_value, SingleBit(index)._value);
 
-        var segment = index >> 6;
-        var localBit = index & 0x3F;
-        var mask = 1UL << localBit;
+    /// <summary>
+    /// Sets all bits in the inclusive range [start, end].
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void SetRange(int start, int end) => _value |= FromRange(start, end)._value;
 
-        switch (segment)
-        {
-            case 0:
-                {
-                    Bits0 &= ~mask; break;
-                }
-            case 1:
-                {
-                    Bits1 &= ~mask; break;
-                }
-            case 2:
-                {
-                    Bits2 &= ~mask; break;
-                }
-            case 3:
-                {
-                    Bits3 &= ~mask; break;
-                }
-        }
-    }
+    /// <summary>
+    /// Clears all bits in the inclusive range [start, end].
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void ClearRange(int start, int end) => _value = Vector256.AndNot(_value, FromRange(start, end)._value);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly BitMask256 WithBitSet(int index) => new(_value | SingleBit(index)._value);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly BitMask256 WithBitCleared(int index) => new(Vector256.AndNot(_value, SingleBit(index)._value));
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly BitMask256 WithRangeSet(int start, int end) => new(_value | FromRange(start, end)._value);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly BitMask256 WithRangeCleared(int start, int end) =>
+        new(Vector256.AndNot(_value, FromRange(start, end)._value));
 
     /// <summary>
     /// Gets the value of a single bit at the specified index (0-255).
@@ -132,168 +201,88 @@ public struct BitMask256
             return false;
         }
 
-        var segment = index >> 6;
-        var localBit = index & 0x3F;
-        var mask = 1UL << localBit;
-
-        return segment switch
-        {
-            0 => (Bits0 & mask) != 0,
-            1 => (Bits1 & mask) != 0,
-            2 => (Bits2 & mask) != 0,
-            3 => (Bits3 & mask) != 0,
-            _ => false
-        };
-    }
-
-    /// <summary>
-    /// Sets all bits in the inclusive range [start, end].
-    /// </summary>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void SetRange(int start, int end)
-    {
-        if (end < 0 || start > 255 || start > end)
-        {
-            return;
-        }
-
-        start = Math.Max(0, start);
-        end = Math.Min(255, end);
-
-        Bits0 |= CreateSegmentMask(start, end, 0);
-        Bits1 |= CreateSegmentMask(start, end, 64);
-        Bits2 |= CreateSegmentMask(start, end, 128);
-        Bits3 |= CreateSegmentMask(start, end, 192);
-    }
-
-    /// <summary>
-    /// Clears all bits in the inclusive range [start, end].
-    /// </summary>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void ClearRange(int start, int end)
-    {
-        if (end < 0 || start > 255 || start > end)
-        {
-            return;
-        }
-
-        start = Math.Max(0, start);
-        end = Math.Min(255, end);
-
-        Bits0 &= ~CreateSegmentMask(start, end, 0);
-        Bits1 &= ~CreateSegmentMask(start, end, 64);
-        Bits2 &= ~CreateSegmentMask(start, end, 128);
-        Bits3 &= ~CreateSegmentMask(start, end, 192);
-    }
-
-    /// <summary>
-    /// Creates a bitmask for the portion of [start, end] that falls within a 64-bit segment.
-    /// </summary>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static ulong CreateSegmentMask(int start, int end, int segmentOffset)
-    {
-        var localStart = start - segmentOffset;
-        var localEnd = end - segmentOffset;
-
-        localStart = Math.Max(0, localStart);
-        localEnd = Math.Min(63, localEnd);
-
-        if (localStart > 63 || localEnd < 0 || localStart > localEnd)
-        {
-            return 0;
-        }
-
-        var bitCount = localEnd - localStart + 1;
-        var mask = bitCount >= 64 ? ulong.MaxValue : (1UL << bitCount) - 1;
-        return mask << localStart;
+        return ((_value.GetElement(index >> 6) >> (index & 0x3F)) & 1UL) != 0;
     }
 
     /// <summary>
     /// Returns the bitwise AND of this mask with another.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly BitMask256 And(in BitMask256 other) => new()
-    {
-        Bits0 = Bits0 & other.Bits0,
-        Bits1 = Bits1 & other.Bits1,
-        Bits2 = Bits2 & other.Bits2,
-        Bits3 = Bits3 & other.Bits3
-    };
+    public readonly BitMask256 And(in BitMask256 other) => new(_value & other._value);
 
     /// <summary>
     /// Returns the bitwise OR of this mask with another.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly BitMask256 Or(in BitMask256 other) => new()
-    {
-        Bits0 = Bits0 | other.Bits0,
-        Bits1 = Bits1 | other.Bits1,
-        Bits2 = Bits2 | other.Bits2,
-        Bits3 = Bits3 | other.Bits3
-    };
+    public readonly BitMask256 Or(in BitMask256 other) => new(_value | other._value);
 
     /// <summary>
     /// Returns the bitwise XOR of this mask with another.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly BitMask256 Xor(in BitMask256 other) => new()
-    {
-        Bits0 = Bits0 ^ other.Bits0,
-        Bits1 = Bits1 ^ other.Bits1,
-        Bits2 = Bits2 ^ other.Bits2,
-        Bits3 = Bits3 ^ other.Bits3
-    };
+    public readonly BitMask256 Xor(in BitMask256 other) => new(_value ^ other._value);
 
     /// <summary>
     /// Returns the bitwise AND-NOT (this &amp; ~other).
     /// Clears bits in this mask that are set in the other mask.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly BitMask256 AndNot(in BitMask256 other) => new()
-    {
-        Bits0 = Bits0 & ~other.Bits0,
-        Bits1 = Bits1 & ~other.Bits1,
-        Bits2 = Bits2 & ~other.Bits2,
-        Bits3 = Bits3 & ~other.Bits3
-    };
+    public readonly BitMask256 AndNot(in BitMask256 other) => new(Vector256.AndNot(_value, other._value));
 
     /// <summary>
     /// Returns the bitwise NOT of this mask.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly BitMask256 Not() => new()
-    {
-        Bits0 = ~Bits0,
-        Bits1 = ~Bits1,
-        Bits2 = ~Bits2,
-        Bits3 = ~Bits3
-    };
+    public readonly BitMask256 Not() => new(~_value);
 
-    /// <summary>
-    /// Returns the total number of bits set (population count).
-    /// </summary>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly int PopCount() =>
-        BitOperations.PopCount(Bits0) +
-        BitOperations.PopCount(Bits1) +
-        BitOperations.PopCount(Bits2) +
-        BitOperations.PopCount(Bits3);
+    public static BitMask256 operator &(BitMask256 left, BitMask256 right) => new(left._value & right._value);
+
+    public static BitMask256 operator |(BitMask256 left, BitMask256 right) => new(left._value | right._value);
+
+    public static BitMask256 operator ^(BitMask256 left, BitMask256 right) => new(left._value ^ right._value);
+
+    public static BitMask256 operator ~(BitMask256 value) => new(~value._value);
 
     /// <summary>
     /// Returns true if no bits are set.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly bool IsEmpty() => (Bits0 | Bits1 | Bits2 | Bits3) == 0;
+    public readonly bool IsEmpty()
+    {
+        if (Vector256.IsHardwareAccelerated)
+        {
+            return _value == Vector256<ulong>.Zero;
+        }
+
+        return (_value.GetLower() | _value.GetUpper()) == Vector128<ulong>.Zero;
+    }
 
     /// <summary>
     /// Returns true if all 256 bits are set.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly bool IsFull() =>
-        Bits0 == ulong.MaxValue &&
-        Bits1 == ulong.MaxValue &&
-        Bits2 == ulong.MaxValue &&
-        Bits3 == ulong.MaxValue;
+    public readonly bool IsFull()
+    {
+        if (Vector256.IsHardwareAccelerated)
+        {
+            return _value == Vector256<ulong>.AllBitsSet;
+        }
+
+        return (_value.GetLower() & _value.GetUpper()) == Vector128<ulong>.AllBitsSet;
+    }
+
+    /// <summary>
+    /// Returns the total number of bits set (population count).
+    /// </summary>
+    /// <remarks>
+    /// Scalar on purpose: there is no portable vector popcount, and emulating one on AVX2 is slower than four popcnt.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly int PopCount() =>
+        BitOperations.PopCount(_value.GetElement(0)) +
+        BitOperations.PopCount(_value.GetElement(1)) +
+        BitOperations.PopCount(_value.GetElement(2)) +
+        BitOperations.PopCount(_value.GetElement(3));
 
     /// <summary>
     /// Returns the index of the lowest set bit (0-255), or -1 if no bits are set.
@@ -301,24 +290,34 @@ public struct BitMask256
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly int LowestSetBit()
     {
-        if (Bits0 != 0)
+        if (Vector256.IsHardwareAccelerated)
         {
-            return BitOperations.TrailingZeroCount(Bits0);
+            var nonZeroLanes = ~Vector256.Equals(_value, Vector256<ulong>.Zero).ExtractMostSignificantBits() & 0xFu;
+            if (nonZeroLanes == 0)
+            {
+                return -1;
+            }
+
+            var lane = BitOperations.TrailingZeroCount(nonZeroLanes);
+            return (lane << 6) + BitOperations.TrailingZeroCount(_value.GetElement(lane));
         }
 
-        if (Bits1 != 0)
+        var lo = _value.GetLower();
+        if (lo != Vector128<ulong>.Zero)
         {
-            return 64 + BitOperations.TrailingZeroCount(Bits1);
+            var e0 = lo.GetElement(0);
+            return e0 != 0
+                ? BitOperations.TrailingZeroCount(e0)
+                : 64 + BitOperations.TrailingZeroCount(lo.GetElement(1));
         }
 
-        if (Bits2 != 0)
+        var hi = _value.GetUpper();
+        if (hi != Vector128<ulong>.Zero)
         {
-            return 128 + BitOperations.TrailingZeroCount(Bits2);
-        }
-
-        if (Bits3 != 0)
-        {
-            return 192 + BitOperations.TrailingZeroCount(Bits3);
+            var e2 = hi.GetElement(0);
+            return e2 != 0
+                ? 128 + BitOperations.TrailingZeroCount(e2)
+                : 192 + BitOperations.TrailingZeroCount(hi.GetElement(1));
         }
 
         return -1;
@@ -330,24 +329,34 @@ public struct BitMask256
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly int HighestSetBit()
     {
-        if (Bits3 != 0)
+        if (Vector256.IsHardwareAccelerated)
         {
-            return 255 - BitOperations.LeadingZeroCount(Bits3);
+            var nonZeroLanes = ~Vector256.Equals(_value, Vector256<ulong>.Zero).ExtractMostSignificantBits() & 0xFu;
+            if (nonZeroLanes == 0)
+            {
+                return -1;
+            }
+
+            var lane = 31 - BitOperations.LeadingZeroCount(nonZeroLanes);
+            return (lane << 6) + 63 - BitOperations.LeadingZeroCount(_value.GetElement(lane));
         }
 
-        if (Bits2 != 0)
+        var hi = _value.GetUpper();
+        if (hi != Vector128<ulong>.Zero)
         {
-            return 191 - BitOperations.LeadingZeroCount(Bits2);
+            var e3 = hi.GetElement(1);
+            return e3 != 0
+                ? 255 - BitOperations.LeadingZeroCount(e3)
+                : 191 - BitOperations.LeadingZeroCount(hi.GetElement(0));
         }
 
-        if (Bits1 != 0)
+        var lo = _value.GetLower();
+        if (lo != Vector128<ulong>.Zero)
         {
-            return 127 - BitOperations.LeadingZeroCount(Bits1);
-        }
-
-        if (Bits0 != 0)
-        {
-            return 63 - BitOperations.LeadingZeroCount(Bits0);
+            var e1 = lo.GetElement(1);
+            return e1 != 0
+                ? 127 - BitOperations.LeadingZeroCount(e1)
+                : 63 - BitOperations.LeadingZeroCount(lo.GetElement(0));
         }
 
         return -1;
@@ -355,66 +364,60 @@ public struct BitMask256
 
     /// <summary>
     /// Returns the index of the Nth set bit (0-indexed), or -1 if fewer than N+1 bits are set.
-    /// Uses BMI2 PDEP for O(1) performance when available, otherwise O(popcount) fallback.
+    /// Uses BMI2 PDEP for O(1) selection within a lane when available, otherwise O(popcount).
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly int GetNthSetBit(int n)
     {
-        if (n < 0)
+        if ((uint)n >= 256)
         {
             return -1;
         }
 
-        var count0 = BitOperations.PopCount(Bits0);
-        if (n < count0)
+        for (var lane = 0; lane < 4; lane++)
         {
-            return GetNthBitInUlong(Bits0, n);
-        }
+            var bits = _value.GetElement(lane);
+            var count = BitOperations.PopCount(bits);
+            if (n < count)
+            {
+                return (lane << 6) + GetNthBitInUlong(bits, n);
+            }
 
-        n -= count0;
-
-        var count1 = BitOperations.PopCount(Bits1);
-        if (n < count1)
-        {
-            return 64 + GetNthBitInUlong(Bits1, n);
-        }
-
-        n -= count1;
-
-        var count2 = BitOperations.PopCount(Bits2);
-        if (n < count2)
-        {
-            return 128 + GetNthBitInUlong(Bits2, n);
-        }
-
-        n -= count2;
-
-        var count3 = BitOperations.PopCount(Bits3);
-        if (n < count3)
-        {
-            return 192 + GetNthBitInUlong(Bits3, n);
+            n -= count;
         }
 
         return -1;
     }
 
+    // Caller guarantees n < PopCount(bits)
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static int GetNthBitInUlong(ulong bits, int n)
     {
-        // BMI2 PDEP: O(1) - deposits the nth selector bit into the position of the nth set bit
+        // PDEP deposits the nth selector bit into the position of the nth set bit
         if (Bmi2.X64.IsSupported)
         {
-            var deposited = Bmi2.X64.ParallelBitDeposit(1UL << n, bits);
-            return BitOperations.TrailingZeroCount(deposited);
+            return BitOperations.TrailingZeroCount(Bmi2.X64.ParallelBitDeposit(1UL << n, bits));
         }
 
-        // Fallback: O(popcount) - clear n set bits, then find position of next one
-        while (n > 0 && bits != 0)
+        while (n > 0)
         {
             bits &= bits - 1;
             n--;
         }
 
-        return bits == 0 ? -1 : BitOperations.TrailingZeroCount(bits);
+        return BitOperations.TrailingZeroCount(bits);
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly bool Equals(BitMask256 other) => _value == other._value;
+
+    public readonly override bool Equals(object obj) => obj is BitMask256 other && Equals(other);
+
+    public readonly override int GetHashCode() => _value.GetHashCode();
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool operator ==(BitMask256 left, BitMask256 right) => left._value == right._value;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool operator !=(BitMask256 left, BitMask256 right) => left._value != right._value;
 }
