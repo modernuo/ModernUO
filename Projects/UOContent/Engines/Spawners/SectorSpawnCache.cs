@@ -30,8 +30,13 @@ namespace Server.Engines.Spawners;
 /// </summary>
 public static class SectorSpawnCacheManager
 {
-    private static readonly Dictionary<(Map, int, int), BitMask256> _landCaches = [];
-    private static readonly Dictionary<(Map, int, int), BitMask256> _waterCaches = [];
+    private static readonly Dictionary<long, BitMask256> _landCaches = [];
+    private static readonly Dictionary<long, BitMask256> _waterCaches = [];
+
+    // MapIndex < 0x100; sector coordinates go through ushort so negative ones (bounds past a map edge) stay distinct
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static long SectorKey(Map map, int sectorX, int sectorY) =>
+        ((long)map.MapIndex << 32) | ((long)(ushort)sectorX << 16) | (ushort)sectorY;
 
     /// <summary>
     /// Marks a position as valid for spawning in the global cache.
@@ -46,7 +51,7 @@ public static class SectorSpawnCacheManager
         var bitIndex = (pos.X & (Map.SectorSize - 1)) + ((pos.Y & (Map.SectorSize - 1)) << Map.SectorShift);
 
         var caches = isWater ? _waterCaches : _landCaches;
-        ref var cache = ref CollectionsMarshal.GetValueRefOrAddDefault(caches, (map, sectorX, sectorY), out _);
+        ref var cache = ref CollectionsMarshal.GetValueRefOrAddDefault(caches, SectorKey(map, sectorX, sectorY), out _);
         cache.SetBit(bitIndex);
     }
 
@@ -93,8 +98,8 @@ public static class SectorSpawnCacheManager
 
         var caches = isWater ? _waterCaches : _landCaches;
 
-        // Collect unique sectors and their counts
-        using var sectorList = PooledRefList<(int sx, int sy, int count)>.Create();
+        // Collect unique sectors with their masks so selection needs no second lookup
+        using var sectorList = PooledRefList<(int sx, int sy, int count, BitMask256 mask)>.Create();
         var totalPositions = 0;
 
         for (var i = 0; i < allBounds.Length; i++)
@@ -109,29 +114,17 @@ public static class SectorSpawnCacheManager
             {
                 for (var sy = startSectorY; sy <= endSectorY; sy++)
                 {
-                    // Check if we've already added this sector
-                    var alreadyAdded = false;
-                    for (var j = 0; j < sectorList.Count; j++)
-                    {
-                        var (checkSX, checkSY, _) = sectorList[j];
-                        if (checkSX == sx && checkSY == sy)
-                        {
-                            alreadyAdded = true;
-                            break;
-                        }
-                    }
-
-                    if (alreadyAdded)
+                    if (IsSectorInEarlierBounds(allBounds, i, sx, sy))
                     {
                         continue;
                     }
 
-                    if (caches.TryGetValue((map, sx, sy), out var cache))
+                    if (caches.TryGetValue(SectorKey(map, sx, sy), out var cache))
                     {
                         var count = cache.PopCount();
                         if (count > 0)
                         {
-                            sectorList.Add((sx, sy, count));
+                            sectorList.Add((sx, sy, count, cache));
                             totalPositions += count;
                         }
                     }
@@ -144,6 +137,8 @@ public static class SectorSpawnCacheManager
             return false;
         }
 
+        var sectors = sectorList.AsSpan();
+
         // Retry loop for when selected position is outside all bounds
         for (var attempt = 0; attempt <= maxRetries; attempt++)
         {
@@ -152,24 +147,17 @@ public static class SectorSpawnCacheManager
 
             // Find the sector containing that index
             var currentIndex = 0;
-            for (var i = 0; i < sectorList.Count; i++)
+            for (var i = 0; i < sectors.Length; i++)
             {
-                var (sx, sy, sectorCount) = sectorList[i];
-                if (targetIndex < currentIndex + sectorCount)
+                ref readonly var sector = ref sectors[i];
+                if (targetIndex < currentIndex + sector.count)
                 {
-                    // Target is in this sector - look up cache again
-                    if (!caches.TryGetValue((map, sx, sy), out var cache))
-                    {
-                        break; // Should not happen, try again
-                    }
-
-                    var indexInSector = targetIndex - currentIndex;
-                    var bitPosition = cache.GetNthSetBit(indexInSector);
+                    var bitPosition = sector.mask.GetNthSetBit(targetIndex - currentIndex);
 
                     var localX = bitPosition & (Map.SectorSize - 1);
                     var localY = bitPosition >> Map.SectorShift;
 
-                    pos = new Point2D((sx << Map.SectorShift) + localX, (sy << Map.SectorShift) + localY);
+                    pos = new Point2D((sector.sx << Map.SectorShift) + localX, (sector.sy << Map.SectorShift) + localY);
 
                     // Find which bounds contains this position
                     for (var j = 0; j < allBounds.Length; j++)
@@ -187,7 +175,27 @@ public static class SectorSpawnCacheManager
                     break;
                 }
 
-                currentIndex += sectorCount;
+                currentIndex += sector.count;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// True if an earlier bounds rectangle already covers this sector, so it was visited (and counted) before.
+    /// Costs O(bounds) per sector instead of scanning every sector collected so far.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static bool IsSectorInEarlierBounds(ReadOnlySpan<Rectangle3D> allBounds, int boundsIndex, int sx, int sy)
+    {
+        for (var j = 0; j < boundsIndex; j++)
+        {
+            var bounds = allBounds[j];
+            if (sx >= bounds.Start.X >> Map.SectorShift && sx <= (bounds.End.X - 1) >> Map.SectorShift &&
+                sy >= bounds.Start.Y >> Map.SectorShift && sy <= (bounds.End.Y - 1) >> Map.SectorShift)
+            {
+                return true;
             }
         }
 
@@ -233,7 +241,7 @@ public static class SectorSpawnCacheManager
         {
             for (var sy = startSectorY; sy <= endSectorY; sy++)
             {
-                var key = (map, sx, sy);
+                var key = SectorKey(map, sx, sy);
                 _landCaches.Remove(key);
                 _waterCaches.Remove(key);
             }
