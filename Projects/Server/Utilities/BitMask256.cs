@@ -288,21 +288,69 @@ public struct BitMask256 : IEquatable<BitMask256>
     /// Returns the index of the lowest set bit (0-255), or -1 if no bits are set.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly int LowestSetBit()
+    public readonly int LowestSetBit() => LowestSetBit(_value);
+
+    /// <summary>
+    /// Returns the index of the highest set bit (0-255), or -1 if no bits are set.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly int HighestSetBit() => HighestSetBit(_value);
+
+    /// <summary>
+    /// Returns the index of the set bit closest to <paramref name="target"/>, or -1 if no bits are set.
+    /// On a tie (one set bit the same distance below and above) the lower one wins.
+    /// <paramref name="target"/> is clamped to 0-255, so <c>NearestSetBit(0)</c> equals <see cref="LowestSetBit()"/>.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public readonly int NearestSetBit(int target)
+    {
+        target = Math.Clamp(target, 0, 255);
+
+        // Bits strictly below target: whole lanes under the target's lane, plus the low bits of its own lane.
+        // Signed lane-index compares map to a single vpcmpgtq/vpcmpeqq; unsigned 64-bit compares are emulated on AVX2.
+        var laneIndex = Vector256.Create(0L, 1L, 2L, 3L);
+        var targetLane = Vector256.Create((long)(target >> 6));
+        var strictlyBelow = Vector256.LessThan(laneIndex, targetLane).AsUInt64() |
+                            (Vector256.Equals(laneIndex, targetLane).AsUInt64() &
+                             Vector256.Create((1UL << (target & 0x3F)) - 1));
+
+        var high = LowestSetBit(Vector256.AndNot(_value, strictlyBelow));
+        if (high == target)
+        {
+            return high;
+        }
+
+        var low = HighestSetBit(_value & strictlyBelow);
+        if (low < 0)
+        {
+            return high;
+        }
+
+        if (high < 0)
+        {
+            return low;
+        }
+
+        return target - low <= high - target ? low : high;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static int LowestSetBit(Vector256<ulong> value)
     {
         if (Vector256.IsHardwareAccelerated)
         {
-            var nonZeroLanes = ~Vector256.Equals(_value, Vector256<ulong>.Zero).ExtractMostSignificantBits() & 0xFu;
+            var nonZeroLanes = ~Vector256.Equals(value, Vector256<ulong>.Zero).ExtractMostSignificantBits() & 0xFu;
             if (nonZeroLanes == 0)
             {
                 return -1;
             }
 
-            var lane = BitOperations.TrailingZeroCount(nonZeroLanes);
-            return (lane << 6) + BitOperations.TrailingZeroCount(_value.GetElement(lane));
+            // & 3 lets the JIT drop the GetElement range check; nonZeroLanes is 4 bits so it changes nothing
+            var lane = BitOperations.TrailingZeroCount(nonZeroLanes) & 3;
+            return (lane << 6) + BitOperations.TrailingZeroCount(value.GetElement(lane));
         }
 
-        var lo = _value.GetLower();
+        var lo = value.GetLower();
         if (lo != Vector128<ulong>.Zero)
         {
             var e0 = lo.GetElement(0);
@@ -311,7 +359,7 @@ public struct BitMask256 : IEquatable<BitMask256>
                 : 64 + BitOperations.TrailingZeroCount(lo.GetElement(1));
         }
 
-        var hi = _value.GetUpper();
+        var hi = value.GetUpper();
         if (hi != Vector128<ulong>.Zero)
         {
             var e2 = hi.GetElement(0);
@@ -323,25 +371,22 @@ public struct BitMask256 : IEquatable<BitMask256>
         return -1;
     }
 
-    /// <summary>
-    /// Returns the index of the highest set bit (0-255), or -1 if no bits are set.
-    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly int HighestSetBit()
+    private static int HighestSetBit(Vector256<ulong> value)
     {
         if (Vector256.IsHardwareAccelerated)
         {
-            var nonZeroLanes = ~Vector256.Equals(_value, Vector256<ulong>.Zero).ExtractMostSignificantBits() & 0xFu;
+            var nonZeroLanes = ~Vector256.Equals(value, Vector256<ulong>.Zero).ExtractMostSignificantBits() & 0xFu;
             if (nonZeroLanes == 0)
             {
                 return -1;
             }
 
-            var lane = 31 - BitOperations.LeadingZeroCount(nonZeroLanes);
-            return (lane << 6) + 63 - BitOperations.LeadingZeroCount(_value.GetElement(lane));
+            var lane = (31 - BitOperations.LeadingZeroCount(nonZeroLanes)) & 3;
+            return (lane << 6) + 63 - BitOperations.LeadingZeroCount(value.GetElement(lane));
         }
 
-        var hi = _value.GetUpper();
+        var hi = value.GetUpper();
         if (hi != Vector128<ulong>.Zero)
         {
             var e3 = hi.GetElement(1);
@@ -350,7 +395,7 @@ public struct BitMask256 : IEquatable<BitMask256>
                 : 191 - BitOperations.LeadingZeroCount(hi.GetElement(0));
         }
 
-        var lo = _value.GetLower();
+        var lo = value.GetLower();
         if (lo != Vector128<ulong>.Zero)
         {
             var e1 = lo.GetElement(1);
@@ -374,6 +419,7 @@ public struct BitMask256 : IEquatable<BitMask256>
             return -1;
         }
 
+        // The JIT unrolls this constant-trip loop, so each GetElement extracts from the register (no spill)
         for (var lane = 0; lane < 4; lane++)
         {
             var bits = _value.GetElement(lane);
