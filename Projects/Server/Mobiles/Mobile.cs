@@ -3055,7 +3055,11 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 state.Send(facialHairPacket);
             }
 
-            SendOPLPacketTo(state);
+            // The remove (0x1D) makes the client drop its cached property list along with the mobile.
+            if (sendOPLUpdate || sendRemove)
+            {
+                SendOPLPacketTo(state);
+            }
         }
     }
 
@@ -3440,7 +3444,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
                 if (m_NetState != null && CanSee(attacker) && Utility.InUpdateRange(m_Location, attacker.m_Location))
                 {
-                    m_NetState.SendMobileIncoming(this, attacker);
+                    m_NetState.SendMobileMoving(this, attacker);
                 }
             }
         }
@@ -3464,7 +3468,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
                 if (m_NetState != null && CanSee(defender) && Utility.InUpdateRange(m_Location, defender.m_Location))
                 {
-                    m_NetState.SendMobileIncoming(this, defender);
+                    m_NetState.SendMobileMoving(this, defender);
                 }
             }
         }
@@ -3888,11 +3892,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 )
             );
 
-            if (CanSee(aggressor))
-            {
-                m_NetState.SendMobileIncoming(this, aggressor);
-            }
-
             if (Combatant == null)
             {
                 setCombatant = true;
@@ -3911,17 +3910,20 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 )
             );
 
-            if (CanSee(aggressor))
-            {
-                m_NetState.SendMobileIncoming(this, aggressor);
-            }
-
             if (Combatant == null)
             {
                 setCombatant = true;
             }
 
             UpdateAggrExpire();
+        }
+
+        // A new aggression can change the aggressor's notoriety to us; 0x77 carries it without
+        // making the client rebuild the aggressor's equipment the way 0x78 does.
+        if ((addAggressor || addAggressed) && m_NetState != null && CanSee(aggressor) &&
+            Utility.InUpdateRange(m_Location, aggressor.m_Location))
+        {
+            m_NetState.SendMobileMoving(this, aggressor);
         }
 
         if (setCombatant)
@@ -3950,9 +3952,9 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 Aggressed.RemoveAt(i);
                 info.Free();
 
-                if (m_NetState != null && CanSee(aggressed))
+                if (m_NetState != null && CanSee(aggressed) && Utility.InUpdateRange(m_Location, aggressed.m_Location))
                 {
-                    m_NetState.SendMobileIncoming(this, aggressed);
+                    m_NetState.SendMobileMoving(this, aggressed);
                 }
 
                 break;
@@ -3980,9 +3982,9 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 Aggressors.RemoveAt(i);
                 info.Free();
 
-                if (m_NetState != null && CanSee(aggressor))
+                if (m_NetState != null && CanSee(aggressor) && Utility.InUpdateRange(m_Location, aggressor.m_Location))
                 {
-                    m_NetState.SendMobileIncoming(this, aggressor);
+                    m_NetState.SendMobileMoving(this, aggressor);
                 }
 
                 break;
