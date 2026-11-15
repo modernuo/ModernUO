@@ -1128,7 +1128,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
     /// <paramref name="preferredZ"/>.
     /// </summary>
     /// <remarks>
-    /// Spawners pass their own Z here. Their bounds usually span the whole Z range (-128 to 127), and with
+    /// Spawners standing inside their bounds pass their own Z here. Their bounds usually span the whole Z range (-128 to 127), and with
     /// the lowest surface preferred, a spawner standing on a raised floor spawns onto the ground beneath it
     /// whenever the floor is 16 or more above the ground: the gap passes the 16-high headroom check, the
     /// client draws the floor over the mobile, and only its name shows.
