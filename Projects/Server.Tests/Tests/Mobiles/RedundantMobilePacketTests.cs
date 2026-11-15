@@ -10,14 +10,36 @@ public class RedundantMobilePacketTests : IDisposable
     private static readonly Point3D _loc = new(1700, 1700, 0);
 
     private readonly bool _oplWasEnabled;
+    private readonly NotorietyHandler _notorietyWas;
 
     public RedundantMobilePacketTests()
     {
         _oplWasEnabled = ObjectPropertyList.Enabled;
         ObjectPropertyList.Enabled = true;
+
+        _notorietyWas = Notoriety.Handler;
+        Notoriety.Handler = AggressorNotoriety;
     }
 
-    public void Dispose() => ObjectPropertyList.Enabled = _oplWasEnabled;
+    public void Dispose()
+    {
+        ObjectPropertyList.Enabled = _oplWasEnabled;
+        Notoriety.Handler = _notorietyWas;
+    }
+
+    // The aggression part of the UOContent handler: someone who attacked you can be attacked.
+    private static int AggressorNotoriety(Mobile source, Mobile target)
+    {
+        for (var i = 0; i < source.Aggressors.Count; i++)
+        {
+            if (source.Aggressors[i].Attacker == target)
+            {
+                return Notoriety.CanBeAttacked;
+            }
+        }
+
+        return Notoriety.Innocent;
+    }
 
     [Fact]
     public void HitsChange_DoesNotResendPropertyListHash()
@@ -83,6 +105,77 @@ public class RedundantMobilePacketTests : IDisposable
 
             Assert.Equal(1, CountPacketsForSerial(defenderNs, 0x77, aggressor.Serial));
             Assert.Equal(0, CountPacketsForSerial(defenderNs, 0x78, aggressor.Serial, 3));
+        }
+        finally
+        {
+            DisposeClient(defenderNs, defender);
+            DisposeClient(aggressorNs, aggressor);
+        }
+    }
+
+    [Fact]
+    public void RepeatedAggression_SendsNoNotorietyRefresh()
+    {
+        var (defenderNs, defender) = CreateClient(_loc);
+        var (aggressorNs, aggressor) = CreateClient(new Point3D(_loc.X + 1, _loc.Y, 0));
+
+        try
+        {
+            defender.AggressiveAction(aggressor);
+            ClearSent(defenderNs);
+
+            defender.AggressiveAction(aggressor);
+
+            Assert.Equal(0, CountPacketsForSerial(defenderNs, 0x77, aggressor.Serial));
+        }
+        finally
+        {
+            DisposeClient(defenderNs, defender);
+            DisposeClient(aggressorNs, aggressor);
+        }
+    }
+
+    [Fact]
+    public void AggressionThatLeavesNotorietyUnchanged_SendsNoRefresh()
+    {
+        var (defenderNs, defender) = CreateClient(_loc);
+        var (aggressorNs, aggressor) = CreateClient(new Point3D(_loc.X + 1, _loc.Y, 0));
+        Notoriety.Handler = (_, _) => Notoriety.Innocent;
+
+        try
+        {
+            ClearSent(defenderNs);
+
+            defender.AggressiveAction(aggressor);
+
+            Assert.Equal(0, CountPacketsForSerial(defenderNs, 0x77, aggressor.Serial));
+        }
+        finally
+        {
+            DisposeClient(defenderNs, defender);
+            DisposeClient(aggressorNs, aggressor);
+        }
+    }
+
+    [Fact]
+    public void RemovingAggressor_RefreshesNotorietyOnlyWhenItChanges()
+    {
+        var (defenderNs, defender) = CreateClient(_loc);
+        var (aggressorNs, aggressor) = CreateClient(new Point3D(_loc.X + 1, _loc.Y, 0));
+
+        try
+        {
+            defender.AggressiveAction(aggressor);
+            ClearSent(defenderNs);
+
+            defender.RemoveAggressor(aggressor);
+
+            Assert.Equal(1, CountPacketsForSerial(defenderNs, 0x77, aggressor.Serial));
+
+            ClearSent(defenderNs);
+            defender.RemoveAggressor(aggressor);
+
+            Assert.Equal(0, CountPacketsForSerial(defenderNs, 0x77, aggressor.Serial));
         }
         finally
         {

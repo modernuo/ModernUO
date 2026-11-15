@@ -3437,15 +3437,13 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             if (info.Expired)
             {
                 var attacker = info.Attacker;
+                var oldNoto = GetShownNotoriety(attacker);
                 attacker.RemoveAggressed(this);
 
                 Aggressors.RemoveAt(i);
                 info.Free();
 
-                if (m_NetState != null && CanSee(attacker) && Utility.InUpdateRange(m_Location, attacker.m_Location))
-                {
-                    m_NetState.SendMobileMoving(this, attacker);
-                }
+                SendNotorietyIfChanged(attacker, oldNoto);
             }
         }
 
@@ -3461,19 +3459,39 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             if (info.Expired)
             {
                 var defender = info.Defender;
+                var oldNoto = GetShownNotoriety(defender);
                 defender.RemoveAggressor(this);
 
                 Aggressed.RemoveAt(i);
                 info.Free();
 
-                if (m_NetState != null && CanSee(defender) && Utility.InUpdateRange(m_Location, defender.m_Location))
-                {
-                    m_NetState.SendMobileMoving(this, defender);
-                }
+                SendNotorietyIfChanged(defender, oldNoto);
             }
         }
 
         UpdateAggrExpire();
+    }
+
+    // Notoriety.Compute reads the aggression lists, so callers take this before changing them and
+    // pass it to SendNotorietyIfChanged after. -1 when this client could not be sent a refresh for m.
+    private int GetShownNotoriety(Mobile m) =>
+        m_NetState != null && CanSee(m) && Utility.InUpdateRange(m_Location, m.m_Location)
+            ? Notoriety.Compute(this, m)
+            : -1;
+
+    private void SendNotorietyIfChanged(Mobile m, int oldNoto)
+    {
+        if (oldNoto < 0)
+        {
+            return;
+        }
+
+        var noto = Notoriety.Compute(this, m);
+
+        if (noto != oldNoto)
+        {
+            m_NetState.SendMobileMoving(m, noto);
+        }
     }
 
     /// <summary>
@@ -3880,6 +3898,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             }
         }
 
+        var oldNoto = addAggressor || addAggressed ? GetShownNotoriety(aggressor) : -1;
         var setCombatant = false;
 
         if (addAggressor)
@@ -3918,13 +3937,8 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             UpdateAggrExpire();
         }
 
-        // A new aggression can change the aggressor's notoriety to us; 0x77 carries it without
-        // making the client rebuild the aggressor's equipment the way 0x78 does.
-        if ((addAggressor || addAggressed) && m_NetState != null && CanSee(aggressor) &&
-            Utility.InUpdateRange(m_Location, aggressor.m_Location))
-        {
-            m_NetState.SendMobileMoving(this, aggressor);
-        }
+        // 0x77 carries the notoriety without making the client rebuild the aggressor's equipment the way 0x78 does.
+        SendNotorietyIfChanged(aggressor, oldNoto);
 
         if (setCombatant)
         {
@@ -3949,13 +3963,12 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
             if (info.Defender == aggressed)
             {
+                var oldNoto = GetShownNotoriety(aggressed);
+
                 Aggressed.RemoveAt(i);
                 info.Free();
 
-                if (m_NetState != null && CanSee(aggressed) && Utility.InUpdateRange(m_Location, aggressed.m_Location))
-                {
-                    m_NetState.SendMobileMoving(this, aggressed);
-                }
+                SendNotorietyIfChanged(aggressed, oldNoto);
 
                 break;
             }
@@ -3979,13 +3992,12 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
             if (info.Attacker == aggressor)
             {
+                var oldNoto = GetShownNotoriety(aggressor);
+
                 Aggressors.RemoveAt(i);
                 info.Free();
 
-                if (m_NetState != null && CanSee(aggressor) && Utility.InUpdateRange(m_Location, aggressor.m_Location))
-                {
-                    m_NetState.SendMobileMoving(this, aggressor);
-                }
+                SendNotorietyIfChanged(aggressor, oldNoto);
 
                 break;
             }
