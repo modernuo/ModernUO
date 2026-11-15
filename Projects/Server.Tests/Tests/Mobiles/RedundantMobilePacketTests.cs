@@ -27,12 +27,23 @@ public class RedundantMobilePacketTests : IDisposable
         Notoriety.Handler = _notorietyWas;
     }
 
-    // The aggression part of the UOContent handler: someone who attacked you can be attacked.
+    // The aggression part of the UOContent handler: someone who attacked you, or whom you attacked
+    // without it being criminal, can be attacked.
     private static int AggressorNotoriety(Mobile source, Mobile target)
     {
         for (var i = 0; i < source.Aggressors.Count; i++)
         {
             if (source.Aggressors[i].Attacker == target)
+            {
+                return Notoriety.CanBeAttacked;
+            }
+        }
+
+        for (var i = 0; i < source.Aggressed.Count; i++)
+        {
+            var info = source.Aggressed[i];
+
+            if (!info.CriminalAggression && info.Defender == target)
             {
                 return Notoriety.CanBeAttacked;
             }
@@ -176,6 +187,49 @@ public class RedundantMobilePacketTests : IDisposable
             defender.RemoveAggressor(aggressor);
 
             Assert.Equal(0, CountPacketsForSerial(defenderNs, 0x77, aggressor.Serial));
+        }
+        finally
+        {
+            DisposeClient(defenderNs, defender);
+            DisposeClient(aggressorNs, aggressor);
+        }
+    }
+
+    [Fact]
+    public void Aggression_RefreshesTheAggressorsViewToo()
+    {
+        var (defenderNs, defender) = CreateClient(_loc);
+        var (aggressorNs, aggressor) = CreateClient(new Point3D(_loc.X + 1, _loc.Y, 0));
+
+        try
+        {
+            ClearSent(aggressorNs);
+
+            defender.AggressiveAction(aggressor, false);
+
+            Assert.Equal(1, CountPacketsForSerial(aggressorNs, 0x77, defender.Serial));
+        }
+        finally
+        {
+            DisposeClient(defenderNs, defender);
+            DisposeClient(aggressorNs, aggressor);
+        }
+    }
+
+    [Fact]
+    public void RepeatedAggressionTurningCriminal_RefreshesTheAggressorsView()
+    {
+        var (defenderNs, defender) = CreateClient(_loc);
+        var (aggressorNs, aggressor) = CreateClient(new Point3D(_loc.X + 1, _loc.Y, 0));
+
+        try
+        {
+            defender.AggressiveAction(aggressor, false);
+            ClearSent(aggressorNs);
+
+            defender.AggressiveAction(aggressor, true);
+
+            Assert.Equal(1, CountPacketsForSerial(aggressorNs, 0x77, defender.Serial));
         }
         finally
         {

@@ -1515,6 +1515,33 @@ namespace Server.Mobiles
             {
                 ValidateEquipment();
             }
+
+            // A follower can show this master's notoriety (NotorietyHandlers.MobileNotoriety), so it changes with ours.
+            if ((flag & MobileDelta.Noto) != 0 && _allFollowers != null)
+            {
+                foreach (var follower in _allFollowers)
+                {
+                    follower.Delta(MobileDelta.Noto);
+                }
+            }
+        }
+
+        protected override void OnShownNotorietyChanged(Mobile m)
+        {
+            // In ML a controlled pet shows its master's notoriety unless the aggression is with the pet itself.
+            if (!Core.ML || m is not PlayerMobile { _allFollowers: { } followers })
+            {
+                return;
+            }
+
+            foreach (var follower in followers)
+            {
+                if (follower is BaseCreature { Controlled: true } pet && pet.ControlMaster == m && CanSee(pet) &&
+                    Utility.InUpdateRange(Location, pet.Location))
+                {
+                    NetState.SendMobileMoving(this, pet);
+                }
+            }
         }
 
         private static void OnLogout(Mobile m)
