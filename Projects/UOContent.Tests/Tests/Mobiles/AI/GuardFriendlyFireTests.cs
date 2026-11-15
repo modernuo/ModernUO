@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Server;
+using Server.Misc;
 using Server.Mobiles;
 using Xunit;
 
@@ -125,7 +126,7 @@ public class GuardFriendlyFireTests : IDisposable
         var (owner, pet) = Spawn();
         var sibling = OtherPet(owner, new Point3D(1498, 1600, owner.Z));
         owner.AggressiveAction(sibling, false);
-        Assert.Contains(owner.Aggressors, entry => entry.Attacker == sibling);
+        Assert.True(NotorietyHandlers.CheckAggressor(owner.Aggressors, sibling));
         Assert.False(pet.AIObject.AcquireFocusMob(10, pet.FightMode, false, false, true));
         Assert.Null(pet.FocusMob);
     }

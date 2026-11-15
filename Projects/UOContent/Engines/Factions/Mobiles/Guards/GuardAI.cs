@@ -241,9 +241,6 @@ namespace Server.Factions
 
             if (activeOnly)
             {
-                var aggressed = Mobile.Aggressed;
-                var aggressors = Mobile.Aggressors;
-
                 Mobile active = null;
                 var activePrio = 0.0;
 
@@ -261,9 +258,8 @@ namespace Server.Factions
                     }
                 }
 
-                for (var i = 0; i < aggressed.Count; ++i)
+                foreach (var info in Mobile.Aggressed)
                 {
-                    var info = aggressed[i];
                     var m = info.Defender;
 
                     if (m != comb && m.Combatant == Mobile && Mobile.InRange(m, 12) && CanDispel(m))
@@ -283,9 +279,8 @@ namespace Server.Factions
                     }
                 }
 
-                for (var i = 0; i < aggressors.Count; ++i)
+                foreach (var info in Mobile.Aggressors)
                 {
-                    var info = aggressors[i];
                     var m = info.Attacker;
 
                     if (m != comb && m.Combatant == Mobile && Mobile.InRange(m, 12) && CanDispel(m))

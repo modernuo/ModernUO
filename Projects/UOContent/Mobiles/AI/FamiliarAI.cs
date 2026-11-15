@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.  *
  ************************************************************************/
 
-using System.Collections.Generic;
+using Server.Collections;
 
 namespace Server.Mobiles;
 
@@ -170,13 +170,11 @@ public class FamiliarAI : BaseAI
 
     // defenders: an Aggressed list, read the Defender.
     private void ScanAggression(
-        Mobile master, List<AggressorInfo> list, bool defenders, ref Mobile best, ref double bestDist
+        Mobile master, in ValueLinkList<AggressorInfo> list, bool defenders, ref Mobile best, ref double bestDist
     )
     {
-        for (var i = 0; i < list.Count; i++)
+        foreach (var info in list)
         {
-            var info = list[i];
-
             if (info.Expired)
             {
                 continue;

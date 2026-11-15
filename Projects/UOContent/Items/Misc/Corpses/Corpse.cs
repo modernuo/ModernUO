@@ -270,10 +270,8 @@ public partial class Corpse : Container, ICarvable
 
         var lastTime = TimeSpan.MaxValue;
 
-        for (var i = 0; i < owner.Aggressors.Count; ++i)
+        foreach (var info in owner.Aggressors)
         {
-            var info = owner.Aggressors[i];
-
             if (Core.Now - info.LastCombatTime < lastTime)
             {
                 _killer = info.Attacker;
@@ -286,10 +284,8 @@ public partial class Corpse : Container, ICarvable
             }
         }
 
-        for (var i = 0; i < owner.Aggressed.Count; ++i)
+        foreach (var info in owner.Aggressed)
         {
-            var info = owner.Aggressed[i];
-
             if (Core.Now - info.LastCombatTime < lastTime)
             {
                 _killer = info.Defender;

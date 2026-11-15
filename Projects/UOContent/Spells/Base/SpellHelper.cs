@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Server.Collections;
 using Server.Engines.CannedEvil;
 using Server.Engines.ConPVP;
 using Server.Engines.PartySystem;
@@ -207,10 +208,8 @@ namespace Server.Spells
                 return false;
             }
 
-            for (var i = 0; i < m.Aggressed.Count; ++i)
+            foreach (var info in m.Aggressed)
             {
-                var info = m.Aggressed[i];
-
                 if (info.Defender.Player && Core.Now - info.LastCombatTime < CombatHeatDelay)
                 {
                     return true;
@@ -219,10 +218,8 @@ namespace Server.Spells
 
             if (Core.AOS)
             {
-                for (var i = 0; i < m.Aggressors.Count; ++i)
+                foreach (var info in m.Aggressors)
                 {
-                    var info = m.Aggressors[i];
-
                     if (info.Attacker.Player && info.Attacker == m && Core.Now - info.LastCombatTime < CombatHeatDelay)
                     {
                         return true;

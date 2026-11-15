@@ -36,7 +36,7 @@ internal sealed partial class TransferItem : Item
 
     public override bool SkipSerialization => true;
 
-    public static bool IsInCombat(BaseCreature creature) => creature?.Aggressors.Count > 0 || creature?.Aggressed.Count > 0;
+    public static bool IsInCombat(BaseCreature creature) => creature?.HasAggressors == true || creature?.HasAggressed == true;
 
     public override void GetProperties(IPropertyList list)
     {

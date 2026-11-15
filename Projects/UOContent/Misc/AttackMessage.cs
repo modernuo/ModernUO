@@ -1,4 +1,5 @@
 using System;
+using Server.Collections;
 
 namespace Server.Misc
 {
@@ -42,24 +43,16 @@ namespace Server.Misc
 
         public static bool CheckAggressions(Mobile m1, Mobile m2)
         {
-            var list = m1.Aggressors;
-
-            for (var i = 0; i < list.Count; ++i)
+            foreach (var info in m1.Aggressors)
             {
-                var info = list[i];
-
                 if (info.Attacker == m2 && Core.Now < info.LastCombatTime + Delay)
                 {
                     return true;
                 }
             }
 
-            list = m2.Aggressors;
-
-            for (var i = 0; i < list.Count; ++i)
+            foreach (var info in m2.Aggressors)
             {
-                var info = list[i];
-
                 if (info.Attacker == m1 && Core.Now < info.LastCombatTime + Delay)
                 {
                     return true;
