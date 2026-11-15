@@ -292,32 +292,31 @@ public partial class SpecialFishingNet : Item
             _ => null
         };
 
-        if (loot != null)
-        {
-            spawn.PackItem(loot);
-        }
+        spawn.PackItem(loot);
     }
 
     protected virtual void FinishEffect(Point3D p, Map map, Mobile from)
     {
-        from.RevealingAction();
-
-        var count = GetSpawnCount();
-
-        for (var i = 0; map != null && i < count; ++i)
+        if (map != null)
         {
-            var spawn = Utility.Random(4) switch
+            from.RevealingAction();
+            var count = GetSpawnCount();
+    
+            for (var i = 0; i < count; ++i)
             {
-                0 => (BaseCreature)new SeaSerpent(),
-                1 => new DeepSeaSerpent(),
-                2 => new WaterElemental(),
-                3 => new Kraken(),
-                _ => new SeaSerpent()
-            };
-
-            Spawn(p, map, spawn);
-
-            spawn.Combatant = from;
+                var spawn = Utility.Random(4) switch
+                {
+                    0 => (BaseCreature)new SeaSerpent(),
+                    1 => new DeepSeaSerpent(),
+                    2 => new WaterElemental(),
+                    3 => new Kraken(),
+                    _ => new SeaSerpent()
+                };
+    
+                Spawn(p, map, spawn);
+    
+                spawn.Combatant = from;
+            }
         }
 
         Delete();
