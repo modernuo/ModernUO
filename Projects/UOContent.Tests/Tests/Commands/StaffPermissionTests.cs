@@ -120,6 +120,31 @@ public class StaffPermissionTests : IDisposable
     }
 
     [Fact]
+    public void StaffAccess_AccountDemotionCancelsRestore()
+    {
+        var admin = CreateCharacter(AccessLevel.Administrator, AccessLevel.Administrator);
+
+        StaffAccessCommand(admin, "player");
+        ((Account)admin.Account).AccessLevel = AccessLevel.Player;
+        Assert.False(StaffAccess.TryGetOriginalAccessLevel(admin, out _));
+
+        StaffAccessCommand(admin, "");
+        Assert.Equal(AccessLevel.Player, admin.AccessLevel);
+    }
+
+    [Fact]
+    public void StaffAccess_AccountPromotionKeepsRestore()
+    {
+        var gm = CreateCharacter(AccessLevel.GameMaster, AccessLevel.Player);
+
+        StaffAccessCommand(gm, "player");
+        ((Account)gm.Account).AccessLevel = AccessLevel.Counselor;
+
+        StaffAccessCommand(gm, "");
+        Assert.Equal(AccessLevel.GameMaster, gm.AccessLevel);
+    }
+
+    [Fact]
     public void StaffAccess_DeletedCharacterIsForgotten()
     {
         var admin = CreateCharacter(AccessLevel.Administrator, AccessLevel.Administrator);

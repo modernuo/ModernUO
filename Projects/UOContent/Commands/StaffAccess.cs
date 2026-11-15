@@ -92,6 +92,27 @@ public static class StaffAccess
     /// </summary>
     public static void OnAccessLevelChanged(PlayerMobile m) => RemoveOriginalAccessLevel(m, out _);
 
+    /// <summary>
+    /// Called when <paramref name="account"/>'s access level is lowered. Its characters' pending restores are
+    /// cancelled: a character lowered with [StaffAccess shows as a player, so whoever demotes the account sees
+    /// nothing left to demote.
+    /// </summary>
+    public static void OnAccountDemoted(Account account)
+    {
+        if (_originalLevels == null)
+        {
+            return;
+        }
+
+        for (var i = 0; i < account.Length; i++)
+        {
+            if (account[i] is PlayerMobile m)
+            {
+                RemoveOriginalAccessLevel(m, out _);
+            }
+        }
+    }
+
     [OnEvent(nameof(PlayerMobile.PlayerDeletedEvent))]
     public static void OnPlayerDeleted(PlayerMobile m) => RemoveOriginalAccessLevel(m, out _);
 
