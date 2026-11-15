@@ -32,6 +32,12 @@ public struct BitMask256 : IEquatable<BitMask256>
 {
     private Vector256<ulong> _value;
 
+    // Scalar paths load lanes straight from the struct: extracting from a YMM register costs more than a load,
+    // and a runtime lane index would otherwise spill the whole vector. Callers keep lane in 0-3.
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private readonly ulong Lane(int lane) =>
+        Unsafe.Add(ref Unsafe.As<Vector256<ulong>, ulong>(ref Unsafe.AsRef(in _value)), lane);
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private BitMask256(Vector256<ulong> value) => _value = value;
 
@@ -42,25 +48,25 @@ public struct BitMask256 : IEquatable<BitMask256>
     public readonly ulong Bits0
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => _value.GetElement(0);
+        get => Lane(0);
     }
 
     public readonly ulong Bits1
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => _value.GetElement(1);
+        get => Lane(1);
     }
 
     public readonly ulong Bits2
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => _value.GetElement(2);
+        get => Lane(2);
     }
 
     public readonly ulong Bits3
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => _value.GetElement(3);
+        get => Lane(3);
     }
 
     /// <summary>
@@ -201,7 +207,7 @@ public struct BitMask256 : IEquatable<BitMask256>
             return false;
         }
 
-        return ((_value.GetElement(index >> 6) >> (index & 0x3F)) & 1UL) != 0;
+        return ((Lane(index >> 6) >> (index & 0x3F)) & 1UL) != 0;
     }
 
     /// <summary>
@@ -279,10 +285,10 @@ public struct BitMask256 : IEquatable<BitMask256>
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly int PopCount() =>
-        BitOperations.PopCount(_value.GetElement(0)) +
-        BitOperations.PopCount(_value.GetElement(1)) +
-        BitOperations.PopCount(_value.GetElement(2)) +
-        BitOperations.PopCount(_value.GetElement(3));
+        BitOperations.PopCount(Lane(0)) +
+        BitOperations.PopCount(Lane(1)) +
+        BitOperations.PopCount(Lane(2)) +
+        BitOperations.PopCount(Lane(3));
 
     /// <summary>
     /// Returns the index of the lowest set bit (0-255), or -1 if no bits are set.
@@ -419,10 +425,9 @@ public struct BitMask256 : IEquatable<BitMask256>
             return -1;
         }
 
-        // The JIT unrolls this constant-trip loop, so each GetElement extracts from the register (no spill)
         for (var lane = 0; lane < 4; lane++)
         {
-            var bits = _value.GetElement(lane);
+            var bits = Lane(lane);
             var count = BitOperations.PopCount(bits);
             if (n < count)
             {
