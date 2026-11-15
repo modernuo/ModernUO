@@ -420,24 +420,28 @@ public struct BitMask256 : IEquatable<BitMask256>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly int GetNthSetBit(int n)
     {
-        if ((uint)n >= 256)
+        var c0 = BitOperations.PopCount(Lane(0));
+        var c1 = BitOperations.PopCount(Lane(1));
+        var c2 = BitOperations.PopCount(Lane(2));
+        var p1 = c0;
+        var p2 = p1 + c1;
+        var p3 = p2 + c2;
+
+        // Also rejects negative n
+        if ((uint)n >= (uint)(p3 + BitOperations.PopCount(Lane(3))))
         {
             return -1;
         }
 
-        for (var lane = 0; lane < 4; lane++)
-        {
-            var bits = Lane(lane);
-            var count = BitOperations.PopCount(bits);
-            if (n < count)
-            {
-                return (lane << 6) + GetNthBitInUlong(bits, n);
-            }
+        // Callers pass a random n, so a lane walk mispredicts. Compares become setcc; the counts before the lane
+        // are masked with -ge rather than selected with ?:, which the JIT turns back into branches inside loops.
+        var ge1 = n >= p1 ? 1 : 0;
+        var ge2 = n >= p2 ? 1 : 0;
+        var ge3 = n >= p3 ? 1 : 0;
+        var lane = ge1 + ge2 + ge3;
+        var before = (c0 & -ge1) + (c1 & -ge2) + (c2 & -ge3);
 
-            n -= count;
-        }
-
-        return -1;
+        return (lane << 6) + GetNthBitInUlong(Lane(lane), n - before);
     }
 
     // Caller guarantees n < PopCount(bits)
