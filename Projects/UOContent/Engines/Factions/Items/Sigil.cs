@@ -14,13 +14,13 @@ public class Sigil : BaseSystemController
     public static readonly TimeSpan CorruptionGrace = TimeSpan.FromMinutes(Core.SE ? 30.0 : 15.0);
 
     // Sigil must be held at a stronghold for this amount of time in order to become corrupted
-    public static readonly TimeSpan CorruptionPeriod = Core.SE ? TimeSpan.FromHours(10.0) : TimeSpan.FromHours(24.0);
+    public static readonly TimeSpan CorruptionPeriod = Core.SE ? TimeSpan.FromMinutes(5.0) : TimeSpan.FromMinutes(10.0);
 
     // After a sigil has been corrupted it must be returned to the town within this period of time
     public static readonly TimeSpan ReturnPeriod = TimeSpan.FromHours(1.0);
 
     // Once it's been returned the corrupting faction owns the town for this period of time
-    public static readonly TimeSpan PurificationPeriod = TimeSpan.FromDays(3.0);
+    public static readonly TimeSpan PurificationPeriod = TimeSpan.FromMinutes(5.0);
     private Faction m_Corrupted;
     private Faction m_Corrupting;
 

@@ -179,7 +179,7 @@ public static partial class DotNetSdkManager
 
     /// <summary>
     /// Reads the required SDK version from global.json.
-    /// Falls back to 10.0 if global.json is missing or unparseable.
+    /// Falls back to 11.0 if global.json is missing or unparseable.
     /// </summary>
     private static Version ReadRequiredVersion(string repoRoot)
     {
@@ -194,7 +194,7 @@ public static partial class DotNetSdkManager
             }
         }
 
-        return new Version(10, 0);
+        return new Version(11, 0);
     }
 
     [GeneratedRegex(@"^(\d+\.\d+\.\d+\S*)")]

@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using MailKit;
 using MailKit.Net.Smtp;
 using MimeKit;
 using Server.Accounting;
@@ -146,7 +147,7 @@ namespace Server.Misc
                         EmailConfiguration.EmailServerUsername,
                         EmailConfiguration.EmailServerPassword
                     ).ConfigureAwait(false);
-                    await client.SendAsync(message).ConfigureAwait(false);
+                    await client.SendAsync(new SendRequest(message)).ConfigureAwait(false);
                     await client.DisconnectAsync(true).ConfigureAwait(false);
                     return;
                 }

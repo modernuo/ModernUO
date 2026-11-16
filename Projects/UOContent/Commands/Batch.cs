@@ -77,6 +77,7 @@ namespace Server.Commands
 
                     var propertyChains = new Dictionary<Type, PropertyInfo[]>();
                     var usedList = new List<object>(list.Count);
+                    var refused = false;
 
                     for (var j = 0; j < list.Count; ++j)
                     {
@@ -106,10 +107,17 @@ namespace Server.Commands
                             continue;
                         }
 
-                        var endProp = Properties.GetPropertyInfo(ref obj, chain, out failReason);
+                        var endProp = Properties.GetPropertyInfo(e.Mobile, ref obj, chain, out failReason);
 
                         if (endProp == null)
                         {
+                            refused |= failReason == Properties.HigherPrivilegedMessage;
+                            continue;
+                        }
+
+                        if (Properties.IsHigherPrivileged(e.Mobile, obj))
+                        {
+                            refused = true;
                             continue;
                         }
 
@@ -117,15 +125,29 @@ namespace Server.Commands
                         {
                             obj = endProp.GetValue(obj, null);
 
-                            if (obj != null)
+                            if (obj == null)
                             {
-                                usedList.Add(obj);
+                                continue;
                             }
+
+                            // The redirected object is what the command runs on, so it gets the same check as a target.
+                            if (Properties.IsHigherPrivileged(e.Mobile, obj) || !BaseCommand.IsAccessible(e.Mobile, obj))
+                            {
+                                refused = true;
+                                continue;
+                            }
+
+                            usedList.Add(obj);
                         }
                         catch
                         {
                             // ignored
                         }
+                    }
+
+                    if (refused)
+                    {
+                        e.Mobile.SendMessage(Properties.HigherPrivilegedMessage);
                     }
 
                     command.ExecuteList(eventArgs[i], usedList);

@@ -1642,9 +1642,16 @@ namespace Server.Gumps
             string notice;
             List<Account> list = null;
 
+            if (!CanManageAccount(from, a))
+            {
+                from.SendMessage(CannotManageAccount);
+                return;
+            }
+
             if (okay)
             {
                 list = GetSharedAccounts(a.LoginIPs);
+                list.RemoveAll(acct => !CanManageAccount(from, acct));
 
                 for (var i = 0; i < list.Count; ++i)
                 {
@@ -1671,6 +1678,12 @@ namespace Server.Gumps
         {
             if (from.AccessLevel < AccessLevel.Administrator)
             {
+                return;
+            }
+
+            if (!CanManageAccount(from, a))
+            {
+                from.SendMessage(CannotManageAccount);
                 return;
             }
 
@@ -1726,6 +1739,8 @@ namespace Server.Gumps
 
             if (okay)
             {
+                rads.RemoveAll(acct => !CanManageAccount(from, acct));
+
                 if (!ban)
                 {
                     NetState.FlushAll();
@@ -1853,6 +1868,12 @@ namespace Server.Gumps
 
             string notice;
 
+            if (!CanManageAccount(from, a))
+            {
+                from.SendMessage(CannotManageAccount);
+                return;
+            }
+
             if (okay)
             {
                 var ips = a.LoginIPs;
@@ -1884,6 +1905,12 @@ namespace Server.Gumps
             }
 
             string notice;
+
+            if (!CanManageAccount(from, a))
+            {
+                from.SendMessage(CannotManageAccount);
+                return;
+            }
 
             if (okay)
             {
@@ -2690,6 +2717,21 @@ namespace Server.Gumps
                     }
                 case 5:
                     {
+                        if (IsAccountChange(index) && m_State is Account target && !CanManageAccount(from, target))
+                        {
+                            from.SendGump(
+                                new AdminGump(
+                                    from,
+                                    AdminGumpPage.AccountDetails_Information,
+                                    0,
+                                    null,
+                                    CannotManageAccount,
+                                    m_State
+                                )
+                            );
+                            break;
+                        }
+
                         switch (index)
                         {
                             case 0:
@@ -3794,6 +3836,12 @@ namespace Server.Gumps
                                 {
                                     if (m.Account is Account a)
                                     {
+                                        if (!CanManageAccount(from, a))
+                                        {
+                                            notice = CannotManageAccount;
+                                            break;
+                                        }
+
                                         CommandLogging.WriteLine(
                                             from,
                                             $"{from.AccessLevel} {CommandLogging.Format(from)} banning {CommandLogging.Format(m)}"
@@ -3918,7 +3966,7 @@ namespace Server.Gumps
                         {
                             case 3:
                                 {
-                                    if (m.Account is Account a)
+                                    if (m.Account is Account a && CanManageAccount(from, a))
                                     {
                                         from.SendGump(new BanDurationGump(a));
                                     }
@@ -4143,6 +4191,31 @@ namespace Server.Gumps
             }
         }
 
+        private const string CannotManageAccount = "You may only manage accounts ranked below your own.";
+
+        /// <summary>
+        /// Account changes need the account, and every character on it, to rank below the editor.
+        /// The editor's own account and Owners are exempt.
+        /// </summary>
+        public static bool CanManageAccount(Mobile from, IAccount a)
+        {
+            if (a == null)
+            {
+                return false;
+            }
+
+            if (a == from.Account || from.AccessLevel >= AccessLevel.Owner)
+            {
+                return true;
+            }
+
+            GetAccountInfo(a, out var level, out _);
+            return level < from.AccessLevel;
+        }
+
+        private static bool IsAccountChange(int index) =>
+            index is 4 or 5 or (>= 10 and <= 12) or 17 or (>= 20 and <= 25) or 33 or 34 or 36;
+
         private static void FilterAccess(List<object> list, Mobile from)
         {
             if (list == null || list.Count == 0)
@@ -4206,7 +4279,11 @@ namespace Server.Gumps
 
             public override void OnResponse(Mobile from, string text)
             {
-                if (m_Account != null)
+                if (!CanManageAccount(from, m_Account))
+                {
+                    from.SendMessage(CannotManageAccount);
+                }
+                else
                 {
                     m_Account.Comments.Add(new AccountComment(from.RawName, text));
                     from.SendGump(
@@ -4277,7 +4354,11 @@ namespace Server.Gumps
 
             public override void OnResponse(Mobile from, string text)
             {
-                if (m_Account != null)
+                if (!CanManageAccount(from, m_Account))
+                {
+                    from.SendMessage(CannotManageAccount);
+                }
+                else
                 {
                     m_Account.AddTag(m_Name, text);
                     from.SendGump(new AdminGump(from, AdminGumpPage.AccountDetails_Tags, 0, null, "Tag added.", m_Account));

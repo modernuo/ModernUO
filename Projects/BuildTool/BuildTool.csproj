@@ -2,9 +2,8 @@
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <ApplicationIcon>build-tool.ico</ApplicationIcon>
-        <TargetFramework>net10.0</TargetFramework>
-        <LangVersion>Preview</LangVersion>
-        <ImportDirectoryBuildProps>false</ImportDirectoryBuildProps>
+        <TargetFramework>net11.0</TargetFramework>
+        <LangVersion>15</LangVersion>
         <RootNamespace>BuildTool</RootNamespace>
         <AssemblyName>build-tool</AssemblyName>
         <ImplicitUsings>enable</ImplicitUsings>
@@ -17,6 +16,7 @@
         <Platforms>AnyCPU;x64</Platforms>
     </PropertyGroup>
     <ItemGroup>
+        <PackageReference Include="Nerdbank.GitVersioning" Version="3.10.94" PrivateAssets="all" />
         <PackageReference Include="Spectre.Console" Version="0.57.2" />
     </ItemGroup>
 </Project>
