@@ -1121,7 +1121,19 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
     /// <returns>True if a valid spawn Z was found within the range</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool CanSpawnMobile(int x, int y, int minZ, int maxZ, bool canSwim, bool cantWalk, out int spawnZ)
-        => CanSpawnMobile(x, y, minZ, maxZ, canSwim, cantWalk, out spawnZ, out _);
+        => CanSpawnMobile(x, y, minZ, maxZ, minZ, canSwim, cantWalk, out spawnZ, out _);
+
+    /// <summary>
+    /// Finds a valid spawn Z within the specified range, preferring the surface closest to
+    /// <paramref name="preferredZ"/>.
+    /// </summary>
+    /// <remarks>
+    /// Spawners inside their bounds pass their own Z, so a spawner on a raised floor spawns on the floor rather
+    /// than on the ground beneath it, whose gap also passes the 16-high headroom check.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool CanSpawnMobile(int x, int y, int minZ, int maxZ, int preferredZ, bool canSwim, bool cantWalk, out int spawnZ)
+        => CanSpawnMobile(x, y, minZ, maxZ, preferredZ, canSwim, cantWalk, out spawnZ, out _);
 
     /// <summary>
     /// Finds a valid spawn Z within the specified range by checking land, static, multi tiles, and world items.
@@ -1141,6 +1153,20 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
     /// <param name="failureReason">Indicates why spawn failed (if it did)</param>
     /// <returns>True if a valid spawn Z was found within the range</returns>
     public bool CanSpawnMobile(int x, int y, int minZ, int maxZ, bool canSwim, bool cantWalk, out int spawnZ, out SpawnFailureReason failureReason)
+        => CanSpawnMobile(x, y, minZ, maxZ, minZ, canSwim, cantWalk, out spawnZ, out failureReason);
+
+    /// <summary>
+    /// Finds a valid spawn Z within the specified range by checking land, static, multi tiles, and world items.
+    /// Prefers the valid surface closest to <paramref name="preferredZ"/>, the lower one on a tie.
+    /// With <paramref name="preferredZ"/> at or below <paramref name="minZ"/> that is the lowest valid surface.
+    /// Also reports the reason for failure if no valid position is found.
+    /// </summary>
+    /// <param name="preferredZ">The Z to spawn nearest, normally the spawner's own Z.</param>
+    /// <inheritdoc cref="CanSpawnMobile(int, int, int, int, bool, bool, out int, out SpawnFailureReason)"/>
+    public bool CanSpawnMobile(
+        int x, int y, int minZ, int maxZ, int preferredZ, bool canSwim, bool cantWalk, out int spawnZ,
+        out SpawnFailureReason failureReason
+    )
     {
         spawnZ = 0;
         failureReason = SpawnFailureReason.None;
@@ -1273,11 +1299,11 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             }
         }
 
-        // Find the lowest unblocked surface
+        // Bits are relative to minZ; a target outside the range clamps to its nearer end
         var validSurfaces = surfaces.And(in openSlots);
-        var lowestBit = validSurfaces.LowestSetBit();
+        var chosenBit = validSurfaces.NearestSetBit(preferredZ - minZ);
 
-        if (lowestBit < 0)
+        if (chosenBit < 0)
         {
             // Determine failure reason based on what blockers we encountered
             // If no surfaces existed at all, that's also a non-transient issue (map geometry)
@@ -1294,9 +1320,14 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             return false;
         }
 
-        spawnZ = minZ + lowestBit;
+        spawnZ = minZ + chosenBit;
         return true;
     }
+
+    /// <inheritdoc cref="CanSpawnItem(int, int, int, int, int, out int)"/>
+    /// <remarks>Prefers the lowest valid surface.</remarks>
+    public bool CanSpawnItem(int x, int y, int minZ, int maxZ, out int spawnZ) =>
+        CanSpawnItem(x, y, minZ, maxZ, minZ, out spawnZ);
 
     /// <summary>
     /// Finds a valid spawn Z for items within the specified range.
@@ -1306,9 +1337,10 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
     /// <param name="y">Y coordinate</param>
     /// <param name="minZ">Minimum Z (inclusive)</param>
     /// <param name="maxZ">Maximum Z (inclusive)</param>
+    /// <param name="preferredZ">The Z to spawn nearest (the lower surface on a tie), normally the spawner's own Z.</param>
     /// <param name="spawnZ">The valid spawn Z if found</param>
     /// <returns>True if a valid spawn Z was found within the range</returns>
-    public bool CanSpawnItem(int x, int y, int minZ, int maxZ, out int spawnZ)
+    public bool CanSpawnItem(int x, int y, int minZ, int maxZ, int preferredZ, out int spawnZ)
     {
         spawnZ = 0;
 
@@ -1397,16 +1429,16 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             }
         }
 
-        // Find the lowest unblocked surface
+        // Bits are relative to minZ; a target outside the range clamps to its nearer end
         var validSurfaces = surfaces.And(in openSlots);
-        var lowestBit = validSurfaces.LowestSetBit();
+        var chosenBit = validSurfaces.NearestSetBit(preferredZ - minZ);
 
-        if (lowestBit < 0)
+        if (chosenBit < 0)
         {
             return false;
         }
 
-        spawnZ = minZ + lowestBit;
+        spawnZ = minZ + chosenBit;
         return true;
     }
 

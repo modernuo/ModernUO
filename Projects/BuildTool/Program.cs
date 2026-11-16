@@ -8,6 +8,15 @@ using Spectre.Console;
 
 Console.OutputEncoding = Encoding.UTF8;
 
+// Answered before the repo-root lookup so the release job can ask a binary what it is from anywhere.
+if (args is ["--version"])
+{
+    Console.WriteLine(Branding.Version);
+    return 0;
+}
+
+TerminalProfile.Configure();
+
 var repoRoot = FindRepoRoot();
 if (repoRoot is null)
 {

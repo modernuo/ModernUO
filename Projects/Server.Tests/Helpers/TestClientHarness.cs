@@ -31,6 +31,29 @@ internal static class TestClientHarness
         mobile.Delete();
     }
 
+    /// <summary>Discards everything queued so far, so later probes only see what follows.</summary>
+    public static void ClearSent(NetState ns) => ns.SendBuffer.CommitRead(ns.SendBuffer.ReadableBytes);
+
+    /// <summary>Counts packets with this ID whose serial sits at <paramref name="serialOffset"/> from the ID byte.</summary>
+    public static int CountPacketsForSerial(NetState ns, byte packetId, Serial serial, int serialOffset = 1)
+    {
+        Span<byte> serialBytes = stackalloc byte[4];
+        new SpanWriter(serialBytes).Write(serial);
+
+        var span = ns.SendBuffer.GetReadSpan();
+        var count = 0;
+
+        for (var i = serialOffset; i <= span.Length - 4; i++)
+        {
+            if (span[i - serialOffset] == packetId && span.Slice(i, 4).SequenceEqual(serialBytes))
+            {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
     public static bool ReceivedRemove(NetState ns, Serial serial) => CountRemoves(ns, serial) > 0;
 
     public static int CountRemoves(NetState ns, Serial serial)

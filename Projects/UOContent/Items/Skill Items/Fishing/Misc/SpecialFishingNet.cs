@@ -283,32 +283,40 @@ public partial class SpecialFishingNet : Item
 
         spawn.MoveToWorld(new Point3D(x, y, p.Z), map);
 
-        if (spawn is Kraken && Utility.RandomDouble() < 0.2)
+        var facet = map == Map.Felucca ? Map.Felucca : Map.Trammel;
+        Item loot = spawn switch
         {
-            spawn.PackItem(new MessageInABottle(map == Map.Felucca ? Map.Felucca : Map.Trammel));
-        }
+            Kraken when Utility.RandomDouble() < 0.45 => new MessageInABottle(facet),
+            SeaSerpent when Utility.RandomDouble() < 0.26 => new TreasureMap(1, facet),
+            DeepSeaSerpent when Utility.RandomDouble() < 0.3 => new TreasureMap(2, facet),
+            _ => null
+        };
+
+        spawn.PackItem(loot);
     }
 
     protected virtual void FinishEffect(Point3D p, Map map, Mobile from)
     {
-        from.RevealingAction();
-
-        var count = GetSpawnCount();
-
-        for (var i = 0; map != null && i < count; ++i)
+        if (map != null)
         {
-            var spawn = Utility.Random(4) switch
+            from.RevealingAction();
+            var count = GetSpawnCount();
+    
+            for (var i = 0; i < count; ++i)
             {
-                0 => (BaseCreature)new SeaSerpent(),
-                1 => new DeepSeaSerpent(),
-                2 => new WaterElemental(),
-                3 => new Kraken(),
-                _ => new SeaSerpent()
-            };
-
-            Spawn(p, map, spawn);
-
-            spawn.Combatant = from;
+                var spawn = Utility.Random(4) switch
+                {
+                    0 => (BaseCreature)new SeaSerpent(),
+                    1 => new DeepSeaSerpent(),
+                    2 => new WaterElemental(),
+                    3 => new Kraken(),
+                    _ => new SeaSerpent()
+                };
+    
+                Spawn(p, map, spawn);
+    
+                spawn.Combatant = from;
+            }
         }
 
         Delete();

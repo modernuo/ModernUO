@@ -32,8 +32,16 @@ public partial class Account : IAccount, IComparable<Account>
     [SerializableField(2)]
     private string _password;
 
-    [SerializableField(3)]
+    [SerializableField(3, fieldChanged: nameof(OnAccessLevelChanged))]
     private AccessLevel _accessLevel;
+
+    private void OnAccessLevelChanged(AccessLevel oldValue, AccessLevel newValue)
+    {
+        if (newValue < oldValue)
+        {
+            Commands.StaffAccess.OnAccountDemoted(this);
+        }
+    }
 
     [SerializableField(4)]
     private int _flags;

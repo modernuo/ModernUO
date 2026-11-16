@@ -463,13 +463,15 @@ public abstract partial class BaseSpawner : Item, ISpawner
             int spawnZ;
             SpawnFailureReason failureReason;
 
+            var preferredZ = GetPreferredSpawnZ(bounds, minZ);
+
             if (isMobile)
             {
-                success = map.CanSpawnMobile(x, y, minZ, maxZ, canSwim, cantWalk, out spawnZ, out failureReason);
+                success = map.CanSpawnMobile(x, y, minZ, maxZ, preferredZ, canSwim, cantWalk, out spawnZ, out failureReason);
             }
             else
             {
-                success = map.CanSpawnItem(x, y, minZ, maxZ, out spawnZ);
+                success = map.CanSpawnItem(x, y, minZ, maxZ, preferredZ, out spawnZ);
                 failureReason = success ? SpawnFailureReason.None : SpawnFailureReason.NonTransientBlocker;
             }
 
@@ -581,10 +583,17 @@ public abstract partial class BaseSpawner : Item, ISpawner
     }
 
     /// <summary>
+    /// The Z a spawn in <paramref name="bounds"/> should land nearest: the spawner's own Z when it stands inside
+    /// them (every HomeRange spawner), otherwise the lowest surface, since a spawner placed elsewhere (region
+    /// spawners, offset bounds) says nothing about the intended level.
+    /// </summary>
+    private int GetPreferredSpawnZ(Rectangle3D bounds, int minZ) => bounds.Contains(Location) ? Z : minZ;
+
+    /// <summary>
     /// Attempts to get a verified spawn position from the sector cache across all bounds.
     /// Uses deduplicated sector lookup for uniform distribution.
     /// </summary>
-    private static bool TryGetVerifiedCachedPosition(
+    private bool TryGetVerifiedCachedPosition(
         Map map,
         ReadOnlySpan<Rectangle3D> allBounds,
         bool isMobile,
@@ -605,14 +614,15 @@ public abstract partial class BaseSpawner : Item, ISpawner
             return false;
         }
 
-        // Re-verify in 3D using the bounds that contains this position
+        // The shared cache only records X/Y validity, so Z is chosen again for this spawner
         var normalizedBounds = containingBounds.Normalized;
         var minZ = normalizedBounds.Start.Z;
         var maxZ = Math.Max(minZ, normalizedBounds.End.Z - 1);
+        var preferredZ = GetPreferredSpawnZ(normalizedBounds, minZ);
 
         var verified = isMobile
-            ? map.CanSpawnMobile(cachedPos.X, cachedPos.Y, minZ, maxZ, canSwim, cantWalk, out var verifiedZ)
-            : map.CanSpawnItem(cachedPos.X, cachedPos.Y, minZ, maxZ, out verifiedZ);
+            ? map.CanSpawnMobile(cachedPos.X, cachedPos.Y, minZ, maxZ, preferredZ, canSwim, cantWalk, out var verifiedZ)
+            : map.CanSpawnItem(cachedPos.X, cachedPos.Y, minZ, maxZ, preferredZ, out verifiedZ);
 
         if (!verified)
         {
