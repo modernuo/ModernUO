@@ -216,6 +216,8 @@ public class AnimalForm : NinjaSpell
             return MorphResult.Success; // Still consumes mana, just no effect
         }
 
+        RemoveContext(m); // Drop any previous form's mods and timer before replacing it
+
         BaseMount.Dismount(m);
 
         var bodyMod = entry.BodyMod;
