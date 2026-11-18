@@ -58,4 +58,32 @@ public class AdminGumpRankTests : IDisposable
             accounts.ForEach(Accounts.Remove);
         }
     }
+
+    [Fact]
+    public void AccountSearchDoesNotOpenSingleMatchAboveActorRank()
+    {
+        using var ns = PacketTestUtilities.CreateTestNetState();
+        var actorAccount = NewAccount(AccessLevel.Administrator);
+        var actor = Connect(ns, AccessLevel.Administrator, actorAccount);
+        var target = NewAccount(AccessLevel.Developer);
+
+        try
+        {
+            var name = Encoding.BigEndianUnicode.GetBytes(target.Username);
+            new AdminGump(actor, AdminGumpPage.Accounts).OnResponse(
+                ns,
+                new RelayInfo(1 + 5 + 11 * 7, [], new ushort[] { 0 }, new Range[] { 0..name.Length }, name)
+            );
+
+            var page = typeof(AdminGump).GetField("m_PageType", BindingFlags.Instance | BindingFlags.NonPublic)!
+                .GetValue(actor.FindGump<AdminGump>());
+            Assert.Equal(AdminGumpPage.Accounts, page);
+        }
+        finally
+        {
+            actor.Delete();
+            Accounts.Remove(target);
+            Accounts.Remove(actorAccount);
+        }
+    }
 }
