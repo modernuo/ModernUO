@@ -329,6 +329,22 @@ public class EventSchedulerTests : IDisposable
         }
     }
 
+    [Fact]
+    public void WeeklyAt_SchedulesNextOccurrenceOneWeekLater()
+    {
+        Init();
+        try
+        {
+            var evt = EventScheduler.WeeklyAt(new DateTime(2024, 5, 15, 12, 30, 0, DateTimeKind.Utc), () => { });
+
+            Assert.Equal(new DateTime(2024, 5, 22, 12, 30, 0, DateTimeKind.Utc), evt.NextOccurrence);
+        }
+        finally
+        {
+            Finish();
+        }
+    }
+
     private class TestYearlyEvent(MonthDay start, MonthDay end, IRecurrencePattern recurrence)
         : YearlyScheduledEvent(new TimeOnly(12, 0), start, end, recurrence)
     {

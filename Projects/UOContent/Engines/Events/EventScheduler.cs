@@ -60,11 +60,21 @@ public class EventScheduler : Timer
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ScheduledEvent WeeklyAt(DateTime startOn, Action action, TimeZoneInfo timeZone = null) =>
-        Shared.ScheduleEvent(startOn, action, Weekly, timeZone);
+        Shared.ScheduleEvent(
+            startOn,
+            action,
+            new WeeklyRecurrencePattern(1, AllowedMonths.All, startOn.DayOfWeek.ToDaysOfWeek()),
+            timeZone
+        );
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ScheduledEvent BiweeklyAt(DateTime startOn, Action action, TimeZoneInfo timeZone = null) =>
-        Shared.ScheduleEvent(startOn, action, Biweekly, timeZone);
+        Shared.ScheduleEvent(
+            startOn,
+            action,
+            new WeeklyRecurrencePattern(2, AllowedMonths.All, startOn.DayOfWeek.ToDaysOfWeek()),
+            timeZone
+        );
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ScheduledEvent MonthlyAt(DateTime startOn, Action action, TimeZoneInfo timeZone = null) =>
