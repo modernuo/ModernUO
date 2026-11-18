@@ -86,4 +86,35 @@ public class AdminGumpRankTests : IDisposable
             Accounts.Remove(actorAccount);
         }
     }
+
+    [Fact]
+    public void ClientBringRefusesHigherRankedCharacter()
+    {
+        using var actorState = PacketTestUtilities.CreateTestNetState();
+        using var targetState = PacketTestUtilities.CreateTestNetState();
+        var actorAccount = NewAccount(AccessLevel.GameMaster);
+        var targetAccount = NewAccount(AccessLevel.Seer);
+        var actor = Connect(actorState, AccessLevel.GameMaster, actorAccount);
+        var target = Connect(targetState, AccessLevel.Seer, targetAccount);
+
+        try
+        {
+            // Positions are set directly: moving a connected mobile between maps sends packets.
+            actor.Location = new Point3D(100, 100, 0);
+            target.Location = new Point3D(200, 200, 0);
+            actor.Map = Map.Felucca;
+            target.Map = Map.Felucca;
+
+            new ClientGump(actor, targetState).OnResponse(actorState, new RelayInfo(6, [], [], [], []));
+
+            Assert.Equal(new Point3D(200, 200, 0), target.Location);
+        }
+        finally
+        {
+            actor.Delete();
+            target.Delete();
+            Accounts.Remove(actorAccount);
+            Accounts.Remove(targetAccount);
+        }
+    }
 }
