@@ -199,7 +199,7 @@ namespace Server.Menus.Questions
             var index = info.ButtonID - 1;
             var entries = IsInSecondAgeArea(m_Mobile) ? m_T2AEntries : m_Entries;
 
-            if (index >= 0 && index < entries.Length)
+            if (index >= 0 && index < entries.Length && !Sigil.ExistsOn(m_Mobile))
             {
                 Teleport(entries[index]);
             }
