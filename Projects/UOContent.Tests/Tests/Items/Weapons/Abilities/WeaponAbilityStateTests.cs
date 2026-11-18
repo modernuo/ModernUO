@@ -12,6 +12,11 @@ public class WeaponAbilityStateTests
         public override WeaponAbility PrimaryAbility => WeaponAbility.Bladeweave;
     }
 
+    private sealed class FeintKatana : Katana
+    {
+        public override WeaponAbility PrimaryAbility => WeaponAbility.Feint;
+    }
+
     private static Mobile NewMobile()
     {
         var m = new Mobile(World.NewMobile);
@@ -58,6 +63,34 @@ public class WeaponAbilityStateTests
             WeaponAbility.Table.Remove(attacker);
             WeaponAbility.Bladeweave.OnMiss(attacker, attacker);
             attacker.Delete();
+            katana.Delete();
+        }
+    }
+
+    [Fact]
+    public void Feint_ReducesDamageTheOpponentDealsToTheFeinter()
+    {
+        var katana = new FeintKatana { Layer = Layer.OneHanded };
+        var feinter = NewFighter(katana);
+        var opponent = NewMobile();
+
+        try
+        {
+            WeaponAbility.Feint.OnHit(feinter, opponent, 10, new WorldLocation(opponent));
+
+            Assert.True(Feint.GetDamageReduction(opponent, feinter, out var reduction));
+            Assert.True(reduction > 0);
+            Assert.False(Feint.GetDamageReduction(feinter, opponent, out _));
+        }
+        finally
+        {
+            if (Feint.Registry.Remove(feinter, out var timer))
+            {
+                timer.Stop();
+            }
+
+            feinter.Delete();
+            opponent.Delete();
             katana.Delete();
         }
     }

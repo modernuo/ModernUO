@@ -20,7 +20,7 @@ public class Feint : WeaponAbility
             return;
         }
 
-        if (Registry.Remove(defender, out var timer))
+        if (Registry.Remove(attacker, out var timer))
         {
             timer.Stop();
         }
@@ -42,14 +42,14 @@ public class Feint : WeaponAbility
         );
 
         timer.Start();
-        Registry.Add(defender, timer);
+        Registry.Add(attacker, timer);
 
         // TODO: Add buff icon (Publish 100)
     }
 
     public static bool GetDamageReduction(Mobile attacker, Mobile defender, out int damageReduction)
     {
-        if (Registry.TryGetValue(attacker, out var timer) && timer.Defender == defender)
+        if (Registry.TryGetValue(defender, out var timer) && timer.Defender == attacker)
         {
             damageReduction = timer.DamageReduction;
             return true;
