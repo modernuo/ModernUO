@@ -72,7 +72,7 @@ public class EventScheduler : Timer
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ScheduledEvent YearlyAt(DateTime startOn, Action action, TimeZoneInfo timeZone = null) =>
-        Shared.ScheduleEvent(startOn, action, GetMonthlyRecurrence(startOn.Day), timeZone);
+        Shared.ScheduleEvent(startOn, action, Yearly, timeZone);
 
     public static void Configure()
     {

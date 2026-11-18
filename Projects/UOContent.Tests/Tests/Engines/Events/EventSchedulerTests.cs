@@ -312,4 +312,20 @@ public class EventSchedulerTests : IDisposable
             _callback?.Invoke();
         }
     }
+
+    [Fact]
+    public void YearlyAt_SchedulesNextOccurrenceOneYearLater()
+    {
+        Init();
+        try
+        {
+            var evt = EventScheduler.YearlyAt(new DateTime(2024, 5, 15, 12, 30, 0, DateTimeKind.Utc), () => { });
+
+            Assert.Equal(new DateTime(2025, 5, 15, 12, 30, 0, DateTimeKind.Utc), evt.NextOccurrence);
+        }
+        finally
+        {
+            Finish();
+        }
+    }
 }
