@@ -55,7 +55,11 @@ public partial class PowderOfTranslocation : Item
             }
             else if (targeted is TranslocationItem transItem)
             {
-                if (transItem.Charges >= transItem.MaxCharges)
+                if (transItem is Item placed && !placed.IsChildOf(from.Backpack))
+                {
+                    from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1042001); // That must be in your pack for you to use it.
+                }
+                else if (transItem.Charges >= transItem.MaxCharges)
                 {
                     // This item cannot absorb any more powder of translocation.
                     _powder.SendLocalizedMessageTo(from, 1054137, 0x59);
