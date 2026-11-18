@@ -48,9 +48,11 @@ public static class SaveCommands
         var saveDelay = e.GetTimeSpan(0);
         var warningDelay = e.Length >= 2 ? e.GetTimeSpan(1) : AutoSave.Warning;
 
-        AutoSave.ResetAutoSave(saveDelay, warningDelay);
-
-        e.Mobile.SendMessage("Save frequency has been updated.");
+        e.Mobile.SendMessage(
+            AutoSave.ResetAutoSave(saveDelay, warningDelay)
+                ? "Save frequency has been updated."
+                : "The save frequency must be greater than zero."
+        );
     }
 
     [Usage("ArchiveStatus")]

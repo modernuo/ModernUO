@@ -40,8 +40,13 @@ namespace Server.Saves
             SavesEnabled = ServerConfiguration.GetOrUpdateSetting("autosave.enabled", true);
         }
 
-        public static void ResetAutoSave(TimeSpan saveDelay, TimeSpan warningDelay)
+        public static bool ResetAutoSave(TimeSpan saveDelay, TimeSpan warningDelay)
         {
+            if (saveDelay <= TimeSpan.Zero)
+            {
+                return false;
+            }
+
             if (saveDelay != Delay || warningDelay != Warning)
             {
                 Delay = saveDelay;
@@ -52,6 +57,7 @@ namespace Server.Saves
             }
 
             SavesEnabled = true;
+            return true;
         }
 
         private static void SetNextSave(DateTime now)
