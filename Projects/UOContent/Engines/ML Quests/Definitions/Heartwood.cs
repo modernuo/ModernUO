@@ -1944,7 +1944,7 @@ public class DeathToTheNinja : MLQuest
         Activated = true;
         Title = 1072913; // Death to the Ninja!
         // I wish to make a statement of censure against the elite ninjas of the Black Order.  Deliver, in the strongest manner, my disdain.  But do not make war on women, even those that take arms against you.  It is not ... fitting.
-        Description = 1072966;
+        Description = 1072967;
         RefusalMessage = 1072979; // As you wish.
         // The Black Order's fortress home is well hidden.  Legend has it that a humble fishing village disguises the magical portal.
         InProgressMessage = 1072980;
