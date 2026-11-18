@@ -1,5 +1,4 @@
 using System;
-using System.Numerics;
 using Server.Gumps;
 using Server.Logging;
 using Server.Mobiles;
@@ -87,26 +86,37 @@ namespace Server.Misc
 
         private static string GetAllowedClientsString(ClientType allowedClients)
         {
-            // Get total number of allowed clients
-            var totalAllowedClients = BitOperations.PopCount((uint)allowedClients) - 1;
-            if (totalAllowedClients == 0)
+            Span<ClientType> types = [ClientType.Classic, ClientType.UOTD, ClientType.KR, ClientType.SA];
+            var total = 0;
+            foreach (var type in types)
+            {
+                if ((allowedClients & type) != 0)
+                {
+                    total++;
+                }
+            }
+
+            if (total == 0)
             {
                 return "There are no clients supported at this time.";
             }
 
             using var builder = new ValueStringBuilder(stackalloc char[192]);
             builder.Append("Please connect with a ");
-            uint flags = 0;
             var i = 0;
-            while (flags < (uint)allowedClients)
+            foreach (var type in types)
             {
-                flags = 1u << i;
-                if (i > 0)
+                if ((allowedClients & type) == 0)
                 {
-                    builder.Append(i == totalAllowedClients ? " or " : ", ");
+                    continue;
                 }
 
-                builder.Append(((ClientType)flags).TypeName());
+                if (i > 0)
+                {
+                    builder.Append(i == total - 1 ? " or " : ", ");
+                }
+
+                builder.Append(type.TypeName());
                 i++;
             }
 
