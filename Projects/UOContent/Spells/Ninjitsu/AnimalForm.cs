@@ -316,7 +316,7 @@ public class AnimalForm : NinjaSpell
     public static bool UnderTransformation(Mobile m, Type type) => GetContext(m)?.Type == type;
 
     [OnEvent(nameof(PlayerMobile.PlayerDeletedEvent))]
-    public static void RemoveLastAnimalForm(Mobile m) => _table.Remove(m);
+    public static void RemoveLastAnimalForm(Mobile m) => _lastAnimalForms.Remove(m);
 
     public class AnimalFormEntry
     {

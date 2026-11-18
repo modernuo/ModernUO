@@ -76,4 +76,20 @@ public class AnimalFormTests
         AnimalForm.RemoveContext(m);
         m.Delete();
     }
+
+    [Fact]
+    public void RemoveLastAnimalForm_ClearsTheRememberedForm()
+    {
+        var m = NewMobileWithNinjitsu(120.0);
+
+        AnimalForm.Morph(m, IndexOf(typeof(Rat)));
+        Assert.NotEqual(-1, AnimalForm.GetLastAnimalForm(m));
+
+        AnimalForm.RemoveLastAnimalForm(m);
+
+        Assert.Equal(-1, AnimalForm.GetLastAnimalForm(m));
+
+        AnimalForm.RemoveContext(m);
+        m.Delete();
+    }
 }
