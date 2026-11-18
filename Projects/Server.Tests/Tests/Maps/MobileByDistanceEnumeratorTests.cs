@@ -397,6 +397,38 @@ public class MobileByDistanceEnumeratorTests
         }
     }
 
+    [Fact]
+    public void MobileByDistanceEnumerator_MinDistanceNeverDecreasesAcrossRing()
+    {
+        var map = Map.Felucca;
+        var center = new Point2D(504, 504); // tile 8,8 of sector 31,31
+        var mobiles = new List<TestMobile>();
+        try
+        {
+            for (var sx = 30; sx <= 32; sx++)
+            {
+                for (var sy = 30; sy <= 32; sy++)
+                {
+                    if (sx != 31 || sy != 31)
+                    {
+                        mobiles.Add(CreateMobile(map, new Point3D(sx * 16 + 8, sy * 16 + 8, 0)));
+                    }
+                }
+            }
+
+            var last = 0;
+            foreach (var (_, minDistance) in map.GetMobilesInRangeByDistance(new Point3D(center.X, center.Y, 0), 24))
+            {
+                Assert.True(minDistance >= last, $"MinDistance went from {last} to {minDistance}");
+                last = minDistance;
+            }
+        }
+        finally
+        {
+            DeleteAll(mobiles.ToArray());
+        }
+    }
+
     // Test implementation of Mobile
     private class TestMobile : Mobile
     {
