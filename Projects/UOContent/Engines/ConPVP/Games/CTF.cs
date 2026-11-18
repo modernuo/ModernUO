@@ -1052,7 +1052,7 @@ public sealed class CTFGame : EventGame
         {
             var teamInfo = Controller.TeamInfo[i % 8];
 
-            if (teamInfo?.Flag == null)
+            if (teamInfo?.Flag == null || teams.Contains(teamInfo))
             {
                 continue;
             }
