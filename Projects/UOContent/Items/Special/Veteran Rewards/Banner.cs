@@ -328,7 +328,8 @@ public partial class BannerDeed : Item, IRewardItem
 
             public override void OnResponse(NetState sender, in RelayInfo info)
             {
-                if (_banner?.Deleted != false || _house == null)
+                if (_banner?.Deleted != false || _house == null ||
+                    info.ButtonID != (int)Buttons.East && info.ButtonID != (int)Buttons.South)
                 {
                     return;
                 }
