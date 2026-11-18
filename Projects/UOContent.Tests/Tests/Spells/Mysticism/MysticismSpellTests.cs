@@ -13,6 +13,11 @@ public class MysticismSpellTests
         public override bool CheckFizzle() => true;
     }
 
+    private sealed class NetherCyclone(Mobile caster) : NetherCycloneSpell(caster)
+    {
+        public override bool CheckFizzle() => true;
+    }
+
     private static Mobile NewCaster()
     {
         var m = new Mobile(World.NewMobile);
@@ -57,6 +62,35 @@ public class MysticismSpellTests
         finally
         {
             caster.Delete();
+        }
+    }
+
+    [Fact]
+    public void NetherCyclone_HighResistTargetIsNotHealed()
+    {
+        var caster = NewCaster();
+        caster.Skills.Mysticism.Base = 50;
+        caster.Skills.Focus.Base = 50;
+        var target = NewCaster();
+        target.MoveToWorld(new Point3D(2001, 1000, 0), Map.Felucca);
+        target.Skills.MagicResist.Base = 120;
+        target.Stam = 50;
+        target.Mana = 50;
+
+        try
+        {
+            var spell = new NetherCyclone(caster);
+            BeginSequence(caster, spell);
+
+            spell.Target(new Point3D(2001, 1000, 0));
+
+            Assert.True(target.Stam <= 50);
+            Assert.True(target.Mana <= 50);
+        }
+        finally
+        {
+            caster.Delete();
+            target.Delete();
         }
     }
 }
