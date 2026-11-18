@@ -34,6 +34,14 @@ public static class PacketThrottles
                     continue;
                 }
 
+                if (packetId is < 0 or > 0xFF || v < 0)
+                {
+                    Utility.PushColor(ConsoleColor.DarkYellow);
+                    Console.WriteLine("Packet Throttles: Invalid throttle {0} from {1}", k, ThrottlesConfiguration);
+                    Utility.PopColor();
+                    continue;
+                }
+
                 Delays[packetId] = v;
             }
         }
@@ -68,9 +76,9 @@ public static class PacketThrottles
 
         var packetID = e.GetInt32(0);
 
-        if (packetID is < 0 or > 0x100)
+        if (packetID is < 0 or > 0xFF)
         {
-            e.Mobile.SendMessage("Invalid Command Format. PacketID must be between 0 and 0x100.");
+            e.Mobile.SendMessage("Invalid Command Format. PacketID must be between 0 and 0xFF.");
             return;
         }
 
@@ -90,15 +98,15 @@ public static class PacketThrottles
         var packetID = e.GetInt32(0);
         var delay = e.GetInt32(1);
 
-        if (packetID is < 0 or > 0x100)
+        if (packetID is < 0 or > 0xFF)
         {
-            e.Mobile.SendMessage("Invalid Command Format. PacketID must be between 0 and 0x100.");
+            e.Mobile.SendMessage("Invalid Command Format. PacketID must be between 0 and 0xFF.");
             return;
         }
 
-        if (delay > 5000)
+        if (delay is < 0 or > 5000)
         {
-            e.Mobile.SendMessage("Invalid Command Format. Delay cannot exceed 5000 milliseconds.");
+            e.Mobile.SendMessage("Invalid Command Format. Delay must be between 0 and 5000 milliseconds.");
             return;
         }
 
