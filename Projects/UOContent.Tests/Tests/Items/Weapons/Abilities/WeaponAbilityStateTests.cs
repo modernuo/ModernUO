@@ -12,6 +12,28 @@ public class WeaponAbilityStateTests
         public override WeaponAbility PrimaryAbility => WeaponAbility.Bladeweave;
     }
 
+    // Hits regenerate while the timer wheel runs, so count the damage taken instead of reading Hits.
+    private sealed class DamageCounter : Mobile
+    {
+        public DamageCounter() : base(World.NewMobile)
+        {
+        }
+
+        public int Damaged { get; private set; }
+
+        public override void OnDamage(int amount, Mobile from, bool willKill)
+        {
+            Damaged += amount;
+            base.OnDamage(amount, from, willKill);
+        }
+    }
+
+    // The skill check handler is not wired up in tests, so make every throw land.
+    private sealed class SureBoomerang : Boomerang
+    {
+        public override bool CheckHit(Mobile attacker, Mobile defender) => true;
+    }
+
     private sealed class FeintKatana : Katana
     {
         public override WeaponAbility PrimaryAbility => WeaponAbility.Feint;
@@ -92,6 +114,57 @@ public class WeaponAbilityStateTests
             feinter.Delete();
             opponent.Delete();
             katana.Delete();
+        }
+    }
+
+    [Fact]
+    public void MysticArc_DelayedHitsKeepTheirOwnCasterAndTarget()
+    {
+        Mobile Place(Mobile m, int x)
+        {
+            m.RawStr = 100;
+            m.Hits = m.HitsMax;
+            m.MoveToWorld(new Point3D(x, 1000, 0), Map.Felucca);
+            return m;
+        }
+
+        Mobile Caster(int x)
+        {
+            var caster = NewMobile();
+            caster.Skills.Throwing.Base = 100;
+            caster.EquipItem(new SureBoomerang { Layer = Layer.OneHanded });
+            return Place(caster, x);
+        }
+
+        DamageCounter Foe(Mobile caster, int x)
+        {
+            var foe = new DamageCounter();
+            foe.DefaultMobileInit();
+            Place(foe, x);
+            foe.Combatant = caster;
+            return foe;
+        }
+
+        var first = Caster(1000);
+        var firstPrimary = Foe(first, 1002);
+        var firstSecondary = Foe(first, 1003);
+        var second = Caster(1100);
+        var secondPrimary = Foe(second, 1102);
+        var secondSecondary = Foe(second, 1103);
+
+        using (new PredictableRandom(0))
+        {
+            WeaponAbility.MysticArc.OnHit(first, firstPrimary, 0, new WorldLocation(firstPrimary));
+            WeaponAbility.MysticArc.OnHit(second, secondPrimary, 0, new WorldLocation(secondPrimary));
+            Timer.Slice(Core.TickCount + 400);
+        }
+
+        Assert.True(firstSecondary.Damaged > 0);
+        Assert.True(secondSecondary.Damaged > 0);
+
+        foreach (var m in new Mobile[] { first, firstPrimary, firstSecondary, second, secondPrimary, secondSecondary })
+        {
+            m.Delete();
         }
     }
 }

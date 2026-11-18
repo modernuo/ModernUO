@@ -7,9 +7,7 @@ namespace Server.Items;
 // Chaos energy will burst from the projectile at each target. This will only hit targets that are in combat with the user.
 public class MysticArc : WeaponAbility
 {
-    private readonly int Damage = 15;
-    private Mobile _target;
-    private Mobile _mobile;
+    private const int Damage = 15;
 
     public override int BaseMana => 20;
 
@@ -43,45 +41,36 @@ public class MysticArc : WeaponAbility
             queue.Enqueue(m);
         }
 
-        if (queue.Count > 0)
-        {
-            _target = queue.PeekRandom();
-        }
+        var target = queue.Count > 0 ? queue.PeekRandom() : null;
 
         AOS.Damage(defender, attacker, Damage, 0, 0, 0, 0, 0, 100);
 
-        if (_target != null)
+        if (target != null)
         {
-            defender?.MovingEffect(_target, weapon.ItemID, 18, 1, false, false);
+            defender?.MovingEffect(target, weapon.ItemID, 18, 1, false, false);
 
-            Timer.DelayCall(TimeSpan.FromSeconds(0.3), ThrowAgain);
-            _mobile = attacker;
+            Timer.DelayCall(TimeSpan.FromSeconds(0.3), () => ThrowAgain(attacker, target));
         }
 
         ClearCurrentAbility(attacker);
     }
 
-    public void ThrowAgain()
+    private static void ThrowAgain(Mobile attacker, Mobile target)
     {
-        if (_target == null || _mobile == null)
+        if (attacker.Weapon is not BaseThrown weapon)
         {
             return;
         }
 
-        if (_mobile.Weapon is not BaseThrown weapon)
+        if (GetCurrentAbility(attacker) is MysticArc)
         {
-            return;
+            ClearCurrentAbility(attacker);
         }
 
-        if (GetCurrentAbility(_mobile) is MysticArc)
+        if (weapon.CheckHit(attacker, target))
         {
-            ClearCurrentAbility(_mobile);
-        }
-
-        if (weapon.CheckHit(_mobile, _target))
-        {
-            weapon.OnHit(_mobile, _target, 0.0);
-            AOS.Damage(_target, _mobile, Damage, 0, 0, 0, 0, 100);
+            weapon.OnHit(attacker, target, 0.0);
+            AOS.Damage(target, attacker, Damage, 0, 0, 0, 0, 100);
         }
     }
 }
