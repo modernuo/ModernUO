@@ -80,7 +80,7 @@ namespace Server.Engines.ConPVP
                     {
                         GroupType = (GroupingType)reader.ReadEncodedInt();
                         TieType = (TieType)reader.ReadEncodedInt();
-                        SignupPeriod = reader.ReadTimeSpan();
+                        SuddenDeath = reader.ReadTimeSpan();
 
                         goto case 0;
                     }
