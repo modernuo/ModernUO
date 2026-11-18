@@ -986,7 +986,6 @@ public class TournamentBracketGump : DynamicGump
                     _object = match.Participants[index];
                     _list = null;
                     _page = 0;
-                    from.SendGump(this); // refresh-via-this
 
                     break;
                 }
