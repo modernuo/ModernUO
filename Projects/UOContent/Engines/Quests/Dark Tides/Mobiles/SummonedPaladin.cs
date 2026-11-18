@@ -219,4 +219,6 @@ public partial class SummonedPaladinMoongate : Item
 
         Timer.StartTimer(TimeSpan.FromSeconds(10.0), Delete);
     }
+
+    public override bool SkipSerialization => true;
 }
