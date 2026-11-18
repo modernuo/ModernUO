@@ -126,18 +126,19 @@ namespace Server.Commands
                 {
                     if (from.AccessLevel == AccessLevel.Counselor)
                     {
-                        var pe = PageQueue.GetEntry(targ);
+                        var entry = PageQueue.GetEntry(targ);
 
-                        if (pe?.Handler == from)
-                        {
-                            from.SendMessage("You may only use this command if you are handling their help page.");
-                        }
-                        else
+                        if (entry == null)
                         {
                             from.SendMessage("You may only use this command on someone who has paged you.");
+                            return;
                         }
 
-                        return;
+                        if (entry.Handler != from)
+                        {
+                            from.SendMessage("You may only use this command if you are handling their help page.");
+                            return;
+                        }
                     }
 
                     if (targ.AddToBackpack(held))

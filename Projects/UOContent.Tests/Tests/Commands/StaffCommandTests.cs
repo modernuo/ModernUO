@@ -93,4 +93,29 @@ public class StaffCommandTests : IDisposable
 
         Assert.Equal(0, probe.Runs);
     }
+
+    [Fact]
+    public void CounselorHandlingThePageCanDropHolding()
+    {
+        var counselor = Player(AccessLevel.Counselor, true);
+        var target = Player(AccessLevel.Player);
+        var item = Track(new Item(0x1));
+        target.Holding = item;
+
+        var entry = new PageEntry(target, "help", PageType.Question);
+        PageQueue.Enqueue(entry);
+
+        try
+        {
+            entry.Handler = counselor;
+            CommandHandlers.DropHolding_OnTarget(counselor, target);
+
+            Assert.Null(target.Holding);
+            Assert.Same(target.Backpack, item.Parent);
+        }
+        finally
+        {
+            PageQueue.Remove(entry);
+        }
+    }
 }
