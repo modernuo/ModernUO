@@ -15,8 +15,9 @@ namespace Server.Mobiles
         [SerializableField(1, getter: "private", setter: "private")]
         private int _deadline;
 
-        [SerializableProperty(2)]
-        private bool IsNotNullTimer { get => m_Timer != null; }
+        // Kept in step with m_Timer: the generator saves this field, so a computed property would always save false.
+        [SerializableField(2, getter: "private", setter: "private")]
+        private bool _isNotNullTimer;
 
         [Constructible]
         public PlagueBeastLord() : base(AIType.AI_Melee)
@@ -317,8 +318,11 @@ namespace Server.Mobiles
             )
             {
                 _lord = lord;
+                lord.IsNotNullTimer = true;
                 Count = count;
                 Deadline = deadline;
+                lord.Count = count;
+                lord.Deadline = deadline;
             }
             public int Count { get; private set; }
             public int Deadline { get; private set; }
@@ -361,6 +365,7 @@ namespace Server.Mobiles
                         _lord.Kill();
                     }
 
+                    _lord.IsNotNullTimer = false;
                     Stop();
                 }
                 else if (Count % 15 == 0)
@@ -369,11 +374,13 @@ namespace Server.Mobiles
                 }
 
                 Count++;
+                _lord.Count = Count;
             }
 
             public void StartDissolving()
             {
                 Deadline = Math.Min(Count + 60, Deadline);
+                _lord.Deadline = Deadline;
             }
         }
     }
