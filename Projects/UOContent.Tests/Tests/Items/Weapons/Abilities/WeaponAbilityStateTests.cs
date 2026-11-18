@@ -167,4 +167,16 @@ public class WeaponAbilityStateTests
             m.Delete();
         }
     }
+
+    [Fact]
+    public void DeletingAPlayer_DropsTheirArmedAbility()
+    {
+        var player = new PlayerMobile(World.NewMobile);
+        player.DefaultMobileInit();
+        WeaponAbility.Table[player] = WeaponAbility.Feint;
+
+        player.Delete();
+
+        Assert.False(WeaponAbility.Table.ContainsKey(player));
+    }
 }
