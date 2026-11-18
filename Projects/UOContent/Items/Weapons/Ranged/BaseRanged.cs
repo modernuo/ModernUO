@@ -20,6 +20,9 @@ namespace Server.Items
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _velocity;
 
+        // Set when the last shot spent no ammo (lower ammo cost), so a miss has nothing to recover.
+        private bool _firedWithoutAmmo;
+
         public BaseRanged(int itemID) : base(itemID)
         {
         }
@@ -135,7 +138,7 @@ namespace Server.Items
 
         public override void OnMiss(Mobile attacker, Mobile defender)
         {
-            if (attacker.Player && Utility.RandomDouble() < 0.4)
+            if (attacker.Player && !_firedWithoutAmmo && Utility.RandomDouble() < 0.4)
             {
                 if (Core.SE)
                 {
@@ -163,6 +166,8 @@ namespace Server.Items
 
         public virtual bool OnFired(Mobile attacker, Mobile defender)
         {
+            _firedWithoutAmmo = false;
+
             if (attacker.Player)
             {
                 var quiver = attacker.FindItemOnLayer<BaseQuiver>(Layer.Cloak);
@@ -184,6 +189,10 @@ namespace Server.Items
                 {
                     // lower ammo cost should not work when we have no ammo at all
                     return false;
+                }
+                else
+                {
+                    _firedWithoutAmmo = true;
                 }
             }
 
