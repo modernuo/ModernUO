@@ -171,11 +171,14 @@ public struct WorldLocation : IPoint3D, IComparable<WorldLocation>, IEquatable<W
             var span = array.AsSpan();
             while (!TryFormat(span, out charsWritten, null, null))
             {
+                ArrayPool<char>.Shared.Return(array);
                 array = ArrayPool<char>.Shared.Rent(array.Length * 2);
                 span = array.AsSpan();
             }
 
-            return span[..charsWritten].ToString();
+            var result = span[..charsWritten].ToString();
+            ArrayPool<char>.Shared.Return(array);
+            return result;
         }
     }
 
