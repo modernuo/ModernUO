@@ -159,6 +159,18 @@ public partial class WeaponEngravingTool : Item, IUsesRemaining, IRewardItem
 
     public static WeaponEngravingTool Find(Mobile from) => from.Backpack?.FindItemByType<WeaponEngravingTool>();
 
+    private static bool CanReach(Mobile from, BaseWeapon item)
+    {
+        if (!from.InRange(item.GetWorldLocation(), 3) || item.RootParent is Mobile m && m != from ||
+            !item.Movable || item.IsLockedDown)
+        {
+            from.SendLocalizedMessage(1072310); // The selected item is not accessible to engrave.
+            return false;
+        }
+
+        return true;
+    }
+
     private class TargetWeapon : Target
     {
         private readonly WeaponEngravingTool _tool;
@@ -174,6 +186,11 @@ public partial class WeaponEngravingTool : Item, IUsesRemaining, IRewardItem
 
             if (targeted is BaseWeapon item)
             {
+                if (!CanReach(from, item))
+                {
+                    return;
+                }
+
                 WeaponEngravingToolGump.DisplayTo(from, _tool, item);
             }
             else
@@ -236,6 +253,11 @@ public partial class WeaponEngravingTool : Item, IUsesRemaining, IRewardItem
             if (info.ButtonID != (int)Buttons.Okay)
             {
                 state.Mobile.SendLocalizedMessage(1072363); // The object was not engraved.
+                return;
+            }
+
+            if (!CanReach(state.Mobile, _target))
+            {
                 return;
             }
 
