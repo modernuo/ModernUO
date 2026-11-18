@@ -288,8 +288,8 @@ public class TournamentBracketGump : DynamicGump
                     builder.AddPage();
                     builder.AddBackground(0, 0, 300, 300, 9380);
 
-                    var pList = _list?.SafeConvertList<object, TourneyParticipant>()
-                                ?? new List<TourneyParticipant>(_tournament.Participants);
+                    _list ??= new List<object>(_tournament.Participants);
+                    var pList = _list.SafeConvertList<object, TourneyParticipant>();
 
                     AddLeftArrow(ref builder, 25, 11, ToButtonID(0, 0));
                     builder.AddHtml(25, 35, 250, 20, Html.Center($"{pList.Count} Participant{(pList.Count == 1 ? "" : "s")}"));
@@ -421,6 +421,8 @@ public class TournamentBracketGump : DynamicGump
                     AddLeftArrow(ref builder, 25, 11, ToButtonID(0, 0));
                     builder.AddHtml(25, 35, 250, 20, "Rounds".Center());
 
+                    _list ??= new List<object>(_tournament.Pyramid.Levels);
+
                     StartPage(ref builder, out var index, out var count, out var y, 12);
 
                     for (var i = 0; i < count; ++i, y += 18)
@@ -443,9 +445,8 @@ public class TournamentBracketGump : DynamicGump
                         break;
                     }
 
-                    var matchesList = _list != null
-                        ? _list.SafeConvertList<object, TourneyMatch>()
-                        : new List<TourneyMatch>(level.Matches);
+                    _list ??= new List<object>(level.Matches);
+                    var matchesList = _list.SafeConvertList<object, TourneyMatch>();
 
                     AddRightArrow(
                         ref builder,
