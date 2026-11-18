@@ -423,7 +423,7 @@ public class FiendishFriends : MLQuest
 
         // The opportunity to prove yourself worthy of learning to Summon Fiends.
         // (Sufficient spellweaving skill is required to cast the spell)
-        Rewards.Add(new DummyReward(107487));
+        Rewards.Add(new DummyReward(1074873));
     }
 
     public override Type NextQuest => typeof(CrackingTheWhipI);
