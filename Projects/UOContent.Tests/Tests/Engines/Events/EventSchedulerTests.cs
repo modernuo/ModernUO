@@ -328,4 +328,30 @@ public class EventSchedulerTests : IDisposable
             Finish();
         }
     }
+
+    private class TestYearlyEvent(MonthDay start, MonthDay end, IRecurrencePattern recurrence)
+        : YearlyScheduledEvent(new TimeOnly(12, 0), start, end, recurrence)
+    {
+        public DateTime Next(DateTime after) => GetNextOccurrence(after);
+
+        public override void OnEvent()
+        {
+        }
+    }
+
+    [Fact]
+    public void YearlyScheduledEvent_NextWindowStartsInTheFollowingYear()
+    {
+        // Window Nov 10 - Dec 20, monthly on the 15th: after Dec 15, 2028 the next candidate (Jan 15)
+        // is before the 2029 window, so the next occurrence is Nov 15, 2029.
+        var evt = new TestYearlyEvent(
+            new MonthDay(2024, 11, 10),
+            new MonthDay(2024, 12, 20),
+            EventScheduler.GetMonthlyRecurrence(15)
+        );
+
+        var next = evt.Next(new DateTime(2028, 12, 15, 12, 0, 0, DateTimeKind.Utc));
+
+        Assert.Equal(new DateTime(2029, 11, 15, 12, 0, 0, DateTimeKind.Utc), next);
+    }
 }
