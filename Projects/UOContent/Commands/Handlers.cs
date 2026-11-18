@@ -762,17 +762,17 @@ namespace Server.Commands
 
                 if (targeted is Mobile mobile)
                 {
-                    from.SendMenu(new EquipMenu(from, mobile, GetEquip(mobile)));
+                    from.SendMenu(new EquipMenu(from, mobile, mobile.Items.ToArray()));
                 }
             }
 
-            private static ItemListEntry[] GetEquip(Mobile m)
+            private static ItemListEntry[] GetEquip(Item[] items)
             {
-                var entries = new ItemListEntry[m.Items.Count];
+                var entries = new ItemListEntry[items.Length];
 
-                for (var i = 0; i < m.Items.Count; ++i)
+                for (var i = 0; i < items.Length; ++i)
                 {
-                    var item = m.Items[i];
+                    var item = items[i];
 
                     entries[i] = new ItemListEntry($"{item.Layer}: {item.GetType().Name}", item.ItemID, item.Hue);
                 }
@@ -782,10 +782,12 @@ namespace Server.Commands
 
             private class EquipMenu : ItemListMenu
             {
+                private readonly Item[] m_Items; // rows resolve against the items listed.
                 private readonly Mobile m_Mobile;
 
-                public EquipMenu(Mobile from, Mobile m, ItemListEntry[] entries) : base("Equipment", entries)
+                public EquipMenu(Mobile from, Mobile m, Item[] items) : base("Equipment", GetEquip(items))
                 {
+                    m_Items = items;
                     m_Mobile = m;
 
                     CommandLogging.WriteLine(
@@ -796,9 +798,14 @@ namespace Server.Commands
 
                 public override void OnResponse(NetState state, int index)
                 {
-                    if (index >= 0 && index < m_Mobile.Items.Count)
+                    if (index >= 0 && index < m_Items.Length)
                     {
-                        var item = m_Mobile.Items[index];
+                        var item = m_Items[index];
+
+                        if (item.Deleted || item.Parent != m_Mobile)
+                        {
+                            return;
+                        }
 
                         state.Mobile.SendMenu(new EquipDetailsMenu(m_Mobile, item));
                     }
@@ -820,7 +827,7 @@ namespace Server.Commands
 
                     public override void OnCancel(NetState state)
                     {
-                        state.Mobile.SendMenu(new EquipMenu(state.Mobile, m_Mobile, GetEquip(m_Mobile)));
+                        state.Mobile.SendMenu(new EquipMenu(state.Mobile, m_Mobile, m_Mobile.Items.ToArray()));
                     }
 
                     public override void OnResponse(NetState state, int index)
