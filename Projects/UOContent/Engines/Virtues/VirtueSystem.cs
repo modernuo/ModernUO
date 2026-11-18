@@ -245,6 +245,19 @@ public class VirtueSystem : GenericPersistence
 
         var oldLevel = GetLevel(from, virtue);
 
+        if (current == 0)
+        {
+            // Start the 7 day atrophy grace; a never-set loss time reads as long expired.
+            var now = Core.Now;
+            switch (virtue)
+            {
+                case VirtueName.Sacrifice:  virtues.LastSacrificeLoss = now; break;
+                case VirtueName.Justice:    virtues.LastJusticeLoss = now; break;
+                case VirtueName.Compassion: virtues.LastCompassionLoss = now; break;
+                case VirtueName.Valor:      virtues.LastValorLoss = now; break;
+            }
+        }
+
         virtues.SetValue((int)virtue, current + amount);
 
         gainedPath = GetLevel(from, virtue) != oldLevel;
