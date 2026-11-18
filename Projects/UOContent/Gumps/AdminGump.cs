@@ -1268,7 +1268,7 @@ namespace Server.Gumps
                             AddImage(375, 177, 0x25EA);
                         }
 
-                        if ((listPage + 1) * 12 < m_List.Count)
+                        if ((listPage + 1) * 9 < m_List.Count)
                         {
                             AddButton(392, 177, 0x15E1, 0x15E5, GetButtonID(1, 1));
                         }
