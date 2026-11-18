@@ -106,7 +106,7 @@ public abstract class BaseGuild : ISerializable
                     continue;
                 }
 
-                if (name.InsensitiveContains(word))
+                if (!name.InsensitiveContains(word))
                 {
                     all = false;
                     break;
