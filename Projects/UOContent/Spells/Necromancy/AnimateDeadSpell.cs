@@ -263,7 +263,7 @@ public class AnimateDeadSpell : NecromancerSpell, ITargetingSpell<Item>
 
             if (mob.Deleted)
             {
-                list.RemoveAt(i--);
+                list.RemoveAt(i);
             }
         }
 
