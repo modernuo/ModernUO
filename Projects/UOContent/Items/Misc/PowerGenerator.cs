@@ -57,6 +57,7 @@ public partial class ControlPanel : AddonComponent
         Hue = 0x835;
 
         m_SideLength = sideLength;
+        InitPath();
     }
 
     [SerializableProperty(0, useField: nameof(m_SideLength))]
@@ -78,6 +79,16 @@ public partial class ControlPanel : AddonComponent
     }
 
     public override string DefaultName => "a control panel";
+
+    [AfterDeserialization]
+    private void AfterDeserialization()
+    {
+        // Panels created before the constructor built the path were saved without one.
+        if (_path == null || _path.Length == 0)
+        {
+            InitPath();
+        }
+    }
 
     public void InitPath()
     {
