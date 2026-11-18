@@ -115,10 +115,10 @@ public struct WorldLocation : IPoint3D, IComparable<WorldLocation>, IEquatable<W
     public static bool operator ==(WorldLocation l, IEntity r) =>
         !ReferenceEquals(r, null) && l._loc == r.Location && l._map == r.Map;
 
-    public static bool operator !=(WorldLocation l, WorldLocation r) => l._loc != r._loc && l._map != r._map;
+    public static bool operator !=(WorldLocation l, WorldLocation r) => l._loc != r._loc || l._map != r._map;
 
     public static bool operator !=(WorldLocation l, IEntity r) =>
-        !ReferenceEquals(r, null) && l._loc != r.Location && l._map != r.Map;
+        !ReferenceEquals(r, null) && (l._loc != r.Location || l._map != r.Map);
 
     public static bool operator >(WorldLocation l, WorldLocation r) => l._loc > r._loc && l._map == r._map;
 

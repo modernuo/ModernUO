@@ -149,4 +149,15 @@ public sealed class WorldLocationTests
         Assert.Equal(default, p);
         Assert.Throws<FormatException>(() => WorldLocation.Parse("(,23,) [Felucca]", null));
     }
+
+    [Fact]
+    public void TestWorldLocationNotEqualsComparesMapAndLocation()
+    {
+        var felucca = CreateMap("Felucca");
+        var trammel = CreateMap("Trammel");
+
+        Assert.True(new WorldLocation(1, 2, 3, felucca) != new WorldLocation(1, 2, 3, trammel));
+        Assert.True(new WorldLocation(1, 2, 3, felucca) != new WorldLocation(4, 5, 6, felucca));
+        Assert.False(new WorldLocation(1, 2, 3, felucca) != new WorldLocation(1, 2, 3, felucca));
+    }
 }
