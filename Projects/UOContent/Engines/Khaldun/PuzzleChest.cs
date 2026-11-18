@@ -341,7 +341,7 @@ namespace Server.Items
             }
             else
             {
-                (_guesses ??= []).Add(m, new PuzzleChestSolutionAndTime(this, Core.Now, solution));
+                (_guesses ??= [])[m] = new PuzzleChestSolutionAndTime(this, Core.Now, solution);
                 StartCleanupTimer();
 
                 m.SendGump(new StatusGump(correctCylinders, correctColors));
