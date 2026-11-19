@@ -902,13 +902,14 @@ public static class FeatureFlagManager
             try
             {
                 File.Copy(path, copy, true);
-                logger.Error(ex, "Failed to load {Path} (copy kept at {Copy})", path, copy);
             }
             catch (Exception copyEx)
             {
-                logger.Error(ex, "Failed to load {Path}", path);
                 logger.Error(copyEx, "Failed to keep a copy of {Path}", path);
+                copy = null;
             }
+
+            logger.Error(ex, "Failed to load {Path} (copy: {Copy})", path, copy);
 
             return null;
         }
@@ -920,7 +921,7 @@ public static class FeatureFlagManager
         {
             var savePath = FeatureFlagSettings.SavePath;
 
-            // Load flags (each file is read on its own, so one corrupt file can't drop the others)
+            // Load flags
             var flags = ReadList<FeatureFlag>(Path.Combine(savePath, "flags.json"));
             if (flags != null)
             {
