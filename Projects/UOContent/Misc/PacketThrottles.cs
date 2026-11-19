@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Server.Json;
+using Server.Logging;
 
 namespace Server.Network;
 
@@ -9,6 +10,7 @@ public static class PacketThrottles
 {
     // Delay in milliseconds
     private static readonly int[] Delays = new int[0x100];
+    private static readonly ILogger logger = LogFactory.GetLogger(typeof(PacketThrottles));
     private const string ThrottlesConfiguration = "Configuration/throttles.json";
 
     public static void Configure()
@@ -36,9 +38,7 @@ public static class PacketThrottles
 
                 if (packetId is < 0 or > 0xFF || v < 0)
                 {
-                    Utility.PushColor(ConsoleColor.DarkYellow);
-                    Console.WriteLine("Packet Throttles: Invalid throttle {0} from {1}", k, ThrottlesConfiguration);
-                    Utility.PopColor();
+                    logger.Warning("Packet Throttles: Invalid throttle {Key} from {Path}", k, ThrottlesConfiguration);
                     continue;
                 }
 

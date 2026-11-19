@@ -83,8 +83,7 @@ public partial class ControlPanel : AddonComponent
     [AfterDeserialization]
     private void AfterDeserialization()
     {
-        // Panels created before the constructor built the path were saved without one.
-        if (_path == null || _path.Length == 0)
+        if (_path is not { Length: > 0 })
         {
             InitPath();
         }

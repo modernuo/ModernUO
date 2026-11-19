@@ -34,7 +34,7 @@ public partial class StrongBox : BaseContainer, IChoppable
 
     public void OnChop(Mobile from)
     {
-        if (_house?.Deleted != false || _owner?.Deleted == false && from == _owner || _house.IsOwner(from))
+        if (_house?.Deleted != false || (_owner?.Deleted == false && from == _owner) || _house.IsOwner(from))
         {
             Chop(from);
         }
@@ -87,7 +87,7 @@ public partial class StrongBox : BaseContainer, IChoppable
 
     public override bool IsAccessibleTo(Mobile m) =>
         _house?.Deleted != false || m.AccessLevel >= AccessLevel.GameMaster ||
-        _owner?.Deleted == false && m == _owner && _house.IsCoOwner(m) && base.IsAccessibleTo(m);
+        (_owner?.Deleted == false && m == _owner && _house.IsCoOwner(m) && base.IsAccessibleTo(m));
 
     private void Chop(Mobile from)
     {

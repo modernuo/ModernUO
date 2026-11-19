@@ -15,7 +15,6 @@ namespace Server.Mobiles
         [SerializableField(1, getter: "private", setter: "private")]
         private int _deadline;
 
-        // Kept in step with m_Timer: the generator saves this field, so a computed property would always save false.
         [SerializableField(2, getter: "private", setter: "private")]
         private bool _isNotNullTimer;
 
@@ -96,6 +95,7 @@ namespace Server.Mobiles
 
                 if (!m_Timer.Running)
                 {
+                    IsNotNullTimer = true;
                     m_Timer.Start();
                 }
 
@@ -319,13 +319,21 @@ namespace Server.Mobiles
             {
                 _lord = lord;
                 lord.IsNotNullTimer = true;
-                Count = count;
-                Deadline = deadline;
                 lord.Count = count;
                 lord.Deadline = deadline;
             }
-            public int Count { get; private set; }
-            public int Deadline { get; private set; }
+
+            public int Count
+            {
+                get => _lord.Count;
+                private set => _lord.Count = value;
+            }
+
+            public int Deadline
+            {
+                get => _lord.Deadline;
+                private set => _lord.Deadline = value;
+            }
 
             protected override void OnTick()
             {
@@ -374,13 +382,11 @@ namespace Server.Mobiles
                 }
 
                 Count++;
-                _lord.Count = Count;
             }
 
             public void StartDissolving()
             {
                 Deadline = Math.Min(Count + 60, Deadline);
-                _lord.Deadline = Deadline;
             }
         }
     }

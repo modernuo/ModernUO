@@ -60,8 +60,7 @@ public abstract partial class BaseCamp : BaseMulti
     {
         _initTimer = null;
         
-        // A camp restored from a save already has its components
-        if (Deleted || _items.Count > 0 || _mobiles.Count > 0)
+        if (Deleted)
         {
             return;
         }
@@ -192,10 +191,7 @@ public abstract partial class BaseCamp : BaseMulti
         else
         {
             Timer.DelayCall(TimeSpan.Zero, Delete);
-            return;
         }
-        
-        _initTimer = Timer.DelayCall(TimeSpan.Zero, CheckAddComponents);
     }
 }
 

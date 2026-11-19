@@ -166,14 +166,20 @@ public partial class KeyRing : Item
             }
             else if (targeted is ILockable o)
             {
+                var item = o as Item;
                 var tooFar = false;
 
                 foreach (var key in _keyRing.Keys)
                 {
-                    // A key on the ring reaches exactly as far as the same key used loose
-                    if (o is Item item && (item.Map != from.Map || !from.InRange(item.GetWorldLocation(), key.MaxRange)))
+                    if (key.KeyValue != o.KeyValue)
                     {
-                        tooFar |= key.KeyValue == o.KeyValue;
+                        continue;
+                    }
+
+                    // Same reach as the key used loose
+                    if (item != null && (item.Map != from.Map || !from.InRange(item.GetWorldLocation(), key.MaxRange)))
+                    {
+                        tooFar = true;
                         continue;
                     }
 

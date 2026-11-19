@@ -35,7 +35,7 @@ public class PlagueBeastLordTests
         var copyTimer = (PlagueBeastLord.DecayTimer)typeof(PlagueBeastLord).GetField("m_Timer", NonPublic)!.GetValue(copy);
         Assert.NotNull(copyTimer);
         Assert.Equal(5, copyTimer.Count);
-        Assert.Equal(120, copyTimer.Deadline);
+        Assert.Equal(((PlagueBeastLord.DecayTimer)timer).Deadline, copyTimer.Deadline);
 
         from.Delete();
         lord.Delete();

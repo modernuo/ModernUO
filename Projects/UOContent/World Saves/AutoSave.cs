@@ -36,6 +36,11 @@ namespace Server.Saves
         public static void Configure()
         {
             Delay = ServerConfiguration.GetOrUpdateSetting("autosave.saveDelay", TimeSpan.FromMinutes(5.0));
+            if (Delay <= TimeSpan.Zero)
+            {
+                Delay = TimeSpan.FromMinutes(5.0);
+            }
+
             Warning = ServerConfiguration.GetOrUpdateSetting("autosave.warningDelay", TimeSpan.Zero);
             SavesEnabled = ServerConfiguration.GetOrUpdateSetting("autosave.enabled", true);
         }
