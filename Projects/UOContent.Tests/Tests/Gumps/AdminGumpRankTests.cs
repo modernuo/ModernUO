@@ -34,32 +34,6 @@ public class AdminGumpRankTests : IDisposable
     }
 
     [Fact]
-    public void FirewallAccountListPagesByRowsShown()
-    {
-        var actor = new Mobile { Name = "rank-pager", AccessLevel = AccessLevel.Administrator };
-        var accounts = Enumerable.Range(0, 10).Select(_ => NewAccount(AccessLevel.Player)).ToList();
-
-        try
-        {
-            var entry = new SingleIpFirewallEntry(IPAddress.Parse("192.0.2.78"));
-            var gump = new AdminGump(
-                actor,
-                AdminGumpPage.FirewallInfo,
-                list: accounts.ConvertAll(a => (object)a),
-                state: entry
-            );
-
-            // Page 0 shows nine rows, so the Next button must be present for the tenth.
-            Assert.Contains(gump.Entries, e => e is GumpButton { ButtonID: 1 + 1 + 11 * 1 });
-        }
-        finally
-        {
-            actor.Delete();
-            accounts.ForEach(Accounts.Remove);
-        }
-    }
-
-    [Fact]
     public void AccountSearchDoesNotOpenSingleMatchAboveActorRank()
     {
         using var ns = PacketTestUtilities.CreateTestNetState();

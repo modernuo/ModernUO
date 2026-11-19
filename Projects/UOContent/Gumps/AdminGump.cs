@@ -1257,6 +1257,7 @@ namespace Server.Gumps
                             blockedEntriesList.Sort(AccountComparer.Instance);
 
                             m_List = blockedEntriesList.ToList<Account, object>();
+                            FilterAccess(m_List, from);
                         }
 
                         if (listPage > 0)
