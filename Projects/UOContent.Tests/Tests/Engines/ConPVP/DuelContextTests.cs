@@ -24,7 +24,7 @@ public class DuelContextTests
             context.StartCountdown(3, counts.Add);
 
             TimerWheelScope.RunFor(900);
-            Assert.Empty(counts);
+            Assert.Equal([3], counts);
 
             TimerWheelScope.RunFor(4100);
             Assert.Equal([3, 2, 1, 0], counts);
