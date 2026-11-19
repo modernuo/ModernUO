@@ -25,14 +25,16 @@ public class QuiverAmmoRecoveryTests
             var bow = new Bow { Layer = Layer.TwoHanded };
             player.AddItem(bow);
 
-            using (new PredictableRandom(0)) // lower ammo cost saves the arrow; the miss roll is under 40%
+            // Roll 0 passes the quiver's lower ammo cost check, and would also pass the miss recovery chance
+            using (new PredictableRandom(0))
             {
                 Assert.True(bow.OnFired(player, target));
                 bow.OnMiss(player, target);
             }
 
             player.Warmode = false;
-            Timer.Slice(Core.TickCount + 11000);
+            // Far past AmmoRecovery's recovery interval, so any banked ammo would have been gathered by now
+            Timer.Slice(Core.TickCount + 60000);
 
             Assert.Equal(10, pack.GetAmount(typeof(Arrow)));
         }

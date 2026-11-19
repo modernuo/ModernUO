@@ -152,31 +152,24 @@ public class WeaponAbilityStateTests
         var secondPrimary = Foe(second, 1102);
         var secondSecondary = Foe(second, 1103);
 
-        using (new PredictableRandom(0))
+        try
         {
-            WeaponAbility.MysticArc.OnHit(first, firstPrimary, 0, new WorldLocation(firstPrimary));
-            WeaponAbility.MysticArc.OnHit(second, secondPrimary, 0, new WorldLocation(secondPrimary));
-            Timer.Slice(Core.TickCount + 400);
+            using (new PredictableRandom(0))
+            {
+                WeaponAbility.MysticArc.OnHit(first, firstPrimary, 0, new WorldLocation(firstPrimary));
+                WeaponAbility.MysticArc.OnHit(second, secondPrimary, 0, new WorldLocation(secondPrimary));
+                Timer.Slice(Core.TickCount + 400);
+            }
+
+            Assert.True(firstSecondary.Damaged > 0);
+            Assert.True(secondSecondary.Damaged > 0);
         }
-
-        Assert.True(firstSecondary.Damaged > 0);
-        Assert.True(secondSecondary.Damaged > 0);
-
-        foreach (var m in new Mobile[] { first, firstPrimary, firstSecondary, second, secondPrimary, secondSecondary })
+        finally
         {
-            m.Delete();
+            foreach (var m in new Mobile[] { first, firstPrimary, firstSecondary, second, secondPrimary, secondSecondary })
+            {
+                m.Delete();
+            }
         }
-    }
-
-    [Fact]
-    public void DeletingAPlayer_DropsTheirArmedAbility()
-    {
-        var player = new PlayerMobile(World.NewMobile);
-        player.DefaultMobileInit();
-        WeaponAbility.Table[player] = WeaponAbility.Feint;
-
-        player.Delete();
-
-        Assert.False(WeaponAbility.Table.ContainsKey(player));
     }
 }

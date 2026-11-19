@@ -79,7 +79,7 @@ public class NetherCycloneSpell : MysticSpell, ITargetingSpell<IPoint3D>
                     Caster.DoHarmful(m);
                     SpellHelper.Damage(this, m, damage, 0, 0, 0, 0, 0, 100);
 
-                    var resistedReduction = Math.Max(0, reduction - m.Skills.MagicResist.Value / 800.0);
+                    var resistedReduction = Math.Max(0.0, reduction - m.Skills.MagicResist.Value / 800.0);
 
                     m.Stam -= (int)(m.StamMax * resistedReduction);
                     m.Mana -= (int)(m.ManaMax * resistedReduction);

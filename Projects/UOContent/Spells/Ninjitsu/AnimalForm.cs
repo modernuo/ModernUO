@@ -216,7 +216,7 @@ public class AnimalForm : NinjaSpell
             return MorphResult.Success; // Still consumes mana, just no effect
         }
 
-        RemoveContext(m); // Drop any previous form's mods and timer before replacing it
+        RemoveContext(m);
 
         BaseMount.Dismount(m);
 
@@ -467,6 +467,11 @@ public class AnimalForm : NinjaSpell
             else if (_caster is PlayerMobile mobile
                      && (mobile.MountBlockReason != BlockMountType.None
                          || mobile.DuelContext?.AllowSpellCast(_caster, _spell) == false))
+            {
+                _caster.SendLocalizedMessage(1063108); // You cannot use this ability right now.
+            }
+            else if (!_caster.CanBeginAction<PolymorphSpell>() || TransformationSpellHelper.UnderTransformation(_caster) ||
+                     DisguisePersistence.IsDisguised(_caster) || GetContext(_caster) != null)
             {
                 _caster.SendLocalizedMessage(1063108); // You cannot use this ability right now.
             }

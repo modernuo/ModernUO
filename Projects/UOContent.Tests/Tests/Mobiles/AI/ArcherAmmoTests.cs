@@ -24,8 +24,8 @@ public class ArcherAmmoTests
         {
             archer.MoveToWorld(new Point3D(1500, 1600, 0), Map.Felucca);
             target.MoveToWorld(new Point3D(1500, 1603, 0), Map.Felucca);
-            archer.EquipItem(new Crossbow());
-            var pack = new Backpack();
+            Assert.True(archer.EquipItem(new Crossbow { Layer = Layer.TwoHanded }));
+            var pack = new Backpack { Layer = Layer.Backpack };
             archer.AddItem(pack);
             pack.DropItem(new Bolt(10));
             archer.Combatant = target;

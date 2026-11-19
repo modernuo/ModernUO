@@ -57,6 +57,11 @@ public class MysticArc : WeaponAbility
 
     private static void ThrowAgain(Mobile attacker, Mobile target)
     {
+        if (attacker.Deleted || target.Deleted || !target.Alive)
+        {
+            return;
+        }
+
         if (attacker.Weapon is not BaseThrown weapon)
         {
             return;
