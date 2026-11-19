@@ -290,8 +290,7 @@ public partial class Map
             }
         }
 
-        // Lower bound for every sector in the current ring: its nearest (cardinal) sector, so that
-        // the reported minimum never decreases as the walk moves on.
+        // Nearest (cardinal) sector of the ring: a lower bound for every sector in it and in later rings.
         private int RingMinDistance()
         {
             var sx = _center.m_X / SectorSize;

@@ -168,16 +168,12 @@ public partial class Map
 
                         _ring++;
                         _ringIndex = -1;
+                        _minDistance = RingMinDistance();
                     }
 
                     _linkList = ref map.GetRealSector(_currentSectorX, _currentSectorY).Clients;
                     _currentVersion = _linkList.Version;
                     current = _linkList._first;
-
-                    if (current != null)
-                    {
-                        _minDistance = MinDistToSectorSqrt(_center.m_X, _center.m_Y, _currentSectorX, _currentSectorY);
-                    }
                 }
 
                 var m = current.Mobile;
@@ -271,6 +267,24 @@ public partial class Map
                 x = startX;
                 y = startY + ringSize - (index - ringSize * 3);
             }
+        }
+
+        // Nearest (cardinal) sector of the ring: a lower bound for every sector in it and in later rings.
+        private int RingMinDistance()
+        {
+            var sx = _center.m_X / SectorSize;
+            var sy = _center.m_Y / SectorSize;
+
+            return Math.Min(
+                Math.Min(
+                    MinDistToSectorSqrt(_center.m_X, _center.m_Y, sx - _ring, sy),
+                    MinDistToSectorSqrt(_center.m_X, _center.m_Y, sx + _ring, sy)
+                ),
+                Math.Min(
+                    MinDistToSectorSqrt(_center.m_X, _center.m_Y, sx, sy - _ring),
+                    MinDistToSectorSqrt(_center.m_X, _center.m_Y, sx, sy + _ring)
+                )
+            );
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

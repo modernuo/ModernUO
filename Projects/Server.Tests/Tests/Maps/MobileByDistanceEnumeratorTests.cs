@@ -402,7 +402,8 @@ public class MobileByDistanceEnumeratorTests
     {
         var map = Map.Felucca;
         var center = new Point2D(504, 504); // tile 8,8 of sector 31,31
-        var mobiles = new List<TestMobile>();
+        var mobiles = new TestMobile[8];
+        var count = 0;
         try
         {
             for (var sx = 30; sx <= 32; sx++)
@@ -411,7 +412,7 @@ public class MobileByDistanceEnumeratorTests
                 {
                     if (sx != 31 || sy != 31)
                     {
-                        mobiles.Add(CreateMobile(map, new Point3D(sx * 16 + 8, sy * 16 + 8, 0)));
+                        mobiles[count++] = CreateMobile(map, new Point3D(sx * 16 + 8, sy * 16 + 8, 0));
                     }
                 }
             }
@@ -425,7 +426,7 @@ public class MobileByDistanceEnumeratorTests
         }
         finally
         {
-            DeleteAll(mobiles.ToArray());
+            DeleteAll(mobiles);
         }
     }
 
