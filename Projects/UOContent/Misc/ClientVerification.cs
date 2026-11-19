@@ -1,4 +1,5 @@
 using System;
+using System.Numerics;
 using Server.Gumps;
 using Server.Logging;
 using Server.Mobiles;
@@ -18,6 +19,8 @@ namespace Server.Misc
         private static TimeSpan _ageLeniency;
         private static TimeSpan _gameTimeLeniency;
         private static string _allowedClientsMessage;
+
+        private const uint ValidClientMask = (uint)(ClientType.Classic | ClientType.UOTD | ClientType.KR | ClientType.SA);
 
         public static ClientType AllowedClientTypes { get; private set; }
 
@@ -86,15 +89,8 @@ namespace Server.Misc
 
         private static string GetAllowedClientsString(ClientType allowedClients)
         {
-            Span<ClientType> types = [ClientType.Classic, ClientType.UOTD, ClientType.KR, ClientType.SA];
-            var total = 0;
-            foreach (var type in types)
-            {
-                if ((allowedClients & type) != 0)
-                {
-                    total++;
-                }
-            }
+            var bits = (uint)allowedClients & ValidClientMask;
+            var total = BitOperations.PopCount(bits);
 
             if (total == 0)
             {
@@ -103,21 +99,30 @@ namespace Server.Misc
 
             using var builder = new ValueStringBuilder(stackalloc char[192]);
             builder.Append("Please connect with a ");
-            var i = 0;
-            foreach (var type in types)
+
+            var emitted = 0;
+            while (bits != 0)
             {
-                if ((allowedClients & type) == 0)
+                var bitIndex = BitOperations.TrailingZeroCount(bits);
+                var flag = (ClientType)(1u << bitIndex);
+
+                if (emitted > 0)
                 {
-                    continue;
+                    if (emitted == total - 1)
+                    {
+                        builder.Append(total > 2 ? ", or " : " or ");
+                    }
+                    else
+                    {
+                        builder.Append(", ");
+                    }
                 }
 
-                if (i > 0)
-                {
-                    builder.Append(i == total - 1 ? " or " : ", ");
-                }
+                builder.Append(flag.TypeName());
+                emitted++;
 
-                builder.Append(type.TypeName());
-                i++;
+                // Clear the lowest set bit
+                bits &= bits - 1;
             }
 
             return builder.ToString();
