@@ -51,10 +51,18 @@ public abstract class DynamicGump : BaseGump
         _switches = gumpBuilder.Switches;
         _textEntries = gumpBuilder.TextEntries;
 
-        OutgoingGumpPackets.WritePacked(gumpBuilder.LayoutData, ref writer);
+        var layoutData = gumpBuilder.LayoutData;
+        var stringsData = gumpBuilder.StringsData;
+
+        var fits = OutgoingGumpPackets.WritePacked(layoutData, ref writer, OutgoingGumpPackets.StringsSectionMinLength);
 
         writer.Write(gumpBuilder._stringsCount);
-        OutgoingGumpPackets.WritePacked(gumpBuilder.StringsData, ref writer);
+        fits &= OutgoingGumpPackets.WritePacked(stringsData, ref writer);
+
+        if (!fits)
+        {
+            OnPacketTooLarge(layoutData.Length, stringsData.Length);
+        }
 
         gumpBuilder.Dispose();
 

@@ -27,6 +27,7 @@ public abstract class StaticGump<TSelf> : BaseGump where TSelf : StaticGump<TSel
     private static int _switches;
     private static int _textEntries;
     private static byte[] _compressedLayoutData;
+    private static int _layoutLength;
     private static byte[] _compressedStringsData;
 
     private static bool _hasDynamicStrings;
@@ -51,14 +52,23 @@ public abstract class StaticGump<TSelf> : BaseGump where TSelf : StaticGump<TSel
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void WriteLayout(ref SpanWriter writer, ref StaticGumpBuilder gumpBuilder)
+    private static bool WriteLayout(ref SpanWriter writer, ref StaticGumpBuilder gumpBuilder)
     {
+        var layoutData = gumpBuilder.LayoutData;
+        _layoutLength = layoutData.Length;
+
         var layoutPos = writer.Position;
-        OutgoingGumpPackets.WritePacked(gumpBuilder.LayoutData, ref writer);
+        if (!OutgoingGumpPackets.WritePacked(layoutData, ref writer, OutgoingGumpPackets.StringsSectionMinLength))
+        {
+            _compressedLayoutData = null;
+            return false;
+        }
+
         var layoutLength = writer.Position - layoutPos;
 
         _compressedLayoutData = GC.AllocateUninitializedArray<byte>(layoutLength);
         writer.Span.Slice(layoutPos, layoutLength).CopyTo(_compressedLayoutData);
+        return true;
     }
 
     public override void Compile(ref SpanWriter writer)
@@ -89,7 +99,12 @@ public abstract class StaticGump<TSelf> : BaseGump where TSelf : StaticGump<TSel
                 if (_staticStringsCount == 0)
                 {
                     writer.Write(stringsBuilder._stringsCount);
-                    OutgoingGumpPackets.WritePacked(stringsBuilder.StringsBuffer, ref writer);
+
+                    var stringsData = stringsBuilder.StringsBuffer;
+                    if (!OutgoingGumpPackets.WritePacked(stringsData, ref writer))
+                    {
+                        OnPacketTooLarge(_layoutLength, stringsData.Length);
+                    }
                 }
                 else
                 {
@@ -102,14 +117,22 @@ public abstract class StaticGump<TSelf> : BaseGump where TSelf : StaticGump<TSel
                     _staticStrings.CopyTo(buffer.AsSpan());
                     stringsData.CopyTo(buffer.AsSpan(_staticStrings.Length));
 
-                    OutgoingGumpPackets.WritePacked(buffer.AsSpan(0, stringsLength), ref writer);
+                    if (!OutgoingGumpPackets.WritePacked(buffer.AsSpan(0, stringsLength), ref writer))
+                    {
+                        OnPacketTooLarge(_layoutLength, stringsLength);
+                    }
+
                     STArrayPool<byte>.Shared.Return(buffer);
                 }
             }
             else if (_staticStrings != null)
             {
                 writer.Write(_staticStringsCount);
-                OutgoingGumpPackets.WritePacked(_staticStrings, ref writer);
+
+                if (!OutgoingGumpPackets.WritePacked(_staticStrings, ref writer))
+                {
+                    OnPacketTooLarge(_layoutLength, _staticStrings.Length);
+                }
             }
         }
         else
@@ -135,7 +158,7 @@ public abstract class StaticGump<TSelf> : BaseGump where TSelf : StaticGump<TSel
                 BuildStrings(ref stringsBuilder);
                 stringsBuilder.FinalizeStrings(ref gumpBuilder); // Modifies the layout
 
-                WriteLayout(ref writer, ref gumpBuilder);
+                var fits = WriteLayout(ref writer, ref gumpBuilder);
 
                 writer.Write(_staticStringsCount + stringsBuilder._stringsCount);
 
@@ -146,23 +169,41 @@ public abstract class StaticGump<TSelf> : BaseGump where TSelf : StaticGump<TSel
                 staticStringsData.CopyTo(buffer.AsSpan());
                 stringsData.CopyTo(buffer.AsSpan(staticStringsData.Length));
 
-                OutgoingGumpPackets.WritePacked(buffer.AsSpan(0, stringsLength), ref writer);
+                fits &= OutgoingGumpPackets.WritePacked(buffer.AsSpan(0, stringsLength), ref writer);
+
+                if (!fits)
+                {
+                    OnPacketTooLarge(_layoutLength, stringsLength);
+                }
 
                 STArrayPool<byte>.Shared.Return(buffer);
                 stringsBuilder.Dispose();
             }
             else
             {
-                WriteLayout(ref writer, ref gumpBuilder);
+                var fits = WriteLayout(ref writer, ref gumpBuilder);
 
                 writer.Write(_staticStringsCount);
 
                 var stringsPos = writer.Position;
-                OutgoingGumpPackets.WritePacked(staticStringsData, ref writer);
-                var stringsLength = writer.Position - stringsPos;
+                if (OutgoingGumpPackets.WritePacked(staticStringsData, ref writer))
+                {
+                    var stringsLength = writer.Position - stringsPos;
 
-                _compressedStringsData = GC.AllocateUninitializedArray<byte>(stringsLength);
-                writer.Span.Slice(stringsPos, stringsLength).CopyTo(_compressedStringsData);
+                    _compressedStringsData = GC.AllocateUninitializedArray<byte>(stringsLength);
+                    writer.Span.Slice(stringsPos, stringsLength).CopyTo(_compressedStringsData);
+                }
+                else
+                {
+                    // The cached path writes no strings section when neither strings cache is set.
+                    _compressedLayoutData = null;
+                    fits = false;
+                }
+
+                if (!fits)
+                {
+                    OnPacketTooLarge(_layoutLength, staticStringsData.Length);
+                }
             }
 
             gumpBuilder.Dispose();

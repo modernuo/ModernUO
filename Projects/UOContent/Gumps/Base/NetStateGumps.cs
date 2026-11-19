@@ -97,7 +97,7 @@ public readonly ref struct NetStateGumps
                     old.OnServerClose(_state);
 
                     _gumps[i] = gump;
-                    gump.SendTo(_state);
+                    SendTo(gump);
                     return;
                 }
             }
@@ -111,7 +111,19 @@ public readonly ref struct NetStateGumps
         }
 
         _gumps.Add(gump);
+        SendTo(gump);
+    }
+
+    private void SendTo(BaseGump gump)
+    {
         gump.SendTo(_state);
+
+        // The client never saw it, so it must not count as open. SendTo overrides may close other gumps first,
+        // so the index it was stored at is not reliable.
+        if (gump.PacketTooLarge)
+        {
+            _gumps.Remove(gump);
+        }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
