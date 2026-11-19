@@ -2,7 +2,7 @@ using Server.Engines.Virtues;
 using Server.Mobiles;
 using Xunit;
 
-namespace Server.Tests.Engines.Virtues;
+namespace UOContent.Tests;
 
 [Collection("Sequential UOContent Tests")]
 public class VirtueAtrophyTests

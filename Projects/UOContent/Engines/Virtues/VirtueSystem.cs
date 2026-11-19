@@ -247,14 +247,30 @@ public class VirtueSystem : GenericPersistence
 
         if (current == 0)
         {
-            // Start the 7 day atrophy grace; a never-set loss time reads as long expired.
+            // Loss times default to MinValue, so the first gain would atrophy on the next check.
             var now = Core.Now;
             switch (virtue)
             {
-                case VirtueName.Sacrifice:  virtues.LastSacrificeLoss = now; break;
-                case VirtueName.Justice:    virtues.LastJusticeLoss = now; break;
-                case VirtueName.Compassion: virtues.LastCompassionLoss = now; break;
-                case VirtueName.Valor:      virtues.LastValorLoss = now; break;
+                case VirtueName.Sacrifice:
+                    {
+                        virtues.LastSacrificeLoss = now;
+                        break;
+                    }
+                case VirtueName.Justice:
+                    {
+                        virtues.LastJusticeLoss = now;
+                        break;
+                    }
+                case VirtueName.Compassion:
+                    {
+                        virtues.LastCompassionLoss = now;
+                        break;
+                    }
+                case VirtueName.Valor:
+                    {
+                        virtues.LastValorLoss = now;
+                        break;
+                    }
             }
         }
 
