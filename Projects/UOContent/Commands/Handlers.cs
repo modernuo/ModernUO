@@ -782,12 +782,12 @@ namespace Server.Commands
 
             private class EquipMenu : ItemListMenu
             {
-                private readonly Item[] m_Items; // rows resolve against the items listed.
+                private readonly Item[] _items;
                 private readonly Mobile m_Mobile;
 
                 public EquipMenu(Mobile from, Mobile m, Item[] items) : base("Equipment", GetEquip(items))
                 {
-                    m_Items = items;
+                    _items = items;
                     m_Mobile = m;
 
                     CommandLogging.WriteLine(
@@ -798,9 +798,9 @@ namespace Server.Commands
 
                 public override void OnResponse(NetState state, int index)
                 {
-                    if (index >= 0 && index < m_Items.Length)
+                    if (index >= 0 && index < _items.Length)
                     {
-                        var item = m_Items[index];
+                        var item = _items[index];
 
                         if (item.Deleted || item.Parent != m_Mobile)
                         {

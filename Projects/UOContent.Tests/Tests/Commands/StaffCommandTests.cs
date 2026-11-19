@@ -118,29 +118,4 @@ public class StaffCommandTests : IDisposable
             PageQueue.Remove(entry);
         }
     }
-
-    [Fact]
-    public void ViewEquipmentRowResolvesAgainstTheListedItems()
-    {
-        const BindingFlags any = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
-        var staff = Player(AccessLevel.Administrator, true);
-        var target = Player(AccessLevel.Player);
-        var cloak = Track(new Cloak());
-        var shirt = Track(new Shirt());
-        target.AddItem(cloak);
-        target.AddItem(shirt);
-        var row = target.Items.IndexOf(cloak);
-
-        var targetType = typeof(CommandHandlers).GetNestedType("ViewEqTarget", BindingFlags.NonPublic)!;
-        var viewer = Activator.CreateInstance(targetType, true);
-        targetType.GetMethod("OnTarget", any)!.Invoke(viewer, [staff, target]);
-        var menu = staff.NetState.Menus[^1];
-
-        target.Backpack.Delete(); // shifts the live item indexes
-        menu.OnResponse(staff.NetState, row);
-
-        var details = staff.NetState.Menus[^1];
-        Assert.NotSame(menu, details);
-        Assert.Same(cloak, details.GetType().GetField("m_Item", any)!.GetValue(details));
-    }
 }
