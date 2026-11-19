@@ -161,8 +161,7 @@ public partial class WeaponEngravingTool : Item, IUsesRemaining, IRewardItem
 
     private static bool CanReach(Mobile from, BaseWeapon item)
     {
-        if (!from.InRange(item.GetWorldLocation(), 3) || item.RootParent is Mobile m && m != from ||
-            !item.Movable || item.IsLockedDown)
+        if (!item.IsChildOf(from))
         {
             from.SendLocalizedMessage(1072310); // The selected item is not accessible to engrave.
             return false;

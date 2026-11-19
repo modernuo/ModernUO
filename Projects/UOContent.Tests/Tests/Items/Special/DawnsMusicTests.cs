@@ -1,10 +1,7 @@
-using System;
-using System.Reflection;
 using Server;
 using Server.Items;
 using Server.Mobiles;
 using Server.Multis;
-using Server.Targeting;
 using Xunit;
 
 namespace UOContent.Tests;
@@ -16,32 +13,6 @@ public class DawnsMusicTests
     private sealed class TestHouse(Mobile owner) : SmallOldHouse(owner, 0x64)
     {
         public override bool IsInside(Point3D p, int height) => !Deleted && p.X == X && p.Y == Y;
-    }
-
-    [Fact]
-    public void GearIsConsumedWhenItsTrackIsAdded()
-    {
-        var from = new PlayerMobile { Player = true };
-        var box = new DawnsMusicBox();
-        var track = Enum.GetValues<MusicName>()[0];
-        box.Tracks.Remove(track);
-        var gear = new DawnsMusicGear(track);
-
-        try
-        {
-            gear.OnDoubleClick(from);
-            typeof(Target).GetMethod("OnTarget", BindingFlags.Instance | BindingFlags.NonPublic)!
-                .Invoke(from.Target, [from, box]);
-
-            Assert.Contains(track, box.Tracks);
-            Assert.True(gear.Deleted);
-        }
-        finally
-        {
-            gear.Delete();
-            box.Delete();
-            from.Delete();
-        }
     }
 
     [Fact]

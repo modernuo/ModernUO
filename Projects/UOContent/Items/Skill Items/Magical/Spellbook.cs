@@ -309,13 +309,8 @@ public partial class Spellbook : Item, ICraftable, ISlayer, IAosItem
 
         var book = item as Spellbook;
 
-        // Only use the packet's book when it is worn or directly in the backpack
-        if (book != null && book.Parent != from && (from.Backpack == null || book.Parent != from.Backpack))
-        {
-            book = null;
-        }
-
-        if (book?.HasSpell(spellID) != true)
+        if (book == null || book.Parent != from && (from.Backpack == null || book.Parent != from.Backpack) ||
+            !book.HasSpell(spellID))
         {
             book = Find(from, spellID);
         }

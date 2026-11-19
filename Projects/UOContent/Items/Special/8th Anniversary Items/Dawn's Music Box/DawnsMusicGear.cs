@@ -88,7 +88,7 @@ public partial class DawnsMusicGear : Item
                 return;
             }
 
-            box.Tracks.Add(_gear.Music);
+            box.AddToTracks(_gear.Music);
             box.InvalidateProperties();
             _gear.Delete();
             from.SendLocalizedMessage(1071961); // This song has been added to the musicbox.

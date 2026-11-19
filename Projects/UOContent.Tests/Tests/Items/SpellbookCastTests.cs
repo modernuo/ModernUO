@@ -32,6 +32,7 @@ public class SpellbookCastTests
         }
         finally
         {
+            player.Spell?.OnCasterKilled();
             book.Delete();
             player.Delete();
         }

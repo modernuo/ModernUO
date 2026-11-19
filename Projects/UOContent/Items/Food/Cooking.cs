@@ -382,7 +382,7 @@ public partial class WheatSheaf : Item
 
     public virtual void OnTarget(Mobile from, object obj)
     {
-        if (Deleted || RootParent is Mobile holder && holder != from)
+        if (Deleted || !Movable || !IsAccessibleTo(from) || RootParent is Mobile holder && holder != from)
         {
             return;
         }
