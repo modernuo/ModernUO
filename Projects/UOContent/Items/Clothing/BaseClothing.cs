@@ -160,8 +160,6 @@ namespace Server.Items
         public virtual int BaseDexBonus => 0;
         public virtual int BaseIntBonus => 0;
 
-        public virtual Race RequiredRace => null;
-
         public virtual int AosStrReq => 10;
         public virtual int OldStrReq => 0;
 

@@ -1,7 +1,7 @@
 using Server.Items;
 using Xunit;
 
-namespace Server.Tests.Items;
+namespace UOContent.Tests;
 
 [Collection("Sequential UOContent Tests")]
 public class ClothingRaceTests
