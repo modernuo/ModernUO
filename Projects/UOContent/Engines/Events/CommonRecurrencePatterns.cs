@@ -41,7 +41,7 @@ public class WeeklyRecurrencePattern : IRecurrencePattern
     public WeeklyRecurrencePattern(int intervalWeeks = 1, AllowedMonths allowedMonths = AllowedMonths.All, AllowedDays allowedDays = AllowedDays.None)
     {
         IntervalWeeks = Math.Max(1, intervalWeeks);
-        AllowedDays = allowedDays == AllowedDays.None ? AllowedDays.All : allowedDays;
+        AllowedDays = allowedDays;
         AllowedMonths = allowedMonths == AllowedMonths.None ? AllowedMonths.All : allowedMonths;
     }
 
