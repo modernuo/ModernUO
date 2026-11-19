@@ -47,8 +47,7 @@ public abstract class YearlyScheduledEvent : ScheduledEvent
 
         int yearToUse;
 
-        // Outside the range, either between the end and the start of a spanning range, or before the start of
-        // this year's non-spanning range: target this year's start. Otherwise we're past this year's range.
+        // A spanning range resumes later this year; a non-spanning one only if its start is still ahead.
         if (YearlyStart > YearlyEnd || new MonthDay(localNext.Year, localNext.Month, localNext.Day) < YearlyStart)
         {
             yearToUse = localNext.Year;

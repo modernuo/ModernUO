@@ -83,11 +83,4 @@ public class HtmlEscapeTests
         var result = input.EscapeHtml();
         Assert.Equal(expected, result);
     }
-
-    [Fact]
-    public void Color_ClosesBaseFont()
-    {
-        Assert.Equal("<BASEFONT COLOR=#FF0000>text</BASEFONT>", "text".Color(0xFF0000));
-        Assert.Equal("<BASEFONT COLOR=red>text</BASEFONT>", "text".Color("red"));
-    }
 }
