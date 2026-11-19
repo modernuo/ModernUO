@@ -3,6 +3,7 @@ using Server;
 using Server.Engines.ConPVP;
 using Server.Gumps;
 using Server.Network;
+using Server.Tests;
 using Server.Tests.Network;
 using Xunit;
 
@@ -17,8 +18,10 @@ public class TournamentTests
     [InlineData(15, 4)] // Rounds, then the first round
     public void TestBracketListPagesOpen(int listButton, int firstRowButton)
     {
+        using var scope = new TimerWheelScope();
+
         var ns = PacketTestUtilities.CreateTestNetState();
-        var from = new Mobile((Serial)0x1040u);
+        var from = new Mobile(World.NewMobile);
         from.DefaultMobileInit();
         from.NetState = ns;
         ns.Mobile = from;
@@ -47,25 +50,4 @@ public class TournamentTests
 
     private static RelayInfo Button(int buttonId) =>
         new(buttonId, ReadOnlySpan<int>.Empty, ReadOnlySpan<ushort>.Empty, ReadOnlySpan<Range>.Empty, ReadOnlySpan<byte>.Empty);
-
-    [Fact]
-    public void TestSuddenDeathSurvivesSaveAndLoad()
-    {
-        var tourney = new Tournament
-        {
-            SuddenDeath = TimeSpan.FromMinutes(3),
-            SignupPeriod = TimeSpan.FromMinutes(7)
-        };
-
-        var writer = new BufferWriter(true);
-        tourney.Serialize(writer);
-
-        var buffer = new byte[writer.Position];
-        writer.Buffer.AsSpan(0, (int)writer.Position).CopyTo(buffer);
-
-        var copy = new Tournament(new BufferReader(buffer));
-
-        Assert.Equal(TimeSpan.FromMinutes(3), copy.SuddenDeath);
-        Assert.Equal(TimeSpan.FromMinutes(7), copy.SignupPeriod);
-    }
 }

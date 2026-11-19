@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using Server;
 using Server.Engines.ConPVP;
+using Server.Tests;
 using Xunit;
 
 namespace Server.Engines.ConPVP.Tests;
@@ -11,35 +11,27 @@ public class DuelContextTests
     [Fact]
     public void TestCountdownReachesZero()
     {
-        Timer.Init(0);
+        using var scope = new TimerWheelScope();
 
-        var initiator = new Mobile((Serial)0x1024u);
+        var initiator = new Mobile(World.NewMobile);
         initiator.DefaultMobileInit();
 
         try
         {
             var context = new DuelContext(initiator, RulesetLayout.Root);
-            var counts = new List<int>();
+            List<int> counts = [];
 
             context.StartCountdown(3, counts.Add);
 
-            for (var tick = 8L; tick <= 5000; tick += 8)
-            {
-                Timer.Slice(tick);
+            TimerWheelScope.RunFor(900);
+            Assert.Empty(counts);
 
-                if (tick == 896)
-                {
-                    // One step per second: nothing but the immediate first step before the first second.
-                    Assert.Equal(new[] { 3 }, counts);
-                }
-            }
-
-            Assert.Equal(new[] { 3, 2, 1, 0 }, counts);
+            TimerWheelScope.RunFor(4100);
+            Assert.Equal([3, 2, 1, 0], counts);
         }
         finally
         {
             initiator.Delete();
-            Timer.Init(0);
         }
     }
 }
