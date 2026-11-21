@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.MemoryMappedFiles;
 
 namespace Server;
 
@@ -93,12 +92,8 @@ public abstract class GenericPersistence : Persistence, IGenericSerializable
 
         try
         {
-            using var mmf = MemoryMappedFile.CreateFromFile(dataPath, FileMode.Open);
-            using var accessor = mmf.CreateViewStream();
-
-            byte* ptr = null;
-            accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref ptr);
-            var dataReader = new UnmanagedDataReader(ptr, accessor.Length, typesDb)
+            using var data = new ReadOnlyFileData(dataPath);
+            var dataReader = new UnmanagedDataReader(data.Pointer, data.Length, typesDb)
             {
                 // These payloads carry no anchor of their own; they inherit the save-wide
                 // shift stamped while the entity indexes were read (indexes always load
@@ -111,8 +106,6 @@ public abstract class GenericPersistence : Persistence, IGenericSerializable
             error = dataReader.Position != fileLength
                 ? $"Serialized {fileLength} bytes, but {dataReader.Position} bytes deserialized"
                 : null;
-
-            accessor.SafeMemoryMappedViewHandle.ReleasePointer();
         }
         catch (Exception e)
         {

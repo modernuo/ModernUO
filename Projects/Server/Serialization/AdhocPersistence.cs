@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.MemoryMappedFiles;
 using System.Threading.Tasks;
 
 namespace Server;
@@ -61,7 +60,7 @@ public static class AdhocPersistence
         Task.Run(() => writer.Dispose(), Core.ClosingTokenSource.Token);
     }
 
-    public static unsafe void Deserialize(string filePath, Action<IGenericReader> deserializer)
+    public static void Deserialize(string filePath, Action<IGenericReader> deserializer)
     {
         var fullPath = PathUtility.GetFullPath(filePath, Core.BaseDirectory);
         var file = new FileInfo(fullPath);
@@ -77,19 +76,13 @@ public static class AdhocPersistence
 
         try
         {
-            using var mmf = MemoryMappedFile.CreateFromFile(fullPath, FileMode.Open);
-            using var accessor = mmf.CreateViewStream();
-
-            byte* ptr = null;
-            accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref ptr);
-            var dataReader = new UnmanagedDataReader(ptr, accessor.Length);
+            using var data = new ReadOnlyFileData(fullPath);
+            var dataReader = data.CreateReader();
             deserializer(dataReader);
 
             error = dataReader.Position != fileLength
                 ? $"Serialized {fileLength} bytes, but {dataReader.Position} bytes deserialized"
                 : null;
-
-            accessor.SafeMemoryMappedViewHandle.ReleasePointer();
         }
         catch (Exception e)
         {
