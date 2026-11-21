@@ -1055,7 +1055,9 @@ public partial class DuelContext
 
     public void StartCountdown(int count, CountdownCallback cb)
     {
+        cb(count);
         Timer.StartTimer(
+            TimeSpan.FromSeconds(1.0),
             TimeSpan.FromSeconds(1.0),
             count,
             () => Countdown_Callback(cb),
@@ -1067,7 +1069,7 @@ public partial class DuelContext
 
     private void Countdown_Callback(CountdownCallback cb)
     {
-        var count = _countdownTimerToken.RemainingCount;
+        var count = _countdownTimerToken.RemainingCount - 1;
 
         if (count == 0)
         {
