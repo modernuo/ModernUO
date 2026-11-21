@@ -16,7 +16,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.MemoryMappedFiles;
 
 namespace Server;
 
@@ -67,7 +66,7 @@ public abstract class Persistence
         }
     }
 
-    private static unsafe Dictionary<ulong, string> LoadTypes(string path)
+    private static Dictionary<ulong, string> LoadTypes(string path)
     {
         var db = new Dictionary<ulong, string>();
 
@@ -77,12 +76,8 @@ public abstract class Persistence
             return db;
         }
 
-        using var mmf = MemoryMappedFile.CreateFromFile(typesPath, FileMode.Open);
-        using var accessor = mmf.CreateViewStream();
-
-        byte* ptr = null;
-        accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref ptr);
-        var dataReader = new UnmanagedDataReader(ptr, accessor.Length);
+        using var data = new ReadOnlyFileData(typesPath);
+        var dataReader = data.CreateReader();
 
         var version = dataReader.ReadInt();
         var count = dataReader.ReadInt();
@@ -94,7 +89,6 @@ public abstract class Persistence
             db[hash] = typeName;
         }
 
-        accessor.SafeMemoryMappedViewHandle.ReleasePointer();
         return db;
     }
 
