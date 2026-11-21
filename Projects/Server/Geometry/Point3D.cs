@@ -90,7 +90,6 @@ public struct Point3D
     public static bool operator !=(Point3D l, IPoint3D r) =>
         !ReferenceEquals(r, null) && (l.m_X != r.X || l.m_Y != r.Y || l.m_Z != r.Z);
 
-    // Relational operators compare X/Y only, matching RunUO where Point3D compared through IPoint2D.
     public static bool operator >(Point3D l, Point3D r) => l.m_X > r.m_X && l.m_Y > r.m_Y;
 
     public static bool operator >(Point3D l, IPoint3D r) =>
