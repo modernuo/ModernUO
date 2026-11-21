@@ -81,11 +81,11 @@ public static class Html
     public static string Color(this string input, ReadOnlySpan<char> color) => Color(input.AsSpan(), color);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string Color(this ReadOnlySpan<char> input, int color) => $"<BASEFONT COLOR=#{color:X6}>{input}</CENTER>";
+    public static string Color(this ReadOnlySpan<char> input, int color) => $"<BASEFONT COLOR=#{color:X6}>{input}</BASEFONT>";
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string Color(this ReadOnlySpan<char> input, ReadOnlySpan<char> color) =>
-        $"<BASEFONT COLOR={color}>{input}</CENTER>";
+        $"<BASEFONT COLOR={color}>{input}</BASEFONT>";
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string Color(ref RawInterpolatedStringHandler input, int color)
