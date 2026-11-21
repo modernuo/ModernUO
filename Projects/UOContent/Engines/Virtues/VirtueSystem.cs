@@ -248,27 +248,26 @@ public class VirtueSystem : GenericPersistence
         if (current == 0)
         {
             // Loss times default to MinValue, so the first gain would atrophy on the next check.
-            var now = Core.Now;
             switch (virtue)
             {
                 case VirtueName.Sacrifice:
                     {
-                        virtues.LastSacrificeLoss = now;
+                        virtues.LastSacrificeLoss = Core.Now;
                         break;
                     }
                 case VirtueName.Justice:
                     {
-                        virtues.LastJusticeLoss = now;
+                        virtues.LastJusticeLoss = Core.Now;
                         break;
                     }
                 case VirtueName.Compassion:
                     {
-                        virtues.LastCompassionLoss = now;
+                        virtues.LastCompassionLoss = Core.Now;
                         break;
                     }
                 case VirtueName.Valor:
                     {
-                        virtues.LastValorLoss = now;
+                        virtues.LastValorLoss = Core.Now;
                         break;
                     }
             }
