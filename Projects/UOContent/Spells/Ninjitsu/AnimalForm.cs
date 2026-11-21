@@ -216,6 +216,8 @@ public class AnimalForm : NinjaSpell
             return MorphResult.Success; // Still consumes mana, just no effect
         }
 
+        RemoveContext(m);
+
         BaseMount.Dismount(m);
 
         var bodyMod = entry.BodyMod;
@@ -314,7 +316,7 @@ public class AnimalForm : NinjaSpell
     public static bool UnderTransformation(Mobile m, Type type) => GetContext(m)?.Type == type;
 
     [OnEvent(nameof(PlayerMobile.PlayerDeletedEvent))]
-    public static void RemoveLastAnimalForm(Mobile m) => _table.Remove(m);
+    public static void RemoveLastAnimalForm(Mobile m) => _lastAnimalForms.Remove(m);
 
     public class AnimalFormEntry
     {
@@ -465,6 +467,11 @@ public class AnimalForm : NinjaSpell
             else if (_caster is PlayerMobile mobile
                      && (mobile.MountBlockReason != BlockMountType.None
                          || mobile.DuelContext?.AllowSpellCast(_caster, _spell) == false))
+            {
+                _caster.SendLocalizedMessage(1063108); // You cannot use this ability right now.
+            }
+            else if (!_caster.CanBeginAction<PolymorphSpell>() || TransformationSpellHelper.UnderTransformation(_caster) ||
+                     DisguisePersistence.IsDisguised(_caster) || GetContext(_caster) != null)
             {
                 _caster.SendLocalizedMessage(1063108); // You cannot use this ability right now.
             }

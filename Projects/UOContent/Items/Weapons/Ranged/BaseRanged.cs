@@ -20,6 +20,9 @@ namespace Server.Items
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _velocity;
 
+        // Lower ammo cost spared the last shot, so a miss has nothing to recover.
+        private bool _firedWithoutAmmo;
+
         public BaseRanged(int itemID) : base(itemID)
         {
         }
@@ -105,7 +108,7 @@ namespace Server.Items
         public override void OnHit(Mobile attacker, Mobile defender, double damageBonus = 1)
         {
             if (attacker.Player && !defender.Player && (defender.Body.IsAnimal || defender.Body.IsMonster) &&
-                Utility.RandomDouble() < 0.4 && Ammo is { } ammo && !defender.AddToBackpack(ammo))
+                Utility.RandomDouble() < 0.4 && !_firedWithoutAmmo && Ammo is { } ammo && !defender.AddToBackpack(ammo))
             {
                 ammo.Delete();
             }
@@ -135,7 +138,7 @@ namespace Server.Items
 
         public override void OnMiss(Mobile attacker, Mobile defender)
         {
-            if (attacker.Player && Utility.RandomDouble() < 0.4)
+            if (attacker.Player && !_firedWithoutAmmo && Utility.RandomDouble() < 0.4)
             {
                 if (Core.SE)
                 {
@@ -163,6 +166,8 @@ namespace Server.Items
 
         public virtual bool OnFired(Mobile attacker, Mobile defender)
         {
+            _firedWithoutAmmo = false;
+
             if (attacker.Player)
             {
                 var quiver = attacker.FindItemOnLayer<BaseQuiver>(Layer.Cloak);
@@ -184,6 +189,10 @@ namespace Server.Items
                 {
                     // lower ammo cost should not work when we have no ammo at all
                     return false;
+                }
+                else
+                {
+                    _firedWithoutAmmo = true;
                 }
             }
 

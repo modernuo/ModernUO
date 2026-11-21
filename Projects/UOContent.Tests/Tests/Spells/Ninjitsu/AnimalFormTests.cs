@@ -59,4 +59,21 @@ public class AnimalFormTests
 
         m.Delete();
     }
+
+    [Fact]
+    public void Morph_SecondMorphRemovesTheFirstFormSkillMod()
+    {
+        var m = NewMobileWithNinjitsu(120.0);
+
+        AnimalForm.Morph(m, IndexOf(typeof(Rat))); // stealth bonus
+        var first = AnimalForm.GetContext(m);
+        Assert.NotNull(first?.Mod);
+
+        AnimalForm.Morph(m, IndexOf(typeof(Cat)));
+
+        Assert.False(m.SkillMods?.Contains(first.Mod) ?? false);
+
+        AnimalForm.RemoveContext(m);
+        m.Delete();
+    }
 }
