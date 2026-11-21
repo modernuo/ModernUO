@@ -890,6 +890,31 @@ public static class FeatureFlagManager
         }
     }
 
+    private static List<T> ReadList<T>(string path)
+    {
+        try
+        {
+            return JsonConfig.Deserialize<List<T>>(path);
+        }
+        catch (Exception ex)
+        {
+            var copy = $"{path}.corrupt";
+            try
+            {
+                File.Copy(path, copy, true);
+            }
+            catch (Exception copyEx)
+            {
+                logger.Error(copyEx, "Failed to keep a copy of {Path}", path);
+                copy = null;
+            }
+
+            logger.Error(ex, "Failed to load {Path} (copy: {Copy})", path, copy);
+
+            return null;
+        }
+    }
+
     public static void Load()
     {
         try
@@ -897,22 +922,32 @@ public static class FeatureFlagManager
             var savePath = FeatureFlagSettings.SavePath;
 
             // Load flags
-            var flags = JsonConfig.Deserialize<List<FeatureFlag>>(Path.Combine(savePath, "flags.json"));
+            var flags = ReadList<FeatureFlag>(Path.Combine(savePath, "flags.json"));
             if (flags != null)
             {
                 foreach (var flag in flags)
                 {
+                    if (flag?.Key == null)
+                    {
+                        continue;
+                    }
+
                     _flags[flag.Key] = flag;
                 }
             }
 
             // Load gump blocks (TypeConverter resolves Type from JSON)
-            var gumpBlocks = JsonConfig.Deserialize<List<GumpBlockEntry>>(Path.Combine(savePath, "gump-blocks.json"));
+            var gumpBlocks = ReadList<GumpBlockEntry>(Path.Combine(savePath, "gump-blocks.json"));
             if (gumpBlocks != null)
             {
                 for (var i = 0; i < gumpBlocks.Count; i++)
                 {
                     var entry = gumpBlocks[i];
+                    if (entry == null)
+                    {
+                        continue;
+                    }
+
                     if (entry.ResolvedType != null)
                     {
                         _gumpBlocks[entry.ResolvedType] = entry;
@@ -922,12 +957,17 @@ public static class FeatureFlagManager
 
             // Load item blocks (or migrate from old format)
             var itemBlocksPath = Path.Combine(savePath, "item-blocks.json");
-            var itemBlocks = JsonConfig.Deserialize<List<ItemBlockEntry>>(itemBlocksPath);
+            var itemBlocks = ReadList<ItemBlockEntry>(itemBlocksPath);
             if (itemBlocks != null)
             {
                 for (var i = 0; i < itemBlocks.Count; i++)
                 {
                     var entry = itemBlocks[i];
+                    if (entry == null)
+                    {
+                        continue;
+                    }
+
                     if (entry.ResolvedType != null)
                     {
                         _itemBlocks[entry.ResolvedType] = entry;
@@ -936,12 +976,17 @@ public static class FeatureFlagManager
             }
 
             // Load skill blocks (JsonStringEnumConverter deserializes SkillName)
-            var skillBlocks = JsonConfig.Deserialize<List<SkillBlockEntry>>(Path.Combine(savePath, "skill-blocks.json"));
+            var skillBlocks = ReadList<SkillBlockEntry>(Path.Combine(savePath, "skill-blocks.json"));
             if (skillBlocks != null)
             {
                 for (var i = 0; i < skillBlocks.Count; i++)
                 {
                     var entry = skillBlocks[i];
+                    if (entry == null)
+                    {
+                        continue;
+                    }
+
                     var index = (int)entry.Skill;
                     if (index >= 0 && index < _skillBlocks.Length)
                     {
@@ -951,12 +996,17 @@ public static class FeatureFlagManager
             }
 
             // Load spell blocks (TypeConverter resolves Type, then look up SpellId)
-            var spellBlocks = JsonConfig.Deserialize<List<SpellBlockEntry>>(Path.Combine(savePath, "spell-blocks.json"));
+            var spellBlocks = ReadList<SpellBlockEntry>(Path.Combine(savePath, "spell-blocks.json"));
             if (spellBlocks != null)
             {
                 for (var i = 0; i < spellBlocks.Count; i++)
                 {
                     var entry = spellBlocks[i];
+                    if (entry == null)
+                    {
+                        continue;
+                    }
+
                     if (entry.ResolvedType == null)
                     {
                         continue;
