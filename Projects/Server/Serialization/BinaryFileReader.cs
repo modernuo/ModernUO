@@ -178,6 +178,36 @@ public sealed unsafe class BinaryFileReader : IDisposable, IGenericReader
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Serial ReadSerial() => _reader.ReadSerial();
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public int ReadEncodedInt() => _reader.ReadEncodedInt();
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public DateTime ReadDateTime() => _reader.ReadDateTime();
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public TimeSpan ReadTimeSpan() => _reader.ReadTimeSpan();
+
+    public DateTime ReadAnchoredTime() => _reader.ReadAnchoredTime();
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Point3D ReadPoint3D() => _reader.ReadPoint3D();
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Point2D ReadPoint2D() => _reader.ReadPoint2D();
+
+    public Rectangle2D ReadRect2D() => _reader.ReadRect2D();
+
+    public Rectangle3D ReadRect3D() => _reader.ReadRect3D();
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Map ReadMap() => _reader.ReadMap();
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Race ReadRace() => _reader.ReadRace();
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public T ReadEnum<T>() where T : unmanaged, Enum => _reader.ReadEnum<T>();
+
     /// <summary>
     /// Reads the next Byte which helps determine how to read the following Type.
     /// <br>If the byte returns 1 => <see cref="ReadStringRaw"/> and translate into a Type via the <see cref="AssemblyHandler"/></br>
@@ -193,7 +223,7 @@ public sealed unsafe class BinaryFileReader : IDisposable, IGenericReader
     /// </summary>
     /// <param name="buffer">A reference span that will be filled with the next set of bytes.</param>
     /// <returns>The length of the buffer.</returns>
-    /// <exception cref="OutOfMemoryException">Thrown if the buffer is larger than the remaining data to read in the file.</exception>
+    /// <exception cref="EndOfStreamException">Thrown if the buffer is larger than the remaining data to read in the file.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int Read(Span<byte> buffer) => _reader.Read(buffer);
 
