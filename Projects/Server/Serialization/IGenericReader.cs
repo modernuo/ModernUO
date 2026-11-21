@@ -86,6 +86,7 @@ public interface IGenericReader
     /// coming back, and a record of something that already happened (a last-use or last-loss stamp)
     /// keeps its bytes across restarts, with downtime counting toward its window.
     /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     DateTime ReadAnchoredTime() => RebaseAnchoredTime(ReadDateTime(), AnchoredTimeShift, AnchoredTimeOrigin);
 
     /// <summary>
@@ -151,9 +152,16 @@ public interface IGenericReader
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     Point2D ReadPoint2D() => new(ReadInt(), ReadInt());
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     Rectangle2D ReadRect2D() => new(ReadPoint2D(), ReadPoint2D());
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     Rectangle3D ReadRect3D() => new(ReadPoint3D(), ReadPoint3D());
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     Map ReadMap() => Map.Maps[ReadByte()];
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     Race ReadRace() => Race.Races[ReadByte()];
     int Read(Span<byte> buffer);
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
