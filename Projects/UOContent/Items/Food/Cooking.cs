@@ -382,6 +382,11 @@ public partial class WheatSheaf : Item
 
     public virtual void OnTarget(Mobile from, object obj)
     {
+        if (Deleted || !Movable || !IsAccessibleTo(from) || RootParent is Mobile holder && holder != from)
+        {
+            return;
+        }
+
         if (obj is AddonComponent addon)
         {
             obj = addon.Addon;

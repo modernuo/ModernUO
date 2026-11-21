@@ -333,6 +333,11 @@ public partial class BannerDeed : Item, IRewardItem
                     return;
                 }
 
+                if (info.ButtonID is not ((int)Buttons.East or (int)Buttons.South))
+                {
+                    return;
+                }
+
                 var banner = new Banner(_itemId + (info.ButtonID == (int)Buttons.East ? 1 : 0));
                 _house.Addons.Add(banner);
 

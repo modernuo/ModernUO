@@ -309,7 +309,8 @@ public partial class Spellbook : Item, ICraftable, ISlayer, IAosItem
 
         var book = item as Spellbook;
 
-        if (book?.HasSpell(spellID) != true)
+        if (book == null || book.Parent != from && (from.Backpack == null || book.Parent != from.Backpack) ||
+            !book.HasSpell(spellID))
         {
             book = Find(from, spellID);
         }

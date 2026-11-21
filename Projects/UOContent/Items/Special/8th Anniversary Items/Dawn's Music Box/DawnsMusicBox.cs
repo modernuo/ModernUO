@@ -217,7 +217,7 @@ public partial class DawnsMusicBox : Item, ISecurable
     }
 
     public bool HasAccess(Mobile m) =>
-        m.AccessLevel >= AccessLevel.GameMaster || BaseHouse.FindHouseAt(this)?.HasAccess(m) == true;
+        m.AccessLevel >= AccessLevel.GameMaster || BaseHouse.FindHouseAt(this)?.HasSecureAccess(m, _level) == true;
 
     public void PlayMusic(Mobile m, MusicName music)
     {
