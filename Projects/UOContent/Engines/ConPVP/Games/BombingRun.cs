@@ -1679,7 +1679,7 @@ public sealed class BRGame : EventGame
         {
             var teamInfo = Controller.TeamInfo[i % Controller.TeamInfo.Length];
 
-            if (teamInfo != null)
+            if (teamInfo != null && !teams.Contains(teamInfo))
             {
                 teams.Add(teamInfo);
             }

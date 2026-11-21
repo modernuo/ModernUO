@@ -288,7 +288,7 @@ namespace Server.Engines.ConPVP
 
         public LadderEntry Find(Mobile mob)
         {
-            if (m_Table.TryGetValue(mob, out var entry))
+            if (!m_Table.TryGetValue(mob, out var entry))
             {
                 m_Table[mob] = entry = new LadderEntry(mob, this);
                 entry.Index = Entries.Count;

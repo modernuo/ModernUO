@@ -390,6 +390,11 @@ public sealed partial class CTFFlag : Item
         var ourTeam = m_TeamInfo;
         var useTeam = m_TeamInfo.Game.GetTeamInfo(from);
 
+        if (useTeam == null)
+        {
+            return;
+        }
+
         if (obj is CTFFlag)
         {
             if (obj == useTeam.Flag)
@@ -1052,7 +1057,7 @@ public sealed class CTFGame : EventGame
         {
             var teamInfo = Controller.TeamInfo[i % 8];
 
-            if (teamInfo?.Flag == null)
+            if (teamInfo?.Flag == null || teams.Contains(teamInfo))
             {
                 continue;
             }
