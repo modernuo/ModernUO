@@ -309,7 +309,7 @@ public static class OutgoingMobilePackets
         writer.Write((byte)0x98); // Packet ID
         writer.Write((ushort)37);
         writer.Write(m.Serial);
-        writer.WriteLatin1(m.Name ?? "", 29);
+        writer.WriteCp1252(m.Name ?? "", 29);
         writer.Write((byte)0); // Null terminator
 
         ns.Send(writer.Span);
@@ -507,7 +507,7 @@ public static class OutgoingMobilePackets
         writer.Write((byte)0x11); // Packet ID
         writer.Seek(2, SeekOrigin.Current);
         writer.Write(beheld.Serial);
-        writer.WriteLatin1(name, 30);
+        writer.WriteCp1252(name, 30);
         writer.WriteAttribute(beheld.HitsMax, beheld.Hits, version == 0, true);
         writer.Write(canBeRenamed);
         writer.Write((byte)version);

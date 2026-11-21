@@ -40,7 +40,7 @@ public static class IncomingMessagePackets
         var type = (MessageType)reader.ReadByte();
         int hue = reader.ReadInt16();
         reader.ReadInt16(); // font
-        var text = reader.ReadLatin1Safe().Trim();
+        var text = reader.ReadCp1252Safe().Trim();
 
         if (text.Length is <= 0 or > 128)
         {

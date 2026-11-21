@@ -89,9 +89,9 @@ public static class OutgoingGumpPackets
         writer.Write(serial);
         writer.Write((short)gumpId);
         writer.Write((short)(unknown.Length + 1));
-        writer.WriteLatin1Null(unknown);
+        writer.WriteCp1252Null(unknown);
         writer.Write((short)(caption.Length + 1));
-        writer.WriteLatin1Null(caption);
+        writer.WriteCp1252Null(caption);
 
         ns.Send(writer.Span);
     }

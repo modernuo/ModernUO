@@ -288,18 +288,18 @@ public ref struct SpanWriter
         handler.Clear();
     }
 
-    public void WriteLatin1(ref RawInterpolatedStringHandler handler)
+    public void WriteCp1252(ref RawInterpolatedStringHandler handler)
     {
-        Write(handler.Text, Encoding.Latin1);
+        WriteCp1252(handler.Text);
         handler.Clear();
     }
 
-    public void WriteLatin1(
+    public void WriteCp1252(
         IFormatProvider? formatProvider,
         [InterpolatedStringHandlerArgument("formatProvider")]
         ref RawInterpolatedStringHandler handler)
     {
-        Write(handler.Text, Encoding.Latin1);
+        WriteCp1252(handler.Text);
         handler.Clear();
     }
 
@@ -325,15 +325,18 @@ public ref struct SpanWriter
         var src = value[..charLength];
 
         var byteLength = encoding.GetByteLengthForEncoding();
-        var byteCount = encoding.GetByteCount(src);
-        if (fixedLength > src.Length)
-        {
-            byteCount += (fixedLength - src.Length) * byteLength;
-        }
+        var padding = fixedLength > src.Length ? (fixedLength - src.Length) * byteLength : 0;
 
-        if (byteCount == 0)
+        if (src.IsEmpty && padding == 0)
         {
             return;
+        }
+
+        // The worst-case size needs no pass over the text; count exactly only when it would force a grow
+        var byteCount = encoding.GetMaxByteCount(src.Length) + padding;
+        if (_position + byteCount > _buffer.Length)
+        {
+            byteCount = encoding.GetByteCount(src) + padding;
         }
 
         GrowIfNeeded(byteCount);
@@ -400,16 +403,51 @@ public ref struct SpanWriter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void WriteAscii(ReadOnlySpan<char> value, int fixedLength) => Write(value, Encoding.ASCII, fixedLength);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void WriteLatin1(ReadOnlySpan<char> value) => Write(value, Encoding.Latin1);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void WriteLatin1(ReadOnlySpan<char> value, int fixedLength) => Write(value, Encoding.Latin1, fixedLength);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void WriteLatin1Null(ReadOnlySpan<char> value)
+    /// <summary>
+    /// Writes Windows-1252, the code page of the client's one-byte strings.
+    /// </summary>
+    public void WriteCp1252(ReadOnlySpan<char> value)
     {
-        Write(value, Encoding.Latin1);
+        if (value.IsEmpty)
+        {
+            return;
+        }
+
+        // Cp1252 writes at most one byte per char
+        GrowIfNeeded(value.Length);
+        Position += value.GetBytesCp1252(_buffer[_position..]);
+    }
+
+    /// <summary>
+    /// Writes at most <paramref name="fixedLength"/> chars as Windows-1252 and zero fills the rest of the field.
+    /// </summary>
+    public void WriteCp1252(ReadOnlySpan<char> value, int fixedLength)
+    {
+        if (fixedLength <= 0)
+        {
+            return;
+        }
+
+        if (fixedLength < value.Length)
+        {
+            value = value[..fixedLength];
+        }
+
+        GrowIfNeeded(fixedLength);
+
+        var bytesWritten = value.GetBytesCp1252(_buffer[_position..]);
+        Position += bytesWritten;
+
+        if (fixedLength > bytesWritten)
+        {
+            Clear(fixedLength - bytesWritten);
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void WriteCp1252Null(ReadOnlySpan<char> value)
+    {
+        WriteCp1252(value);
         Write((byte)0); // '\0'
     }
 

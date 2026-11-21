@@ -15,8 +15,10 @@
 
 using System;
 using System.Buffers;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Runtime.Intrinsics;
 using System.Text;
 using Server.Buffers;
 
@@ -36,34 +38,36 @@ public static class TextEncoding
         0x7F
     );
 
-    // SearchValues for invalid Latin1 bytes (C0: 0x00-0x1F, C1: 0x80-0x9F)
-    private static readonly SearchValues<byte> InvalidLatin1Bytes = SearchValues.Create(
+    // Cp1252 bytes a decode must remap to a typographic char (0x80-0x9F) or a safe decode must drop
+    private static readonly SearchValues<byte> Cp1252RemapOrInvalidBytes = SearchValues.Create(
         0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
         0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,
         0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17,
         0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F,
+        0x7F,
         0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87,
         0x88, 0x89, 0x8A, 0x8B, 0x8C, 0x8D, 0x8E, 0x8F,
         0x90, 0x91, 0x92, 0x93, 0x94, 0x95, 0x96, 0x97,
         0x98, 0x99, 0x9A, 0x9B, 0x9C, 0x9D, 0x9E, 0x9F
     );
 
-    // SearchValues for invalid Latin1 chars (same ranges as bytes)
-    private static readonly SearchValues<char> InvalidLatin1Chars = SearchValues.Create(
-        '\x00', '\x01', '\x02', '\x03', '\x04', '\x05', '\x06', '\x07',
-        '\x08', '\x09', '\x0A', '\x0B', '\x0C', '\x0D', '\x0E', '\x0F',
-        '\x10', '\x11', '\x12', '\x13', '\x14', '\x15', '\x16', '\x17',
-        '\x18', '\x19', '\x1A', '\x1B', '\x1C', '\x1D', '\x1E', '\x1F',
-        '\x80', '\x81', '\x82', '\x83', '\x84', '\x85', '\x86', '\x87',
-        '\x88', '\x89', '\x8A', '\x8B', '\x8C', '\x8D', '\x8E', '\x8F',
-        '\x90', '\x91', '\x92', '\x93', '\x94', '\x95', '\x96', '\x97',
-        '\x98', '\x99', '\x9A', '\x9B', '\x9C', '\x9D', '\x9E', '\x9F'
+    // Cp1252 bytes a safe decode drops: C0, DEL, and the five bytes Windows-1252 leaves unassigned
+    private static readonly SearchValues<byte> InvalidCp1252Bytes = SearchValues.Create(
+        0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+        0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,
+        0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17,
+        0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F,
+        0x7F, 0x81, 0x8D, 0x8F, 0x90, 0x9D
     );
+
+    // Windows-1252 bytes 0x80-0x9F. The unassigned 0x81, 0x8D, 0x8F, 0x90 and 0x9D keep their C1 char.
+    private static ReadOnlySpan<char> Cp1252C1Chars =>
+        "\u20AC\u0081\u201A\u0192\u201E\u2026\u2020\u2021\u02C6\u2030\u0160\u2039\u0152\u008D\u017D\u008F" +
+        "\u0090\u2018\u2019\u201C\u201D\u2022\u2013\u2014\u02DC\u2122\u0161\u203A\u0153\u009D\u017E\u0178";
 
     public static Encoding UTF8 => _utf8 ??= new UTF8Encoding(false, false);
     public static Encoding Unicode => _unicode ??= new UnicodeEncoding(true, false, false);
     public static Encoding UnicodeLE => _unicodeLE ??= new UnicodeEncoding(false, false, false);
-    public static Encoding Latin1 => Encoding.Latin1;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte[] GetBytesAscii(this string str) => GetBytes(str, Encoding.ASCII);
@@ -79,9 +83,6 @@ public static class TextEncoding
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte[] GetBytesAscii(this ReadOnlySpan<char> str) => GetBytes(str, Encoding.ASCII);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static byte[] GetBytesLatin1(this ReadOnlySpan<char> str) => GetBytes(str, Latin1);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte[] GetBytesBigUni(this ReadOnlySpan<char> str) => GetBytes(str, Unicode);
@@ -126,11 +127,84 @@ public static class TextEncoding
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int GetBytesAscii(this ReadOnlySpan<char> str, Span<byte> buffer) => Encoding.ASCII.GetBytes(str, buffer);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int GetBytesLatin1(this ReadOnlySpan<char> str, Span<byte> buffer) => Latin1.GetBytes(str, buffer);
+    /// <summary>
+    /// Encodes <paramref name="chars"/> as Windows-1252, the code page of the client's one-byte strings, and returns the
+    /// byte count. One byte per code point, so <paramref name="destination"/> needs at most chars.Length bytes.
+    /// U+0080-U+009F, chars outside Cp1252, and surrogates (a pair counts once) become '?'.
+    /// </summary>
+    public static int GetBytesCp1252(this ReadOnlySpan<char> chars, Span<byte> destination)
+    {
+        if (Ascii.FromUtf16(chars, destination, out var ascii) == OperationStatus.Done)
+        {
+            return ascii;
+        }
+
+        var n = ascii;
+
+        for (var i = ascii; i < chars.Length; i++)
+        {
+            var c = chars[i];
+
+            if (char.IsHighSurrogate(c) && i + 1 < chars.Length && char.IsLowSurrogate(chars[i + 1]))
+            {
+                i++;
+                destination[n++] = (byte)'?';
+            }
+            else
+            {
+                destination[n++] = ToCp1252Byte(c);
+            }
+        }
+
+        return n;
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int GetBytesLatin1(this string str, Span<byte> buffer) => Latin1.GetBytes(str, buffer);
+    public static int GetBytesCp1252(this string str, Span<byte> destination) =>
+        GetBytesCp1252(str.AsSpan(), destination);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static byte ToCp1252Byte(char c) =>
+        c switch
+        {
+            < '\x80'  => (byte)c,
+            <= '\x9F' => (byte)'?',
+            <= '\xFF' => (byte)c,
+            _         => ToCp1252Typographic(c)
+        };
+
+    private static byte ToCp1252Typographic(char c) =>
+        c switch
+        {
+            '\u20AC' => 0x80,
+            '\u201A' => 0x82,
+            '\u0192' => 0x83,
+            '\u201E' => 0x84,
+            '\u2026' => 0x85,
+            '\u2020' => 0x86,
+            '\u2021' => 0x87,
+            '\u02C6' => 0x88,
+            '\u2030' => 0x89,
+            '\u0160' => 0x8A,
+            '\u2039' => 0x8B,
+            '\u0152' => 0x8C,
+            '\u017D' => 0x8E,
+            '\u2018' => 0x91,
+            '\u2019' => 0x92,
+            '\u201C' => 0x93,
+            '\u201D' => 0x94,
+            '\u2022' => 0x95,
+            '\u2013' => 0x96,
+            '\u2014' => 0x97,
+            '\u02DC' => 0x98,
+            '\u2122' => 0x99,
+            '\u0161' => 0x9A,
+            '\u203A' => 0x9B,
+            '\u0153' => 0x9C,
+            '\u017E' => 0x9E,
+            '\u0178' => 0x9F,
+            _        => (byte)'?'
+        };
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int GetBytesBigUni(this string str, Span<byte> buffer) => Unicode.GetBytes(str, buffer);
@@ -152,13 +226,11 @@ public static class TextEncoding
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int GetByteLengthForEncoding(this Encoding encoding) =>
-        encoding.BodyName switch
+        encoding switch
         {
-            "utf-16BE" => 2,
-            "utf-16"   => 2,
-            "utf-32BE" => 3,
-            "utf-32"   => 3,
-            _          => 1
+            UnicodeEncoding => 2,
+            UTF32Encoding   => 4,
+            _               => 1
         };
 
     /// <summary>
@@ -182,227 +254,125 @@ public static class TextEncoding
             return Encoding.ASCII.GetString(bytes);
         }
 
-        // Has invalid bytes, filter and decode
-        return FilterInvalidAsciiBytes(bytes, index);
+        return FilterSingleByte(bytes, index, InvalidAsciiBytes, Encoding.ASCII, cp1252: false);
     }
 
-    private static string FilterInvalidAsciiBytes(ReadOnlySpan<byte> bytes, int firstInvalidIndex)
+    /// <summary>
+    /// Decodes a Windows-1252 byte span, the code page the client writes its one-byte strings in, so typographic chars
+    /// at 0x80-0x9F (ellipsis, curly quotes, dashes, trademark, euro...) survive. In safe mode drops C0, DEL, and the
+    /// five unassigned bytes (0x81, 0x8D, 0x8F, 0x90, 0x9D).
+    /// </summary>
+    public static string GetStringCp1252(ReadOnlySpan<byte> bytes, bool safeString = false)
+    {
+        if (bytes.IsEmpty)
+        {
+            return "";
+        }
+
+        var index = safeString
+            ? bytes.IndexOfAny(Cp1252RemapOrInvalidBytes)
+            : bytes.IndexOfAnyInRange((byte)0x80, (byte)0x9F);
+
+        if (index == -1)
+        {
+            return Encoding.Latin1.GetString(bytes);
+        }
+
+        if (safeString)
+        {
+            var invalid = bytes[index..].IndexOfAny(InvalidCp1252Bytes);
+            if (invalid != -1)
+            {
+                return FilterSingleByte(bytes, index + invalid, InvalidCp1252Bytes, Encoding.Latin1, cp1252: true);
+            }
+        }
+
+        return string.Create(
+            bytes.Length,
+            bytes,
+            static (chars, b) =>
+            {
+                Encoding.Latin1.GetChars(b, chars);
+                PatchCp1252(chars);
+            }
+        );
+    }
+
+    // Cp1252 is Latin1 except at 0x80-0x9F, so decode as Latin1 and remap the C1 chars that widening left behind.
+    private static void PatchCp1252(Span<char> chars)
+    {
+        var index = chars.IndexOfAnyInRange('\x80', '\x9F');
+
+        while (index != -1)
+        {
+            chars[index] = Cp1252C1Chars[chars[index] - 0x80];
+            chars = chars[(index + 1)..];
+            index = chars.IndexOfAnyInRange('\x80', '\x9F');
+        }
+    }
+
+    // ASCII and Latin1 (the base of Cp1252) decode one char per byte, so the kept segments decode straight into one buffer.
+    private static string FilterSingleByte(
+        ReadOnlySpan<byte> bytes, int firstInvalidIndex, SearchValues<byte> invalid, Encoding encoding, bool cp1252
+    )
     {
         var maxLength = bytes.Length;
 
         char[] rentedChars = null;
-        var charBuffer = maxLength <= 256
+        var chars = maxLength <= 256
             ? stackalloc char[maxLength]
             : rentedChars = STArrayPool<char>.Shared.Rent(maxLength);
 
-        try
+        var length = 0;
+        var index = firstInvalidIndex;
+
+        while (index != -1)
         {
-            using var sb = maxLength <= 256
-                ? new ValueStringBuilder(stackalloc char[maxLength])
-                : ValueStringBuilder.Create(maxLength);
-
-            var index = firstInvalidIndex;
-
-            while (index != -1)
+            if (index > 0)
             {
-                if (index > 0)
-                {
-                    // Decode segment and append
-                    var segment = bytes[..index];
-                    var decoded = Encoding.ASCII.GetChars(segment, charBuffer);
-                    sb.Append(charBuffer[..decoded]);
-                }
-
-                if (index + 1 < bytes.Length)
-                {
-                    bytes = bytes[(index + 1)..];
-                    index = bytes.IndexOfAny(InvalidAsciiBytes);
-                }
-                else
-                {
-                    bytes = [];
-                    index = -1;
-                }
+                length += encoding.GetChars(bytes[..index], chars[length..]);
             }
 
-            if (bytes.Length > 0)
-            {
-                var decoded = Encoding.ASCII.GetChars(bytes, charBuffer);
-                sb.Append(charBuffer[..decoded]);
-            }
-
-            return sb.ToString();
+            bytes = bytes[(index + 1)..];
+            index = bytes.IndexOfAny(invalid);
         }
-        finally
+
+        if (bytes.Length > 0)
         {
-            if (rentedChars != null)
-            {
-                STArrayPool<char>.Shared.Return(rentedChars);
-            }
+            length += encoding.GetChars(bytes, chars[length..]);
         }
-    }
 
-    /// <summary>
-    /// Decodes a Latin1 byte span to a string, filtering C0/C1 control codes in safe mode.
-    /// </summary>
-    public static string GetStringLatin1(ReadOnlySpan<byte> bytes, bool safeString = false)
-    {
-        if (!safeString)
+        chars = chars[..length];
+
+        if (cp1252)
         {
-            return Latin1.GetString(bytes);
+            PatchCp1252(chars);
         }
 
-        // Check bytes directly - Latin1 is 1:1 mapping, avoids char buffer for valid strings
-        var index = bytes.IndexOfAny(InvalidLatin1Bytes);
-        if (index == -1)
+        var result = new string(chars);
+
+        if (rentedChars != null)
         {
-            return Latin1.GetString(bytes);
+            STArrayPool<char>.Shared.Return(rentedChars);
         }
 
-        // Has invalid bytes, need to filter - now allocate char buffer
-        return FilterInvalidLatin1Chars(bytes, index);
-    }
-
-    private static string FilterInvalidLatin1Chars(ReadOnlySpan<byte> bytes, int firstInvalidIndex)
-    {
-        var charCount = bytes.Length;
-
-        char[] rentedChars = null;
-        var chars = charCount <= 256
-            ? stackalloc char[charCount]
-            : rentedChars = STArrayPool<char>.Shared.Rent(charCount);
-
-        try
-        {
-            var length = Latin1.GetChars(bytes, chars);
-            chars = chars[..length];
-
-            using var sb = charCount <= 256
-                ? new ValueStringBuilder(stackalloc char[charCount])
-                : ValueStringBuilder.Create(charCount);
-
-            // Start from the first invalid index we already found
-            var index = firstInvalidIndex;
-
-            while (index != -1)
-            {
-                sb.Append(chars[..index]);
-
-                if (index + 1 < chars.Length)
-                {
-                    chars = chars[(index + 1)..];
-                    index = chars.IndexOfAny(InvalidLatin1Chars);
-                }
-                else
-                {
-                    index = -1;
-                }
-            }
-
-            if (chars.Length > 0)
-            {
-                sb.Append(chars);
-            }
-
-            return sb.ToString();
-        }
-        finally
-        {
-            if (rentedChars != null)
-            {
-                STArrayPool<char>.Shared.Return(rentedChars);
-            }
-        }
+        return result;
     }
 
     /// <summary>
     /// Decodes a UTF-8 byte span to a string, filtering control codes and non-characters in safe mode.
     /// </summary>
     /// <remarks>
-    /// Filters: C0 (0x00-0x1F), DEL (0x7F), C1 (0x80-0x9F), and non-characters (0xFFFD-0xFFFF).
-    /// Optimized to check bytes for C0/DEL first (single-byte in UTF-8), then chars for C1/non-chars.
+    /// Filters: C0 (0x00-0x1F), DEL (0x7F), C1 (0x80-0x9F), and non-characters (0xFFFE-0xFFFF).
     /// </remarks>
-    public static string GetStringUtf8(ReadOnlySpan<byte> bytes, bool safeString = false)
-    {
-        if (!safeString)
-        {
-            return UTF8.GetString(bytes);
-        }
-
-        // Quick check: C0 (0x00-0x1F) and DEL (0x7F) are single-byte in UTF-8
-        var hasC0OrDel = bytes.IndexOfAny(InvalidAsciiBytes) >= 0;
-
-        var charCount = UTF8.GetMaxCharCount(bytes.Length);
-
-        char[] rentedChars = null;
-        var chars = charCount <= 256
-            ? stackalloc char[charCount]
-            : rentedChars = STArrayPool<char>.Shared.Rent(charCount);
-
-        try
-        {
-            var length = UTF8.GetChars(bytes, chars);
-            chars = chars[..length];
-
-            // If no C0/DEL in bytes, only need to check for C1 and non-chars
-            var index = hasC0OrDel
-                ? IndexOfInvalidUnicodeChar(chars)
-                : IndexOfInvalidUnicodeCharNonAscii(chars);
-
-            if (index == -1)
-            {
-                return new string(chars);
-            }
-
-            return FilterInvalidUnicodeChars(chars, index, hasC0OrDel);
-        }
-        finally
-        {
-            if (rentedChars != null)
-            {
-                STArrayPool<char>.Shared.Return(rentedChars);
-            }
-        }
-    }
+    public static string GetStringUtf8(ReadOnlySpan<byte> bytes, bool safeString = false) =>
+        safeString ? FilterInvalidUnicodeChars(UTF8.GetString(bytes)) : UTF8.GetString(bytes);
 
     /// <summary>
     /// Decodes a big-endian UTF-16 byte span to a string, filtering control codes and non-characters in safe mode.
     /// </summary>
-    public static string GetStringBigUni(ReadOnlySpan<byte> bytes, bool safeString = false)
-    {
-        if (!safeString)
-        {
-            return Unicode.GetString(bytes);
-        }
-
-        var charCount = Unicode.GetMaxCharCount(bytes.Length);
-
-        char[] rentedChars = null;
-        var chars = charCount <= 256
-            ? stackalloc char[charCount]
-            : rentedChars = STArrayPool<char>.Shared.Rent(charCount);
-
-        try
-        {
-            var length = Unicode.GetChars(bytes, chars);
-            chars = chars[..length];
-
-            var index = IndexOfInvalidUnicodeChar(chars);
-            if (index == -1)
-            {
-                return new string(chars);
-            }
-
-            return FilterInvalidUnicodeChars(chars, index, fullCheck: true);
-        }
-        finally
-        {
-            if (rentedChars != null)
-            {
-                STArrayPool<char>.Shared.Return(rentedChars);
-            }
-        }
-    }
+    public static string GetStringBigUni(ReadOnlySpan<byte> bytes, bool safeString = false) =>
+        safeString ? FilterInvalidUnicodeChars(Unicode.GetString(bytes)) : Unicode.GetString(bytes);
 
     /// <summary>
     /// Decodes a little-endian UTF-16 byte span to a string, filtering control codes and non-characters in safe mode.
@@ -421,174 +391,164 @@ public static class TextEncoding
         }
 
         var index = IndexOfInvalidUnicodeChar(chars);
-        if (index == -1)
-        {
-            return new string(chars);
-        }
-
-        return FilterInvalidUnicodeChars(chars, index, fullCheck: true);
+        return index == -1 ? new string(chars) : FilterInvalidUnicodeChars(chars, index);
     }
 
     /// <summary>
     /// Generic string decoding with filtering. Prefer encoding-specific methods for better performance.
     /// </summary>
-    public static string GetString(ReadOnlySpan<byte> span, Encoding encoding, bool safeString = false)
-    {
-        if (!safeString)
-        {
-            return encoding.GetString(span);
-        }
-
-        var charCount = encoding.GetMaxCharCount(span.Length);
-
-        char[] rentedChars = null;
-        var chars = charCount <= 256
-            ? stackalloc char[charCount]
-            : rentedChars = STArrayPool<char>.Shared.Rent(charCount);
-
-        try
-        {
-            var length = encoding.GetChars(span, chars);
-            chars = chars[..length];
-
-            var index = IndexOfInvalidUnicodeChar(chars);
-            if (index == -1)
-            {
-                return new string(chars);
-            }
-
-            using var sb = charCount <= 256
-                ? new ValueStringBuilder(stackalloc char[charCount])
-                : ValueStringBuilder.Create(charCount);
-
-            while (index != -1)
-            {
-                sb.Append(chars[..index]);
-
-                if (index + 1 < chars.Length)
-                {
-                    chars = chars[(index + 1)..];
-                    index = IndexOfInvalidUnicodeChar(chars);
-                }
-                else
-                {
-                    index = -1;
-                }
-            }
-
-            if (chars.Length > 0)
-            {
-                sb.Append(chars);
-            }
-
-            return sb.ToString();
-        }
-        finally
-        {
-            if (rentedChars != null)
-            {
-                STArrayPool<char>.Shared.Return(rentedChars);
-            }
-        }
-    }
+    public static string GetString(ReadOnlySpan<byte> span, Encoding encoding, bool safeString = false) =>
+        safeString ? FilterInvalidUnicodeChars(encoding.GetString(span)) : encoding.GetString(span);
 
     /// <summary>
     /// Finds the first invalid Unicode character for display.
     /// Invalid: C0 (0x00-0x1F), DEL (0x7F), C1 (0x80-0x9F), non-chars (0xFFFE-0xFFFF).
     /// Note: Surrogate pairs (0xD800-0xDFFF) are not filtered - proper validation requires context checking.
     /// </summary>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    /// <remarks>
+    /// One vectorized pass that tests all three ranges per block.
+    /// </remarks>
     private static int IndexOfInvalidUnicodeChar(ReadOnlySpan<char> chars)
     {
-        // Check invalid ranges and return the minimum index found
-        var c0Index = chars.IndexOfAnyInRange((char)0x00, (char)0x1F);        // C0 control codes
-        var delC1Index = chars.IndexOfAnyInRange((char)0x7F, (char)0x9F);     // DEL + C1 control codes
-        var nonCharIndex = chars.IndexOfAnyInRange((char)0xFFFE, (char)0xFFFF); // Non-characters
+        ref var src = ref Unsafe.As<char, ushort>(ref MemoryMarshal.GetReference(chars));
+        var length = chars.Length;
 
-        // Find minimum non-negative index
-        var minIndex = -1;
-
-        if (c0Index >= 0)
+        if (Vector256.IsHardwareAccelerated && length >= Vector256<ushort>.Count)
         {
-            minIndex = c0Index;
+            var i = 0;
+
+            for (; i <= length - 2 * Vector256<ushort>.Count; i += 2 * Vector256<ushort>.Count)
+            {
+                var invalid0 = InvalidUnicodeMask(Vector256.LoadUnsafe(ref src, (nuint)i));
+                var invalid1 = InvalidUnicodeMask(Vector256.LoadUnsafe(ref src, (nuint)(i + Vector256<ushort>.Count)));
+
+                if ((invalid0 | invalid1) != Vector256<ushort>.Zero)
+                {
+                    return invalid0 != Vector256<ushort>.Zero
+                        ? i + BitOperations.TrailingZeroCount(invalid0.ExtractMostSignificantBits())
+                        : i + Vector256<ushort>.Count +
+                          BitOperations.TrailingZeroCount(invalid1.ExtractMostSignificantBits());
+                }
+            }
+
+            if (i <= length - Vector256<ushort>.Count)
+            {
+                var invalid = InvalidUnicodeMask(Vector256.LoadUnsafe(ref src, (nuint)i));
+                if (invalid != Vector256<ushort>.Zero)
+                {
+                    return i + BitOperations.TrailingZeroCount(invalid.ExtractMostSignificantBits());
+                }
+
+                i += Vector256<ushort>.Count;
+            }
+
+            if (i < length)
+            {
+                // The last block overlaps lanes already known to be valid, so its first hit is the first in the tail
+                var start = length - Vector256<ushort>.Count;
+                var invalid = InvalidUnicodeMask(Vector256.LoadUnsafe(ref src, (nuint)start));
+                if (invalid != Vector256<ushort>.Zero)
+                {
+                    return start + BitOperations.TrailingZeroCount(invalid.ExtractMostSignificantBits());
+                }
+            }
+
+            return -1;
         }
 
-        if (delC1Index >= 0 && (minIndex < 0 || delC1Index < minIndex))
+        if (Vector128.IsHardwareAccelerated && length >= Vector128<ushort>.Count)
         {
-            minIndex = delC1Index;
+            var i = 0;
+
+            for (; i <= length - Vector128<ushort>.Count; i += Vector128<ushort>.Count)
+            {
+                var invalid = InvalidUnicodeMask(Vector128.LoadUnsafe(ref src, (nuint)i));
+                if (invalid != Vector128<ushort>.Zero)
+                {
+                    return i + BitOperations.TrailingZeroCount(invalid.ExtractMostSignificantBits());
+                }
+            }
+
+            if (i < length)
+            {
+                var start = length - Vector128<ushort>.Count;
+                var invalid = InvalidUnicodeMask(Vector128.LoadUnsafe(ref src, (nuint)start));
+                if (invalid != Vector128<ushort>.Zero)
+                {
+                    return start + BitOperations.TrailingZeroCount(invalid.ExtractMostSignificantBits());
+                }
+            }
+
+            return -1;
         }
 
-        if (nonCharIndex >= 0 && (minIndex < 0 || nonCharIndex < minIndex))
+        for (var i = 0; i < length; i++)
         {
-            minIndex = nonCharIndex;
+            if (IsInvalidUnicodeChar(chars[i]))
+            {
+                return i;
+            }
         }
 
-        return minIndex;
+        return -1;
     }
 
-    /// <summary>
-    /// Finds the first invalid Unicode character, excluding C0/DEL (already checked at byte level).
-    /// Checks: C1 (0x80-0x9F), non-chars (0xFFFE-0xFFFF).
-    /// Note: Surrogate pairs (0xD800-0xDFFF) are not filtered - proper validation requires context checking.
-    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static int IndexOfInvalidUnicodeCharNonAscii(ReadOnlySpan<char> chars)
+    private static bool IsInvalidUnicodeChar(char c) => c < 0x20 || (uint)(c - 0x7F) <= 0x9F - 0x7F || c >= 0xFFFE;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static Vector256<ushort> InvalidUnicodeMask(Vector256<ushort> v) =>
+        Vector256.LessThan(v, Vector256.Create((ushort)0x20)) |
+        Vector256.LessThanOrEqual(v - Vector256.Create((ushort)0x7F), Vector256.Create((ushort)(0x9F - 0x7F))) |
+        Vector256.GreaterThanOrEqual(v, Vector256.Create((ushort)0xFFFE));
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static Vector128<ushort> InvalidUnicodeMask(Vector128<ushort> v) =>
+        Vector128.LessThan(v, Vector128.Create((ushort)0x20)) |
+        Vector128.LessThanOrEqual(v - Vector128.Create((ushort)0x7F), Vector128.Create((ushort)(0x9F - 0x7F))) |
+        Vector128.GreaterThanOrEqual(v, Vector128.Create((ushort)0xFFFE));
+
+    // Decoding straight into the string and scanning it leaves the clean (common) case with one allocation and no copy
+    private static string FilterInvalidUnicodeChars(string str)
     {
-        // Only check C1 and non-chars (C0/DEL already verified absent at byte level)
-        var c1Index = chars.IndexOfAnyInRange((char)0x80, (char)0x9F);           // C1 control codes
-        var nonCharIndex = chars.IndexOfAnyInRange((char)0xFFFE, (char)0xFFFF);  // Non-characters
-
-        if (c1Index < 0)
-        {
-            return nonCharIndex;
-        }
-
-        if (nonCharIndex < 0)
-        {
-            return c1Index;
-        }
-
-        return Math.Min(c1Index, nonCharIndex);
+        var index = IndexOfInvalidUnicodeChar(str);
+        return index == -1 ? str : FilterInvalidUnicodeChars(str, index);
     }
 
     /// <summary>
     /// Filters invalid Unicode characters from a char span by removing them.
     /// The UO client renders nothing for invalid characters, so removal is most efficient.
     /// </summary>
-    private static string FilterInvalidUnicodeChars(ReadOnlySpan<char> chars, int firstInvalidIndex, bool fullCheck)
+    private static string FilterInvalidUnicodeChars(ReadOnlySpan<char> chars, int firstInvalidIndex)
     {
         var maxLength = chars.Length;
 
-        using var sb = maxLength <= 256
-            ? new ValueStringBuilder(stackalloc char[maxLength])
-            : ValueStringBuilder.Create(maxLength);
+        char[] rentedChars = null;
+        var buffer = maxLength <= 256
+            ? stackalloc char[maxLength]
+            : rentedChars = STArrayPool<char>.Shared.Rent(maxLength);
 
+        var length = 0;
         var index = firstInvalidIndex;
 
         while (index != -1)
         {
-            sb.Append(chars[..index]);
-            // Skip the invalid character (don't append replacement - client renders nothing anyway)
-
-            if (index + 1 < chars.Length)
-            {
-                chars = chars[(index + 1)..];
-                index = fullCheck
-                    ? IndexOfInvalidUnicodeChar(chars)
-                    : IndexOfInvalidUnicodeCharNonAscii(chars);
-            }
-            else
-            {
-                chars = [];
-                index = -1;
-            }
+            chars[..index].CopyTo(buffer[length..]);
+            length += index;
+            chars = chars[(index + 1)..];
+            index = IndexOfInvalidUnicodeChar(chars);
         }
 
-        if (chars.Length > 0)
+        chars.CopyTo(buffer[length..]);
+        length += chars.Length;
+
+        var result = new string(buffer[..length]);
+
+        if (rentedChars != null)
         {
-            sb.Append(chars);
+            STArrayPool<char>.Shared.Return(rentedChars);
         }
 
-        return sb.ToString();
+        return result;
     }
 }

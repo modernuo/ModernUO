@@ -63,7 +63,7 @@ public static class OutgoingEquipmentPackets
             writer.Write(-3); // crafted by
 
             writer.Write((ushort)crafterName.Length);
-            writer.WriteLatin1(crafterName);
+            writer.WriteCp1252(crafterName);
         }
 
         if (unidentified)

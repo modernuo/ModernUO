@@ -45,7 +45,7 @@ public static class OutgoingSecureTradePackets
         writer.Write(second.Serial);
         writer.Write(true);
 
-        writer.WriteLatin1(name ?? "", 30);
+        writer.WriteCp1252(name ?? "", 30);
 
         ns.Send(writer.Span);
     }

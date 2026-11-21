@@ -255,16 +255,16 @@ public ref struct SpanReader
     public string ReadAscii() => ReadStringAscii(false);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ReadLatin1Safe(int fixedLength) => ReadStringLatin1(true, fixedLength);
+    public string ReadCp1252Safe(int fixedLength) => ReadStringCp1252(true, fixedLength);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ReadLatin1Safe() => ReadStringLatin1(true);
+    public string ReadCp1252Safe() => ReadStringCp1252(true);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ReadLatin1(int fixedLength) => ReadStringLatin1(false, fixedLength);
+    public string ReadCp1252(int fixedLength) => ReadStringCp1252(false, fixedLength);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ReadLatin1() => ReadStringLatin1(false);
+    public string ReadCp1252() => ReadStringCp1252(false);
 
     /// <summary>
     /// Reads a big-endian UTF-16 string, filtering control codes and non-characters in safe mode.
@@ -413,9 +413,9 @@ public ref struct SpanReader
     }
 
     /// <summary>
-    /// Reads a Latin1 string, filtering C0/C1 control codes in safe mode.
+    /// Reads a Windows-1252 string (the client's one-byte text), filtering control codes in safe mode.
     /// </summary>
-    private string ReadStringLatin1(bool safeString, int fixedLength = -1)
+    private string ReadStringCp1252(bool safeString, int fixedLength = -1)
     {
         if (fixedLength == 0)
         {
@@ -440,7 +440,7 @@ public ref struct SpanReader
 
         Position += isFixedLength || index < 0 ? size : index + 1;
 
-        return TextEncoding.GetStringLatin1(span, safeString);
+        return TextEncoding.GetStringCp1252(span, safeString);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -236,10 +236,10 @@ writer.WriteAscii(string value);
 writer.WriteAsciiNull(string value);       // Null-terminated
 writer.WriteAscii(string value, int fixedLength);
 
-// Latin-1 (1 byte per char, extended ASCII)
-writer.WriteLatin1(string value);
-writer.WriteLatin1Null(string value);
-writer.WriteLatin1(string value, int fixedLength);
+// Windows-1252 (1 byte per char, the client's one-byte text: Latin-1 plus typographic chars at 0x80-0x9F)
+writer.WriteCp1252(string value);
+writer.WriteCp1252Null(string value);
+writer.WriteCp1252(string value, int fixedLength);
 
 // UTF-16 Big-Endian (UO standard for Unicode)
 writer.WriteBigUni(string value);
@@ -313,8 +313,8 @@ reader.ReadUInt32LE();
 // Each has a "Safe" variant that filters control characters
 reader.ReadAscii(int fixedLength = -1);
 reader.ReadAsciiSafe(int fixedLength = -1);
-reader.ReadLatin1(int fixedLength = -1);
-reader.ReadLatin1Safe(int fixedLength = -1);
+reader.ReadCp1252(int fixedLength = -1);
+reader.ReadCp1252Safe(int fixedLength = -1);
 reader.ReadBigUni(int fixedLength = -1);
 reader.ReadBigUniSafe(int fixedLength = -1);
 reader.ReadLittleUni(int fixedLength = -1);
