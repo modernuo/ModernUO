@@ -90,25 +90,25 @@ public struct Point3D
     public static bool operator !=(Point3D l, IPoint3D r) =>
         !ReferenceEquals(r, null) && (l.m_X != r.X || l.m_Y != r.Y || l.m_Z != r.Z);
 
-    public static bool operator >(Point3D l, Point3D r) => l.m_X > r.m_X && l.m_Y > r.m_Y && l.m_Z > r.m_Z;
+    public static bool operator >(Point3D l, Point3D r) => l.m_X > r.m_X && l.m_Y > r.m_Y;
 
     public static bool operator >(Point3D l, IPoint3D r) =>
-        !ReferenceEquals(r, null) && l.m_X > r.X && l.m_Y > r.Y && l.m_Z > r.Z;
+        !ReferenceEquals(r, null) && l.m_X > r.X && l.m_Y > r.Y;
 
-    public static bool operator <(Point3D l, Point3D r) => l.m_X < r.m_X && l.m_Y < r.m_Y && l.m_Z > r.m_Z;
+    public static bool operator <(Point3D l, Point3D r) => l.m_X < r.m_X && l.m_Y < r.m_Y;
 
     public static bool operator <(Point3D l, IPoint3D r) =>
-        !ReferenceEquals(r, null) && l.m_X < r.X && l.m_Y < r.Y && l.m_Z > r.Z;
+        !ReferenceEquals(r, null) && l.m_X < r.X && l.m_Y < r.Y;
 
-    public static bool operator >=(Point3D l, Point3D r) => l.m_X >= r.m_X && l.m_Y >= r.m_Y && l.m_Z > r.m_Z;
+    public static bool operator >=(Point3D l, Point3D r) => l.m_X >= r.m_X && l.m_Y >= r.m_Y;
 
     public static bool operator >=(Point3D l, IPoint3D r) =>
-        !ReferenceEquals(r, null) && l.m_X >= r.X && l.m_Y >= r.Y && l.m_Z > r.Z;
+        !ReferenceEquals(r, null) && l.m_X >= r.X && l.m_Y >= r.Y;
 
-    public static bool operator <=(Point3D l, Point3D r) => l.m_X <= r.m_X && l.m_Y <= r.m_Y && l.m_Z > r.m_Z;
+    public static bool operator <=(Point3D l, Point3D r) => l.m_X <= r.m_X && l.m_Y <= r.m_Y;
 
     public static bool operator <=(Point3D l, IPoint3D r) =>
-        !ReferenceEquals(r, null) && l.m_X <= r.X && l.m_Y <= r.Y && l.m_Z > r.Z;
+        !ReferenceEquals(r, null) && l.m_X <= r.X && l.m_Y <= r.Y;
 
     public int CompareTo(Point3D other)
     {
