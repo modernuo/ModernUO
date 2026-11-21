@@ -29,6 +29,7 @@ public class TournamentBracketGump : DynamicGump
     private readonly Tournament _tournament;
     private TourneyBracketGumpType _type;
     private int _perPage;
+    private int _listCount;
 
     public override bool Singleton => true;
 
@@ -59,6 +60,7 @@ public class TournamentBracketGump : DynamicGump
     protected override void BuildLayout(ref DynamicGumpBuilder builder)
     {
         _perPage = 12;
+        _listCount = 0;
 
         switch (_type)
         {
@@ -288,17 +290,21 @@ public class TournamentBracketGump : DynamicGump
                     builder.AddPage();
                     builder.AddBackground(0, 0, 300, 300, 9380);
 
+                    // Snapshot pins row indices so a button resolves to the row that was rendered
                     _list ??= new List<object>(_tournament.Participants);
-                    var pList = _list.SafeConvertList<object, TourneyParticipant>();
 
                     AddLeftArrow(ref builder, 25, 11, ToButtonID(0, 0));
-                    builder.AddHtml(25, 35, 250, 20, Html.Center($"{pList.Count} Participant{(pList.Count == 1 ? "" : "s")}"));
+                    builder.AddHtml(25, 35, 250, 20, Html.Center($"{_list.Count} Participant{(_list.Count == 1 ? "" : "s")}"));
 
-                    StartPage(ref builder, out var index, out var count, out var y, 12);
+                    StartPage(ref builder, out var index, out var count, out var y, 12, _list.Count);
 
                     for (var i = 0; i < count; ++i, y += 18)
                     {
-                        var part = pList[index + i];
+                        if (_list[index + i] is not TourneyParticipant part)
+                        {
+                            continue;
+                        }
+
                         var name = part.NameList;
 
                         if (_tournament.TourneyType != TourneyType.Standard && part.Players.Count == 1)
@@ -423,7 +429,7 @@ public class TournamentBracketGump : DynamicGump
 
                     _list ??= new List<object>(_tournament.Pyramid.Levels);
 
-                    StartPage(ref builder, out var index, out var count, out var y, 12);
+                    StartPage(ref builder, out var index, out var count, out var y, 12, _list.Count);
 
                     for (var i = 0; i < count; ++i, y += 18)
                     {
@@ -445,8 +451,8 @@ public class TournamentBracketGump : DynamicGump
                         break;
                     }
 
-                    _list ??= new List<object>(level.Matches);
-                    var matchesList = _list.SafeConvertList<object, TourneyMatch>();
+                    // No snapshot: a level's matches are fixed before it is published, and OnResponse reads them live
+                    var matchesList = level.Matches;
 
                     AddRightArrow(
                         ref builder,
@@ -458,7 +464,7 @@ public class TournamentBracketGump : DynamicGump
 
                     builder.AddHtml(25, 73, 200, 20, $"{matchesList.Count} Match{(matchesList.Count == 1 ? "" : "es")}");
 
-                    StartPage(ref builder, out var index, out var count, out var y, 10);
+                    StartPage(ref builder, out var index, out var count, out var y, 10, matchesList.Count);
 
                     for (var i = 0; i < count; ++i, y += 18)
                     {
@@ -744,12 +750,15 @@ public class TournamentBracketGump : DynamicGump
         return bid >= 1;
     }
 
-    private void StartPage(ref DynamicGumpBuilder builder, out int index, out int count, out int y, int perPage)
+    private void StartPage(
+        ref DynamicGumpBuilder builder, out int index, out int count, out int y, int perPage, int total
+    )
     {
         _perPage = perPage;
+        _listCount = total;
 
         index = Math.Max(_page * perPage, 0);
-        count = Math.Clamp(_list.Count - index, 0, perPage);
+        count = Math.Clamp(total - index, 0, perPage);
 
         y = 53 + (12 - perPage) * 18;
 
@@ -758,7 +767,7 @@ public class TournamentBracketGump : DynamicGump
             AddLeftArrow(ref builder, 242, 35, ToButtonID(1, 0));
         }
 
-        if ((_page + 1) * perPage < _list.Count)
+        if ((_page + 1) * perPage < total)
         {
             AddRightArrow(ref builder, 260, 35, ToButtonID(1, 1));
         }
@@ -876,7 +885,7 @@ public class TournamentBracketGump : DynamicGump
                     {
                         case 0:
                             {
-                                if (_list != null && _page > 0)
+                                if (_page > 0)
                                 {
                                     _page--;
                                 }
@@ -889,7 +898,7 @@ public class TournamentBracketGump : DynamicGump
                             }
                         case 1:
                             {
-                                if (_list != null && (_page + 1) * _perPage < _list.Count)
+                                if ((_page + 1) * _perPage < _listCount)
                                 {
                                     _page++;
                                 }
