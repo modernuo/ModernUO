@@ -33,7 +33,7 @@ public class FeatureFlagLoadTests
     }
 
     [Fact]
-    public void CorruptBlockFileIsCopiedAside()
+    public void CorruptBlockFileSurvivesDefaultSeeding()
     {
         WithFlagFolder(dir =>
         {
@@ -41,7 +41,7 @@ public class FeatureFlagLoadTests
 
             FeatureFlagManager.Initialize();
 
-            Assert.Equal("{ not json", File.ReadAllText(Path.Combine(dir, "skill-blocks.json.corrupt")));
+            Assert.Equal("{ not json", File.ReadAllText(Path.Combine(dir, "skill-blocks.json")));
         });
     }
 

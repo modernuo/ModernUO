@@ -797,7 +797,7 @@ public static class FeatureFlagManager
 
         if (added > 0)
         {
-            Save();
+            SaveFlags();
             logger.Information("Seeded {Count} default feature flag(s)", added);
         }
     }
@@ -898,19 +898,7 @@ public static class FeatureFlagManager
         }
         catch (Exception ex)
         {
-            var copy = $"{path}.corrupt";
-            try
-            {
-                File.Copy(path, copy, true);
-            }
-            catch (Exception copyEx)
-            {
-                logger.Error(copyEx, "Failed to keep a copy of {Path}", path);
-                copy = null;
-            }
-
-            logger.Error(ex, "Failed to load {Path} (copy: {Copy})", path, copy);
-
+            logger.Error(ex, "Failed to load {Path}, using defaults", path);
             return null;
         }
     }
