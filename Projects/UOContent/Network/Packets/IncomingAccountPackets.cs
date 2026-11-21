@@ -96,7 +96,7 @@ public static class IncomingAccountPackets
         var unk2 = reader.ReadInt32();
         int unk3 = reader.ReadByte();
         */
-        var name = reader.ReadLatin1Safe(30);
+        var name = reader.ReadCp1252Safe(30);
 
         reader.Seek(2, SeekOrigin.Current);
         var flags = reader.ReadInt32();
@@ -456,8 +456,8 @@ public static class IncomingAccountPackets
             return;
         }
 
-        var username = reader.ReadLatin1Safe(30);
-        var password = reader.ReadLatin1Safe(30);
+        var username = reader.ReadCp1252Safe(30);
+        var password = reader.ReadCp1252Safe(30);
 
         var authResult = ConsumeAuthId(authId, username, state.Address, out var ap);
 
@@ -564,8 +564,8 @@ public static class IncomingAccountPackets
 
         state.SentFirstPacket = true;
 
-        var username = reader.ReadLatin1Safe(30);
-        var password = reader.ReadLatin1Safe(30);
+        var username = reader.ReadCp1252Safe(30);
+        var password = reader.ReadCp1252Safe(30);
 
         var accountLoginEventArgs = new AccountLoginEventArgs(state, username, password);
 

@@ -89,7 +89,7 @@ public static class OutgoingAccountPackets
                 var name = (m.RawName?.Trim()).DefaultIfNullOrEmpty("-no name-");
 
                 count++;
-                writer.WriteLatin1(name, 30);
+                writer.WriteCp1252(name, 30);
                 writer.Clear(30); // Password (empty)
             }
         }
@@ -276,7 +276,7 @@ public static class OutgoingAccountPackets
             else
             {
                 var name = (m.RawName?.Trim()).DefaultIfNullOrEmpty("-no name-");
-                writer.WriteLatin1(name, 30);
+                writer.WriteCp1252(name, 30);
                 writer.Clear(30); // password
             }
         }
@@ -341,7 +341,7 @@ public static class OutgoingAccountPackets
             else
             {
                 var name = (m.RawName?.Trim()).DefaultIfNullOrEmpty("-no name-");
-                writer.WriteLatin1(name, 30);
+                writer.WriteCp1252(name, 30);
                 writer.Clear(30); // password
             }
         }
@@ -353,8 +353,8 @@ public static class OutgoingAccountPackets
             var ci = cityInfo[i];
 
             writer.Write((byte)i);
-            writer.WriteLatin1(ci.City, textLength);
-            writer.WriteLatin1(ci.Building, textLength);
+            writer.WriteCp1252(ci.City, textLength);
+            writer.WriteCp1252(ci.Building, textLength);
             if (client70130)
             {
                 writer.Write(ci.X);
@@ -428,7 +428,7 @@ public static class OutgoingAccountPackets
             var si = info[i];
 
             writer.Write((ushort)i);
-            writer.WriteLatin1(si.Name, 32);
+            writer.WriteCp1252(si.Name, 32);
             writer.Write((byte)si.FullPercent);
             writer.Write((sbyte)si.TimeZone);
             // UO only supports IPv4

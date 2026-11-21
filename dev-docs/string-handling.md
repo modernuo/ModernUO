@@ -129,7 +129,7 @@ A `[InterpolatedStringHandler]` ref struct that renders an interpolated string d
 
 ### APIs that accept `ref RawInterpolatedStringHandler`
 
-- `SpanWriter.WriteAscii`, `WriteLatin1`, `Write(Encoding, …)` — packet building
+- `SpanWriter.WriteAscii`, `WriteCp1252`, `Write(Encoding, …)` — packet building
 - `Mobile.SendMessage`, `SendLocalizedMessage`, `SendAsciiMessage`, `Public/Local/Nonlocal/PrivateOverheadMessage`, `Say`, `Emote`, `Whisper`, `Yell` — player-facing chat
 - `Item.PublicOverheadMessage`, `SendLocalizedMessageTo`, `SendMessageTo` — item-attributed messages
 - `OutgoingMessagePackets.SendMessageLocalized`, `SendMessageLocalizedAffix`, `SendMessage` — direct NetState extensions

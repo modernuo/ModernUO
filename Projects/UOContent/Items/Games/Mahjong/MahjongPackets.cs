@@ -346,7 +346,7 @@ namespace Server.Engines.Mahjong
                 writer.Write((byte)0);
 
                 writer.Write(players.IsPublic(i));
-                writer.WriteLatin1(m?.Name ?? "", 30);
+                writer.WriteCp1252(m?.Name ?? "", 30);
 
                 writer.Write(m == null || !players.IsInGamePlayer(i));
                 count++;

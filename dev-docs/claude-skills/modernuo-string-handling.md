@@ -118,7 +118,7 @@ sb.Append($"{score:N0} points, {kills:N0} kills");
 
 ## Interpolation Anti-Patterns (handler-aware APIs)
 
-Many APIs accept `ref RawInterpolatedStringHandler` (messages on `Mobile`/`Item`, `IPropertyList.Add`, `SpanWriter.WriteAscii`/`WriteLatin1`, gump `AddLabel`/`AddHtml`, `Html.Center`/`Color`/`Right`, etc.). The handler overload renders the interpolation directly into a pooled buffer with zero `string` allocation — but **only when the call-site argument is a `$"..."` literal directly in position**. These patterns silently defeat that selection. Flag any of them in messaging/gump/OPL code.
+Many APIs accept `ref RawInterpolatedStringHandler` (messages on `Mobile`/`Item`, `IPropertyList.Add`, `SpanWriter.WriteAscii`/`WriteCp1252`, gump `AddLabel`/`AddHtml`, `Html.Center`/`Color`/`Right`, etc.). The handler overload renders the interpolation directly into a pooled buffer with zero `string` allocation — but **only when the call-site argument is a `$"..."` literal directly in position**. These patterns silently defeat that selection. Flag any of them in messaging/gump/OPL code.
 
 | Pattern | Why bad | Fix |
 |---|---|---|

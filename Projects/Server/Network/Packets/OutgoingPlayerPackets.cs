@@ -77,7 +77,7 @@ public static class OutgoingPlayerPackets
         writer.Write((byte)0xB8); // Packet ID
         writer.Write((ushort)length);
         writer.Write(m);
-        writer.WriteLatin1Null(header);
+        writer.WriteCp1252Null(header);
         writer.WriteBigUniNull(footer);
         writer.WriteBigUniNull(body);
 
@@ -262,7 +262,7 @@ public static class OutgoingPlayerPackets
         var writer = new SpanWriter(stackalloc byte[66]);
         writer.Write((byte)0x88); // Packet ID
         writer.Write(m);
-        writer.WriteLatin1(title, 60);
+        writer.WriteCp1252(title, 60);
         writer.Write(flags);
 
         ns.Send(writer.Span);
@@ -300,7 +300,7 @@ public static class OutgoingPlayerPackets
         writer.Write((byte)type);
         writer.Write(tip);
         writer.Write((ushort)text.Length);
-        writer.WriteLatin1(text);
+        writer.WriteCp1252(text);
 
         ns.Send(writer.Span);
     }

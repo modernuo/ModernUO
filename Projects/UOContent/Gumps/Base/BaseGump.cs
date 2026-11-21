@@ -23,13 +23,20 @@ namespace Server.Gumps;
 
 public abstract class BaseGump
 {
-    private static readonly byte[] _packetBuffer = GC.AllocateUninitializedArray<byte>(0x10000);
+    // The packet length field is a ushort, so a gump packet must stay within 0xFFFF bytes.
+    private static readonly byte[] _packetBuffer = GC.AllocateUninitializedArray<byte>(0xFFFF);
     private static readonly ILogger _logger = LogFactory.GetLogger(typeof(BaseGump));
     private static Serial nextSerial = (Serial)1;
 
     public int TypeID { get; protected set; }
     public Serial Serial { get; protected set; }
     protected bool HasVisualElements { get; set; }
+
+    /// <summary>
+    /// Set by <see cref="Compile"/> when a section did not fit in the packet. <see cref="SendTo"/> then drops the
+    /// packet, since the client cannot use a gump missing its layout or strings.
+    /// </summary>
+    protected internal bool PacketTooLarge { get; set; }
 
     public abstract int Switches { get; }
     public abstract int TextEntries { get; }
@@ -57,7 +64,14 @@ public abstract class BaseGump
     public virtual void SendTo(NetState ns)
     {
         var writer = new SpanWriter(_packetBuffer);
+        PacketTooLarge = false;
         Compile(ref writer);
+
+        if (PacketTooLarge)
+        {
+            writer.Dispose();
+            return;
+        }
 
         if (!HasVisualElements)
         {
@@ -70,6 +84,21 @@ public abstract class BaseGump
     }
 
     public abstract void Compile(ref SpanWriter writer);
+
+    /// <summary>
+    /// Called by <see cref="Compile"/> when the compressed layout or strings did not fit in the packet.
+    /// Lengths are uncompressed.
+    /// </summary>
+    protected void OnPacketTooLarge(int layoutLength, int stringsLength)
+    {
+        PacketTooLarge = true;
+        _logger.Error(
+            "Gump {GumpType} is too large to send ({LayoutLength} bytes of layout, {StringsLength} bytes of strings before compression); paginate it",
+            GetType().FullName,
+            layoutLength,
+            stringsLength
+        );
+    }
 
     public virtual void OnResponse(NetState sender, in RelayInfo info)
     {

@@ -155,8 +155,8 @@ writer.WriteLE(uint value);
 writer.WriteAscii(string value);
 writer.WriteAsciiNull(string value);      // Null-terminated
 writer.WriteAscii(string value, int fixedLength);
-writer.WriteLatin1(string value);
-writer.WriteLatin1Null(string value);
+writer.WriteCp1252(string value);         // Windows-1252, the client's one-byte text
+writer.WriteCp1252Null(string value);
 writer.WriteBigUni(string value);         // UTF-16 big-endian
 writer.WriteBigUniNull(string value);
 writer.WriteLittleUni(string value);      // UTF-16 little-endian
@@ -203,8 +203,8 @@ reader.ReadUInt32LE();
 // String reads
 reader.ReadAscii(int fixedLength = -1);
 reader.ReadAsciiSafe(int fixedLength = -1);  // Filters control chars
-reader.ReadLatin1(int fixedLength = -1);
-reader.ReadLatin1Safe(int fixedLength = -1);
+reader.ReadCp1252(int fixedLength = -1);
+reader.ReadCp1252Safe(int fixedLength = -1);
 reader.ReadBigUni(int fixedLength = -1);
 reader.ReadBigUniSafe(int fixedLength = -1);
 reader.ReadLittleUni(int fixedLength = -1);

@@ -14,7 +14,6 @@
  *************************************************************************/
 
 using Server.Compression;
-using Server.Logging;
 using Server.Network;
 using System;
 using System.Buffers;
@@ -25,34 +24,51 @@ namespace Server.Gumps;
 
 public static class OutgoingGumpPackets
 {
-    private static readonly ILogger _logger = LogFactory.GetLogger(typeof(OutgoingGumpPackets));
+    /// <summary>
+    /// Bytes a gump packet needs after its layout section: the strings count and an empty strings section.
+    /// </summary>
+    public const int StringsSectionMinLength = 8;
 
+    /// <summary>
+    /// Writes <paramref name="span"/> as a compressed gump section, leaving <paramref name="reserve"/> bytes free
+    /// at the end of the writer's buffer.
+    /// </summary>
+    /// <returns>false, with nothing written, when the compressed section does not fit.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void WritePacked(ReadOnlySpan<byte> span, ref SpanWriter writer)
+    public static bool WritePacked(ReadOnlySpan<byte> span, ref SpanWriter writer, int reserve = 0)
     {
         var length = span.Length;
+        var available = writer.Capacity - reserve - writer.Position;
 
         if (length == 0)
         {
+            if (available < 4)
+            {
+                return false;
+            }
+
             writer.Write(0);
-            return;
+            return true;
         }
 
-        var dest = writer.RawBuffer[(writer.Position + 8)..];
+        // Room for the 8 byte section header and at least one packed byte.
+        if (available <= 8)
+        {
+            return false;
+        }
+
+        var dest = writer.RawBuffer.Slice(writer.Position + 8, available - 8);
 
         var bytesPacked = Deflate.Standard.Pack(dest, span);
         if (bytesPacked == 0)
         {
-            _logger.Warning("Gump compression failed");
-
-            writer.Write(4);
-            writer.Write(0);
-            return;
+            return false;
         }
 
         writer.Write(4 + bytesPacked);
         writer.Write(length);
         writer.Seek(bytesPacked, SeekOrigin.Current);
+        return true;
     }
 
     public static void SendDisplaySignGump(this NetState ns, Serial serial, int gumpId, string unknown, string caption)
@@ -73,9 +89,9 @@ public static class OutgoingGumpPackets
         writer.Write(serial);
         writer.Write((short)gumpId);
         writer.Write((short)(unknown.Length + 1));
-        writer.WriteLatin1Null(unknown);
+        writer.WriteCp1252Null(unknown);
         writer.Write((short)(caption.Length + 1));
-        writer.WriteLatin1Null(caption);
+        writer.WriteCp1252Null(caption);
 
         ns.Send(writer.Span);
     }
