@@ -92,7 +92,7 @@ public sealed partial class StormsEye : PowerFactionItem
                 m.InLOS(new Point3D(origin.X, origin.Y, origin.Z + 1)) &&
                 Faction.Find(m) != null)
             {
-                queue.Enqueue(from);
+                queue.Enqueue(m);
             }
         }
 
