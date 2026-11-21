@@ -62,7 +62,7 @@ public static class OutgoingMenuPackets
 
         if (question != null)
         {
-            writer.WriteLatin1(question);
+            writer.WriteCp1252(question);
         }
 
         writer.Write((byte)entriesLength);
@@ -84,7 +84,7 @@ public static class OutgoingMenuPackets
             {
                 var nameLength = name.Length;
                 writer.Write((byte)nameLength);
-                writer.WriteLatin1(name);
+                writer.WriteCp1252(name);
             }
         }
 
@@ -120,7 +120,7 @@ public static class OutgoingMenuPackets
 
         if (question != null)
         {
-            writer.WriteLatin1(question);
+            writer.WriteCp1252(question);
         }
 
         writer.Write((byte)answersLength);
@@ -139,7 +139,7 @@ public static class OutgoingMenuPackets
             {
                 var nameLength = answer.Length;
                 writer.Write((byte)nameLength);
-                writer.WriteLatin1(answer);
+                writer.WriteCp1252(answer);
             }
         }
 

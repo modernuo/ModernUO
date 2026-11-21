@@ -165,7 +165,7 @@ return type switch
 
 ### 17. Interpolation Anti-Patterns (handler-aware APIs)
 
-**Context**: Many ModernUO APIs accept `ref RawInterpolatedStringHandler` (`Mobile.SendMessage`/`Say`/`Emote`/etc., `Item.Public/Local/NonlocalOverheadMessage`/`SendLocalizedMessageTo`/`SendMessageTo`, `IPropertyList.Add`, `SpanWriter.WriteAscii`/`WriteLatin1`, gump `AddLabel`/`AddHtml`/`AddHtmlLocalized`, `Html.Center`/`Color`/`Right`). The handler overload renders the interpolation directly into a pooled buffer with **zero `string` allocation** — but only when the call-site argument is a `$"..."` literal directly in the parameter slot.
+**Context**: Many ModernUO APIs accept `ref RawInterpolatedStringHandler` (`Mobile.SendMessage`/`Say`/`Emote`/etc., `Item.Public/Local/NonlocalOverheadMessage`/`SendLocalizedMessageTo`/`SendMessageTo`, `IPropertyList.Add`, `SpanWriter.WriteAscii`/`WriteCp1252`, gump `AddLabel`/`AddHtml`/`AddHtmlLocalized`, `Html.Center`/`Color`/`Right`). The handler overload renders the interpolation directly into a pooled buffer with **zero `string` allocation** — but only when the call-site argument is a `$"..."` literal directly in the parameter slot.
 
 **Check**: Flag any of the following patterns when the call target is one of those handler-aware APIs. The handler overload is silently bypassed and a `string` is allocated per call.
 

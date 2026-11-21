@@ -517,4 +517,28 @@ public class SpanWriterTests
         writer.Write((byte)0xFF);
         Assert.Equal(3, writer.BytesWritten);
     }
+
+    // The worst-case UTF-8 size (3 bytes per char) would not fit; the exact size does
+    [Fact]
+    public void TestWriteEncodedFillsExactNonResizableBuffer()
+    {
+        var expected = System.Text.Encoding.UTF8.GetBytes("héllo");
+        var writer = new SpanWriter(stackalloc byte[expected.Length]);
+
+        writer.WriteUTF8("héllo");
+
+        Assert.Equal(expected, writer.Span.ToArray());
+    }
+
+    [Fact]
+    public void TestWriteEncodedFixedLengthPads()
+    {
+        var writer = new SpanWriter(stackalloc byte[12]);
+
+        writer.WriteBigUni("ab", 4);
+        writer.WriteAscii("abcdef", 4);
+
+        byte[] expected = [0, (byte)'a', 0, (byte)'b', 0, 0, 0, 0, (byte)'a', (byte)'b', (byte)'c', (byte)'d'];
+        Assert.Equal(expected, writer.Span.ToArray());
+    }
 }

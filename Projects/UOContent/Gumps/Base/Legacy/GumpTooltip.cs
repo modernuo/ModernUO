@@ -40,7 +40,7 @@ public class GumpTooltip : GumpEntry
         }
         else
         {
-            writer.WriteLatin1($"{{ tooltip {Number} @{Args}@ }}");
+            writer.WriteCp1252($"{{ tooltip {Number} @{Args}@ }}");
         }
     }
 }
