@@ -15,8 +15,8 @@ namespace Server.Mobiles
         [SerializableField(1, getter: "private", setter: "private")]
         private int _deadline;
 
-        [SerializableProperty(2)]
-        private bool IsNotNullTimer { get => m_Timer != null; }
+        [SerializableField(2, getter: "private", setter: "private")]
+        private bool _isNotNullTimer;
 
         [Constructible]
         public PlagueBeastLord() : base(AIType.AI_Melee)
@@ -95,6 +95,7 @@ namespace Server.Mobiles
 
                 if (!m_Timer.Running)
                 {
+                    IsNotNullTimer = true;
                     m_Timer.Start();
                 }
 
@@ -317,11 +318,22 @@ namespace Server.Mobiles
             )
             {
                 _lord = lord;
-                Count = count;
-                Deadline = deadline;
+                lord.IsNotNullTimer = true;
+                lord.Count = count;
+                lord.Deadline = deadline;
             }
-            public int Count { get; private set; }
-            public int Deadline { get; private set; }
+
+            public int Count
+            {
+                get => _lord.Count;
+                private set => _lord.Count = value;
+            }
+
+            public int Deadline
+            {
+                get => _lord.Deadline;
+                private set => _lord.Deadline = value;
+            }
 
             protected override void OnTick()
             {
@@ -361,6 +373,7 @@ namespace Server.Mobiles
                         _lord.Kill();
                     }
 
+                    _lord.IsNotNullTimer = false;
                     Stop();
                 }
                 else if (Count % 15 == 0)

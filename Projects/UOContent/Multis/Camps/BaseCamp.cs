@@ -191,10 +191,7 @@ public abstract partial class BaseCamp : BaseMulti
         else
         {
             Timer.DelayCall(TimeSpan.Zero, Delete);
-            return;
         }
-        
-        _initTimer = Timer.DelayCall(TimeSpan.Zero, CheckAddComponents);
     }
 }
 

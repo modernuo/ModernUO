@@ -166,15 +166,37 @@ public partial class KeyRing : Item
             }
             else if (targeted is ILockable o)
             {
+                var item = o as Item;
+                var tooFar = false;
+
                 foreach (var key in _keyRing.Keys)
                 {
+                    if (key.KeyValue != o.KeyValue)
+                    {
+                        continue;
+                    }
+
+                    // Same reach as the key used loose
+                    if (item != null && (item.Map != from.Map || !from.InRange(item.GetWorldLocation(), key.MaxRange)))
+                    {
+                        tooFar = true;
+                        continue;
+                    }
+
                     if (key.UseOn(from, o))
                     {
                         return;
                     }
                 }
 
-                from.SendLocalizedMessage(1008140); // You do not have a key for that.
+                if (tooFar)
+                {
+                    from.SendLocalizedMessage(500446); // That is too far away.
+                }
+                else
+                {
+                    from.SendLocalizedMessage(1008140); // You do not have a key for that.
+                }
             }
             else
             {

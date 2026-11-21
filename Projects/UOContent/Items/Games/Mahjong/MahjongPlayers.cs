@@ -442,7 +442,7 @@ public partial class MahjongPlayers
         var fromPosition = GetPlayerIndex(from);
         var to = GetPlayer(toPosition);
 
-        if (fromPosition < 0 || to == null || _scores[fromPosition] < amount)
+        if (amount <= 0 || fromPosition < 0 || to == null || _scores[fromPosition] < amount)
         {
             return;
         }

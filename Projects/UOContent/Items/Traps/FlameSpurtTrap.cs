@@ -74,6 +74,7 @@ public partial class FlameSpurtTrap : BaseTrap
     {
         base.OnDelete();
 
+        StopTimer();
         _spurt?.Delete();
     }
 
