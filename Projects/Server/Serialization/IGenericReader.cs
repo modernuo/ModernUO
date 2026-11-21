@@ -23,6 +23,8 @@ namespace Server;
 
 public interface IGenericReader
 {
+    long Position => Seek(0, SeekOrigin.Current);
+
     string ReadString(bool intern = false);
     public string ReadStringRaw(bool intern = false);
 
@@ -78,17 +80,19 @@ public interface IGenericReader
     /// coming back, and a record of something that already happened (a last-use or last-loss stamp)
     /// keeps its bytes across restarts, with downtime counting toward its window.
     /// </summary>
-    DateTime ReadAnchoredTime()
-    {
-        var value = ReadDateTime();
+    DateTime ReadAnchoredTime() => RebaseAnchoredTime(ReadDateTime(), AnchoredTimeShift, AnchoredTimeOrigin);
 
+    /// <summary>
+    /// The <see cref="ReadAnchoredTime" /> rule, for readers that implement it directly.
+    /// </summary>
+    static DateTime RebaseAnchoredTime(DateTime value, TimeSpan shift, DateTime origin)
+    {
         if (value == DateTime.MinValue || value == DateTime.MaxValue)
         {
             return value;
         }
 
-        var shift = AnchoredTimeShift;
-        if (shift == TimeSpan.Zero || value <= AnchoredTimeOrigin)
+        if (shift == TimeSpan.Zero || value <= origin)
         {
             return value;
         }
@@ -105,18 +109,20 @@ public interface IGenericReader
     decimal ReadDecimal() => new([ReadInt(), ReadInt(), ReadInt(), ReadInt()]);
     int ReadEncodedInt()
     {
-        int v = 0, shift = 0;
-        byte b;
+        var v = 0;
 
-        do
+        for (var shift = 0; shift < 35; shift += 7)
         {
-            b = ReadByte();
+            var b = ReadByte();
             v |= (b & 0x7F) << shift;
-            shift += 7;
-        }
-        while (b >= 0x80);
 
-        return v;
+            if (b < 0x80)
+            {
+                return v;
+            }
+        }
+
+        throw new InvalidDataException("Encoded int is longer than 5 bytes.");
     }
     IPAddress ReadIPAddress()
     {

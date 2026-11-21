@@ -16,19 +16,21 @@
 using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
-using Server.Logging;
 using Server.Text;
 
 namespace Server;
 
+/// <summary>
+/// Reads little-endian serialized data from a byte array. Every read is bounds-checked, so
+/// corrupt data throws <see cref="EndOfStreamException" /> instead of reading past the end.
+/// </summary>
 public class BufferReader : IGenericReader
 {
-    private static readonly ILogger logger = LogFactory.GetLogger(typeof(BufferReader));
-
     private readonly Dictionary<ulong, string> _typesDb;
     private readonly Encoding _encoding;
     private readonly byte[] _buffer;
@@ -49,195 +51,207 @@ public class BufferReader : IGenericReader
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private ref byte Take(int bytes)
+    {
+        var position = _position;
+
+        if ((uint)bytes > (uint)(_buffer.Length - position))
+        {
+            ThrowEndOfData(bytes);
+        }
+
+        _position = position + bytes;
+        return ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(_buffer), position);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private ReadOnlySpan<byte> TakeSpan(int bytes) => MemoryMarshal.CreateReadOnlySpan(ref Take(bytes), bytes);
+
+    [DoesNotReturn]
+    private void ThrowEndOfData(int bytes) =>
+        throw new EndOfStreamException(
+            $"Reading {bytes} bytes at position {_position} passes the end of the data ({_buffer.Length} bytes)."
+        );
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string ReadString(bool intern = false) => ReadBool() ? ReadStringRaw(intern) : null;
 
     public string ReadStringRaw(bool intern = false)
     {
-        var length = ((IGenericReader)this).ReadEncodedInt();
-        if (length <= 0)
+        var length = ReadEncodedInt();
+
+        if (length == 0)
         {
-            return "".Intern();
+            return string.Empty;
         }
 
-        var str = TextEncoding.GetString(_buffer.AsSpan(_position, length), _encoding);
-        _position += length;
+        var str = TextEncoding.GetString(TakeSpan(length), _encoding);
         return intern ? str.Intern() : str;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public long ReadLong()
-    {
-        var v = BinaryPrimitives.ReadInt64LittleEndian(_buffer.AsSpan(_position, 8));
-        _position += 8;
-        return v;
-    }
+    public long ReadLong() => BinaryPrimitives.ReadInt64LittleEndian(TakeSpan(8));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ulong ReadULong()
-    {
-        var v = BinaryPrimitives.ReadUInt64LittleEndian(_buffer.AsSpan(_position, 8));
-        _position += 8;
-        return v;
-    }
+    public ulong ReadULong() => BinaryPrimitives.ReadUInt64LittleEndian(TakeSpan(8));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public int ReadInt()
-    {
-        var v = BinaryPrimitives.ReadInt32LittleEndian(_buffer.AsSpan(_position, 4));
-        _position += 4;
-        return v;
-    }
+    public int ReadInt() => BinaryPrimitives.ReadInt32LittleEndian(TakeSpan(4));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public uint ReadUInt()
-    {
-        var v = BinaryPrimitives.ReadUInt32LittleEndian(_buffer.AsSpan(_position, 4));
-        _position += 4;
-        return v;
-    }
+    public uint ReadUInt() => BinaryPrimitives.ReadUInt32LittleEndian(TakeSpan(4));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public short ReadShort()
-    {
-        var v = BinaryPrimitives.ReadInt16LittleEndian(_buffer.AsSpan(_position, 2));
-        _position += 2;
-        return v;
-    }
+    public short ReadShort() => BinaryPrimitives.ReadInt16LittleEndian(TakeSpan(2));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ushort ReadUShort()
-    {
-        var v = BinaryPrimitives.ReadUInt16LittleEndian(_buffer.AsSpan(_position, 2));
-        _position += 2;
-        return v;
-    }
+    public ushort ReadUShort() => BinaryPrimitives.ReadUInt16LittleEndian(TakeSpan(2));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public double ReadDouble()
-    {
-        var v = BinaryPrimitives.ReadDoubleLittleEndian(_buffer.AsSpan(_position, 8));
-        _position += 8;
-        return v;
-    }
+    public double ReadDouble() => BinaryPrimitives.ReadDoubleLittleEndian(TakeSpan(8));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public float ReadFloat()
-    {
-        var v = BinaryPrimitives.ReadSingleLittleEndian(_buffer.AsSpan(_position, 4));
-        _position += 4;
-        return v;
-    }
+    public float ReadFloat() => BinaryPrimitives.ReadSingleLittleEndian(TakeSpan(4));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public byte ReadByte() => _buffer[_position++];
+    public byte ReadByte() => Take(1);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public sbyte ReadSByte() => (sbyte)_buffer[_position++];
+    public sbyte ReadSByte() => (sbyte)Take(1);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool ReadBool() => _buffer[_position++] != 0;
+    public bool ReadBool() => Take(1) != 0;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Serial ReadSerial() => (Serial)ReadUInt();
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public int ReadEncodedInt()
+    {
+        var b = Take(1);
+        return b < 0x80 ? b : ReadEncodedIntMultiByte(b);
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private int ReadEncodedIntMultiByte(byte first)
+    {
+        var v = first & 0x7F;
+
+        for (var shift = 7; shift < 35; shift += 7)
+        {
+            var b = Take(1);
+            v |= (b & 0x7F) << shift;
+
+            if (b < 0x80)
+            {
+                return v;
+            }
+        }
+
+        throw new InvalidDataException($"Encoded int at position {_position - 5} is longer than 5 bytes.");
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public DateTime ReadDateTime() => new(ReadLong(), DateTimeKind.Utc);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public TimeSpan ReadTimeSpan() => new(ReadLong());
+
+    public DateTime ReadAnchoredTime() =>
+        IGenericReader.RebaseAnchoredTime(ReadDateTime(), AnchoredTimeShift, AnchoredTimeOrigin);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Point3D ReadPoint3D()
+    {
+        var p = TakeSpan(12);
+        return new Point3D(
+            BinaryPrimitives.ReadInt32LittleEndian(p),
+            BinaryPrimitives.ReadInt32LittleEndian(p[4..]),
+            BinaryPrimitives.ReadInt32LittleEndian(p[8..])
+        );
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Point2D ReadPoint2D()
+    {
+        var p = TakeSpan(8);
+        return new Point2D(BinaryPrimitives.ReadInt32LittleEndian(p), BinaryPrimitives.ReadInt32LittleEndian(p[4..]));
+    }
+
+    public Rectangle2D ReadRect2D() => new(ReadPoint2D(), ReadPoint2D());
+
+    public Rectangle3D ReadRect3D() => new(ReadPoint3D(), ReadPoint3D());
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Map ReadMap() => Map.Maps[Take(1)];
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Race ReadRace() => Race.Races[Take(1)];
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public unsafe T ReadEnum<T>() where T : unmanaged, Enum
+    {
+        switch (sizeof(T))
+        {
+            case 1:
+                {
+                    var num = ReadByte();
+                    return *(T*)&num;
+                }
+            case 2:
+                {
+                    var num = ReadShort();
+                    return *(T*)&num;
+                }
+            case 4:
+                {
+                    var num = ReadEncodedInt();
+                    return *(T*)&num;
+                }
+            case 8:
+                {
+                    var num = ReadLong();
+                    return *(T*)&num;
+                }
+        }
+
+        return default;
+    }
+
     public Type ReadType() =>
         ReadByte() switch
         {
-            0 => null,
             1 => AssemblyHandler.FindTypeByFullName(ReadStringRaw()), // Backward compatibility
-            2 => ReadTypeByHash()
+            2 => ReadTypeByHash(),
+            _ => null
         };
 
-    public Type ReadTypeByHash()
-    {
-        var hash = ReadULong();
-        var t = AssemblyHandler.FindTypeByHash(hash);
-
-        if (t != null)
-        {
-            return t;
-        }
-
-        if (_typesDb == null)
-        {
-            logger.Error(
-                new Exception($"The file SerializedTypes.db was not loaded. Type hash '{hash}' could not be found."),
-                "Invalid {Hash} at position {Position}",
-                hash,
-                Position
-            );
-
-            return null;
-        }
-
-        if (!_typesDb.TryGetValue(hash, out var typeName))
-        {
-            logger.Error(
-                new Exception($"Type hash '{hash}' is not present in the serialized types database."),
-                "Invalid type hash {Hash} at position {Position}",
-                hash,
-                Position
-            );
-
-            return null;
-        }
-
-        t = AssemblyHandler.FindTypeByFullName(typeName, false);
-
-        if (t == null)
-        {
-            logger.Error(
-                new Exception($"Type '{typeName}' was not found."),
-                "Type {Type} was not found.",
-                typeName
-            );
-        }
-
-        return t;
-    }
+    public Type ReadTypeByHash() => SerializedTypeResolver.Resolve(ReadULong(), _typesDb, _position);
 
     public int Read(Span<byte> buffer)
     {
-        var length = buffer.Length;
-        if (length > _buffer.Length - _position)
-        {
-            throw new OutOfMemoryException();
-        }
-
-        _buffer.AsSpan(_position, length).CopyTo(buffer);
-        _position += length;
-        return length;
+        TakeSpan(buffer.Length).CopyTo(buffer);
+        return buffer.Length;
     }
 
     public virtual long Seek(long offset, SeekOrigin origin)
     {
-        Debug.Assert(
-            origin != SeekOrigin.End || offset <= 0 && offset > -_buffer.Length,
-            "Attempting to seek to an invalid position using SeekOrigin.End"
-        );
-        Debug.Assert(
-            origin != SeekOrigin.Begin || offset >= 0 && offset < _buffer.Length,
-            "Attempting to seek to an invalid position using SeekOrigin.Begin"
-        );
-        Debug.Assert(
-            origin != SeekOrigin.Current || _position + offset >= 0 && _position + offset < _buffer.Length,
-            "Attempting to seek to an invalid position using SeekOrigin.Current"
-        );
-
-        var position = Math.Max(0L, origin switch
+        var position = origin switch
         {
             SeekOrigin.Current => _position + offset,
             SeekOrigin.End     => _buffer.Length + offset,
             _                  => offset // Begin
-        });
+        };
 
-        if (position > int.MaxValue)
+        if ((ulong)position > (ulong)_buffer.Length)
         {
-            throw new ArgumentException($"BufferReader does not support {nameof(offset)} beyond Int32.MaxValue");
+            throw new ArgumentOutOfRangeException(
+                nameof(offset),
+                $"Seeking to {position} is outside the data (0 to {_buffer.Length})."
+            );
         }
 
         _position = (int)position;
-
-        return _position;
+        return position;
     }
 }
