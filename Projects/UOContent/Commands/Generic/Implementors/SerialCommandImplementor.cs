@@ -32,6 +32,10 @@ namespace Server.Commands.Generic
                 {
                     e.Mobile.SendMessage("That is not a valid serial.");
                 }
+                else if (!BaseCommand.IsAccessible(e.Mobile, obj))
+                {
+                    e.Mobile.SendLocalizedMessage(500447); // That is not accessible.
+                }
                 else
                 {
                     Commands.TryGetValue(e.GetString(1), out var command);
