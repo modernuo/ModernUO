@@ -180,7 +180,7 @@ public class RecurrencePatternTests
     {
         // Arrange
         var tz = TimeZoneInfo.Utc;
-        var pattern = new WeeklyRecurrencePattern(intervalWeeks, allowedMonths);
+        var pattern = new WeeklyRecurrencePattern(intervalWeeks, allowedMonths, AllowedDays.All);
         var afterUtc = new DateTime(startYear, startMonth, startDay, startHour, startMinute, 0, DateTimeKind.Utc);
         var time = new TimeOnly(expectedHour, expectedMinute);
 

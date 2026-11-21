@@ -115,10 +115,10 @@ public struct WorldLocation : IPoint3D, IComparable<WorldLocation>, IEquatable<W
     public static bool operator ==(WorldLocation l, IEntity r) =>
         !ReferenceEquals(r, null) && l._loc == r.Location && l._map == r.Map;
 
-    public static bool operator !=(WorldLocation l, WorldLocation r) => l._loc != r._loc && l._map != r._map;
+    public static bool operator !=(WorldLocation l, WorldLocation r) => l._loc != r._loc || l._map != r._map;
 
     public static bool operator !=(WorldLocation l, IEntity r) =>
-        !ReferenceEquals(r, null) && l._loc != r.Location && l._map != r.Map;
+        !ReferenceEquals(r, null) && (l._loc != r.Location || l._map != r.Map);
 
     public static bool operator >(WorldLocation l, WorldLocation r) => l._loc > r._loc && l._map == r._map;
 
@@ -171,11 +171,14 @@ public struct WorldLocation : IPoint3D, IComparable<WorldLocation>, IEquatable<W
             var span = array.AsSpan();
             while (!TryFormat(span, out charsWritten, null, null))
             {
+                ArrayPool<char>.Shared.Return(array);
                 array = ArrayPool<char>.Shared.Rent(array.Length * 2);
                 span = array.AsSpan();
             }
 
-            return span[..charsWritten].ToString();
+            var result = span[..charsWritten].ToString();
+            ArrayPool<char>.Shared.Return(array);
+            return result;
         }
     }
 

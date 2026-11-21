@@ -35,7 +35,7 @@ public static class ExpansionConfigurationPrompts
             {
                 expansion = (Expansion)number;
             }
-            else if (!Enum.TryParse(input, out expansion))
+            else if (!Enum.TryParse(input, out expansion) || !Enum.IsDefined(expansion))
             {
                 Utility.PushColor(ConsoleColor.Red);
                 Console.Write(input);

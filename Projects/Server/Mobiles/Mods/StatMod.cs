@@ -62,7 +62,7 @@ public partial class StatMod : MobileMod
     {
         if (_duration > TimeSpan.Zero && Core.Now - _added < _duration)
         {
-            Timer.StartTimer(_duration, RemoveFromOwner, out _timerToken);
+            Timer.StartTimer(_duration - (Core.Now - _added), RemoveFromOwner, out _timerToken);
         }
     }
 
