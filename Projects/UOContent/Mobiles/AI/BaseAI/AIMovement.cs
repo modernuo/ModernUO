@@ -658,6 +658,18 @@ public abstract partial class BaseAI
         };
     }
 
+    // Arrival clears the move intent, so without this a follower only re-approaches on its
+    // think clock: behind a running master (200 ms steps) a 250 ms think paces the pet a tile
+    // behind every five steps and the catch-up lands as a sprint burst. The master's step is
+    // the event, so it wakes the pet; the think decides whether a step is due.
+    public void OnMasterMoved()
+    {
+        if (IsPacingToMaster())
+        {
+            AITimer?.Prod();
+        }
+    }
+
     // A pet executing a movement order outside combat; its order handler owns its speed.
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsObeyingMoveOrder() =>
