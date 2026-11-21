@@ -27,8 +27,8 @@ namespace Server;
 /// block and move the file offset, so backwards patches (e.g. the idx entity count) become
 /// small positional writes. Memory-mapped writing pays soft page faults on every composed
 /// page and dirty-section teardown stalls at dispose — measured ~4x slower at snapshot sizes.
-/// A single item larger than the staging block grows the block via the base resize path,
-/// so oversized spans and strings remain correct.
+/// A span larger than the staging block goes straight to the file; a string whose worst-case
+/// encoding exceeds the block grows the block, since it is encoded in place.
 /// </summary>
 public class FileBufferWriter : BufferWriter, IDisposable
 {
@@ -59,32 +59,55 @@ public class FileBufferWriter : BufferWriter, IDisposable
 
     public override long Position => _fileOffset + Index;
 
-    public override void Flush()
+    protected override void Grow(long bytes)
     {
         if (Index > 0)
         {
             Drain();
+
+            if (bytes <= Buffer.Length)
+            {
+                return;
+            }
         }
-        else
+
+        base.Grow(bytes);
+    }
+
+    public override void Write(ReadOnlySpan<byte> bytes)
+    {
+        if (bytes.Length > Buffer.Length - Index)
         {
-            // Nothing staged and still not enough room: a single item larger than the
-            // staging block. Grow the block so the base write loops always make progress.
-            base.Flush();
+            if (Index > 0)
+            {
+                Drain();
+            }
+
+            if (bytes.Length > Buffer.Length)
+            {
+                WriteToFile(bytes);
+                return;
+            }
         }
+
+        base.Write(bytes);
     }
 
     private void Drain()
     {
-        var length = (int)Index;
-        RandomAccess.Write(_handle, Buffer.AsSpan(0, length), _fileOffset);
-        _fileOffset += length;
+        WriteToFile(Buffer.AsSpan(0, (int)Index));
+        Index = 0;
+    }
+
+    private void WriteToFile(ReadOnlySpan<byte> bytes)
+    {
+        RandomAccess.Write(_handle, bytes, _fileOffset);
+        _fileOffset += bytes.Length;
 
         if (_fileOffset > _fileHighWater)
         {
             _fileHighWater = _fileOffset;
         }
-
-        Index = 0;
     }
 
     public override long Seek(long offset, SeekOrigin origin)
