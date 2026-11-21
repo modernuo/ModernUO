@@ -297,10 +297,19 @@ public class Gump : BaseGump
         writer.Write(Y);
 
         layoutWriter.Write((byte)0); // Layout text terminator
-        OutgoingGumpPackets.WritePacked(layoutWriter.Span, ref writer);
+        var fits = OutgoingGumpPackets.WritePacked(
+            layoutWriter.Span,
+            ref writer,
+            OutgoingGumpPackets.StringsSectionMinLength
+        );
 
         writer.Write(_stringsList.Count);
-        OutgoingGumpPackets.WritePacked(stringsWriter.Span, ref writer);
+        fits &= OutgoingGumpPackets.WritePacked(stringsWriter.Span, ref writer);
+
+        if (!fits)
+        {
+            OnPacketTooLarge(layoutWriter.BytesWritten, stringsWriter.BytesWritten);
+        }
 
         writer.WritePacketLength();
 
