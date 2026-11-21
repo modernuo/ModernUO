@@ -21,7 +21,16 @@ The `EventScheduler` provides **wall-clock scheduling** — firing events at rea
 
 ## Architecture
 
-`EventScheduler` is a singleton `Timer` that ticks every second. Internally it holds a `PriorityQueue<BaseScheduledEvent, DateTime>` sorted by `NextOccurrence` (UTC). Each tick it dequeues and fires all events whose time has passed, then each event self-re-enqueues for its next occurrence.
+`EventScheduler` is a singleton `Timer` that ticks every second. Internally it holds a `PriorityQueue<BaseScheduledEvent, DateTime>` sorted by `NextOccurrence` (UTC). Each tick it takes the runs that are due when the tick begins, fires them in time order, and each event re-enqueues its first run after now. A run that a callback schedules for "now" fires on the next tick.
+
+### Calendar semantics
+
+The scheduler behaves like a calendar, not a catch-up queue:
+
+- **A series starts at `startOn`.** If `startOn` is in the future, the first run is `startOn`. If it is in the past, the series joins at its first run after now. Runs before now never fire, and a one-shot in the past never fires.
+- **Cadence is counted from `startOn`.** `BiweeklyAt`, "every 3 days", and "every 2 months" keep the weeks, days, and months of the original start, however long ago it was.
+- **Missed runs are skipped.** A due run fires if it is no more than `BaseScheduledEvent.MissedOccurrenceGrace` (1 minute) late. That covers the 1-second poll and a world save: saves run on the 5-minute wall-clock grid and freeze the loop for up to ~10s on large shards, so runs on the same boundary fire together when the loop resumes, like timers do. A run later than the grace (a long hang) is skipped and logged, and the event fires next at its next run after now. Runs missed while the server was **down** are handled by the content with `HasMissedOccurrence` — see [Recipe: never miss a run across downtime](#recipe-never-miss-a-run-across-downtime).
+- **`Cancel()` and `Schedule()` are safe inside `OnEvent()`.** Cancelling stops the series; rescheduling replaces it.
 
 ```
 EventScheduler (Timer, 1s tick)
@@ -111,20 +120,23 @@ All patterns implement `IRecurrencePattern`:
 ```csharp
 public interface IRecurrencePattern
 {
-    DateTime GetNextOccurrence(DateTime afterUtc, TimeOnly time, TimeZoneInfo timeZone);
+    // First run strictly after afterUtc and at or after startUtc, on the cadence counted from startUtc.
+    DateTime GetNextOccurrence(DateTime afterUtc, DateTime startUtc, TimeOnly time, TimeZoneInfo timeZone);
 }
 ```
+
+A pattern must always return a time later than `afterUtc` (or `DateTime.MaxValue`). An event whose pattern does not move forward is stopped with an error instead of firing in a loop. Patterns are stateless, so one instance can be shared by any number of events.
 
 ### Built-In Patterns
 
 | Pattern | Static accessor | Behavior |
 |---|---|---|
-| `HourlyRecurrencePattern` | `EventScheduler.Hourly` | Every N hours (default 1) at the same minute |
-| `DailyRecurrencePattern` | `EventScheduler.Daily` | Every N days (default 1) at the specified time |
-| `WeeklyRecurrencePattern` | `EventScheduler.Weekly` | Every N weeks (default 1), with optional `AllowedDays` and `AllowedMonths` filters |
-| `WeeklyRecurrencePattern(2)` | `EventScheduler.Biweekly` | Every 2 weeks |
-| `MonthlyRecurrencePattern` | `EventScheduler.Monthly` | Every N months (default 1) on a specific day-of-month |
-| `MonthlyRecurrencePattern(-1, 12)` | `EventScheduler.Yearly` | Every 12 months (yearly) |
+| `HourlyRecurrencePattern` | `EventScheduler.Hourly` | Every N elapsed hours (default 1) at the same minute |
+| `DailyRecurrencePattern` | `EventScheduler.Daily` | Every N calendar days (default 1) at the specified local time |
+| `WeeklyRecurrencePattern` | `EventScheduler.Weekly` | Every N weeks (default 1) on `AllowedDays` in `AllowedMonths`; `AllowedDays.None` (the default) means the weekday of the start |
+| `WeeklyRecurrencePattern(2)` | `EventScheduler.Biweekly` | Every 2 weeks on the weekday of the start |
+| `MonthlyRecurrencePattern` | `EventScheduler.Monthly` | Every N months (default 1) on a day of the month (`-1`, the default, is the day of the start); months without that day are skipped |
+| `MonthlyRecurrencePattern(-1, 12)` | `EventScheduler.Yearly` | Every year on the month and day of the start; a Feb 29 start runs only in leap years |
 | `MonthlyOrdinalRecurrencePattern` | (construct directly) | E.g., "second Tuesday of every month" or "last Friday" |
 
 ### MonthlyOrdinalRecurrencePattern
@@ -219,17 +231,23 @@ EventScheduler.MonthlyAt(startOn, action, timeZone);
 EventScheduler.YearlyAt(startOn, action, timeZone);
 ```
 
-The `startOn` parameter determines:
-1. The `TimeOnly` component (hour/minute for recurrence)
-2. The starting reference date
-3. For `MonthlyAt`/`YearlyAt`, the day-of-month
+The `startOn` parameter determines, read in `timeZone`:
+1. The first run, if it is in the future
+2. The local time of day of every run
+3. The cadence anchor, plus the weekday (`WeeklyAt`/`BiweeklyAt`), day of the month (`MonthlyAt`), or month and day (`YearlyAt`)
+
+`startOn` may be UTC, machine-local (`DateTimeKind.Local`), or a wall-clock time in `timeZone` (`DateTimeKind.Unspecified`).
 
 Example:
 ```csharp
-// Fire at 6:00 AM Eastern every day, starting tomorrow
-var eastern = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
-var tomorrow6am = new DateTime(2025, 6, 15, 6, 0, 0);
-EventScheduler.DailyAt(tomorrow6am, ResetDailyQuests, eastern);
+// Fire at 6:00 AM Eastern every day. The start date can be any past day; the series joins at the next 6:00 AM.
+var eastern = TimeZoneInfo.FindSystemTimeZoneById("America/New_York");
+EventScheduler.DailyAt(new DateTime(2025, 6, 15, 6, 0, 0), ResetDailyQuests, eastern);
+
+// Every Friday in October at 7:00 PM Eastern, every year.
+var octoberFridays = new WeeklyRecurrencePattern(1, AllowedMonths.October, AllowedDays.Friday);
+var evt = new CallbackScheduledEvent(new TimeOnly(19, 0), StartOctoberEvent, octoberFridays);
+evt.Schedule(DateTime.UtcNow, eastern);
 ```
 
 ## Timezone & DST Handling
@@ -238,8 +256,9 @@ The system fully supports timezones via `TimeZoneInfo`:
 
 - **Default**: UTC if no timezone specified
 - **DST-safe**: Uses `LocalToUtc()` extension which handles:
-  - **Ambiguous times** (fall-back): Uses the later offset (standard time)
-  - **Invalid times** (spring-forward): Recurrence patterns skip invalid candidates
+  - **Ambiguous times** (fall-back): A local time that happens twice runs once, on its first pass (daylight time)
+  - **Invalid times** (spring-forward): A local time that does not exist runs later by the gap (2:30 AM becomes 3:30 AM)
+  - **Hourly** counts elapsed hours, so it runs in both passes of the repeated hour and skips the missing one
 - **Conversion**: All internal scheduling uses UTC; local time is only for calculating the next occurrence
 
 ```csharp
@@ -320,6 +339,79 @@ public void StopDailyResets()
 }
 ```
 
+## Recipe: never miss a run across downtime
+
+`Schedule` never fires runs that are already in the past, so a run that falls while the server is down is lost unless the content catches it. This matters for resets: "every Tuesday at 5 PM, reset weekly quests" must still happen if the server was down at 5 PM, whether it came back at 5:00:30 or at 6 PM.
+
+The pattern:
+
+1. Save **when the work last ran** (`Core.Now` inside the callback) in your system's persistence, as a plain `DateTime`.
+2. On startup, after the world loads (`Initialize`), schedule the event, then call `HasMissedOccurrence(lastRun)`. It is true when the first run after `lastRun` is already due, however late, so run the work once immediately.
+
+```csharp
+public static class WeeklyQuestReset
+{
+    private static WeeklyQuestResetPersistence _persistence;
+    private static ScheduledEvent _reset;
+    private static DateTime _lastReset;
+
+    // Creating the persistence registers it, so it loads with the world.
+    public static void Configure() => _persistence = new WeeklyQuestResetPersistence();
+
+    public static void Initialize()
+    {
+        var eastern = TimeZoneInfo.FindSystemTimeZoneById("America/New_York");
+
+        // Every Tuesday at 5 PM Eastern. The date is any Tuesday; it only anchors the weekday and time.
+        _reset = EventScheduler.WeeklyAt(new DateTime(2025, 1, 7, 17, 0, 0), ResetWeeklyQuests, eastern);
+
+        // Down at 4:30 PM, back at 6 PM: the 5 PM run was missed, so reset now.
+        if (_reset.HasMissedOccurrence(_lastReset))
+        {
+            ResetWeeklyQuests();
+        }
+    }
+
+    private static void ResetWeeklyQuests()
+    {
+        _lastReset = Core.Now;
+        // ... reset the quests
+    }
+
+    internal static void Serialize(IGenericWriter writer)
+    {
+        writer.WriteEncodedInt(0); // version
+        writer.Write(_lastReset);
+    }
+
+    internal static void Deserialize(IGenericReader reader)
+    {
+        reader.ReadEncodedInt(); // version
+        _lastReset = reader.ReadDateTime(); // wall-clock UTC
+    }
+}
+
+public class WeeklyQuestResetPersistence : GenericPersistence
+{
+    public WeeklyQuestResetPersistence() : base("WeeklyQuestReset", 10)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer) => WeeklyQuestReset.Serialize(writer);
+
+    public override void Deserialize(IGenericReader reader) => WeeklyQuestReset.Deserialize(reader);
+}
+```
+
+How it behaves:
+
+- **Runs once, never twice.** The missed run is caught by the check; `Schedule` skips it, and the next scheduled run is next Tuesday.
+- **Several missed runs fire once.** Down for three weeks, the check is true once and the reset runs once. If each missed run matters (e.g. rewards per week), count them yourself from `_lastReset`.
+- **Nothing saved yet** (`default`): false, so a fresh shard does not reset on its first boot.
+- **The event's own rules apply.** A run past `EndDate` or outside a `YearlyScheduledEvent` window is never "missed".
+- **Call it after `Schedule`.** The check uses the event's recurrence, start and time zone.
+- **Anchor on a fixed date**, not `DateTime.UtcNow`, for any cadence longer than one step (biweekly, every N days or months), or the cadence restarts every boot.
+
 ## Common Mistakes
 
 | Mistake | Problem | Fix |
@@ -328,6 +420,7 @@ public void StopDailyResets()
 | Forgetting timezone | Event fires at UTC instead of local time | Always pass `TimeZoneInfo` for local-time events |
 | Not cancelling on cleanup | Event keeps firing after system disabled | Call `Cancel()` in cleanup/shutdown |
 | Using `EventScheduler` for sub-second timing | 1-second granularity too coarse | Use `Timer.StartTimer` instead |
+| Expecting a run missed during downtime to fire on startup | `Schedule` never fires past runs | Save when it last ran and check `HasMissedOccurrence` on startup (see the recipe) |
 | Constructing `MonthDay` with invalid days | Throws `ArgumentOutOfRangeException` | Check `DateTime.DaysInMonth` for the given month |
 
 ## Key File References

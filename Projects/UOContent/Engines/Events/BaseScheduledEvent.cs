@@ -8,59 +8,134 @@ public abstract class BaseScheduledEvent
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(BaseScheduledEvent));
 
+    /// <summary>
+    /// How late a run may fire. The scheduler polls every second and a world save freezes the loop for up to
+    /// ~10s on large shards; saves run on the 5-minute wall-clock grid, so they land on the same boundaries as
+    /// events. A run later than this was missed, and is skipped like a calendar skips it.
+    /// </summary>
+    public static readonly TimeSpan MissedOccurrenceGrace = TimeSpan.FromMinutes(1);
+
     public TimeZoneInfo TimeZone { get; private set; } = TimeZoneInfo.Utc;
+
+    /// <summary>The UTC start of the series. Recurrence cadences are counted from it.</summary>
+    public DateTime Start { get; private set; }
+
     public DateTime NextOccurrence { get; private set; } = DateTime.MaxValue;
     public bool Cancelled { get; private set; }
     public EventScheduler Scheduler { get; private set; }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Schedule(DateTime startAfter, TimeZoneInfo timeZone = null) =>
-        Schedule(EventScheduler.Shared, startAfter, timeZone);
+    // Bumped by Schedule and Cancel so a run in flight knows it was superseded.
+    internal int Version { get; private set; }
 
-    public void Schedule(EventScheduler scheduler, DateTime startAfter, TimeZoneInfo timeZone = null)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void Schedule(DateTime startOn, TimeZoneInfo timeZone = null) =>
+        Schedule(EventScheduler.Shared, startOn, timeZone);
+
+    /// <summary>
+    /// Starts the series at <paramref name="startOn"/>. A start in the past joins the series at its first run
+    /// after now; runs before now are not fired. Use <see cref="HasMissedOccurrence"/> to catch a run missed
+    /// while the server was down.
+    /// </summary>
+    /// <param name="startOn">
+    /// A UTC time, a machine-local time, or (<see cref="DateTimeKind.Unspecified"/>) a wall-clock time in
+    /// <paramref name="timeZone"/>.
+    /// </param>
+    public void Schedule(EventScheduler scheduler, DateTime startOn, TimeZoneInfo timeZone = null)
     {
         Cancel();
+        Cancelled = false;
         Scheduler = scheduler;
         TimeZone = timeZone ?? TimeZoneInfo.Utc;
-        Schedule(startAfter, timeZone, true);
+        Start = CalendarTime.ToUtc(startOn, TimeZone);
+
+        var now = Core.Now;
+        var from = Start > now ? Start : now;
+        SetNext(from.AddTicks(-1));
     }
 
-    private void Schedule(DateTime startAfter, TimeZoneInfo timeZone, bool isFirst)
-    {
-        Cancelled = false;
-        var afterUtc = startAfter.Kind == DateTimeKind.Utc ? startAfter : startAfter.LocalToUtc(timeZone);
+    /// <summary>
+    /// Whether a run after <paramref name="lastRun"/> is already due, e.g. one missed while the server was
+    /// down. <see cref="Schedule(EventScheduler, DateTime, TimeZoneInfo)"/> never fires past runs, so content that
+    /// must not miss a run saves when it last ran and checks this after scheduling. A default
+    /// <paramref name="lastRun"/> means nothing has run yet, so nothing was missed.
+    /// </summary>
+    /// <param name="lastRun">
+    /// When the content last ran; <see cref="DateTimeKind.Unspecified"/> is read in <see cref="TimeZone"/>.
+    /// </param>
+    public bool HasMissedOccurrence(DateTime lastRun) =>
+        lastRun != default && GetNextOccurrence(CalendarTime.ToUtc(lastRun, TimeZone)) <= Core.Now;
 
-        var next = GetNextOccurrence(afterUtc);
-
-        // For the first occurrence, we should set it to the startAfter date if we have no recurrence.
-        NextOccurrence = next == DateTime.MaxValue && isFirst ? afterUtc : next;
-
-        if (NextOccurrence != DateTime.MaxValue)
-        {
-            Scheduler.ScheduleEvent(this);
-        }
-    }
-
+    /// <summary>
+    /// Gets the first run strictly after <paramref name="after"/> (UTC), or <see cref="DateTime.MaxValue"/>.
+    /// </summary>
     protected abstract DateTime GetNextOccurrence(DateTime after);
 
     public void Cancel()
     {
         Cancelled = true;
+        Version++;
+        NextOccurrence = DateTime.MaxValue;
         Scheduler?.UnscheduleEvent(this);
     }
 
+    /// <summary>Fires the due run unless it was missed, then queues the first run after now.</summary>
     public virtual void Advance()
     {
-        try
+        var now = Core.Now;
+        var version = Version;
+
+        if (now - NextOccurrence <= MissedOccurrenceGrace)
         {
-            OnEvent();
+            try
+            {
+                OnEvent();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "OnEvent failed to execute.");
+            }
+
+            // OnEvent cancelled or rescheduled this event.
+            if (version != Version)
+            {
+                return;
+            }
         }
-        catch (Exception ex)
+        else
         {
-            logger.Error(ex, "OnEvent failed to execute.");
+            logger.Warning(
+                "Skipped {Event} run due {Due} (now {Now}).",
+                GetType().Name,
+                NextOccurrence,
+                now
+            );
         }
 
-        Schedule(NextOccurrence, TimeZone, false);
+        SetNext(now);
+    }
+
+    private void SetNext(DateTime after)
+    {
+        var next = GetNextOccurrence(after);
+
+        // A pattern that does not move forward would fire again in the same tick, forever.
+        if (next <= after)
+        {
+            logger.Error(
+                "{Event} recurrence returned {Next}, not after {After}; the event is stopped.",
+                GetType().Name,
+                next,
+                after
+            );
+            next = DateTime.MaxValue;
+        }
+
+        NextOccurrence = next;
+
+        if (next != DateTime.MaxValue)
+        {
+            Scheduler.ScheduleEvent(this);
+        }
     }
 
     public abstract void OnEvent();

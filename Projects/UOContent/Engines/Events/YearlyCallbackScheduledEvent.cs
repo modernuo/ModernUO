@@ -6,7 +6,7 @@ public class YearlyCallbackScheduledEvent : YearlyScheduledEvent
 {
     private readonly Action _callback;
 
-    protected YearlyCallbackScheduledEvent(
+    public YearlyCallbackScheduledEvent(
         TimeOnly time,
         MonthDay yearlyStart,
         MonthDay yearlyEnd,
@@ -16,14 +16,15 @@ public class YearlyCallbackScheduledEvent : YearlyScheduledEvent
     {
     }
 
-    protected YearlyCallbackScheduledEvent(
+    public YearlyCallbackScheduledEvent(
         TimeOnly time,
         MonthDay yearlyStart,
         MonthDay yearlyEnd,
         DateTime endOn,
         Action callback,
         IRecurrencePattern recurrence
-    ) : base(time, yearlyStart, yearlyEnd, endOn, recurrence) => _callback = callback;
+    ) : base(time, yearlyStart, yearlyEnd, endOn, recurrence) =>
+        _callback = callback ?? throw new ArgumentNullException(nameof(callback));
 
     public override void OnEvent() => _callback();
 }
