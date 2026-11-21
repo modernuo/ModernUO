@@ -160,8 +160,6 @@ namespace Server.Items
         public virtual int BaseDexBonus => 0;
         public virtual int BaseIntBonus => 0;
 
-        public virtual Race RequiredRace => null;
-
         public virtual int AosStrReq => 10;
         public virtual int OldStrReq => 0;
 
@@ -422,17 +420,8 @@ namespace Server.Items
                 return false;
             }
 
-            if (RequiredRace != null && from.Race != RequiredRace)
+            if (!CheckRace(from))
             {
-                if (RequiredRace == Race.Elf)
-                {
-                    from.SendLocalizedMessage(1072203); // Only Elves may use this.
-                }
-                else
-                {
-                    from.SendMessage($"Only {RequiredRace.PluralName} may use this.");
-                }
-
                 return false;
             }
 
@@ -533,17 +522,8 @@ namespace Server.Items
 
                 if (item is BaseClothing clothing)
                 {
-                    if (clothing.RequiredRace != null && m.Race != clothing.RequiredRace)
+                    if (!clothing.CheckRace(m))
                     {
-                        if (clothing.RequiredRace == Race.Elf)
-                        {
-                            m.SendLocalizedMessage(1072203); // Only Elves may use this.
-                        }
-                        else
-                        {
-                            m.SendMessage($"Only {clothing.RequiredRace.PluralName} may use this.");
-                        }
-
                         m.AddToBackpack(clothing);
                     }
                     else if (!clothing.AllowMaleWearer && !m.Female && m.AccessLevel < AccessLevel.GameMaster)
