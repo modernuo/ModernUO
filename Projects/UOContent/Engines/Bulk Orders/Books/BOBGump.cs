@@ -510,9 +510,8 @@ public class BOBGump : DynamicGump
                 BulkMaterialType.Spined => 1062236,
                 BulkMaterialType.Horned => 1062237,
                 BulkMaterialType.Barbed => 1062238,
-                _ when itemType.IsSubclassOf(typeof(BaseArmor)) ||
-                       itemType.IsSubclassOf(typeof(BaseShoes)) => 1062235,
-                _                       => 1044286
+                _ when BGTClassifier.Classify(type, itemType) == BulkGenericType.Leather => 1062235,
+                _                                                                         => 1044286
             },
             _ => TextDefinition.Empty
         };

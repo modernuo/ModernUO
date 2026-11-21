@@ -372,6 +372,11 @@ namespace Server.Engines.Chat
 
         public static void RenameChannel(ChatUser from, Channel channel, string param)
         {
+            if ((param = param.Trim()).Length == 0 || Channel.FindChannelByName(param) != null)
+            {
+                return;
+            }
+
             channel.Name = param;
         }
 

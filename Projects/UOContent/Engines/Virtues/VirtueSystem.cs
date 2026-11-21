@@ -245,6 +245,34 @@ public class VirtueSystem : GenericPersistence
 
         var oldLevel = GetLevel(from, virtue);
 
+        if (current == 0)
+        {
+            // Loss times default to MinValue, so the first gain would atrophy on the next check.
+            switch (virtue)
+            {
+                case VirtueName.Sacrifice:
+                    {
+                        virtues.LastSacrificeLoss = Core.Now;
+                        break;
+                    }
+                case VirtueName.Justice:
+                    {
+                        virtues.LastJusticeLoss = Core.Now;
+                        break;
+                    }
+                case VirtueName.Compassion:
+                    {
+                        virtues.LastCompassionLoss = Core.Now;
+                        break;
+                    }
+                case VirtueName.Valor:
+                    {
+                        virtues.LastValorLoss = Core.Now;
+                        break;
+                    }
+            }
+        }
+
         virtues.SetValue((int)virtue, current + amount);
 
         gainedPath = GetLevel(from, virtue) != oldLevel;

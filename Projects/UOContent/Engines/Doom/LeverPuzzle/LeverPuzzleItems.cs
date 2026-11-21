@@ -94,6 +94,12 @@ public partial class LeverPuzzleLever : Item
 
     public override void OnDoubleClick(Mobile m)
     {
+        if (m?.InRange(GetWorldLocation(), 3) == false)
+        {
+            m.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            return;
+        }
+
         if (m != null && _controller.Enabled)
         {
             ItemID ^= 2;

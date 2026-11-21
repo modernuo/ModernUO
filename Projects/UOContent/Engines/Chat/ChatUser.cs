@@ -193,6 +193,10 @@ namespace Server.Engines.Chat
                 {
                     ChatSystem.SendCommandTo(user.Mobile, command, param1, param2);
                 }
+                else if (!m_Users.Contains(user))
+                {
+                    --i;
+                }
             }
         }
     }

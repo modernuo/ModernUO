@@ -403,7 +403,7 @@ namespace Server.Engines.Craft
 
             foreach (var item in map.GetItemsInRange(from.Location, 2))
             {
-                if (item.Z + 16 > item.Z && item.Z + 16 > item.Z && Find(item.ItemID, itemIDs))
+                if (item.Z + 16 > from.Z && from.Z + 16 > item.Z && Find(item.ItemID, itemIDs))
                 {
                     return true;
                 }
