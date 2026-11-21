@@ -21,6 +21,8 @@ description: >
 4. **Use `YearlyScheduledEvent`** for seasonal windows (e.g., Oct 15 - Nov 1 each year)
 5. **Cancel events on cleanup** — call `Cancel()` when disabling or shutting down
 6. **1-second granularity** — EventScheduler ticks every second, not suitable for sub-second precision
+7. **Calendar semantics** — a series starts at `startOn` (fired only if in the future; a past start joins at the next run after now) and its cadence is counted from `startOn`; runs more than `MissedOccurrenceGrace` (1 minute) late are skipped, never replayed
+8. **Patterns must move forward** — a custom `IRecurrencePattern` returns the first run strictly after `afterUtc` and at or after `startUtc`; an event whose pattern does not advance is stopped with an error
 
 ## Timer vs EventScheduler Decision
 

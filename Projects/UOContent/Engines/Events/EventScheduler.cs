@@ -2,16 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Server.Collections;
 
 namespace Server.Engines.Events;
 
 public interface IRecurrencePattern
 {
     /// <summary>
-    /// Get the next occurrence of the event.
-    /// <returns><c>DateTime</c> of the next occurence in UTC or DateTime.MaxValue</returns>
+    /// Gets the first run strictly after <paramref name="afterUtc"/> and at or after <paramref name="startUtc"/>,
+    /// on the cadence counted from <paramref name="startUtc"/>.
     /// </summary>
-    DateTime GetNextOccurrence(DateTime afterUtc, TimeOnly time, TimeZoneInfo timeZone);
+    /// <returns>The run in UTC, or <see cref="DateTime.MaxValue"/> when there is none.</returns>
+    DateTime GetNextOccurrence(DateTime afterUtc, DateTime startUtc, TimeOnly time, TimeZoneInfo timeZone);
 }
 
 public enum OrdinalDayOccurrence { Last = -1, First, Second, Third, Fourth, Fifth }
@@ -22,21 +24,23 @@ public class EventScheduler : Timer
 
     public static EventScheduler Shared { get; private set; }
 
-    public static IRecurrencePattern Hourly => new HourlyRecurrencePattern();
+    public static IRecurrencePattern Hourly { get; } = new HourlyRecurrencePattern();
 
-    public static IRecurrencePattern Daily => new DailyRecurrencePattern();
+    public static IRecurrencePattern Daily { get; } = new DailyRecurrencePattern();
 
-    // Recur every week, on the same day/time as the first occurence
-    public static IRecurrencePattern Weekly => new WeeklyRecurrencePattern();
+    // Recur every week on the weekday of the series start
+    public static IRecurrencePattern Weekly { get; } = new WeeklyRecurrencePattern();
 
-    // Recur every two weeks, on the same day/time as the first occurence
-    public static IRecurrencePattern Biweekly => new WeeklyRecurrencePattern(2);
+    // Recur every two weeks on the weekday of the series start
+    public static IRecurrencePattern Biweekly { get; } = new WeeklyRecurrencePattern(2);
 
-    public static IRecurrencePattern Monthly => new MonthlyRecurrencePattern();
+    // Recur every month on the day of the series start
+    public static IRecurrencePattern Monthly { get; } = new MonthlyRecurrencePattern();
 
-    public static IRecurrencePattern Yearly => new MonthlyRecurrencePattern(-1, 12);
+    // Recur every year on the month and day of the series start
+    public static IRecurrencePattern Yearly { get; } = new MonthlyRecurrencePattern(-1, 12);
 
-    // For each of the days of the week
+    // One shared pattern per day of the month
     private static readonly Dictionary<int, MonthlyRecurrencePattern> _monthlyRecurrenceByDay = [];
 
     public static IRecurrencePattern GetMonthlyRecurrence(int dayOfMonth)
@@ -68,11 +72,11 @@ public class EventScheduler : Timer
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ScheduledEvent MonthlyAt(DateTime startOn, Action action, TimeZoneInfo timeZone = null) =>
-        Shared.ScheduleEvent(startOn, action, GetMonthlyRecurrence(startOn.Day), timeZone);
+        Shared.ScheduleEvent(startOn, action, Monthly, timeZone);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ScheduledEvent YearlyAt(DateTime startOn, Action action, TimeZoneInfo timeZone = null) =>
-        Shared.ScheduleEvent(startOn, action, GetMonthlyRecurrence(startOn.Day), timeZone);
+        Shared.ScheduleEvent(startOn, action, Yearly, timeZone);
 
     public static void Configure()
     {
@@ -84,15 +88,23 @@ public class EventScheduler : Timer
     {
     }
 
+    /// <summary>
+    /// Schedules <paramref name="callback"/> at <paramref name="startOn"/>, recurring at its local time of day.
+    /// </summary>
     public ScheduledEvent ScheduleEvent(
         DateTime startOn,
         Action callback,
         IRecurrencePattern recurrencePattern = null,
         TimeZoneInfo timeZone = null
-    ) => ScheduleEvent(startOn, TimeOnly.FromDateTime(startOn), callback, recurrencePattern, timeZone);
+    )
+    {
+        timeZone ??= TimeZoneInfo.Utc;
+        var localStart = CalendarTime.ToLocal(CalendarTime.ToUtc(startOn, timeZone), timeZone);
+        return ScheduleEvent(startOn, TimeOnly.FromDateTime(localStart), callback, recurrencePattern, timeZone);
+    }
 
     public ScheduledEvent ScheduleEvent(
-        DateTime after,
+        DateTime startOn,
         TimeOnly time,
         Action callback,
         IRecurrencePattern recurrencePattern = null,
@@ -100,7 +112,7 @@ public class EventScheduler : Timer
     )
     {
         var scheduledEvent = new CallbackScheduledEvent(time, callback, recurrencePattern);
-        scheduledEvent.Schedule(this, after, timeZone);
+        scheduledEvent.Schedule(this, startOn, timeZone);
         return scheduledEvent;
     }
 
@@ -124,23 +136,27 @@ public class EventScheduler : Timer
     {
         var now = Core.Now;
 
-        while (_schedule.Count > 0)
+        if (!_schedule.TryPeek(out _, out var first) || first > now)
         {
-            var entry = _schedule.Peek();
-            var cancelled = entry.Cancelled;
-            if (!cancelled && entry.NextOccurrence > now)
-            {
-                break;
-            }
+            return;
+        }
 
+        // Only runs due when the tick began fire, so a callback that schedules a run for now waits a tick
+        // instead of spinning this loop.
+        using var due = PooledRefQueue<(BaseScheduledEvent Entry, int Version)>.Create();
+        while (_schedule.TryPeek(out var entry, out var at) && at <= now)
+        {
             _schedule.Dequeue();
+            due.Enqueue((entry, entry.Version));
+        }
 
-            if (cancelled)
+        while (due.TryDequeue(out var item))
+        {
+            // An earlier callback in this tick may have cancelled or rescheduled this event.
+            if (!item.Entry.Cancelled && item.Entry.Version == item.Version)
             {
-                continue;
+                item.Entry.Advance();
             }
-
-            entry.Advance(); // Advances the event and self queues if necessary
         }
     }
 }
