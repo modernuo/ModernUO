@@ -762,7 +762,7 @@ namespace Server.Commands
 
                 if (targeted is Mobile mobile)
                 {
-                    from.SendMenu(new EquipMenu(from, mobile, mobile.Items.ToArray()));
+                    from.SendMenu(new EquipMenu(from, mobile));
                 }
             }
 
@@ -780,12 +780,28 @@ namespace Server.Commands
                 return entries;
             }
 
+            private static bool IsStillEquipped(Mobile from, Mobile m, Item item)
+            {
+                if (!m.Deleted && !item.Deleted && item.Parent == m)
+                {
+                    return true;
+                }
+
+                from.SendMessage("That item is no longer equipped.");
+                return false;
+            }
+
             private class EquipMenu : ItemListMenu
             {
                 private readonly Item[] _items;
                 private readonly Mobile m_Mobile;
 
-                public EquipMenu(Mobile from, Mobile m, Item[] items) : base("Equipment", GetEquip(items))
+                public EquipMenu(Mobile from, Mobile m) : this(from, m, m.Items.ToArray())
+                {
+                }
+
+                // The client answers with an index into the rows it was shown, so keep those rows.
+                private EquipMenu(Mobile from, Mobile m, Item[] items) : base("Equipment", GetEquip(items))
                 {
                     _items = items;
                     m_Mobile = m;
@@ -802,7 +818,7 @@ namespace Server.Commands
                     {
                         var item = _items[index];
 
-                        if (item.Deleted || item.Parent != m_Mobile)
+                        if (!IsStillEquipped(state.Mobile, m_Mobile, item))
                         {
                             return;
                         }
@@ -827,11 +843,19 @@ namespace Server.Commands
 
                     public override void OnCancel(NetState state)
                     {
-                        state.Mobile.SendMenu(new EquipMenu(state.Mobile, m_Mobile, m_Mobile.Items.ToArray()));
+                        if (!m_Mobile.Deleted)
+                        {
+                            state.Mobile.SendMenu(new EquipMenu(state.Mobile, m_Mobile));
+                        }
                     }
 
                     public override void OnResponse(NetState state, int index)
                     {
+                        if (index is < 0 or > 2 || !IsStillEquipped(state.Mobile, m_Mobile, m_Item))
+                        {
+                            return;
+                        }
+
                         if (index == 0)
                         {
                             CommandLogging.WriteLine(
