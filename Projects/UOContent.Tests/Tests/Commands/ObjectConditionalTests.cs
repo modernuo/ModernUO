@@ -187,4 +187,12 @@ public class ObjectConditionalTests : IDisposable
         Assert.True(Check(tp, "Skill", "=", "Magery"));
         Assert.False(Check(tp, "Skill", "=", "Anatomy"));
     }
+
+    [Fact]
+    public void TrailingOrIsRejected()
+    {
+        string[] args = [nameof(SkillTeleporter), "Name", "=", "gate", "or"];
+
+        Assert.Throws<Exception>(() => ObjectConditional.ParseDirect(_from, args, 0, args.Length));
+    }
 }

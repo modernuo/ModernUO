@@ -128,6 +128,11 @@ namespace Server.Commands.Generic
                 }
                 else if (cur.InsensitiveEquals("or") || cur == "||")
                 {
+                    if (index + 1 >= size)
+                    {
+                        throw new Exception("Improperly formatted object conditional.");
+                    }
+
                     if (current.Count > 1)
                     {
                         conditions.Add(current.ToArray());
