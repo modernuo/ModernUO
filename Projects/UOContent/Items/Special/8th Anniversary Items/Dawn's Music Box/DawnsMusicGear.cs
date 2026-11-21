@@ -82,12 +82,13 @@ public partial class DawnsMusicGear : Item
                 return;
             }
 
-            if (!box.AddToTracks(_gear.Music))
+            if (!box.Contains(_gear.Music))
             {
                 from.SendLocalizedMessage(1071962); // This song track is already in the musicbox.
                 return;
             }
 
+            box.AddToTracks(_gear.Music);
             box.InvalidateProperties();
             _gear.Delete();
             from.SendLocalizedMessage(1071961); // This song has been added to the musicbox.
