@@ -29,7 +29,7 @@ The scheduler behaves like a calendar, not a catch-up queue:
 
 - **A series starts at `startOn`.** If `startOn` is in the future, the first run is `startOn`. If it is in the past, the series joins at its first run after now. Runs before now never fire, and a one-shot in the past never fires.
 - **Cadence is counted from `startOn`.** `BiweeklyAt`, "every 3 days", and "every 2 months" keep the weeks, days, and months of the original start, however long ago it was.
-- **Missed runs are skipped.** A due run fires if it is no more than `BaseScheduledEvent.MissedOccurrenceGrace` (1 minute) late. That covers the 1-second poll and a world save: saves run on the 5-minute wall-clock grid and freeze the loop for up to ~10s on large shards, so runs on the same boundary fire together when the loop resumes, like timers do. A run later than the grace (a long hang) is skipped and logged, and the event fires next at its next run after now. Catch-up of missed runs is not built in.
+- **Missed runs are skipped.** A due run fires if it is no more than `BaseScheduledEvent.MissedOccurrenceGrace` (1 minute) late. That covers the 1-second poll and a world save: saves run on the 5-minute wall-clock grid and freeze the loop for up to ~10s on large shards, so runs on the same boundary fire together when the loop resumes, like timers do. A run later than the grace (a long hang) is skipped and logged, and the event fires next at its next run after now. Runs missed while the server was **down** are handled by the content with `HasMissedOccurrence` — see [Recipe: never miss a run across downtime](#recipe-never-miss-a-run-across-downtime).
 - **`Cancel()` and `Schedule()` are safe inside `OnEvent()`.** Cancelling stops the series; rescheduling replaces it.
 
 ```
@@ -339,6 +339,79 @@ public void StopDailyResets()
 }
 ```
 
+## Recipe: never miss a run across downtime
+
+`Schedule` never fires runs that are already in the past, so a run that falls while the server is down is lost unless the content catches it. This matters for resets: "every Tuesday at 5 PM, reset weekly quests" must still happen if the server was down at 5 PM, whether it came back at 5:00:30 or at 6 PM.
+
+The pattern:
+
+1. Save **when the work last ran** (`Core.Now` inside the callback) in your system's persistence, as a plain `DateTime`.
+2. On startup, after the world loads (`Initialize`), schedule the event, then call `HasMissedOccurrence(lastRun)`. It is true when the first run after `lastRun` is already due, however late, so run the work once immediately.
+
+```csharp
+public static class WeeklyQuestReset
+{
+    private static WeeklyQuestResetPersistence _persistence;
+    private static ScheduledEvent _reset;
+    private static DateTime _lastReset;
+
+    // Creating the persistence registers it, so it loads with the world.
+    public static void Configure() => _persistence = new WeeklyQuestResetPersistence();
+
+    public static void Initialize()
+    {
+        var eastern = TimeZoneInfo.FindSystemTimeZoneById("America/New_York");
+
+        // Every Tuesday at 5 PM Eastern. The date is any Tuesday; it only anchors the weekday and time.
+        _reset = EventScheduler.WeeklyAt(new DateTime(2025, 1, 7, 17, 0, 0), ResetWeeklyQuests, eastern);
+
+        // Down at 4:30 PM, back at 6 PM: the 5 PM run was missed, so reset now.
+        if (_reset.HasMissedOccurrence(_lastReset))
+        {
+            ResetWeeklyQuests();
+        }
+    }
+
+    private static void ResetWeeklyQuests()
+    {
+        _lastReset = Core.Now;
+        // ... reset the quests
+    }
+
+    internal static void Serialize(IGenericWriter writer)
+    {
+        writer.WriteEncodedInt(0); // version
+        writer.Write(_lastReset);
+    }
+
+    internal static void Deserialize(IGenericReader reader)
+    {
+        reader.ReadEncodedInt(); // version
+        _lastReset = reader.ReadDateTime(); // wall-clock UTC
+    }
+}
+
+public class WeeklyQuestResetPersistence : GenericPersistence
+{
+    public WeeklyQuestResetPersistence() : base("WeeklyQuestReset", 10)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer) => WeeklyQuestReset.Serialize(writer);
+
+    public override void Deserialize(IGenericReader reader) => WeeklyQuestReset.Deserialize(reader);
+}
+```
+
+How it behaves:
+
+- **Runs once, never twice.** The missed run is caught by the check; `Schedule` skips it, and the next scheduled run is next Tuesday.
+- **Several missed runs fire once.** Down for three weeks, the check is true once and the reset runs once. If each missed run matters (e.g. rewards per week), count them yourself from `_lastReset`.
+- **Nothing saved yet** (`default`): false, so a fresh shard does not reset on its first boot.
+- **The event's own rules apply.** A run past `EndDate` or outside a `YearlyScheduledEvent` window is never "missed".
+- **Call it after `Schedule`.** The check uses the event's recurrence, start and time zone.
+- **Anchor on a fixed date**, not `DateTime.UtcNow`, for any cadence longer than one step (biweekly, every N days or months), or the cadence restarts every boot.
+
 ## Common Mistakes
 
 | Mistake | Problem | Fix |
@@ -347,7 +420,7 @@ public void StopDailyResets()
 | Forgetting timezone | Event fires at UTC instead of local time | Always pass `TimeZoneInfo` for local-time events |
 | Not cancelling on cleanup | Event keeps firing after system disabled | Call `Cancel()` in cleanup/shutdown |
 | Using `EventScheduler` for sub-second timing | 1-second granularity too coarse | Use `Timer.StartTimer` instead |
-| Expecting missed runs to replay after downtime | Runs more than 1 minute late are skipped, like a calendar | Persist your own state and reconcile on startup if a missed run matters |
+| Expecting a run missed during downtime to fire on startup | `Schedule` never fires past runs | Save when it last ran and check `HasMissedOccurrence` on startup (see the recipe) |
 | Constructing `MonthDay` with invalid days | Throws `ArgumentOutOfRangeException` | Check `DateTime.DaysInMonth` for the given month |
 
 ## Key File References

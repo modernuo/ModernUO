@@ -364,4 +364,69 @@ public class EventSchedulerTests : IDisposable
         Assert.Equal(Utc(2025, 3, 1, 12, 0), evt.Next(Utc(2025, 1, 1, 0, 0)));
         evt.Cancel();
     }
+
+    // Weekly quest reset every Tuesday 17:00 Eastern (22:00 UTC in winter).
+    private ScheduledEvent ScheduleWeeklyReset() =>
+        Track(EventScheduler.WeeklyAt(new DateTime(2025, 1, 7, 17, 0, 0), () => { }, NewYork));
+
+    [Fact]
+    public void HasMissedOccurrence_DownThroughTheRun_IsTrueAndTheRunIsNotScheduledAgain()
+    {
+        Core._now = Utc(2025, 1, 14, 23, 0);
+        var evt = ScheduleWeeklyReset();
+
+        Assert.True(evt.HasMissedOccurrence(Utc(2025, 1, 7, 22, 0, 3)));
+        Assert.Equal(Utc(2025, 1, 21, 22, 0), evt.NextOccurrence);
+    }
+
+    [Fact]
+    public void HasMissedOccurrence_RanThisWeek_IsFalse()
+    {
+        Core._now = Utc(2025, 1, 14, 23, 0);
+        var evt = ScheduleWeeklyReset();
+
+        Assert.False(evt.HasMissedOccurrence(Utc(2025, 1, 14, 22, 0, 3)));
+    }
+
+    [Fact]
+    public void HasMissedOccurrence_RestartAcrossTheRun_IsTrueOnce()
+    {
+        // Down from 16:59 to 17:00:30: the run never fired, and Schedule does not fire it either.
+        Core._now = Utc(2025, 1, 14, 22, 0, 30);
+        var evt = ScheduleWeeklyReset();
+
+        Assert.True(evt.HasMissedOccurrence(Utc(2025, 1, 7, 22, 0, 2)));
+        Assert.Equal(Utc(2025, 1, 21, 22, 0), evt.NextOccurrence);
+    }
+
+    [Fact]
+    public void HasMissedOccurrence_NothingRecorded_IsFalse()
+    {
+        Core._now = Utc(2025, 1, 14, 23, 0);
+        var evt = ScheduleWeeklyReset();
+
+        Assert.False(evt.HasMissedOccurrence(default));
+    }
+
+    [Fact]
+    public void HasMissedOccurrence_OutsideTheYearlyWindow_IsFalse()
+    {
+        Core._now = Utc(2025, 2, 1, 0, 0);
+        var evt = new TestYearlyEvent(new MonthDay(2024, 10, 1), new MonthDay(2024, 10, 31), EventScheduler.Daily);
+        evt.Schedule(EventScheduler.Shared, Utc(2024, 1, 1, 0, 0));
+
+        Assert.False(evt.HasMissedOccurrence(Utc(2024, 10, 31, 12, 0)));
+        Assert.True(evt.HasMissedOccurrence(Utc(2024, 10, 30, 12, 0)));
+        evt.Cancel();
+    }
+
+    [Fact]
+    public void HasMissedOccurrence_PastTheEndDate_IsFalse()
+    {
+        Core._now = Utc(2025, 2, 1, 0, 0);
+        var evt = Track(new TestEvent(new TimeOnly(12, 0), Utc(2024, 12, 31, 0, 0), EventScheduler.Daily, null));
+        evt.Schedule(Utc(2024, 1, 1, 12, 0));
+
+        Assert.False(evt.HasMissedOccurrence(Utc(2024, 12, 30, 12, 0)));
+    }
 }

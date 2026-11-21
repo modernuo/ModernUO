@@ -33,7 +33,8 @@ public abstract class BaseScheduledEvent
 
     /// <summary>
     /// Starts the series at <paramref name="startOn"/>. A start in the past joins the series at its first run
-    /// after now; runs before now are not fired.
+    /// after now; runs before now are not fired. Use <see cref="HasMissedOccurrence"/> to catch a run missed
+    /// while the server was down.
     /// </summary>
     /// <param name="startOn">
     /// A UTC time, a machine-local time, or (<see cref="DateTimeKind.Unspecified"/>) a wall-clock time in
@@ -51,6 +52,18 @@ public abstract class BaseScheduledEvent
         var from = Start > now ? Start : now;
         SetNext(from.AddTicks(-1));
     }
+
+    /// <summary>
+    /// Whether a run after <paramref name="lastRun"/> is already due, e.g. one missed while the server was
+    /// down. <see cref="Schedule(EventScheduler, DateTime, TimeZoneInfo)"/> never fires past runs, so content that
+    /// must not miss a run saves when it last ran and checks this after scheduling. A default
+    /// <paramref name="lastRun"/> means nothing has run yet, so nothing was missed.
+    /// </summary>
+    /// <param name="lastRun">
+    /// When the content last ran; <see cref="DateTimeKind.Unspecified"/> is read in <see cref="TimeZone"/>.
+    /// </param>
+    public bool HasMissedOccurrence(DateTime lastRun) =>
+        lastRun != default && GetNextOccurrence(CalendarTime.ToUtc(lastRun, TimeZone)) <= Core.Now;
 
     /// <summary>
     /// Gets the first run strictly after <paramref name="after"/> (UTC), or <see cref="DateTime.MaxValue"/>.
