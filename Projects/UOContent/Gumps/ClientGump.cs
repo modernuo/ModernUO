@@ -236,6 +236,10 @@ namespace Server.Gumps
                         {
                             from.SendMessage("You cannot bring that person here.");
                         }
+                        else if (!BaseCommand.IsAccessible(from, focus))
+                        {
+                            from.SendLocalizedMessage(500447); // That is not accessible.
+                        }
                         else
                         {
                             focus.MoveToWorld(from.Location, from.Map);
