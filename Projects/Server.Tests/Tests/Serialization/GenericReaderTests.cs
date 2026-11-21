@@ -15,7 +15,7 @@ public class GenericReaderTests
 
     private enum LongEnum : long { Value = long.MinValue + 7 }
 
-    public static TheoryData<string> Readers => ["buffer", "unmanaged"];
+    public static TheoryData<string> Readers => ["buffer", "unmanaged", "defaults"];
 
     // The pinned array is returned so the caller keeps it alive while the unmanaged reader points into it.
     private static unsafe (IGenericReader Reader, byte[] Data) CreateReader(string kind, ReadOnlySpan<byte> bytes)
@@ -23,11 +23,39 @@ public class GenericReaderTests
         var data = GC.AllocateArray<byte>(bytes.Length, pinned: true);
         bytes.CopyTo(data);
 
-        IGenericReader reader = kind == "buffer"
-            ? new BufferReader(data)
-            : new UnmanagedDataReader(data.Length == 0 ? null : (byte*)Unsafe.AsPointer(ref data[0]), data.Length);
+        IGenericReader reader = kind switch
+        {
+            "buffer"    => new BufferReader(data),
+            "defaults"  => new DefaultMembersReader(new BufferReader(data)),
+            _           => new UnmanagedDataReader(data.Length == 0 ? null : (byte*)Unsafe.AsPointer(ref data[0]), data.Length)
+        };
 
         return (reader, data);
+    }
+
+    /// <summary>
+    /// Implements only the members IGenericReader requires, so every other read uses the
+    /// interface's default implementation, as a reader outside the core would.
+    /// </summary>
+    private sealed class DefaultMembersReader(BufferReader inner) : IGenericReader
+    {
+        public string ReadString(bool intern = false) => inner.ReadString(intern);
+        public string ReadStringRaw(bool intern = false) => inner.ReadStringRaw(intern);
+        public long ReadLong() => inner.ReadLong();
+        public ulong ReadULong() => inner.ReadULong();
+        public int ReadInt() => inner.ReadInt();
+        public uint ReadUInt() => inner.ReadUInt();
+        public short ReadShort() => inner.ReadShort();
+        public ushort ReadUShort() => inner.ReadUShort();
+        public double ReadDouble() => inner.ReadDouble();
+        public float ReadFloat() => inner.ReadFloat();
+        public byte ReadByte() => inner.ReadByte();
+        public sbyte ReadSByte() => inner.ReadSByte();
+        public bool ReadBool() => inner.ReadBool();
+        public Serial ReadSerial() => inner.ReadSerial();
+        public Type ReadType() => inner.ReadType();
+        public int Read(Span<byte> buffer) => inner.Read(buffer);
+        public long Seek(long offset, SeekOrigin origin) => inner.Seek(offset, origin);
     }
 
     [Theory]

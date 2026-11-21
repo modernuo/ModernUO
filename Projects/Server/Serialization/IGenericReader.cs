@@ -18,6 +18,7 @@ using System.Buffers;
 using System.Collections;
 using System.IO;
 using System.Net;
+using System.Runtime.CompilerServices;
 
 namespace Server;
 
@@ -42,7 +43,12 @@ public interface IGenericReader
     Serial ReadSerial();
     Type ReadType();
 
+    // The hot defaults are AggressiveInlining so a reader that relies on them is not left with a
+    // devirtualized-but-not-inlined call per field; PGO alone does not inline them.
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     DateTime ReadDateTime() => new(ReadLong(), DateTimeKind.Utc);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     TimeSpan ReadTimeSpan() => new(ReadLong());
 
     /// <summary>
@@ -107,11 +113,19 @@ public interface IGenericReader
         return ticks <= 0 ? DateTime.MinValue : new DateTime(ticks, DateTimeKind.Utc);
     }
     decimal ReadDecimal() => new([ReadInt(), ReadInt(), ReadInt(), ReadInt()]);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     int ReadEncodedInt()
     {
-        var v = 0;
+        var b = ReadByte();
+        return b < 0x80 ? b : ReadEncodedIntMultiByte(b);
+    }
 
-        for (var shift = 0; shift < 35; shift += 7)
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private int ReadEncodedIntMultiByte(byte first)
+    {
+        var v = first & 0x7F;
+
+        for (var shift = 7; shift < 35; shift += 7)
         {
             var b = ReadByte();
             v |= (b & 0x7F) << shift;
@@ -132,13 +146,17 @@ public interface IGenericReader
         Read(integer);
         return Utility.Intern(new IPAddress(integer));
     }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     Point3D ReadPoint3D() => new(ReadInt(), ReadInt(), ReadInt());
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     Point2D ReadPoint2D() => new(ReadInt(), ReadInt());
     Rectangle2D ReadRect2D() => new(ReadPoint2D(), ReadPoint2D());
     Rectangle3D ReadRect3D() => new(ReadPoint3D(), ReadPoint3D());
     Map ReadMap() => Map.Maps[ReadByte()];
     Race ReadRace() => Race.Races[ReadByte()];
     int Read(Span<byte> buffer);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     unsafe T ReadEnum<T>() where T : unmanaged, Enum
     {
         switch (sizeof(T))
