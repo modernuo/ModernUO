@@ -111,6 +111,46 @@ public class FileBufferWriterTests
     }
 
     [Fact]
+    public void OversizedSpanBypassesStagingBetweenStagedWrites()
+    {
+        var path = TempFile();
+
+        try
+        {
+            var payload = new byte[777];
+            new System.Random(0x5EED).NextBytes(payload);
+
+            using (var writer = new FileBufferWriter(path, expectedSize: 64))
+            {
+                var stagingLength = writer.Buffer.Length;
+
+                writer.Write(0); // patched below
+                writer.Write((ReadOnlySpan<byte>)payload);
+                writer.Write(0xC0FFEE);
+
+                Assert.Equal(stagingLength, writer.Buffer.Length);
+                Assert.Equal(4 + payload.Length + 4, writer.Position);
+
+                writer.Seek(0, SeekOrigin.Begin);
+                writer.Write(payload.Length);
+                writer.Seek(0, SeekOrigin.End);
+                Assert.Equal(4 + payload.Length + 4, writer.Position);
+            }
+
+            var bytes = File.ReadAllBytes(path);
+            IGenericReader reader = new BufferReader(bytes);
+            Assert.Equal(payload.Length, reader.ReadInt());
+            Assert.Equal(payload, bytes.AsSpan(4, payload.Length).ToArray());
+            reader.Seek(payload.Length, SeekOrigin.Current);
+            Assert.Equal(0xC0FFEE, reader.ReadInt());
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    [Fact]
     public void TypeWritesUseTagAndHashFormat()
     {
         var path = TempFile();

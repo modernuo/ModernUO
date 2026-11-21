@@ -42,8 +42,7 @@ public class BufferWriter : IGenericWriter
         {
             if (value < 0 || value > _buffer.Length)
             {
-                // If you are receiving this exception and your value is too large, you may need to use `Resize`
-                // If you are receiving this exception and your value is negative, you probably used Seek incorrectly.
+                // Seeking past the end of the buffer is not supported; a negative value means Seek was misused.
                 throw new ArgumentOutOfRangeException(nameof(value));
             }
 
@@ -86,41 +85,43 @@ public class BufferWriter : IGenericWriter
     {
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Resize(int size)
+    private const int MaxGrowthStep = 64 * 1024 * 1024;
+
+    /// <summary>
+    /// Makes room for at least <paramref name="bytes"/> more bytes at the current index, or throws.
+    /// Doubles up to 64MB, then grows in 64MB steps instead of doubling a large buffer.
+    /// </summary>
+    protected virtual void Grow(long bytes)
     {
+        var required = _index + bytes;
+
+        if (required > Array.MaxLength)
+        {
+            throw new InvalidOperationException($"{nameof(BufferWriter)} cannot hold more than {Array.MaxLength} bytes.");
+        }
+
+        long length = _buffer.Length;
+        var size = Math.Clamp(Math.Min(length * 2, length + MaxGrowthStep), Math.Max(required, BufferSize), Array.MaxLength);
+
         _bytesWritten = Math.Max(_bytesWritten, _index);
 
-        // We shouldn't ever resize to a 0 length buffer. That is dangerous
-        if (size <= 0)
-        {
-            size = BufferSize;
-        }
-
-        if (size < _buffer.Length)
-        {
-            _bytesWritten = size;
-        }
-
-        var newBuffer = GC.AllocateUninitializedArray<byte>(size);
-        _buffer.AsSpan(0, Math.Min(size, _buffer.Length)).CopyTo(newBuffer);
+        var newBuffer = GC.AllocateUninitializedArray<byte>((int)size);
+        _buffer.AsSpan().CopyTo(newBuffer);
         _buffer = newBuffer;
     }
-
-    public virtual void Flush() => Resize(Math.Clamp(_buffer.Length * 2, BufferSize, _buffer.Length + 1024 * 1024 * 64));
 
     /// <summary>
     /// Ensures capacity, returns a ref at the current position, and advances the index.
     /// The capacity check proves the caller's unaligned store is in-bounds, and the index
-    /// only moves forward between Seek calls, so no per-write validation is needed. Growth
-    /// (Flush -> Resize) always adds at least BufferSize, covering any primitive width.
+    /// only moves forward between Seek calls, so no per-write validation is needed. Grow
+    /// makes room for the requested width or throws.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private ref byte Reserve(int bytes)
     {
         if ((uint)(_index + bytes) > (uint)_buffer.Length)
         {
-            Flush();
+            Grow(bytes);
         }
 
         ref var result = ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(_buffer), (nint)_index);
@@ -136,9 +137,9 @@ public class BufferWriter : IGenericWriter
     {
         var length = bytes.Length;
 
-        while (_buffer.Length - _index < length)
+        if (_buffer.Length - _index < length)
         {
-            Flush();
+            Grow(length);
         }
 
         bytes.CopyTo(_buffer.AsSpan((int)_index));
@@ -560,12 +561,13 @@ public class BufferWriter : IGenericWriter
         // write the actual byte count into the reserved prefix zero-padded to the same
         // width. Readers accumulate 7-bit groups, so non-minimal prefixes decode
         // identically — no second pass over the string, no scratch copy, no pooling.
-        var maxLength = value.Length * 3;
-        var prefixWidth = EncodedIntWidth(maxLength);
+        var maxLength = value.Length * 3L;
+        var prefixWidth = EncodedIntWidth((int)Math.Min(maxLength, int.MaxValue));
+        var reserved = prefixWidth + maxLength;
 
-        while (_buffer.Length - _index < prefixWidth + maxLength)
+        if (_buffer.Length - _index < reserved)
         {
-            Flush();
+            Grow(reserved);
         }
 
         var written = _encoding.GetBytes(value, _buffer.AsSpan((int)(_index + prefixWidth)));
