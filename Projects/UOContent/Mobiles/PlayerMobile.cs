@@ -1442,7 +1442,7 @@ namespace Server.Mobiles
                         {
                             drop = true;
                         }
-                        else if (clothing.RequiredRace != null && clothing.RequiredRace != Race)
+                        else if (!clothing.CheckRace(Race))
                         {
                             drop = true;
                         }

@@ -12,6 +12,12 @@ namespace Server.Items
 
         public override void OnDoubleClick(Mobile from)
         {
+            if (!from.InRange(GetWorldLocation(), 2))
+            {
+                from.SendLocalizedMessage(500446); // That is too far away.
+                return;
+            }
+
             if (from.BeginAction<RejuvinationAddonComponent>())
             {
                 from.FixedEffect(0x373A, 1, 16);

@@ -572,7 +572,6 @@ namespace Server.Items
             {
                 (toKill[i] as BaseFish)!.Kill();
 
-                amount -= 1;
                 LiveCreatures = Math.Max(LiveCreatures - 1, 0);
 
                 // An unfortunate accident has left a creature floating upside-down.  It is starting to smell.
@@ -1024,7 +1023,7 @@ namespace Server.Items
 
             public override void OnClick(Mobile from, IEntity target)
             {
-                if (!from.Alive || target is not Aquarium aquarium || aquarium.Deleted || aquarium.HasAccess(from) ||
+                if (!from.Alive || target is not Aquarium aquarium || aquarium.Deleted || !aquarium.HasAccess(from) ||
                     aquarium._events.Count == 0)
                 {
                     return;
@@ -1051,7 +1050,7 @@ namespace Server.Items
 
             public override void OnClick(Mobile from, IEntity target)
             {
-                if (!from.Alive || target is not Aquarium aquarium || aquarium.Deleted || aquarium.HasAccess(from))
+                if (!from.Alive || target is not Aquarium aquarium || aquarium.Deleted || !aquarium.HasAccess(from))
                 {
                     return;
                 }
