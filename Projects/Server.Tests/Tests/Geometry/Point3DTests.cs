@@ -113,4 +113,25 @@ public class Point3DTests
         Assert.Equal(default, p);
         Assert.Throws<FormatException>(() => Point3D.Parse("(23,,-1)", null));
     }
+
+    [Fact]
+    public void TestPoint3DRelationalOperatorsIgnoreZ()
+    {
+        var low = new Point3D(1, 1, 50);
+        var high = new Point3D(2, 2, -50);
+        IPoint3D boxedHigh = high;
+
+        Assert.True(low < high);
+        Assert.True(low <= high);
+        Assert.True(high > low);
+        Assert.True(high >= low);
+        Assert.True(low < boxedHigh);
+        Assert.True(low <= boxedHigh);
+
+        var same = new Point3D(1, 1, -50);
+        Assert.True(low <= same);
+        Assert.True(low >= same);
+        Assert.False(low < same);
+        Assert.False(low > same);
+    }
 }
