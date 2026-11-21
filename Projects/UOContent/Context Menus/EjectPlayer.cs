@@ -17,7 +17,7 @@ namespace Server.ContextMenus
 
             var house = BaseHouse.FindHouseAt(targetMobile);
 
-            if (!from.Alive || house.Deleted || !house.IsFriend(from))
+            if (!from.Alive || house?.Deleted != false || !house.IsFriend(from))
             {
                 return;
             }
