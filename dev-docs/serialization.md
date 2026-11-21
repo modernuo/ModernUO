@@ -589,6 +589,68 @@ entity.Stop(ref timer);  // Stops and nulls the reference
 
 ---
 
+## Reading and Writing Your Own Files
+
+Anything saved with the world belongs in a `GenericPersistence` or a serialized entity: the framework
+owns the files, the save threads and the load order. The classes below are the building blocks under
+that framework, for data with its own format and lifetime: a cache, an export, a precomputed table.
+`StepCacheFile` (`Projects/UOContent/Engines/Pathing/Cache/StepCacheFile.cs`) is an in-tree example.
+
+| Job | Class | Notes |
+|---|---|---|
+| Build bytes in memory | `BufferWriter` | Grows as needed (doubling, then 64 MB steps); `Buffer` holds the bytes, `Position` the length. Throws past `Array.MaxLength`. |
+| Write a file of any size | `FileBufferWriter` | Stages up to 1 MB and writes positionally, so memory stays flat. `Seek` back to patch a header or count. Dispose to finish the file. |
+| Read bytes in memory | `BufferReader` | Over a `byte[]`. |
+| Read a whole file | `ReadOnlyFileData` + `CreateReader()` | Maps the file read-only on Linux and macOS, reads it into native memory on Windows: the faster option on each. |
+| One file, one callback | `AdhocPersistence.SerializeAndSnapshot` / `AdhocPersistence.Deserialize` | Serializes on the calling thread and finishes the file in the background; the load side checks every byte was read. |
+| Legacy RunUO-style reader | `BinaryFileReader` | Kept for existing systems; new code uses `ReadOnlyFileData`. |
+
+```csharp
+// Write: version first, so the format can change later.
+using (var writer = new FileBufferWriter(path))
+{
+    writer.WriteEncodedInt(1); // version
+    writer.WriteEncodedInt(_entries.Count);
+
+    for (var i = 0; i < _entries.Count; i++)
+    {
+        writer.Write(_entries[i].Location);
+        writer.Write(_entries[i].Name);
+    }
+}
+
+// Read: the reader is bounded by the file's length.
+using var data = new ReadOnlyFileData(path);
+var reader = data.CreateReader();
+
+var version = reader.ReadEncodedInt();
+var count = reader.ReadEncodedInt();
+
+for (var i = 0; i < count; i++)
+{
+    _entries.Add(new Entry(reader.ReadPoint3D(), reader.ReadString()));
+}
+```
+
+Rules:
+
+- **Match the string prefix.** A writer built with `prefixStr: true` (as `FileBufferWriter` is) writes a
+  null flag before each string; read those with `ReadString()`. With `prefixStr: false`, use
+  `ReadStringRaw()`.
+- **Corrupt data throws.** Every read is bounds-checked: running past the end throws
+  `EndOfStreamException`, and an encoded int longer than five bytes throws `InvalidDataException`.
+  Catch these where a bad file should be skipped rather than stop the server.
+- **Keep game state on the loop.** Reading and writing files may run off the loop, but nothing that
+  runs there may touch mobiles, items, maps or timers, and background work defers while a world save
+  is running ([threading-model.md](threading-model.md)). A `ReadOnlyFileData` pointer handed to
+  another thread is valid only until the instance is disposed; keep it undisposed until that thread
+  is done.
+- **Custom readers.** A class implementing `IGenericReader` needs only its required members; the
+  interface supplies the rest. For the fastest reads, also implement `ReadEncodedInt`, `ReadPoint3D`,
+  `ReadDateTime` and `ReadEnum` directly, as `BufferReader` and `UnmanagedDataReader` do.
+
+---
+
 ## Complete Example: Versioned Item
 
 ```csharp
@@ -700,6 +762,10 @@ public partial class MagicGem : Item
 | File | Description |
 |---|---|
 | `Projects/Server/Serialization/ISerializableExtensions.cs` | MarkDirty(), collection helpers |
+| `Projects/Server/Serialization/BufferWriter.cs`, `FileBufferWriter.cs` | In-memory and file writers |
+| `Projects/Server/Serialization/BufferReader.cs`, `UnmanagedDataReader.cs` | Bounds-checked readers |
+| `Projects/Server/Serialization/ReadOnlyFileData.cs` | A whole file's bytes for reading, per-OS fastest path |
+| `Projects/Server/Serialization/AdhocPersistence.cs` | One-file save and load helpers |
 | `Projects/Server/Migrations/*.v*.json` | Server migration schemas |
 | `Projects/UOContent/Migrations/*.v*.json` | Content migration schemas |
 | `Projects/UOContent/Mobiles/Animals/Bears/BlackBear.cs` | Simple creature example |
