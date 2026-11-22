@@ -19,13 +19,12 @@ using System.Formats.Tar;
 using System.IO;
 using System.IO.Compression;
 using Server.Logging;
-using ZstdNet;
 
 namespace Server.Compression;
 
 /// <summary>
-/// Cross-platform archive creation and extraction using System.Formats.Tar + ZstdNet (native libzstd).
-/// Single-pass streaming: TarWriter → CompressionStream → FileStream.
+/// Cross-platform archive creation and extraction using System.Formats.Tar + System.IO.Compression's zstd.
+/// Single-pass streaming: TarWriter → ZstandardStream → FileStream.
 /// </summary>
 public static class ManagedArchive
 {
@@ -60,8 +59,8 @@ public static class ManagedArchive
                 bufferSize: 81920
             );
 
-            using var compressionOptions = new CompressionOptions(compressionLevel);
-            using var zstdStream = new CompressionStream(fileStream, compressionOptions);
+            var compressionOptions = new ZstandardCompressionOptions { Quality = compressionLevel };
+            using var zstdStream = new ZstandardStream(fileStream, compressionOptions, leaveOpen: true);
             using var tarWriter = new TarWriter(zstdStream, TarEntryFormat.Pax, leaveOpen: true);
 
             var entryCount = 0;
@@ -157,7 +156,7 @@ public static class ManagedArchive
                 bufferSize: 81920
             );
 
-            using var zstdStream = new DecompressionStream(fileStream);
+            using var zstdStream = new ZstandardStream(fileStream, CompressionMode.Decompress);
             return ExtractTarFromStream(zstdStream, outputDirectory);
         }
         catch (Exception ex)
@@ -267,7 +266,7 @@ public static class ManagedArchive
                 bufferSize: 81920
             );
 
-            using var zstdStream = new DecompressionStream(fileStream);
+            using var zstdStream = new ZstandardStream(fileStream, CompressionMode.Decompress);
             using var tarReader = new TarReader(zstdStream);
 
             var count = 0;

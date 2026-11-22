@@ -12,7 +12,7 @@ namespace Server.Tests.Pathfinding;
 /// asserted byte-identical after a round trip:
 ///
 ///   predictive-Z — a directional-Z array that matches its prediction is omitted entirely,
-///   compression — each record deflates independently, or stores raw when that doesn't shrink it,
+///   compression — each record is its own zstd frame, or stored raw when that doesn't shrink it,
 ///   compact index — the trailer carries no file offsets; the reader sums record lengths instead.
 ///
 /// Several tests assert on file size, because a round trip alone cannot tell you a transform ran:
@@ -353,6 +353,43 @@ public class StepCacheFileFormatTests
     }
 
     [Fact]
+    public void LargeChunkSet_TrainsADictionary_AndRoundTrips()
+    {
+        // Big enough that the writer's sample clears the training threshold, so every record here
+        // is compressed against the embedded dictionary — the path a real map bake takes.
+        var chunks = new (int cx, int cy, StepChunk c)[1024];
+        for (var i = 0; i < chunks.Length; i++)
+        {
+            chunks[i] = (i & 31, i >> 5, VariedChunk(seed: i * 13));
+        }
+
+        var path = Write(chunks);
+        try
+        {
+            using (var fs = File.OpenRead(path))
+            {
+                Span<byte> header = stackalloc byte[44];
+                fs.ReadExactly(header);
+                Assert.True(BitConverter.ToUInt32(header[40..]) > 0, "no dictionary was trained");
+            }
+
+            using var reader = StepCacheFile.OpenForLazy(path);
+            Assert.NotNull(reader);
+
+            foreach (var (cx, cy, src) in chunks)
+            {
+                var rt = reader!.TryReadChunk(cx, cy);
+                Assert.NotNull(rt);
+                AssertIdentical(src, rt!);
+            }
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    [Fact]
     public void EmptyChunkSet_WritesAReadableFile()
     {
         var path = Write();
@@ -375,6 +412,7 @@ public class StepCacheFileFormatTests
     [InlineData(0u)]
     [InlineData(5u)]
     [InlineData(8u)]
+    [InlineData(9u)]
     [InlineData(StepCacheFile.FormatVersion + 1)]
     public void UnsupportedVersion_IsRejected(uint version)
     {

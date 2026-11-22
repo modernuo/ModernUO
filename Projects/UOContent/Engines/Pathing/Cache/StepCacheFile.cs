@@ -1,22 +1,23 @@
 using System;
+using System.Buffers;
 using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Runtime.InteropServices;
-using Server.Compression;
+using Server.Logging;
 
 namespace Server.Engines.Pathing.Cache;
 
 /// <summary>
 /// Binary serializer and reader for the step cache, so a shard can warm-start instead of building
 /// chunks on the first pathfind through each region. Opening a file reads only the header and chunk
-/// index; a chunk record is seeked and inflated when the cache actually asks for it, which keeps
+/// index; a chunk record is seeked and decompressed when the cache actually asks for it, which keeps
 /// resident memory bounded by MaxResidentChunks no matter how large the file is.
 ///
 /// File layout (little-endian, BufferWriter / BufferReader convention):
 ///
-///   Header (40 bytes):
+///   Header (44 bytes):
 ///     u32   Magic           = 0x42575300 ('SWB\0')
 ///     u32   Version         = FormatVersion
 ///     u32   MapId
@@ -27,15 +28,20 @@ namespace Server.Engines.Pathing.Cache;
 ///     u64   BakeTimestamp   DateTime.UtcNow.Ticks at write time. Informational.
 ///     u32   ChunkCount
 ///     u64   IndexOffset     Where the index trailer begins.
+///     u32   DictLength      Size of the zstd dictionary that follows; 0 = records use none.
+///
+///   Dictionary (DictLength bytes): trained by the writer on a sample of this file's own records.
+///   Each record is too small for zstd to find much redundancy within it alone; the repetition is
+///   across records, and the dictionary is how a per-record (random access) frame gets at it.
 ///
 ///   Per chunk (ChunkCount times, variable size):
-///     u32    UncompressedLen   Size of the inflated record body below.
-///     byte[] Payload           The record body, libdeflate-compressed — or stored raw when
+///     u32    UncompressedLen   Size of the decompressed record body below.
+///     byte[] Payload           The record body as one zstd frame — or stored raw when
 ///                              compression didn't shrink it, as happens with tiny Uniform
 ///                              records. The reader tells the two apart by comparing the payload
 ///                              length against UncompressedLen.
 ///
-///   Record body (after inflate):
+///   Record body (after decompression):
 ///     u16    ChunkX
 ///     u16    ChunkY
 ///     u32    BuiltMultisVersion  Reserved, always 0 — chunks are static-only.
@@ -72,7 +78,7 @@ namespace Server.Engines.Pathing.Cache;
 ///   Index trailer (8 × ChunkCount bytes), in record write order:
 ///     For each chunk: { u32 packedKey = (ChunkX << 16) | ChunkY, u32 recordLength }
 ///     The file offset is not stored — reconstructed as a cumulative sum of recordLength
-///     starting at HeaderSize (the first record sits immediately after the header).
+///     starting at HeaderSize + DictLength (the first record sits immediately after the dictionary).
 ///
 /// A chunk's fixed portion runs ~783 bytes, and each directional-Z array that survives prediction
 /// adds 256 more, so a Full record lands between ~783 bytes and ~4 KB. The strata trailer adds
@@ -85,16 +91,18 @@ namespace Server.Engines.Pathing.Cache;
 /// </summary>
 internal static class StepCacheFile
 {
+    private static readonly ILogger logger = LogFactory.GetLogger(typeof(StepCacheFile));
+
     public const uint Magic = 0x42575300; // 'SWB\0'
 
-    public const uint FormatVersion = 9;
+    public const uint FormatVersion = 10;
 
     /// <summary>
     /// Oldest format this binary will load. Anything older is treated as missing rather than
     /// migrated: the cache is fully regenerable from the map data, so a re-bake is always
     /// available and always correct.
     /// </summary>
-    public const uint MinSupportedVersion = 9;
+    public const uint MinSupportedVersion = 10;
 
     // Record discriminator. 1 is reserved.
     private const byte KindFull = 0;
@@ -107,7 +115,26 @@ internal static class StepCacheFile
         + sizeof(ulong) // Fingerprint
         + sizeof(ulong) // BakeTimestamp
         + sizeof(uint)  // ChunkCount
-        + sizeof(ulong); // IndexOffset
+        + sizeof(ulong)  // IndexOffset
+        + sizeof(uint);  // DictLength
+
+    // L19 with a trained dictionary matched libdeflate L12's size at half its bake time and
+    // decompressed ~25% faster.
+    private const int CompressionLevel = 19;
+
+    private const int MaxDictionarySize = 64 * 1024;
+
+    // Every Nth record goes into the training sample. A full map samples well past the ~100x
+    // dictionary size zstd wants, without holding the whole map's records in memory twice.
+    private const int DictionarySampleStride = 7;
+
+    // ZDICT refuses fewer than 5 samples, and a dictionary bigger than the data it serves is pure
+    // overhead, so small record sets (tests, sparse partial bakes) go without one.
+    private const int MinDictionarySamples = 5;
+    private const int MinDictionarySize = 1024;
+
+    // A reader-side sanity bound on DictLength, so a corrupt header can't ask for a huge allocation.
+    private const int MaxDictionaryLength = 1024 * 1024;
 
     // One index entry: u32 packedKey ((chunkX << 16) | chunkY) + u32 recordLength. The file offset
     // isn't stored — entries sit in record write order, so the reader rebuilds each offset as a
@@ -233,18 +260,22 @@ internal static class StepCacheFile
     }
 
     /// <summary>
-    /// Writes the map's chunks to <paramref name="path"/>: header, then one record per chunk, then
-    /// the index trailer. IndexOffset isn't known until the records are down, so it goes in as a
-    /// placeholder and gets patched by seeking back to it.
+    /// Writes the map's chunks to <paramref name="path"/>: header, dictionary, then one record per
+    /// chunk, then the index trailer. IndexOffset isn't known until the records are down, so it goes
+    /// in as a placeholder and gets patched by seeking back to it.
     /// </summary>
     public static void Write(string path, uint mapId, ReadOnlySpan<(int chunkX, int chunkY, StepChunk chunk)> chunks)
     {
         Directory.CreateDirectory(Path.GetDirectoryName(path) ?? ".");
 
+        var recordScratch = new byte[BytesPerChunkBase + 1024];
+        var dictionaryBytes = TrainDictionary(chunks, ref recordScratch);
+
         // A rough estimate: the base record plus a small strata budget per chunk. Coastline chunks
         // run ~2.5 KB over it for their swim layer, but they're a small share of any map, and the
         // writer grows on overflow — under-estimating costs a few reallocs during a bake, nothing more.
-        var capacity = HeaderSize + (BytesPerChunkBase + 256 + IndexEntryBytes) * chunks.Length;
+        var capacity = HeaderSize + dictionaryBytes.Length
+                       + (BytesPerChunkBase + 256 + IndexEntryBytes) * chunks.Length;
         var w = new BufferWriter(new byte[capacity], prefixStr: false);
 
         w.Write(Magic);
@@ -255,12 +286,19 @@ internal static class StepCacheFile
         w.Write((uint)chunks.Length);
         var indexOffsetPosition = w.Position;
         w.Write(0UL); // patched below, once the records are written and the index position is known
+        w.Write((uint)dictionaryBytes.Length);
+        w.Write(dictionaryBytes);
+
+        using var dictionary = dictionaryBytes.Length > 0
+            ? ZstandardDictionary.Create(dictionaryBytes, CompressionLevel)
+            : null;
+        using var encoder = dictionary != null
+            ? new ZstandardEncoder(dictionary)
+            : new ZstandardEncoder(CompressionLevel);
 
         // Each record is built into recordScratch, compressed into compScratch, then framed as
         // [u32 uncompressedLen][payload].
-        var packer = Deflate.Maximum;
-        var recordScratch = new byte[BytesPerChunkBase + 1024];
-        var compScratch = new byte[packer.MaxPackSize(recordScratch.Length)];
+        var compScratch = new byte[ZstandardEncoder.GetMaxCompressedLength(recordScratch.Length)];
 
         // Record lengths only — the index stores no offsets, so the reader rebuilds them by
         // summing these in order.
@@ -269,7 +307,7 @@ internal static class StepCacheFile
         {
             var (chunkX, chunkY, chunk) = chunks[i];
             var start = w.Position;
-            WriteChunk(w, chunkX, chunkY, chunk, packer, ref recordScratch, ref compScratch);
+            WriteChunk(w, chunkX, chunkY, chunk, encoder, ref recordScratch, ref compScratch);
             lengths[i] = (uint)(w.Position - start);
         }
 
@@ -289,6 +327,51 @@ internal static class StepCacheFile
         // w.Buffer, not the array handed to the constructor: BufferWriter reallocates on growth,
         // which leaves that original reference pointing at a stale array.
         File.WriteAllBytes(path, w.Buffer.AsSpan(0, totalBytes).ToArray());
+    }
+
+    /// <summary>
+    /// Trains a zstd dictionary on every <see cref="DictionarySampleStride"/>th record. Empty when
+    /// there is too little to train on, or training fails; the records are then compressed without
+    /// one, which costs ratio but never correctness.
+    /// </summary>
+    private static byte[] TrainDictionary(
+        ReadOnlySpan<(int chunkX, int chunkY, StepChunk chunk)> chunks, ref byte[] recordScratch
+    )
+    {
+        var sampleCount = (chunks.Length + DictionarySampleStride - 1) / DictionarySampleStride;
+        if (sampleCount < MinDictionarySamples)
+        {
+            return [];
+        }
+
+        var samples = new BufferWriter(new byte[sampleCount * (BytesPerChunkBase / 2)], prefixStr: false);
+        var sampleLengths = new int[sampleCount];
+        for (int i = 0, s = 0; i < chunks.Length; i += DictionarySampleStride, s++)
+        {
+            var (chunkX, chunkY, chunk) = chunks[i];
+            var rw = new BufferWriter(recordScratch, prefixStr: false);
+            BuildRecord(rw, chunkX, chunkY, chunk);
+            recordScratch = rw.Buffer;
+            sampleLengths[s] = (int)rw.Position;
+            samples.Write(recordScratch.AsSpan(0, sampleLengths[s]));
+        }
+
+        var sampleBytes = (int)samples.Position;
+        var dictionarySize = Math.Min(MaxDictionarySize, sampleBytes / 100);
+        if (dictionarySize < MinDictionarySize)
+        {
+            return [];
+        }
+
+        try
+        {
+            return ZstandardDictionary.Train(samples.Buffer.AsSpan(0, sampleBytes), sampleLengths, dictionarySize);
+        }
+        catch (Exception e)
+        {
+            logger.Warning(e, "StepCache: dictionary training failed; writing records without one");
+            return [];
+        }
     }
 
     /// <summary>
@@ -338,11 +421,19 @@ internal static class StepCacheFile
             var bakeTimestamp = BinaryPrimitives.ReadUInt64LittleEndian(headerBuf[20..]);
             var chunkCount = BinaryPrimitives.ReadUInt32LittleEndian(headerBuf[28..]);
             var indexOffset = BinaryPrimitives.ReadUInt64LittleEndian(headerBuf[32..]);
+            var dictionaryLength = BinaryPrimitives.ReadUInt32LittleEndian(headerBuf[40..]);
 
-            if (fingerprint != ComputeFingerprint((int)mapId))
+            if (fingerprint != ComputeFingerprint((int)mapId) || dictionaryLength > MaxDictionaryLength)
             {
                 stream.Dispose();
                 return null;
+            }
+
+            byte[] dictionaryBytes = [];
+            if (dictionaryLength > 0)
+            {
+                dictionaryBytes = new byte[dictionaryLength];
+                stream.ReadExactly(dictionaryBytes);
             }
 
             // Pull the whole index in one read.
@@ -356,9 +447,9 @@ internal static class StepCacheFile
             }
 
             // Entries are in record write order and carry no offset, so rebuild each one as a
-            // running sum of the record lengths, starting just past the header.
+            // running sum of the record lengths, starting just past the dictionary.
             var offsets = new Dictionary<ulong, (ulong offset, uint length)>((int)chunkCount);
-            var runningOffset = (ulong)HeaderSize;
+            var runningOffset = (ulong)HeaderSize + dictionaryLength;
             for (var i = 0; i < chunkCount; i++)
             {
                 var entry = indexBuf.AsSpan(i * IndexEntryBytes);
@@ -369,7 +460,8 @@ internal static class StepCacheFile
                 runningOffset += len;
             }
 
-            return new LazyReader(stream, mapId, fingerprint, bakeTimestamp, chunkCount, offsets);
+            var dictionary = dictionaryBytes.Length > 0 ? ZstandardDictionary.Create(dictionaryBytes) : null;
+            return new LazyReader(stream, mapId, fingerprint, bakeTimestamp, chunkCount, offsets, dictionary);
         }
         catch
         {
@@ -419,7 +511,7 @@ internal static class StepCacheFile
     /// </summary>
     private static void WriteChunk(
         BufferWriter w, int chunkX, int chunkY, StepChunk chunk,
-        LibDeflateBinding packer, ref byte[] recordScratch, ref byte[] compScratch
+        ZstandardEncoder encoder, ref byte[] recordScratch, ref byte[] compScratch
     )
     {
         var rw = new BufferWriter(recordScratch, prefixStr: false);
@@ -427,16 +519,19 @@ internal static class StepCacheFile
         recordScratch = rw.Buffer; // may have grown; hold onto the larger buffer for the next chunk
         var recordLen = (int)rw.Position;
 
-        var bound = packer.MaxPackSize(recordLen);
+        var bound = ZstandardEncoder.GetMaxCompressedLength(recordLen);
         if (compScratch.Length < bound)
         {
             compScratch = new byte[bound];
         }
 
-        var compLen = packer.Pack(compScratch, recordScratch.AsSpan(0, recordLen));
+        var status = encoder.Compress(
+            recordScratch.AsSpan(0, recordLen), compScratch, out var consumed, out var compLen, isFinalBlock: true
+        );
+        encoder.Reset();
 
         w.Write((uint)recordLen);
-        if (compLen > 0 && compLen < recordLen)
+        if (status == OperationStatus.Done && consumed == recordLen && compLen < recordLen)
         {
             w.Write(compScratch.AsSpan(0, compLen));
         }
@@ -669,15 +764,18 @@ internal static class StepCacheFile
         r.Read(MemoryMarshal.Cast<sbyte, byte>(arr.AsSpan()));
 
     /// <summary>
-    /// An open .swb file: the stream plus the chunk index. Only the records actually asked for are
-    /// ever read or inflated. Dispose releases the stream.
+    /// An open .swb file: the stream, the chunk index, and a decoder primed with the file's
+    /// dictionary. Only the records actually asked for are ever read or decompressed. Dispose
+    /// releases the stream and the native zstd state.
     /// </summary>
     internal sealed class LazyReader : IDisposable
     {
         private FileStream _stream;
         private readonly Dictionary<ulong, (ulong offset, uint length)> _offsets;
         private byte[] _buffer;      // the raw framed record as it sits on disk
-        private byte[] _bodyBuffer;  // that record, inflated, ready for ReadChunk
+        private byte[] _bodyBuffer;  // that record, decompressed, ready for ReadChunk
+        private ZstandardDictionary _dictionary;
+        private ZstandardDecoder _decoder;
 
         public uint MapId { get; }
         public ulong Fingerprint { get; }
@@ -698,9 +796,12 @@ internal static class StepCacheFile
 
         internal LazyReader(
             FileStream stream, uint mapId, ulong fingerprint, ulong bakeTimestamp,
-            uint chunkCount, Dictionary<ulong, (ulong offset, uint length)> offsets
+            uint chunkCount, Dictionary<ulong, (ulong offset, uint length)> offsets,
+            ZstandardDictionary dictionary
         )
         {
+            _dictionary = dictionary;
+            _decoder = dictionary != null ? new ZstandardDecoder(dictionary) : new ZstandardDecoder();
             _stream = stream;
             MapId = mapId;
             Fingerprint = fingerprint;
@@ -755,14 +856,14 @@ internal static class StepCacheFile
             }
             else
             {
-                // Deflate.Standard, not .Maximum: the level only affects packing, and inflate has
-                // to accept whatever the writer produced regardless.
-                var result = Deflate.Standard.Unpack(
-                    _bodyBuffer.AsSpan(0, uncompressedLen),
+                var status = _decoder.Decompress(
                     _buffer.AsSpan(sizeof(uint), payloadLen),
+                    _bodyBuffer.AsSpan(0, uncompressedLen),
+                    out _,
                     out var produced
                 );
-                if (result != LibDeflateResult.Success || produced != uncompressedLen)
+                _decoder.Reset();
+                if (status != OperationStatus.Done || produced != uncompressedLen)
                 {
                     return null;
                 }
@@ -775,6 +876,10 @@ internal static class StepCacheFile
         {
             _stream?.Dispose();
             _stream = null;
+            _decoder?.Dispose();
+            _decoder = null;
+            _dictionary?.Dispose();
+            _dictionary = null;
             _buffer = null;
             _bodyBuffer = null;
         }

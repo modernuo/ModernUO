@@ -47,7 +47,7 @@ jobs:
     - name: Install Prerequisites
       run: |
         brew update
-        brew install icu4c libdeflate argon2
+        brew install icu4c argon2
     - name: Set Library Path
       run: echo "DYLD_LIBRARY_PATH=/opt/homebrew/lib:$DYLD_LIBRARY_PATH" >> $GITHUB_ENV
     - name: Build
@@ -129,13 +129,13 @@ jobs:
       # unversioned .so symlink and mask the very thing the binding packages now probe for, so a
       # regression in versioned-SONAME resolution would sail through CI.
       - name: Install Prerequisites using dnf
-        run: dnf makecache --refresh && dnf install -y findutils libicu libdeflate libargon2 tzdata
+        run: dnf makecache --refresh && dnf install -y findutils libicu isa-l libargon2 tzdata
         if: ${{ matrix.packageManager == 'dnf' }}
       # ICU's runtime package carries the ABI version in its name (libicu70 on jammy, libicu76 on
       # trixie) and has no stable alias, so match it by pattern. libicu-dev was the old way to stay
       # version-independent, but it drags in the unversioned symlink and defeats the check below.
       - name: Install Prerequisites using apt
-        run: apt-get update -y && apt-get install -y curl '^libicu[0-9]+$' libdeflate0 libargon2-1 tzdata
+        run: apt-get update -y && apt-get install -y curl '^libicu[0-9]+$' libisal2 libargon2-1 tzdata
         if: ${{ matrix.packageManager == 'apt' }}
       # Versioned-SONAME resolution is only under test while the unversioned symlink is absent. If a
       # base image or a package ever starts shipping it, every probe would succeed on the first try
@@ -144,7 +144,7 @@ jobs:
       - name: Assert the unversioned .so symlinks are absent
         run: |
           found=""
-          for lib in libicuuc libicui18n libdeflate libargon2; do
+          for lib in libicuuc libicui18n libisal libargon2; do
             hit=$(ls /usr/lib/*/"$lib".so /usr/lib64/"$lib".so 2>/dev/null || true)
             if [ -n "$hit" ]; then
               found="$found $hit"

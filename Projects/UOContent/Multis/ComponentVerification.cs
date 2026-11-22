@@ -110,7 +110,7 @@ public static class ComponentVerification
             stream.ReadExactly(compressedData);
             var decompressedData = new byte[entry.Size];
 
-            if (Deflate.Standard.Unpack(decompressedData, compressedData, out var bytesDecompressed) != LibDeflateResult.Success
+            if (Deflate.Standard.Unpack(decompressedData, compressedData, out var bytesDecompressed) != IGzipResult.Success
                 || entry.Size != bytesDecompressed)
             {
                 return null;
