@@ -118,10 +118,7 @@ public class TileMatrix
 
                     var uopEntries = UOPFiles.ReadUOPIndexes(MapStream, ".dat", 0x14000, 5);
 
-                    _uopMapEntries = GC.AllocateUninitializedArray<UOPEntry>(uopEntries.Count);
-                    uopEntries.Values.CopyTo(_uopMapEntries, 0);
-
-                    ConvertToMapEntries(MapStream);
+                    _uopMapEntries = OrderMapEntries(uopEntries);
                 }
                 else
                 {
@@ -510,21 +507,25 @@ public class TileMatrix
         return -1;
     }
 
-    private void ConvertToMapEntries(FileStream stream)
+    /// <summary>
+    /// Orders a map UOP's chunks by their index. Each chunk is named
+    /// <c>build/map#legacymul/########.dat</c>, so the index decoded from its name hash is its place in the map.
+    /// The first int32 of a chunk is the header of its first block, not an order: EA's files happen to store the
+    /// block number there, but files from other tools can repeat it, and sorting on it scrambles the map.
+    /// </summary>
+    internal static UOPEntry[] OrderMapEntries(Dictionary<int, UOPEntry> entries)
     {
-        // Sorting by offset to make seeking faster
-        Array.Sort(_uopMapEntries, (a, b) => a.Offset.CompareTo(b.Offset));
+        var keys = new int[entries.Count];
+        entries.Keys.CopyTo(keys, 0);
+        Array.Sort(keys);
 
-        var reader = new BinaryReader(stream);
-
-        for (var i = 0; i < _uopMapEntries.Length; ++i)
+        var ordered = GC.AllocateUninitializedArray<UOPEntry>(keys.Length);
+        for (var i = 0; i < keys.Length; i++)
         {
-            var entry = _uopMapEntries[i];
-            stream.Seek(entry.Offset, SeekOrigin.Begin);
-            _uopMapEntries[i].Extra = reader.ReadInt32(); // order
+            ordered[i] = entries[keys[i]];
         }
 
-        Array.Sort(_uopMapEntries, (a, b) => a.Extra.CompareTo(b.Extra));
+        return ordered;
     }
 
     public void Dispose()
