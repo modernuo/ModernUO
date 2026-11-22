@@ -27,7 +27,7 @@ public static class UOPFiles
     )
     {
         var reader = new BinaryReader(stream);
-        var length = (int)stream.Length;
+        var length = stream.Length;
 
         // MYP\0
         if (reader.ReadUInt32() != 0x50594D)
@@ -47,11 +47,10 @@ public static class UOPFiles
             throw new FileLoadException($"Error loading file {stream.Name}. Invalid signature.");
         }
 
-        var hashes = GenerateHashes(stream.Name, fileExt, entryCount, precision);
-
         var nextBlock = reader.ReadInt64();
 
-        var entries = new Dictionary<int, UOPEntry>(0x10000);
+        // The table is keyed by name hash, so read it whole and then hash candidate names against it.
+        var tableEntries = new Dictionary<ulong, UOPEntry>();
 
         do
         {
@@ -76,45 +75,55 @@ public static class UOPFiles
                     continue;
                 }
 
-                if (hashes.TryGetValue(fileNameHash, out var fileIndex))
+                tableEntries[fileNameHash] = new UOPEntry(offset + headerLength, decompressedLength)
                 {
-                    entries[fileIndex] = new UOPEntry(offset + headerLength, decompressedLength)
-                    {
-                        Compressed = compressed,
-                        CompressedSize = compressedLength
-                    };
-                }
-                else if (additionalHashes != null && additionalHashes.ContainsKey(fileNameHash))
-                {
-                    additionalHashes[fileNameHash] = new UOPEntry(offset + headerLength, decompressedLength)
-                    {
-                        Compressed = compressed,
-                        CompressedSize = compressedLength
-                    };
-                }
+                    Compressed = compressed,
+                    CompressedSize = compressedLength
+                };
             }
         }
         while (nextBlock != 0 && nextBlock < length);
 
-        entries.TrimExcess();
-        return entries;
-    }
-
-    private static Dictionary<ulong, int> GenerateHashes(string filePath, string ext, int entryCount, int precision = 8)
-    {
-        var hashes = new Dictionary<ulong, int>();
-        Span<char> buffer = stackalloc char[precision];
-        var formatter = $"D{precision}".AsSpan();
-
-        var root = $"build/{Path.GetFileNameWithoutExtension(filePath).ToLowerInvariant()}";
-
-        for (var i = 0; i < entryCount; i++)
+        if (additionalHashes != null)
         {
-            i.TryFormat(buffer, out _, formatter);
-            hashes[HashLittle2($"{root}/{buffer}{ext}")] = i;
+            foreach (var hash in additionalHashes.Keys)
+            {
+                if (tableEntries.Remove(hash, out var entry))
+                {
+                    additionalHashes[hash] = entry;
+                }
+            }
         }
 
-        return hashes;
+        var entries = new Dictionary<int, UOPEntry>(Math.Min(tableEntries.Count, entryCount));
+
+        // build/<file name>/<index, zero-padded to precision><ext>
+        var root = Path.GetFileNameWithoutExtension(stream.Name);
+        var nameLength = 6 + root.Length + 1 + precision + fileExt.Length;
+        Span<char> name = nameLength <= 256 ? stackalloc char[nameLength] : new char[nameLength];
+        "build/".CopyTo(name);
+        root.AsSpan().ToLowerInvariant(name[6..]);
+        name[6 + root.Length] = '/';
+        fileExt.CopyTo(name[^fileExt.Length..]);
+        var digits = name.Slice(6 + root.Length + 1, precision);
+
+        // Stops once every table entry is placed, so a map hashes ~100 names instead of entryCount.
+        for (var i = 0; i < entryCount && tableEntries.Count > 0; i++)
+        {
+            var n = i;
+            for (var d = precision - 1; d >= 0; d--)
+            {
+                digits[d] = (char)('0' + n % 10);
+                n /= 10;
+            }
+
+            if (tableEntries.Remove(HashLittle2(name), out var entry))
+            {
+                entries[i] = entry;
+            }
+        }
+
+        return entries;
     }
 
     public static ulong HashLittle2(ReadOnlySpan<char> s)
