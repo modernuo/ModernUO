@@ -840,7 +840,7 @@ public static class Core
             logger.Information("Headless mode detected (stdin is not a TTY); interactive console input is disabled.");
         }
 
-        // LibDeflate is not thread safe, so each thread gets its own instance; this is the loop's.
+        // IGZip is not thread safe, so each thread gets its own instance; this is the loop's.
         _ = Deflate.Standard;
 
         ServerConfiguration.Load();

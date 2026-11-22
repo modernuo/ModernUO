@@ -317,3 +317,8 @@ Validate size **and** read-latency vs the corpus in the benchmark repo after eac
 - *Calibrated v8 (`BakeMap`-measured, full Trammel):* **#3b index compaction (20 → 8 B/chunk):
   19.2 MB → 17.9 MB.** Roadmap end-to-end: **565 MB → 17.9 MB (−96.8%)** across #1 uniform elision
   (v5) → #2 predictive-Z (v6) → #3a per-chunk libdeflate (v7) → #3b compact index (v8).
+- *Format v10:* records switched from libdeflate to zstd L19 against a 64 KB dictionary the writer
+  trains on every 7th record and stores after the header. The v7 spike compared zstd *without* a
+  dictionary; at 256-cell granularity the redundancy is across records, which is exactly what a
+  dictionary captures. Map 0 (114,688 records, 117.3 MiB raw): **15.70 MiB vs libdeflate L12
+  15.78 MiB**, bake 32 s vs 60 s (training adds 0.5 s), read-all 0.169 s vs 0.220 s.

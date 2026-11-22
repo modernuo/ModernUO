@@ -25,17 +25,18 @@ public static class NativeLibraryChecker
                 "macOS",
                 [
                     ".NET 11 Runtime — https://dotnet.microsoft.com/download/dotnet/11.0",
-                    "brew install icu4c libdeflate zstd argon2"
+                    "brew install icu4c argon2",
+                    "Intel Macs also: brew install isa-l (Apple Silicon uses the copy bundled with IGzip.Bindings)"
                 ]
             ),
             "linux" => (
                 "Linux",
                 [
                     ".NET 11 Runtime — https://dotnet.microsoft.com/download/dotnet/11.0",
-                    "Debian/Ubuntu:  sudo apt-get install -y libdeflate0 libargon2-1 libicuNN tzdata",
+                    "Debian/Ubuntu:  sudo apt-get install -y libisal2 libargon2-1 libicuNN tzdata",
                     "                (libicuNN varies by release, e.g. libicu76 — run build-tool --check-prereqs there for the exact name)",
                     "                (add tzdata-legacy if the shard is configured with an alias such as US/Eastern)",
-                    "Fedora/RHEL:    sudo dnf install -y libdeflate libargon2 libicu tzdata",
+                    "Fedora/RHEL:    sudo dnf install -y isa-l libargon2 libicu tzdata",
                     "CentOS:         Also requires epel-release and CRB enabled"
                 ]
             ),
@@ -136,7 +137,10 @@ public static class NativeLibraryChecker
         }
 
         // Check required Homebrew formulae
-        var formulae = new[] { "icu4c", "libdeflate", "zstd", "argon2" };
+        // IGzip.Bindings bundles libisal for osx-arm64 only; Intel Macs need Homebrew's.
+        var formulae = RuntimeInformation.OSArchitecture == Architecture.Arm64
+            ? new[] { "icu4c", "argon2" }
+            : new[] { "icu4c", "isa-l", "argon2" };
         var listResult = ProcessRunner.RunCaptured("brew", "list --formula");
         var installedFormulae = listResult.Success
             ? new HashSet<string>(
@@ -187,7 +191,7 @@ public static class NativeLibraryChecker
     [
         ("libicuuc", 60, 120),
         ("libicui18n", 60, 120),
-        ("libdeflate", 0, 9),
+        ("libisal", 0, 9),
         ("libargon2", 0, 9)
     ];
 
@@ -319,10 +323,10 @@ public static class NativeLibraryChecker
                     var packages = missing.Select(
                         library => library switch
                         {
-                            "libdeflate" => "libdeflate0",
-                            "libargon2"  => "libargon2-1",
-                            "tzdata"     => "tzdata",
-                            _            => _aptIcuPackage ??= ResolveAptIcuPackage()
+                            "libisal"   => "libisal2",
+                            "libargon2" => "libargon2-1",
+                            "tzdata"    => "tzdata",
+                            _           => _aptIcuPackage ??= ResolveAptIcuPackage()
                         }
                     ).Distinct();
 
@@ -333,10 +337,10 @@ public static class NativeLibraryChecker
                     var packages = missing.Select(
                         library => library switch
                         {
-                            "libdeflate" => "libdeflate",
-                            "libargon2"  => "libargon2",
-                            "tzdata"     => "tzdata",
-                            _            => "libicu"
+                            "libisal"   => "isa-l",
+                            "libargon2" => "libargon2",
+                            "tzdata"    => "tzdata",
+                            _           => "libicu"
                         }
                     ).Distinct();
 

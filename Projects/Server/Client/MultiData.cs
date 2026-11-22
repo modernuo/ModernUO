@@ -84,7 +84,7 @@ public static class MultiData
                 }
 
                 var decompressedSize = entry.Size;
-                if (Deflate.Standard.Unpack(compressionBuffer, buffer, out var bytesDecompressed) != LibDeflateResult.Success
+                if (Deflate.Standard.Unpack(compressionBuffer, buffer, out var bytesDecompressed) != IGzipResult.Success
                     || decompressedSize != bytesDecompressed)
                 {
                     throw new FileLoadException($"Error loading file {stream.Name}. Failed to unpack entry {i}.");

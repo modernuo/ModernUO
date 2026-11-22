@@ -98,7 +98,7 @@ dnf install -y dnf-plugins-core
 dnf config-manager --set-enabled crb
 dnf install -y epel-release
 # Prerequisites
-dnf install -y findutils libicu libdeflate libargon2 tzdata
+dnf install -y findutils libicu isa-l libargon2 tzdata
 ```
 
 ### Ubuntu, Debian, etc
@@ -106,14 +106,14 @@ dnf install -y findutils libicu libdeflate libargon2 tzdata
 apt-get update -y
 # The ICU runtime package carries the ABI version in its name (libicu74, libicu76, …) and has no
 # stable alias, so match it by pattern rather than pinning a release-specific name.
-apt-get install -y '^libicu[0-9]+$' libdeflate0 libargon2-1 tzdata
+apt-get install -y '^libicu[0-9]+$' libisal2 libargon2-1 tzdata
 ```
 
 Only the runtime libraries are needed — the `-dev`/`-devel` packages are not. Run
 `./build-tool --check-prereqs` to check the current machine and print the exact packages your
 release needs.
 
-`zstd` is not listed because ZstdNet bundles `libzstd` for every platform, and `liburing` is not
+`zstd` is not listed because it is built into .NET 11, and `liburing` is not
 listed because IORingGroup issues `io_uring` syscalls directly.
 
 If the shard's configured time zone is a legacy alias such as `US/Eastern`, Debian 12 and Ubuntu
@@ -122,7 +122,9 @@ for what each dependency is for and what breaks without it.
 
 ## OSX Requirements
 ```shell
-brew install icu4c libdeflate argon2
+brew install icu4c argon2
+# Intel Macs only; Apple Silicon uses the bundled copy
+brew install isa-l
 ```
 
 ## Running the Server

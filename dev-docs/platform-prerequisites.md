@@ -10,16 +10,16 @@ the exact install command for the detected distribution.
 
 | Dependency | Platform | Why |
 |---|---|---|
-| .NET 10 Runtime | all | — |
+| .NET 11 Runtime | all | — |
 | ICU (`libicuuc`, `libicui18n`) | Linux, macOS | The runtime refuses to start without it; see below |
 | tzdata | Linux | Time zone lookups; see below |
-| `libdeflate` | all | `LibDeflate.Bindings` |
+| `libisal` (ISA-L) | Linux, Intel macOS | `IGzip.Bindings` (packet compression, UOP reads); bundled for Windows x64 and Apple Silicon |
 | `libargon2` | all | `Argon2.Bindings` (password hashing) |
 | VC++ Redistributable v14 | Windows | Native bindings |
 
 Not required, despite appearances:
 
-- **zstd** — `ZstdNet` bundles `libzstd` for every RID.
+- **zstd** — built into .NET 11 (`System.IO.Compression.ZstandardStream`); nothing to install.
 - **liburing** — `IORingGroup` issues `io_uring` syscalls directly. It imports only `libc`,
   `libSystem.dylib`, `kernel32.dll`, `kernelbase.dll` and `ws2_32.dll`.
 - **`-dev` / `-devel` packages** — see "Runtime packages only" below.
@@ -28,16 +28,16 @@ Not required, despite appearances:
 
 ```sh
 # Debian / Ubuntu   (ICU has no stable package alias, so match it by pattern)
-sudo apt-get install -y '^libicu[0-9]+$' libdeflate0 libargon2-1 tzdata
+sudo apt-get install -y '^libicu[0-9]+$' libisal2 libargon2-1 tzdata
 
 # Fedora / RHEL
-sudo dnf install -y libdeflate libargon2 libicu tzdata
+sudo dnf install -y isa-l libargon2 libicu tzdata
 
 # Alpine
-apk add --no-cache libdeflate argon2-libs icu-libs tzdata
+apk add --no-cache isa-l argon2-libs icu-libs tzdata
 
-# macOS
-brew install icu4c libdeflate argon2
+# macOS (Intel Macs also need isa-l)
+brew install icu4c argon2
 ```
 
 CentOS additionally needs EPEL and CRB:
@@ -52,10 +52,10 @@ Only the runtime packages are needed. The `-dev`/`-devel` packages are **not** r
 
 They used to be, because .NET's `DllImport` probing looks for the unversioned `libfoo.so`, and on
 Linux that bare symlink ships only in the development package. The runtime package ships the
-versioned SONAME (`libdeflate.so.0`, `libargon2.so.1`). The binding packages now probe the versioned
+versioned SONAME (`libisal.so.2`, `libargon2.so.1`). The binding packages now probe the versioned
 names as well, so the runtime package is sufficient.
 
-Anything still documenting `libicu-dev` or `libdeflate-dev` as a requirement is out of date.
+Anything still documenting `libicu-dev`, `libisal-dev` or `libdeflate-dev` as a requirement is out of date.
 
 ## ICU
 

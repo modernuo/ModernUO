@@ -21,15 +21,9 @@ namespace Server.Compression;
 public static class Deflate
 {
     [ThreadStatic]
-    private static LibDeflateBinding _standard;
+    private static IGzipBinding _standard;
 
-    [ThreadStatic]
-    private static LibDeflateBinding _maximum;
-
-    public static LibDeflateBinding Standard => _standard ??= new LibDeflateBinding();
-
-    // Best-ratio compressor, cached per thread like Standard (construction allocates native state).
-    public static LibDeflateBinding Maximum => _maximum ??= new LibDeflateBinding(LibDeflateCompressionLevel.VeryHigh);
+    public static IGzipBinding Standard => _standard ??= new IGzipBinding();
 
     /// <summary>
     /// Frees the calling thread's <see cref="Standard"/> instance. Cleared too, so a later use on this
