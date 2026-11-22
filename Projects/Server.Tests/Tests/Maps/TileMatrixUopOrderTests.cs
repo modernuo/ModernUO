@@ -7,46 +7,78 @@ namespace Server.Tests.Maps;
 
 public class TileMatrixUopOrderTests
 {
-    private const int BlockSize = 196;
-    private const int BlocksPerChunk = 2;
+    private const int ChunkSize = 196 * 2;
 
-    [Fact]
-    public void OrderMapEntries_OrdersByChunkIndex()
-    {
-        var entries = new Dictionary<int, UOPEntry>
-        {
-            [2] = new(300, 10),
-            [0] = new(100, 10),
-            [1] = new(200, 10)
-        };
-
-        var ordered = TileMatrix.OrderMapEntries(entries);
-
-        Assert.Equal(new long[] { 100, 200, 300 }, Array.ConvertAll(ordered, e => e.Offset));
-    }
-
-    // A map UOP whose chunks all start with the same int32 (as files from tools other than EA's can),
-    // stored on disk in reverse order: each chunk must still resolve to its own data.
+    // Chunks whose first int32 repeats (as files from tools other than EA's can), stored on disk in reverse:
+    // each chunk must still be placed by the index in its name.
     [Theory]
     [InlineData(3)]
     [InlineData(40)]
-    public void OrderMapEntries_IgnoresRepeatedChunkHeaders(int chunkCount)
+    public void BuildMapChunks_IgnoresRepeatedChunkHeaders(int chunkCount)
+    {
+        var indexes = new int[chunkCount];
+        for (var i = 0; i < chunkCount; i++)
+        {
+            indexes[i] = chunkCount - 1 - i;
+        }
+
+        AssertChunksResolve(indexes, chunkCount);
+    }
+
+    [Fact]
+    public void BuildMapChunks_MissingChunkLeavesHole()
+    {
+        AssertChunksResolve([0, 1, 3, 4], 5);
+    }
+
+    [Fact]
+    public void ReadUOPIndexes_FindsAdditionalHashes()
     {
         var dir = Directory.CreateTempSubdirectory("muo-uop-order-");
         try
         {
             var path = Path.Combine(dir.FullName, "map96LegacyMUL.uop");
-            WriteMapUop(path, chunkCount);
+            var extraHash = UOPFiles.HashLittle2("build/map96legacymul/extra.bin");
+            WriteMapUop(path, [1, 0], extraHash);
 
             using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-            var ordered = TileMatrix.OrderMapEntries(UOPFiles.ReadUOPIndexes(stream, ".dat", 0x14000, 5));
+            var additional = new Dictionary<ulong, UOPEntry> { [extraHash] = default };
+            var entries = UOPFiles.ReadUOPIndexes(stream, ".dat", 0x14000, 5, 8, additional);
 
-            Assert.Equal(chunkCount, ordered.Length);
-            var reader = new BinaryReader(stream);
-            for (var i = 0; i < chunkCount; i++)
+            Assert.Equal(2, entries.Count);
+            Assert.True(entries.ContainsKey(0));
+            Assert.True(entries.ContainsKey(1));
+            Assert.NotEqual(0, additional[extraHash].Offset);
+        }
+        finally
+        {
+            dir.Delete(true);
+        }
+    }
+
+    private static void AssertChunksResolve(int[] storedIndexes, int expectedLength)
+    {
+        var dir = Directory.CreateTempSubdirectory("muo-uop-order-");
+        try
+        {
+            var path = Path.Combine(dir.FullName, "map96LegacyMUL.uop");
+            WriteMapUop(path, storedIndexes);
+
+            using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+            var chunks = TileMatrix.BuildMapChunks(UOPFiles.ReadUOPIndexes(stream, ".dat", 0x14000, 5));
+
+            Assert.Equal(expectedLength, chunks.Length);
+            var present = new HashSet<int>(storedIndexes);
+            for (var i = 0; i < chunks.Length; i++)
             {
-                stream.Seek(ordered[i].Offset + 4, SeekOrigin.Begin); // past the shared block header
-                Assert.Equal(i, reader.ReadByte());
+                if (!present.Contains(i))
+                {
+                    Assert.Equal(0, chunks[i].Offset);
+                    continue;
+                }
+
+                stream.Seek(chunks[i].Offset + 4, SeekOrigin.Begin); // past the shared block header
+                Assert.Equal(i, stream.ReadByte());
             }
         }
         finally
@@ -55,41 +87,46 @@ public class TileMatrixUopOrderTests
         }
     }
 
-    private static void WriteMapUop(string path, int chunkCount)
+    // Writes chunk storedIndexes[n] at storage position n. Every chunk starts with the same int32 (1)
+    // and is filled with its own index after that.
+    private static void WriteMapUop(string path, int[] storedIndexes, ulong extraHash = 0)
     {
         const int headerSize = 4 + 4 + 4 + 8 + 4 + 4;
         const int entrySize = 8 + 4 + 4 + 4 + 8 + 4 + 2;
-        const int chunkSize = BlockSize * BlocksPerChunk;
+        var fileCount = storedIndexes.Length + (extraHash != 0 ? 1 : 0);
         var tableOffset = (long)headerSize;
-        var dataOffset = tableOffset + 4 + 8 + chunkCount * entrySize;
+        var dataOffset = tableOffset + 4 + 8 + fileCount * entrySize;
 
         using var w = new BinaryWriter(File.Create(path));
         w.Write(0x50594Du);   // MYP\0
         w.Write(5);           // version
         w.Write(0xFD23EC43u); // signature
         w.Write(tableOffset);
-        w.Write(chunkCount);  // block capacity
-        w.Write(chunkCount);  // file count
+        w.Write(fileCount);   // block capacity
+        w.Write(fileCount);   // file count
 
-        w.Write(chunkCount);
+        w.Write(fileCount);
         w.Write(0L);          // no next table
-        for (var i = chunkCount - 1; i >= 0; i--)
+        for (var n = 0; n < fileCount; n++)
         {
-            // Chunk i is stored at position (chunkCount - 1 - i): last chunk first.
-            w.Write(dataOffset + (long)(chunkCount - 1 - i) * chunkSize);
+            var hash = n < storedIndexes.Length
+                ? UOPFiles.HashLittle2($"build/map96legacymul/{storedIndexes[n]:D8}.dat")
+                : extraHash;
+
+            w.Write(dataOffset + (long)n * ChunkSize);
             w.Write(0);         // header length
-            w.Write(chunkSize); // compressed length
-            w.Write(chunkSize); // decompressed length
-            w.Write(UOPFiles.HashLittle2($"build/map96legacymul/{i:D8}.dat"));
+            w.Write(ChunkSize); // compressed length
+            w.Write(ChunkSize); // decompressed length
+            w.Write(hash);
             w.Write(0u);        // adler32
             w.Write((short)0);  // not compressed
         }
 
-        for (var i = chunkCount - 1; i >= 0; i--)
+        for (var n = 0; n < fileCount; n++)
         {
-            var chunk = new byte[chunkSize];
-            BitConverter.TryWriteBytes(chunk, 1); // every chunk's first block header is 1
-            chunk.AsSpan(4).Fill((byte)i);
+            var chunk = new byte[ChunkSize];
+            BitConverter.TryWriteBytes(chunk, 1);
+            chunk.AsSpan(4).Fill(n < storedIndexes.Length ? (byte)storedIndexes[n] : (byte)0xFF);
             w.Write(chunk);
         }
     }

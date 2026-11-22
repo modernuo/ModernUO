@@ -34,7 +34,8 @@ public class TileMatrix
     private readonly LandTile[][][] _landTiles;
     private readonly LandTile[] _invalidLandBlock;
     private readonly StaticTile[][][] _emptyStaticBlock;
-    private readonly UOPEntry[] _uopMapEntries;
+    // Indexed by chunk number; a missing chunk has Offset 0.
+    private readonly UOPEntry[] _uopMapChunks;
     private readonly int _fileIndex;
     private readonly Map _map;
     private readonly int[][] _staticPatches;
@@ -118,7 +119,7 @@ public class TileMatrix
 
                     var uopEntries = UOPFiles.ReadUOPIndexes(MapStream, ".dat", 0x14000, 5);
 
-                    _uopMapEntries = OrderMapEntries(uopEntries);
+                    _uopMapChunks = BuildMapChunks(uopEntries, mapPath);
                 }
                 else
                 {
@@ -374,6 +375,11 @@ public class TileMatrix
 
             var count = length / 7;
 
+            if (count == 0)
+            {
+                return _emptyStaticBlock;
+            }
+
             DataStream.Seek(lookup, SeekOrigin.Begin);
 
             if (m_TileBuffer.Length < count)
@@ -385,7 +391,8 @@ public class TileMatrix
 
             fixed (StaticTile* pTiles = staTiles)
             {
-                _ = DataStream.Read(new Span<byte>(pTiles, length));
+                // count * 7, not length: a length that is not a multiple of 7 would overrun the buffer.
+                DataStream.ReadExactly(new Span<byte>(pTiles, count * 7));
 
                 if (m_Lists == null)
                 {
@@ -428,11 +435,11 @@ public class TileMatrix
                 return tiles;
             }
         }
-        catch (EndOfStreamException ex)
+        catch (EndOfStreamException)
         {
             if (Core.Now >= m_NextStaticWarning)
             {
-                Console.WriteLine("Warning: Static EOS for {0} ({1}, {2})", _map, x, y);
+                logger.Warning("Static EOS for {Map} ({X}, {Y})", _map, x, y);
                 m_NextStaticWarning = Core.Now + TimeSpan.FromMinutes(1.0);
             }
 
@@ -457,11 +464,31 @@ public class TileMatrix
     {
         try
         {
-            long offset = (x * BlockHeight + y) * 196 + 4;
+            var block = (long)x * BlockHeight + y;
+            long offset;
 
-            if (_uopMapEntries != null)
+            if (_uopMapChunks != null)
             {
-                offset = FindOffset(offset);
+                // Clients address map UOPs as fixed chunks of 4096 blocks, by chunk number.
+                var chunk = block >> UopChunkShift;
+                var blockInChunk = (int)(block & (UopBlocksPerChunk - 1));
+
+                if (chunk >= _uopMapChunks.Length)
+                {
+                    return _invalidLandBlock;
+                }
+
+                ref readonly var entry = ref _uopMapChunks[chunk];
+                if (entry.Offset == 0 || (blockInChunk + 1) * LandBlockSize > entry.Size)
+                {
+                    return _invalidLandBlock;
+                }
+
+                offset = entry.Offset + blockInChunk * LandBlockSize + 4;
+            }
+            else
+            {
+                offset = block * LandBlockSize + 4;
             }
 
             MapStream.Seek(offset, SeekOrigin.Begin);
@@ -470,16 +497,16 @@ public class TileMatrix
 
             fixed (LandTile* pTiles = tiles)
             {
-                _ = MapStream.Read(new Span<byte>(pTiles, 192));
+                MapStream.ReadExactly(new Span<byte>(pTiles, 192));
             }
 
             return tiles;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             if (Core.Now >= m_NextLandWarning)
             {
-                Console.WriteLine("Warning: Land EOS for {0} ({1}, {2})", _map, x, y);
+                logger.Warning("Land EOS for {Map} ({X}, {Y})", _map, x, y);
                 m_NextLandWarning = Core.Now + TimeSpan.FromMinutes(1.0);
             }
 
@@ -487,45 +514,41 @@ public class TileMatrix
         }
     }
 
-    public long FindOffset(long offset)
-    {
-        var total = 0;
-
-        for (var i = 0; i < _uopMapEntries.Length; ++i)
-        {
-            var entry = _uopMapEntries[i];
-            var newTotal = total + entry.Size;
-
-            if (offset < newTotal)
-            {
-                return entry.Offset + (offset - total);
-            }
-
-            total = newTotal;
-        }
-
-        return -1;
-    }
+    private const int LandBlockSize = 196;
+    private const int UopChunkShift = 12;
+    private const int UopBlocksPerChunk = 1 << UopChunkShift;
 
     /// <summary>
-    /// Orders a map UOP's chunks by their index. Each chunk is named
-    /// <c>build/map#legacymul/########.dat</c>, so the index decoded from its name hash is its place in the map.
-    /// The first int32 of a chunk is the header of its first block, not an order: EA's files happen to store the
-    /// block number there, but files from other tools can repeat it, and sorting on it scrambles the map.
+    /// Places a map UOP's chunks by the index in their name (<c>build/map#legacymul/########.dat</c>), as clients do.
+    /// The first int32 of a chunk is its first block's header, not an order: EA's files store the block number
+    /// there, but files from other tools can repeat it.
     /// </summary>
-    internal static UOPEntry[] OrderMapEntries(Dictionary<int, UOPEntry> entries)
+    internal static UOPEntry[] BuildMapChunks(Dictionary<int, UOPEntry> entries, string path = null)
     {
-        var keys = new int[entries.Count];
-        entries.Keys.CopyTo(keys, 0);
-        Array.Sort(keys);
-
-        var ordered = GC.AllocateUninitializedArray<UOPEntry>(keys.Length);
-        for (var i = 0; i < keys.Length; i++)
+        var length = 0;
+        foreach (var index in entries.Keys)
         {
-            ordered[i] = entries[keys[i]];
+            length = Math.Max(length, index + 1);
         }
 
-        return ordered;
+        var chunks = new UOPEntry[length];
+        foreach (var (index, entry) in entries)
+        {
+            if (entry.Compressed)
+            {
+                logger.Warning("Map chunk {Index} in {File} is compressed and will not load.", index, path);
+                continue;
+            }
+
+            chunks[index] = entry;
+        }
+
+        if (entries.Count != length)
+        {
+            logger.Warning("{File} is missing {Count} map chunks; those blocks will not load.", path, length - entries.Count);
+        }
+
+        return chunks;
     }
 
     public void Dispose()
