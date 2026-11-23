@@ -21,7 +21,8 @@ namespace Server.Items
 
         public static bool BladeWeaving(Mobile attacker, out WeaponAbility a)
         {
-            if (_newAttack.TryGetValue(attacker, out var bwr))
+            if (Table.TryGetValue(attacker, out var current) && current is Bladeweave &&
+                _newAttack.TryGetValue(attacker, out var bwr))
             {
                 a = bwr.NewAbility;
                 return true;

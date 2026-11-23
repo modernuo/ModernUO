@@ -71,7 +71,9 @@ public class ArcherAI : BaseAI
         // When we have no ammo, we flee
         var pack = Mobile.Backpack;
 
-        if (pack?.FindItemByType<Arrow>() == null)
+        var ammoType = (Mobile.Weapon as BaseRanged)?.AmmoType ?? typeof(Arrow);
+
+        if (pack?.FindItemByType(ammoType) == null)
         {
             Action = ActionType.Flee;
             return true;

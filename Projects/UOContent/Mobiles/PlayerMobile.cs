@@ -3869,6 +3869,7 @@ namespace Server.Mobiles
             SentHonorContext?.Cancel();
 
             AmmoRecovery.Forget(this);
+            WeaponAbility.Table.Remove(this);
 
             if (Stabled != null)
             {
