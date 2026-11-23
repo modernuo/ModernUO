@@ -1257,6 +1257,7 @@ namespace Server.Gumps
                             blockedEntriesList.Sort(AccountComparer.Instance);
 
                             m_List = blockedEntriesList.ToList<Account, object>();
+                            FilterAccess(m_List, from);
                         }
 
                         if (listPage > 0)
@@ -1268,7 +1269,7 @@ namespace Server.Gumps
                             AddImage(375, 177, 0x25EA);
                         }
 
-                        if ((listPage + 1) * 12 < m_List.Count)
+                        if ((listPage + 1) * 9 < m_List.Count)
                         {
                             AddButton(392, 177, 0x15E1, 0x15E5, GetButtonID(1, 1));
                         }
@@ -2617,9 +2618,12 @@ namespace Server.Gumps
                                         results.Sort(NetStateComparer.Instance);
                                     }
 
-                                    if (results.Count == 1)
+                                    var visible = results.ToList<object>();
+                                    FilterAccess(visible, from);
+
+                                    if (visible.Count == 1)
                                     {
-                                        var ns = results[0];
+                                        var ns = (NetState)visible[0];
                                         var state = ns.Mobile ?? (object)ns.Account;
 
                                         if (state is Mobile)
@@ -2655,7 +2659,7 @@ namespace Server.Gumps
                                                     from,
                                                     AdminGumpPage.Clients,
                                                     0,
-                                                    results.ToList<object>(),
+                                                    visible,
                                                     "One match found."
                                                 )
                                             );
@@ -2668,8 +2672,8 @@ namespace Server.Gumps
                                                 from,
                                                 AdminGumpPage.Clients,
                                                 0,
-                                                results.ToList<object>(),
-                                                notice ?? (results.Count == 0 ? "Nothing matched your search terms." : null)
+                                                visible,
+                                                notice ?? (visible.Count == 0 ? "Nothing matched your search terms." : null)
                                             )
                                         );
                                     }
@@ -2888,7 +2892,10 @@ namespace Server.Gumps
                                         results.Sort(AccountComparer.Instance);
                                     }
 
-                                    if (results.Count == 1)
+                                    var visible = results.ToList<object>();
+                                    FilterAccess(visible, from);
+
+                                    if (visible.Count == 1)
                                     {
                                         from.SendGump(
                                             new AdminGump(
@@ -2897,7 +2904,7 @@ namespace Server.Gumps
                                                 0,
                                                 null,
                                                 "One match found.",
-                                                results[0]
+                                                visible[0]
                                             )
                                         );
                                     }
@@ -2908,8 +2915,8 @@ namespace Server.Gumps
                                                 from,
                                                 AdminGumpPage.Accounts,
                                                 0,
-                                                results.ToList<object>(),
-                                                results.Count == 0 ? "Nothing matched your search terms." : null,
+                                                visible,
+                                                visible.Count == 0 ? "Nothing matched your search terms." : null,
                                                 new List<object>()
                                             )
                                         );
@@ -3329,6 +3336,8 @@ namespace Server.Gumps
                                         }
                                     }
 
+                                    FilterAccess(results, from);
+
                                     if (results.Count == 1)
                                     {
                                         from.SendGump(
@@ -3370,6 +3379,8 @@ namespace Server.Gumps
                                         }
                                     }
 
+                                    FilterAccess(results, from);
+
                                     if (results.Count == 1)
                                     {
                                         from.SendGump(
@@ -3410,6 +3421,8 @@ namespace Server.Gumps
                                             results.Add(acct);
                                         }
                                     }
+
+                                    FilterAccess(results, from);
 
                                     if (results.Count == 1)
                                     {
