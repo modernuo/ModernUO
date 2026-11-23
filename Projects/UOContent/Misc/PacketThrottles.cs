@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Server.Json;
+using Server.Logging;
 
 namespace Server.Network;
 
@@ -9,6 +10,7 @@ public static class PacketThrottles
 {
     // Delay in milliseconds
     private static readonly int[] Delays = new int[0x100];
+    private static readonly ILogger logger = LogFactory.GetLogger(typeof(PacketThrottles));
     private const string ThrottlesConfiguration = "Configuration/throttles.json";
 
     public static void Configure()
@@ -31,6 +33,12 @@ public static class PacketThrottles
                     Utility.PushColor(ConsoleColor.DarkYellow);
                     Console.WriteLine("Packet Throttles: Error deserializing {0} from {1}", k, ThrottlesConfiguration);
                     Utility.PopColor();
+                    continue;
+                }
+
+                if (packetId is < 0 or > 0xFF || v < 0)
+                {
+                    logger.Warning("Packet Throttles: Invalid throttle {Key} from {Path}", k, ThrottlesConfiguration);
                     continue;
                 }
 
@@ -68,9 +76,9 @@ public static class PacketThrottles
 
         var packetID = e.GetInt32(0);
 
-        if (packetID is < 0 or > 0x100)
+        if (packetID is < 0 or > 0xFF)
         {
-            e.Mobile.SendMessage("Invalid Command Format. PacketID must be between 0 and 0x100.");
+            e.Mobile.SendMessage("Invalid Command Format. PacketID must be between 0 and 0xFF.");
             return;
         }
 
@@ -90,15 +98,15 @@ public static class PacketThrottles
         var packetID = e.GetInt32(0);
         var delay = e.GetInt32(1);
 
-        if (packetID is < 0 or > 0x100)
+        if (packetID is < 0 or > 0xFF)
         {
-            e.Mobile.SendMessage("Invalid Command Format. PacketID must be between 0 and 0x100.");
+            e.Mobile.SendMessage("Invalid Command Format. PacketID must be between 0 and 0xFF.");
             return;
         }
 
-        if (delay > 5000)
+        if (delay is < 0 or > 5000)
         {
-            e.Mobile.SendMessage("Invalid Command Format. Delay cannot exceed 5000 milliseconds.");
+            e.Mobile.SendMessage("Invalid Command Format. Delay must be between 0 and 5000 milliseconds.");
             return;
         }
 

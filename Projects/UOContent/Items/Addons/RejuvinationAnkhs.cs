@@ -29,12 +29,12 @@ namespace Server.Items
                     from.Hits = from.HitsMax;
                     SendLocalizedMessageTo(from, 500801); // A sense of warmth fills your body!
                 }
-                else if (random is 2 or 4)
+                if (random is 2 or 4)
                 {
                     from.Mana = from.ManaMax;
                     SendLocalizedMessageTo(from, 500802); // A feeling of power surges through your veins!
                 }
-                else if (random is 3 or 4)
+                if (random is 3 or 4)
                 {
                     from.Stam = from.StamMax;
                     SendLocalizedMessageTo(from, 500803); // You feel as though you've slept for days!

@@ -20,6 +20,8 @@ namespace Server.Misc
         private static TimeSpan _gameTimeLeniency;
         private static string _allowedClientsMessage;
 
+        private const uint ValidClientMask = (uint)(ClientType.Classic | ClientType.UOTD | ClientType.KR | ClientType.SA);
+
         public static ClientType AllowedClientTypes { get; private set; }
 
         public static bool AllowClassic => (AllowedClientTypes & ClientType.Classic) != 0;
@@ -87,27 +89,40 @@ namespace Server.Misc
 
         private static string GetAllowedClientsString(ClientType allowedClients)
         {
-            // Get total number of allowed clients
-            var totalAllowedClients = BitOperations.PopCount((uint)allowedClients) - 1;
-            if (totalAllowedClients == 0)
+            var bits = (uint)allowedClients & ValidClientMask;
+            var total = BitOperations.PopCount(bits);
+
+            if (total == 0)
             {
                 return "There are no clients supported at this time.";
             }
 
             using var builder = new ValueStringBuilder(stackalloc char[192]);
             builder.Append("Please connect with a ");
-            uint flags = 0;
-            var i = 0;
-            while (flags < (uint)allowedClients)
+
+            var emitted = 0;
+            while (bits != 0)
             {
-                flags = 1u << i;
-                if (i > 0)
+                var bitIndex = BitOperations.TrailingZeroCount(bits);
+                var flag = (ClientType)(1u << bitIndex);
+
+                if (emitted > 0)
                 {
-                    builder.Append(i == totalAllowedClients ? " or " : ", ");
+                    if (emitted == total - 1)
+                    {
+                        builder.Append(total > 2 ? ", or " : " or ");
+                    }
+                    else
+                    {
+                        builder.Append(", ");
+                    }
                 }
 
-                builder.Append(((ClientType)flags).TypeName());
-                i++;
+                builder.Append(flag.TypeName());
+                emitted++;
+
+                // Clear the lowest set bit
+                bits &= bits - 1;
             }
 
             return builder.ToString();

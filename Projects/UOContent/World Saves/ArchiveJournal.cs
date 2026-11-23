@@ -94,12 +94,7 @@ public static class ArchiveJournal
             var tempPath = _journalPath + ".tmp";
             JsonConfig.Serialize(tempPath, _data);
 
-            if (File.Exists(_journalPath))
-            {
-                File.Delete(_journalPath);
-            }
-
-            File.Move(tempPath, _journalPath);
+            File.Move(tempPath, _journalPath, overwrite: true);
         }
         catch (Exception ex)
         {

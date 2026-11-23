@@ -80,6 +80,7 @@ public abstract partial class BaseBoatDeed : Item
         if (!ContentFeatureFlags.BoatPlacement && from.AccessLevel < FeatureFlagSettings.RequiredAccessLevel)
         {
             from.SendMessage(0x22, "Boat placement is temporarily disabled.");
+            return;
         }
 
         if (from.AccessLevel < AccessLevel.GameMaster && (map == Map.Ilshenar || map == Map.Malas))
