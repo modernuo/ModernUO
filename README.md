@@ -32,7 +32,7 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 
 #### Required Frameworks
 ##### All Operating Systems
-[![.NET](https://img.shields.io/badge/-10.0.0-5C2D91?logo=.NET&logoColor=white&labelColor=222222)](https://dotnet.microsoft.com/download/dotnet/10.0)
+[![.NET](https://img.shields.io/badge/-11.0.0-5C2D91?logo=.NET&logoColor=white&labelColor=222222)](https://dotnet.microsoft.com/download/dotnet/11.0)
 
 ##### Windows
 [![VC++ Redistributable v14](https://img.shields.io/badge/-Redist%20v14-00599C?logo=cplusplus&logoColor=white&labelColor=222222)](https://aka.ms/vc14/vc_redist.x64.exe)
@@ -50,7 +50,7 @@ See [dev-docs/server-requirements.md](dev-docs/server-requirements.md) for more 
 
 #### Development
 [![git](https://img.shields.io/badge/-git-F05032?logo=git&logoColor=F05032&labelColor=222222)](https://git-scm.com/downloads)
-[![.NET](https://img.shields.io/badge/-%2010.0.100%20SDK-5C2D91?logo=.NET&logoColor=white&labelColor=222222)](https://dotnet.microsoft.com/download/dotnet/10.0)
+[![.NET](https://img.shields.io/badge/-%2011.0.100%20SDK-5C2D91?logo=.NET&logoColor=white&labelColor=222222)](https://dotnet.microsoft.com/download/dotnet/11.0)
 
 #### Supported IDEs
 <p align="left">
@@ -80,7 +80,7 @@ Run `./publish.cmd` (Windows) or `./publish.sh` (Linux/macOS) with no arguments 
 ```shell
 ./publish.cmd [release|debug] [os] [arch]
 ```
-- `os` - [Supported operating systems](https://github.com/dotnet/core/blob/main/release-notes/10.0/supported-os.md)
+- `os` - [Supported operating systems](https://github.com/dotnet/core/blob/main/release-notes/11.0/supported-os.md)
   - `win` - [Windows](https://learn.microsoft.com/en-us/dotnet/core/install/windows)
   - `osx` - [macOS](https://learn.microsoft.com/en-us/dotnet/core/install/macos)
   - `linux` - [Linux](https://learn.microsoft.com/en-us/dotnet/core/install/linux)
